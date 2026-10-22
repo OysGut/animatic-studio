@@ -190,3 +190,5 @@
 - [x] Land ved registrering, tvungen dialog, kontoside med klokke/datoformat og forhåndsvisning
 - [x] Admin: brukere per land; personvern nb/en; gjenbruk i lister
 - [x] DB-tester, account-locale.mjs nb/en, regresjon, full vitest, B097_REPORT.md
+
+- [ ] Admin-bryter for testspråket EN-XA (av som standard); språkvelgeren flyttes under «Logg inn» over Personvern.

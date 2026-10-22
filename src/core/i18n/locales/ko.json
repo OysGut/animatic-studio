@@ -54192,5 +54192,70 @@
     "text": "컷은 필름 전체 기준으로 반올림한 겹침의 중간에 있습니다. 샷 길이는 반올림한 경계의 차이입니다. handleIn과 handleOut은 이웃 샷 쪽의 겹침이며 핸들을 포함하여 촬영합니다. 겹침이 없으면 0입니다. 오디오와 단어는 시작한 샷에 속하며 전체 길이와 절대·상대 시간을 유지합니다. crossesCut=true는 컷을 넘는 것을 나타냅니다. 2프레임 촬영은 24fps 타임라인에서 초당 12번 노출, 한 프레임씩 건너뜁니다. 종료 경계는 포함하지 않습니다. 빈 필름은 0프레임이며 매우 짧은 샷도 0프레임으로 목록에 남습니다. PTG1의 카메라는 null입니다.",
     "sourceHash": "c2bc23ed4767d9ef2f64d31a3495aef22dc03598c58430e55f3ca528c1171661",
     "review": "machine"
+  },
+  "b115.privacy.terms.heading": {
+    "text": "이용 약관 및 면책 조항",
+    "sourceHash": "da1928e529438e2f72252eb3ad6ceb274aa56d4678373c5619ff5920367b1192",
+    "review": "machine"
+  },
+  "b115.privacy.ownership.title": {
+    "text": "소유권 및 저작권",
+    "sourceHash": "cb68209029ea0cd2ae6b391ac9965e00a1176238972b0548a8e92a64b60905cf",
+    "review": "machine"
+  },
+  "b115.privacy.ownership.text": {
+    "text": "서비스에서 직접 만들거나 업로드하는 모든 콘텐츠(시나리오, 장면, 그림, 이미지, 음향, 편집, 완성된 영화)는 귀하 또는 귀하의 제작사에 귀속됩니다. From Pen to Glass는 귀하의 콘텐츠에 대한 저작권을 주장하지 않습니다. 당사는 귀하와 프로젝트 구성원에게 콘텐츠를 저장하고 표시하는 데 필요한 기술적 허가만 필요로 합니다. 업로드하는 자료(음악, 목소리, 타인의 참고 이미지 등)에 대한 권리를 보유하고 있는지 확인할 책임은 귀하에게 있습니다.",
+    "sourceHash": "209f62511d06f378a6c31793ec73ceef9be37c9a6e10eb4372e781b5ed1f9f7a",
+    "review": "machine"
+  },
+  "b115.privacy.ai.title": {
+    "text": "인공지능으로 생성된 콘텐츠",
+    "sourceHash": "b9326e1e74ecd74e7119f6fd800f1e1e43d739e3514113bd7c9db93876dfe6ff",
+    "review": "machine"
+  },
+  "b115.privacy.ai.text": {
+    "text": "인공지능이 제안하는 내용(텍스트, 분석, 음성, 이미지)은 있는 그대로 제공되며, 정확성, 완전성 또는 제3자의 권리 침해 여부에 대한 보증은 없습니다. AI로 생성된 자료를 제작에 사용할 수 있는지 평가하고 각 AI 제공업체의 이용 조건을 준수할 책임은 귀하에게 있습니다.",
+    "sourceHash": "3fec0e9b8d8cf2baee5a012542d7879ef428bb2b01b70b50b5b7950a2b69a0f0",
+    "review": "machine"
+  },
+  "b115.privacy.liability.title": {
+    "text": "책임의 제한 및 백업",
+    "sourceHash": "389fc30a48458dc457e15c5e214858c7c3121f26291824a74ab330f2e2a7aa42",
+    "review": "machine"
+  },
+  "b115.privacy.liability.text": {
+    "text": "본 서비스는 있는 그대로 제공되며, 중단 없는 운영이나 오류가 없음을 보증하지 않습니다. 프로젝트의 백업을 정기적으로 다운로드하는 것을 권장합니다. From Pen to Glass는 다운타임, 오류 또는 데이터 손실로 인한 제작 시간 손실, 마감 기한 미준수, 제3자에 대한 비용 등 간접 손해에 대해 책임을 지지 않습니다.",
+    "sourceHash": "79f2e4804a0d8e99952629b2bc48d73384f17dd3ef77af0d0301c3cab18b816c",
+    "review": "machine"
+  },
+  "b115.privacy.fonts.title": {
+    "text": "서체와 라이선스",
+    "sourceHash": "13f98a00d2834e4fec701f1bccc51c7f8de035cb277a55007c49a4aed3862b6e",
+    "review": "machine"
+  },
+  "b115.privacy.fonts.text": {
+    "text": "프로젝트에서 서체를 사용할 때(직접 업로드한 것이든 Google Fonts와 같은 외부 카탈로그의 것이든) 화면 표시, PDF 임베딩, 인쇄 등 해당 사용이 라이선스에서 허용되는지 확인할 책임은 귀하에게 있습니다.",
+    "sourceHash": "494d23fc4b315bc1bafb638f292b65d8439fb2fa0dc5ba127d38ab26c58a08c1",
+    "review": "machine"
+  },
+  "b115.privacy.links.title": {
+    "text": "공유 링크와 접근 권한",
+    "sourceHash": "62ba24171b44ae418462c55bf5b6c4c703c03d6aec12ff7432a6904c3013567c",
+    "review": "machine"
+  },
+  "b115.privacy.links.text": {
+    "text": "영화 검토용 공유 링크 등은 보호되지만, 유효한 링크를 가진 사람은 누구나 공유된 내용을 볼 수 있습니다. 링크를 누구에게 보낼지는 귀하의 책임이며, 공유는 언제든지 취소할 수 있습니다.",
+    "sourceHash": "fd4ded571900830a5d2a6e1fb7eb9ec963a56e9e2f2607f6f6831587ddec5550",
+    "review": "machine"
+  },
+  "b115.privacy.law.title": {
+    "text": "언어 및 준거법",
+    "sourceHash": "0a94b0a028d2710e2b28e770e66ef96ce5d29dc392d7bc5f321656206716911d",
+    "review": "machine"
+  },
+  "b115.privacy.law.text": {
+    "text": "이 선언문은 사용자의 접근성을 위해 여러 언어로 번역되어 있습니다. 언어 버전 간에 불일치가 있는 경우 노르웨이어 원문이 우선하며, 영어 텍스트는 보조 참고 자료입니다. 이 선언문과 서비스 이용에는 노르웨이 법이 적용됩니다.",
+    "sourceHash": "8c55d1527dac6e92ec81ee9f4e1f2ccaa182ea093bed3686c73aa0b949196edb",
+    "review": "machine"
   }
 }
