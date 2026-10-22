@@ -17,6 +17,7 @@ import { t, loadUiCatalog } from "@/core/i18n/keyed";
 import { matchUiLanguage } from '@/core/i18n/languages';
 import { Button } from '@/components/ui/button';
 import { useFeature } from '@/app/community/use-feature';
+import { initializeUiCatalogLoader } from '@/adapters/i18n/catalog-loader';
 
 export const LANGUAGE_KEY = "animatic:lang";
 /** Klasse på <html> mens lagret språk settes (skjuler siden, se `LANGUAGE_BOOT_SCRIPT`). */
@@ -105,6 +106,7 @@ export async function applyProfileLanguage(lang: UiLang | null) {
   await commitSelection(next, revision);
 }
 async function commitSelection(next: UiLang, revision: number) {
+  initializeUiCatalogLoader();
   try { await loadUiCatalog(next); } catch { next = 'en'; }
   if (selectionRevision !== revision) return;
   selectionSettled = true;

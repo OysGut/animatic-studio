@@ -3,7 +3,7 @@ import { getUiLanguage, isUiLang, setLanguage } from '@/core/i18n';
 import { acceptLanguagePreferences, matchUiLanguage } from '@/core/i18n/languages';
 import { createTranslator, type LanguageManifest } from '@/core/i18n/messages';
 import { loadUiCatalog, t } from '@/core/i18n/keyed';
-import '@/adapters/i18n/catalog-loader';
+import { initializeUiCatalogLoader } from '@/adapters/i18n/catalog-loader';
 
 afterEach(() => setLanguage('nb'));
 describe('B-107/B-111 open interface languages', () => {
@@ -18,6 +18,7 @@ describe('B-107/B-111 open interface languages', () => {
     expect(acceptLanguagePreferences('fr;q=0.4,nb;q=0.8,en;q=0,ja')).toEqual(['ja', 'nb', 'fr']);
   });
   it('loads a separate French catalog and renders its own text', async () => {
+    initializeUiCatalogLoader();
     await loadUiCatalog('fr');
     expect(t('app-i18n-language.language-switch.aria-label.a2595484506d', {}, 'fr')).not.toBe(t('app-i18n-language.language-switch.aria-label.a2595484506d', {}, 'en'));
   });

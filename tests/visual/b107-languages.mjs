@@ -25,7 +25,30 @@ async function checkLanguageSwitches(page, label) {
     for (const tag of regularLanguages) check(await group.getByTestId(`language-${tag}`).isVisible(), `${label}: ${tag} visible`);
   }
 }
+const translated = {
+  fr: { signIn: 'Se connecter', change: 'Changer de langue' },
+  ja: { signIn: 'ログイン', change: '言語を変更' },
+};
+async function checkTranslatedText(page, language, account = false) {
+  const expected = translated[language];
+  if (!expected) throw Error(`Missing translation expectation: ${language}`);
+  await page.getByTestId('language-switch').first().waitFor();
+  check(await page.getByTestId('language-switch').first().getAttribute('title') === expected.change, `${language}: translated language control, not English fallback`);
+  if (!account) check(await page.getByRole('button', { name: expected.signIn, exact: true }).isVisible(), `${language}: translated sign-in text`);
+}
 try {
+  for (const language of ['fr', 'ja']) {
+    const context = await browser.newContext({ viewport: { width: 1280, height: 1800 }, locale: 'en-GB' });
+    const page = await context.newPage();
+    await page.goto(base, { waitUntil: 'networkidle' }); await page.waitForTimeout(3200);
+    await page.getByTestId(`language-${language}`).first().click(); await page.waitForTimeout(1500);
+    await checkTranslatedText(page, language);
+    const response = await page.reload({ waitUntil: 'networkidle' }); await page.waitForTimeout(3200);
+    check((await response.text()).includes(translated[language].signIn), `${language}: SSR renders translated sign-in text`);
+    await checkTranslatedText(page, language);
+    await page.screenshot({ path: `${out}/selected-${language}.png` });
+    await context.close();
+  }
   for (const [locale, expected] of [['nb-NO','nb'],['fr-FR','fr'],['ja-JP','ja'],['zz-ZZ','en']]) {
     const context = await browser.newContext({ viewport: { width: 1280, height: 1800 }, locale });
     const page = await context.newPage();
@@ -69,6 +92,15 @@ try {
   check(await page.locator('html').getAttribute('lang') === 'fr', 'profile beats local nb and browser ja');
   check(await page.evaluate(() => localStorage.getItem('animatic:lang')) === 'nb', 'profile does not rewrite explicit local choice');
   check(saved.length === 0, 'automatic detection never saves profile');
+  await checkTranslatedText(page, 'fr', true);
+  for (const language of ['fr', 'ja']) {
+    await page.getByTestId(`language-${language}`).first().click(); await page.waitForTimeout(1500);
+    await checkTranslatedText(page, language, true);
+    check(saved.at(-1) === language, `${language}: explicit account choice saved`);
+    await page.reload({ waitUntil: 'networkidle' }); await page.getByTestId('account-page').waitFor(); await page.waitForTimeout(3500);
+    await checkTranslatedText(page, language, true);
+    check(await page.locator('html').getAttribute('lang') === language, `${language}: account language survives reload`);
+  }
   await page.getByTestId('language-de').first().click(); await page.waitForTimeout(1500);
   check(saved.at(-1) === 'de', 'explicit choice saves account locale');
   await page.reload({ waitUntil: 'networkidle' }); await page.getByTestId('account-page').waitFor(); await page.waitForTimeout(3500);
