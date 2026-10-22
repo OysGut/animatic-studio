@@ -27,7 +27,7 @@ async function checkLanguageSwitches(page, label) {
 }
 const translated = {
   fr: { signIn: 'Se connecter', change: 'Changer de langue', description: 'From Pen to Glass – du scénario au film terminé.' },
-  ja: { signIn: 'ログイン', change: '言語を変更', description: 'From Pen to Glass – 脚本から完成した映画まで。' },
+  ja: { signIn: 'ログイン', change: '言語を変更', description: 'From Pen to Glass – 脚本から完成作品まで。' },
 };
 async function checkTranslatedText(page, language, account = false) {
   const expected = translated[language];
