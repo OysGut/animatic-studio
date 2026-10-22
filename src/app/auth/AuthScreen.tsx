@@ -206,7 +206,6 @@ export function AuthScreen({ invited = false }: { invited?: boolean } = {}) {
     <main className="flex min-h-screen items-center justify-center bg-bg-app px-4">
       <div className="w-full max-w-[360px]">
         <div className="mb-8">
-          <div className="mb-3 flex justify-end"><LanguageSwitch compact /></div>
           <h1 className="text-2xl font-semibold tracking-tight text-text-primary">
             From Pen to Glass
           </h1>
@@ -344,6 +343,7 @@ export function AuthScreen({ invited = false }: { invited?: boolean } = {}) {
             </button>
           </div>
         </form>
+        <div className="mt-3 flex justify-center"><LanguageSwitch compact /></div>
         <div className="mt-3 flex justify-center">
           <PrivacyLink />
         </div>
