@@ -22,7 +22,7 @@ export function harness(defaultOut) {
   const rows = fx.rows;
   const state = { commands: [], uploads: [], uploadBodies: [], rpcs: [], batches: [] };
   /** B-099: valgfrie egne svar (rest(table, request) / serverFn(name, data)); undefined = vanlig svar. */
-  const hooks = { rest: null, serverFn: null, storage: null };
+  const hooks = { rest: null, serverFn: null, storage: null, context: null };
 
   function serverFnName(url) {
     try {
@@ -186,6 +186,8 @@ export function harness(defaultOut) {
     browser ??= await chromium.launch({ headless: true, args: ["--use-fake-ui-for-media-stream", "--use-fake-device-for-media-stream"] });
     const context = await browser.newContext({ viewport: { width: 1280, height: 1800 }, colorScheme: "dark", permissions: ["microphone"] });
     await mock(context, role);
+    // K-1: en suite kan sette opp mer på konteksten (for eksempel en simulert sanntidskanal)
+    if (hooks.context) await hooks.context(context);
     const page = await context.newPage();
     // R7: under last (flere suiter samtidig, kald Vite-kompilering) tok første lasting over 30 s
     page.setDefaultNavigationTimeout(90000);

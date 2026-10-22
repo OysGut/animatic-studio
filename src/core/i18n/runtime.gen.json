@@ -31625,6 +31625,33 @@
     "id3.provenance.unresolved": {
       "text": "kildeversjonen kan ikke bestemmes sikkert"
     },
+    "k1.conflict.aria": {
+      "text": "Lagringskonflikt"
+    },
+    "k1.conflict.by": {
+      "text": "Sist endret av {name}, {time}."
+    },
+    "k1.conflict.by-unknown": {
+      "text": "Sist endret {time}."
+    },
+    "k1.conflict.discard": {
+      "text": "Forkast min endring"
+    },
+    "k1.conflict.rebase": {
+      "text": "Legg min endring oppå"
+    },
+    "k1.conflict.title": {
+      "text": "Noen andre endret det samme samtidig, så endringen din ble ikke lagret. Velg hva som skal skje."
+    },
+    "k1.presence.dot": {
+      "text": "Andre i scenen nå: {names}"
+    },
+    "k1.presence.many": {
+      "text": "{names} redigerer også denne scenen"
+    },
+    "k1.presence.one": {
+      "text": "{name} redigerer også denne scenen"
+    },
     "ml3-language-versions.button.add": {
       "text": "Legg til språkversjon"
     },
@@ -64492,6 +64519,33 @@
     },
     "id3.provenance.unresolved": {
       "text": "the source version cannot be determined with certainty"
+    },
+    "k1.conflict.aria": {
+      "text": "Save conflict"
+    },
+    "k1.conflict.by": {
+      "text": "Last changed by {name}, {time}."
+    },
+    "k1.conflict.by-unknown": {
+      "text": "Last changed {time}."
+    },
+    "k1.conflict.discard": {
+      "text": "Discard my change"
+    },
+    "k1.conflict.rebase": {
+      "text": "Apply my change on top"
+    },
+    "k1.conflict.title": {
+      "text": "Someone else changed the same thing at the same time, so your change was not saved. Choose what happens next."
+    },
+    "k1.presence.dot": {
+      "text": "Others in this scene now: {names}"
+    },
+    "k1.presence.many": {
+      "text": "{names} are also editing this scene"
+    },
+    "k1.presence.one": {
+      "text": "{name} is also editing this scene"
     },
     "ml3-language-versions.button.add": {
       "text": "Add language version"

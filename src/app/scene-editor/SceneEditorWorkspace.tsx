@@ -46,6 +46,9 @@ import { LayersPanel } from "./LayersPanel";
 import { Stage } from "./Stage";
 import { SceneAssetsPanel } from "./SceneAssetsPanel";
 import { useSceneLastChanges } from "./use-scene-last-changes";
+import { usePresence } from "@/app/project/use-presence";
+import { presenceByOccurrence } from "@/app/project/presence-view";
+import { SceneConflictNotice, ScenePresenceBadge } from "./SceneCollabNotice";
 import { ScenePicker } from "./ScenePicker";
 import { SceneMarkControls } from "./SceneMarkControls";
 import { SceneColorStripe } from "@/app/shell/SceneMark";
@@ -236,6 +239,9 @@ function Editor({
   const [scriptEdit, setScriptEdit] = useState<{ blockId: string | null } | null>(null);
   const me = useProfiles([userId]);
   const myName = me.data?.[userId]?.display_name || tk("app-scene-editor-scene-editor-workspace.my-name.message.fb62c54c5770");
+  // K-1: hvem andre som står i hvilken scene nå (presence, lagres ikke)
+  const others = usePresence(projectId, userId, myName, occurrenceId);
+  const presence = useMemo(() => presenceByOccurrence(others), [others]);
   const [selectedShotId, setSelectedShotIdState] = useState<string | null>(null);
   // Ett valg om gangen: et lag eller et kamerautsnitt
   // Stabile funksjoner, så panelene som er memoisert ikke tegnes om for hvert bilde under avspilling
@@ -789,6 +795,7 @@ function Editor({
           onPick={pickScene}
           synced={contentSync}
           lastChanged={lastChanges.data}
+          presence={presence}
         />
         <ContentSyncFlag
           state={state}
@@ -1008,6 +1015,8 @@ function Editor({
           ) : null}
         </div>
       </Toolbar>
+      <ScenePresenceBadge names={occurrenceId ? presence.get(occurrenceId) : undefined} />
+      <SceneConflictNotice cmds={cmds} lastChange={occurrence ? lastChanges.data?.get(occurrence.sceneId) : undefined} />
       <div className="flex min-h-0 flex-1">
         {/* Ressursene i scenen (side om side står de sammen med de andre panelene til høyre) */}
         {side ? null : (
