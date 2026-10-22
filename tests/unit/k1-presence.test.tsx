@@ -72,7 +72,7 @@ describe("K-1 konfliktflyt", () => {
     const { result } = hookWith(seed.state);
     h.runCommand.mockResolvedValueOnce({ ok: false, code: "revision_conflict", message: "x" });
     act(() => {
-      const err = result.current.run({ type: "SetOccurrenceColor", occurrenceId: occ.id, color: "#ff0000" } as never, "Farge");
+      const err = result.current.run({ type: "SetOccurrenceColor", occurrenceId: occ.id, color: "red" } as never, "Farge");
       if (err) throw new Error(err);
     });
     await waitFor(() => expect(result.current.conflicts).toHaveLength(1));
@@ -103,7 +103,7 @@ describe("K-1 konfliktflyt", () => {
     });
     await waitFor(() => expect(h.runCommand).toHaveBeenCalledTimes(2));
     const second = (h.runCommand.mock.calls[1]![0] as { data: { command: { type: string; occurrenceId: string; color: string } } }).data.command;
-    expect(second).toMatchObject({ type: "SetOccurrenceColor", occurrenceId: occ.id, color: "#ff0000" });
+    expect(second).toMatchObject({ type: "SetOccurrenceColor", occurrenceId: occ.id, color: "red" });
     expect(result.current.conflicts).toEqual([]);
     expect(result.current.canUndo).toBe(true);
   });
