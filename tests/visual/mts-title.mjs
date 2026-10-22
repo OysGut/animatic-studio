@@ -3,6 +3,7 @@
  * ENV_FILE=… node tests/visual/mts-title.mjs <baseUrl> /tmp/claude-0/mts-fixture.json [out]
  */
 import { harness } from "./mts-harness.mjs";
+import { revealInToolbar } from "./toolbar.mjs";
 
 const h = harness("/tmp/claude-0/mts-title");
 const { M, state, check, scenario, selectLayer, eventually } = h;
@@ -42,6 +43,7 @@ await scenario("P-dupliser-side", M.titleOcc, "nb", async (page) => {
 
 await scenario("Q-logo-paa-side", M.titleOcc, "nb", async (page) => {
   // Produksjonslogoen er et vanlig bilde-/ressurslag i sidegruppen; fra globalt bibliotek via Tekst-menyen (GP6)
+  await revealInToolbar(page, page.getByTestId("mts-text-menu"));
   await page.getByTestId("mts-text-menu").click();
   const globalItem = page.getByTestId("mts-global-templates");
   check(await globalItem.isVisible(), "Q: globale ressurser (logoer og maler) nås fra Tekst-menyen");

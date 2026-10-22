@@ -209,6 +209,7 @@ async function mock(ctx) {
 const browser = await chromium
   .launch({ executablePath: "/opt/pw-browsers/chromium-1194/chrome-linux/chrome" })
   .catch(() => chromium.launch());
+let passed = 0, failed = 0;
 async function shot(name, path, act, viewport = { width: 1440, height: 900 }) {
   if (ONLY && !ONLY.includes(name)) return;
   const ctx = await browser.newContext({ viewport, deviceScaleFactor: 1, colorScheme: "dark" });
@@ -217,8 +218,9 @@ async function shot(name, path, act, viewport = { width: 1440, height: 900 }) {
   const errors = [];
   page.on("pageerror", (e) => errors.push(String(e)));
   const exp = Math.floor(Date.now() / 1000) + 86400;
-  await page.addInitScript(
-    ([k, v]) => localStorage.setItem(k, v),
+  await page.goto(base, { waitUntil: "domcontentloaded" });
+  await page.evaluate(
+    ([k, v]) => { localStorage.setItem(k, v); localStorage.setItem("animatic:lang", "nb"); },
     [
       `sb-${ref}-auth-token`,
       JSON.stringify({
@@ -254,6 +256,7 @@ async function shot(name, path, act, viewport = { width: 1440, height: 900 }) {
       ),
     );
   console.log(name, errors.length ? "FEIL: " + errors.join(" | ").slice(0, 600) : "ok");
+  errors.length ? failed++ : passed++;
   await ctx.close();
 }
 
@@ -465,3 +468,5 @@ await shot("g17-bibliotek-bildeverktoy", `${P}/bibliotek`, async (page) => {
   await page.waitForTimeout(1200);
 });
 await browser.close();
+console.log(`RESULTAT ${passed} bestått, ${failed} feilet`);
+process.exitCode = failed ? 1 : 0;

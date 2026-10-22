@@ -406,7 +406,8 @@ for (const o of order.slice(0, 3))
       prompt: "p",
       status: i === 0 ? "done" : "running",
       result_path: null,
-      created_at: "2026-10-15T09:00:00Z",
+      // Ferske tidspunkter: kjørende videojobber eldre enn sju dager regnes som hengende (core/generation/cost.ts)
+      created_at: new Date(Date.now() - 60_000).toISOString(),
       created_by: USER.id,
       occurrence_id: o.id,
       params: { source: "scene2d", batch: `b-${o.id}`, piece: i, pieces: 2, startMs: i * 2000, endMs: (i + 1) * 2000 },

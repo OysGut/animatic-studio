@@ -3,6 +3,7 @@
  * ENV_FILE=… node tests/visual/mts-engine.mjs <baseUrl> /tmp/claude-0/mts-fixture.json [out]
  */
 import { harness } from "./mts-harness.mjs";
+import { revealInToolbar } from "./toolbar.mjs";
 
 const h = harness("/tmp/claude-0/mts-engine");
 const { M, state, check, scenario, selectLayer, waitHidden, menu, lastFields, eventually } = h;
@@ -153,6 +154,7 @@ await scenario("AH-lokal-tekst", M.sceneA, "nb", async (page) => {
 });
 
 await scenario("engelsk", M.sceneA, "en", async (page) => {
+  await revealInToolbar(page, page.getByTestId("mts-text-menu"));
   await page.getByTestId("mts-text-menu").click();
   const text = await page.getByTestId("mts-add-text").innerText();
   check(/Add text/.test(text), "engelsk: menyen er på engelsk");

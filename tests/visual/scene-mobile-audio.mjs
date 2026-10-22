@@ -11,6 +11,7 @@
  */
 import { harness } from "./mts-harness.mjs";
 import { uiLang } from "./ui-lang.mjs";
+import { revealInToolbar } from "./toolbar.mjs";
 
 const h = harness("/tmp/browser/scene-mobile-audio");
 const LANG = uiLang("nb");
@@ -54,6 +55,7 @@ h.hooks.rest = (table) => {
 const T = (nb, en) => (LANG === "en" ? en : nb);
 
 async function openDialog(page) {
+  await revealInToolbar(page, page.getByTestId("scene-record-audio").first());
   await page.getByTestId("scene-record-audio").first().click();
   const dlg = page.getByTestId("record-audio-dialog");
   await dlg.waitFor();

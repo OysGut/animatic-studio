@@ -4,6 +4,7 @@
  */
 import { harness } from "./mts-harness.mjs";
 import { byLang } from "./ui-lang.mjs";
+import { revealInToolbar } from "./toolbar.mjs";
 
 const h = harness("/tmp/claude-0/mts-lower-thirds");
 const { M, state, check, scenario, selectLayer, waitHidden, menu, eventually } = h;
@@ -61,6 +62,7 @@ await scenario("Z-AA-AB-samme-design", M.sceneB, "nb", async (page) => {
 });
 
 await scenario("engelsk", M.sceneB, "en", async (page) => {
+  await revealInToolbar(page, page.getByTestId("mts-text-menu"));
   await page.getByTestId("mts-text-menu").click();
   const text = await page.getByTestId(`mts-same-design-${M.instance}`).locator("xpath=..").innerText();
   check(/Use the same design as in/.test(text) && /New lower third/.test(text), "engelsk: menyvalgene er på engelsk");

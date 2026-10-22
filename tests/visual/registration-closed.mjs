@@ -128,6 +128,7 @@ await run("stengt-standardmelding", "/konto", async (page, st) => {
   check((await page.getByTestId("auth-mode-toggle").count()) === 0, "stengt: «Opprett konto» er skjult");
   check((await page.getByTestId("signup-country").count()) === 0 && (await page.getByTestId("signup-privacy").count()) === 0, "stengt: registreringsskjemaet vises ikke");
   check(await page.getByTestId("auth-submit").isVisible(), "stengt: innlogging er fortsatt mulig");
+  console.log("Offentlige RPC-er:", JSON.stringify(st.rpcs));
   check(!st.rpcs.some((r) => r !== "registration_status" && r !== "my_account"), "bare statusfunksjonen kalles før innlogging");
   // Innloggingslenke: ingen ny konto, rolig melding ved ukjent adresse
   await page.locator("#email").fill("ny@example.no");
