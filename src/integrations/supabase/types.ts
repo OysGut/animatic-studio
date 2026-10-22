@@ -3319,6 +3319,191 @@ export type Database = {
           },
         ]
       }
+      print_copies: {
+        Row: {
+          code_digest: string
+          copy_number: number
+          created_at: string
+          created_by: string | null
+          element_id: string
+          id: string
+          project_id: string
+          revoked_at: string | null
+          short_digest: string
+        }
+        Insert: {
+          code_digest: string
+          copy_number: number
+          created_at?: string
+          created_by?: string | null
+          element_id: string
+          id?: string
+          project_id: string
+          revoked_at?: string | null
+          short_digest: string
+        }
+        Update: {
+          code_digest?: string
+          copy_number?: number
+          created_at?: string
+          created_by?: string | null
+          element_id?: string
+          id?: string
+          project_id?: string
+          revoked_at?: string | null
+          short_digest?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "print_copies_element_id_fkey"
+            columns: ["element_id"]
+            isOneToOne: false
+            referencedRelation: "print_job_elements"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "print_copies_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      print_job_elements: {
+        Row: {
+          copies: number
+          created_at: string
+          created_by: string | null
+          frame: number
+          id: string
+          job_id: string
+          layer_id: string
+          mask_id: string | null
+          note: string
+          position: number
+          project_id: string
+          removed: boolean
+          revision: number
+          scene_id: string
+          up_arrow: boolean
+          version_id: string
+        }
+        Insert: {
+          copies: number
+          created_at?: string
+          created_by?: string | null
+          frame: number
+          id: string
+          job_id: string
+          layer_id: string
+          mask_id?: string | null
+          note?: string
+          position: number
+          project_id: string
+          removed?: boolean
+          revision?: number
+          scene_id: string
+          up_arrow?: boolean
+          version_id: string
+        }
+        Update: {
+          copies?: number
+          created_at?: string
+          created_by?: string | null
+          frame?: number
+          id?: string
+          job_id?: string
+          layer_id?: string
+          mask_id?: string | null
+          note?: string
+          position?: number
+          project_id?: string
+          removed?: boolean
+          revision?: number
+          scene_id?: string
+          up_arrow?: boolean
+          version_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "print_job_elements_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "print_jobs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "print_job_elements_layer_id_fkey"
+            columns: ["layer_id"]
+            isOneToOne: false
+            referencedRelation: "composition_layers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "print_job_elements_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "print_job_elements_scene_id_fkey"
+            columns: ["scene_id"]
+            isOneToOne: false
+            referencedRelation: "scenes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "print_job_elements_version_id_fkey"
+            columns: ["version_id"]
+            isOneToOne: false
+            referencedRelation: "asset_versions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      print_jobs: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          name: string
+          project_id: string
+          removed: boolean
+          revision: number
+          settings: Json
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id: string
+          name: string
+          project_id: string
+          removed?: boolean
+          revision?: number
+          settings: Json
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          name?: string
+          project_id?: string
+          removed?: boolean
+          revision?: number
+          settings?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "print_jobs_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       privacy_acceptances: {
         Row: {
           accepted_at: string
@@ -6055,6 +6240,10 @@ export type Database = {
         }
         Returns: number
       }
+      issue_print_copies: {
+        Args: { p_job: string; p_project: string }
+        Returns: number
+      }
       issue_signup_pass: { Args: { p_email: string }; Returns: undefined }
       leave_project: { Args: { p_project: string }; Returns: undefined }
       leave_workspace: { Args: { p_workspace: string }; Returns: undefined }
@@ -6074,6 +6263,16 @@ export type Database = {
           joined_at: string
           role: string
           user_id: string
+        }[]
+      }
+      lookup_print_copy: {
+        Args: { p_code: string; p_project?: string }
+        Returns: {
+          copy_number: number
+          frame: number
+          layer_id: string
+          project_id: string
+          scene_id: string
         }[]
       }
       mobile_confirm_upload: {
@@ -6189,6 +6388,16 @@ export type Database = {
         }
       }
       my_account: { Args: never; Returns: Json }
+      print_copy_codes: {
+        Args: { p_job: string; p_project: string }
+        Returns: {
+          copy_id: string
+          copy_number: number
+          element_id: string
+          key: string
+          short_code: string
+        }[]
+      }
       project_lock_info: { Args: { p_project: string }; Returns: Json }
       purge_project_assets: {
         Args: { p_actor: string; p_project: string }
@@ -6260,6 +6469,10 @@ export type Database = {
       }
       revoke_film_share: { Args: { p_share: string }; Returns: undefined }
       revoke_invitation: { Args: { p_invitation: string }; Returns: undefined }
+      revoke_print_copies: {
+        Args: { p_job: string; p_project: string }
+        Returns: number
+      }
       revoke_upload_session: { Args: { p_id: string }; Returns: undefined }
       revoke_workspace_invitation: {
         Args: { p_invitation: string }
