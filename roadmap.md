@@ -1,5 +1,10 @@
 # Veikart
 
+## S-1 – Community-sikkerhet (22.10.2026)
+- [ ] Migrasjon 0086: bekreftet e-post ved mottakertreff og minste nødvendige EXECUTE-rettigheter.
+- [ ] DB-regresjoner, full DB og Vitest; kontroller at private ikke er eksponert i API-et.
+- [ ] Norsk S1-rapport; Claude kjører migrasjonen i Cloud. Sperrede filer røres ikke.
+
 ## PTG7 – Nuke og Fusion (22.10.2026)
 - [x] Rene nodeoppsett og kamerakurver fra utvekslingsmodellen; 2D uten rigg.
 - [x] Strømmet ZIP med medier, nb/en LESMEG og knapp i Til produksjonen.
