@@ -31372,6 +31372,9 @@
     "engine-export-zip.write-zip.new-text-encoder-encode.d311a09da39a": {
       "text": "Disse filene kunne ikke hentes da zip-filen ble laget:\n\n{value1}\n"
     },
+    "engine-export-zip.zip.message.d8988ee64a25": {
+      "text": "Zip-filen ble større enn 4 GB. Ta med færre filer og prøv igjen."
+    },
     "engine-import-browser.decode-fountain.message.af53ad05831d": {
       "text": "Filen er ikke en Fountain-tekstfil. Fountain-manus er ren tekst (.fountain, .spmd eller .txt)."
     },
@@ -63738,6 +63741,9 @@
     },
     "engine-export-zip.write-zip.new-text-encoder-encode.d311a09da39a": {
       "text": "These files could not be fetched when the zip file was made:\n\n{value1}\n"
+    },
+    "engine-export-zip.zip.message.d8988ee64a25": {
+      "text": "The zip file grew larger than 4 GB. Include fewer files and try again."
     },
     "engine-import-browser.decode-fountain.message.af53ad05831d": {
       "text": "The file is not a Fountain text file. Fountain scripts are plain text (.fountain, .spmd or .txt)."

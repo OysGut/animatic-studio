@@ -71753,6 +71753,12 @@
     "parameters": [],
     "executable": false
   },
+  "engine-export-zip.zip.message.d8988ee64a25": {
+    "text": "[!! TThhëë zzïïpp ffïïllëë ggrrëëww lláárrggëërr tthháánn 4 GGBB. ÏÏnnccllüüddëë ffëëwwëërr ffïïllëëss áánndd ttrryy áággááïïnn. !!]",
+    "source": "\"The zip file grew larger than 4 GB. Include fewer files and try again.\"",
+    "parameters": [],
+    "executable": true
+  },
   "app-projects-backup-dialogs.missing-files": {
     "text": null,
     "plural": {

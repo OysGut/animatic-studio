@@ -71771,6 +71771,12 @@
     "parameters": [],
     "executable": false
   },
+  "engine-export-zip.zip.message.d8988ee64a25": {
+    "text": "Zip-filen ble større enn 4 GB. Ta med færre filer og prøv igjen.",
+    "source": "\"Zip-filen ble større enn 4 GB. Ta med færre filer og prøv igjen.\"",
+    "parameters": [],
+    "executable": true
+  },
   "app-projects-backup-dialogs.missing-files": {
     "text": null,
     "plural": {
