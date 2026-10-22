@@ -10571,11 +10571,12 @@ requirements:
   tests:
   - 'manuell: arkitekturgjennomgang'
   - 'integrasjon: to mock-adaptere bak samme grensesnitt'
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - "src/adapters/ai/providers.server.ts"
   verification:
   - "tests/unit/ai-providers.test.ts"
+  - "tests/architecture/n4-provider-agnostic.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -10589,6 +10590,9 @@ requirements:
   - date: '2026-10-21'
     decision: V1
     change: "Ikke verifisert: Ny leverandør krever fortsatt endring i src/core/generation/providers.ts (historikken sier IKKE OPPFYLT)."
+  - date: '2026-10-22'
+    decision: DEC-0099
+    change: "N5: AssetVoice.provider er leverandør-ID fra katalogen (talekapabilitet); arkitekturtesten har ingen avvik."
   notes: Ufravikelig prinsipp nr. 11 (modellagnostisk) i kap. 34.
 - id: REQ-0270
   title: Koble egne API-kontoer

@@ -498,7 +498,8 @@ export interface ContextName {
 }
 
 export interface AssetVoice {
-  readonly provider: "elevenlabs";
+  /** Leverandør-ID fra leverandørkatalogen (REQ-0269); valideres mot katalogens talekapabilitet. */
+  readonly provider: string;
   /** Stemmens ID hos leverandøren. */
   readonly voiceId: string;
   /** Navnet som vises (fra leverandørens liste). */

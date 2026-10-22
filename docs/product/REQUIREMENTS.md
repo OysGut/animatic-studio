@@ -8,7 +8,7 @@ Autoritativ kilde for krav-ID-er. Mandatkrav er utledet fra `MASTER_SPECIFICATIO
 - Antall krav: **924**
 - Prioritet: P0: 147, P1: 569, P2: 169, P3: 39
 - Opprinnelse: mandat: 520, brukerbeslutning: 397, teknisk-anbefaling: 7
-- Status: Verifisert: 783, Ikke startet: 63, Implementert – ikke verifisert: 65, Utgått: 1, Under arbeid: 12
+- Status: Verifisert: 784, Ikke startet: 63, Implementert – ikke verifisert: 64, Utgått: 1, Under arbeid: 12
 
 ## Prioritetsdefinisjoner
 - **P0** Kritisk – ufravikelig prinsipp/systeminvariant. Gjelder fra første kodelinje som berører området, også når selve funksjonen bygges i en senere fase (feltet `phase`).
@@ -3649,7 +3649,7 @@ Programmet skal ha en leverandøruavhengig arkitektur for integrasjon med releva
 
 - **Kilde:** Kap. 19 (l. 755-756) · **Opprinnelse:** mandat · **Type:** arkitektur · **Prioritet:** P0 · **Fase:** 1
 - **Moduler:** PROVIDER, PROMPT
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Et nytt leverandøradapter kan legges til uten endring i kjerne-, manus- eller tidslinjemoduler.
 - **Tester:**

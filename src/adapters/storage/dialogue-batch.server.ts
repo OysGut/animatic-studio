@@ -1,4 +1,5 @@
 /** DV5: durable sequential work, leased per batch; no browser or page-load orchestration. */
+import { undoneLocally } from "@/core/dialogue/batch-undo";
 import { applyCommand, diffStates, newId, type Command, type AssetVoice } from "@/core";
 import { loadProjectState, checkSchema, type AnyClient } from "../storage/project-rows";
 import { runSpeech } from "../ai/speech-run.server";
@@ -87,7 +88,8 @@ export async function pumpDialogueBatches(db: AnyClient) {
 /**
  * DV5-rest: «Angre hele jobben». Bruker de lagrede inverse kommandoene fra kommandologgen, i omvendt rekkefølge,
  * og skriver hver angring som en vanlig endring via apply_changes (revisjonskontroll). Angrede elementer merkes
- * «undone» og kjøres aldri igjen, så ingen betalt generering gjentas. Stopper ved første konflikt.
+ * «undone» og kjøres aldri igjen, så ingen betalt generering gjentas. Stopper ved første konflikt. Resultater som
+ * allerede er angret fra angrelisten, merkes «undone» og hoppes over (N5).
  */
 export async function undoDialogueBatch(db: AnyClient, projectId: string, batchId: string, actor: string) {
   const { data: batch } = await db.from("dialogue_batches").select("id,status,lease_until").eq("id", batchId).eq("project_id", projectId).maybeSingle();
@@ -96,9 +98,21 @@ export async function undoDialogueBatch(db: AnyClient, projectId: string, batchI
   const { data: items, error } = await db.from("dialogue_batch_items").select("id,command_id,position").eq("batch_id", batchId).eq("status", "done").order("position", { ascending: false });
   if (error) throw new Error(error.message);
   let undone = 0;
+  let skipped = 0;
   for (const item of (items ?? []) as { id: string; command_id: string }[]) {
-    const { data: log } = await db.from("change_log").select("inverse").eq("id", item.command_id).eq("project_id", projectId).maybeSingle();
+    const { data: log } = await db.from("change_log").select("command,inverse,created_at").eq("id", item.command_id).eq("project_id", projectId).maybeSingle();
     const inverse = (log as { inverse?: Command } | null)?.inverse;
+    // N5: allerede angret fra den lokale angrelisten? Da merkes elementet som angret og hoppes over.
+    if (inverse && log) {
+      const original = (log as { command: Command }).command;
+      const types = [...new Set([inverse.type, original.type])];
+      const { data: later } = await db.from("change_log").select("command").eq("project_id", projectId).in("command_type", types).gt("created_at", String((log as { created_at: string }).created_at)).neq("id", item.command_id);
+      if (undoneLocally(original, inverse, ((later ?? []) as { command: unknown }[]).map((r) => r.command))) {
+        await db.from("dialogue_batch_items").update({ status: "undone", error: null, retryable: false }).eq("id", item.id).eq("status", "done");
+        skipped++;
+        continue;
+      }
+    }
     // Uten lagret invers kan ikke resultatet angres trygt; elementet merkes ikke som angret.
     if (!inverse) throw new Error(t("adapters-storage-dialogue-batch-server.undo-dialogue-batch.message.8b864703871d", { undone: String(undone) }));
     const state = await loadProjectState(db, projectId);
@@ -110,7 +124,7 @@ export async function undoDialogueBatch(db: AnyClient, projectId: string, batchI
     await db.from("dialogue_batch_items").update({ status: "undone", error: null, retryable: false }).eq("id", item.id).eq("status", "done");
     undone++;
   }
-  return { undone };
+  return { undone, skipped };
 }
 
 /** DV5-rest (N3): ferdige elementer i jobben med kommandologgens invers. Kommandologgen leses med brukerens klient (RLS). */

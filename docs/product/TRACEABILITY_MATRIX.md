@@ -39,8 +39,8 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | COMPOSE | 2D Composition Engine | 116 | 14 | 101 | 100 |
 | CAMERA | Camera & Motion Engine | 32 | 2 | 32 | 32 |
 | AUDIO | Audio Engine | 70 | 2 | 70 | 64 |
-| PROMPT | Prompt Orchestration Engine | 59 | 15 | 59 | 54 |
-| PROVIDER | Provider Adapters | 55 | 6 | 50 | 46 |
+| PROMPT | Prompt Orchestration Engine | 59 | 15 | 59 | 55 |
+| PROVIDER | Provider Adapters | 55 | 6 | 50 | 47 |
 | QUALITYCOST | Quality & Cost Engine | 41 | 7 | 41 | 39 |
 | QUEUE | Render Queue | 36 | 13 | 36 | 33 |
 | VERSION | Version & Dependency Engine | 98 | 38 | 98 | 96 |
@@ -56,7 +56,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 
 | Fase | Krav | Verifisert |
 |---|---|---|
-| 1 | 72 | 69 |
+| 1 | 72 | 70 |
 | 2 | 97 | 93 |
 | 3 | 280 | 208 |
 | 4 | 85 | 84 |
@@ -338,7 +338,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0266 | Kap. 18.3 (l. 747) | TIMELINE, VERSION | src/core/generation/video.ts | 1 | tests/unit/ai-video.test.ts | Verifisert | 2026-10-12 DEC-0070: Hvert segment kan få nytt forsøk og eget valg; utdatert sammensetning vises. |
 | REQ-0267 | Kap. 18.4 (l. 748-752) | CORE, SCRIPT, TIMELINE | src/core/generation/scene-prompt.ts#planSegments, segmentTimes, src/core/commands/apply.ts (ReplaceSegments), db/migrations/0014_ai_control.sql (production_segments.start_ms/end_ms) | 1 | tests/unit/ai-control.test.ts | Verifisert | 2026-10-11 DEC-0053: Segmentene er ikke festet til manusblokker; manuset kan redigeres fritt |
 | REQ-0268 | Kap. 18.4 (l. 753) | CORE, TIMELINE | src/core/model.ts#ProductionSegment, src/core/commands/apply.ts#CreateSegments | 2 | tests/invariants/random-sequences.test.ts::INV-10: segmentering endrer aldri scener, manusblokker eller rekkefølge, tests/unit/ai-control.test.ts::segmentene følger blokkene, dekker hele scenen og endrer ikke manuset | Verifisert | 2026-10-12 : Revisjon natt til 12.10.2026: genereringssegmenter er egne entiteter som refererer til sceneforekomsten; verifisert med invarianttest |
-| REQ-0269 | Kap. 19 (l. 755-756) | PROVIDER, PROMPT | src/adapters/ai/providers.server.ts | 2 | tests/unit/ai-providers.test.ts | Implementert – ikke verifisert | 2026-10-21 V1: Ikke verifisert: Ny leverandør krever fortsatt endring i src/core/generation/providers.ts (historikken sier IKKE OPPFYLT). |
+| REQ-0269 | Kap. 19 (l. 755-756) | PROVIDER, PROMPT | src/adapters/ai/providers.server.ts | 2 | tests/unit/ai-providers.test.ts, tests/architecture/n4-provider-agnostic.test.ts | Verifisert | 2026-10-22 DEC-0099: N5: AssetVoice.provider er leverandør-ID fra katalogen (talekapabilitet); arkitekturtesten har ingen avvik. |
 | REQ-0270 | Kap. 19.1 (l. 757-758) | PROVIDER, SECURITY | src/app/ai/ProvidersDialog.tsx, src/adapters/ai/provider-keys.functions.ts, db/migrations/0024_ai_providers.sql | 1 | tests/unit/ai-providers.test.ts, tests/db/run-db-tests.ts, tests/unit/verifisering3-ai-server.test.ts | Verifisert | 2026-10-21 3b: Merknad lagt til: Verifisert med mock, prøving med ekte nøkkel gjenstår. Status uendret (Verifisert med enhetstester og mock). |
 | REQ-0271 | Kap. 19.1 (l. 759) | SECURITY, PROVIDER | src/adapters/ai/gateway.ts, src/adapters/ai/generate-image.functions.ts, src/adapters/ai/write-prompt.functions.ts, src/adapters/ai/key-vault.server.ts | 2 | tests/unit/ai-providers.test.ts | Verifisert | 2026-10-12 DEC-0069: Nøkler krypteres med AES-256-GCM bundet til bruker, leverandør og rad; hovednøkkelen er en serverhemmelighet. |
 | REQ-0272 | Kap. 19.1 (l. 760) | SECURITY, EXPORT | src/adapters/ai/gateway.ts#gatewayError, src/adapters/ai/generate-image.functions.ts, src/core/backup/index.ts, db/migrations/0024_ai_providers.sql, src/adapters/ai/providers.server.ts | 1 | tests/db/run-db-tests.ts, tests/unit/ai-providers.test.ts | Verifisert | 2026-10-12 DEC-0069: Den krypterte nøkkelen kan ikke leses fra nettleseren (kolonnetilgang); feiltekster renses for nøkler. |

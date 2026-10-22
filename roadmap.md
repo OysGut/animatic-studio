@@ -313,3 +313,10 @@
 - [x] build_docs, check_kb, tsc, Vitest og DB grønne; rapport docs/development/N4_REPORT.md
 - [ ] Resterende 65 krav (mest UI-punkter i DV og P3) i neste runde
 - [ ] Ekstern prøving: telefoner, ekte opptak og lukket fane mot ekte bakgrunnsjobb
+
+## N5: Ytelse i sceneeditoren, REQ-0269 og DV5
+- [x] Målt rendringer, commits og lange oppgaver under avspilling; frosset verktøylinje, paneler og lukkede dialoger
+- [x] Ytelsesregresjon: n5-frame-frozen.test.tsx og tak i verifisering4-ui; maks avvik 122/111 → 43/62 ms
+- [x] AssetVoice.provider leverandøruavhengig; REQ-0269 Verifisert
+- [x] «Angre hele jobben» hopper over resultater angret fra angrelisten (uten migrasjon)
+- [ ] Videre ytelse: tidslinjen, tegnetrinnet og knappene tegnes fortsatt per bilde
