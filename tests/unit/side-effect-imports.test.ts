@@ -31,9 +31,6 @@ it('src contains no unreviewed runtime side-effect imports', () => {
     const path = relative(root, file).replaceAll('\\', '/');
     if (/\.css$/.test(module)) return []; // Styles are intentional assets, not runtime registration.
     if (path === 'test/setup.ts' && module === '@testing-library/jest-dom/vitest') return [];
-    // This sync branch predates cb9118c; its router fix is already verified/published on main.
-    // Remove this temporary exception when Øystein merges the branches.
-    if (path === 'router.tsx' && module === './adapters/i18n/catalog-loader') return [];
     return [`${path}: ${module}`];
   }));
   expect(violations).toEqual([]);

@@ -1,5 +1,9 @@
-import { useEffect, useState } from "react";
-import { getSession, onSessionChange, type Session } from "@/adapters/browser/auth";
+import { useEffect, useState, useSyncExternalStore } from "react";
+import { getSession, onSessionChange, getSessionUserId, onSessionIdentityChange, type Session } from "@/adapters/browser/auth";
+
+export function useSessionUserId(): string | null {
+  return useSyncExternalStore(onSessionIdentityChange, getSessionUserId, () => null);
+}
 
 export type SessionState =
   { status: "loading" } | { status: "signed-out" } | { status: "signed-in"; session: Session };
@@ -9,11 +13,13 @@ export function useSession(): SessionState {
   const [state, setState] = useState<SessionState>({ status: "loading" });
   useEffect(() => {
     let alive = true;
+    let observedSession = false;
     void getSession().then((session) => {
-      if (!alive) return;
+      if (!alive || observedSession) return;
       setState(session ? { status: "signed-in", session } : { status: "signed-out" });
     });
     const unsubscribe = onSessionChange((session) => {
+      observedSession = true;
       setState(session ? { status: "signed-in", session } : { status: "signed-out" });
     });
     return () => {

@@ -5,6 +5,21 @@ import { isCountryCode } from "@/core";
 
 export type { Session };
 
+// Browser identity only; SSR always starts without an authenticated browser user.
+let sessionUserId: string | null = null;
+const identityListeners = new Set<() => void>();
+export function getSessionUserId(): string | null { return sessionUserId; }
+export function onSessionIdentityChange(listener: () => void): () => void {
+  identityListeners.add(listener);
+  return () => { identityListeners.delete(listener); };
+}
+function updateSessionIdentity(session: Session | null) {
+  const next = session?.user.id ?? null;
+  if (next === sessionUserId) return;
+  sessionUserId = next;
+  for (const listener of identityListeners) listener();
+}
+
 export interface AuthResult {
   readonly error: BackendError | null;
   readonly session: Session | null;
@@ -19,6 +34,7 @@ export async function getSession(): Promise<Session | null> {
 /** Varsler ved inn- og utlogging. Returnerer en funksjon som stopper lyttingen. */
 export function onSessionChange(listener: (session: Session | null) => void): () => void {
   const { data: sub } = browserClient.auth.onAuthStateChange((_event, session) => {
+    updateSessionIdentity(session);
     listener(session);
   });
   return () => sub.subscription.unsubscribe();

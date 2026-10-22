@@ -9,7 +9,7 @@
  */
 import { Languages } from "lucide-react";
 import { useEffect, useLayoutEffect, useSyncExternalStore, type ReactNode } from "react";
-import { onSessionChange } from '@/adapters/browser/auth';
+import { getSessionUserId, onSessionChange } from '@/adapters/browser/auth';
 import { useQueryClient } from '@tanstack/react-query';
 import { getUiLanguage, isUiLang, onLanguageChange, setLanguage, type UiLang } from "@/core";
 import manifest from "@/core/i18n/manifest.json";
@@ -17,8 +17,10 @@ import { t, loadUiCatalog } from "@/core/i18n/keyed";
 import { matchUiLanguage } from '@/core/i18n/languages';
 import { Button } from '@/components/ui/button';
 import { useFeature } from '@/app/community/use-feature';
+import { initializeUiCatalogLoader } from '@/adapters/i18n/catalog-loader';
 
 export const LANGUAGE_KEY = "animatic:lang";
+function languageStorageKey() { const id = getSessionUserId(); return id ? `${LANGUAGE_KEY}:${id}` : LANGUAGE_KEY; }
 /** Klasse på <html> mens lagret språk settes (skjuler siden, se `LANGUAGE_BOOT_SCRIPT`). */
 export const LANGUAGE_PENDING_CLASS = "lang-pending";
 
@@ -58,7 +60,7 @@ export function availableLanguages(includeTest = testLanguagesEnabled()): Langua
 
 function stored(): UiLang | null {
   try {
-    const v = window.localStorage.getItem(LANGUAGE_KEY);
+    const v = window.localStorage.getItem(languageStorageKey());
     if (!isUiLang(v)) return null;
     if (v === "en-XA" && !testLanguagesEnabled()) return "en";
     return v;
@@ -80,7 +82,7 @@ export function bootUiLanguage(): UiLang {
   if (typeof window === "undefined") return getUiLanguage();
   if (rootSettled || profileLanguage !== null) return getUiLanguage();
   let fromStore: string | null = null;
-  try { fromStore = window.localStorage.getItem(LANGUAGE_KEY); } catch { fromStore = null; }
+  try { fromStore = window.localStorage.getItem(languageStorageKey()); } catch { fromStore = null; }
   if (isUiLang(fromStore)) return fromStore === "en-XA" && !testLanguagesEnabled() ? "en" : fromStore;
   const nav = typeof navigator === "undefined" ? [] : navigator.languages?.length ? navigator.languages : [navigator.language];
   return browserUiLanguage(nav.filter(Boolean)) ?? 'en';
@@ -99,12 +101,14 @@ export function onExplicitLanguageChoice(listener: (lang: UiLang) => void) {
 }
 /** Profile wins over browser/local choices at sign-in; never rewrites the explicit local choice. */
 export async function applyProfileLanguage(lang: UiLang | null) {
+  if (typeof window === 'undefined') return;
   const revision = ++selectionRevision;
   profileLanguage = lang;
   const next = lang ?? stored() ?? browserUiLanguage(navigator.languages) ?? 'en';
   await commitSelection(next, revision);
 }
 async function commitSelection(next: UiLang, revision: number) {
+  initializeUiCatalogLoader();
   try { await loadUiCatalog(next); } catch { next = 'en'; }
   if (selectionRevision !== revision) return;
   selectionSettled = true;
@@ -123,10 +127,11 @@ export function useLanguage(): UiLang {
 
 /** Velg språk: huskes i nettleseren og gjelder med én gang, uten remontering. */
 export async function chooseLanguage(lang: UiLang) {
+  if (typeof window === 'undefined') return;
   if (lang === "en-XA" && !testLanguagesEnabled()) return;
   const revision = ++selectionRevision;
   try {
-    window.localStorage.setItem(LANGUAGE_KEY, lang);
+    window.localStorage.setItem(languageStorageKey(), lang);
   } catch {
     // privat vindu: gjelder bare denne økten
   }
@@ -150,10 +155,13 @@ export function LanguageRoot({ children }: { children: ReactNode }) {
       const previous = identity;
       identity = next;
       if (previous !== undefined) {
-        void queryClient.cancelQueries({ queryKey: ['my-account'] }).then(() => {
-          queryClient.removeQueries({ queryKey: ['my-account'] });
-          void applyProfileLanguage(null);
-        });
+        // Invalidate old asynchronous selections immediately, not after cancellation finishes.
+        adminTestLanguages = false;
+        explicitChoices.clear();
+        try { window.localStorage.removeItem(LANGUAGE_KEY); } catch { /* private browser */ }
+        void applyProfileLanguage(null);
+        void queryClient.cancelQueries();
+        queryClient.clear();
       }
     });
   }, [queryClient]);
