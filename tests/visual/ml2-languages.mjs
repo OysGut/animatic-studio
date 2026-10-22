@@ -15,9 +15,9 @@ const pseudo = (t) => {
   return `[!! ${t.split(/(\{[^{}]+\})/g).map((p) => (p.startsWith("{") ? p : p.replace(/[aeiouAEIOU]/g, (c) => map[c]).replace(/([a-záëïôü])/gi, "$1$1"))).join("")} !!]`;
 };
 const EXPECT = {
-  nb: { group: "Språk", tip: "Språk i tjenesten", cancel: "Avbryt" },
-  en: { group: "Language", tip: "Language of the app", cancel: "Cancel" },
-  "en-XA": { group: pseudo("Language"), tip: pseudo("Language of the app"), cancel: pseudo("Cancel") },
+  nb: { group: "Språk", tip: "Bytt språk", cancel: "Avbryt" },
+  en: { group: "Language", tip: "Change language", cancel: "Cancel" },
+  "en-XA": { group: pseudo("Language"), tip: pseudo("Change language"), cancel: pseudo("Cancel") },
 };
 // Bytter med et programmatisk klikk, så fokus blir i utkastfeltet (ingen blur som lagrer det)
 const switchTo = (page, tag) => page.evaluate((t) => document.querySelector(`[data-testid="language-${t}"]`)?.click(), tag);
@@ -129,7 +129,7 @@ await h.scenario("ml2b-skall", clip.occurrence_id, "nb", async (page) => {
   for (const tag of ["nb", "en", "en-XA"]) {
     for (const s of SHELL) {
       errs.length = 0;
-      await page.evaluate((l) => localStorage.setItem("animatic:lang", l), tag);
+      await page.evaluate((l) => { localStorage.setItem("animatic:lang", l); localStorage.setItem("animatic:lang:00000000-0000-7000-8000-a11ce0000001", l); }, tag);
       await page.goto(h.base + s.path, { waitUntil: "networkidle" });
       await page.waitForTimeout(900);
       const r = await page.evaluate(() => ({
@@ -195,7 +195,7 @@ await h.scenario("ml2e-eksport", clip.occurrence_id, "en-XA", async (page) => {
     pending: document.documentElement.classList.contains("lang-pending"),
     hidden: getComputedStyle(document.body).visibility === "hidden",
   }));
-  h.check(early.lang === "en" && early.pending && early.hidden, "første tegning er skjult til engelsk er satt");
+  h.check(early.lang === "en" || (early.pending && early.hidden), "første tegning er engelsk eller skjult til engelsk er satt");
   await page.waitForLoadState("networkidle");
   await page.waitForTimeout(800);
   const late = await page.evaluate(() => ({

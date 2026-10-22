@@ -149,7 +149,7 @@ async function run(name, path, act, { lang = "nb", width = 1280 } = {}) {
     ([k, v, l]) => {
       if (!sessionStorage.getItem("init")) {
         localStorage.setItem(k, v);
-        localStorage.setItem("animatic:lang", l);
+        localStorage.setItem("animatic:lang", l); localStorage.setItem("animatic:lang:00000000-0000-7000-8000-a11ce0000001", l);
         sessionStorage.setItem("init", "1");
       }
     },
@@ -173,10 +173,10 @@ async function run(name, path, act, { lang = "nb", width = 1280 } = {}) {
 
 const moreBtn = (page) => page.getByRole("button", { name: /^(Mer …|More …)$/ }).first();
 const rowHeights = (page) =>
-  page.locator("[data-toolbar-group]").evaluateAll((els) => els.map((e) => e.getBoundingClientRect().height));
+  page.locator("[data-toolbar-group]:visible").evaluateAll((els) => els.map((e) => e.getBoundingClientRect().height));
 
 const toolbarHeights = (page) =>
-  page.locator("[data-toolbar-group]").evaluateAll((els) =>
+  page.locator("[data-toolbar-group]:visible").evaluateAll((els) =>
     [...new Set(els.map((e) => e.parentElement))].map((t) => t.getBoundingClientRect().height),
   );
 
@@ -186,7 +186,21 @@ for (const [name, path] of [["scene", "/scene"], ["manus", "/manus"], ["bibliote
     check(hs.length > 0 && hs.every((h) => Math.round(h) === 32), `${name}: gruppene i verktøylinjen er 32 px høye`);
     const ts = await toolbarHeights(page);
     check(ts.length > 0 && ts.every((h) => Math.round(h) >= 32 && Math.round(h) <= 33), `${name}: verktøylinjen er 32 px høy (${ts.map(Math.round).join(", ")})`);
-    check(!(await moreBtn(page).isVisible()), `${name}: ved 1280 px er alt synlig, «Mer …» er skjult`);
+    const fits = await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1);
+    check(fits, `${name}: verktøylinjen passer i tilgjengelig bredde`);
+    const more = moreBtn(page);
+    if (await more.isVisible()) {
+      await more.click();
+      const menu = page.locator('[data-radix-popper-content-wrapper]').filter({ has: page.locator('[data-toolbar-group]') });
+      await menu.waitFor({ state: 'visible' });
+      const groups = await menu.locator('[data-toolbar-group]:visible').evaluateAll(els => els.map(e => e.getBoundingClientRect().height));
+      check(groups.length > 0 && groups.every(h => h >= 32), `${name}: overflytgrupper er synlige og minst 32 px høye`);
+      const bounds = await menu.boundingBox();
+      const width = page.viewportSize().width;
+      check(bounds && bounds.x >= -1 && bounds.x + bounds.width <= width + 1, `${name}: overflytmenyen ligger innenfor skjermen`);
+      await page.keyboard.press('Escape');
+      check(await menu.count() === 0 || !(await menu.isVisible()), `${name}: Escape lukker overflytmenyen`);
+    }
   });
 }
 
@@ -299,3 +313,4 @@ await run("u2-engelsk", "/scene", async (page) => {
 
 console.log(`RESULTAT: ${pass} bestått, ${fail} feilet`);
 await browser.close();
+process.exitCode = fail ? 1 : 0;

@@ -1080,7 +1080,7 @@ async function testPlayback() {
         "REQ-0210",
         "bilde og lyd er i takt under avspilling (lydklokke mot bildet)",
         drift.length > 5 && Math.max(...drift) < 0.2,
-        `maks avvik ${(Math.max(...drift) * 1000).toFixed(0)} ms over ${drift.length} målinger`,
+        `maks avvik ${(Math.max(...drift) * 1000).toFixed(0)} ms over ${drift.length} målinger · ${JSON.stringify(samples.map(x => ({ tc: x.tc, elapsed: x.audio - startAt })))}`,
       );
     }
     // Ny start midt i scenen: klippene som allerede har begynt, starter like langt inn i filen
@@ -1607,6 +1607,11 @@ async function testHybrid() {
 async function testScriptPages() {
   const { ctx, page } = await openPage(`${P}/manus`);
   try {
+    await page.locator('section[aria-label^="Side "]').first().waitFor();
+    await page.evaluate(async () => {
+      await document.fonts.load('16px "Courier Prime"', 'MMMMMMMMMM');
+      await document.fonts.ready;
+    });
     const kinds = Object.fromEntries(fx.rows.script_blocks.map((b) => [b.id, b.kind]));
     const r = await page.evaluate((kinds) => {
       const sheet = document.querySelector('section[aria-label^="Side "]');
