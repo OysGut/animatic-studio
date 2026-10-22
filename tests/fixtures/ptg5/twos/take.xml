@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scen:take xmlns:scen="http://www.dragonframe.com/scene">
+  <scen:fps>24</scen:fps>
+  <scen:edl>
+    <scen:vframe vframe="1" file="1"/>
+    <scen:vframe vframe="2" file="1"/>
+    <scen:vframe vframe="3" file="2"/>
+    <scen:vframe vframe="4" file="2"/>
+    <scen:vframe vframe="1073741829" file="3"/>
+  </scen:edl>
+</scen:take>

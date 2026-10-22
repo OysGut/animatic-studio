@@ -1,0 +1,55 @@
+/** PTG5: kunstig mappe/ZIP, ekte H.264-koding, mockede tjenester; ingen AI. */
+import { harness } from "./mts-harness.mjs";
+import { readFileSync } from "node:fs";
+import { zipSync } from "fflate";
+const h = harness("/tmp/browser/ptg5-roundtrip");
+const lang = process.env.UI_LANG ?? "nb";
+const occ = h.rows.scene_occurrences.find(o => o.active);
+if (!occ) throw new Error("fixture");
+h.fx.project.code = "PTG-TEST"; h.fx.project.fps_num = 24; h.fx.project.fps_den = 1;
+const original = occ.active_take_id;
+h.hooks.serverFn = (name, d) => {
+  if (!/runCommand/.test(name)) return;
+  const c = d.command ?? d.envelope?.command ?? d;
+  h.state.commands.push(c);
+  if (c.type === "AddTake") h.rows.takes.push({ id:c.takeId, project_id:h.fx.project.id, revision:1, occurrence_id:c.occurrenceId,
+    segment_id:c.segmentId, kind:c.kind,status:c.status,duration_frames:c.durationFrames,media_ref:c.mediaRef,media:c.media,removed:false, created_at:new Date().toISOString() });
+  return { ok:true, changeId:"ptg5", affected:[], inverse:null, revisions:{} };
+};
+await h.scenario(`ptg5-${lang}`, occ.id, lang, async page => {
+  await page.goto(h.base+h.P+"/montering", {waitUntil:"networkidle"});
+  await page.getByTestId("ptg5-open").click();
+  const baseName = "PTG-TEST_SC001_SH010_v003";
+  const frames = [1,2,3,4].map(n => [ `${baseName}_X1_${String(n).padStart(4,"0")}.png`, readFileSync(`tests/fixtures/ptg5/twos/${baseName}_X1_${String(n).padStart(4,"0")}.png`) ]);
+  const zip = zipSync(Object.fromEntries([[`${baseName}/take.xml`,readFileSync("tests/fixtures/ptg5/twos/take.xml")],...frames.map(([n,b])=>[`${baseName}/${n}`,b])]));
+  await page.getByTestId("ptg5-file").setInputFiles({name:"take.zip",mimeType:"application/zip",buffer:Buffer.from(zip)});
+  await page.getByTestId("ptg5-warning-hidden").waitFor();
+  h.check(await page.getByTestId("ptg5-recognized").isVisible(), `${lang}: navn gjenkjennes som PTG1 v003`);
+  h.check(await page.getByTestId("ptg5-warning-twos").isVisible() && await page.getByTestId("ptg5-warning-deleted").isVisible(), `${lang}: toere, skjulte og slettede bilder varsles`);
+  h.check(await page.getByTestId("ptg5-warning-short").isVisible() && await page.getByTestId("ptg5-warning-partial").isVisible(), `${lang}: kort/delvis take blokkerer ikke`);
+  await page.getByTestId("ptg5-dialog").screenshot({path:`${h.out}/${lang}-warnings.png`});
+  await page.getByTestId("ptg5-save").click();
+  await page.getByTestId("ptg5-saved").waitFor({timeout:60000});
+  const take = h.state.commands.find(c=>c.type==="AddTake");
+  h.check(take?.kind==="imported_film" && take.status==="in_progress" && take.durationFrames===4, `${lang}: ny fire-bilders MP4-take via kommando`);
+  h.check(!h.state.commands.some(c=>c.type==="SetSceneEdit" || c.type==="SetActiveTake") && occ.active_take_id===original, `${lang}: aktiv versjon beholdes`);
+  h.check(h.state.uploads.length===1 && h.state.uploadBodies[0]?.length>0, `${lang}: én film lastes opp`);
+  const body = h.state.uploadBodies[0];
+  const start = body.indexOf(Buffer.from("ftyp")) - 4;
+  const end = body.indexOf(Buffer.from("\r\n--"), start);
+  const mp4 = body.subarray(start, end < 0 ? body.length : end);
+  const decoded = await page.evaluate(async bytes => {
+    const mb = await import("/node_modules/.vite/deps/mediabunny.js");
+    const input = new mb.Input({source:new mb.BufferSource(new Uint8Array(bytes).buffer),formats:mb.ALL_FORMATS});
+    const track=await input.getPrimaryVideoTrack(); const sink=new mb.CanvasSink(track); const colors=[];
+    for await(const f of sink.canvases()) colors.push(Array.from(f.canvas.getContext("2d").getImageData(8,8,1,1).data).slice(0,3));
+    return {colors, fps:(await track.computePacketStats()).averagePacketRate};
+  },Array.from(mp4));
+  h.check(decoded.colors.length===4 && JSON.stringify(decoded.colors[0])===JSON.stringify(decoded.colors[1]) && JSON.stringify(decoded.colors[2])===JSON.stringify(decoded.colors[3]) && JSON.stringify(decoded.colors[0])!==JSON.stringify(decoded.colors[2]), `${lang}: koding følger EDL bilde for bilde og gjentar toere`);
+  h.check(Math.abs(decoded.fps-24)<0.1, `${lang}: videoen beholder 24 bilder/s`);
+  await page.getByTestId("ptg5-compare").click();
+  h.check(await page.getByRole("dialog").count()>=1, `${lang}: sammenligningsvindu åpnes`);
+  await page.getByRole("dialog").last().screenshot({path:`${h.out}/${lang}-compare.png`});
+  h.check(!h.state.rpcs.some(r=>/generate|Ai/.test(r.name)), `${lang}: ingen AI-kall`);
+});
+await h.finish();

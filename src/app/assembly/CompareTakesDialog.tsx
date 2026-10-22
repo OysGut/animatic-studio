@@ -18,8 +18,15 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { t as tk } from "@/core/i18n/keyed";
+import { CompareVersionsDialog } from "./CompareVersionsDialog";
 
-export function CompareTakesDialog({
+export function CompareTakesDialog(props: Parameters<typeof CompareAiTakesDialog>[0] & { importedOnly?: boolean }) {
+  if (props.importedOnly) return <CompareVersionsDialog open={props.open} onOpenChange={props.onOpenChange} state={props.state}
+    projectId={props.state.project.id} productionId={props.productionId} occurrenceId={props.occurrenceId} title={props.title} />;
+  return <CompareAiTakesDialog {...props} />;
+}
+
+function CompareAiTakesDialog({
   open,
   onOpenChange,
   state,

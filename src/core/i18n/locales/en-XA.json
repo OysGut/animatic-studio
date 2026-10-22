@@ -75029,5 +75029,80 @@
   },
   "b118.filter-color-all": {
     "text": "[!! ÁÁllll ccôôllôôüürrss !!]"
+  },
+  "ptg5.heading": {
+    "text": "[!! ÏÏmmppôôrrtt ffrrôômm DDrráággôônnffrráámmëë !!]"
+  },
+  "ptg5.description": {
+    "text": "[!! CChhôôôôssëë ôônnëë ttáákkëë. ÏÏtt ïïss ssáávvëëdd ááss áá nnëëww vvëërrssïïôônn; tthhëë ááccttïïvvëë vvëërrssïïôônn ïïss pprrëëssëërrvvëëdd. !!]"
+  },
+  "ptg5.folder": {
+    "text": "[!! CChhôôôôssëë ffôôllddëërr !!]"
+  },
+  "ptg5.file": {
+    "text": "[!! CChhôôôôssëë ZZÏÏPP ôôrr ffïïllmm !!]"
+  },
+  "ptg5.invalid": {
+    "text": "[!! TThhëë ttáákkëë ccôôüülldd nnôôtt bbëë rrëëáádd. CChhëëcckk tthhëë XXMMLL áánndd ïïmmáággëë ffïïllëëss. !!]"
+  },
+  "ptg5.single-take": {
+    "text": "[!! CChhôôôôssëë ôônnëë ttáákkëë áátt áá ttïïmmëë; tthhëë ffôôllddëërr ccôônnttááïïnnss mmüüllttïïppllëë ttáákkëë.xxmmll ffïïllëëss. !!]"
+  },
+  "ptg5.empty": {
+    "text": "[!! NNôô mmááïïnn ëëxxppôôssüürrëëss (XX1) ccôôüülldd bbëë rrëëáádd. !!]"
+  },
+  "ptg5.encoder": {
+    "text": "[!! YYôôüürr bbrrôôwwssëërr ccáánnnnôôtt ëënnccôôddëë HH.264 áátt tthhïïss ïïmmáággëë ssïïzzëë. !!]"
+  },
+  "ptg5.recognized": {
+    "text": "[!! RRëëccôôggnnïïzzëëdd: {name} · ëëxxppôôrrtt vvëërrssïïôônn {version} !!]"
+  },
+  "ptg5.unmatched": {
+    "text": "[!! TThhëë sshhôôtt ccôôüülldd nnôôtt bbëë ïïddëënnttïïffïïëëdd üünnïïqqüüëëllyy. CChhôôôôssëë áá sshhôôtt. !!]"
+  },
+  "ptg5.shot": {
+    "text": "[!! CChhôôôôssëë sshhôôtt !!]"
+  },
+  "ptg5.rate-missing": {
+    "text": "[!! FFrráámmëë rrááttëë ïïss mmïïssssïïnngg ffrrôômm ttáákkëë.xxmmll. ËËnnttëërr tthhëë ccááppttüürrëë ffrráámmëëss/ss: !!]"
+  },
+  "ptg5.length": {
+    "text": "[!! {frames} ffrráámmëëss áátt {fps} ffrráámmëëss/ss. ËËxxppëëccttëëdd: {expected} ffrráámmëëss ïïnnccllüüddïïnngg hháánnddllëëss. !!]"
+  },
+  "ptg5.twos": {
+    "text": "[!! RRëëppëëááttëëdd ëëxxppôôssüürrëëss (ttwwôôss/hhôôllddss) áárrëë pprrëëssëërrvvëëdd ïïnn tthhëë ffïïllmm. !!]"
+  },
+  "ptg5.short": {
+    "text": "[!! TThhëë ttáákkëë ïïss sshhôôrrttëërr tthháánn tthhëë sshhôôtt ïïnnccllüüddïïnngg hháánnddllëëss. !!]"
+  },
+  "ptg5.long": {
+    "text": "[!! TThhëë ttáákkëë ïïss llôônnggëërr tthháánn tthhëë sshhôôtt ïïnnccllüüddïïnngg hháánnddllëëss. NNôôtthhïïnngg ïïss ttrrïïmmmmëëdd. !!]"
+  },
+  "ptg5.partial": {
+    "text": "[!! TThhëë ttáákkëë ïïss ppáárrttïïáállllyy ffïïnnïïsshhëëdd ôôrr ïïmmáággëë ffïïllëëss áárrëë mmïïssssïïnngg. !!]"
+  },
+  "ptg5.hidden": {
+    "text": "[!! HHïïddddëënn ffrráámmëëss ïïnn ttáákkëë.xxmmll áárrëë ôômmïïttttëëdd. !!]"
+  },
+  "ptg5.deleted": {
+    "text": "[!! ÏÏmmáággëë ffïïllëëss áábbssëënntt ffrrôômm ttáákkëë.xxmmll áárrëë ôômmïïttttëëdd ááss ddëëllëëttëëdd ffrráámmëëss. !!]"
+  },
+  "ptg5.fps-warning": {
+    "text": "[!! TThhëë ffrráámmëë rrááttëë ddïïffffëërrss ffrrôômm tthhëë sshhôôtt ccááppttüürrëë rrááttëë. !!]"
+  },
+  "ptg5.no-edl": {
+    "text": "[!! NNôô ËËDDLL. XX1 ïïmmáággëëss áárrëë ssôôrrttëëdd bbyy ffïïllëë nnüümmbbëërr; hhïïddddëënn ffrráámmëëss áánndd hhôôllddss áárrëë üünnkknnôôwwnn. !!]"
+  },
+  "ptg5.save": {
+    "text": "[!! SSáávvëë nnëëww ttáákkëë !!]"
+  },
+  "ptg5.working": {
+    "text": "[!! PPrrôôccëëssssïïnngg ttáákkëë … {progress}% !!]"
+  },
+  "ptg5.saved": {
+    "text": "[!! NNëëww ttáákkëë ssáávvëëdd, nnôôtt ááccttïïvvááttëëdd. YYôôüü ccáánn ssëëllëëcctt ïïtt ïïnn áássssëëmmbbllyy. !!]"
+  },
+  "ptg5.compare": {
+    "text": "[!! CCôômmppáárrëë ttáákkëëss !!]"
   }
 }

@@ -1,5 +1,13 @@
 # Veikart
 
+## PTG5 og scenevelgeroppfølging (22.10.2026)
+- [x] Regel om SceneSelect/SceneMark i AGENTS.md.
+- [ ] interactions-e2e setter nb eksplisitt og består.
+- [ ] Dragonframe-mappe/ZIP/film: ren parser, PTG-navnekobling, håndtak og avvik uten AI.
+- [ ] Ny inaktiv take via eksisterende kommando, MP4 i nettleseren, scenevalg og sammenligning/blandet avspilling.
+- [ ] Kunstige fixturer, enhetstester, ptg5 nb/en og sekvensielle regresjoner; full Vitest, DB og i18n.
+- [ ] Norsk PTG5_REPORT.md med faktisk verifisering og avvik.
+
 ## Aktivt (22.10.2026)
 - [x] Personvernerklæringen utvidet med vilkår/ansvarsfraskrivelse (seksjoner 10–15, b115.privacy.*) på alle språk.
 - [x] Språkvelgeren på forsiden flyttet under «Logg inn»-boksen, over Personvern-lenken (verifisert i nettleser).

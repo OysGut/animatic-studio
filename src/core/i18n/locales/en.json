@@ -75029,5 +75029,80 @@
   },
   "b118.filter-color-all": {
     "text": "All colours"
+  },
+  "ptg5.heading": {
+    "text": "Import from Dragonframe"
+  },
+  "ptg5.description": {
+    "text": "Choose one take. It is saved as a new version; the active version is preserved."
+  },
+  "ptg5.folder": {
+    "text": "Choose folder"
+  },
+  "ptg5.file": {
+    "text": "Choose ZIP or film"
+  },
+  "ptg5.invalid": {
+    "text": "The take could not be read. Check the XML and image files."
+  },
+  "ptg5.single-take": {
+    "text": "Choose one take at a time; the folder contains multiple take.xml files."
+  },
+  "ptg5.empty": {
+    "text": "No main exposures (X1) could be read."
+  },
+  "ptg5.encoder": {
+    "text": "Your browser cannot encode H.264 at this image size."
+  },
+  "ptg5.recognized": {
+    "text": "Recognized: {name} · export version {version}"
+  },
+  "ptg5.unmatched": {
+    "text": "The shot could not be identified uniquely. Choose a shot."
+  },
+  "ptg5.shot": {
+    "text": "Choose shot"
+  },
+  "ptg5.rate-missing": {
+    "text": "Frame rate is missing from take.xml. Enter the capture frames/s:"
+  },
+  "ptg5.length": {
+    "text": "{frames} frames at {fps} frames/s. Expected: {expected} frames including handles."
+  },
+  "ptg5.twos": {
+    "text": "Repeated exposures (twos/holds) are preserved in the film."
+  },
+  "ptg5.short": {
+    "text": "The take is shorter than the shot including handles."
+  },
+  "ptg5.long": {
+    "text": "The take is longer than the shot including handles. Nothing is trimmed."
+  },
+  "ptg5.partial": {
+    "text": "The take is partially finished or image files are missing."
+  },
+  "ptg5.hidden": {
+    "text": "Hidden frames in take.xml are omitted."
+  },
+  "ptg5.deleted": {
+    "text": "Image files absent from take.xml are omitted as deleted frames."
+  },
+  "ptg5.fps-warning": {
+    "text": "The frame rate differs from the shot capture rate."
+  },
+  "ptg5.no-edl": {
+    "text": "No EDL. X1 images are sorted by file number; hidden frames and holds are unknown."
+  },
+  "ptg5.save": {
+    "text": "Save new take"
+  },
+  "ptg5.working": {
+    "text": "Processing take … {progress}%"
+  },
+  "ptg5.saved": {
+    "text": "New take saved, not activated. You can select it in assembly."
+  },
+  "ptg5.compare": {
+    "text": "Compare takes"
   }
 }

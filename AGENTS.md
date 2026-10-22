@@ -58,3 +58,4 @@ Kortversjonen († = detaljer i `docs/development/AGENTS_DETAILS.md`):
 42. Image ingestion separates pure size/file-selection policy in core from browser decoding/encoding in adapters, preserving immutable source bytes.
 43. Print jobs (R5) are project data via apply_changes; copies are one row per physical copy, written only by security-definer RPCs with their own pepper, so keys never leave the QR and lookup returns only project/scene/frame/layer/copy number.
 44. Production exchange derives names and timing only in core/interchange; immutable per-shot export-log reservations serialize under the project lock so concurrent exports never reuse versions.
+45. All scene choices use `SceneSelect`/`SceneMark`; never use native `<select>` for scenes, so accessibility and scene-mark alignment stay consistent.

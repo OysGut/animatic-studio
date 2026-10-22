@@ -86,7 +86,7 @@ async function mock(ctx) {
     }
     if (table === "project_members")
       return json([{ user_id: USER.id, role: "owner", joined_at: "2026-10-08T10:00:00Z" }]);
-    if (table === "profiles") return json([{ user_id: USER.id, display_name: "Mars" }]);
+    if (table === "profiles") return json([{ user_id: USER.id, display_name: "Mars", locale: "nb" }]);
     if (path.startsWith("/rest/v1/rpc/")) return json(null);
     if (path.startsWith("/realtime/")) return route.abort();
     if (fx.rows[table] && single) return json(fx.rows[table][0] ?? null);
@@ -133,7 +133,8 @@ const browser = await chromium
  */
 async function openPage(path) {
   const ctx = await browser.newContext({
-    viewport: { width: 1440, height: 900 },
+    viewport: { width: 1280, height: 1800 },
+    locale: "nb-NO",
     deviceScaleFactor: 1,
     colorScheme: "dark",
   });
@@ -147,8 +148,9 @@ async function openPage(path) {
     (m) => m.type() === "error" && !/WebSocket connection/.test(m.text()) && errors.push(m.text()),
   );
   const exp = Math.floor(Date.now() / 1000) + 86400;
-  await page.addInitScript(
-    ([k, v]) => localStorage.setItem(k, v),
+  await page.goto(base, { waitUntil: "domcontentloaded" });
+  await page.evaluate(
+    ([k, v]) => { localStorage.setItem(k, v); localStorage.setItem("animatic:lang", "nb"); },
     [
       `sb-${ref}-auth-token`,
       JSON.stringify({
@@ -526,9 +528,11 @@ async function testPoster() {
   try {
     const svg = page.getByRole("application", { name: /Plakaten/ });
     await svg.waitFor({ timeout: 15000 });
-    const b = await svg.boundingBox();
-    // Velg tittelen øverst på plakaten (klikk uten å dra)
-    await page.mouse.click(b.x + b.width / 2, b.y + b.height * 0.07);
+    // Velg et faktisk element eksplisitt; plakaten er ikke lenger låst til gammel toppplassering.
+    const picker = page.getByTestId("poster-element-select");
+    const value = await picker.locator("option").evaluateAll(opts => opts.find(o => o.value)?.value);
+    if (!value) throw new Error("Ingen plakatelementer i fixture");
+    await picker.selectOption(value);
     await page.waitForTimeout(300);
     const s0 = await posterSelection(page);
     check(G, "et element er valgt", !!s0, JSON.stringify(s0));
