@@ -81,12 +81,13 @@ export function nukeScript(doc: InterchangeDoc, shot: Shot): string {
   for (const [i, item] of layers.entries()) {
     const f = item.frames;
     out.push(`Read {\n file ${quote(mediaPath(doc, item.layer))}\n first 0\n last ${Math.max(0, shot.lengthFrames - 1)}\n name Read_${i + 1}\n label ${quote(item.layer.source.name)}\n}`, `set read_${i} [stack 0]`);
+    out.push(`Multiply {\n value ${curve(f, s => s.opacity)}\n name Opacity_${i + 1}\n}`);
     if (shot.camera) {
       out.push(`Card2 {\n inputs 1\n translate {${curve(f, s => s.x)} ${curve(f, s => s.y)} ${curve(f, s => s.z)}}\n rotate {0 0 ${curve(f, s => s.rotation)}}\n scaling {${curve(f, s => s.width / 2)} ${curve(f, s => s.height / 2)} 1}\n image_aspect false\n name ${item.name}\n}`);
     } else {
       out.push(`Transform {\n translate {${curve(f, s => s.x)} ${curve(f, s => s.y)}}\n rotate ${curve(f, s => s.rotation)}\n scale {${curve(f, s => s.scaleX)} ${curve(f, s => s.scaleY)}}\n center {${n(item.layer.source.width / 2)} ${n(item.layer.source.height / 2)}}\n name ${item.name}\n}`);
     }
-    out.push(`Multiply {\n value ${curve(f, s => s.opacity)}\n name Opacity_${i + 1}\n}`, `set plate_${i} [stack 0]`);
+    out.push(`set plate_${i} [stack 0]`);
   }
   if (shot.camera) {
     const samples = compositingCamera(shot);
@@ -114,13 +115,14 @@ export function fusionComp(doc: InterchangeDoc, shot: Shot): string {
     tools.push(`Read_${i + 1} = Loader { Clips = { Clip { ID = "Clip1", Filename = ${luaQuote(mediaPath(doc, item.layer))}, StartFrame = 0, Length = ${shot.lengthFrames}, Loop = 1 } }, Inputs = { GlobalIn = Input { Value = 0 }, GlobalOut = Input { Value = ${shot.lengthFrames - 1} } } }`);
     const values = shot.camera ? animated(name, item.frames, {
       'Transform3DOp.Translate.X': s => s.x, 'Transform3DOp.Translate.Y': s => s.y, 'Transform3DOp.Translate.Z': s => s.z,
-      'Transform3DOp.Rotate.Z': s => s.rotation, 'Transform3DOp.Scale.X': s => s.width, 'Transform3DOp.Scale.Y': s => s.height,
+      'Transform3DOp.Rotate.Z': s => s.rotation, 'MtlStdInputs.Opacity': s => s.opacity, 'Transform3DOp.Scale.X': s => s.width, 'Transform3DOp.Scale.Y': s => s.height,
     }) : animated(name, item.frames, { Angle: s => s.rotation, Size: s => s.scaleX, Aspect: s => s.scaleY / (s.scaleX || 1) });
     // Fusion tool identifiers cannot contain dots; spline names are normalized after serialization.
     if (shot.camera) tools.push(`${name} = ImagePlane3D { Inputs = { ${values.join(', ')}, MaterialInput = Input { SourceOp = "Read_${i + 1}", Source = "Output" }, ["SurfacePlaneInputs.Width"] = Input { Value = 1 }, ["SurfacePlaneInputs.Height"] = Input { Value = 1 } } }`);
     else {
-      const centers = item.frames.map(s => `[${s.frame}] = { ${n(0.5 + s.x / doc.frameSize.width)}, ${n(0.5 + s.y / doc.frameSize.height)} }`).join(', ');
-      tools.push(`${name}_Center = XYPath { Points = { ${centers} } }`, `${name} = Transform { Inputs = { ${values.join(', ')}, Center = Input { SourceOp = "${name}_Center", Source = "Position" }, Input = Input { SourceOp = "Read_${i + 1}", Source = "Output" } } }`);
+      const centerFields = animated(`${name}_Center`, item.frames, { X: s => 0.5 + s.x / doc.frameSize.width, Y: s => 0.5 + s.y / doc.frameSize.height });
+      const blend = animated(name, item.frames, { Blend: s => s.opacity });
+      tools.push(`${name}_Center = XYPath { Inputs = { ${centerFields.join(', ')} } }`, `${name} = Transform { Inputs = { ${[...values, ...blend].join(', ')}, Center = Input { SourceOp = "${name}_Center", Source = "Position" }, Input = Input { SourceOp = "Read_${i + 1}", Source = "Output" } } }`);
     }
   }
   if (shot.camera) {

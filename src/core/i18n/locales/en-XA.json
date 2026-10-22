@@ -75105,6 +75105,15 @@
   "ptg5.compare": {
     "text": "[!! CCôômmppáárrëë ttáákkëëss !!]"
   },
+  "ptg7.export": {
+    "text": "[!! NNüükkëë áánndd FFüüssïïôônn !!]"
+  },
+  "ptg7.readme": {
+    "text": "[!! NNüükkëë áánndd FFüüssïïôônn: ëëxxttrráácctt tthhëë ëënnttïïrrëë ZZÏÏPP áánndd ôôppëënn tthhëë sshhôôtt'ss .nnkk ôôrr .ccôômmpp. MMëëddïïáá ppáátthhss áárrëë rrëëllááttïïvvëë ttôô tthhëë sshhôôtt ffôôllddëërr. SSëëtt tthhëë wwôôrrkkïïnngg ddïïrrëëccttôôrryy ttôô tthhëë sshhôôtt ffôôllddëërr ïïff tthhëë ááppppllïïccááttïïôônn ddôôëëss nnôôtt rrëëssôôllvvëë rrëëllááttïïvvëë ppáátthhss. WWôôrrlldd üünnïïttss áárrëë mmïïllllïïmmëëttrrëëss, YY üüpp, ccáámmëërráá ffááccïïnngg nnëëggááttïïvvëë ZZ. CCáárrdd2 ïïss NNüükkëë'ss cclláássssïïcc 3DD ccáárrdd (CCáárrdd), nnôôtt tthhëë 2DD pprrôôjjëëccttïïôônn nnôôddëë CCáárrdd3DD. CCáámmëërráá ffïïëëlldd ôôff vvïïëëww áánndd ppôôssïïttïïôônn ffôôllllôôww tthhëë mmôôddëëll ppëërr ffrráámmëë; ttwwôôss áárrëë hhëëlldd. FFüüssïïôônn üüssëëss ÏÏmmáággëëPPlláánnëë3DD. NNôô ÁÁÏÏ ïïss üüssëëdd. RRëëááll ïïmmppôôrrtt mmüüsstt bbëë cchhëëcckkëëdd ïïnn NNüükkëë áánndd FFüüssïïôônn bbëëffôôrrëë pprrôôddüüccttïïôônn. !!]"
+  },
+  "ptg7.no-rig": {
+    "text": "[!! {shot}: nnôô vváállïïdd rrïïgg; 2DD ssëëttüüpp wwïïtthh TTrráánnssffôôrrmm nnôôddëëss, wwïïtthhôôüütt áá 3DD ccáámmëërráá. !!]"
+  },
   "ptg6.export": {
     "text": "[!! ËËddïïttôôrrïïááll ffïïllëëss (ÔÔTTÏÏÔÔ, XXMMLL, ËËDDLL) !!]"
   },
