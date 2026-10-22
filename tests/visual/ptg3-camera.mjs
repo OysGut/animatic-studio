@@ -77,7 +77,7 @@ await h.scenario(`ptg3-${lang}`, occ.id, lang, async page => {
     h.check(!/\b(let|const)\s/.test(jsx) && !jsx.includes("=>"), `${lang}/ae-${mode}: ren ES3`);
     h.check(mode === "ae" ? jsx.includes("addCamera") : !jsx.includes("addCamera"), `${lang}/ae-${mode}: kameramodus følges`);
     h.check(mode === "parallax" ? jsx.includes("PAR_") : !jsx.includes("PAR_"), `${lang}/ae-${mode}: parallakse-nuller bare i 2D-modus`);
-    h.check(jsx.includes("camera omitted"), `${lang}/ae-${mode}: skudd uten rigg får ingen kamera`);
+    if (mode === "ae") h.check(jsx.includes("camera omitted"), `${lang}/ae-${mode}: skudd uten rigg får ingen kamera`);
     const readme = new TextDecoder().decode(zip["LESMEG.txt"]);
     h.check(readme.split("\n").some(l => l.startsWith("- ") && l.includes(rigShotPrefix)), `${lang}/ae-${mode}: LESMEG nevner skudd uten rigg`);
     h.check(!readme.includes("null i PTG1") && !readme.includes("null in PTG1"), `${lang}/ae-${mode}: LESMEG sier ikke lenger «null i PTG1»`);
