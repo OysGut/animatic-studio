@@ -72,7 +72,8 @@ describe("K-1 konfliktflyt", () => {
     const { result } = hookWith(seed.state);
     h.runCommand.mockResolvedValueOnce({ ok: false, code: "revision_conflict", message: "x" });
     act(() => {
-      result.current.run({ type: "SetOccurrenceColor", occurrenceId: occ.id, color: "#ff0000" } as never, "Farge");
+      const err = result.current.run({ type: "SetOccurrenceColor", occurrenceId: occ.id, color: "#ff0000" } as never, "Farge");
+      if (err) throw new Error(err);
     });
     await waitFor(() => expect(result.current.conflicts).toHaveLength(1));
     return { result, occ };
@@ -109,11 +110,13 @@ describe("K-1 konfliktflyt", () => {
 
   it("varselet viser hvem som sist endret og kaller valget brukeren tar", async () => {
     const resolveConflict = vi.fn(async () => null);
+    const qc = new QueryClient();
+    qc.setQueryData(["my-account"], null);
     render(
-      createElement(SceneConflictNotice, {
+      createElement(QueryClientProvider, { client: qc }, createElement(SceneConflictNotice, {
         cmds: { conflicts: [{ id: "c1", label: "Farge", command: {} as never, affected: [] }], resolveConflict },
         lastChange: { at: "2026-10-22T10:00:00Z", actorName: "Ada", logged: true },
-      }),
+      })),
     );
     expect(screen.getByTestId("scene-conflict-by").textContent).toContain("Ada");
     fireEvent.click(screen.getByTestId("scene-conflict-discard"));
