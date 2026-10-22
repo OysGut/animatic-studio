@@ -41,6 +41,13 @@ export const confirmOrphanCleanup = createServerFn({ method: "POST" }).middlewar
     {
       const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
       await sweepShowcaseReservations(supabaseAdmin as unknown as AnyClient, data.projectId);
+      // N1 (0088): utløpte reservasjoner for globale versjoner i prosjektets gruppe ryddes i samme jobb.
+      const { data: proj } = await (supabaseAdmin as unknown as AnyClient).from("projects").select("workspace_id").eq("id", data.projectId).maybeSingle();
+      const ws = (proj as { workspace_id?: string | null } | null)?.workspace_id;
+      if (ws) {
+        const { sweepGlobalReservations } = await import("@/adapters/global/global-reservation.server");
+        await sweepGlobalReservations(supabaseAdmin as unknown as AnyClient, ws);
+      }
     }
     if (!data.paths?.length) throw new Error(t("r2-orphan-cleanup.error.confirm"));
     const fresh = await orphanCandidates(context, data.projectId);
