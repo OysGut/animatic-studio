@@ -8,6 +8,7 @@ const occ = h.rows.scene_occurrences.find(o => o.active);
 if (!occ) throw new Error("fixture");
 h.fx.project.code = "PTG-TEST"; h.fx.project.fps_num = 24; h.fx.project.fps_den = 1;
 const original = occ.active_take_id;
+let roundtripFilm;
 h.hooks.serverFn = (name, d) => {
   if (!/runCommand/.test(name)) return;
   const c = d.command ?? d.envelope?.command ?? d;
@@ -38,6 +39,7 @@ await h.scenario(`ptg5-${lang}`, occ.id, lang, async page => {
   const start = body.indexOf(Buffer.from("ftyp")) - 4;
   const end = body.indexOf(Buffer.from("\r\n--"), start);
   const mp4 = body.subarray(start, end < 0 ? body.length : end);
+  roundtripFilm = Buffer.from(mp4);
   const decoded = await page.evaluate(async bytes => {
     const mb = await import("/node_modules/.vite/deps/mediabunny.js");
     const input = new mb.Input({source:new mb.BufferSource(new Uint8Array(bytes).buffer),formats:mb.ALL_FORMATS});
@@ -51,5 +53,29 @@ await h.scenario(`ptg5-${lang}`, occ.id, lang, async page => {
   h.check(await page.getByRole("dialog").count()>=1, `${lang}: sammenligningsvindu åpnes`);
   await page.getByRole("dialog").last().screenshot({path:`${h.out}/${lang}-compare.png`});
   h.check(!h.state.rpcs.some(r=>/generate|Ai/.test(r.name)), `${lang}: ingen AI-kall`);
+});
+await h.scenario(`ptg5-manual-${lang}`, occ.id, lang, async page => {
+  await page.goto(h.base+h.P+"/montering", {waitUntil:"networkidle"});
+  await page.getByTestId("ptg5-open").click();
+  const image = readFileSync("tests/fixtures/ptg5/twos/PTG-TEST_SC001_SH010_v003_X1_0001.png");
+  const xml = `<take><fps>12</fps><edl>${Array.from({length:120},(_,i)=>`<vframe vframe="${i+1}" file="1"/>`).join("")}</edl></take>`;
+  const zip=zipSync({"unknown/take.xml":Buffer.from(xml),"unknown/take_X1_0001.png":image});
+  await page.getByTestId("ptg5-file").setInputFiles({name:"unknown.zip",mimeType:"application/zip",buffer:Buffer.from(zip)});
+  const chooser=page.getByTestId("ptg5-shot"); await chooser.waitFor();
+  h.check(await page.getByTestId("ptg5-save").isDisabled(), `${lang}: ukjent navn krever eksplisitt scenevalg`);
+  await chooser.click(); await page.getByRole("option").filter({hasText:"SC001_SH010"}).first().click();
+  h.check(await page.getByTestId("ptg5-warning-long").isVisible() && await page.getByTestId("ptg5-warning-fps").isVisible(), `${lang}: for lang take og feil bildefrekvens varsles uten blokkering`);
+  h.check(await page.getByTestId("ptg5-save").isEnabled(),`${lang}: SceneSelect tillater manuell kobling`);
+});
+await h.scenario(`ptg5-film-${lang}`, occ.id, lang, async page => {
+  if (!roundtripFilm) throw new Error("missing encoded film");
+  await page.goto(h.base+h.P+"/montering", {waitUntil:"networkidle"});
+  await page.getByTestId("ptg5-open").click();
+  await page.getByTestId("ptg5-file").setInputFiles({name:"PTG-TEST_SC001_SH010_v004.mp4",mimeType:"video/mp4",buffer:roundtripFilm});
+  await page.getByTestId("ptg5-recognized").waitFor();
+  await page.getByTestId("ptg5-save").click(); await page.getByTestId("ptg5-saved").waitFor({timeout:60000});
+  const take=h.state.commands.find(c=>c.type==="AddTake");
+  h.check(take?.media.fileName==="PTG-TEST_SC001_SH010_v004.mp4" && take.durationFrames===4,`${lang}: eksportert film lagres som ny take med eksportversjon`);
+  h.check(h.state.commands.length===1 && h.state.commands[0].type==="AddTake",`${lang}: filmimport aktiverer ikke take`);
 });
 await h.finish();

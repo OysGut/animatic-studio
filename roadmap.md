@@ -2,9 +2,9 @@
 
 ## PTG5 og scenevelgeroppfølging (22.10.2026)
 - [x] Regel om SceneSelect/SceneMark i AGENTS.md.
-- [ ] interactions-e2e setter nb eksplisitt og består.
-- [ ] Dragonframe-mappe/ZIP/film: ren parser, PTG-navnekobling, håndtak og avvik uten AI.
-- [ ] Ny inaktiv take via eksisterende kommando, MP4 i nettleseren, scenevalg og sammenligning/blandet avspilling.
+- [x] interactions-e2e setter nb eksplisitt og består (44/44).
+- [x] Dragonframe-mappe/ZIP/film: ren parser, PTG-navnekobling, håndtak og avvik uten AI.
+- [x] Ny inaktiv take via eksisterende kommando, MP4 i nettleseren, scenevalg og sammenligning/blandet avspilling.
 - [ ] Kunstige fixturer, enhetstester, ptg5 nb/en og sekvensielle regresjoner; full Vitest, DB og i18n.
 - [ ] Norsk PTG5_REPORT.md med faktisk verifisering og avvik.
 
