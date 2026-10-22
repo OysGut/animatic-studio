@@ -1,5 +1,10 @@
 # Veikart
 
+## B-116 – Utstillingsvindu (22.10.2026)
+- [x] Migrasjon 0087 (additiv oppå 0086): showcase_items, showcase_comments, godkjenningsbryter, RPC-er, delete_project; Claude kjører i Cloud.
+- [ ] Kjerne, serverfunksjoner, brukerflate (boks, forhåndsvisning, Mine delinger, karusell, kommentarer, admin-kø).
+- [ ] Tester: DB, enhetstester, b116-showcase.mjs nb/en, full vitest og i18n; rapport B116_REPORT.md.
+
 ## D-2 – Restfunn før demoen
 - [x] Rett og kontroller SSR/hydrering og språkverktøytips etter gjenopprettingen (ML2 318/318).
 - [x] Oppdater eksplisitte RPC-lister, Story Lab- og U2-kontrakter; REQ-0050 4/4 og g07 bestått.
