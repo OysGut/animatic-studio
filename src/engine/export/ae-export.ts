@@ -28,7 +28,8 @@ export function aeTitleCards(doc: InterchangeDoc): AeTitleCards {
     filmTitle: doc.project.name,
     explain: t("ptg3b.card-explain"),
     footer: t("ptg3b.card-footer"),
-    sceneLine: (s) => `SC${s.sceneNumber.padStart(3, "0")} · ${s.name}`,
+    // Scenenavn = sceneoverskriften (som skuddlistens beskrivelse), med SC-nummer og skuddnavn fra PTG1
+    sceneLine: (s) => [/_(SC\d{3}[A-Z]?)_/.exec(s.name)?.[1] ?? "", s.description, s.name].filter(Boolean).join(" · "),
     qrPath: qrPathOf,
   };
 }
