@@ -113,7 +113,7 @@ export async function writeZip(
   const check = () => { if (o.signal?.aborted) throw new DOMException(tk("engine-export-zip.write-zip.message.080bb98d06cc"), "AbortError"); };
   const write = async (data: Uint8Array) => { check(); await sink.write(data); written += BigInt(data.byteLength); };
   const add = async (name: string, chunks: AsyncIterable<Uint8Array>) => {
-    if (names.has(name)) throw new Error(tk("ptg1.duplicate-file"));
+    if (names.has(name)) throw new Error(tk("engine-export-zip.zip.message.d8988ee64a25"));
     names.add(name);
     const offset = written;
     await write(zipLocalHeader(name));

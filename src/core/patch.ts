@@ -1175,8 +1175,8 @@ export function stateFromRows(r: ProjectRows): ProjectState {
       id: str(p["id"]) as never,
       revision: num(p["revision"]),
       name: str(p["name"]),
-      code: typeof p["code"] === "string" ? p["code"] : null,
-      capture: { mode: (p["capture_mode"] ?? "ones") as import("./interchange/settings").CaptureMode, fps: { num: num(p["capture_fps_num"] ?? 24), den: num(p["capture_fps_den"] ?? 1) } },
+      ...(p["code"] === undefined ? {} : { code: typeof p["code"] === "string" ? p["code"] : null }),
+      ...(p["capture_mode"] === undefined ? {} : { capture: { mode: p["capture_mode"] as import("./interchange/settings").CaptureMode, fps: { num: num(p["capture_fps_num"] ?? 24), den: num(p["capture_fps_den"] ?? 1) } } }),
       fps: { num: num(p["fps_num"]), den: num(p["fps_den"]) },
       // Før migrasjon 0008 finnes ikke kolonnene: HD 16:9
       frameWidth: num(p["frame_width"] ?? 1920),

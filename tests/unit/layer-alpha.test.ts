@@ -176,7 +176,10 @@ describe("P4 streaming ZIP and cancellation", () => {
       for (let i = 0; i < 20; i++) { expect(pending).toBe(false); produced++; yield { path: `${i}.png`, data: new Uint8Array([i]) }; }
     }
     await writeZip(sink, [], {}, { extra: frames() });
-    expect(produced).toBe(20); expect(Object.keys(unzipSync(Buffer.concat(chunks)))).toHaveLength(20);
+    expect(produced).toBe(20);
+    const files = unzipSync(Buffer.concat(chunks));
+    expect(Object.keys(files).filter(n => n.endsWith(".png"))).toHaveLength(20);
+    expect(files["LESMEG.txt"]).toBeDefined();
     expect(sink.close).toHaveBeenCalledOnce();
   });
   it("cancelled export aborts the sink and never finalizes a half file", async () => {
