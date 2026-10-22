@@ -42,6 +42,8 @@ const APP_ENTRIES = [
   "src/engine/export/shotlist.ts",
   "src/engine/export/camera-export.ts",
   "src/engine/export/ae-export.ts",
+  "src/core/interchange/titlecard.ts", // PTG3b
+  "src/app/assembly/ptg-import.ts", // PTG3b
   "src/engine/export/zip64.ts",
   "src/app/assembly/FilmViewer.tsx",
   "src/app/assembly/FilmPopout.tsx",
