@@ -183,6 +183,8 @@ export function effectiveAssetRights(r: AssetRights | null | undefined): { share
 
 /* ------------------------------------------------------------ rapportering */
 
-export const REPORT_TARGETS = ["publication", "comment", "profile", "user"] as const;
+export * from "./showcase";
+
+export const REPORT_TARGETS = ["publication", "comment", "profile", "user", "showcase"] as const;
 export const REPORT_REASONS = ["spam", "abuse", "copyright", "privacy", "other"] as const;
 export const REPORT_STATUSES = ["open", "dismissed", "actioned"] as const;

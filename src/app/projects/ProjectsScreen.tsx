@@ -48,6 +48,8 @@ import {
 import { BackupDialog, RestoreBackupDialog } from "./BackupDialogs";
 import { ProvidersDialog } from "@/app/ai/ProvidersDialog";
 import { EmptyState, ErrorState, LoadingState } from "@/app/shell/screen-states";
+import { ShowcaseBox } from "@/app/community/ShowcaseBox";
+import { ShowcaseCarousel } from "@/app/community/ShowcaseCarousel";
 import { Film } from "lucide-react";
 import { t, tLocalized } from "@/core/i18n/keyed";
 import { useTimeFormat } from "@/app/i18n/time-format";
@@ -223,6 +225,9 @@ export function ProjectsScreen({ userId }: { userId: string }) {
           ) : null}
         </div>
       </div>
+
+      {/* B-116: utstillingsvinduet (bak bryteren community.public) */}
+      <ShowcaseBox projects={sorted.map((p) => ({ id: p.id, name: p.name, role: roleOf(p) }))} />
 
       {creating ? (
         <form
@@ -565,6 +570,7 @@ export function ProjectsScreen({ userId }: { userId: string }) {
           projectName={dialog.target.name}
         />
       ) : null}
+      <ShowcaseCarousel signedIn />
     </div>
   );
 }

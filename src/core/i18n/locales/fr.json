@@ -55215,5 +55215,375 @@
     "text": "Abandonner ma modification",
     "sourceHash": "f7e2c71634e2d0d104e7eaaa57f3766e4b4e6db7d2a618d6a670780fd6721877",
     "review": "machine"
+  },
+  "b116.box.title": {
+    "text": "Envie de montrer un peu de ce sur quoi vous travaillez ?",
+    "sourceHash": "581a703f3d9b707334863e63e7479a0f11e3af40f83208b291d5d4ba1a7ff298",
+    "review": "machine"
+  },
+  "b116.box.hint": {
+    "text": "Choisissez une chose dans l’un de vos projets – un personnage, une ressource, une courte scène, un extrait de scénario ou un extrait sonore.",
+    "sourceHash": "77b5cc341f20526af82e7beed6fc083b29948a369c5ccf929d54ca6039d14a7f",
+    "review": "machine"
+  },
+  "b116.box.share": {
+    "text": "Partager quelque chose",
+    "sourceHash": "ac97eab6540cfe4c1a72ccc75437a0e5e15b3a7a42301be8fd1d7ca2f169b2dc",
+    "review": "machine"
+  },
+  "b116.box.mine": {
+    "text": "Mes partages",
+    "sourceHash": "13839135f0ffcaa09554f0861e9c5626086466de75e6fa9c4c34e5698a542034",
+    "review": "machine"
+  },
+  "b116.box.profile": {
+    "text": "Modifier le profil",
+    "sourceHash": "15267ea15ea723d30a2a79c57ecf1c000203f57f44d10e476ef3e33adf9abd89",
+    "review": "machine"
+  },
+  "b116.create.title": {
+    "text": "Partager dans la vitrine",
+    "sourceHash": "34f45b37756eaefbd541168d62a1bfc0c35ee6833bf92fc025730d1c5338c4d6",
+    "review": "machine"
+  },
+  "b116.create.preview": {
+    "text": "Aperçu",
+    "sourceHash": "6b2153b9371eb726341a755d22cf795eb941d48e73942ca609f78ad2f7656500",
+    "review": "machine"
+  },
+  "b116.create.previewHint": {
+    "text": "Voici exactement comment votre contribution apparaîtra dans le carrousel.",
+    "sourceHash": "71147bf32fa76143557bc07c4bc8507ba00e42636baf2737815ef91901b6cff8",
+    "review": "machine"
+  },
+  "b116.create.project": {
+    "text": "Projet",
+    "sourceHash": "30a6bf7d10a859379d1cdfbc84ffe8c4a5a7e5333aa51b9fcdf05f4febd04e7c",
+    "review": "machine"
+  },
+  "b116.create.kind": {
+    "text": "Que voulez-vous partager ?",
+    "sourceHash": "0063dbcc137422d90d5a8f95c842513c47ac245efbcd1763e994c4cefc64bdf5",
+    "review": "machine"
+  },
+  "b116.kind.character": {
+    "text": "Personnage",
+    "sourceHash": "4f4a650cdc41931d714685042197b87c9411b38002e220232a5f1eb512514500",
+    "review": "machine"
+  },
+  "b116.kind.asset": {
+    "text": "Ressource",
+    "sourceHash": "d6f032ca0f7726990892f6a28d9b2617b1351202577385c28993ebac3cf61485",
+    "review": "machine"
+  },
+  "b116.kind.scene": {
+    "text": "Courte scène",
+    "sourceHash": "dbd73889f2af6f7efe81449b38d24ac3c5ec30cafb3e62861456808b91a27f80",
+    "review": "machine"
+  },
+  "b116.kind.script": {
+    "text": "Extrait de scénario",
+    "sourceHash": "8f8095159e4c4df04fde57bdfa126bbf789caf7f7130dc7e0225a2e3e6e1804a",
+    "review": "machine"
+  },
+  "b116.kind.audio": {
+    "text": "Extrait sonore",
+    "sourceHash": "840d2692e48b2e9d3db0ecfccb9fb75b1712c9f2e1f72faddcb347bc50db80b8",
+    "review": "machine"
+  },
+  "b116.create.excerptLabel": {
+    "text": "Extrait de scénario (quelques répliques)",
+    "sourceHash": "ce78d5efb8dda7b1033570b83d1890076e583a2a2a13594f65be1a0e8dce140e",
+    "review": "machine"
+  },
+  "b116.create.excerptWarning": {
+    "text": "Le texte devient public. Ne partagez que ce que vous voulez que tout le monde puisse lire.",
+    "sourceHash": "7867d1abdfbd80a21558f351f8dc8a65d9b409cc0e12d13206c8711d8d1ccfb9",
+    "review": "machine"
+  },
+  "b116.create.titleLabel": {
+    "text": "Titre",
+    "sourceHash": "f8014454bf11e149d7db8af825fb9d11538afb69168e473103ba98be4f8e19bd",
+    "review": "machine"
+  },
+  "b116.create.textLabel": {
+    "text": "À propos du projet de film et de vous (facultatif)",
+    "sourceHash": "9585cd96141feb85b14f0e69ddc043e6e2fb69ca7198a4fa710e8b362e723b2a",
+    "review": "machine"
+  },
+  "b116.create.expires": {
+    "text": "Visible pendant",
+    "sourceHash": "7f62424a5912e2b9820c4e0aaf0255b6805fbe24480d4babdd884d3b410221e7",
+    "review": "machine"
+  },
+  "b116.expires.7": {
+    "text": "1 semaine",
+    "sourceHash": "6f908bc33596fec50667c089000fbae1ad296579b0d177dba0df13d7569c5645",
+    "review": "machine"
+  },
+  "b116.expires.14": {
+    "text": "2 semaines",
+    "sourceHash": "c8a894ae6ce7e7206a0172108b397cd4ee2772045a22000c643c6dfb8e604860",
+    "review": "machine"
+  },
+  "b116.expires.30": {
+    "text": "1 mois",
+    "sourceHash": "56b9f65beb79983f4d809db469eef294443b06c8db550fb6167c06df82b5729e",
+    "review": "machine"
+  },
+  "b116.expires.90": {
+    "text": "3 mois",
+    "sourceHash": "5585aceaae6c1a2788d73e9df91699b727315f9ec2b9654fb8d0617eb688464b",
+    "review": "machine"
+  },
+  "b116.create.empty": {
+    "text": "Rien à choisir ici pour l’instant.",
+    "sourceHash": "7ea28d82b30afefb817cc7cad56f086d7085991fa7902bd0e3434d7b08749a16",
+    "review": "machine"
+  },
+  "b116.create.back": {
+    "text": "Retour",
+    "sourceHash": "44834c439ce8cfc73579af35af8d22d2fb2c2637fa19880f91caae0af2485a98",
+    "review": "machine"
+  },
+  "b116.create.submit": {
+    "text": "Partager",
+    "sourceHash": "09772187ba0a65f4606b7b2cb66c6eef6e3e508eaedafc8d8240e6db4664c439",
+    "review": "machine"
+  },
+  "b116.create.pendingNotice": {
+    "text": "Merci ! Votre contribution attend une approbation avant d’être affichée.",
+    "sourceHash": "76007d726b26d5fe1bf5faace79560efb4acfc914609800ad92f31ac0a2f1ae3",
+    "review": "machine"
+  },
+  "b116.create.liveNotice": {
+    "text": "Merci ! Votre contribution est maintenant visible dans le carrousel.",
+    "sourceHash": "3b3f2678944b24c3e05d03e8418f5000d873d9766c7275a3c3f6e1a381b056d1",
+    "review": "machine"
+  },
+  "b116.create.failed": {
+    "text": "Impossible de partager. Réessayez.",
+    "sourceHash": "f2704d958a051a728234349dd84943da6e6d70d54c01f1ac96ec50d6362fc23e",
+    "review": "machine"
+  },
+  "b116.cancel": {
+    "text": "Annuler",
+    "sourceHash": "a69ea29ae854ab93e4967572b360e5a50e1c854ae20c4ae9b47ee3b1368bab86",
+    "review": "machine"
+  },
+  "b116.close": {
+    "text": "Fermer",
+    "sourceHash": "e8b18396064c1a5f49e211a1cfca295a50ace87cebb16890ebb2c2fae97a4b95",
+    "review": "machine"
+  },
+  "b116.loading": {
+    "text": "Chargement …",
+    "sourceHash": "9afa6b4550a416f8b1bf9a4d708a82a427e1f6ff70e25ef9d52769b406cf65ef",
+    "review": "machine"
+  },
+  "b116.mine.title": {
+    "text": "Mes partages",
+    "sourceHash": "13839135f0ffcaa09554f0861e9c5626086466de75e6fa9c4c34e5698a542034",
+    "review": "machine"
+  },
+  "b116.mine.empty": {
+    "text": "Vous n’avez encore rien partagé.",
+    "sourceHash": "705cd770718a79a0a5d764bd377505996982b400c888f9c9ed2b79d8a3a6300f",
+    "review": "machine"
+  },
+  "b116.mine.edit": {
+    "text": "Modifier",
+    "sourceHash": "cfd2b696026ff850dd747fda326e20f2877a1bb2262a1b2c8b87a5e6e7f4a83f",
+    "review": "machine"
+  },
+  "b116.mine.save": {
+    "text": "Enregistrer",
+    "sourceHash": "17313c395ac9f722f10ded2a46d31ffa3f63252c66b890b61a904160c55f034b",
+    "review": "machine"
+  },
+  "b116.mine.revoke": {
+    "text": "Retirer",
+    "sourceHash": "d79ae0be2868150f1712d5c50f47eb2f7ab74bd58c8ea9cfc359a909ee73b115",
+    "review": "machine"
+  },
+  "b116.mine.revokeConfirm": {
+    "text": "Retirer cette contribution ? Elle disparaîtra du carrousel.",
+    "sourceHash": "150664edcabf073886367162fbdea21e426c78b9600a673212fb485278048222",
+    "review": "machine"
+  },
+  "b116.mine.expiresAt": {
+    "text": "Visible jusqu’au {date}",
+    "sourceHash": "1a2eb16bcde39b22dbca6b49152d1337dfc03a2437baf45df079da629937572d",
+    "review": "machine"
+  },
+  "b116.status.pending": {
+    "text": "En attente d’approbation",
+    "sourceHash": "a947012742a94999757c50b670df74d9024bdc6a8f685f525a1ad68158f3ee27",
+    "review": "machine"
+  },
+  "b116.status.live": {
+    "text": "Visible",
+    "sourceHash": "675582aa5dd0b412117eadc5bf24642dfe2702b9bae1f39b7a913361ad2da079",
+    "review": "machine"
+  },
+  "b116.status.expired": {
+    "text": "Expiré",
+    "sourceHash": "5cb78ac096b06f9d9924ba8f4c99b6fdbeefe577ca09b8da8fbd02dc42fa36b5",
+    "review": "machine"
+  },
+  "b116.status.revoked": {
+    "text": "Retiré",
+    "sourceHash": "d972666fc9c1d730a6fc82c5ae8a5cedc794c988f872f37cd8aaeadb14fe6818",
+    "review": "machine"
+  },
+  "b116.status.rejected": {
+    "text": "Refusé",
+    "sourceHash": "fd84276dcd23f45264a47d0ca1ea46b63567a1c28729fcddb7d732ad15798dcb",
+    "review": "machine"
+  },
+  "b116.card.by": {
+    "text": "par {name}",
+    "sourceHash": "67d7a4022bc80298f5670ee7a95365505e71985f036008f45cc80eec99a4aabd",
+    "review": "machine"
+  },
+  "b116.carousel.aria": {
+    "text": "Vitrine",
+    "sourceHash": "bb7de261e267abd43c847d938406ab8c9c4eb430f85e8b30da956eb1b23e527e",
+    "review": "machine"
+  },
+  "b116.carousel.prev": {
+    "text": "Précédent",
+    "sourceHash": "d273af62315d1d24b1303b340e851dff5c31112199a57c414092a08d8fc46567",
+    "review": "machine"
+  },
+  "b116.carousel.next": {
+    "text": "Suivant",
+    "sourceHash": "f205f6b1abd1f7e080db38e927655e9ee6e902a8b8067c9607abdc98a1481df0",
+    "review": "machine"
+  },
+  "b116.comments.title": {
+    "text": "Commentaires",
+    "sourceHash": "80e1a5ead2da65bd3b75a346c04869e0641ff610783d11306b6ce0fe2e1be0d3",
+    "review": "machine"
+  },
+  "b116.comments.empty": {
+    "text": "Aucun commentaire pour l’instant.",
+    "sourceHash": "f1fe4f2ec31f3a329d92c34b2b8428b15acc85b51bd10cca833635dab8d131fc",
+    "review": "machine"
+  },
+  "b116.comments.placeholder": {
+    "text": "Écrire un commentaire …",
+    "sourceHash": "d0e22923974ccefd2c67c45a6fede351a7f7baf1c6637e3526e1d184f3012d1c",
+    "review": "machine"
+  },
+  "b116.comments.submit": {
+    "text": "Commenter",
+    "sourceHash": "6feb3d78e6c88501f8065ccad48127c35b149d1a1493ca5ee8452a243114edeb",
+    "review": "machine"
+  },
+  "b116.comments.login": {
+    "text": "Connectez-vous pour commenter.",
+    "sourceHash": "8b27962a6568dac5578b14824038bd08095442928da1e0153ee403d95ac1f281",
+    "review": "machine"
+  },
+  "b116.comments.remove": {
+    "text": "Supprimer",
+    "sourceHash": "efa41f7dcba0d2f5b5c7ee29c270d50f2ecd3e8f65636f8336ca5ba934612a15",
+    "review": "machine"
+  },
+  "b116.comments.failed": {
+    "text": "Une erreur s’est produite. Réessayez.",
+    "sourceHash": "3d739fa3b7d9c39b4ca225ed4f5c15dc9c343517420aa17b19f4ad679dfbad3e",
+    "review": "machine"
+  },
+  "b116.report": {
+    "text": "Signaler",
+    "sourceHash": "24ecd190b99786075adfdccc4b25007e8aa3676949eac70c680e4d3b95c08349",
+    "review": "machine"
+  },
+  "b116.report.sent": {
+    "text": "Merci pour votre signalement.",
+    "sourceHash": "b40b745097dc40a3f6207e81d50df799d1b994494e490af7c8ec6ca160fc82e4",
+    "review": "machine"
+  },
+  "b116.profile.title": {
+    "text": "Votre profil",
+    "sourceHash": "40881535789b064e092ba6367c1b5a4a145b555a83e1893808874cdea661011d",
+    "review": "machine"
+  },
+  "b116.profile.bio": {
+    "text": "À propos de vous",
+    "sourceHash": "6f96f49f40d4887f9788612ea6e2ba4f2e2aec843cc33cffb236e65bea68012a",
+    "review": "machine"
+  },
+  "b116.profile.handle": {
+    "text": "Identifiant (handle)",
+    "sourceHash": "6f6f2259432cf4b0bdb4ca48b1a47abc826bc4becafd26dbfc1d3b07bf0c7044",
+    "review": "machine"
+  },
+  "b116.profile.avatar": {
+    "text": "Avatar",
+    "sourceHash": "7e35d6b90e976ffaacc3f835c2d62f0114c0b50859586712461d20d89c6bb73b",
+    "review": "machine"
+  },
+  "b116.profile.avatarChoose": {
+    "text": "Choisir une image",
+    "sourceHash": "69204a7df7e7588df4e22044fe5d81f03d7e856023277f9187b704d1d4b059a1",
+    "review": "machine"
+  },
+  "b116.profile.public": {
+    "text": "Afficher le profil publiquement",
+    "sourceHash": "e34810bbce089d278936dd7b4b1bb498aa60d8ad3b2b98e39f711cfca57c5f76",
+    "review": "machine"
+  },
+  "b116.profile.save": {
+    "text": "Enregistrer le profil",
+    "sourceHash": "ef0850e4c0c28ee923d363c23d174c3c8e70fb0ce5bdd6a9df484d913bb62c44",
+    "review": "machine"
+  },
+  "b116.profile.saved": {
+    "text": "Votre profil a été enregistré.",
+    "sourceHash": "3785cecdbbe2601b5a45a09de58645bbb85fb08a336a8ad511a86b5b45fc91e7",
+    "review": "machine"
+  },
+  "b116.admin.title": {
+    "text": "Vitrine",
+    "sourceHash": "bb7de261e267abd43c847d938406ab8c9c4eb430f85e8b30da956eb1b23e527e",
+    "review": "machine"
+  },
+  "b116.admin.approval": {
+    "text": "Exiger une approbation avant l’affichage des contributions",
+    "sourceHash": "022505f2b2f15136b92d7712a1982bc153ed776be8dce8e6d1acd02aaa202155",
+    "review": "machine"
+  },
+  "b116.admin.empty": {
+    "text": "Aucune contribution en attente.",
+    "sourceHash": "aefffbae5d32b9d8f9a971e917a6a545041edf7bd7557e281e523783dcc00b1a",
+    "review": "machine"
+  },
+  "b116.admin.approve": {
+    "text": "Approuver",
+    "sourceHash": "a990bf3b84b44c4921a6748e26d38a46e4e3cb0b4454eff99640887ef9c4b1e8",
+    "review": "machine"
+  },
+  "b116.admin.reject": {
+    "text": "Refuser",
+    "sourceHash": "d3a48b52dbff252243bf3b1ee4cce1a85c466f1f84948cae80235c43cf3ccb78",
+    "review": "machine"
+  },
+  "b116.admin.failed": {
+    "text": "L’action a échoué.",
+    "sourceHash": "58a63283bde1edc33f97f272261e5374703c3fb686fb17b0e797469a25fd0505",
+    "review": "machine"
+  },
+  "b116.route.title": {
+    "text": "Mes partages – From Pen to Glass",
+    "sourceHash": "d2ca9fcca162ddae166b15ee902959b9c331b9b708a3a1e0f0316159f8dd296f",
+    "review": "machine"
+  },
+  "b116.route.description": {
+    "text": "Tout ce que vous avez partagé dans la vitrine, avec son statut.",
+    "sourceHash": "4a22ff8440fa388050502107d2707327ae9f2a04e4947f2c6c4040d0e1211f20",
+    "review": "machine"
   }
 }

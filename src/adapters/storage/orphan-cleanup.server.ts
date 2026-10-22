@@ -21,6 +21,8 @@ export const ORPHAN_REFERENCE_TABLES: readonly string[] = [
   "story_sessions", "story_suggestions", "script_entity_analysis", "duration_estimates",
   // B-114 C0 (0080): mediefilene til publiseringer
   "publication_media",
+  // B-116 (0087): kopierte bidragsfiler under <prosjekt>/shares/
+  "showcase_items",
 ];
 
 /** Tabeller der en jobb som ikke er avsluttet, sperrer hele oppryddingen. */

@@ -26,6 +26,7 @@ import { AiConnectionsAdmin, CronStatusLine, useAiAdmin } from "./AiConnectionsA
 import { CountryStats } from "./CountryStats";
 import { CaptchaWarning, RegistrationAdmin } from "./RegistrationAdmin";
 import { FeaturesAdmin } from "./FeaturesAdmin";
+import { ShowcaseAdmin } from "./ShowcaseAdmin";
 import { t } from "@/core/i18n/keyed";
 
 export const ADMIN_KEY = ["admin-overview"] as const;
@@ -208,6 +209,7 @@ export function AdminPage({ myId }: { myId: string }) {
       <CaptchaWarning />
       <RegistrationAdmin />
       <FeaturesAdmin />
+      <ShowcaseAdmin />
       <CountryStats />
       <AiConnectionsAdmin />
 

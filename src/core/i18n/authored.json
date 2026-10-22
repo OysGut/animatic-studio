@@ -9917,6 +9917,598 @@
       "en": {
         "text": "Discard my change"
       }
+    },
+    "b116.box.title": {
+      "nb": {
+        "text": "Vil du vise frem litt av hva du jobber med?"
+      },
+      "en": {
+        "text": "Want to show a little of what you're working on?"
+      }
+    },
+    "b116.box.hint": {
+      "nb": {
+        "text": "Velg én ting fra et eget prosjekt – en karakter, en ressurs, en kort scene, et manusutdrag eller en lydbit."
+      },
+      "en": {
+        "text": "Pick one thing from one of your projects – a character, an asset, a short scene, a script excerpt or a piece of audio."
+      }
+    },
+    "b116.box.share": {
+      "nb": {
+        "text": "Del noe"
+      },
+      "en": {
+        "text": "Share something"
+      }
+    },
+    "b116.box.mine": {
+      "nb": {
+        "text": "Mine delinger"
+      },
+      "en": {
+        "text": "My shares"
+      }
+    },
+    "b116.box.profile": {
+      "nb": {
+        "text": "Rediger profil"
+      },
+      "en": {
+        "text": "Edit profile"
+      }
+    },
+    "b116.create.title": {
+      "nb": {
+        "text": "Del i utstillingsvinduet"
+      },
+      "en": {
+        "text": "Share in the showcase"
+      }
+    },
+    "b116.create.preview": {
+      "nb": {
+        "text": "Forhåndsvisning"
+      },
+      "en": {
+        "text": "Preview"
+      }
+    },
+    "b116.create.previewHint": {
+      "nb": {
+        "text": "Slik vil bidraget se ut i karusellen."
+      },
+      "en": {
+        "text": "This is exactly how your contribution will look in the carousel."
+      }
+    },
+    "b116.create.project": {
+      "nb": {
+        "text": "Prosjekt"
+      },
+      "en": {
+        "text": "Project"
+      }
+    },
+    "b116.create.kind": {
+      "nb": {
+        "text": "Hva vil du dele?"
+      },
+      "en": {
+        "text": "What do you want to share?"
+      }
+    },
+    "b116.kind.character": {
+      "nb": {
+        "text": "Karakter"
+      },
+      "en": {
+        "text": "Character"
+      }
+    },
+    "b116.kind.asset": {
+      "nb": {
+        "text": "Ressurs"
+      },
+      "en": {
+        "text": "Asset"
+      }
+    },
+    "b116.kind.scene": {
+      "nb": {
+        "text": "Kort scene"
+      },
+      "en": {
+        "text": "Short scene"
+      }
+    },
+    "b116.kind.script": {
+      "nb": {
+        "text": "Manusutdrag"
+      },
+      "en": {
+        "text": "Script excerpt"
+      }
+    },
+    "b116.kind.audio": {
+      "nb": {
+        "text": "Lydbit"
+      },
+      "en": {
+        "text": "Audio clip"
+      }
+    },
+    "b116.create.excerptLabel": {
+      "nb": {
+        "text": "Manusutdrag (noen få replikker)"
+      },
+      "en": {
+        "text": "Script excerpt (a few lines)"
+      }
+    },
+    "b116.create.excerptWarning": {
+      "nb": {
+        "text": "Teksten blir offentlig. Del bare det du vil at alle skal kunne lese."
+      },
+      "en": {
+        "text": "The text becomes public. Share only what you want everyone to be able to read."
+      }
+    },
+    "b116.create.titleLabel": {
+      "nb": {
+        "text": "Tittel"
+      },
+      "en": {
+        "text": "Title"
+      }
+    },
+    "b116.create.textLabel": {
+      "nb": {
+        "text": "Om filmprosjektet og deg selv (valgfritt)"
+      },
+      "en": {
+        "text": "About the film project and yourself (optional)"
+      }
+    },
+    "b116.create.expires": {
+      "nb": {
+        "text": "Synlig i"
+      },
+      "en": {
+        "text": "Visible for"
+      }
+    },
+    "b116.expires.7": {
+      "nb": {
+        "text": "1 uke"
+      },
+      "en": {
+        "text": "1 week"
+      }
+    },
+    "b116.expires.14": {
+      "nb": {
+        "text": "2 uker"
+      },
+      "en": {
+        "text": "2 weeks"
+      }
+    },
+    "b116.expires.30": {
+      "nb": {
+        "text": "1 måned"
+      },
+      "en": {
+        "text": "1 month"
+      }
+    },
+    "b116.expires.90": {
+      "nb": {
+        "text": "3 måneder"
+      },
+      "en": {
+        "text": "3 months"
+      }
+    },
+    "b116.create.empty": {
+      "nb": {
+        "text": "Ingenting å velge her ennå."
+      },
+      "en": {
+        "text": "Nothing to choose here yet."
+      }
+    },
+    "b116.create.back": {
+      "nb": {
+        "text": "Tilbake"
+      },
+      "en": {
+        "text": "Back"
+      }
+    },
+    "b116.create.submit": {
+      "nb": {
+        "text": "Del"
+      },
+      "en": {
+        "text": "Share"
+      }
+    },
+    "b116.create.pendingNotice": {
+      "nb": {
+        "text": "Takk! Bidraget venter på godkjenning før det vises."
+      },
+      "en": {
+        "text": "Thank you! Your contribution is waiting for approval before it is shown."
+      }
+    },
+    "b116.create.liveNotice": {
+      "nb": {
+        "text": "Takk! Bidraget vises nå i karusellen."
+      },
+      "en": {
+        "text": "Thank you! Your contribution is now showing in the carousel."
+      }
+    },
+    "b116.create.failed": {
+      "nb": {
+        "text": "Kunne ikke dele. Prøv igjen."
+      },
+      "en": {
+        "text": "Could not share. Try again."
+      }
+    },
+    "b116.cancel": {
+      "nb": {
+        "text": "Avbryt"
+      },
+      "en": {
+        "text": "Cancel"
+      }
+    },
+    "b116.close": {
+      "nb": {
+        "text": "Lukk"
+      },
+      "en": {
+        "text": "Close"
+      }
+    },
+    "b116.loading": {
+      "nb": {
+        "text": "Laster …"
+      },
+      "en": {
+        "text": "Loading …"
+      }
+    },
+    "b116.mine.title": {
+      "nb": {
+        "text": "Mine delinger"
+      },
+      "en": {
+        "text": "My shares"
+      }
+    },
+    "b116.mine.empty": {
+      "nb": {
+        "text": "Du har ikke delt noe ennå."
+      },
+      "en": {
+        "text": "You have not shared anything yet."
+      }
+    },
+    "b116.mine.edit": {
+      "nb": {
+        "text": "Endre"
+      },
+      "en": {
+        "text": "Edit"
+      }
+    },
+    "b116.mine.save": {
+      "nb": {
+        "text": "Lagre"
+      },
+      "en": {
+        "text": "Save"
+      }
+    },
+    "b116.mine.revoke": {
+      "nb": {
+        "text": "Trekk tilbake"
+      },
+      "en": {
+        "text": "Withdraw"
+      }
+    },
+    "b116.mine.revokeConfirm": {
+      "nb": {
+        "text": "Trekk tilbake bidraget? Det forsvinner fra karusellen."
+      },
+      "en": {
+        "text": "Withdraw this contribution? It disappears from the carousel."
+      }
+    },
+    "b116.mine.expiresAt": {
+      "nb": {
+        "text": "Synlig til {date}"
+      },
+      "en": {
+        "text": "Visible until {date}"
+      }
+    },
+    "b116.status.pending": {
+      "nb": {
+        "text": "Venter godkjenning"
+      },
+      "en": {
+        "text": "Awaiting approval"
+      }
+    },
+    "b116.status.live": {
+      "nb": {
+        "text": "Synlig"
+      },
+      "en": {
+        "text": "Visible"
+      }
+    },
+    "b116.status.expired": {
+      "nb": {
+        "text": "Utløpt"
+      },
+      "en": {
+        "text": "Expired"
+      }
+    },
+    "b116.status.revoked": {
+      "nb": {
+        "text": "Trukket tilbake"
+      },
+      "en": {
+        "text": "Withdrawn"
+      }
+    },
+    "b116.status.rejected": {
+      "nb": {
+        "text": "Avvist"
+      },
+      "en": {
+        "text": "Rejected"
+      }
+    },
+    "b116.card.by": {
+      "nb": {
+        "text": "av {name}"
+      },
+      "en": {
+        "text": "by {name}"
+      }
+    },
+    "b116.carousel.aria": {
+      "nb": {
+        "text": "Utstillingsvindu"
+      },
+      "en": {
+        "text": "Showcase"
+      }
+    },
+    "b116.carousel.prev": {
+      "nb": {
+        "text": "Forrige"
+      },
+      "en": {
+        "text": "Previous"
+      }
+    },
+    "b116.carousel.next": {
+      "nb": {
+        "text": "Neste"
+      },
+      "en": {
+        "text": "Next"
+      }
+    },
+    "b116.comments.title": {
+      "nb": {
+        "text": "Kommentarer"
+      },
+      "en": {
+        "text": "Comments"
+      }
+    },
+    "b116.comments.empty": {
+      "nb": {
+        "text": "Ingen kommentarer ennå."
+      },
+      "en": {
+        "text": "No comments yet."
+      }
+    },
+    "b116.comments.placeholder": {
+      "nb": {
+        "text": "Skriv en kommentar …"
+      },
+      "en": {
+        "text": "Write a comment …"
+      }
+    },
+    "b116.comments.submit": {
+      "nb": {
+        "text": "Kommenter"
+      },
+      "en": {
+        "text": "Comment"
+      }
+    },
+    "b116.comments.login": {
+      "nb": {
+        "text": "Logg inn for å kommentere."
+      },
+      "en": {
+        "text": "Sign in to comment."
+      }
+    },
+    "b116.comments.remove": {
+      "nb": {
+        "text": "Fjern"
+      },
+      "en": {
+        "text": "Remove"
+      }
+    },
+    "b116.comments.failed": {
+      "nb": {
+        "text": "Noe gikk galt. Prøv igjen."
+      },
+      "en": {
+        "text": "Something went wrong. Try again."
+      }
+    },
+    "b116.report": {
+      "nb": {
+        "text": "Rapporter"
+      },
+      "en": {
+        "text": "Report"
+      }
+    },
+    "b116.report.sent": {
+      "nb": {
+        "text": "Takk for meldingen."
+      },
+      "en": {
+        "text": "Thanks for letting us know."
+      }
+    },
+    "b116.profile.title": {
+      "nb": {
+        "text": "Profilen din"
+      },
+      "en": {
+        "text": "Your profile"
+      }
+    },
+    "b116.profile.bio": {
+      "nb": {
+        "text": "Om deg selv"
+      },
+      "en": {
+        "text": "About yourself"
+      }
+    },
+    "b116.profile.handle": {
+      "nb": {
+        "text": "Kortnavn (handle)"
+      },
+      "en": {
+        "text": "Handle"
+      }
+    },
+    "b116.profile.avatar": {
+      "nb": {
+        "text": "Avatar"
+      },
+      "en": {
+        "text": "Avatar"
+      }
+    },
+    "b116.profile.avatarChoose": {
+      "nb": {
+        "text": "Velg bilde"
+      },
+      "en": {
+        "text": "Choose image"
+      }
+    },
+    "b116.profile.public": {
+      "nb": {
+        "text": "Vis profilen offentlig"
+      },
+      "en": {
+        "text": "Show profile publicly"
+      }
+    },
+    "b116.profile.save": {
+      "nb": {
+        "text": "Lagre profil"
+      },
+      "en": {
+        "text": "Save profile"
+      }
+    },
+    "b116.profile.saved": {
+      "nb": {
+        "text": "Profilen er lagret."
+      },
+      "en": {
+        "text": "Your profile has been saved."
+      }
+    },
+    "b116.admin.title": {
+      "nb": {
+        "text": "Utstillingsvindu"
+      },
+      "en": {
+        "text": "Showcase"
+      }
+    },
+    "b116.admin.approval": {
+      "nb": {
+        "text": "Krev godkjenning før bidrag vises"
+      },
+      "en": {
+        "text": "Require approval before contributions are shown"
+      }
+    },
+    "b116.admin.empty": {
+      "nb": {
+        "text": "Ingen bidrag venter."
+      },
+      "en": {
+        "text": "No contributions are waiting."
+      }
+    },
+    "b116.admin.approve": {
+      "nb": {
+        "text": "Godkjenn"
+      },
+      "en": {
+        "text": "Approve"
+      }
+    },
+    "b116.admin.reject": {
+      "nb": {
+        "text": "Avvis"
+      },
+      "en": {
+        "text": "Reject"
+      }
+    },
+    "b116.admin.failed": {
+      "nb": {
+        "text": "Handlingen feilet."
+      },
+      "en": {
+        "text": "The action failed."
+      }
+    },
+    "b116.route.title": {
+      "nb": {
+        "text": "Mine delinger – From Pen to Glass"
+      },
+      "en": {
+        "text": "My shares – From Pen to Glass"
+      }
+    },
+    "b116.route.description": {
+      "nb": {
+        "text": "Alt du har delt i utstillingsvinduet, med status."
+      },
+      "en": {
+        "text": "Everything you have shared in the showcase, with status."
+      }
     }
   }
 }

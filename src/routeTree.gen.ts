@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteImport } from './routes/admin'
+import { Route as DelingerRouteImport } from './routes/delinger'
 import { Route as InvitasjonRouteImport } from './routes/invitasjon'
 import { Route as KontoRouteImport } from './routes/konto'
 import { Route as PersonvernRouteImport } from './routes/personvern'
@@ -40,6 +41,11 @@ const IndexRoute = IndexRouteImport.update({
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DelingerRoute = DelingerRouteImport.update({
+  id: '/delinger',
+  path: '/delinger',
   getParentRoute: () => rootRouteImport,
 } as any)
 const InvitasjonRoute = InvitasjonRouteImport.update({
@@ -150,6 +156,7 @@ const ApiPublicCronAiJobsRoute = ApiPublicCronAiJobsRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/delinger': typeof DelingerRoute
   '/invitasjon': typeof InvitasjonRoute
   '/konto': typeof KontoRoute
   '/personvern': typeof PersonvernRoute
@@ -174,6 +181,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/delinger': typeof DelingerRoute
   '/invitasjon': typeof InvitasjonRoute
   '/konto': typeof KontoRoute
   '/personvern': typeof PersonvernRoute
@@ -198,6 +206,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/delinger': typeof DelingerRoute
   '/invitasjon': typeof InvitasjonRoute
   '/konto': typeof KontoRoute
   '/personvern': typeof PersonvernRoute
@@ -224,6 +233,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
+    | '/delinger'
     | '/invitasjon'
     | '/konto'
     | '/personvern'
@@ -248,6 +258,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/admin'
+    | '/delinger'
     | '/invitasjon'
     | '/konto'
     | '/personvern'
@@ -271,6 +282,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/admin'
+    | '/delinger'
     | '/invitasjon'
     | '/konto'
     | '/personvern'
@@ -296,6 +308,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
+  DelingerRoute: typeof DelingerRoute
   InvitasjonRoute: typeof InvitasjonRoute
   KontoRoute: typeof KontoRoute
   PersonvernRoute: typeof PersonvernRoute
@@ -324,6 +337,13 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/delinger': {
+      id: '/delinger'
+      path: '/delinger'
+      fullPath: '/delinger'
+      preLoaderRoute: typeof DelingerRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/invitasjon': {
@@ -497,6 +517,7 @@ const ProsjektProjectIdRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
+  DelingerRoute: DelingerRoute,
   InvitasjonRoute: InvitasjonRoute,
   KontoRoute: KontoRoute,
   PersonvernRoute: PersonvernRoute,

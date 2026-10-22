@@ -75257,5 +75257,227 @@
   },
   "k1.conflict.discard": {
     "text": "[!! DDïïssccáárrdd mmyy cchháánnggëë !!]"
+  },
+  "b116.box.title": {
+    "text": "[!! WWáánntt ttôô sshhôôww áá llïïttttllëë ôôff wwhháátt yyôôüü'rrëë wwôôrrkkïïnngg ôônn? !!]"
+  },
+  "b116.box.hint": {
+    "text": "[!! PPïïcckk ôônnëë tthhïïnngg ffrrôômm ôônnëë ôôff yyôôüürr pprrôôjjëëccttss – áá cchháárrááccttëërr, áánn áássssëëtt, áá sshhôôrrtt ssccëënnëë, áá ssccrrïïpptt ëëxxccëërrpptt ôôrr áá ppïïëëccëë ôôff ááüüddïïôô. !!]"
+  },
+  "b116.box.share": {
+    "text": "[!! SShháárrëë ssôômmëëtthhïïnngg !!]"
+  },
+  "b116.box.mine": {
+    "text": "[!! MMyy sshháárrëëss !!]"
+  },
+  "b116.box.profile": {
+    "text": "[!! ËËddïïtt pprrôôffïïllëë !!]"
+  },
+  "b116.create.title": {
+    "text": "[!! SShháárrëë ïïnn tthhëë sshhôôwwccáássëë !!]"
+  },
+  "b116.create.preview": {
+    "text": "[!! PPrrëëvvïïëëww !!]"
+  },
+  "b116.create.previewHint": {
+    "text": "[!! TThhïïss ïïss ëëxxááccttllyy hhôôww yyôôüürr ccôônnttrrïïbbüüttïïôônn wwïïllll llôôôôkk ïïnn tthhëë ccáárrôôüüssëëll. !!]"
+  },
+  "b116.create.project": {
+    "text": "[!! PPrrôôjjëëcctt !!]"
+  },
+  "b116.create.kind": {
+    "text": "[!! WWhháátt ddôô yyôôüü wwáánntt ttôô sshháárrëë? !!]"
+  },
+  "b116.kind.character": {
+    "text": "[!! CChháárrááccttëërr !!]"
+  },
+  "b116.kind.asset": {
+    "text": "[!! ÁÁssssëëtt !!]"
+  },
+  "b116.kind.scene": {
+    "text": "[!! SShhôôrrtt ssccëënnëë !!]"
+  },
+  "b116.kind.script": {
+    "text": "[!! SSccrrïïpptt ëëxxccëërrpptt !!]"
+  },
+  "b116.kind.audio": {
+    "text": "[!! ÁÁüüddïïôô ccllïïpp !!]"
+  },
+  "b116.create.excerptLabel": {
+    "text": "[!! SSccrrïïpptt ëëxxccëërrpptt (áá ffëëww llïïnnëëss) !!]"
+  },
+  "b116.create.excerptWarning": {
+    "text": "[!! TThhëë ttëëxxtt bbëëccôômmëëss ppüübbllïïcc. SShháárrëë ôônnllyy wwhháátt yyôôüü wwáánntt ëëvvëërryyôônnëë ttôô bbëë áábbllëë ttôô rrëëáádd. !!]"
+  },
+  "b116.create.titleLabel": {
+    "text": "[!! TTïïttllëë !!]"
+  },
+  "b116.create.textLabel": {
+    "text": "[!! ÁÁbbôôüütt tthhëë ffïïllmm pprrôôjjëëcctt áánndd yyôôüürrssëëllff (ôôppttïïôônnááll) !!]"
+  },
+  "b116.create.expires": {
+    "text": "[!! VVïïssïïbbllëë ffôôrr !!]"
+  },
+  "b116.expires.7": {
+    "text": "[!! 1 wwëëëëkk !!]"
+  },
+  "b116.expires.14": {
+    "text": "[!! 2 wwëëëëkkss !!]"
+  },
+  "b116.expires.30": {
+    "text": "[!! 1 mmôônntthh !!]"
+  },
+  "b116.expires.90": {
+    "text": "[!! 3 mmôônntthhss !!]"
+  },
+  "b116.create.empty": {
+    "text": "[!! NNôôtthhïïnngg ttôô cchhôôôôssëë hhëërrëë yyëëtt. !!]"
+  },
+  "b116.create.back": {
+    "text": "[!! BBáácckk !!]"
+  },
+  "b116.create.submit": {
+    "text": "[!! SShháárrëë !!]"
+  },
+  "b116.create.pendingNotice": {
+    "text": "[!! TThháánnkk yyôôüü! YYôôüürr ccôônnttrrïïbbüüttïïôônn ïïss wwááïïttïïnngg ffôôrr áápppprrôôvvááll bbëëffôôrrëë ïïtt ïïss sshhôôwwnn. !!]"
+  },
+  "b116.create.liveNotice": {
+    "text": "[!! TThháánnkk yyôôüü! YYôôüürr ccôônnttrrïïbbüüttïïôônn ïïss nnôôww sshhôôwwïïnngg ïïnn tthhëë ccáárrôôüüssëëll. !!]"
+  },
+  "b116.create.failed": {
+    "text": "[!! CCôôüülldd nnôôtt sshháárrëë. TTrryy áággááïïnn. !!]"
+  },
+  "b116.cancel": {
+    "text": "[!! CCáánnccëëll !!]"
+  },
+  "b116.close": {
+    "text": "[!! CCllôôssëë !!]"
+  },
+  "b116.loading": {
+    "text": "[!! LLôôááddïïnngg … !!]"
+  },
+  "b116.mine.title": {
+    "text": "[!! MMyy sshháárrëëss !!]"
+  },
+  "b116.mine.empty": {
+    "text": "[!! YYôôüü hháávvëë nnôôtt sshháárrëëdd áánnyytthhïïnngg yyëëtt. !!]"
+  },
+  "b116.mine.edit": {
+    "text": "[!! ËËddïïtt !!]"
+  },
+  "b116.mine.save": {
+    "text": "[!! SSáávvëë !!]"
+  },
+  "b116.mine.revoke": {
+    "text": "[!! WWïïtthhddrrááww !!]"
+  },
+  "b116.mine.revokeConfirm": {
+    "text": "[!! WWïïtthhddrrááww tthhïïss ccôônnttrrïïbbüüttïïôônn? ÏÏtt ddïïssááppppëëáárrss ffrrôômm tthhëë ccáárrôôüüssëëll. !!]"
+  },
+  "b116.mine.expiresAt": {
+    "text": "[!! VVïïssïïbbllëë üünnttïïll {date} !!]"
+  },
+  "b116.status.pending": {
+    "text": "[!! ÁÁwwááïïttïïnngg áápppprrôôvvááll !!]"
+  },
+  "b116.status.live": {
+    "text": "[!! VVïïssïïbbllëë !!]"
+  },
+  "b116.status.expired": {
+    "text": "[!! ËËxxppïïrrëëdd !!]"
+  },
+  "b116.status.revoked": {
+    "text": "[!! WWïïtthhddrrááwwnn !!]"
+  },
+  "b116.status.rejected": {
+    "text": "[!! RRëëjjëëccttëëdd !!]"
+  },
+  "b116.card.by": {
+    "text": "[!! bbyy {name} !!]"
+  },
+  "b116.carousel.aria": {
+    "text": "[!! SShhôôwwccáássëë !!]"
+  },
+  "b116.carousel.prev": {
+    "text": "[!! PPrrëëvvïïôôüüss !!]"
+  },
+  "b116.carousel.next": {
+    "text": "[!! NNëëxxtt !!]"
+  },
+  "b116.comments.title": {
+    "text": "[!! CCôômmmmëënnttss !!]"
+  },
+  "b116.comments.empty": {
+    "text": "[!! NNôô ccôômmmmëënnttss yyëëtt. !!]"
+  },
+  "b116.comments.placeholder": {
+    "text": "[!! WWrrïïttëë áá ccôômmmmëënntt … !!]"
+  },
+  "b116.comments.submit": {
+    "text": "[!! CCôômmmmëënntt !!]"
+  },
+  "b116.comments.login": {
+    "text": "[!! SSïïggnn ïïnn ttôô ccôômmmmëënntt. !!]"
+  },
+  "b116.comments.remove": {
+    "text": "[!! RRëëmmôôvvëë !!]"
+  },
+  "b116.comments.failed": {
+    "text": "[!! SSôômmëëtthhïïnngg wwëënntt wwrrôônngg. TTrryy áággááïïnn. !!]"
+  },
+  "b116.report": {
+    "text": "[!! RRëëppôôrrtt !!]"
+  },
+  "b116.report.sent": {
+    "text": "[!! TThháánnkkss ffôôrr llëëttttïïnngg üüss kknnôôww. !!]"
+  },
+  "b116.profile.title": {
+    "text": "[!! YYôôüürr pprrôôffïïllëë !!]"
+  },
+  "b116.profile.bio": {
+    "text": "[!! ÁÁbbôôüütt yyôôüürrssëëllff !!]"
+  },
+  "b116.profile.handle": {
+    "text": "[!! HHáánnddllëë !!]"
+  },
+  "b116.profile.avatar": {
+    "text": "[!! ÁÁvvááttáárr !!]"
+  },
+  "b116.profile.avatarChoose": {
+    "text": "[!! CChhôôôôssëë ïïmmáággëë !!]"
+  },
+  "b116.profile.public": {
+    "text": "[!! SShhôôww pprrôôffïïllëë ppüübbllïïccllyy !!]"
+  },
+  "b116.profile.save": {
+    "text": "[!! SSáávvëë pprrôôffïïllëë !!]"
+  },
+  "b116.profile.saved": {
+    "text": "[!! YYôôüürr pprrôôffïïllëë hhááss bbëëëënn ssáávvëëdd. !!]"
+  },
+  "b116.admin.title": {
+    "text": "[!! SShhôôwwccáássëë !!]"
+  },
+  "b116.admin.approval": {
+    "text": "[!! RRëëqqüüïïrrëë áápppprrôôvvááll bbëëffôôrrëë ccôônnttrrïïbbüüttïïôônnss áárrëë sshhôôwwnn !!]"
+  },
+  "b116.admin.empty": {
+    "text": "[!! NNôô ccôônnttrrïïbbüüttïïôônnss áárrëë wwááïïttïïnngg. !!]"
+  },
+  "b116.admin.approve": {
+    "text": "[!! ÁÁpppprrôôvvëë !!]"
+  },
+  "b116.admin.reject": {
+    "text": "[!! RRëëjjëëcctt !!]"
+  },
+  "b116.admin.failed": {
+    "text": "[!! TThhëë ááccttïïôônn ffááïïllëëdd. !!]"
+  },
+  "b116.route.title": {
+    "text": "[!! MMyy sshháárrëëss – FFrrôômm PPëënn ttôô GGlláássss !!]"
+  },
+  "b116.route.description": {
+    "text": "[!! ËËvvëërryytthhïïnngg yyôôüü hháávvëë sshháárrëëdd ïïnn tthhëë sshhôôwwccáássëë, wwïïtthh ssttááttüüss. !!]"
   }
 }
