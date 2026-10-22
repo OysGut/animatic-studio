@@ -7,6 +7,7 @@
  */
 import { chromium } from "playwright";
 import { VISUAL_SCHEMA_VERSION } from "./schema-version.mjs";
+import { uiLang } from "./ui-lang.mjs";
 /** REQ-0037: forgreiningen peker på turens ID (fromTurnId); null = fra start. */
 const forkAt = (p, d) => (d.fromTurnId === null || d.fromTurnId === undefined ? -1 : p.turns.findIndex((t) => t.id === d.fromTurnId));
 import { readFileSync, mkdirSync } from "node:fs";
@@ -132,8 +133,9 @@ async function mock(ctx) {
     }
     if (/projectAiProviders/.test(name)) return json({ providers: [], missing: false });
     if (/listTextChoices/.test(name)) return json({ providers: [], missing: false });
-    if (/generateText/.test(name)) {
-      S.gen.push({ task: d.task, system: d.system ?? "", messages: d.messages });
+    if (/estimateStoryPrompt/.test(name)) return json({ ok: true, chars: 1000 });
+    if (/generateStoryText/.test(name)) {
+      S.gen.push({ body, task: d.task, request: d.request ?? {}, system: d.system ?? "", messages: d.messages });
       if (S.delay) await new Promise((resolve) => setTimeout(resolve, S.delay));
       const text =
         d.task === "storylab_profile"
@@ -188,6 +190,7 @@ const check = (ok, text) => {
 };
 
 async function run(name, act, { lang = "nb", path = "" } = {}) {
+  lang = uiLang(lang);
   reset();
   const ctx = await browser.newContext({ viewport: { width: 1280, height: 1800 }, colorScheme: "dark" });
   await mock(ctx);
@@ -198,7 +201,7 @@ async function run(name, act, { lang = "nb", path = "" } = {}) {
   await page.goto(base, { waitUntil: "domcontentloaded" });
   await page.evaluate(([k, v, l]) => {
     localStorage.setItem(k, v);
-    localStorage.setItem("animatic:lang", l);
+    localStorage.setItem("animatic:lang", l); localStorage.setItem("animatic:lang:00000000-0000-7000-8000-a11ce0000001", l);
   }, [`sb-${ref}-auth-token`, JSON.stringify({ access_token: "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ4In0.sig", refresh_token: "r", token_type: "bearer", expires_in: 86400, expires_at: exp, user: USER }), lang]);
   await page.goto(base + P + "/storylab" + path, { waitUntil: "networkidle" });
   await page.waitForTimeout(2500);
@@ -255,9 +258,9 @@ await run("gruppe, kunnskap, regi, analyse, forgrening og gjenåpning", async (p
   await page.getByTestId("storylab-fact-add").click();
   const form = page.getByTestId("storylab-fact-form");
   await form.getByRole("textbox").first().fill(SECRET);
-  await form.getByLabel("Type").selectOption("secret");
+  await form.getByRole("combobox").first().selectOption("secret");
   await page.getByTestId("storylab-fact-knower-add").click();
-  await form.getByLabel("Karakter").selectOption(MAJA.id);
+  await form.getByLabel(/^(Karakter|Character)$/).selectOption(MAJA.id);
   await page.getByTestId("storylab-fact-save").click();
   const original = await createGroup(page);
   check(original.kind === "group" && original.context.participants.length === 2, "ny gruppe med Maja og Bestemor Anne");
@@ -267,7 +270,7 @@ await run("gruppe, kunnskap, regi, analyse, forgrening og gjenåpning", async (p
   check(!(await group(page).getByTestId("storylab-knowledge").innerText()).includes(SECRET), "Bestemors kunnskapsboks viser ikke Majas hemmelighet");
   await send(page, "Hva skjedde, bestemor?", true);
   const annePrompt = S.gen.at(-1);
-  check(annePrompt.task === "storylab_group" && !JSON.stringify(annePrompt).includes(SECRET), "Bestemors gruppeprompt utelater Majas hemmelighet");
+  check(annePrompt.task === "storylab_group" && annePrompt.request.kind === "character" && annePrompt.request.assetId === ANNE.id && !annePrompt.body.includes(SECRET) && !annePrompt.system, "Bestemors gruppekall sender riktig karakter uten prompt eller Majas hemmelighet");
   check(original.turns.at(-1).speaker === ANNE.id && original.turns[0].to === ANNE.id, "rettet spørsmål besvares av Bestemor");
   await group(page).getByTestId("storylab-auto").click();
   const auto = await group(page).getByTestId("storylab-next-speaker").getAttribute("data-asset-id");
@@ -281,23 +284,23 @@ await run("gruppe, kunnskap, regi, analyse, forgrening og gjenåpning", async (p
   await idle(page);
   await participant(page, ANNE.id).click();
   await send(page, "Bestemor?");
-  check(!S.gen.at(-1).system.includes("MAJA-NESTE"), "målrettet regi sendes ikke til Bestemor");
+  check(!S.gen.at(-1).request.directions.includes("MAJA-NESTE: er bakfull"), "målrettet regi sendes ikke til Bestemor");
   check(await group(page).getByTestId("storylab-direction").count() === 1, "regien består etter en annen talers replikk");
   await participant(page, MAJA.id).click();
   await send(page, "Maja?");
-  check(S.gen.at(-1).system.includes("MAJA-NESTE"), "regien sendes i Majas neste kall");
+  check(S.gen.at(-1).request.directions.includes("MAJA-NESTE: er bakfull"), "regien sendes i Majas neste kall");
   check(await group(page).getByTestId("storylab-direction").count() === 0, "next-regi forsvinner etter målets tur");
   await participant(page, MAJA.id).click();
   await send(page, "Og nå?");
-  check(!S.gen.at(-1).system.includes("MAJA-NESTE"), "regien brukes ikke en gang til");
+  check(!S.gen.at(-1).request.directions.includes("MAJA-NESTE: er bakfull"), "regien brukes ikke en gang til");
   const targetTurn = original.turns.find((t) => t.kind === "line");
   await group(page).getByTestId("storylab-explain").first().click();
   await idle(page);
-  check(S.gen.at(-1).task === "storylab_analysis" && S.gen.at(-1).system.includes("third person"), "forklar deg bruker analyse i tredjeperson");
+  check(S.gen.at(-1).task === "storylab_analysis" && S.gen.at(-1).request.kind === "analyst" && S.gen.at(-1).request.explain === true && S.gen.at(-1).request.focusId === targetTurn.speaker, "forklar deg bruker analytiker med riktig mål (tredjeperson testes i promptbyggeren)");
   check(original.turns.at(-1).kind === "analysis" && original.turns.at(-1).to === targetTurn.speaker, "forklaringen lagres med mål");
   await group(page).getByTestId("storylab-mode-analysis").click();
   await send(page, "Hvorfor svarer de slik?");
-  check(S.gen.at(-1).system.includes("# Characters") && S.gen.at(-1).system.includes("Maja") && S.gen.at(-1).system.includes("Bestemor Anne"), "analyse får alle deltakerprofiler");
+  check([MAJA.id, ANNE.id].every(id => S.gen.at(-1).request.characters.some(c => c.assetId === id && JSON.stringify(c.profile) === JSON.stringify(original.context.profiles[id] ?? null))), "analyse sender begge deltakeres profiløyeblikksbilder");
   await group(page).getByTestId("storylab-mode-analysis").click();
   await group(page).getByTestId("storylab-suggest").first().selectOption("motivation");
   await waitUntil(() => S.suggestions.length === 1, "forslag");

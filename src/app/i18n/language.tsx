@@ -8,6 +8,7 @@
  * med funksjonsbryteren «ui.test_languages» i Admin, eller med lokal utviklerinnstilling.
  */
 import { Languages } from "lucide-react";
+import { useHydrated } from '@tanstack/react-router';
 import { useEffect, useLayoutEffect, useSyncExternalStore, type ReactNode } from "react";
 import { getSessionUserId, onSessionChange } from '@/adapters/browser/auth';
 import { useQueryClient } from '@tanstack/react-query';
@@ -50,9 +51,10 @@ export interface LanguageOption {
 }
 
 /** Språkene i manifestet som brukerflaten kan vises på. */
-export function availableLanguages(includeTest = testLanguagesEnabled()): LanguageOption[] {
+export function availableLanguages(includeTest = testLanguagesEnabled(), includeIncomplete?: boolean): LanguageOption[] {
   let incomplete = false;
-  try { incomplete = window.localStorage.getItem('animatic:incomplete-languages') === '1'; } catch { /* SSR */ }
+  if (includeIncomplete !== undefined) incomplete = includeIncomplete;
+  else try { incomplete = window.localStorage.getItem('animatic:incomplete-languages') === '1'; } catch { /* SSR */ }
   return manifest.languages
     .filter((l) => isUiLang(l.tag) && (l.complete || incomplete) && (includeTest || !("testOnly" in l && l.testOnly)))
     .map((l) => ({ tag: l.tag as UiLang, nativeName: l.nativeName, testOnly: "testOnly" in l && !!l.testOnly }));
@@ -210,7 +212,9 @@ export function LanguageSwitch({ compact = false }: { compact?: boolean }) {
   // Tegnes på nytt når funksjonsbryteren er lest eller endret, så testspråket dukker opp/forsvinner.
   const testLangs = useFeature("ui.test_languages");
   useEffect(() => { adminTestLanguages = testLangs; }, [testLangs]);
-  const options = availableLanguages();
+  // Browser-only developer flags must not add buttons to the first hydration render.
+  const hydrated = useHydrated();
+  const options = hydrated ? availableLanguages(testLangs || testLanguagesEnabled()) : availableLanguages(false, false);
   const seg = (on: boolean) =>
     "rounded-sm px-2 py-0.5 text-xs " +
     (on ? "bg-accent-selection text-text-primary" : "text-text-secondary hover:bg-surface-3");

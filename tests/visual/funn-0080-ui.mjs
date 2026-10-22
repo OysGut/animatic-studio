@@ -146,6 +146,8 @@ async function mock(ctx) {
         providers: ["lovable", "google", "openai", "fal", "elevenlabs"],
         missing: false,
       });
+    if (/previewImagePrompt/.test(name))
+      return json({ ok: true, preview: { prompt: "Turnaround preview for the selected character and views.", negative: null, summary: null, legendChars: 0, attached: [] } });
     if (/writeImagePrompt/.test(name)) {
       const body = route.request().postData() ?? "";
       if (body.includes('"style"'))
@@ -220,7 +222,7 @@ async function shot(name, path, act, viewport = { width: 1440, height: 900 }) {
   const exp = Math.floor(Date.now() / 1000) + 86400;
   await page.goto(base, { waitUntil: "domcontentloaded" });
   await page.evaluate(
-    ([k, v]) => { localStorage.setItem(k, v); localStorage.setItem("animatic:lang", "nb"); },
+    ([k, v]) => { localStorage.setItem(k, v); localStorage.setItem("animatic:lang", "nb"); localStorage.setItem("animatic:lang:00000000-0000-7000-8000-a11ce0000001", "nb"); },
     [
       `sb-${ref}-auth-token`,
       JSON.stringify({
@@ -359,7 +361,7 @@ await shot("g07-lag-andre-vinkler", `${P}/scene`, async (page) => {
   await page.getByRole("button", { name: /Lag andre vinkler/ }).click();
   await page.waitForTimeout(400);
   await page.getByRole("button", { name: /Vis beskrivelsen som sendes/ }).click();
-  await page.waitForTimeout(300);
+  await page.getByText("Turnaround preview for the selected character and views.", { exact: true }).waitFor({ state: "visible" });
 });
 await shot("g07b-vinkler-bekreft", `${P}/scene`, async (page) => {
   await openBig(page);

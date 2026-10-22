@@ -150,16 +150,17 @@ async function mock(ctx) {
     }
     if (/projectAiProviders/.test(name)) return json({ providers: [], missing: false });
     if (/listTextChoices/.test(name)) return json({ providers: [], missing: false });
-    if (/generateText/.test(name)) {
-      S.gen.push({ task: d.task, system: d.system ?? "", messages: d.messages }); S.active++; S.maxActive = Math.max(S.maxActive, S.active);
+    if (/estimateStoryPrompt/.test(name)) return json({ ok: true, chars: 1000 });
+    if (/generateStoryText/.test(name)) {
+      S.gen.push({ body, task: d.task, request: d.request ?? {}, system: d.system ?? "", messages: d.messages }); S.active++; S.maxActive = Math.max(S.maxActive, S.active);
       if (S.delay) await new Promise((resolve) => setTimeout(resolve, S.delay));
       const text =
         d.task === "storylab_interview"
-          ? (String(d.system).includes("turn a story-development interview") ? NODES_JSON : `Spørsmål ${S.gen.length}: Hva vil hovedpersonen?`)
+          ? (d.request?.kind === "interviewNodes" ? NODES_JSON : `Spørsmål ${S.gen.length}: Hva vil hovedpersonen?`)
           : d.task === "storylab_profile"
           ? PROFILE_JSON
           : d.task === "storylab_analysis"
-            ? (String(d.system).includes("Line to assess") || String(d.system).includes("supplied line")
+            ? (d.request?.kind === "lineCheck"
               ? JSON.stringify({ verdict: "no", reasons: [{ text: "Replikken passer ikke", evidence: ["profile.speech.level", "knowledge"] }], rewrite: "Kanskje vi skal vente?" })
               : JSON.stringify({ points: ["credibility", "motivation", "conflict", "subtext", "relationships", "emotional_arc", "knowledge", "consequence", "rhythm", "weaknesses"].map((aspect) => ({ aspect, finding: "Et konkret funn", evidence: [SCENE_BLOCKS.find((b) => b.kind === "dialogue").id], suggestion: "Et forslag", uncertain: aspect === "knowledge" })) }))
             : `Svar ${S.gen.length}`;
@@ -225,7 +226,7 @@ async function run(name, act, { lang: wanted = "nb", path = "?visning=canvas", n
   await page.goto(base, { waitUntil: "domcontentloaded" });
   await page.evaluate(([k, v, l]) => {
     localStorage.setItem(k, v);
-    localStorage.setItem("animatic:lang", l);
+    localStorage.setItem("animatic:lang", l); localStorage.setItem("animatic:lang:00000000-0000-7000-8000-a11ce0000001", l);
   }, [`sb-${ref}-auth-token`, JSON.stringify({ access_token: "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ4In0.sig", refresh_token: "r", token_type: "bearer", expires_in: 86400, expires_at: exp, user: USER }), lang]);
   S.t0 = Date.now();
   await page.goto(base + P + "/storylab" + path, { waitUntil: "networkidle" });
@@ -328,7 +329,7 @@ await run("intervju med to turer og forslag til noder", async (page) => {
   await page.getByTestId("interview-send").click();
   await page.getByTestId("interview-turn").nth(3).waitFor();
   check(S.gen.length === 2 && S.gen.every((g) => g.task === "storylab_interview"), "to intervjuturer bruker storylab_interview");
-  check(S.gen[0].system.includes("one or two questions at a time") && !S.gen[0].system.includes(SECRET), "intervjuprompten har ikke hemmeligheter");
+  check(S.gen[0].request.kind === "interview" && !S.gen[0].system && !S.gen[0].body.includes(SECRET), "intervjukallet sender bare parametere, ikke prompt eller hemmeligheter (promptreglene testes i storylab-interview.test.ts)");
   const s = [...S.sessions.values()][0];
   check(s.kind === "interview" && s.turns.length === 4, "turene lagres i intervjuøkten");
   check((await page.getByTestId("storylab-cost").textContent()).length > 0, "løpende kostnad vises");

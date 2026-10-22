@@ -1,11 +1,18 @@
 # Veikart
 
+## D-2 – Restfunn før demoen
+- [x] Rett og kontroller SSR/hydrering og språkverktøytips etter gjenopprettingen (ML2 318/318).
+- [x] Oppdater eksplisitte RPC-lister, Story Lab- og U2-kontrakter; REQ-0050 4/4 og g07 bestått.
+- [x] Sikre at AI-innstillingsspørringen alltid returnerer en verdi, med fem regresjonstester.
+- [x] Kjør demoflyt nb/en 28/28, full Vitest 2412/0, lokal DB 164/164 og i18n; lever D2_REPORT.md uten publisering.
+- [ ] REQ-0210: årsaken til 252–301 ms avvik i lang verifisering4-ui er uavklart; isolert avspilling 6/6 (89 ms). Ingen toleranser svekket; se D2_REPORT.md.
+
 ## D-1 – Demoklar gjennomgang
 - [x] Kjør aktive visuelle suiter én om gangen på nb og på en der det støttes; dokumenter hver suite i D1_REPORT.md.
 - [x] Kontroller hovedflyten og rett dokumenterte, trygge feil uten å røre sperrede filer.
 - [x] Kjør full Vitest og i18n; DB-testene krever isolert lokal testdatabase, aldri Cloud.
 - [x] Lever norsk rapport med avvik og nøyaktig filliste; ingen publisering.
-- [ ] Åpne testfunn (venter på Claude/Øystein): Story Lab-mocker, U2-måling, ml2/hydrering (sperrede språkfiler), REQ-0050, offentlige RPC-lister, funn-0080 g07.
+- [x] D-1-restfunn Story Lab, U2, ml2/hydrering, REQ-0050, RPC-lister og g07 håndtert i D-2; separat REQ-0210-funn står over.
 
 ## K-1 – Varsel når en annen redigerer samme scene (22.10.2026)
 - [x] Merke «{name} redigerer også denne scenen» og prikk i scenelisten (presence, lagres ikke).

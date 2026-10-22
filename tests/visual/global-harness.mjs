@@ -7,6 +7,7 @@
 import { chromium } from "playwright";
 import { readFileSync, mkdirSync } from "node:fs";
 import { VISUAL_SCHEMA_VERSION } from "./schema-version.mjs";
+import { uiLang } from "./ui-lang.mjs";
 
 export const USER = { id: "00000000-0000-7000-8000-a11ce0000001", email: "mars@example.no", aud: "authenticated", role: "authenticated" };
 
@@ -111,6 +112,7 @@ export function setup(hooks = {}) {
 
   const browserP = chromium.launch({ headless: true });
   async function run(label, path, fn, { lang = "nb", role = "owner", viewport = { width: 1280, height: 1800 }, signedIn = true } = {}) {
+    lang = uiLang(lang);
     log.commands = []; log.serverFns = []; log.rpcs = [];
     const browser = await browserP;
     const context = await browser.newContext({ viewport, colorScheme: "dark" });
@@ -123,6 +125,7 @@ export function setup(hooks = {}) {
       await page.evaluate(([key, value, language, auth]) => {
         if (auth) localStorage.setItem(key, value);
         localStorage.setItem("animatic:lang", language);
+        if (auth) localStorage.setItem("animatic:lang:00000000-0000-7000-8000-a11ce0000001", language);
       }, [`sb-${ref}-auth-token`, JSON.stringify({ access_token: "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ4In0.sig", refresh_token: "r", token_type: "bearer", expires_in: 86400, expires_at: exp, user: USER }), lang, signedIn]);
       await page.goto(`${base}${path.replace("$P", P)}`, { waitUntil: "networkidle" });
       await fn(page);

@@ -104,7 +104,7 @@ async function run(name, path, act, init = {}) {
   const errors = [];
   page.on("pageerror", (e) => errors.push(String(e)));
   const signedIn = !!init.signedIn;
-  await page.addInitScript(([k, v, l, s]) => { if (s) localStorage.setItem(k, v); localStorage.setItem("animatic:lang", l); }, [
+  await page.addInitScript(([k, v, l, s]) => { if (s) localStorage.setItem(k, v); localStorage.setItem("animatic:lang", l); if (s) localStorage.setItem("animatic:lang:00000000-0000-7000-8000-a11ce0000001", l); }, [
     `sb-${ref}-auth-token`,
     JSON.stringify({ access_token: "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ4In0.sig", refresh_token: "r", token_type: "bearer", expires_in: 86400, expires_at: Math.floor(Date.now() / 1000) + 86400, user: USER }),
     LANG, signedIn,
@@ -129,7 +129,8 @@ await run("stengt-standardmelding", "/konto", async (page, st) => {
   check((await page.getByTestId("signup-country").count()) === 0 && (await page.getByTestId("signup-privacy").count()) === 0, "stengt: registreringsskjemaet vises ikke");
   check(await page.getByTestId("auth-submit").isVisible(), "stengt: innlogging er fortsatt mulig");
   console.log("Offentlige RPC-er:", JSON.stringify(st.rpcs));
-  check(!st.rpcs.some((r) => r !== "registration_status" && r !== "my_account"), "bare statusfunksjonen kalles før innlogging");
+  const allowed = ["registration_status", "my_account", "globe_points", "my_features"];
+  check(!st.rpcs.some((r) => !allowed.includes(r)), "før innlogging kalles bare status, konto, offentlige globuspunkter og funksjonsflagg");
   // Innloggingslenke: ingen ny konto, rolig melding ved ukjent adresse
   await page.locator("#email").fill("ny@example.no");
   await page.getByRole("button", { name: L("Send innloggingslenke", "Send sign-in link") }).click();

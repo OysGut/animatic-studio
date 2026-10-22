@@ -105,6 +105,7 @@ export function harness(defaultOut) {
       const name = serverFnName(route.request().url()); const d = dataOf(route.request().postData() ?? "{}");
       const json = (result) => route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ result, context: {} }) });
       if (hooks.serverFn) { const r = hooks.serverFn(name, d); if (r !== undefined) return json(r); }
+      if (/^fetchAiModelSettings(?:_|$)/.test(name)) return json({ ready: true, settings: [] });
       if (/runCommand/.test(name)) {
         state.commands.push(d.command ?? d.envelope?.command ?? d);
         return json({ ok: true, changeId: "mts", affected: [], inverse: null, revisions: {} });
@@ -197,7 +198,7 @@ export function harness(defaultOut) {
     await page.goto(base, { waitUntil: "domcontentloaded" });
     const exp = Math.floor(Date.now() / 1000) + 86400;
     // Testspråk (en-XA) er av som standard; suitene slår dem på med den lokale utviklerinnstillingen.
-    await page.evaluate(([key, value, l]) => { localStorage.setItem(key, value); localStorage.setItem("animatic:lang", l); localStorage.setItem("animatic:test-languages", "1"); }, [`sb-${ref}-auth-token`, JSON.stringify({ access_token: "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ4In0.sig", refresh_token: "r", token_type: "bearer", expires_in: 86400, expires_at: exp, user: USER }), lang]);
+    await page.evaluate(([key, value, l]) => { localStorage.setItem(key, value); localStorage.setItem("animatic:lang", l); localStorage.setItem("animatic:lang:00000000-0000-7000-8000-a11ce0000001", l); localStorage.setItem("animatic:test-languages", "1"); }, [`sb-${ref}-auth-token`, JSON.stringify({ access_token: "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ4In0.sig", refresh_token: "r", token_type: "bearer", expires_in: 86400, expires_at: exp, user: USER }), lang]);
     await page.goto(`${base}${P}/scene?scene=${sceneId}`, { waitUntil: "networkidle" });
     // R7: vent til sceneeditoren faktisk er tegnet (ikke bare en fast pause) før scenarioet starter
     await page.getByTestId("scene-stage").first().waitFor({ timeout: 60000 }).catch(() => {});

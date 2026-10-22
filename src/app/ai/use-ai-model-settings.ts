@@ -19,7 +19,7 @@ export function useAiModelSettings(enabled = true) {
     staleTime: 5 * 60_000,
     queryFn: async (): Promise<ModelSetting[]> => {
       try {
-        return (await fetchAiModelSettings()).settings;
+        return (await fetchAiModelSettings())?.settings ?? [];
       } catch {
         return [];
       }
