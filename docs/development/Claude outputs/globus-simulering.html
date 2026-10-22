@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="nb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Globus – simulering</title>
+<style>
+  :root { --bg:#0e0f12; --panel:#16181d; --line:#2a2e36; --text:#e8e6e1; --muted:#8b8f98; --accent:#ff8a3d; }
+  * { box-sizing:border-box; }
+  html,body { margin:0; height:100%; background:var(--bg); color:var(--text); font:15px/1.4 system-ui,-apple-system,Segoe UI,sans-serif; }
+  .wrap { display:flex; align-items:center; justify-content:center; gap:48px; min-height:100%; padding:24px 16px; flex-wrap:wrap; }
+  .login { width:320px; max-width:100%; border:1px solid var(--line); background:var(--panel); border-radius:10px; padding:24px; }
+  .login h1 { font-size:20px; margin:0 0 4px; font-weight:600; }
+  .login p { margin:0 0 18px; color:var(--muted); font-size:13px; }
+  .field { border:1px solid var(--line); border-radius:6px; padding:10px 12px; margin-bottom:10px; color:var(--muted); font-size:14px; }
+  .btn { border-radius:6px; padding:10px 12px; text-align:center; background:var(--accent); color:#1a1006; font-weight:600; margin-top:6px; }
+  .globe { position:relative; width:min(520px,92vw); aspect-ratio:1; }
+  canvas { width:100%; height:100%; display:block; }
+  .legend { position:absolute; bottom:-6px; left:0; right:0; text-align:center; color:var(--muted); font-size:12px; }
+  .legend b { color:var(--accent); font-weight:600; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="login">
+    <h1>From Pen to Glass</h1>
+    <p>Logg inn for å fortsette</p>
+    <div class="field">E-post</div>
+    <div class="field">Passord</div>
+    <div class="btn">Logg inn</div>
+  </div>
+  <div class="globe">
+    <canvas id="c"></canvas>
+    <div class="legend" id="legend"></div>
+  </div>
+</div>
+<script>
+(function () {
+  // Simulerte brukere: by (eller hovedstad) og om de er aktive siste time.
+  var places = [
+    ["Oslo",59.91,10.75],["Oslo",59.91,10.75],["Oslo",59.91,10.75],["Bergen",60.39,5.32],
+    ["Trondheim",63.43,10.40],["Stockholm",59.33,18.07],["København",55.68,12.57],["Reykjavík",64.15,-21.94],
+    ["London",51.51,-0.13],["Paris",48.86,2.35],["Berlin",52.52,13.40],["Madrid",40.42,-3.70],
+    ["Roma",41.90,12.50],["New York",40.71,-74.01],["Toronto",43.65,-79.38],["Ciudad de México",19.43,-99.13],
+    ["São Paulo",-23.55,-46.63],["Tokyo",35.68,139.69],["Tokyo",35.68,139.69],["Seoul",37.57,126.98],["Sydney",-33.87,151.21]
+  ];
+  // Fast pseudotilfeldighet per bruker (som en hash av bruker-ID), så prikkene ikke hopper ved ny lasting.
+  function rng(seed) { return function () { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; }; }
+  var users = places.map(function (p, i) {
+    var r = rng(i * 7919 + 17);
+    var jitterKm = 2 + r() * 10, ang = r() * Math.PI * 2;
+    var dLat = (jitterKm / 111) * Math.cos(ang);
+    var dLon = (jitterKm / (111 * Math.cos(p[1] * Math.PI / 180))) * Math.sin(ang);
+    return { name: p[0], lat: p[1] + dLat, lon: p[2] + dLon, active: false,
+             phase: r() * Math.PI * 2, period: 0, r: r };
+  });
+  // Omtrent en tredjedel aktive, valgt fast.
+  var order = users.map(function (u, i) { return i; }).sort(function (a, b) { return ((a * 37) % 11) - ((b * 37) % 11); });
+  var nActive = Math.round(users.length / 3);
+  for (var k = 0; k < nActive; k++) users[order[k]].active = true;
+  users.forEach(function (u) { u.period = u.active ? 1.4 + u.r() * 1.4 : 4 + u.r() * 4; });
+  document.getElementById("legend").innerHTML =
+    users.length + " brukere · <b>" + nActive + " aktive siste time</b> · resten sover";
+
+  var cv = document.getElementById("c"), ctx = cv.getContext("2d"), W, H, R, dpr;
+  function size() {
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var rect = cv.getBoundingClientRect();
+    W = cv.width = rect.width * dpr; H = cv.height = rect.height * dpr; R = Math.min(W, H) * 0.42;
+  }
+  window.addEventListener("resize", size); size();
+
+  var tilt = 22 * Math.PI / 180;
+  function project(lat, lon, rot) {
+    var phi = lat * Math.PI / 180, lam = lon * Math.PI / 180 + rot;
+    var x = Math.cos(phi) * Math.sin(lam), y = Math.sin(phi), z = Math.cos(phi) * Math.cos(lam);
+    var y2 = y * Math.cos(tilt) - z * Math.sin(tilt), z2 = y * Math.sin(tilt) + z * Math.cos(tilt);
+    return { x: W / 2 + x * R, y: H / 2 - y2 * R, z: z2 };
+  }
+  function line(points, rot, alpha) {
+    ctx.beginPath(); var pen = false;
+    for (var i = 0; i < points.length; i++) {
+      var p = project(points[i][0], points[i][1], rot);
+      if (p.z > 0) { if (!pen) { ctx.moveTo(p.x, p.y); pen = true; } else ctx.lineTo(p.x, p.y); } else pen = false;
+    }
+    ctx.strokeStyle = "rgba(160,170,190," + alpha + ")"; ctx.stroke();
+  }
+
+  function frame(t) {
+    t /= 1000;
+    var rot = -0.15 + t * 0.06; // langsom rotasjon
+    ctx.globalCompositeOperation = "source-over";
+    ctx.clearRect(0, 0, W, H);
+    // Kant og rutenett
+    ctx.lineWidth = 1 * dpr;
+    ctx.beginPath(); ctx.arc(W / 2, H / 2, R, 0, Math.PI * 2);
+    ctx.strokeStyle = "rgba(160,170,190,0.35)"; ctx.stroke();
+    for (var lat = -75; lat <= 75; lat += 15) {
+      var pts = []; for (var lon = -180; lon <= 180; lon += 4) pts.push([lat, lon]);
+      line(pts, rot, lat === 0 ? 0.22 : 0.12);
+    }
+    for (var lo = -180; lo < 180; lo += 15) {
+      var pts2 = []; for (var la = -90; la <= 90; la += 4) pts2.push([la, lo]);
+      line(pts2, rot, 0.12);
+    }
+    // Prikker med additiv glød
+    ctx.globalCompositeOperation = "lighter";
+    users.forEach(function (u) {
+      var p = project(u.lat, u.lon, rot);
+      if (p.z <= 0.02) return;
+      var edge = Math.min(1, p.z * 3); // svakere nær kanten
+      var s = 0.5 + 0.5 * Math.sin(t * 2 * Math.PI / u.period + u.phase);
+      var core, glowR, glowA;
+      if (u.active) {
+        core = 0.75 + 0.25 * s; glowR = (10 + 10 * s) * dpr; glowA = (0.22 + 0.28 * s);
+      } else {
+        core = 0.06 + 0.22 * s; glowR = (5 + 3 * s) * dpr; glowA = 0.03 + 0.07 * s;
+      }
+      var g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, glowR);
+      g.addColorStop(0, "rgba(255,138,61," + (glowA * edge) + ")");
+      g.addColorStop(1, "rgba(255,138,61,0)");
+      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(p.x, p.y, glowR, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = "rgba(255,190,140," + (core * edge * 0.9) + ")";
+      ctx.beginPath(); ctx.arc(p.x, p.y, (u.active ? 2.2 : 1.6) * dpr, 0, Math.PI * 2); ctx.fill();
+    });
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
