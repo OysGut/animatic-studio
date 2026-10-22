@@ -211,3 +211,5 @@
 - [x] Valg «Tittelkort med QR» (på som standard), tekster på alle språk
 - [x] Tester: unit, QR-dekoding, ptg3b-titlecard.mjs nb/en 9/9, full Vitest/DB/i18n
 - [ ] Ekte AE-kjøring av tittelkortet og ekte opplasting/klipping av en AE-render: ekstern kontroll
+
+- [x] PTG2 «Send til Dragonframe» (B-102): pakke, referansefilm, lydstemmer, X-sheet, LESMEG – rapport i docs/development/PTG2_REPORT.md. Ekte Dragonframe-import gjenstår (ekstern kontroll).
