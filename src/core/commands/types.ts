@@ -243,6 +243,7 @@ export interface BlockPlacement {
 
 export type Command = import("../animation/rig-commands").RigCommand
   | import("../print/measure/commands").MeasureSetCommand
+  | import("../print/job/commands").PrintJobCommand
   | import("../rig/multiplane-commands").MultiplaneRigCommand
   | import("../animation/behavior-commands").BehaviorCommand
   | {

@@ -16,6 +16,7 @@ import { Route as KontoRouteImport } from './routes/konto'
 import { Route as PersonvernRouteImport } from './routes/personvern'
 import { Route as TilbakestillPassordRouteImport } from './routes/tilbakestill-passord'
 import { Route as GruppeWorkspaceIdRouteImport } from './routes/gruppe.$workspaceId'
+import { Route as KCodeRouteImport } from './routes/k.$code'
 import { Route as MTokenRouteImport } from './routes/m.$token'
 import { Route as ManusutforskerProjectIdRouteImport } from './routes/manusutforsker.$projectId'
 import { Route as ProsjektProjectIdRouteImport } from './routes/prosjekt.$projectId'
@@ -63,6 +64,11 @@ const TilbakestillPassordRoute = TilbakestillPassordRouteImport.update({
 const GruppeWorkspaceIdRoute = GruppeWorkspaceIdRouteImport.update({
   id: '/gruppe/$workspaceId',
   path: '/gruppe/$workspaceId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KCodeRoute = KCodeRouteImport.update({
+  id: '/k/$code',
+  path: '/k/$code',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MTokenRoute = MTokenRouteImport.update({
@@ -143,6 +149,7 @@ export interface FileRoutesByFullPath {
   '/personvern': typeof PersonvernRoute
   '/tilbakestill-passord': typeof TilbakestillPassordRoute
   '/gruppe/$workspaceId': typeof GruppeWorkspaceIdRoute
+  '/k/$code': typeof KCodeRoute
   '/m/$token': typeof MTokenRoute
   '/manusutforsker/$projectId': typeof ManusutforskerProjectIdRoute
   '/prosjekt/$projectId': typeof ProsjektProjectIdRouteWithChildren
@@ -165,6 +172,7 @@ export interface FileRoutesByTo {
   '/personvern': typeof PersonvernRoute
   '/tilbakestill-passord': typeof TilbakestillPassordRoute
   '/gruppe/$workspaceId': typeof GruppeWorkspaceIdRoute
+  '/k/$code': typeof KCodeRoute
   '/m/$token': typeof MTokenRoute
   '/manusutforsker/$projectId': typeof ManusutforskerProjectIdRoute
   '/se/$token': typeof SeTokenRoute
@@ -187,6 +195,7 @@ export interface FileRoutesById {
   '/personvern': typeof PersonvernRoute
   '/tilbakestill-passord': typeof TilbakestillPassordRoute
   '/gruppe/$workspaceId': typeof GruppeWorkspaceIdRoute
+  '/k/$code': typeof KCodeRoute
   '/m/$token': typeof MTokenRoute
   '/manusutforsker/$projectId': typeof ManusutforskerProjectIdRoute
   '/prosjekt/$projectId': typeof ProsjektProjectIdRouteWithChildren
@@ -211,6 +220,7 @@ export interface FileRouteTypes {
     | '/personvern'
     | '/tilbakestill-passord'
     | '/gruppe/$workspaceId'
+    | '/k/$code'
     | '/m/$token'
     | '/manusutforsker/$projectId'
     | '/prosjekt/$projectId'
@@ -233,6 +243,7 @@ export interface FileRouteTypes {
     | '/personvern'
     | '/tilbakestill-passord'
     | '/gruppe/$workspaceId'
+    | '/k/$code'
     | '/m/$token'
     | '/manusutforsker/$projectId'
     | '/se/$token'
@@ -254,6 +265,7 @@ export interface FileRouteTypes {
     | '/personvern'
     | '/tilbakestill-passord'
     | '/gruppe/$workspaceId'
+    | '/k/$code'
     | '/m/$token'
     | '/manusutforsker/$projectId'
     | '/prosjekt/$projectId'
@@ -277,6 +289,7 @@ export interface RootRouteChildren {
   PersonvernRoute: typeof PersonvernRoute
   TilbakestillPassordRoute: typeof TilbakestillPassordRoute
   GruppeWorkspaceIdRoute: typeof GruppeWorkspaceIdRoute
+  KCodeRoute: typeof KCodeRoute
   MTokenRoute: typeof MTokenRoute
   ManusutforskerProjectIdRoute: typeof ManusutforskerProjectIdRoute
   ProsjektProjectIdRoute: typeof ProsjektProjectIdRouteWithChildren
@@ -333,6 +346,13 @@ declare module '@tanstack/react-router' {
       path: '/gruppe/$workspaceId'
       fullPath: '/gruppe/$workspaceId'
       preLoaderRoute: typeof GruppeWorkspaceIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/k/$code': {
+      id: '/k/$code'
+      path: '/k/$code'
+      fullPath: '/k/$code'
+      preLoaderRoute: typeof KCodeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/m/$token': {
@@ -462,6 +482,7 @@ const rootRouteChildren: RootRouteChildren = {
   PersonvernRoute: PersonvernRoute,
   TilbakestillPassordRoute: TilbakestillPassordRoute,
   GruppeWorkspaceIdRoute: GruppeWorkspaceIdRoute,
+  KCodeRoute: KCodeRoute,
   MTokenRoute: MTokenRoute,
   ManusutforskerProjectIdRoute: ManusutforskerProjectIdRoute,
   ProsjektProjectIdRoute: ProsjektProjectIdRouteWithChildren,

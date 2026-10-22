@@ -8,11 +8,12 @@ import { Loader2, RotateCcw } from "lucide-react";
 import { AiGlyph } from "@/app/design/icons/AiGlyph";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { aiUsage, type Asset, type AssetMedia, type AssetVariant, type AssetVersion, type AttachedImage, attachedImages, buildContextImageBrief, buildContextImagePrompt, buildImagePrompt, briefSummaryNb, promptFamilyOf, renderBrief, VERSION_VIEW_LABEL, costBreakdown, describeAttached, estimateCostUsd, formatCredits, formatUsd, hasStyleGuide, IMAGE_PURPOSE_FOR_KIND, IMAGE_SIZE_LABEL, fullSizeOriginal, type ImageSize, imageSizesOf, lastImagePrompt, LOVABLE_CUTOUT_MODEL, LOVABLE_IMAGE_MODEL, MAX_PROMPT_CHARS, type Project, type ProjectState, profileBudgetRemaining, qualityProfileUsage, providerInfo, providerModel, providersFor, qualityProfileSnapshot, stripAttachedSection, withAttachedLegend, tm } from "@/core";
+import { aiUsage, type Asset, type AssetMedia, type AssetVariant, type AssetVersion, type AttachedImage, attachedImages, promptFamilyOf, costBreakdown, estimateCostUsd, formatCredits, formatUsd, hasStyleGuide, IMAGE_PURPOSE_FOR_KIND, IMAGE_SIZE_LABEL, fullSizeOriginal, type ImageSize, imageSizesOf, lastImagePrompt, LOVABLE_CUTOUT_MODEL, LOVABLE_IMAGE_MODEL, MAX_PROMPT_CHARS, type Project, type ProjectState, profileBudgetRemaining, qualityProfileUsage, providerInfo, providerModel, providersFor, qualityProfileSnapshot, stripAttachedSection, tm } from "@/core";
 import { QualityProfilePicker, chosenQualityProfile, type QualityProfileChoice } from "@/app/ai/QualityProfilePicker";
 import { aiJobsKey, useAiJobs } from "@/app/ai/use-ai-jobs";
 import { CUTOUT_MODEL, IMAGE_MODEL, generateImage } from "@/adapters/ai/generate-image.functions";
 import { writeImagePrompt } from "@/adapters/ai/write-prompt.functions";
+import { useImagePromptPreview } from "./image-prompt-preview";
 import { useProjectProviders } from "@/app/ai/use-project-providers";
 import { EffortPicker } from "@/app/ai/EffortPicker";
 import { Button } from "@/components/ui/button";
@@ -170,42 +171,26 @@ export function GenerateImagePanel({
   // presis med identiteten først for Seedream, Qwen og FLUX
   const family = promptFamilyOf(choice.provider, chosenModel?.id);
   const transparent = !!chosenModel?.transparent;
-  const promptInput = useMemo(
-    () =>
-      context
-        ? {
-            assetId: asset.id,
-            variantId: variant?.id ?? null,
-            productionId: context.productionId,
-            occurrenceId: context.occurrenceId,
-            withReference: identity !== null,
-            attached,
-            family,
-            transparent,
-          }
-        : null,
-    [asset.id, variant?.id, context, identity, attached, family, transparent],
+  // B-105a: malene og stilreglene ligger på serveren. Her sendes bare innstillingene; svaret er den
+  // automatiske beskrivelsen brukeren ser og kan redigere.
+  const promptRequest = useMemo(
+    () => ({
+      kind: "asset" as const,
+      assetId: asset.id,
+      variantId: variant?.id ?? null,
+      referenceVersionId: identity?.id ?? null,
+      productionId: context?.productionId ?? null,
+      occurrenceId: context?.occurrenceId ?? null,
+      style: withStyle,
+      fullSize,
+      family,
+      transparent,
+    }),
+    [asset.id, variant?.id, identity?.id, context?.productionId, context?.occurrenceId, withStyle, fullSize, family, transparent],
   );
-  const brief = useMemo(
-    () => (context && promptInput ? buildContextImageBrief(context.state, promptInput) : null),
-    [context, promptInput],
-  );
-  const negative = useMemo(
-    () => (brief && family === "compact" ? renderBrief(brief, family).negative : null),
-    [brief, family],
-  );
-  const auto = useMemo(
-    () =>
-      context && promptInput
-        ? buildContextImagePrompt(context.state, promptInput)
-        : buildImagePrompt({
-            asset,
-            variant,
-            filmTitle,
-            withReference: identity !== null,
-          }),
-    [asset, variant, filmTitle, identity, context, promptInput],
-  );
+  const serverPreview = useImagePromptPreview(projectId, promptRequest, context?.state ?? asset).data ?? null;
+  const summary = serverPreview?.summary ?? null;
+  const auto = serverPreview?.prompt ?? "";
   const [prompt, setPrompt] = useState(initialPrompt ?? auto);
   const [edited, setEdited] = useState(initialPrompt !== undefined && initialPrompt !== auto);
   /** Hvor teksten i feltet kom fra, når den ikke er den automatiske. */
@@ -338,15 +323,16 @@ export function GenerateImagePanel({
             assetId: asset.id,
             // Listen over bildene som sendes, er alltid fersk (en gammel liste i teksten byttes ut), så
             // teksten og bildene ikke kan komme i utakt
-            prompt: withAttachedLegend(prompt, asset.name, attached),
-            referencePaths: sentPaths,
+            // Serveren legger til en fersk liste over vedleggene, så teksten og bildene ikke kommer i utakt
+            prompt: stripAttachedSection(prompt),
+            referencePaths: [],
+            promptRequest,
             identityFirst: attached[0]?.role === "identity",
             purpose: IMAGE_PURPOSE_FOR_KIND[asset.kind],
             variantId: variant?.id ?? null,
             provider: choice.provider,
             model: choice.provider === "lovable" ? null : choice.model,
             size,
-            ...(negative ? { negativePrompt: negative } : {}),
             // M8 (REQ-0859): profilen bildet lages med, som øyeblikksbilde i jobbens metadata
             ...(profile ? { qualityProfile: qualityProfileSnapshot(profile) } : {}),
             approved: true,
@@ -381,7 +367,7 @@ export function GenerateImagePanel({
   }
 
   // Beskrivelsen og listen over bildene må få plass sammen
-  const legendLength = attached.length ? describeAttached(asset.name, attached).length + 2 : 0;
+  const legendLength = serverPreview?.legendChars ?? 0;
   const tooLong =
     prompt.length > MAX_PROMPT_CHARS ||
     stripAttachedSection(prompt).length + legendLength > MAX_PROMPT_CHARS;
@@ -452,7 +438,7 @@ export function GenerateImagePanel({
       ) : null}
       <div className="grid grid-cols-1 gap-x-4 gap-y-2 @2xl:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]">
         <div className="flex min-w-0 flex-col gap-2">
-          {brief ? (
+          {summary ? (
             <div
               aria-label={t("app-library-generate-image-panel.generate-image-panel.aria-label.6eac5653b1de")}
               className="rounded-sm border border-border bg-surface-2 px-2 py-1.5 text-[11px] leading-snug text-text-secondary"
@@ -461,7 +447,7 @@ export function GenerateImagePanel({
                 {t("app-library-generate-image-panel.generate-image-panel.p.6eac5653b1de")}
               </p>
               <ul className="list-disc pl-4">
-                {briefSummaryNb(brief, family, (v) => VERSION_VIEW_LABEL[v]).map((l) => (
+                {summary.map((l) => (
                   <li key={l}>{l}</li>
                 ))}
               </ul>

@@ -123,6 +123,8 @@ export function harness(defaultOut) {
       if (/^reconfirmDialogueBatch(?:_|$)/.test(name)) { state.rpcs.push({ name: "reconfirmDialogueBatch", body: d }); return json({ ok: true }); }
       if (/^resumeDialogueBatch(?:_|$)/.test(name)) { state.rpcs.push({name:"resumeDialogueBatch",body:d});return json({ok:true}); }
       // P8: stilharmonisering (mock – ingen AI)
+      // B-105a: prompten settes sammen på serveren; forhåndsvisningen mockes
+      if (/^previewImagePrompt(?:_|$)/.test(name)) { state.rpcs.push({ name: "previewImagePrompt", body: d }); return json({ ok: true, preview: { prompt: "Drawing style: mocked. Keep the identity of image 1.", negative: null, summary: null, legendChars: 0, attached: [{ versionId: "00000000-0000-7000-8000-000000000001", role: "identity", label: "image 1" }] } }); }
       if (/^generateImage(?:_|$)/.test(name)) { state.rpcs.push({ name: "generateImage", body: d }); const n = state.rpcs.filter(r => r.name === "generateImage").length; return json({ ok: true, versionId: `00000000-0000-7000-8000-${String(800000 + n).padStart(12, "0")}`, model: d.model || "openai/gpt-image-2", jobId: "00000000-0000-7000-8000-000000080000", media: { path: `${fx.project.id}/assets/generated/${d.assetId}/mock-${n}.png`, mimeType: "image/png", width: 1024, height: 1536, byteSize: 2048, sha256: "c".repeat(64) } }); }
       // M6: tekst-AI (mock – ingen AI). Svarer med ID-ene som står i prompten.
       if (/^generateText(?:_|$)/.test(name)) {
@@ -136,6 +138,20 @@ export function harness(defaultOut) {
         } else if (/resolve references/.test(d.system ?? "")) {
           const links = [...user.matchAll(/ITEM key=(\S+)\nWORD: [^\n]*\nCANDIDATES: ([0-9a-f-]{36})/g)].map((m) => ({ key: m[1], assetId: m[2], confidence: 0.92 }));
           text = JSON.stringify({ links });
+        }
+        return json({ ok: true, text, provider: "lovable", model: "built-in", usage: { inputTokens: 10, outputTokens: 10 }, costUsd: 0, usedFallback: false, reason: "pref", keyOwner: "lovable", jobId: "00000000-0000-7000-8000-000000090000" });
+      }
+      // B-105a: tekstprompter settes sammen på serveren; klienten sender bare oppgaven (mock – ingen AI)
+      if (/^generateStoryText(?:_|$)/.test(name)) {
+        state.rpcs.push({ name: "generateText", body: d });
+        const r = d.request ?? {};
+        let text = "{}";
+        if (r.kind === "materialUpdate") {
+          const images = (rows.assets ?? []).map((a) => ({ assetId: a.id, prompt: "The character looks up at the snowy sky, same design as before." }));
+          const shots = (r.changes ?? []).map((c) => ({ blockId: c.blockId, text: "Close-up: she looks up as the snow begins." }));
+          text = JSON.stringify({ images, shots });
+        } else if (r.kind === "contextLink") {
+          text = JSON.stringify({ links: (r.items ?? []).filter((i) => i.candidates?.length).map((i) => ({ key: i.key, assetId: i.candidates[0], confidence: 0.92 })) });
         }
         return json({ ok: true, text, provider: "lovable", model: "built-in", usage: { inputTokens: 10, outputTokens: 10 }, costUsd: 0, usedFallback: false, reason: "pref", keyOwner: "lovable", jobId: "00000000-0000-7000-8000-000000090000" });
       }

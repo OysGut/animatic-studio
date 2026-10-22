@@ -53687,5 +53687,290 @@
     "text": "파생 이미지 파일이 저장되었습니다",
     "sourceHash": "dcb7a99511237f43bf2e8ffe4b64a5b1732486e41eba30d84cce32a569063029",
     "review": "machine"
+  },
+  "print-job.invalid": {
+    "text": "잘못된 인쇄 작업",
+    "sourceHash": "47aef3614772fc6bef12cc2fee3ef7b9fde1e56879554442c3368b11dec65747",
+    "review": "machine"
+  },
+  "print-job.empty": {
+    "text": "항목을 하나 이상 추가하세요",
+    "sourceHash": "d08ea12545024f207b493e79ef690bd44031e365b791d8c43877fcd230fe84b0",
+    "review": "machine"
+  },
+  "print-job.too-many": {
+    "text": "한 작업에 항목 또는 사본이 너무 많습니다",
+    "sourceHash": "38c2fb2d73b6a6662a464ba4e9133258178e9ec70edc295a657cbac51492b70c",
+    "review": "machine"
+  },
+  "print-job.copies": {
+    "text": "사본 수",
+    "sourceHash": "c1560ae76b1c9e05efeffb154f5b2232d95b2884aafe5ecf55aa78a8b5036203",
+    "review": "machine"
+  },
+  "print-job.frame": {
+    "text": "잘못된 프레임",
+    "sourceHash": "6515dbb6c149d4bf736eaa8ba432580dd85045bebef71e86139280a384683d65",
+    "review": "machine"
+  },
+  "print-job.note": {
+    "text": "메모",
+    "sourceHash": "a14c6d6baf5bf0d6aa41ef9f8f07b6d8e7f4ac0bbf031612699b57a1195f506a",
+    "review": "machine"
+  },
+  "print-job.stroke": {
+    "text": "재단선은 0.05~0.3mm 사이여야 합니다",
+    "sourceHash": "674a501b87e035f5fe67f716d0a502810b42550946c00968730cd46d6dcad4ef",
+    "review": "machine"
+  },
+  "print-job.scale": {
+    "text": "잘못된 축척",
+    "sourceHash": "b78b294ef96abe6477175d272c7476ffd9d2f0aa577ef832e35e607dcc776948",
+    "review": "machine"
+  },
+  "print-job.title": {
+    "text": "인쇄 작업",
+    "sourceHash": "87eb0ca3dc8b5b94392bcd0847c91d4b6dfed1beedc25ec5edbf126c0c437ef2",
+    "review": "machine"
+  },
+  "print-job.name": {
+    "text": "작업 이름",
+    "sourceHash": "f3eb8cbaadca405df1463c25b799c892fa39f1798b7d88586ba11e4829085458",
+    "review": "machine"
+  },
+  "print-job.reopen": {
+    "text": "“{name}” 열기",
+    "sourceHash": "2e3ee52defa1255b5fc2433157de8cebb31c49e8ab045fb7dd2d0b63f2296481",
+    "review": "machine"
+  },
+  "print-job.add-frame": {
+    "text": "이 프레임({frame}) × {count}",
+    "sourceHash": "35e7c8e4f4f20c4d31bc80ae6368cb5470318665f359e5c19a3741c0074b4f2e",
+    "review": "machine"
+  },
+  "print-job.from": {
+    "text": "시작 프레임",
+    "sourceHash": "1a082bf54ee2f3d8c1b98995a8288dc37bfff7cadd521d1e418eeaecbaea9b40",
+    "review": "machine"
+  },
+  "print-job.to": {
+    "text": "끝 프레임",
+    "sourceHash": "b51e1fb1f94173a8aa8db35ac9d952eb3415684568804d87d30e86fd61699eaa",
+    "review": "machine"
+  },
+  "print-job.add-range": {
+    "text": "프레임 X–Y",
+    "sourceHash": "95c990667633124489736911c656a4a9cd17163286bcde9275a3fe2480872096",
+    "review": "machine"
+  },
+  "print-job.add-range-n": {
+    "text": "프레임 X–Y × 각 {count}부",
+    "sourceHash": "8df226e429fc1802b559d2af909052043eb3c79e8674e7fbacdc48ba99b0db6f",
+    "review": "machine"
+  },
+  "print-job.element": {
+    "text": "프레임 {frame}",
+    "sourceHash": "53369846555ba0ffd5dffc418421b6cc2c3f80155bf54ca97064c1d244be9d2c",
+    "review": "machine"
+  },
+  "print-job.remove": {
+    "text": "항목 제거",
+    "sourceHash": "3bc1fffb2596f752722520c3ec5b0df2c4b3a099004c83c23d0c553bc6aa5870",
+    "review": "machine"
+  },
+  "print-job.shared": {
+    "text": "작업 전체 공통",
+    "sourceHash": "78f1ff1c8f3066add10187530edd5fb719ae3bf68ab03ee8e685f1653f50a8a8",
+    "review": "machine"
+  },
+  "print-job.qr": {
+    "text": "QR 코드",
+    "sourceHash": "0e6201d720b58a962217ef42407efe16526b1905791b1900529223e9d0722733",
+    "review": "machine"
+  },
+  "print-job.qr-outside": {
+    "text": "피규어 바깥",
+    "sourceHash": "89199a8b1b9f949a32e2a8f967b67c6dea377f8eeab92c6316766eed2e32694e",
+    "review": "machine"
+  },
+  "print-job.qr-figure": {
+    "text": "피규어 위",
+    "sourceHash": "72b3bb7706d33070e5f1f508bd83f41d8c0d94a27fc2e07a9bf65ca6989a8643",
+    "review": "machine"
+  },
+  "print-job.qr-back": {
+    "text": "뒷면",
+    "sourceHash": "f5cdd3190962df13b851b84d60522336659ec1b67b9b09321874201e678709dd",
+    "review": "machine"
+  },
+  "print-job.qr-corner": {
+    "text": "피규어 위 위치",
+    "sourceHash": "bea27e54633a3470490fccae5ad04797a80303667c2767c62a1eb8a79e827801",
+    "review": "machine"
+  },
+  "print-job.corner-top-left": {
+    "text": "왼쪽 위",
+    "sourceHash": "db9236734b27be568178068620289cae28b8b11e71895d34e0d89735b8e26d16",
+    "review": "machine"
+  },
+  "print-job.corner-top-right": {
+    "text": "오른쪽 위",
+    "sourceHash": "9731bd9c7f6af47df07a0040505f7252b28ed5a154c279995e53beafeb7f43e0",
+    "review": "machine"
+  },
+  "print-job.corner-bottom-left": {
+    "text": "왼쪽 아래",
+    "sourceHash": "90b5091821d3cb703ffd7e93e2833522baeb4270b13bd3ebb84ba1d3f612cbb3",
+    "review": "machine"
+  },
+  "print-job.corner-bottom-right": {
+    "text": "오른쪽 아래",
+    "sourceHash": "c007b537bcdce4d2217b5168b9c5724998315386e72ae5a0da62152260f5bdeb",
+    "review": "machine"
+  },
+  "print-job.corner-center": {
+    "text": "면 중앙",
+    "sourceHash": "7f947f1421caeb623d799e9246ea36079ab946d9330043a022fe0c53e6572fa6",
+    "review": "machine"
+  },
+  "print-job.qr-visible": {
+    "text": "피규어의 QR 코드는 촬영 시 보입니다.",
+    "sourceHash": "0a053b1f5a1f3c6fe8256582a323ec3c510dd531b4ed1c63c46762de7cb803d1",
+    "review": "machine"
+  },
+  "print-job.copy-number": {
+    "text": "용지에 사본 번호 인쇄",
+    "sourceHash": "48b3857d0c24eabe36b7db557ff463c6f604c565cc3b45ff7218e45d52f964bb",
+    "review": "machine"
+  },
+  "print-job.id-text": {
+    "text": "ID 텍스트",
+    "sourceHash": "db19644f44d9e0c2931f1aef771190961c28d69f5654d166235fd3424b3b00c2",
+    "review": "machine"
+  },
+  "print-job.duplex": {
+    "text": "양면 인쇄",
+    "sourceHash": "c31f302c15eae2d5d8720cac444fc83e833ff3d164380d9ef3aad5c251bd21b8",
+    "review": "machine"
+  },
+  "print-job.flip": {
+    "text": "뒤집기",
+    "sourceHash": "3ec124dd8a16bfaa5f4cf697fe9dfd981b3e9c35572a0ab55c77baf3950cb019",
+    "review": "machine"
+  },
+  "print-job.flip-long": {
+    "text": "긴 쪽",
+    "sourceHash": "e4ec3c418eec58eed40437d650db05214ea2cf71231f197a97fdb01b8ca1c3c7",
+    "review": "machine"
+  },
+  "print-job.flip-short": {
+    "text": "짧은 쪽",
+    "sourceHash": "5f5110b5b0fa218773cedeb8a941f1902d7bfdddef0db866c0958b2e2294f966",
+    "review": "machine"
+  },
+  "print-job.printer": {
+    "text": "프린터",
+    "sourceHash": "94105a09efab0f83ff86a0311bc93c4db925aee243871dcd1e00465dfdbe455b",
+    "review": "machine"
+  },
+  "print-job.offset-x": {
+    "text": "오프셋 x(mm)",
+    "sourceHash": "f85750d623e6460fd10e575e8d982c574a80f37d28ea3c03a386952692d32011",
+    "review": "machine"
+  },
+  "print-job.offset-y": {
+    "text": "오프셋 y(mm)",
+    "sourceHash": "9d9ad8598a199d35470f5bd9427b51e7ba3a3f65a37924008820d38b6adbdec7",
+    "review": "machine"
+  },
+  "print-job.test-sheet": {
+    "text": "양면 테스트 용지",
+    "sourceHash": "c84f7509ccd7d585c1f5fa68c2ae095d52b984017a0ebc62a5b434d94103a951",
+    "review": "machine"
+  },
+  "print-job.duplex-front": {
+    "text": "앞면: 양면 인쇄 후 용지를 빛에 비춰 뒷면 십자의 어긋남을 측정하세요.",
+    "sourceHash": "c73a69893b5631d34128ba315e80e40fd13f55e282677585c5a4a5d418c48a30",
+    "review": "machine"
+  },
+  "print-job.duplex-back": {
+    "text": "뒷면: 각 십자의 눈금은 mm입니다.",
+    "sourceHash": "212955a45b9c57f664f294c0144834b22556310c73a82f1fe9ed50c409195f4b",
+    "review": "machine"
+  },
+  "print-job.totals": {
+    "text": "항목 {elements}개 · 사본 {copies}부 · 용지 {sheets}장",
+    "sourceHash": "20442c0e56b351e7c97621ed27a6222df2c9133d8f86e21ae377aea80cf86cea",
+    "review": "machine"
+  },
+  "print-job.sheet": {
+    "text": "{number}번째 용지",
+    "sourceHash": "55186054a5932f788742e24949b459737220ff9a01c8f9f8589c789c6c254d74",
+    "review": "machine"
+  },
+  "print-job.save-label": {
+    "text": "인쇄 작업 저장",
+    "sourceHash": "26288aec6fd66040bf4070793189f7c6fa9ba5d10f56626782d1c0f272f126a3",
+    "review": "machine"
+  },
+  "print-job.done": {
+    "text": "사본 {count}부로 PDF를 만들었습니다.",
+    "sourceHash": "a57c3394559d95a4931195f75d4d11a3c135db9d6aa917d22533c4c1dd8f31cf",
+    "review": "machine"
+  },
+  "print-job.failed": {
+    "text": "인쇄 작업을 만들 수 없습니다. 다시 시도하세요.",
+    "sourceHash": "5009082fc9032a73cd7168ad1288b3bf563454a5b3d784bd587998a121e33050",
+    "review": "machine"
+  },
+  "print-job.create": {
+    "text": "PDF 만들기",
+    "sourceHash": "35c5ef2f177b619482cc3964728bcb18a3d182835ec5a1c3cdac2a894db075d3",
+    "review": "machine"
+  },
+  "print-job.reprint": {
+    "text": "다시 인쇄(같은 코드)",
+    "sourceHash": "272ba3279dc8fc4cb36a08707eaad1e8d7f65c8519ab3d93e7a2348ca623d6ff",
+    "review": "machine"
+  },
+  "print-job.frame-label": {
+    "text": "프레임 {frame} · {time}",
+    "sourceHash": "8e54c95893c0d37c2291bc476f78a17bb72bbfd5a54fb663faada75e0f6507e4",
+    "review": "machine"
+  },
+  "print-job.code-label": {
+    "text": "인쇄물의 코드",
+    "sourceHash": "15c433294e4c26e5bafcd8a4dc9984af240d99259b38b01cabe1745d3b0965cb",
+    "review": "machine"
+  },
+  "print-job.code-open": {
+    "text": "열기",
+    "sourceHash": "8a0118d34ad287b3b1a23e190ac2e51d66dd70807322e44a7c92c52b59a95be9",
+    "review": "machine"
+  },
+  "print-job.code-unknown": {
+    "text": "코드를 열 수 없습니다. 알 수 없거나 취소되었거나 접근 권한이 없습니다.",
+    "sourceHash": "623ceae7b2a24a3949f54ed537971df7b7ac6930a6a1bdfc7459be45adfda77a",
+    "review": "machine"
+  },
+  "print-job.code-opening": {
+    "text": "피규어를 여는 중…",
+    "sourceHash": "289b4acce2b7410eb55d38645bfb67427b7f506fd5adb3507af7f8fc84749c49",
+    "review": "machine"
+  },
+  "print-job.code-section": {
+    "text": "인쇄된 피규어 열기",
+    "sourceHash": "a576027265b65b50864d5d2093e82aae4a6d0974a828be66924ba32c61e24aa5",
+    "review": "machine"
+  },
+  "print-job.route-title": {
+    "text": "인쇄된 피규어 – Pen to Glass",
+    "sourceHash": "14dbcc6a5c010c52592978be195ec83eaf1b1fb4d10efffba7fa94207a699d14",
+    "review": "machine"
+  },
+  "print-job.route-description": {
+    "text": "인쇄물의 피규어를 올바른 장면과 프레임에서 엽니다.",
+    "sourceHash": "8f4c22cf2eac23efe9a70fd09983bab9eca6c91bf637c38703aacd9eac5a521b",
+    "review": "machine"
   }
 }

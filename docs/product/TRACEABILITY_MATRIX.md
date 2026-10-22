@@ -33,7 +33,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 |---|---|---|---|---|---|
 | CORE | Project Core | 247 | 59 | 247 | 148 |
 | SCRIPT | Screenplay Engine | 138 | 32 | 138 | 136 |
-| TIMELINE | Timeline & Assembly Engine | 110 | 29 | 109 | 109 |
+| TIMELINE | Timeline & Assembly Engine | 110 | 29 | 110 | 110 |
 | LIBRARY | Resource Library | 97 | 10 | 97 | 87 |
 | CONTINUITY | Continuity Engine | 39 | 11 | 39 | 39 |
 | COMPOSE | 2D Composition Engine | 116 | 14 | 101 | 100 |
@@ -45,11 +45,11 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | QUEUE | Render Queue | 36 | 13 | 36 | 33 |
 | VERSION | Version & Dependency Engine | 98 | 38 | 98 | 96 |
 | L10N | Localization Engine | 54 | 4 | 53 | 53 |
-| PRESENT | Presentation Engine | 31 | 3 | 30 | 26 |
-| EXPORT | Export Engine | 107 | 12 | 81 | 80 |
-| SECURITY | Security & Storage | 52 | 5 | 51 | 49 |
+| PRESENT | Presentation Engine | 31 | 3 | 31 | 27 |
+| EXPORT | Export Engine | 107 | 12 | 87 | 86 |
+| SECURITY | Security & Storage | 52 | 5 | 52 | 50 |
 | COLLAB | Collaboration & Access | 21 | 0 | 21 | 21 |
-| UI | Brukergrensesnitt og designsystem | 360 | 23 | 356 | 254 |
+| UI | Brukergrensesnitt og designsystem | 360 | 23 | 357 | 255 |
 | PROCESS | Arbeidsmåte og utviklingsprosess | 51 | 6 | 9 | 6 |
 
 ## Dekning per fase
@@ -58,7 +58,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 |---|---|---|
 | 1 | 72 | 69 |
 | 2 | 97 | 93 |
-| 3 | 280 | 154 |
+| 3 | 280 | 160 |
 | 4 | 85 | 84 |
 | 5 | 152 | 148 |
 | 6 | 49 | 48 |
@@ -948,9 +948,9 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0876 | Beslutning DEC-0081 | L10N, UI | src/core/i18n/messages.ts, src/core/i18n/keyed.ts, src/core/i18n/manifest.json | 2 | tests/unit/i18n-ml1.test.ts, tests/unit/i18n.test.ts, tests/unit/i18n-ml1.test.ts – kjørt og bestått 2026-10-21 (V1), tests/unit/i18n.test.ts – kjørt og bestått 2026-10-21 (V1) | Verifisert | 2026-10-21 V1: Verifisert: testene dekker akseptansekriteriet og besto 2026-10-21. |
 | REQ-0877 | Beslutning DEC-0081 | L10N, UI | src/core/i18n/locales/nb.json, src/core/i18n/locales/en.json, src/core/i18n/locales/en-XA.json | 2 | tests/unit/i18n-ml1.test.ts, tests/unit/i18n.test.ts, tests/unit/i18n-ml1.test.ts – kjørt og bestått 2026-10-21 (V1), tests/unit/i18n.test.ts – kjørt og bestått 2026-10-21 (V1) | Verifisert | 2026-10-21 V1: Verifisert: testene dekker akseptansekriteriet og besto 2026-10-21. |
 | REQ-0878 | Beslutning DEC-0081 | L10N, UI | scripts/i18n/check.mjs, scripts/i18n/validate.mjs | 2 | tests/unit/i18n-ml1.test.ts, tests/unit/i18n.test.ts, tests/unit/i18n-ml1.test.ts – kjørt og bestått 2026-10-21 (V1), tests/unit/i18n.test.ts – kjørt og bestått 2026-10-21 (V1) | Verifisert | 2026-10-21 V1: Verifisert: testene dekker akseptansekriteriet og besto 2026-10-21. |
-| REQ-0879 | Beslutning B-087, DEC-0100 | EXPORT, PRESENT | – | 0 | – | Ikke startet | 2026-10-21 B-087, DEC-0100: Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 5 (batch, kopier, QR, tosidig utskrift og mobiloppslag; migrasjon 0072). |
-| REQ-0880 | Beslutning B-087, DEC-0100 | EXPORT | – | 0 | – | Ikke startet | 2026-10-21 B-087, DEC-0100: Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 5 (batch, kopier, QR, tosidig utskrift og mobiloppslag; migrasjon 0072). |
-| REQ-0881 | Beslutning B-087, DEC-0100 | EXPORT, TIMELINE | – | 0 | – | Ikke startet | 2026-10-21 B-087, DEC-0100: Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 5 (batch, kopier, QR, tosidig utskrift og mobiloppslag; migrasjon 0072). |
+| REQ-0879 | Beslutning B-087, DEC-0100 | EXPORT, PRESENT | src/core/print/job/, src/engine/export/rig-pdf.ts, src/app/rig/PrintJobSection.tsx, db/migrations/0079_rig_print_jobs.sql | 0 | enhet: tests/unit/rigg-r5-job.test.ts 13/13 (A1), DB: tests/db/run-db-tests.ts 0079 (155/155, 2026-10-22), nettleser: tests/visual/rigg-r5.mjs 12/12 nb og en (2026-10-22) | Verifisert | 2026-10-22 B-087: Bygget i rigg runde 5 (migrasjon 0079, ikke 0072 som planlagt); verifisert med enhets-, DB- og nettlesertester. |
+| REQ-0880 | Beslutning B-087, DEC-0100 | EXPORT | src/core/print/job/, src/engine/export/rig-pdf.ts, src/app/rig/PrintJobSection.tsx, db/migrations/0079_rig_print_jobs.sql | 0 | enhet: tests/unit/rigg-r5-job.test.ts 13/13 (A2), DB: tests/db/run-db-tests.ts 0079 (155/155, 2026-10-22), nettleser: tests/visual/rigg-r5.mjs 12/12 nb og en (2026-10-22) | Verifisert | 2026-10-22 B-087: Bygget i rigg runde 5 (migrasjon 0079, ikke 0072 som planlagt); verifisert med enhets-, DB- og nettlesertester. |
+| REQ-0881 | Beslutning B-087, DEC-0100 | EXPORT, TIMELINE | src/core/print/job/, src/engine/export/rig-pdf.ts, src/app/rig/PrintJobSection.tsx, db/migrations/0079_rig_print_jobs.sql | 0 | enhet: tests/unit/rigg-r5-job.test.ts 13/13 (A3), DB: tests/db/run-db-tests.ts 0079 (155/155, 2026-10-22), nettleser: tests/visual/rigg-r5.mjs 12/12 nb og en (2026-10-22) | Verifisert | 2026-10-22 B-087: Bygget i rigg runde 5 (migrasjon 0079, ikke 0072 som planlagt); verifisert med enhets-, DB- og nettlesertester. |
 | REQ-0882 | Beslutning B-087, DEC-0100 | EXPORT, UI | src/core/print/, src/engine/export/rig-pdf.ts, src/app/rig/PrintPanel.tsx | 0 | enhet: tests/unit/print-pdf.test.ts, nettleser: tests/visual/rigg-r4.mjs 12/12 (2026-10-21) | Verifisert | 2026-10-21 B-087: KR-1: bygget i rigg runde 4; status satt etter eksisterende tester (alle grønne 21.10). |
 | REQ-0883 | Beslutning B-087, DEC-0100 | COMPOSE, EXPORT | src/core/print/contour.ts, src/app/rig/contour-client.ts | 0 | enhet: tests/unit/print-contour.test.ts (ikke rektangel ved jevnt dekkende bilde), nettleser: tests/visual/rigg-r2.mjs 17/17 (2026-10-21) | Verifisert | 2026-10-21 B-087: KR-1: bygget i rigg runde 2; status satt etter eksisterende tester (alle grønne 21.10). |
 | REQ-0884 | Beslutning B-087, DEC-0100 | UI | src/app/rig/InspectionWindow.tsx | 0 | nettleser: tests/visual/rigg-r3.mjs 15/15 – inspeksjon uten lagring/utskrift (2026-10-21) | Verifisert | 2026-10-21 B-087: KR-1: bygget i rigg runde 3; status satt etter eksisterende tester (alle grønne 21.10). |
@@ -961,9 +961,9 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0889 | Beslutning B-087, DEC-0100 | UI, CORE | src/core/print/measure.ts | 0 | enhet: tests/unit/print-measure.test.ts (zoomuavhengig over 100 tilfeldige zoom/pan) | Verifisert | 2026-10-21 B-087: KR-1: bygget i rigg runde 3; status satt etter eksisterende tester (alle grønne 21.10). |
 | REQ-0890 | Beslutning B-087, DEC-0100 | EXPORT | src/core/print/, src/engine/export/rig-pdf.ts | 0 | enhet: tests/unit/print-pdf.test.ts (målinger utelatt som standard), nettleser: tests/visual/rigg-r3.mjs (ingen utskrift) | Verifisert | 2026-10-21 B-087: KR-1: bygget i rigg runde 3–4; status satt etter eksisterende tester (alle grønne 21.10). |
 | REQ-0891 | Beslutning B-087, DEC-0100 | CORE, UI | src/core/print/measure.ts, src/app/rig/ | 0 | enhet: tests/unit/print-measure.test.ts (mm og tommer), enhet: tests/unit/print-pdf.test.ts (mm/tommer bevares), nettleser: tests/visual/rigg-r1.mjs 12/12 | Verifisert | 2026-10-21 B-087: KR-1: bygget i rigg runde 1–4; status satt etter eksisterende tester (alle grønne 21.10). |
-| REQ-0892 | Beslutning B-087, DEC-0100 | EXPORT, UI | – | 0 | – | Ikke startet | 2026-10-21 B-087, DEC-0100: Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 5 (batch, kopier, QR, tosidig utskrift og mobiloppslag; migrasjon 0072). |
-| REQ-0893 | Beslutning B-087, DEC-0100 | EXPORT, SECURITY | – | 0 | – | Ikke startet | 2026-10-21 B-087, DEC-0100: Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 5 (batch, kopier, QR, tosidig utskrift og mobiloppslag; migrasjon 0072). |
-| REQ-0894 | Beslutning B-087, DEC-0100 | EXPORT | – | 0 | – | Ikke startet | 2026-10-21 B-087, DEC-0100: Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 4 (PDF-motor i mm, tre moduser, kalibrering og tiling). |
+| REQ-0892 | Beslutning B-087, DEC-0100 | EXPORT, UI | src/core/print/job/, src/engine/export/rig-pdf.ts, src/app/rig/PrintJobSection.tsx, db/migrations/0079_rig_print_jobs.sql | 0 | enhet: tests/unit/rigg-r5-job.test.ts 13/13 (A14), DB: tests/db/run-db-tests.ts 0079 (155/155, 2026-10-22), nettleser: tests/visual/rigg-r5.mjs 12/12 nb og en (2026-10-22) | Verifisert | 2026-10-22 B-087: Bygget i rigg runde 5 (migrasjon 0079, ikke 0072 som planlagt); verifisert med enhets-, DB- og nettlesertester. |
+| REQ-0893 | Beslutning B-087, DEC-0100 | EXPORT, SECURITY | src/core/print/job/, src/engine/export/rig-pdf.ts, src/app/rig/PrintJobSection.tsx, db/migrations/0079_rig_print_jobs.sql | 0 | enhet: tests/unit/rigg-r5-job.test.ts 13/13 (A15), DB: tests/db/run-db-tests.ts 0079 (155/155, 2026-10-22), nettleser: tests/visual/rigg-r5.mjs 12/12 nb og en (2026-10-22) | Verifisert | 2026-10-22 B-087: Bygget i rigg runde 5 (migrasjon 0079, ikke 0072 som planlagt); verifisert med enhets-, DB- og nettlesertester. |
+| REQ-0894 | Beslutning B-087, DEC-0100 | EXPORT | src/core/print/job/, src/engine/export/rig-pdf.ts, src/app/rig/PrintJobSection.tsx, db/migrations/0079_rig_print_jobs.sql | 0 | enhet: tests/unit/rigg-r5-job.test.ts 13/13 (A16), DB: tests/db/run-db-tests.ts 0079 (155/155, 2026-10-22), nettleser: tests/visual/rigg-r5.mjs 12/12 nb og en (2026-10-22), nettleser: tests/visual/rigg-r1.mjs 12/12 (3D-print er deaktivert plassholder) | Verifisert | 2026-10-22 B-087: Bygget i rigg runde 5 (migrasjon 0079, ikke 0072 som planlagt); verifisert med enhets-, DB- og nettlesertester. |
 | REQ-0895 | Beslutning B-087, DEC-0100 | PROCESS | docs/development/TODO_3D_PRINT.md | 1 | tests/unit/todo-3d-print.test.ts: kontrollerer 3D-01–3D-20 og de fire påkrevde feltene | Verifisert | 2026-10-21 B-087, DEC-0100: Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 0 (dokumentasjon: docs/development/TODO_3D_PRINT.md). |
 | REQ-0896 | Beslutning B-087, DEC-0100 | PROVIDER, EXPORT | – | 0 | – | Ikke startet | 2026-10-21 B-087, DEC-0100: Registrert fra B-087 runde 0 som utsatt 3D-arbeid. |
 | REQ-0897 | Beslutning B-087, DEC-0100 | EXPORT, COMPOSE | – | 0 | – | Ikke startet | 2026-10-21 B-087, DEC-0100: Registrert fra B-087 runde 0 som utsatt 3D-arbeid. |

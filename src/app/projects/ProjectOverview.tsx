@@ -13,6 +13,7 @@ import { ProductionList } from "./ProductionList";
 import { MembersSection } from "./MembersSection";
 import { StyleGuideSection } from "./StyleGuideSection";
 import { ProjectTodoBox } from "./ProjectTodoBox";
+import { CopyCodeEntry } from "@/app/print/CopyCodeEntry";
 import { NoteFlagsOverview } from "./NoteFlagsOverview";
 import { QualityProfilesSection } from "./QualityProfilesSection";
 import { MobileImportDialog } from "@/app/mobile/MobileImportDialog";
@@ -88,6 +89,11 @@ export function ProjectOverview({ projectId, userId }: { projectId: string; user
             myName={profiles.data?.[userId]?.display_name ?? ""}
             editable={canEdit(myRole)}
           />
+
+          {/* Rigg R5: kort kode fra en utskrevet figur */}
+          <section aria-label={t("print-job.code-section")} className="mt-6">
+            <CopyCodeEntry projectId={projectId} />
+          </section>
 
           <NoteFlagsOverview state={s} projectId={projectId} names={Object.fromEntries(Object.entries(profiles.data ?? {}).map(([id, p]) => [id, p?.display_name ?? ""]))} />
 

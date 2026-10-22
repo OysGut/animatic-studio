@@ -34,7 +34,8 @@ for (const lang of ["nb", "en"]) {
     await sec.getByTestId("material-update-run").click();
     await sec.getByTestId("material-update-result").waitFor({ timeout: 5000 });
     const call = h.state.rpcs.find((r) => r.name === "generateText")?.body;
-    h.check(call?.task === "general" && /Maja/.test(call?.messages?.[0]?.content ?? ""), "oppdatering: prompten har den endrede linjen");
+    // B-105a: serveren setter sammen prompten; klienten sender den endrede linjen som oppgave
+    h.check(call?.task === "general" && call?.request?.kind === "materialUpdate" && /Maja/.test(JSON.stringify(call?.request?.changes ?? [])), "oppdatering: den endrede linjen sendes til serveren");
     h.check((await sec.getByTestId("material-update-image").count()) >= 1, "oppdatering: bildeforslag vises");
     h.check(h.state.commands.length === 0, "oppdatering: ingenting lagret før valg");
     await sec.getByTestId("material-update-shot").first().getByRole("button").click();

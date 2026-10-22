@@ -52,6 +52,11 @@ export interface GenerateImageInput {
   readonly approved: true;
   /** Kvalitetsprofilen bildet lages med (M8, REQ-0859): øyeblikksbilde i jobbens metadata. */
   readonly qualityProfile?: QualityProfileSnapshot | null;
+  /**
+   * B-105a: innstillingene prompten bygges fra på serveren (maler, stilregler og vedlegg). `prompt` er da
+   * brukerens egen tekst (kan være tom: den automatiske beskrivelsen brukes), og vedleggene beregnes her.
+   */
+  readonly promptRequest?: unknown;
 }
 
 export type GenerateImageResult =
@@ -70,12 +75,13 @@ function validate(d: unknown): GenerateImageInput {
   const projectId = x["projectId"];
   const assetId = x["assetId"];
   const prompt = x["prompt"];
-  const refs = x["referencePaths"];
+  const hasRequest = x["promptRequest"] !== undefined && x["promptRequest"] !== null;
+  const refs = hasRequest ? [] : x["referencePaths"];
   if (typeof projectId !== "string" || !isUuid(projectId))
     throw new Error(t("adapters-ai-generate-image-functions.validate.message.945ebc1deb28"));
   if (typeof assetId !== "string" || !isUuid(assetId))
     throw new Error(t("adapters-ai-generate-image-functions.validate.message.cfa60d63843d"));
-  if (typeof prompt !== "string" || !prompt.trim() || prompt.length > MAX_PROMPT_CHARS)
+  if (typeof prompt !== "string" || (!hasRequest && !prompt.trim()) || prompt.length > MAX_PROMPT_CHARS)
     throw new Error(
       t("adapters-ai-generate-image-functions.validate.message.61920e7c8aa3"),
     );
@@ -131,6 +137,7 @@ function validate(d: unknown): GenerateImageInput {
     upscaleFactor: x["upscaleFactor"] === 4 ? 4 : 2,
     approved: true,
     qualityProfile: parseQualityProfileMeta(x["qualityProfile"]),
+    ...(hasRequest ? { promptRequest: x["promptRequest"] } : {}),
   };
 }
 
@@ -152,6 +159,30 @@ export const generateImage = createServerFn({ method: "POST" })
         message: t("adapters-ai-generate-image-functions.message.message.eec2e586f194"),
       };
 
+    let input: GenerateImageInput = data;
+    if (data.promptRequest !== undefined) {
+      // B-105a: malene og vedleggene settes sammen her, fra prosjektet lest med brukerens tilgang (RLS)
+      const { imagePromptRequest, composeImagePrompt, finalImagePrompt } = await import("./image-prompts.server");
+      const req = imagePromptRequest.safeParse(data.promptRequest);
+      if (!req.success || req.data.assetId !== data.assetId && req.data.kind !== "part")
+        return { ok: false, message: t("adapters-ai-generate-image-functions.validate.message.24c08eed08ff") };
+      const { loadProjectState } = await import("@/adapters/storage/project-rows");
+      const state = await loadProjectState(userDb as never, data.projectId);
+      const c = composeImagePrompt(state, req.data);
+      if (!c) return { ok: false, message: t("adapters-ai-generate-image-functions.validate.message.cfa60d63843d") };
+      const prompt = finalImagePrompt(c, data.prompt);
+      if (!prompt.trim() || prompt.length > MAX_PROMPT_CHARS || c.referencePaths.length > MAX_ATTACHED_IMAGES ||
+        !c.referencePaths.every((r) => validReferencePath(data.projectId, r)))
+        return { ok: false, message: t("adapters-ai-generate-image-functions.validate.message.5536a8eb7feb") };
+      const { promptRequest: _r, ...rest } = data;
+      input = {
+        ...rest,
+        prompt,
+        referencePaths: c.referencePaths,
+        identityFirst: c.identityFirst,
+        ...(c.negative ? { negativePrompt: c.negative } : {}),
+      };
+    }
     const { runImageGeneration } = await import("./image-run.server");
-    return runImageGeneration(data, { userId: context.userId, supabase: context.supabase });
+    return runImageGeneration(input, { userId: context.userId, supabase: context.supabase });
   });

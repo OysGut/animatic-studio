@@ -4,11 +4,12 @@
  * skal unngås og forbildebilder. Brukes i alle bildebeskrivelser. Utkastet kan foreslås fra prosjektet, og
  * forhåndsvisningen viser hvordan en beskrivelse blir.
  */
+import { useImagePromptPreview } from "@/app/library/image-prompt-preview";
 import { useMemo, useState } from "react";
 import { ClipboardList, Loader2, Palette, Plus, ScanSearch, Trash2 } from "lucide-react";
 import { writeImagePrompt } from "@/adapters/ai/write-prompt.functions";
 import { AiGlyph } from "@/app/design/icons/AiGlyph";
-import { STYLE_USES, STYLE_USE_LABEL, type StyleUse, STYLE_FIELD_LIMIT, STYLE_TOTAL_LIMIT, styleGuideLength, buildContextImagePrompt, defaultStyleProfile, emptyStyleGuide, newId, sortedAssets, suggestStyleGuide, versionsOf, type ProjectState, type StyleGuide, type StyleTextField, STYLE_ANALYSIS_KEYS, STYLE_ANALYSIS_LABEL, applyStyleAnalysis, parseStyleAnalysis, styleAnalysisUserText, type StyleAnalysis, type StyleAnalysisKey, collation, tm } from "@/core";
+import { STYLE_USES, STYLE_USE_LABEL, type StyleUse, STYLE_FIELD_LIMIT, STYLE_TOTAL_LIMIT, styleGuideLength, defaultStyleProfile, emptyStyleGuide, newId, sortedAssets, suggestStyleGuide, versionsOf, type ProjectState, type StyleGuide, type StyleTextField, STYLE_ANALYSIS_KEYS, STYLE_ANALYSIS_LABEL, applyStyleAnalysis, parseStyleAnalysis, styleAnalysisUserText, type StyleAnalysis, type StyleAnalysisKey, collation, tm } from "@/core";
 import { GlobalStyleText } from "./GlobalStyleText";
 import { useCommands, type Commands } from "@/app/project/use-commands";
 import { useImageUrls } from "@/app/library/asset-images";
@@ -330,34 +331,15 @@ export function StyleGuideDialog({
   const urls = useImageUrls(candidates.map((c) => c.version.mediaPath)).data ?? {};
 
   // Forhåndsvisning av en beskrivelse med utkastet
-  const preview = useMemo(() => {
-    if (!previewAsset || !main) return "";
-    const pid = profile?.id ?? "preview";
-    const sim: ProjectState = {
-      ...state,
-      // Bare utkastet, så forhåndsvisningen viser akkurat denne profilen
-      styleProfiles: {
-        [pid]: {
-          id: pid as never,
-          revision: 1,
-          name: tk("app-projects-style-guide-section.name.name.814846ecf119"),
-          isDefault: true,
-          guide: draft,
-          removed: false,
-        },
-      },
-    };
-    const va = Object.values(state.assetVariants).find(
-      (v) => v.assetId === previewAsset && !v.archived,
-    );
-    return buildContextImagePrompt(sim, {
-      assetId: previewAsset,
-      variantId: va?.id ?? null,
-      productionId: main.id,
-      occurrenceId: null,
-      withReference: false,
-    });
-  }, [previewAsset, main, profile?.id, state, draft]);
+  // B-105a: eksempelbeskrivelsen bygges på serveren (malene ligger bare der)
+  const preview =
+    useImagePromptPreview(
+      state.project.id,
+      previewAsset && main
+        ? { kind: "styleDraft", assetId: previewAsset, profileId: profile?.id ?? null, guide: draft as unknown as Record<string, unknown> }
+        : null,
+      state,
+    ).data?.prompt ?? "";
 
   function suggest() {
     if (!main) return;

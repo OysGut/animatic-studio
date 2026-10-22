@@ -587,8 +587,11 @@ export const publishVersionToGlobal = createServerFn({ method: "POST" })
     const err = await copyFile(await admin(), v.media_path, to);
     if (err) throw new Error(err);
     // B-105a: de avledede filene følger med til det globale biblioteket
-    const derivedFiles = await copyDerivedFiles(await admin(), v.derived_files, (d) =>
-      globalFilePath(data.workspaceId, globalAssetId, d.sha256, extensionOf(d.path)),
+    const derivedFiles = await copyDerivedFiles(
+      await admin(),
+      v.derived_files,
+      (d) => globalFilePath(data.workspaceId, globalAssetId, d.sha256, extensionOf(d.path)),
+      `${data.projectId}/`,
     );
     const { data: gid, error: e2 } = await db.rpc("global_add_version", {
       p_variant: globalVariantId, p_storage_key: to, p_mime: v.mime_type, p_width: v.width, p_height: v.height,

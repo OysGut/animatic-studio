@@ -31505,6 +31505,177 @@
     "ml4-export-fonts.pdf-blocked": {
       "text": "PDF-fonten ({font}) kan ikke vise {count} tegn i denne språkversjonen: {chars}. De ville blitt «?» i filen, så PDF-eksporten er stoppet. Velg Word eller Fountain, som beholder alle tegn."
     },
+    "print-job.add-frame": {
+      "text": "Denne framen ({frame}) × {count}"
+    },
+    "print-job.add-range": {
+      "text": "Frame X–Y"
+    },
+    "print-job.add-range-n": {
+      "text": "Frame X–Y × {count} kopier hver"
+    },
+    "print-job.code-label": {
+      "text": "Kode fra utskrift"
+    },
+    "print-job.code-open": {
+      "text": "Åpne"
+    },
+    "print-job.code-opening": {
+      "text": "Åpner figuren …"
+    },
+    "print-job.code-section": {
+      "text": "Åpne en utskrevet figur"
+    },
+    "print-job.code-unknown": {
+      "text": "Koden kunne ikke åpnes. Den er ukjent, trukket tilbake, eller du har ikke tilgang."
+    },
+    "print-job.copies": {
+      "text": "Antall kopier"
+    },
+    "print-job.copy-number": {
+      "text": "Skriv kopinummeret på arket"
+    },
+    "print-job.corner-bottom-left": {
+      "text": "Nederst til venstre"
+    },
+    "print-job.corner-bottom-right": {
+      "text": "Nederst til høyre"
+    },
+    "print-job.corner-center": {
+      "text": "Midt på flaten"
+    },
+    "print-job.corner-top-left": {
+      "text": "Øverst til venstre"
+    },
+    "print-job.corner-top-right": {
+      "text": "Øverst til høyre"
+    },
+    "print-job.create": {
+      "text": "Lag PDF"
+    },
+    "print-job.done": {
+      "text": "PDF-en er laget med {count} kopier."
+    },
+    "print-job.duplex": {
+      "text": "Tosidig utskrift"
+    },
+    "print-job.duplex-back": {
+      "text": "Bakside: skalaen ved hvert kryss er i mm."
+    },
+    "print-job.duplex-front": {
+      "text": "Forside: skriv ut tosidig og hold arket mot lyset. Mål hvor mye kryssene på baksiden er forskjøvet."
+    },
+    "print-job.element": {
+      "text": "Frame {frame}"
+    },
+    "print-job.empty": {
+      "text": "Legg til minst ett element"
+    },
+    "print-job.failed": {
+      "text": "Utskriftsjobben kunne ikke lages. Prøv igjen."
+    },
+    "print-job.flip": {
+      "text": "Vend langs"
+    },
+    "print-job.flip-long": {
+      "text": "Lang kant"
+    },
+    "print-job.flip-short": {
+      "text": "Kort kant"
+    },
+    "print-job.frame": {
+      "text": "Ugyldig frame"
+    },
+    "print-job.frame-label": {
+      "text": "Frame {frame} · {time}"
+    },
+    "print-job.from": {
+      "text": "Fra frame"
+    },
+    "print-job.id-text": {
+      "text": "ID-tekst"
+    },
+    "print-job.invalid": {
+      "text": "Ugyldig utskriftsjobb"
+    },
+    "print-job.name": {
+      "text": "Navn på jobben"
+    },
+    "print-job.note": {
+      "text": "Merknad"
+    },
+    "print-job.offset-x": {
+      "text": "Forskyvning x (mm)"
+    },
+    "print-job.offset-y": {
+      "text": "Forskyvning y (mm)"
+    },
+    "print-job.printer": {
+      "text": "Skriver"
+    },
+    "print-job.qr": {
+      "text": "QR-kode"
+    },
+    "print-job.qr-back": {
+      "text": "På baksiden"
+    },
+    "print-job.qr-corner": {
+      "text": "Plassering på figuren"
+    },
+    "print-job.qr-figure": {
+      "text": "På figuren"
+    },
+    "print-job.qr-outside": {
+      "text": "Utenfor figuren"
+    },
+    "print-job.qr-visible": {
+      "text": "QR-koden på figuren blir synlig i opptak."
+    },
+    "print-job.remove": {
+      "text": "Fjern elementet"
+    },
+    "print-job.reopen": {
+      "text": "Åpne «{name}»"
+    },
+    "print-job.reprint": {
+      "text": "Skriv ut på nytt (samme koder)"
+    },
+    "print-job.route-description": {
+      "text": "Åpner figuren fra en utskrift i riktig scene og frame."
+    },
+    "print-job.route-title": {
+      "text": "Utskrevet figur – Pen to Glass"
+    },
+    "print-job.save-label": {
+      "text": "Lagre utskriftsjobb"
+    },
+    "print-job.scale": {
+      "text": "Ugyldig målestokk"
+    },
+    "print-job.shared": {
+      "text": "Felles for hele jobben"
+    },
+    "print-job.sheet": {
+      "text": "Ark {number}"
+    },
+    "print-job.stroke": {
+      "text": "Klippelinjen må være mellom 0,05 og 0,3 mm"
+    },
+    "print-job.test-sheet": {
+      "text": "Testark for tosidig utskrift"
+    },
+    "print-job.title": {
+      "text": "Utskriftsjobb"
+    },
+    "print-job.to": {
+      "text": "Til frame"
+    },
+    "print-job.too-many": {
+      "text": "For mange elementer eller kopier i én jobb"
+    },
+    "print-job.totals": {
+      "text": "{elements} elementer · {copies} kopier · {sheets} ark"
+    },
     "print-measure.error-0": {
       "text": "Ugyldig målepunkt"
     },
@@ -63574,6 +63745,177 @@
     },
     "ml4-export-fonts.pdf-blocked": {
       "text": "The PDF font ({font}) cannot show {count} characters in this language version: {chars}. They would become \"?\" in the file, so the PDF export is stopped. Choose Word or Fountain, which keep every character."
+    },
+    "print-job.add-frame": {
+      "text": "This frame ({frame}) × {count}"
+    },
+    "print-job.add-range": {
+      "text": "Frames X–Y"
+    },
+    "print-job.add-range-n": {
+      "text": "Frames X–Y × {count} copies each"
+    },
+    "print-job.code-label": {
+      "text": "Code from a printout"
+    },
+    "print-job.code-open": {
+      "text": "Open"
+    },
+    "print-job.code-opening": {
+      "text": "Opening the figure …"
+    },
+    "print-job.code-section": {
+      "text": "Open a printed figure"
+    },
+    "print-job.code-unknown": {
+      "text": "The code could not be opened. It is unknown, revoked, or you do not have access."
+    },
+    "print-job.copies": {
+      "text": "Number of copies"
+    },
+    "print-job.copy-number": {
+      "text": "Print the copy number on the sheet"
+    },
+    "print-job.corner-bottom-left": {
+      "text": "Bottom left"
+    },
+    "print-job.corner-bottom-right": {
+      "text": "Bottom right"
+    },
+    "print-job.corner-center": {
+      "text": "Centre of the surface"
+    },
+    "print-job.corner-top-left": {
+      "text": "Top left"
+    },
+    "print-job.corner-top-right": {
+      "text": "Top right"
+    },
+    "print-job.create": {
+      "text": "Create PDF"
+    },
+    "print-job.done": {
+      "text": "The PDF was created with {count} copies."
+    },
+    "print-job.duplex": {
+      "text": "Two-sided printing"
+    },
+    "print-job.duplex-back": {
+      "text": "Back: the scale at each cross is in mm."
+    },
+    "print-job.duplex-front": {
+      "text": "Front: print two-sided and hold the sheet up to the light. Measure how far the crosses on the back are offset."
+    },
+    "print-job.element": {
+      "text": "Frame {frame}"
+    },
+    "print-job.empty": {
+      "text": "Add at least one item"
+    },
+    "print-job.failed": {
+      "text": "The print job could not be created. Try again."
+    },
+    "print-job.flip": {
+      "text": "Flip on"
+    },
+    "print-job.flip-long": {
+      "text": "Long edge"
+    },
+    "print-job.flip-short": {
+      "text": "Short edge"
+    },
+    "print-job.frame": {
+      "text": "Invalid frame"
+    },
+    "print-job.frame-label": {
+      "text": "Frame {frame} · {time}"
+    },
+    "print-job.from": {
+      "text": "From frame"
+    },
+    "print-job.id-text": {
+      "text": "ID text"
+    },
+    "print-job.invalid": {
+      "text": "Invalid print job"
+    },
+    "print-job.name": {
+      "text": "Job name"
+    },
+    "print-job.note": {
+      "text": "Note"
+    },
+    "print-job.offset-x": {
+      "text": "Offset x (mm)"
+    },
+    "print-job.offset-y": {
+      "text": "Offset y (mm)"
+    },
+    "print-job.printer": {
+      "text": "Printer"
+    },
+    "print-job.qr": {
+      "text": "QR code"
+    },
+    "print-job.qr-back": {
+      "text": "On the back"
+    },
+    "print-job.qr-corner": {
+      "text": "Position on the figure"
+    },
+    "print-job.qr-figure": {
+      "text": "On the figure"
+    },
+    "print-job.qr-outside": {
+      "text": "Outside the figure"
+    },
+    "print-job.qr-visible": {
+      "text": "The QR code on the figure will be visible in recordings."
+    },
+    "print-job.remove": {
+      "text": "Remove item"
+    },
+    "print-job.reopen": {
+      "text": "Open “{name}”"
+    },
+    "print-job.reprint": {
+      "text": "Print again (same codes)"
+    },
+    "print-job.route-description": {
+      "text": "Opens the figure from a printout in the right scene and frame."
+    },
+    "print-job.route-title": {
+      "text": "Printed figure – Pen to Glass"
+    },
+    "print-job.save-label": {
+      "text": "Save print job"
+    },
+    "print-job.scale": {
+      "text": "Invalid scale"
+    },
+    "print-job.shared": {
+      "text": "Shared by the whole job"
+    },
+    "print-job.sheet": {
+      "text": "Sheet {number}"
+    },
+    "print-job.stroke": {
+      "text": "The cut line must be between 0.05 and 0.3 mm"
+    },
+    "print-job.test-sheet": {
+      "text": "Two-sided test sheet"
+    },
+    "print-job.title": {
+      "text": "Print job"
+    },
+    "print-job.to": {
+      "text": "To frame"
+    },
+    "print-job.too-many": {
+      "text": "Too many items or copies in one job"
+    },
+    "print-job.totals": {
+      "text": "{elements} items · {copies} copies · {sheets} sheets"
     },
     "print-measure.error-0": {
       "text": "Invalid measurement point"

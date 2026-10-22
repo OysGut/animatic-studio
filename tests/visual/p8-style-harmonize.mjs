@@ -28,7 +28,8 @@ async function harmonizeFlow(page, lang, where) {
   h.check(await h.eventually(() => h.state.rpcs.some((r) => r.name === "generateImage"), 5000), `${where}: genereringen startet etter «Ja»`);
   const call = h.state.rpcs.find((r) => r.name === "generateImage")?.body;
   h.check(call?.approved === true && call?.identityFirst === true, `${where}: bekreftet og identiteten først`);
-  h.check(/Drawing style/.test(call?.prompt ?? "") && /identity/.test(call?.prompt ?? ""), `${where}: prompten har dimensjonene og identitetsinstruksen`);
+  // B-105a: malen (stildimensjoner og identitetsinstruks) settes sammen på serveren; klienten sender bare oppgaven
+  h.check(call?.promptRequest?.kind === "harmonize" && !/Drawing style/.test(JSON.stringify(call?.system ?? "")), `${where}: serveren setter sammen prompten (oppgaven harmonize sendt)`);
   await page.getByTestId("harmonize-compare").waitFor({ timeout: 5000 });
   h.check(await page.getByTestId("harmonize-compare-range").isVisible(), `${where}: skyver i sammenligningen`);
   await page.getByTestId("harmonize-compare-toggle-mode").click();

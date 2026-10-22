@@ -56,3 +56,4 @@ Kortversjonen († = detaljer i `docs/development/AGENTS_DETAILS.md`):
 40. Product name «From Pen to Glass»; b104-product-name.test.ts bans the old name in user text (explicit exceptions); IDs/keys/formats unchanged.
 41. Manifest UI locales use adapter-injected split loading and request-local SSR; core and script/data Lang stay portable.
 42. Image ingestion separates pure size/file-selection policy in core from browser decoding/encoding in adapters, preserving immutable source bytes.
+43. Print jobs (R5) are project data via apply_changes; copies are one row per physical copy, written only by security-definer RPCs with their own pepper, so keys never leave the QR and lookup returns only project/scene/frame/layer/copy number.

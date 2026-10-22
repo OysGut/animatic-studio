@@ -80,6 +80,13 @@ vi.mock("@/adapters/ai/queue.functions", () => ({
 vi.mock("@/adapters/ai/generate-image.functions", () => ({
   generateImage: (a: unknown) => h.image(a),
 }));
+// B-105a: forhåndsvisningen av bildeprompten kommer fra serveren
+vi.mock("@/adapters/ai/image-prompt.functions", () => ({
+  previewImagePrompt: async () => ({
+    ok: true,
+    preview: { prompt: "Design a character for a 2D animated film.", negative: null, summary: null, legendChars: 0, attached: [] },
+  }),
+}));
 vi.mock("@/adapters/ai/write-prompt.functions", () => ({
   writeImagePrompt: (a: unknown) => h.write(a),
 }));
@@ -421,6 +428,7 @@ describe("REQ-0280 REQ-0491 – kostnadsanslaget i bekreftelsene", () => {
     fireEvent.change(screen.getByRole("combobox", { name: "Antall kandidater" }), {
       target: { value: "3" },
     });
+    await screen.findByDisplayValue(/Design a character/); // B-105a: prompten hentes fra serveren
     fireEvent.click(screen.getByRole("button", { name: /^Generer …$/ }));
     const confirm = screen.getByRole("alertdialog", { name: "Bekreft generering" });
     expectSeven(costLines(confirm), {
@@ -432,7 +440,7 @@ describe("REQ-0280 REQ-0491 – kostnadsanslaget i bekreftelsene", () => {
     nothingSent();
   });
 
-  it("REQ-0280: bilde med innebygd Lovable AI – bekreftelsen viser modell, innsatsnivå, oppløsning, antall, ekstrarunder og anslag", () => {
+  it("REQ-0280: bilde med innebygd Lovable AI – bekreftelsen viser modell, innsatsnivå, oppløsning, antall, ekstrarunder og anslag", async () => {
     h.providers = ["lovable"];
     const { state } = seedProject(1);
     const assetId = tid<"asset">();
@@ -469,6 +477,7 @@ describe("REQ-0280 REQ-0491 – kostnadsanslaget i bekreftelsene", () => {
         }),
       ),
     );
+    await screen.findByDisplayValue(/Design a character/); // B-105a: prompten hentes fra serveren
     fireEvent.click(screen.getByRole("button", { name: /^Generer …$/ }));
     const lines = costLines(screen.getByRole("alertdialog", { name: "Bekreft generering" }));
     // Rettet i DEC-0076: modellen serveren velger (frilagt figur) vises med nivå og oppløsning
@@ -687,6 +696,7 @@ describe("REQ-0559 – bildevalget for et lag: velg, last opp eller generer", ()
     h.image.mockResolvedValueOnce({ ok: false, message: "avbrutt i testen" });
     renderLayerDialog(s, layer.id);
     const region = screen.getByRole("region", { name: "Nytt bilde" });
+    await within(region).findByDisplayValue(/Design a character/); // B-105a: prompten hentes fra serveren
     fireEvent.click(within(region).getByRole("button", { name: /^Generer …$/ }));
     const confirm = within(region).getByRole("alertdialog", { name: "Bekreft generering" });
     expect(confirm.textContent).toMatch(/kreditter|belastes/);

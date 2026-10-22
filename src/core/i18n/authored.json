@@ -7709,6 +7709,462 @@
       "en": {
         "text": "Saved derived image files"
       }
+    },
+    "print-job.invalid": {
+      "nb": {
+        "text": "Ugyldig utskriftsjobb"
+      },
+      "en": {
+        "text": "Invalid print job"
+      }
+    },
+    "print-job.empty": {
+      "nb": {
+        "text": "Legg til minst ett element"
+      },
+      "en": {
+        "text": "Add at least one item"
+      }
+    },
+    "print-job.too-many": {
+      "nb": {
+        "text": "For mange elementer eller kopier i én jobb"
+      },
+      "en": {
+        "text": "Too many items or copies in one job"
+      }
+    },
+    "print-job.copies": {
+      "nb": {
+        "text": "Antall kopier"
+      },
+      "en": {
+        "text": "Number of copies"
+      }
+    },
+    "print-job.frame": {
+      "nb": {
+        "text": "Ugyldig frame"
+      },
+      "en": {
+        "text": "Invalid frame"
+      }
+    },
+    "print-job.note": {
+      "nb": {
+        "text": "Merknad"
+      },
+      "en": {
+        "text": "Note"
+      }
+    },
+    "print-job.stroke": {
+      "nb": {
+        "text": "Klippelinjen må være mellom 0,05 og 0,3 mm"
+      },
+      "en": {
+        "text": "The cut line must be between 0.05 and 0.3 mm"
+      }
+    },
+    "print-job.scale": {
+      "nb": {
+        "text": "Ugyldig målestokk"
+      },
+      "en": {
+        "text": "Invalid scale"
+      }
+    },
+    "print-job.title": {
+      "nb": {
+        "text": "Utskriftsjobb"
+      },
+      "en": {
+        "text": "Print job"
+      }
+    },
+    "print-job.name": {
+      "nb": {
+        "text": "Navn på jobben"
+      },
+      "en": {
+        "text": "Job name"
+      }
+    },
+    "print-job.reopen": {
+      "nb": {
+        "text": "Åpne «{name}»"
+      },
+      "en": {
+        "text": "Open “{name}”"
+      }
+    },
+    "print-job.add-frame": {
+      "nb": {
+        "text": "Denne framen ({frame}) × {count}"
+      },
+      "en": {
+        "text": "This frame ({frame}) × {count}"
+      }
+    },
+    "print-job.from": {
+      "nb": {
+        "text": "Fra frame"
+      },
+      "en": {
+        "text": "From frame"
+      }
+    },
+    "print-job.to": {
+      "nb": {
+        "text": "Til frame"
+      },
+      "en": {
+        "text": "To frame"
+      }
+    },
+    "print-job.add-range": {
+      "nb": {
+        "text": "Frame X–Y"
+      },
+      "en": {
+        "text": "Frames X–Y"
+      }
+    },
+    "print-job.add-range-n": {
+      "nb": {
+        "text": "Frame X–Y × {count} kopier hver"
+      },
+      "en": {
+        "text": "Frames X–Y × {count} copies each"
+      }
+    },
+    "print-job.element": {
+      "nb": {
+        "text": "Frame {frame}"
+      },
+      "en": {
+        "text": "Frame {frame}"
+      }
+    },
+    "print-job.remove": {
+      "nb": {
+        "text": "Fjern elementet"
+      },
+      "en": {
+        "text": "Remove item"
+      }
+    },
+    "print-job.shared": {
+      "nb": {
+        "text": "Felles for hele jobben"
+      },
+      "en": {
+        "text": "Shared by the whole job"
+      }
+    },
+    "print-job.qr": {
+      "nb": {
+        "text": "QR-kode"
+      },
+      "en": {
+        "text": "QR code"
+      }
+    },
+    "print-job.qr-outside": {
+      "nb": {
+        "text": "Utenfor figuren"
+      },
+      "en": {
+        "text": "Outside the figure"
+      }
+    },
+    "print-job.qr-figure": {
+      "nb": {
+        "text": "På figuren"
+      },
+      "en": {
+        "text": "On the figure"
+      }
+    },
+    "print-job.qr-back": {
+      "nb": {
+        "text": "På baksiden"
+      },
+      "en": {
+        "text": "On the back"
+      }
+    },
+    "print-job.qr-corner": {
+      "nb": {
+        "text": "Plassering på figuren"
+      },
+      "en": {
+        "text": "Position on the figure"
+      }
+    },
+    "print-job.corner-top-left": {
+      "nb": {
+        "text": "Øverst til venstre"
+      },
+      "en": {
+        "text": "Top left"
+      }
+    },
+    "print-job.corner-top-right": {
+      "nb": {
+        "text": "Øverst til høyre"
+      },
+      "en": {
+        "text": "Top right"
+      }
+    },
+    "print-job.corner-bottom-left": {
+      "nb": {
+        "text": "Nederst til venstre"
+      },
+      "en": {
+        "text": "Bottom left"
+      }
+    },
+    "print-job.corner-bottom-right": {
+      "nb": {
+        "text": "Nederst til høyre"
+      },
+      "en": {
+        "text": "Bottom right"
+      }
+    },
+    "print-job.corner-center": {
+      "nb": {
+        "text": "Midt på flaten"
+      },
+      "en": {
+        "text": "Centre of the surface"
+      }
+    },
+    "print-job.qr-visible": {
+      "nb": {
+        "text": "QR-koden på figuren blir synlig i opptak."
+      },
+      "en": {
+        "text": "The QR code on the figure will be visible in recordings."
+      }
+    },
+    "print-job.copy-number": {
+      "nb": {
+        "text": "Skriv kopinummeret på arket"
+      },
+      "en": {
+        "text": "Print the copy number on the sheet"
+      }
+    },
+    "print-job.id-text": {
+      "nb": {
+        "text": "ID-tekst"
+      },
+      "en": {
+        "text": "ID text"
+      }
+    },
+    "print-job.duplex": {
+      "nb": {
+        "text": "Tosidig utskrift"
+      },
+      "en": {
+        "text": "Two-sided printing"
+      }
+    },
+    "print-job.flip": {
+      "nb": {
+        "text": "Vend langs"
+      },
+      "en": {
+        "text": "Flip on"
+      }
+    },
+    "print-job.flip-long": {
+      "nb": {
+        "text": "Lang kant"
+      },
+      "en": {
+        "text": "Long edge"
+      }
+    },
+    "print-job.flip-short": {
+      "nb": {
+        "text": "Kort kant"
+      },
+      "en": {
+        "text": "Short edge"
+      }
+    },
+    "print-job.printer": {
+      "nb": {
+        "text": "Skriver"
+      },
+      "en": {
+        "text": "Printer"
+      }
+    },
+    "print-job.offset-x": {
+      "nb": {
+        "text": "Forskyvning x (mm)"
+      },
+      "en": {
+        "text": "Offset x (mm)"
+      }
+    },
+    "print-job.offset-y": {
+      "nb": {
+        "text": "Forskyvning y (mm)"
+      },
+      "en": {
+        "text": "Offset y (mm)"
+      }
+    },
+    "print-job.test-sheet": {
+      "nb": {
+        "text": "Testark for tosidig utskrift"
+      },
+      "en": {
+        "text": "Two-sided test sheet"
+      }
+    },
+    "print-job.duplex-front": {
+      "nb": {
+        "text": "Forside: skriv ut tosidig og hold arket mot lyset. Mål hvor mye kryssene på baksiden er forskjøvet."
+      },
+      "en": {
+        "text": "Front: print two-sided and hold the sheet up to the light. Measure how far the crosses on the back are offset."
+      }
+    },
+    "print-job.duplex-back": {
+      "nb": {
+        "text": "Bakside: skalaen ved hvert kryss er i mm."
+      },
+      "en": {
+        "text": "Back: the scale at each cross is in mm."
+      }
+    },
+    "print-job.totals": {
+      "nb": {
+        "text": "{elements} elementer · {copies} kopier · {sheets} ark"
+      },
+      "en": {
+        "text": "{elements} items · {copies} copies · {sheets} sheets"
+      }
+    },
+    "print-job.sheet": {
+      "nb": {
+        "text": "Ark {number}"
+      },
+      "en": {
+        "text": "Sheet {number}"
+      }
+    },
+    "print-job.save-label": {
+      "nb": {
+        "text": "Lagre utskriftsjobb"
+      },
+      "en": {
+        "text": "Save print job"
+      }
+    },
+    "print-job.done": {
+      "nb": {
+        "text": "PDF-en er laget med {count} kopier."
+      },
+      "en": {
+        "text": "The PDF was created with {count} copies."
+      }
+    },
+    "print-job.failed": {
+      "nb": {
+        "text": "Utskriftsjobben kunne ikke lages. Prøv igjen."
+      },
+      "en": {
+        "text": "The print job could not be created. Try again."
+      }
+    },
+    "print-job.create": {
+      "nb": {
+        "text": "Lag PDF"
+      },
+      "en": {
+        "text": "Create PDF"
+      }
+    },
+    "print-job.reprint": {
+      "nb": {
+        "text": "Skriv ut på nytt (samme koder)"
+      },
+      "en": {
+        "text": "Print again (same codes)"
+      }
+    },
+    "print-job.frame-label": {
+      "nb": {
+        "text": "Frame {frame} · {time}"
+      },
+      "en": {
+        "text": "Frame {frame} · {time}"
+      }
+    },
+    "print-job.code-label": {
+      "nb": {
+        "text": "Kode fra utskrift"
+      },
+      "en": {
+        "text": "Code from a printout"
+      }
+    },
+    "print-job.code-open": {
+      "nb": {
+        "text": "Åpne"
+      },
+      "en": {
+        "text": "Open"
+      }
+    },
+    "print-job.code-unknown": {
+      "nb": {
+        "text": "Koden kunne ikke åpnes. Den er ukjent, trukket tilbake, eller du har ikke tilgang."
+      },
+      "en": {
+        "text": "The code could not be opened. It is unknown, revoked, or you do not have access."
+      }
+    },
+    "print-job.code-opening": {
+      "nb": {
+        "text": "Åpner figuren …"
+      },
+      "en": {
+        "text": "Opening the figure …"
+      }
+    },
+    "print-job.code-section": {
+      "nb": {
+        "text": "Åpne en utskrevet figur"
+      },
+      "en": {
+        "text": "Open a printed figure"
+      }
+    },
+    "print-job.route-title": {
+      "nb": {
+        "text": "Utskrevet figur – Pen to Glass"
+      },
+      "en": {
+        "text": "Printed figure – Pen to Glass"
+      }
+    },
+    "print-job.route-description": {
+      "nb": {
+        "text": "Åpner figuren fra en utskrift i riktig scene og frame."
+      },
+      "en": {
+        "text": "Opens the figure from a printout in the right scene and frame."
+      }
     }
   }
 }

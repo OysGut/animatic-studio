@@ -87,6 +87,8 @@ export const BACKUP_STATE_TABLES = [
   "style_preferred_references",
   "language_versions",
   "measure_sets",
+  "print_jobs",
+  "print_job_elements",
   "rig_templates",
   "rig_setups",
 ] as const;
@@ -620,6 +622,8 @@ export function restoredState(
     style_preferred_references: t("style_preferred_references"),
     language_versions: t("language_versions"),
     measure_sets: t("measure_sets"),
+    print_jobs: t("print_jobs"),
+    print_job_elements: t("print_job_elements"),
     rig_templates: t("rig_templates"),
     rig_setups: t("rig_setups"),
   };

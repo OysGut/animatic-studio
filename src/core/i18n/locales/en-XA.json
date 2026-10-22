@@ -74429,5 +74429,176 @@
   },
   "app-library-derived-backfill.label": {
     "text": "[!! SSáávvëëdd ddëërrïïvvëëdd ïïmmáággëë ffïïllëëss !!]"
+  },
+  "print-job.invalid": {
+    "text": "[!! ÏÏnnvváállïïdd pprrïïnntt jjôôbb !!]"
+  },
+  "print-job.empty": {
+    "text": "[!! ÁÁdddd áátt llëëáásstt ôônnëë ïïttëëmm !!]"
+  },
+  "print-job.too-many": {
+    "text": "[!! TTôôôô mmáánnyy ïïttëëmmss ôôrr ccôôppïïëëss ïïnn ôônnëë jjôôbb !!]"
+  },
+  "print-job.copies": {
+    "text": "[!! NNüümmbbëërr ôôff ccôôppïïëëss !!]"
+  },
+  "print-job.frame": {
+    "text": "[!! ÏÏnnvváállïïdd ffrráámmëë !!]"
+  },
+  "print-job.note": {
+    "text": "[!! NNôôttëë !!]"
+  },
+  "print-job.stroke": {
+    "text": "[!! TThhëë ccüütt llïïnnëë mmüüsstt bbëë bbëëttwwëëëënn 0.05 áánndd 0.3 mmmm !!]"
+  },
+  "print-job.scale": {
+    "text": "[!! ÏÏnnvváállïïdd ssccáállëë !!]"
+  },
+  "print-job.title": {
+    "text": "[!! PPrrïïnntt jjôôbb !!]"
+  },
+  "print-job.name": {
+    "text": "[!! JJôôbb nnáámmëë !!]"
+  },
+  "print-job.reopen": {
+    "text": "[!! ÔÔppëënn “{name}” !!]"
+  },
+  "print-job.add-frame": {
+    "text": "[!! TThhïïss ffrráámmëë ({frame}) × {count} !!]"
+  },
+  "print-job.from": {
+    "text": "[!! FFrrôômm ffrráámmëë !!]"
+  },
+  "print-job.to": {
+    "text": "[!! TTôô ffrráámmëë !!]"
+  },
+  "print-job.add-range": {
+    "text": "[!! FFrráámmëëss XX–YY !!]"
+  },
+  "print-job.add-range-n": {
+    "text": "[!! FFrráámmëëss XX–YY × {count} ccôôppïïëëss ëëáácchh !!]"
+  },
+  "print-job.element": {
+    "text": "[!! FFrráámmëë {frame} !!]"
+  },
+  "print-job.remove": {
+    "text": "[!! RRëëmmôôvvëë ïïttëëmm !!]"
+  },
+  "print-job.shared": {
+    "text": "[!! SShháárrëëdd bbyy tthhëë wwhhôôllëë jjôôbb !!]"
+  },
+  "print-job.qr": {
+    "text": "[!! QQRR ccôôddëë !!]"
+  },
+  "print-job.qr-outside": {
+    "text": "[!! ÔÔüüttssïïddëë tthhëë ffïïggüürrëë !!]"
+  },
+  "print-job.qr-figure": {
+    "text": "[!! ÔÔnn tthhëë ffïïggüürrëë !!]"
+  },
+  "print-job.qr-back": {
+    "text": "[!! ÔÔnn tthhëë bbáácckk !!]"
+  },
+  "print-job.qr-corner": {
+    "text": "[!! PPôôssïïttïïôônn ôônn tthhëë ffïïggüürrëë !!]"
+  },
+  "print-job.corner-top-left": {
+    "text": "[!! TTôôpp llëëfftt !!]"
+  },
+  "print-job.corner-top-right": {
+    "text": "[!! TTôôpp rrïïgghhtt !!]"
+  },
+  "print-job.corner-bottom-left": {
+    "text": "[!! BBôôttttôômm llëëfftt !!]"
+  },
+  "print-job.corner-bottom-right": {
+    "text": "[!! BBôôttttôômm rrïïgghhtt !!]"
+  },
+  "print-job.corner-center": {
+    "text": "[!! CCëënnttrrëë ôôff tthhëë ssüürrffááccëë !!]"
+  },
+  "print-job.qr-visible": {
+    "text": "[!! TThhëë QQRR ccôôddëë ôônn tthhëë ffïïggüürrëë wwïïllll bbëë vvïïssïïbbllëë ïïnn rrëëccôôrrddïïnnggss. !!]"
+  },
+  "print-job.copy-number": {
+    "text": "[!! PPrrïïnntt tthhëë ccôôppyy nnüümmbbëërr ôônn tthhëë sshhëëëëtt !!]"
+  },
+  "print-job.id-text": {
+    "text": "[!! ÏÏDD ttëëxxtt !!]"
+  },
+  "print-job.duplex": {
+    "text": "[!! TTwwôô-ssïïddëëdd pprrïïnnttïïnngg !!]"
+  },
+  "print-job.flip": {
+    "text": "[!! FFllïïpp ôônn !!]"
+  },
+  "print-job.flip-long": {
+    "text": "[!! LLôônngg ëëddggëë !!]"
+  },
+  "print-job.flip-short": {
+    "text": "[!! SShhôôrrtt ëëddggëë !!]"
+  },
+  "print-job.printer": {
+    "text": "[!! PPrrïïnnttëërr !!]"
+  },
+  "print-job.offset-x": {
+    "text": "[!! ÔÔffffssëëtt xx (mmmm) !!]"
+  },
+  "print-job.offset-y": {
+    "text": "[!! ÔÔffffssëëtt yy (mmmm) !!]"
+  },
+  "print-job.test-sheet": {
+    "text": "[!! TTwwôô-ssïïddëëdd ttëësstt sshhëëëëtt !!]"
+  },
+  "print-job.duplex-front": {
+    "text": "[!! FFrrôônntt: pprrïïnntt ttwwôô-ssïïddëëdd áánndd hhôôlldd tthhëë sshhëëëëtt üüpp ttôô tthhëë llïïgghhtt. MMëëáássüürrëë hhôôww ffáárr tthhëë ccrrôôssssëëss ôônn tthhëë bbáácckk áárrëë ôôffffssëëtt. !!]"
+  },
+  "print-job.duplex-back": {
+    "text": "[!! BBáácckk: tthhëë ssccáállëë áátt ëëáácchh ccrrôôssss ïïss ïïnn mmmm. !!]"
+  },
+  "print-job.totals": {
+    "text": "[!! {elements} ïïttëëmmss · {copies} ccôôppïïëëss · {sheets} sshhëëëëttss !!]"
+  },
+  "print-job.sheet": {
+    "text": "[!! SShhëëëëtt {number} !!]"
+  },
+  "print-job.save-label": {
+    "text": "[!! SSáávvëë pprrïïnntt jjôôbb !!]"
+  },
+  "print-job.done": {
+    "text": "[!! TThhëë PPDDFF wwááss ccrrëëááttëëdd wwïïtthh {count} ccôôppïïëëss. !!]"
+  },
+  "print-job.failed": {
+    "text": "[!! TThhëë pprrïïnntt jjôôbb ccôôüülldd nnôôtt bbëë ccrrëëááttëëdd. TTrryy áággááïïnn. !!]"
+  },
+  "print-job.create": {
+    "text": "[!! CCrrëëááttëë PPDDFF !!]"
+  },
+  "print-job.reprint": {
+    "text": "[!! PPrrïïnntt áággááïïnn (ssáámmëë ccôôddëëss) !!]"
+  },
+  "print-job.frame-label": {
+    "text": "[!! FFrráámmëë {frame} · {time} !!]"
+  },
+  "print-job.code-label": {
+    "text": "[!! CCôôddëë ffrrôômm áá pprrïïnnttôôüütt !!]"
+  },
+  "print-job.code-open": {
+    "text": "[!! ÔÔppëënn !!]"
+  },
+  "print-job.code-unknown": {
+    "text": "[!! TThhëë ccôôddëë ccôôüülldd nnôôtt bbëë ôôppëënnëëdd. ÏÏtt ïïss üünnkknnôôwwnn, rrëëvvôôkkëëdd, ôôrr yyôôüü ddôô nnôôtt hháávvëë ááccccëëssss. !!]"
+  },
+  "print-job.code-opening": {
+    "text": "[!! ÔÔppëënnïïnngg tthhëë ffïïggüürrëë … !!]"
+  },
+  "print-job.code-section": {
+    "text": "[!! ÔÔppëënn áá pprrïïnnttëëdd ffïïggüürrëë !!]"
+  },
+  "print-job.route-title": {
+    "text": "[!! PPrrïïnnttëëdd ffïïggüürrëë – PPëënn ttôô GGlláássss !!]"
+  },
+  "print-job.route-description": {
+    "text": "[!! ÔÔppëënnss tthhëë ffïïggüürrëë ffrrôômm áá pprrïïnnttôôüütt ïïnn tthhëë rrïïgghhtt ssccëënnëë áánndd ffrráámmëë. !!]"
   }
 }

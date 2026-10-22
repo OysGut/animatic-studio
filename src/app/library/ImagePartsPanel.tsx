@@ -17,12 +17,13 @@ import { Layers, Loader2, Plus, Scissors, Trash2 } from "lucide-react";
 import { AiGlyph } from "@/app/design/icons/AiGlyph";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { ASSET_KIND_LABEL, ASSET_KINDS, buildContextImageBrief, buildPartPrompt, mainProduction, newId, polygonBounds, tm, turnaroundAttachments, withAttachedLegend, type AssetKind, type AssetVersion, type PartAnchor, type PixelBox } from "@/core";
+import { ASSET_KIND_LABEL, ASSET_KINDS, mainProduction, newId, polygonBounds, tm, type AssetKind, type AssetVersion, type PartAnchor, type PixelBox } from "@/core";
 import { generateImage } from "@/adapters/ai/generate-image.functions";
 import { aiJobsKey } from "@/app/ai/use-ai-jobs";
 import { Button } from "@/components/ui/button";
 import { lostConnection } from "./GenerateImagePanel";
 import { CostConfirm, ImageModelFields, PromptPreview } from "./ImageAiPanels";
+import { useImagePromptPreview } from "./image-prompt-preview";
 import { useImageModel } from "./image-model";
 import type { LightboxPart, LightboxTools } from "./ImageLightbox";
 import {
@@ -461,38 +462,19 @@ function AiParts({
   const names = rows.map((r) => r.name.trim()).filter(Boolean);
   const examples = [tk("app-library-image-parts-panel.examples.message.3a0118fea91a"), tk("app-library-image-parts-panel.examples.message.6ef0e4c072f3")];
 
-  function request(part: string) {
-    if (!main) return null;
-    // Originalen (identitet) og stilforbilder
-    const attached = turnaroundAttachments(state, {
-      assetId: asset.id,
-      productionId: main.id,
-      identityVersionId: version.id,
-      style: withStyle,
-    }).filter((a) => a.role !== "view");
-    const brief = buildContextImageBrief(state, {
-      assetId: asset.id,
-      variantId: version.variantId,
-      productionId: main.id,
-      occurrenceId: null,
-      withReference: true,
-      attached,
-      family: m.family,
-      transparent: !!m.model?.transparent,
-    });
-    if (!brief) return null;
-    const r = buildPartPrompt(brief, part, names, m.family);
-    return {
-      attached,
-      prompt: withAttachedLegend(r.prompt, asset.name, attached),
-      negative: r.negative,
-    };
-  }
-  const preview = useMemo(
-    () => (names.length ? request(names[0]!) : null),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [state, rows, withStyle, m.key],
-  );
+  // B-105a: prompten og vedleggene bygges på serveren
+  const promptRequest = (part: string) => ({
+    kind: "part" as const,
+    assetId: asset.id,
+    versionId: version.id,
+    part,
+    others: names,
+    style: withStyle,
+    family: m.family,
+    transparent: !!m.model?.transparent,
+  });
+  const preview =
+    useImagePromptPreview(projectId, main && names.length ? promptRequest(names[0]!) : null, state).data ?? null;
 
   async function run() {
     if (!m.choice) return;
@@ -507,8 +489,7 @@ function AiParts({
         setBusy(
           tk("app-library-image-parts-panel.run.set-busy.7bd5665bbe4c", { partName: String(partName), value2: String(i + 1), length: String(todo.length) }),
         );
-        const req = request(partName);
-        if (!req)
+        if (!main)
           throw new Error(
             tk("app-library-image-parts-panel.run.message.7968b741a95e"),
           );
@@ -527,15 +508,15 @@ function AiParts({
           data: {
             projectId,
             assetId: c.assetId,
-            prompt: req.prompt,
-            referencePaths: req.attached.map((a) => a.path),
+            prompt: "",
+            referencePaths: [],
             identityFirst: true,
+            promptRequest: promptRequest(partName),
             purpose: "cutout",
             variantId: c.variantId,
             provider: choice.provider.id,
             model: choice.provider.id === "lovable" ? null : choice.model.id,
             size: m.size,
-            ...(req.negative ? { negativePrompt: req.negative } : {}),
             approved: true,
           },
         });

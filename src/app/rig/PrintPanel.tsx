@@ -8,12 +8,16 @@ import { useUiPref } from '@/app/account/ui-prefs';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/app/i18n/language';
 import { PrintAnnotations } from './PrintAnnotations';
+import { PrintJobSection } from './PrintJobSection';
+import type { Command } from '@/core';
 
 const validFields = (v: unknown): v is Record<string, boolean> => !!v && typeof v === 'object' && Object.values(v).every(x => typeof x === 'boolean');
 type Paper = 'A4' | 'A3' | 'A5' | 'Letter' | 'Legal' | 'custom';
-export function PrintPanel({ state, layer, spec, frame, contour, url, mode, width, height, pixels, unit }: {
+export function PrintPanel({ state, layer, spec, frame, contour, url, mode, width, height, pixels, unit, onSave, editable = true }: {
   state: ProjectState; layer: CompositionLayer; spec: MultiplaneRigSpec; frame: number; contour: ContourResult | null;
   url: string | undefined | null; mode: string; width: number; height: number; pixels: {width:number;height:number}|null; unit:'mm'|'in';
+  /** Rigg R5: utskriftsjobber lagres som kommandoer. */
+  onSave?: (c: Command, label: string) => string | null; editable?: boolean;
 }) {
   const lang = useLanguage();
   const [fields, setFields] = useUiPref<Record<string, boolean>>('rigPrintFields', {}, validFields);
@@ -67,21 +71,22 @@ export function PrintPanel({ state, layer, spec, frame, contour, url, mode, widt
   const plan=planned.plan;
   const enabled=(key:string)=>fields[key]!==false;
   const toggle=(key:string,value:boolean)=>setFields({...fields,[key]:value});
+  const loadImage=async():Promise<NonNullable<PrintItem['image']>>=>{
+    if(!url)throw new Error();
+    const response=await fetch(url);if(!response.ok)throw new Error();
+    const blob=await response.blob();
+    // WebP is losslessly decoded to PNG at exactly the original pixel dimensions.
+    let data:Uint8Array, format:'PNG'|'JPEG';
+    if(blob.type==='image/png'||blob.type==='image/jpeg'){data=new Uint8Array(await blob.arrayBuffer());format=blob.type==='image/png'?'PNG':'JPEG';}
+    else {const bitmap=await createImageBitmap(blob);try{const canvas=document.createElement('canvas');canvas.width=bitmap.width;canvas.height=bitmap.height;const ctx=canvas.getContext('2d');if(!ctx)throw new Error();ctx.drawImage(bitmap,0,0);const png=await new Promise<Blob>((resolve,reject)=>canvas.toBlob(b=>b?resolve(b):reject(new Error()),'image/png'));data=new Uint8Array(await png.arrayBuffer());format='PNG';}finally{bitmap.close();}}
+    return {data,format,widthPx:pixels?.width??1,heightPx:pixels?.height??1};
+  };
   const create=async()=>{
     if(!contour||!plan)return;
     setBusy(true);setError(false);
     try {
       let printable=item;
-      if(printMode!=='contour') {
-        if(!url)throw new Error();
-        const response=await fetch(url);if(!response.ok)throw new Error();
-        const blob=await response.blob();
-        // WebP is losslessly decoded to PNG at exactly the original pixel dimensions.
-        let data:Uint8Array, format:'PNG'|'JPEG';
-        if(blob.type==='image/png'||blob.type==='image/jpeg'){data=new Uint8Array(await blob.arrayBuffer());format=blob.type==='image/png'?'PNG':'JPEG';}
-        else {const bitmap=await createImageBitmap(blob);try{const canvas=document.createElement('canvas');canvas.width=bitmap.width;canvas.height=bitmap.height;const ctx=canvas.getContext('2d');if(!ctx)throw new Error();ctx.drawImage(bitmap,0,0);const png=await new Promise<Blob>((resolve,reject)=>canvas.toBlob(b=>b?resolve(b):reject(new Error()),'image/png'));data=new Uint8Array(await png.arrayBuffer());format='PNG';}finally{bitmap.close();}}
-        printable={...item,image:{data,format,widthPx:pixels?.width??1,heightPx:pixels?.height??1}};
-      }
+      if(printMode!=='contour') printable={...item,image:await loadImage()};
       renderPdf(planPrint({...input,items:[printable]})).save(`${layer.name.replace(/[^\p{L}\p{N}_-]/gu,'_')}-${frame}.pdf`);
     }catch{setError(true);}finally{setBusy(false);}
   };
@@ -107,5 +112,6 @@ export function PrintPanel({ state, layer, spec, frame, contour, url, mode, widt
     </svg>)}</div></>}
     {(error||planned.failed)&&<p role="alert">{t('app-print.failure')}</p>}
     <Button data-testid="print-create-pdf" disabled={busy||!contour||!plan||(printMode!=='contour'&&!pixels)} onClick={()=>void create()}>{busy?t('app-print.busy'):t('app-print.create')}</Button>
+    {onSave&&contour&&<PrintJobSection state={state} layer={layer} frame={frame} baseItem={item} input={{paper:input.paper??'A4',orientation,margins,technicalReference:false,language:lang,...(calibrate?{calibration:{unit,length}}:{})}} loadImage={loadImage} onSave={onSave} editable={editable} sceneLabel={options.find(f=>f.key==='scene')?.value||layer.name}/>}
   </section>;
 }

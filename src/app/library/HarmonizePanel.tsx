@@ -8,7 +8,7 @@
 import { Globe, Loader2, Palette, Star } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { tm, buildHarmonizePrompt, harmonizeAttachments, harmonizeNote, harmonizedVariantName, harmonizationOf, HARMONIZE_IDENTITY_WARNING, newId, preferredStyleReference, profileChoice, qualityProfileSnapshot, withAttachedLegend, type AssetMedia, type AssetVersion, type HarmonizationUse, type StyleHarmonizationFields } from "@/core";
+import { tm, harmonizeNote, harmonizedVariantName, harmonizationOf, HARMONIZE_IDENTITY_WARNING, newId, preferredStyleReference, profileChoice, qualityProfileSnapshot, type AssetMedia, type AssetVersion, type HarmonizationUse, type StyleHarmonizationFields } from "@/core";
 import { generateImage } from "@/adapters/ai/generate-image.functions";
 import { publishVersionToGlobal, saveAssetToGlobal, setGlobalVersionWithdrawn } from "@/adapters/global/global-library.functions";
 import { registerHistoryEffect } from "@/app/project/use-commands";
@@ -21,6 +21,7 @@ import { lostConnection } from "./GenerateImagePanel";
 import { CostConfirm, ImageModelFields, PromptPreview } from "./ImageAiPanels";
 import { HarmonizeCompare } from "./HarmonizeCompare";
 import { HarmonizeBatchPanel } from "./HarmonizeBatchPanel";
+import { useImagePromptPreview } from "./image-prompt-preview";
 import { useImageModel } from "./image-model";
 import { useImageUrls } from "./asset-images";
 import type { LightboxTools } from "./ImageLightbox";
@@ -101,13 +102,9 @@ export function HarmonizePanel({
     styleProfileId: source === "profile" && profileId ? profileId : null,
     referenceVersionId: source === "reference" && referenceId ? referenceId : null,
   };
-  const preview = useMemo(() => {
-    const prompt = buildHarmonizePrompt(state, input);
-    if (!prompt) return null;
-    const attached = harmonizeAttachments(state, input);
-    return { prompt: withAttachedLegend(prompt, asset.name, attached), negative: null, attached };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state, input.styleProfileId, input.referenceVersionId, version.id]);
+  // B-105a: prompten bygges på serveren; her vises bare forhåndsvisningen
+  const promptRequest = { kind: "harmonize" as const, ...input };
+  const preview = useImagePromptPreview(projectId, promptRequest, state).data ?? null;
   const profileName = input.styleProfileId ? (state.styleProfiles[input.styleProfileId]?.name ?? null) : null;
   const urls = useImageUrls([version.mediaPath, ...(pending ? [pending.media.path] : [])]);
   const existing = harmonizationOf(state, version.id);
@@ -126,8 +123,9 @@ export function HarmonizePanel({
         data: {
           projectId,
           assetId: asset.id,
-          prompt: preview.prompt,
-          referencePaths: preview.attached.map((a) => a.path),
+          prompt: "",
+          referencePaths: [],
+          promptRequest,
           identityFirst: true,
           purpose: "cutout",
           variantId: null,

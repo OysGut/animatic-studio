@@ -1,3 +1,4 @@
+import { DEFAULT_JOB_SETTINGS as DEFAULT_JOB_SETTINGS_FOR_ROWS } from "./print/job";
 import type { TranslationLineLink, TranslationLine } from "./translation/line-align-prompt";
 import type { LanguageVersion } from "./translation/language-versions";
 import type { StyleHarmonization, StylePreferredReference } from "./generation/style-harmonize";
@@ -512,6 +513,14 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
       const r = e as unknown as import("./print/measure/commands").StoredMeasureSet;
       return { ...base, layer_id: r.layerId, frame: r.frame, name: r.name, markers: r.markers, created_at: r.createdAt, removed: r.removed };
     }
+    case "printJobs": {
+      const r = e as unknown as import("./print/job/commands").StoredPrintJob;
+      return { ...base, name: r.name, settings: r.settings, removed: r.removed };
+    }
+    case "printJobElements": {
+      const r = e as unknown as import("./print/job/commands").StoredPrintJobElement;
+      return { ...base, job_id: r.jobId, position: r.position, layer_id: r.layerId, version_id: r.versionId, scene_id: r.sceneId, frame: r.frame, mask_id: r.maskId, copies: r.copies, note: r.note, up_arrow: r.upArrow, removed: r.removed };
+    }
     case "rigTemplates": {
       const r = e as unknown as import("./rig/multiplane").RigTemplate;
       return { ...base, name: r.name, spec: r.spec, removed: r.removed };
@@ -799,6 +808,8 @@ export const TABLE_ORDER: readonly string[] = [
   "credit_sequences",
   "composition_layers",
   "measure_sets",
+  "print_jobs",
+  "print_job_elements",
   "animation_uses",
   "lipsync_results",
   "animation_patterns",
@@ -969,6 +980,9 @@ export interface ProjectRows {
   readonly style_preferred_references?: readonly Row[];
   /** Rigg & 2D-utskrift (B-087, migrasjon 0071). Tomt hvis migrasjonen ikke er kjørt ennå. */
   readonly measure_sets?: readonly Row[];
+  /** Rigg runde 5 (0079). Tomt hvis migrasjonen ikke er kjørt ennå. */
+  readonly print_jobs?: readonly Row[];
+  readonly print_job_elements?: readonly Row[];
   readonly rig_templates?: readonly Row[];
   readonly rig_setups?: readonly Row[];
 }
@@ -1679,6 +1693,8 @@ export function stateFromRows(r: ProjectRows): ProjectState {
     styleHarmonizations: byId((r.style_harmonizations ?? []).map((x): StyleHarmonization => ({id:str(x["id"]),revision:num(x["revision"]),versionId:str(x["version_id"]),sourceVersionId:str(x["source_version_id"]),model:str(x["model"]),qualityProfile:(x["quality_profile"] ?? null) as StyleHarmonization["qualityProfile"],styleProfileId:optStr(x["style_profile_id"]),referenceVersionId:optStr(x["reference_version_id"]),use:str(x["use"]) as StyleHarmonization["use"],note:str(x["note"]),removed:x["removed"]===true}))),
     stylePreferredReferences: byId((r.style_preferred_references ?? []).map((x): StylePreferredReference => ({id:str(x["id"]),revision:num(x["revision"]),assetId:str(x["asset_id"]),styleProfileId:str(x["style_profile_id"]),variantId:str(x["variant_id"]),removed:x["removed"]===true}))),
     measureSets: byId((r.measure_sets ?? []).map((x): import("./print/measure/commands").StoredMeasureSet => ({ id:str(x["id"]), revision:num(x["revision"]), layerId:str(x["layer_id"]), frame:num(x["frame"]), name:str(x["name"]), markers:(json(x["markers"]) ?? []) as never, createdAt:str(x["created_at"]), removed:x["removed"]===true }))),
+    printJobs: byId((r.print_jobs ?? []).map((x): import("./print/job/commands").StoredPrintJob => ({ id:str(x["id"]), revision:num(x["revision"]), name:str(x["name"]), settings:{ ...DEFAULT_JOB_SETTINGS_FOR_ROWS, ...((json(x["settings"]) ?? {}) as object) } as never, createdAt:str(x["created_at"]), removed:x["removed"]===true }))),
+    printJobElements: byId((r.print_job_elements ?? []).map((x): import("./print/job/commands").StoredPrintJobElement => ({ id:str(x["id"]), revision:num(x["revision"]), jobId:str(x["job_id"]), position:num(x["position"]), layerId:str(x["layer_id"]), versionId:str(x["version_id"]), sceneId:str(x["scene_id"]), frame:num(x["frame"]), maskId:optStr(x["mask_id"]) ?? null, copies:num(x["copies"]), note:str(x["note"] ?? ""), upArrow:x["up_arrow"]===true, removed:x["removed"]===true }))),
     rigTemplates: byId((r.rig_templates ?? []).map((x): import("./rig/multiplane").RigTemplate => ({id:str(x["id"]) as never,revision:num(x["revision"]),name:str(x["name"] ?? ""),spec:(json(x["spec"]) ?? {}) as never,removed:x["removed"]===true}))),
     rigSetups: byId((r.rig_setups ?? []).map((x): import("./rig/multiplane").RigSetup => ({id:str(x["id"]) as never,revision:num(x["revision"]),sceneId:optStr(x["scene_id"]) as never,templateId:optStr(x["template_id"]) as never,name:str(x["name"] ?? ""),spec:(json(x["spec"]) ?? {}) as never,removed:x["removed"]===true}))),
     translations: byId(
