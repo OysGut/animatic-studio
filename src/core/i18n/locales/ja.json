@@ -54203,17 +54203,17 @@
   },
   "ptg7.export": {
     "text": "NukeとFusion",
-    "sourceHash": "e978932ab9f526dfd27862b45ee619731c830fc1056f5cf96f933c7778b16f31",
+    "sourceHash": "a5d3ce34cd3466a5ccb3b3b8938996f8c3b3d599005d1b216ed207001c54fd62",
     "review": "machine"
   },
   "ptg7.no-rig": {
     "text": "{shot}：有効なリグがないため、3DカメラなしのTransformノードによる2D構成です。",
-    "sourceHash": "4e5c7697890a04c569a8fc45b4db1f931e8b7fe64f5184a51a4aadeb3701263a",
+    "sourceHash": "d17fc60d692b1103909585803e7a0903807c0da48878a5627fe38a365d778fba",
     "review": "machine"
   },
   "ptg7.readme": {
     "text": "NukeとFusion：ZIP全体を展開し、ショットの.nkまたは.compを開いてください。メディアパスはショットフォルダーからの相対パスです。必要に応じて作業フォルダーを設定してください。世界座標の単位はミリメートル、Yは上、カメラは負のZ方向です。Card2はNukeの従来の3D平面で、2D投影ノードCard3Dではありません。視野と位置は各フレームでモデルに従い、2コマ撮りは保持されます。FusionはImagePlane3Dを使用します。AIは使用しません。制作前にNukeとFusionで実際の読み込みを確認してください。",
-    "sourceHash": "4242cec2379ffc96e63aa1dc6a7110b40897a37bdee2bb6b88c46050eb6b7d6a",
+    "sourceHash": "91c4835a00a2ee793d2ac81a95dbb133a02adb09f77728184328dcb30165cea7",
     "review": "machine"
   },
   "r1-prores-offer.accept": {

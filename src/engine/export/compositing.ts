@@ -11,7 +11,7 @@ export async function exportCompositing(o: {
   const used = new Set(o.doc.shots.flatMap(s => s.layers.flatMap(l => [l.fileId, ...l.swaps.map(w => w.fileId)].filter((id): id is string => !!id))));
   const entries = o.doc.references.filter(r => used.has(r.id)).map(r => ({ path: r.path, mediaPath: r.mediaPath, byteSize: r.byteSize }));
   async function* files() {
-    for (const file of compositingFiles(o.doc)) yield file;
+    for (const file of compositingFiles(o.doc)) yield { path: file.path, data: new TextEncoder().encode(file.data) };
     yield { path: 'LESMEG.txt', data: interchangeReadme([
       t('ptg7.readme', {}, 'nb'), t('ptg7.readme', {}, 'en'),
       ...o.doc.shots.filter(s => !s.camera).flatMap(s => [t('ptg7.no-rig', { shot: s.name }, 'nb'), t('ptg7.no-rig', { shot: s.name }, 'en')]),

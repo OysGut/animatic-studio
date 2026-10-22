@@ -54347,17 +54347,17 @@
   },
   "ptg7.export": {
     "text": "Nuke y Fusion",
-    "sourceHash": "e978932ab9f526dfd27862b45ee619731c830fc1056f5cf96f933c7778b16f31",
+    "sourceHash": "a5d3ce34cd3466a5ccb3b3b8938996f8c3b3d599005d1b216ed207001c54fd62",
     "review": "machine"
   },
   "ptg7.no-rig": {
     "text": "{shot}: sin equipo válido; configuración 2D con nodos Transform, sin cámara 3D.",
-    "sourceHash": "4e5c7697890a04c569a8fc45b4db1f931e8b7fe64f5184a51a4aadeb3701263a",
+    "sourceHash": "d17fc60d692b1103909585803e7a0903807c0da48878a5627fe38a365d778fba",
     "review": "machine"
   },
   "ptg7.readme": {
     "text": "Nuke y Fusion: extraiga todo el ZIP y abra el .nk o .comp del plano. Las rutas son relativas a la carpeta del plano; úsela como directorio de trabajo si es necesario. Unidades: milímetros, Y arriba, cámara hacia Z negativo. Card2 es la tarjeta 3D clásica de Nuke, no el nodo de proyección 2D Card3D. El campo de visión y la posición siguen el modelo en cada fotograma; se mantienen las exposiciones a doses. Fusion usa ImagePlane3D. No se usa IA. Compruebe la importación real en Nuke y Fusion antes de producción.",
-    "sourceHash": "4242cec2379ffc96e63aa1dc6a7110b40897a37bdee2bb6b88c46050eb6b7d6a",
+    "sourceHash": "91c4835a00a2ee793d2ac81a95dbb133a02adb09f77728184328dcb30165cea7",
     "review": "machine"
   },
   "r1-prores-offer.accept": {

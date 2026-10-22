@@ -54203,17 +54203,17 @@
   },
   "ptg7.export": {
     "text": "Nuke 및 Fusion",
-    "sourceHash": "e978932ab9f526dfd27862b45ee619731c830fc1056f5cf96f933c7778b16f31",
+    "sourceHash": "a5d3ce34cd3466a5ccb3b3b8938996f8c3b3d599005d1b216ed207001c54fd62",
     "review": "machine"
   },
   "ptg7.no-rig": {
     "text": "{shot}: 유효한 리그가 없어 3D 카메라 없이 Transform 노드로 구성한 2D 설정입니다.",
-    "sourceHash": "4e5c7697890a04c569a8fc45b4db1f931e8b7fe64f5184a51a4aadeb3701263a",
+    "sourceHash": "d17fc60d692b1103909585803e7a0903807c0da48878a5627fe38a365d778fba",
     "review": "machine"
   },
   "ptg7.readme": {
     "text": "Nuke 및 Fusion: ZIP 전체를 풀고 쇼트의 .nk 또는 .comp를 여세요. 미디어 경로는 쇼트 폴더 기준 상대 경로입니다. 필요하면 작업 폴더를 지정하세요. 월드 단위는 밀리미터, Y는 위쪽, 카메라는 음의 Z 방향입니다. Card2는 Nuke의 기존 3D 평면이며 2D 투영 노드 Card3D가 아닙니다. 시야와 위치는 프레임마다 모델을 따르며 두 프레임 노출은 유지됩니다. Fusion은 ImagePlane3D를 사용합니다. AI는 사용하지 않습니다. 제작 전에 Nuke와 Fusion에서 실제 가져오기를 확인하세요.",
-    "sourceHash": "4242cec2379ffc96e63aa1dc6a7110b40897a37bdee2bb6b88c46050eb6b7d6a",
+    "sourceHash": "91c4835a00a2ee793d2ac81a95dbb133a02adb09f77728184328dcb30165cea7",
     "review": "machine"
   },
   "r1-prores-offer.accept": {
