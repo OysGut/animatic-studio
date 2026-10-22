@@ -24542,6 +24542,228 @@
     "b115.privacy.terms.heading": {
       "text": "Vilkår for bruk og ansvarsfraskrivelse"
     },
+    "b116.admin.approval": {
+      "text": "Krev godkjenning før bidrag vises"
+    },
+    "b116.admin.approve": {
+      "text": "Godkjenn"
+    },
+    "b116.admin.empty": {
+      "text": "Ingen bidrag venter."
+    },
+    "b116.admin.failed": {
+      "text": "Handlingen feilet."
+    },
+    "b116.admin.reject": {
+      "text": "Avvis"
+    },
+    "b116.admin.title": {
+      "text": "Utstillingsvindu"
+    },
+    "b116.box.hint": {
+      "text": "Velg én ting fra et eget prosjekt – en karakter, en ressurs, en kort scene, et manusutdrag eller en lydbit."
+    },
+    "b116.box.mine": {
+      "text": "Mine delinger"
+    },
+    "b116.box.profile": {
+      "text": "Rediger profil"
+    },
+    "b116.box.share": {
+      "text": "Del noe"
+    },
+    "b116.box.title": {
+      "text": "Vil du vise frem litt av hva du jobber med?"
+    },
+    "b116.cancel": {
+      "text": "Avbryt"
+    },
+    "b116.card.by": {
+      "text": "av {name}"
+    },
+    "b116.carousel.aria": {
+      "text": "Utstillingsvindu"
+    },
+    "b116.carousel.next": {
+      "text": "Neste"
+    },
+    "b116.carousel.prev": {
+      "text": "Forrige"
+    },
+    "b116.close": {
+      "text": "Lukk"
+    },
+    "b116.comments.empty": {
+      "text": "Ingen kommentarer ennå."
+    },
+    "b116.comments.failed": {
+      "text": "Noe gikk galt. Prøv igjen."
+    },
+    "b116.comments.login": {
+      "text": "Logg inn for å kommentere."
+    },
+    "b116.comments.placeholder": {
+      "text": "Skriv en kommentar …"
+    },
+    "b116.comments.remove": {
+      "text": "Fjern"
+    },
+    "b116.comments.submit": {
+      "text": "Kommenter"
+    },
+    "b116.comments.title": {
+      "text": "Kommentarer"
+    },
+    "b116.create.back": {
+      "text": "Tilbake"
+    },
+    "b116.create.empty": {
+      "text": "Ingenting å velge her ennå."
+    },
+    "b116.create.excerptLabel": {
+      "text": "Manusutdrag (noen få replikker)"
+    },
+    "b116.create.excerptWarning": {
+      "text": "Teksten blir offentlig. Del bare det du vil at alle skal kunne lese."
+    },
+    "b116.create.expires": {
+      "text": "Synlig i"
+    },
+    "b116.create.failed": {
+      "text": "Kunne ikke dele. Prøv igjen."
+    },
+    "b116.create.kind": {
+      "text": "Hva vil du dele?"
+    },
+    "b116.create.liveNotice": {
+      "text": "Takk! Bidraget vises nå i karusellen."
+    },
+    "b116.create.pendingNotice": {
+      "text": "Takk! Bidraget venter på godkjenning før det vises."
+    },
+    "b116.create.preview": {
+      "text": "Forhåndsvisning"
+    },
+    "b116.create.previewHint": {
+      "text": "Slik vil bidraget se ut i karusellen."
+    },
+    "b116.create.project": {
+      "text": "Prosjekt"
+    },
+    "b116.create.submit": {
+      "text": "Del"
+    },
+    "b116.create.textLabel": {
+      "text": "Om filmprosjektet og deg selv (valgfritt)"
+    },
+    "b116.create.title": {
+      "text": "Del i utstillingsvinduet"
+    },
+    "b116.create.titleLabel": {
+      "text": "Tittel"
+    },
+    "b116.expires.14": {
+      "text": "2 uker"
+    },
+    "b116.expires.30": {
+      "text": "1 måned"
+    },
+    "b116.expires.7": {
+      "text": "1 uke"
+    },
+    "b116.expires.90": {
+      "text": "3 måneder"
+    },
+    "b116.kind.asset": {
+      "text": "Ressurs"
+    },
+    "b116.kind.audio": {
+      "text": "Lydbit"
+    },
+    "b116.kind.character": {
+      "text": "Karakter"
+    },
+    "b116.kind.scene": {
+      "text": "Kort scene"
+    },
+    "b116.kind.script": {
+      "text": "Manusutdrag"
+    },
+    "b116.loading": {
+      "text": "Laster …"
+    },
+    "b116.mine.edit": {
+      "text": "Endre"
+    },
+    "b116.mine.empty": {
+      "text": "Du har ikke delt noe ennå."
+    },
+    "b116.mine.expiresAt": {
+      "text": "Synlig til {date}"
+    },
+    "b116.mine.revoke": {
+      "text": "Trekk tilbake"
+    },
+    "b116.mine.revokeConfirm": {
+      "text": "Trekk tilbake bidraget? Det forsvinner fra karusellen."
+    },
+    "b116.mine.save": {
+      "text": "Lagre"
+    },
+    "b116.mine.title": {
+      "text": "Mine delinger"
+    },
+    "b116.profile.avatar": {
+      "text": "Avatar"
+    },
+    "b116.profile.avatarChoose": {
+      "text": "Velg bilde"
+    },
+    "b116.profile.bio": {
+      "text": "Om deg selv"
+    },
+    "b116.profile.handle": {
+      "text": "Kortnavn (handle)"
+    },
+    "b116.profile.public": {
+      "text": "Vis profilen offentlig"
+    },
+    "b116.profile.save": {
+      "text": "Lagre profil"
+    },
+    "b116.profile.saved": {
+      "text": "Profilen er lagret."
+    },
+    "b116.profile.title": {
+      "text": "Profilen din"
+    },
+    "b116.report": {
+      "text": "Rapporter"
+    },
+    "b116.report.sent": {
+      "text": "Takk for meldingen."
+    },
+    "b116.route.description": {
+      "text": "Alt du har delt i utstillingsvinduet, med status."
+    },
+    "b116.route.title": {
+      "text": "Mine delinger – From Pen to Glass"
+    },
+    "b116.status.expired": {
+      "text": "Utløpt"
+    },
+    "b116.status.live": {
+      "text": "Synlig"
+    },
+    "b116.status.pending": {
+      "text": "Venter godkjenning"
+    },
+    "b116.status.rejected": {
+      "text": "Avvist"
+    },
+    "b116.status.revoked": {
+      "text": "Trukket tilbake"
+    },
     "b117.city.choose": {
       "text": "Velg by (valgfritt) …"
     },
@@ -57436,6 +57658,228 @@
     },
     "b115.privacy.terms.heading": {
       "text": "Terms of use and disclaimer"
+    },
+    "b116.admin.approval": {
+      "text": "Require approval before contributions are shown"
+    },
+    "b116.admin.approve": {
+      "text": "Approve"
+    },
+    "b116.admin.empty": {
+      "text": "No contributions are waiting."
+    },
+    "b116.admin.failed": {
+      "text": "The action failed."
+    },
+    "b116.admin.reject": {
+      "text": "Reject"
+    },
+    "b116.admin.title": {
+      "text": "Showcase"
+    },
+    "b116.box.hint": {
+      "text": "Pick one thing from one of your projects – a character, an asset, a short scene, a script excerpt or a piece of audio."
+    },
+    "b116.box.mine": {
+      "text": "My shares"
+    },
+    "b116.box.profile": {
+      "text": "Edit profile"
+    },
+    "b116.box.share": {
+      "text": "Share something"
+    },
+    "b116.box.title": {
+      "text": "Want to show a little of what you're working on?"
+    },
+    "b116.cancel": {
+      "text": "Cancel"
+    },
+    "b116.card.by": {
+      "text": "by {name}"
+    },
+    "b116.carousel.aria": {
+      "text": "Showcase"
+    },
+    "b116.carousel.next": {
+      "text": "Next"
+    },
+    "b116.carousel.prev": {
+      "text": "Previous"
+    },
+    "b116.close": {
+      "text": "Close"
+    },
+    "b116.comments.empty": {
+      "text": "No comments yet."
+    },
+    "b116.comments.failed": {
+      "text": "Something went wrong. Try again."
+    },
+    "b116.comments.login": {
+      "text": "Sign in to comment."
+    },
+    "b116.comments.placeholder": {
+      "text": "Write a comment …"
+    },
+    "b116.comments.remove": {
+      "text": "Remove"
+    },
+    "b116.comments.submit": {
+      "text": "Comment"
+    },
+    "b116.comments.title": {
+      "text": "Comments"
+    },
+    "b116.create.back": {
+      "text": "Back"
+    },
+    "b116.create.empty": {
+      "text": "Nothing to choose here yet."
+    },
+    "b116.create.excerptLabel": {
+      "text": "Script excerpt (a few lines)"
+    },
+    "b116.create.excerptWarning": {
+      "text": "The text becomes public. Share only what you want everyone to be able to read."
+    },
+    "b116.create.expires": {
+      "text": "Visible for"
+    },
+    "b116.create.failed": {
+      "text": "Could not share. Try again."
+    },
+    "b116.create.kind": {
+      "text": "What do you want to share?"
+    },
+    "b116.create.liveNotice": {
+      "text": "Thank you! Your contribution is now showing in the carousel."
+    },
+    "b116.create.pendingNotice": {
+      "text": "Thank you! Your contribution is waiting for approval before it is shown."
+    },
+    "b116.create.preview": {
+      "text": "Preview"
+    },
+    "b116.create.previewHint": {
+      "text": "This is exactly how your contribution will look in the carousel."
+    },
+    "b116.create.project": {
+      "text": "Project"
+    },
+    "b116.create.submit": {
+      "text": "Share"
+    },
+    "b116.create.textLabel": {
+      "text": "About the film project and yourself (optional)"
+    },
+    "b116.create.title": {
+      "text": "Share in the showcase"
+    },
+    "b116.create.titleLabel": {
+      "text": "Title"
+    },
+    "b116.expires.14": {
+      "text": "2 weeks"
+    },
+    "b116.expires.30": {
+      "text": "1 month"
+    },
+    "b116.expires.7": {
+      "text": "1 week"
+    },
+    "b116.expires.90": {
+      "text": "3 months"
+    },
+    "b116.kind.asset": {
+      "text": "Asset"
+    },
+    "b116.kind.audio": {
+      "text": "Audio clip"
+    },
+    "b116.kind.character": {
+      "text": "Character"
+    },
+    "b116.kind.scene": {
+      "text": "Short scene"
+    },
+    "b116.kind.script": {
+      "text": "Script excerpt"
+    },
+    "b116.loading": {
+      "text": "Loading …"
+    },
+    "b116.mine.edit": {
+      "text": "Edit"
+    },
+    "b116.mine.empty": {
+      "text": "You have not shared anything yet."
+    },
+    "b116.mine.expiresAt": {
+      "text": "Visible until {date}"
+    },
+    "b116.mine.revoke": {
+      "text": "Withdraw"
+    },
+    "b116.mine.revokeConfirm": {
+      "text": "Withdraw this contribution? It disappears from the carousel."
+    },
+    "b116.mine.save": {
+      "text": "Save"
+    },
+    "b116.mine.title": {
+      "text": "My shares"
+    },
+    "b116.profile.avatar": {
+      "text": "Avatar"
+    },
+    "b116.profile.avatarChoose": {
+      "text": "Choose image"
+    },
+    "b116.profile.bio": {
+      "text": "About yourself"
+    },
+    "b116.profile.handle": {
+      "text": "Handle"
+    },
+    "b116.profile.public": {
+      "text": "Show profile publicly"
+    },
+    "b116.profile.save": {
+      "text": "Save profile"
+    },
+    "b116.profile.saved": {
+      "text": "Your profile has been saved."
+    },
+    "b116.profile.title": {
+      "text": "Your profile"
+    },
+    "b116.report": {
+      "text": "Report"
+    },
+    "b116.report.sent": {
+      "text": "Thanks for letting us know."
+    },
+    "b116.route.description": {
+      "text": "Everything you have shared in the showcase, with status."
+    },
+    "b116.route.title": {
+      "text": "My shares – From Pen to Glass"
+    },
+    "b116.status.expired": {
+      "text": "Expired"
+    },
+    "b116.status.live": {
+      "text": "Visible"
+    },
+    "b116.status.pending": {
+      "text": "Awaiting approval"
+    },
+    "b116.status.rejected": {
+      "text": "Rejected"
+    },
+    "b116.status.revoked": {
+      "text": "Withdrawn"
     },
     "b117.city.choose": {
       "text": "Choose city (optional) …"
