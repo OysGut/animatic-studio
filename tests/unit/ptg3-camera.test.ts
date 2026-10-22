@@ -104,8 +104,9 @@ describe("PTG3 kameraspore", () => {
     const { s, mainId } = sceneWithRig("fixed");
     const doc = buildInterchange(s, { productionId: mainId, language: "nb", captureFps: { num: 25, den: 1 } });
     const cam = doc.shots[0]!.camera!;
-    expect(doc.lengthFrames).toBe(250); // 10 s ved 25 opptak/s
-    expect(cam.frames[25]!.panXMm).toBeCloseTo(-61.2, 6);
+    expect(doc.lengthFrames).toBe(260); // 250 kilderbilder à 24/s = 10,4167 s → 260 opptaksbilder à 25/s
+    // Komposisjonsbilde 25 (midt i kamerashotet) ligger på opptaksbilde 26 (25·25/24)
+    expect(cam.frames[26]!.panXMm).toBeCloseTo(-61.2, 6);
   });
 
   it("gyldig kalibrering overstyrer pxPerMm (B-090 pkt 5)", () => {
