@@ -529,8 +529,9 @@ async function testPoster() {
     const svg = page.getByRole("application", { name: /Plakaten/ });
     await svg.waitFor({ timeout: 15000 });
     // Velg et faktisk element eksplisitt; plakaten er ikke lenger låst til gammel toppplassering.
+    await page.getByRole("tab", { name: "Element", exact: true }).click();
     const picker = page.getByTestId("poster-element-select");
-    const value = await picker.locator("option").evaluateAll(opts => opts.find(o => o.value)?.value);
+    const value = await picker.locator("option").evaluateAll(opts => opts.find(o => o.value === "title")?.value);
     if (!value) throw new Error("Ingen plakatelementer i fixture");
     await picker.selectOption(value);
     await page.waitForTimeout(300);
