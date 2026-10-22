@@ -31663,6 +31663,9 @@
     "core-workspaces.workspace-role-label.owner.8c979f17c6d5": {
       "text": "Eier"
     },
+    "dv5.background-result.undo-label": {
+      "text": "Legg inn bakgrunnsresultat"
+    },
     "engine-compositor-canvas.draw-placeholder.ctx-fill-text.15b1faeec76c": {
       "text": " (uten bilde)"
     },
@@ -64779,6 +64782,9 @@
     },
     "core-workspaces.workspace-role-label.owner.8c979f17c6d5": {
       "text": "Owner"
+    },
+    "dv5.background-result.undo-label": {
+      "text": "Add background result"
     },
     "engine-compositor-canvas.draw-placeholder.ctx-fill-text.15b1faeec76c": {
       "text": " (no image)"

@@ -2,6 +2,7 @@
  * ENV_FILE=… node tests/visual/global-library.mjs <baseUrl> <fixture.json> [out]
  */
 import { USER, setup } from "./global-harness.mjs";
+import { byLang } from "./ui-lang.mjs";
 
 const WS = "00000000-0000-4000-8000-00000000aaaa";
 const GA = "00000000-0000-4000-8000-00000000a001";
@@ -164,7 +165,9 @@ linked = true;
 await h.run("english", "$P/bibliotek", async (page) => {
   await page.getByTestId("open-global-library").click();
   await page.getByTestId("global-library-dialog").waitFor();
-  h.check(/Global library/.test(await page.getByTestId("global-library-dialog").innerText()), "engelsk tittel");
+  // N3: UI_LANG=nb overstyrer scenarioets språk; forvent tittelen på språket siden faktisk kjører
+  const title = byLang("en", "Globalt bibliotek", "Global library");
+  h.check((await page.getByTestId("global-library-dialog").innerText()).includes(title), `tittel på valgt språk (${title})`);
   await page.keyboard.press("Escape");
   await h.dialogsClosed(page);
   h.check(true, "dialogen lukkes");

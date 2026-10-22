@@ -75497,5 +75497,8 @@
   },
   "b116.route.description": {
     "text": "Alt du har delt i utstillingsvinduet, med status."
+  },
+  "dv5.background-result.undo-label": {
+    "text": "Legg inn bakgrunnsresultat"
   }
 }

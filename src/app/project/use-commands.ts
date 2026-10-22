@@ -229,7 +229,44 @@ export function registerHistoryEffect(group: string, effect: HistoryEffect): voi
   historyEffects.set(group, effect);
 }
 
-export function useCommands(projectId: string, actorId: string, enabled: boolean, onUndo?: (group: string | undefined) => void, keyboard = true) {
+/**
+ * DV5-rest (N3): et bakgrunnsresultat som serveren har lagt inn med apply_changes (kommandologgen har inversen).
+ * Legges på brukerens lokale angreliste og angres deretter som en vanlig kommando (ingen nye betalte kall).
+ */
+export interface ServerHistoryRow {
+  readonly commandId: string;
+  readonly inverse: Command;
+  readonly affected: readonly string[];
+}
+
+/** Gjør en rad fra serverhistorikken om til et vanlig angresteg. Ugyldige rader gir null. */
+export function serverHistoryEntry(row: ServerHistoryRow, label: string, seenForeign: number): HistoryEntry | null {
+  if (!row.commandId || !row.inverse || typeof (row.inverse as { type?: unknown }).type !== "string") return null;
+  return { id: row.commandId, label, inverse: row.inverse, affected: [...row.affected], seenForeign };
+}
+
+/** Angrelistene per prosjekt som tar imot serverresultater (arbeidsflatenes hovedliste, sist montert vinner). */
+const serverHistoryTargets = new Map<string, ((rows: readonly ServerHistoryRow[], label: string) => void)[]>();
+const pendingServerHistory = new Map<string, { rows: ServerHistoryRow[]; label: string }[]>();
+/** Kommandoer som allerede er lagt på en angreliste i denne fanen (samme resultat legges aldri inn to ganger). */
+export const adoptedServerCommands = new Set<string>();
+
+/** Legg bakgrunnsresultater på angrelisten for prosjektet. Venter til en angreliste er montert. */
+export function adoptServerHistory(projectId: string, rows: readonly ServerHistoryRow[], label: string): number {
+  const fresh = rows.filter((r) => r.commandId && !adoptedServerCommands.has(r.commandId));
+  if (fresh.length === 0) return 0;
+  for (const r of fresh) {
+    adoptedServerCommands.add(r.commandId);
+    // Sanntidsekkoet regnes som eget, så resultatet ikke stopper sin egen angring som «andres endring»
+    ownCommandIds.add(r.commandId);
+  }
+  const target = serverHistoryTargets.get(projectId)?.at(-1);
+  if (target) target(fresh, label);
+  else pendingServerHistory.set(projectId, [...(pendingServerHistory.get(projectId) ?? []), { rows: fresh, label }]);
+  return fresh.length;
+}
+
+export function useCommands(projectId: string, actorId: string, enabled: boolean, onUndo?: (group: string | undefined) => void, keyboard = true, serverHistory = false) {
   const qc = useQueryClient();
   const [undoStack, setUndo] = useState<HistoryEntry[]>([]);
   const [redoStack, setRedo] = useState<HistoryEntry[]>([]);
@@ -260,6 +297,29 @@ export function useCommands(projectId: string, actorId: string, enabled: boolean
       foreignChangeListeners.delete(onForeign);
     };
   }, []);
+
+  // DV5-rest (N3): arbeidsflatens hovedliste (serverHistory) tar imot bakgrunnsresultater fra serveren
+  useEffect(() => {
+    if (!serverHistory) return;
+    const receive = (rows: readonly ServerHistoryRow[], label: string) => {
+      const entries = rows.flatMap((r) => serverHistoryEntry(r, label, foreignSeq.current) ?? []);
+      if (entries.length === 0) return;
+      setUndo((u) => entries.reduce((list, e) => pushEntry(list, e), u));
+      setRedo([]);
+    };
+    const list = serverHistoryTargets.get(projectId) ?? [];
+    serverHistoryTargets.set(projectId, [...list, receive]);
+    const waiting = pendingServerHistory.get(projectId);
+    if (waiting) {
+      pendingServerHistory.delete(projectId);
+      for (const w of waiting) receive(w.rows, w.label);
+    }
+    return () => {
+      const rest = (serverHistoryTargets.get(projectId) ?? []).filter((f) => f !== receive);
+      if (rest.length) serverHistoryTargets.set(projectId, rest);
+      else serverHistoryTargets.delete(projectId);
+    };
+  }, [projectId, serverHistory]);
 
   const reload = useCallback(
     () => qc.invalidateQueries({ queryKey: projectStateKey(projectId) }),

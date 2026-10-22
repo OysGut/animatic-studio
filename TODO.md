@@ -25,7 +25,7 @@
 
 ## DV5/DV6 – rester før full verifikasjon
 - Claude: lokal DB og migrasjon 0061, nye RLS/grant/lease-tester og ende-til-ende med faste lydresultater.
-- Koble bakgrunnsresultatenes serverhistorikk til brukerens lokale angreliste.
+- DV5 (etter N3): angring av ett bakgrunnsresultat fra angrelisten merker ikke elementet som «angret»; «Angre hele jobben» stopper da med konflikt på det elementet. Resultater som blir ferdige mens panelet er lukket, kommer ikke på angrelisten.
 - Avklar gjenopprettet leverandørtilgang for varig blokkerte batcher uten automatiske probes.
 - Kontroller eksisterende cron-plan i Cloud og verifisering4-mikrofon/font i Claudes miljø.
 
@@ -42,7 +42,7 @@ Sist oppdatert: 2026-10-21 (V1: kravstatus avstemt mot testene).
 
 ## B-098 – fonter fra Google Fonts, rester
 - PDF-innbygging av prosjektfonter: ttf ligger i fontpakken, men ingen PDF-eksport bruker tekstlagenes fonter i dag (plakat-PDF bruker PDF-standardskriftene). Bygges når en PDF-eksport tegner tekstlag.
-- Lisens fra kilden: verken katalogen uten nøkkel eller Developer API oppgir lisens; den bestemmes nå fra kjente Apache-/UFL-lister (resten OFL). Bør kontrolleres mot METADATA.pb når det er tid.
+- Lisenstabellen (METADATA.pb) er generert fra én commit i google/fonts; kjør scripts/fonts/build-font-licenses.mjs på nytt ved behov. Familier utenfor tabellen antas fortsatt OFL.
 - Kontroller i Cloud at lagringsbøtta godtar fontpakken (opplasting som application/octet-stream; gjenoppretting fra sikkerhetskopi sender application/x-ptg-fontpack).
 
 ## B-110 – CAPTCHA, rester
@@ -56,9 +56,6 @@ Sist oppdatert: 2026-10-21 (V1: kravstatus avstemt mot testene).
 ## Backlogg fra den globale pakken (GP2–GP5)
 - Omkoding på serveren for deling når nettleseren ikke kan lage H.264/AAC (f.eks. Firefox). Ikke bygget; QR-dialogen forklarer i stedet.
 - Lagring av globale filer i egen bøtte per arbeidsgruppe (nå: «assets» med prefikset `global/`, bare service role).
-
-## Venter på Cloud (N1, 22.–23.10)
-- Migrasjon 0088 (scene_ids i apply_changes, atomiske globale versjoner) er skrevet og testet lokalt, ikke kjørt. Appen forventer versjon 88; ikke publiser før 0088 er kjørt.
 
 ## Bestilt av Mars, ikke bygget ennå
 - **OG2 (Øystein 18.10.2026):** AI-kobling linje for linje legges i backloggen. Scenekobling er tilstrekkelig nå; ingen implementering i retterunde 1.

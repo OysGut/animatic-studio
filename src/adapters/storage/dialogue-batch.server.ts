@@ -112,3 +112,22 @@ export async function undoDialogueBatch(db: AnyClient, projectId: string, batchI
   }
   return { undone };
 }
+
+/** DV5-rest (N3): ferdige elementer i jobben med kommandologgens invers. Kommandologgen leses med brukerens klient (RLS). */
+export async function loadDialogueBatchHistory(db: AnyClient, user: AnyClient, projectId: string, batchId: string, actor: string): Promise<{ itemId: string; commandId: string; inverseJson: string; affected: string[] }[]> {
+  const { data: batch } = await db.from("dialogue_batches").select("id").eq("id", batchId).eq("project_id", projectId).maybeSingle();
+  if (!batch) return [];
+  const { data: items, error } = await db.from("dialogue_batch_items").select("id,command_id,position").eq("batch_id", batchId).eq("status", "done").order("position", { ascending: true });
+  if (error) throw new Error(error.message);
+  const list = (items ?? []) as { id: string; command_id: string }[];
+  if (list.length === 0) return [];
+  const { data: logs, error: logError } = await user.from("change_log").select("id,inverse,affected_ids,actor").eq("project_id", projectId).eq("actor", actor).in("id", list.map((i) => i.command_id));
+  if (logError) throw new Error(logError.message);
+  const byId = new Map(((logs ?? []) as { id: string; inverse: unknown; affected_ids: string[] | null }[]).map((l) => [l.id, l]));
+  return list.flatMap((item) => {
+    const log = byId.get(item.command_id);
+    const inverse = log?.inverse;
+    if (!log || !inverse || typeof inverse !== "object" || typeof (inverse as { type?: unknown }).type !== "string") return [];
+    return [{ itemId: item.id, commandId: item.command_id, inverseJson: JSON.stringify(inverse), affected: log.affected_ids ?? [] }];
+  });
+}

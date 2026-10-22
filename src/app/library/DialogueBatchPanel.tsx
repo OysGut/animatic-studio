@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { qualityProfileSnapshot, characterDialogueCoverage, selectedDialogueCounts, estimateCostUsd, formatUsd, newId, existingSpeechWarning, multilingualSpeechWarning, batchTimeEstimate, speechLanguageError, languageTagError, languageLabel, normalizeLanguageTag, DEFAULT_SPEECH_LANGUAGE, type ProjectState, type Asset, type AssetVoice } from "@/core";
-import { createDialogueBatch, advanceDialogueBatch, resumeDialogueBatch, listDialogueBatches, undoDialogueBatchJob, reconfirmDialogueBatch } from "@/adapters/storage/dialogue-batch.functions";
+import { qualityProfileSnapshot, characterDialogueCoverage, selectedDialogueCounts, estimateCostUsd, formatUsd, newId, existingSpeechWarning, multilingualSpeechWarning, batchTimeEstimate, speechLanguageError, languageTagError, languageLabel, normalizeLanguageTag, DEFAULT_SPEECH_LANGUAGE, type ProjectState, type Asset, type AssetVoice, type Command } from "@/core";
+import { createDialogueBatch, advanceDialogueBatch, resumeDialogueBatch, listDialogueBatches, undoDialogueBatchJob, reconfirmDialogueBatch, dialogueBatchHistory } from "@/adapters/storage/dialogue-batch.functions";
 import { QualityProfilePicker, QualityProfileBudget, useQualityProfile } from "@/app/ai/QualityProfilePicker";
 import { VoiceControls } from "@/app/audio/VoiceControls";
 import { Button } from "@/components/ui/button";
@@ -9,6 +9,8 @@ import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { PanelHeader } from "@/app/shell/workspace-chrome";
 import { listSpeechModels } from "@/adapters/ai/speech.functions";
 import { t } from "@/core/i18n/keyed";
+import { adoptServerHistory } from "@/app/project/use-commands";
+import { batchesStartedHere, batchesToAdopt, rowsToAdopt } from "./background-history";
 
 /**
  * DV5/DV6/DV7: massegenerering for én karakter i aktivt prosjekt. `drift` åpner samme dialog med bare de
@@ -46,6 +48,15 @@ export function DialogueBatchPanel({ state, asset, projectId, editable, drift = 
   const priced = plans.map(p => ({ ...p, cost: estimateCostUsd("elevenlabs", p.voice?.modelId ?? "eleven_v3", { characters: p.lines.reduce((n, l) => n + l.text.replace(/\s+/g, " ").trim().length, 0) }) }));
   const jobsKey = ["dialogue-batches", projectId];
   const jobs = useQuery({ queryKey: jobsKey, enabled: open, queryFn: () => listDialogueBatches({ data: { projectId } }), refetchInterval: open ? 5000 : false });
+  // DV5-rest (N3): ferdige bakgrunnsresultater legges på angrelisten og kan angres som vanlige kommandoer
+  useEffect(() => {
+    if (!jobs.data || !editable) return;
+    for (const batchId of batchesToAdopt(jobs.data)) {
+      void dialogueBatchHistory({ data: { projectId, batchId } })
+        .then((rows) => adoptServerHistory(projectId, rowsToAdopt(batchId, rows).map((r) => ({ commandId: r.commandId, inverse: JSON.parse(r.inverseJson) as Command, affected: r.affected })), t("dv5.background-result.undo-label")))
+        .catch(() => undefined);
+    }
+  }, [jobs.data, editable, projectId]);
   const models = useQuery({ queryKey: ["speech-models", projectId], enabled: open, queryFn: () => listSpeechModels({ data: { projectId } }), staleTime: 300000 });
   const capabilityErrors = priced.flatMap(p => {
     const model = models.data?.ok ? models.data.models?.find(m => m.modelId === (p.voice?.modelId ?? "eleven_v3")) : null;
@@ -67,6 +78,7 @@ export function DialogueBatchPanel({ state, asset, projectId, editable, drift = 
         if (!plan.voice) continue;
         const batch = await createDialogueBatch({ data: { projectId, characterId: asset.id, requestId: ids[plan.language], voice: { ...plan.voice, qualityProfile: quality.profile ? qualityProfileSnapshot(quality.profile) : null }, approved: true,
           lines: plan.lines.map(l => ({ key: l.key, revision: l.scriptRevision, language: mode === "split" ? plan.language : togetherLanguage })) } });
+        batchesStartedHere.add(batch.id);
         await advanceDialogueBatch({ data: { projectId, batchId: batch.id } });
       }
       setConfirm(false); await refresh();

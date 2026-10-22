@@ -2741,6 +2741,71 @@ export type Database = {
           },
         ]
       }
+      global_version_reservations: {
+        Row: {
+          committed_version_id: string | null
+          created_at: string
+          created_by: string
+          expires_at: string
+          global_asset_id: string
+          id: string
+          storage_keys: string[]
+          variant_id: string
+          workspace_id: string
+        }
+        Insert: {
+          committed_version_id?: string | null
+          created_at?: string
+          created_by: string
+          expires_at?: string
+          global_asset_id: string
+          id?: string
+          storage_keys: string[]
+          variant_id: string
+          workspace_id: string
+        }
+        Update: {
+          committed_version_id?: string | null
+          created_at?: string
+          created_by?: string
+          expires_at?: string
+          global_asset_id?: string
+          id?: string
+          storage_keys?: string[]
+          variant_id?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "global_version_reservations_committed_version_id_fkey"
+            columns: ["committed_version_id"]
+            isOneToOne: false
+            referencedRelation: "global_asset_versions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "global_version_reservations_global_asset_id_fkey"
+            columns: ["global_asset_id"]
+            isOneToOne: false
+            referencedRelation: "global_assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "global_version_reservations_variant_id_fkey"
+            columns: ["variant_id"]
+            isOneToOne: false
+            referencedRelation: "global_asset_variants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "global_version_reservations_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       global_version_withdrawals: {
         Row: {
           version_id: string
@@ -6963,6 +7028,26 @@ export type Database = {
           project_name: string
         }[]
       }
+      global_cancel_reservation: {
+        Args: { p_actor: string; p_reservation: string }
+        Returns: boolean
+      }
+      global_commit_version: {
+        Args: {
+          p_bytes: number
+          p_derived_files?: Json
+          p_duration_ms: number
+          p_font_spec?: Json
+          p_height: number
+          p_mime: string
+          p_note: string
+          p_reservation: string
+          p_sha256: string
+          p_template_spec?: Json
+          p_width: number
+        }
+        Returns: string
+      }
       global_create_asset: {
         Args: {
           p_categories: string[]
@@ -6999,6 +7084,17 @@ export type Database = {
           p_spec: Json
           p_workspace: string
         }
+        Returns: string
+      }
+      global_reservation_safe_keys: {
+        Args: { p_actor: string; p_reservation: string }
+        Returns: {
+          committed: boolean
+          storage_key: string
+        }[]
+      }
+      global_reserve_version: {
+        Args: { p_storage_keys: string[]; p_variant: string }
         Returns: string
       }
       global_set_asset_archived: {
@@ -7252,6 +7348,10 @@ export type Database = {
         Returns: string
       }
       registration_status: { Args: never; Returns: Json }
+      release_stale_global_reservation: {
+        Args: { p_reservation: string }
+        Returns: boolean
+      }
       release_stale_showcase_reservation: {
         Args: { p_reservation: string }
         Returns: boolean
@@ -7379,6 +7479,13 @@ export type Database = {
         Returns: boolean
       }
       showcase_media: { Args: { p_item: string }; Returns: Json }
+      stale_global_reservations: {
+        Args: { p_workspace: string }
+        Returns: {
+          id: string
+          storage_keys: string[]
+        }[]
+      }
       stale_showcase_reservations: {
         Args: { p_project: string }
         Returns: {

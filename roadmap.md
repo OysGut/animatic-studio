@@ -1,11 +1,17 @@
 # Veikart
 
+## N3 – rester (natt 22.–23.10.2026)
+- [x] Ustabil b107-språktest: eksplisitt ventegrense for første lasting av ekte katalog; global-library består med tvunget nb
+- [x] B-098: lisens fra innebygd tabell generert fra METADATA.pb (google/fonts)
+- [x] DV5: bakgrunnsresultater legges på brukerens angreliste og angres som vanlige kommandoer
+- [x] tsc 0, full Vitest 2455/0 to ganger, DB 180/0, i18n grønn; ingen migrasjon; rapport N3_REPORT.md
+
 ## N1 – gjeld (natt 22.–23.10.2026)
 - [x] B-097: scene_ids skrives i apply_changes i samme transaksjon (0088); etterkallet i runCommand er fjernet
 - [x] GP2–GP5: global versjon via reservasjon → fil → kontroll → commit, opprydding ved feil og sweep i orphan-cleanup
 - [x] B-116: «Kort scene» → «Scenebilde» / «Scene still» i alle språk
 - [x] Tester: DB 180/0, Vitest grønn, tsc 0, i18n grønn, b116-showcase og global-library nb/en; rapport docs/development/N1_REPORT.md
-- [ ] Claude kjører 0088 i Cloud før publisering
+- [x] Claude kjørte 0088 i Cloud; N1 publisert
 
 ## B-116 – Utstillingsvindu (22.10.2026)
 - [x] Fullfør 19:04-oppdraget: statusoppslag ved tegning, b116-showcase 37/37 nb/en, Vitest 2422/0, DB 170/0, i18n alle språk 100 % og B116_REPORT.md; ingen Cloud-kjøring.

@@ -10509,6 +10509,14 @@
       "en": {
         "text": "Everything you have shared in the showcase, with status."
       }
+    },
+    "dv5.background-result.undo-label": {
+      "nb": {
+        "text": "Legg inn bakgrunnsresultat"
+      },
+      "en": {
+        "text": "Add background result"
+      }
     }
   }
 }

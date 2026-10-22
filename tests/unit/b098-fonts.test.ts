@@ -12,6 +12,7 @@ import {
   fontSpecError,
   licenseNeedsNotice,
   licenseOf,
+  licenseIsKnown,
   normalizeFontQuery,
   normalizeTextSpec,
   parseGoogleDeveloperApi,
@@ -58,10 +59,14 @@ describe("lisensfeltet", () => {
     expect(licenseOf("ufl", "X")).toBe("UFL-1.0");
     expect(licenseOf("OFL", "Roboto")).toBe("OFL-1.1");
   });
-  it("faller tilbake på kjente lister, ellers OFL", () => {
-    expect(licenseOf(undefined, "Roboto")).toBe("Apache-2.0");
+  it("faller tilbake på METADATA.pb-tabellen (N3), ellers OFL", () => {
+    // Roboto er OFL i google/fonts i dag (mappen ofl/roboto); den gamle listen sa Apache
+    expect(licenseOf(undefined, "Roboto")).toBe("OFL-1.1");
+    expect(licenseOf(undefined, "Aclonica")).toBe("Apache-2.0");
     expect(licenseOf(undefined, "Ubuntu Mono")).toBe("UFL-1.0");
     expect(licenseOf(undefined, "Lato")).toBe("OFL-1.1");
+    expect(licenseIsKnown("Lato")).toBe(true);
+    expect(licenseIsKnown("Ingen slik familie")).toBe(false);
   });
   it("bare UFL gir varsel", () => {
     expect(licenseNeedsNotice("UFL-1.0")).toBe(true);
