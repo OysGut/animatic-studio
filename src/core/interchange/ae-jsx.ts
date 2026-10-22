@@ -297,7 +297,7 @@ export function buildAeJsx(doc: InterchangeDoc, o: { readonly cameraMode: AeCame
     "app.beginUndoGroup(\"From Pen to Glass\");",
     `var rot = app.project.items.addFolder(${js(doc.project.code)});`,
     "var media = {};",
-    ...[...used].filter(id => refs.has(id)).map(id => `media[${js(refs.get(id)!)}] = app.project.importFile(new ImportOptions(new File(${js(refs.get(id)!}))));`),
+    ...[...used].filter(id => refs.has(id)).map(id => `media[${js(refs.get(id)!)}] = app.project.importFile(new ImportOptions(new File(${js(refs.get(id)!}))));`.replace("importFile(new ImportOptions(new File(", "importFile(new ImportOptions(new File(") + ")",
     `var hoved = app.project.items.addComp(${js(doc.project.code + "_hoved")}, ${doc.frameSize.width}, ${doc.frameSize.height}, 1, ${r6(sec(doc, doc.lengthFrames))}, ${r6(fpsFloat(doc))});`,
     "hoved.parentFolder = rot;",
   ];
