@@ -51,6 +51,54 @@ export interface InterchangeDialogueLine extends EventTime {
   readonly characterAssetId: string | null;
   readonly estimated: boolean;
 }
+/** Én eksponering i kamerasporet (én per bilde på ener, annethvert bilde på toere). */
+export interface CameraFrameSample {
+  /** Bilde på opptakstidslinjen, relativt til skuddets start. */
+  readonly frame: number;
+  /** Synsfeltet på referanseplaten i mm (W0/z). */
+  readonly fieldWidthMm: number;
+  readonly fieldHeightMm: number;
+  /** Panorering i mm på referanseplaten (scenepiksler gjennom pxPerMm). */
+  readonly panXMm: number;
+  readonly panYMm: number;
+  /** Rull i grader (scenens rotasjon). */
+  readonly rollDeg: number;
+  /** Kamerahøyde over bordet i mm. «Fysisk kamera»: ny høyde fra linseformelen; «fast kamera»: konstant. */
+  readonly cameraHeightMm: number;
+  /** Digital zoom (1 = hele formatet). I modusen «fast kamera» ligger zoomen i figurstørrelsen (B-090). */
+  readonly zoom: number;
+}
+/** En plate i riggen, med 3D-tolkning (avstand fra kameraet) og 2D-tolkning (parallakse). */
+export interface CameraPlate {
+  readonly id: string;
+  readonly name: string;
+  /** Høyde over bordet i mm. */
+  readonly heightMm: number;
+  /** Avstand fra kameraet i mm (riggens kamerahøyde minus platehøyden). */
+  readonly distanceMm: number;
+  /** Parallakse relativt til referanseplaten (dRef/d). */
+  readonly parallax: number;
+}
+/**
+ * Kamerasporet for et skudd (PTG3, B-102 §4): regnet ut fra scenens rigg (B-087/B-090). Kameraet har
+ * aldri egne mål ved siden av riggens; all geometri er avledet. null når scenen ikke har en gyldig rigg.
+ */
+export interface CameraTrack {
+  readonly mode: "fixed" | "moving";
+  readonly rigName: string;
+  readonly sensorWidthMm: number;
+  readonly sensorHeightMm: number;
+  readonly focalLengthMm: number;
+  /** Riggens kamerahøyde over bordet i mm (fast i «fast kamera», hvilehøyde i «fysisk kamera»). */
+  readonly cameraHeightMm: number;
+  readonly referencePlateId: string;
+  /** Skjermpiksler per mm på referanseplaten (målt ved gyldig kalibrering, ellers fra teorien). */
+  readonly pxPerMm: number;
+  /** true når pxPerMm kommer fra en gyldig kalibrering (B-090 pkt 5). */
+  readonly calibrated: boolean;
+  readonly plates: readonly CameraPlate[];
+  readonly frames: readonly CameraFrameSample[];
+}
 export interface Shot {
   readonly id: string;
   readonly sceneId: string;
