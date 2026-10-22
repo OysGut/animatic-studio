@@ -35,6 +35,7 @@ export function ShotlistExport({ state, productionId, clips, language, disabled 
   const commands = useCommands(state.project.id, userId, editable);
   const [profile, setProfile] = useState<ShotlistProfile>("standard");
   const [cameraMode, setCameraMode] = useState<AeCameraMode>("ae");
+  const [titleCard, setTitleCard] = useState(true); // PTG3b: på som standard
   const [progress, setProgress] = useState<{ done: number; total: number } | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [ready, setReady] = useState<{ url: string; name: string } | null>(null);
@@ -79,7 +80,7 @@ export function ShotlistExport({ state, productionId, clips, language, disabled 
     try {
       await commands.whenIdle();
       const reservation = await reserveInterchangeExport({ projectId: state.project.id, productionId, occurrenceIds: clips.map(c => c.occurrenceId), fileName,
-        settings: { format: kind, language: language.dialogue, cameraMode, captureFpsNum: initial.captureFps.num, captureFpsDen: initial.captureFps.den } });
+        settings: { format: kind, language: language.dialogue, cameraMode, ...(kind === "ae" ? { titleCard } : {}), captureFpsNum: initial.captureFps.num, captureFpsDen: initial.captureFps.den } });
       const doc = buildInterchange(state, { productionId, language, occurrenceIds: clips.map(c => c.occurrenceId), versions: reservation.versions });
       if (kind === "fbx") {
         await exportCameraFbx({ doc, sink, signal: ctrl.signal });
@@ -90,7 +91,7 @@ export function ShotlistExport({ state, productionId, clips, language, disabled 
           for (const a of s.audio) if (a.fileId) used.add(a.fileId);
         }
         const paths = doc.references.filter(r => used.has(r.id)).map(r => r.mediaPath);
-        await exportAePackage({ doc, cameraMode, sink, signal: ctrl.signal, urls: await signedUrls([...new Set(paths)], 600),
+        await exportAePackage({ doc, cameraMode, sink, titleCard: titleCard ? { origin: window.location.origin } : null, signal: ctrl.signal, urls: await signedUrls([...new Set(paths)], 600),
           onProgress: p => setProgress({ done: p.files, total: p.totalFiles }) });
       }
       setReady(sink.link?.() ?? null);
@@ -117,6 +118,10 @@ export function ShotlistExport({ state, productionId, clips, language, disabled 
         </select>
       </label>
       <Button data-testid="ptg-export-fbx" size="sm" variant="outline" disabled={disabled || !!progress || clips.length === 0 || !userId} onClick={() => void startPackage("fbx")}><Download />{t("ptg3.camera-fbx")}</Button>
+      <label className="flex items-center gap-2 text-xs text-text-secondary">
+        <input type="checkbox" data-testid="ptg-title-card" disabled={disabled || !!progress} checked={titleCard} onChange={e => setTitleCard(e.target.checked)} />
+        {t("ptg3b.option")}
+      </label>
       <Button data-testid="ptg-export-ae" size="sm" variant="outline" disabled={disabled || !!progress || clips.length === 0 || !userId} onClick={() => void startPackage("ae")}><Download />{t("ptg3.ae-package")}</Button>
       {progress ? <><span role="status" className="text-xs text-text-secondary">{progress.done} / {progress.total}</span><Button size="icon" variant="ghost" aria-label={t("ptg1.cancel")} onClick={() => abort.current?.abort()}><X /></Button></> : null}
     </div>
