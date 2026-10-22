@@ -37,6 +37,17 @@ async function checkTranslatedText(page, language, account = false) {
   if (!account) check(await page.getByRole('button', { name: expected.signIn, exact: true }).isVisible(), `${language}: translated sign-in text`);
 }
 try {
+  // Real server requests overlap; each response must use only its own cookie/header language.
+  const ssrContext = await browser.newContext();
+  await Promise.all(Array.from({ length: 12 }, async (_, index) => {
+    const language = index % 2 ? 'ja' : 'fr';
+    const response = await ssrContext.request.get(base, { headers: { Cookie: `ptg-ui-language=${language}`, 'Accept-Language': language === 'fr' ? 'ja' : 'fr' } });
+    const html = await response.text();
+    check(html.includes(`<html lang="${language}"`), `${language}: concurrent SSR stays request-local`);
+    check(html.includes(translated[language].description), `${language}: concurrent SSR uses its own catalog`);
+    check(response.headers()['cache-control'] === 'private, no-store', `${language}: SSR cannot enter shared cache`);
+  }));
+  await ssrContext.close();
   for (const language of ['fr', 'ja']) {
     const context = await browser.newContext({ viewport: { width: 1280, height: 1800 }, locale: 'en-GB' });
     const page = await context.newPage();
@@ -70,14 +81,14 @@ try {
     await context.close();
   }
   const context = await browser.newContext({ viewport: { width: 1280, height: 1800 }, locale: 'ja-JP' });
-  let profile = 'fr'; const saved = []; const errors = [];
+  let profile = 'fr'; let currentUser = user; let displayName = 'Alice'; const saved = []; const errors = [];
   await context.route(`${backend}/**`, async route => {
     const req = route.request(), url = new URL(req.url()), path = url.pathname;
     const json = result => route.fulfill({ contentType: 'application/json', body: JSON.stringify(result) });
-    if (path.startsWith('/auth/v1/user')) return json(user);
+    if (path.startsWith('/auth/v1/user')) return json(currentUser);
     if (path.startsWith('/auth/v1/')) return json({});
     if (path.includes('/realtime/')) return route.abort();
-    if (path.endsWith('/rpc/my_account')) return json({ status: 'active', locale: profile, display_name: 'Fixture', country: 'NO', privacy_version: null, accepted_version: null, ui_prefs: {} });
+    if (path.endsWith('/rpc/my_account')) return json({ status: 'active', locale: profile, display_name: displayName, country: 'NO', privacy_version: null, accepted_version: null, ui_prefs: {} });
     if (path.endsWith('/rpc/set_my_locale')) { profile = JSON.parse(req.postData() ?? '{}').p_locale; saved.push(profile); return json(null); }
     if (path.includes('/rpc/')) return json(null);
     if (path.endsWith('/schema_version')) return json([{ version: VISUAL_SCHEMA_VERSION }]);
@@ -107,6 +118,25 @@ try {
   await page.reload({ waitUntil: 'networkidle' }); await page.getByTestId('account-page').waitFor(); await page.waitForTimeout(3500);
   check(await page.locator('html').getAttribute('lang') === 'de', 'saved account choice reads back after reload');
   check(errors.length === 0, 'account flow has no runtime errors');
+  // Direct identity change without reloading must discard Alice's account and unsaved name.
+  const nameField = page.getByTestId('account-page').locator('input').first();
+  await nameField.fill('Alice unfinished draft');
+  currentUser = { ...user, id: '00000000-0000-7000-8000-b0b000000002', email: 'bob@example.test' };
+  displayName = 'Bob'; profile = 'ja';
+  await page.evaluate(async newUser => {
+    const { browserClient } = await import('/src/adapters/browser/client.ts');
+    const payload = btoa(JSON.stringify({ sub: newUser.id, exp: Math.floor(Date.now()/1000)+86400 })).replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
+    const result = await browserClient.auth.setSession({ access_token: `eyJhbGciOiJIUzI1NiJ9.${payload}.c2lnbmF0dXJl`, refresh_token: 'fixture-b' });
+    if (result.error) throw new Error(result.error.message);
+  }, currentUser);
+  await page.waitForTimeout(2000);
+  console.log('Observed fixture name after switch:', await nameField.inputValue());
+  check(await nameField.inputValue() === 'Bob', 'B sees Bob, not Alice name or unfinished draft');
+  check(!(await page.getByTestId('account-page').innerText()).includes('Alice'), 'B account contains no Alice data');
+  await checkTranslatedText(page, 'ja', true);
+  await page.reload({ waitUntil: 'networkidle' }); await page.getByTestId('account-page').waitFor(); await page.waitForTimeout(3500);
+  check(await nameField.inputValue() === 'Bob', 'B own name survives reload');
+  await checkTranslatedText(page, 'ja', true);
   await page.screenshot({ path: `${out}/account-de.png` }); await context.close();
   console.log(`RESULTAT: ${passed} bestått, 0 feilet`);
 } finally { await browser.close(); }

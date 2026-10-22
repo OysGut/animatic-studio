@@ -35,7 +35,12 @@ function Card({ title, children, id }: { title: string; children: React.ReactNod
 const input =
   "h-8 w-full rounded-sm border border-border-control bg-surface-3 px-2 text-[13px] text-text-primary";
 
-export function AccountPage({ email, userId }: { email: string; userId?: string }) {
+export function AccountPage(props: { email: string; userId?: string }) {
+  // A new identity owns a new form, including unsaved name/password fields.
+  return <AccountPageForUser key={props.userId ?? props.email} {...props} />;
+}
+
+function AccountPageForUser({ email, userId }: { email: string; userId?: string }) {
   const qc = useQueryClient();
   const ready = useSchemaAtLeast(33);
   const account = useMyAccount();

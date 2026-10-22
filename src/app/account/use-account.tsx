@@ -28,15 +28,18 @@ import {
 } from "@/components/ui/dialog";
 import { PrivacyStatement } from "./PrivacyStatement";
 import { t } from "@/core/i18n/keyed";
+import { useSessionUserId } from '@/app/auth/use-session';
 
 export const MY_ACCOUNT_KEY = ["my-account"] as const;
+export const myAccountKey = (userId: string | null) => [...MY_ACCOUNT_KEY, userId] as const;
 export const PRIVACY_KEY = ["privacy-policy"] as const;
 
 export function useMyAccount(enabled = true) {
+  const userId = useSessionUserId();
   return useQuery({
-    queryKey: MY_ACCOUNT_KEY,
+    queryKey: myAccountKey(userId),
     queryFn: fetchMyAccount,
-    enabled,
+    enabled: enabled && userId !== null,
     staleTime: 60_000,
   });
 }
@@ -50,6 +53,7 @@ const TOUCH_KEY = "animatic:last-touch";
 
 /** I toppfeltet når man er innlogget. Tegner ingenting selv, bortsett fra personvern-dialogen. */
 export function AccountWatcher() {
+  const userId = useSessionUserId();
   const qc = useQueryClient();
   const account = useMyAccount();
   const policy = usePrivacyPolicy();
@@ -62,9 +66,10 @@ export function AccountWatcher() {
   useEffect(() => {
     const touch = () => {
       try {
-        const last = Number(window.localStorage.getItem(TOUCH_KEY) ?? 0);
+        if (!userId) return;
+        const last = Number(window.localStorage.getItem(`${TOUCH_KEY}:${userId}`) ?? 0);
         if (Date.now() - last < 5 * 60 * 1000) return;
-        window.localStorage.setItem(TOUCH_KEY, String(Date.now()));
+        window.localStorage.setItem(`${TOUCH_KEY}:${userId}`, String(Date.now()));
       } catch {
         /* privat vindu */
       }
@@ -73,7 +78,7 @@ export function AccountWatcher() {
     touch();
     const id = window.setInterval(() => { if (!document.hidden) touch(); }, 60 * 1000);
     return () => window.clearInterval(id);
-  }, []);
+  }, [userId]);
 
   // Profile wins once per sign-in. Only explicit user choices are persisted, never browser detection.
   const a = account.data;
@@ -87,7 +92,7 @@ export function AccountWatcher() {
       });
     });
     return off;
-  }, [a?.locale, !!a, qc]);
+  }, [a?.locale, !!a, qc, userId]);
   // En konto som er blokkert eller låst for sletting, logges ut (innloggingen er også sperret)
   useEffect(() => {
     if (a && a.status !== "active") void signOut();

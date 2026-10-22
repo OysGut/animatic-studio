@@ -3,7 +3,14 @@ import { createStart, createCsrfMiddleware, createMiddleware } from "@tanstack/r
 import { renderErrorPage } from "./lib/error-page";
 import { attachSupabaseAuth } from "@/integrations/supabase/auth-attacher";
 import { installUiLanguageReader } from '@/adapters/auth/ui-language';
-installUiLanguageReader();
+import { setResponseHeader } from '@tanstack/react-start/server';
+
+const privateResponseMiddleware = createMiddleware().server(async ({ next }) => {
+  setResponseHeader('Cache-Control', 'private, no-store');
+  const result = await next();
+  result.response.headers.set('Cache-Control', 'private, no-store');
+  return result;
+});
 
 const errorMiddleware = createMiddleware().server(async ({ next }) => {
   try {
@@ -27,7 +34,11 @@ const csrfMiddleware = createCsrfMiddleware({
   filter: (ctx) => ctx.handlerType === "serverFn",
 });
 
-export const startInstance = createStart(() => ({
-  functionMiddleware: [attachSupabaseAuth],
-  requestMiddleware: [errorMiddleware, csrfMiddleware],
-}));
+export const startInstance = createStart(() => {
+  // Explicit initialization survives production tree shaking, unlike a module-only side effect.
+  installUiLanguageReader();
+  return {
+    functionMiddleware: [attachSupabaseAuth],
+    requestMiddleware: [privateResponseMiddleware, errorMiddleware, csrfMiddleware],
+  };
+});

@@ -6,9 +6,11 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { saveUiPrefs, type MyAccount } from "@/adapters/browser/account";
-import { MY_ACCOUNT_KEY, useMyAccount } from "./use-account";
+import { myAccountKey, useMyAccount } from "./use-account";
+import { useSessionUserId } from '@/app/auth/use-session';
+import { getSessionUserId, onSessionIdentityChange } from '@/adapters/browser/auth';
 
-const LOCAL = (key: string) => `animatic:ui:${key}`; // i18n-ignore: nøkkel i nettleserens lager
+const LOCAL = (key: string) => `animatic:ui:${getSessionUserId() ?? 'anonymous'}:${key}`; // i18n-ignore: nøkkel i nettleserens lager
 const PREF_CHANGED = "animatic:ui-pref-changed";
 
 function readLocal(key: string): unknown {
@@ -43,10 +45,23 @@ export function useUiPref<T>(
   valid: (v: unknown) => v is T,
 ): [T, (next: T) => void] {
   const qc = useQueryClient();
+  const userId = useSessionUserId();
   const account = useMyAccount();
   const fromAccount = account.data?.uiPrefs?.[key];
   const [value, setValue] = useState<T>(fallback);
   const touched = useRef(false);
+  useEffect(() => {
+    touched.current = false;
+    const local = readLocal(key);
+    setValue(valid(local) ? local : fallback);
+    return onSessionIdentityChange(() => {
+      if (timer) clearTimeout(timer);
+      timer = null;
+      for (const k of Object.keys(pending)) delete pending[k];
+      touched.current = false;
+      setValue(fallback);
+    });
+  }, [userId, key]);
   // Alle monterte visninger får også senere lokale endringer. `touched` beskytter bare mot
   // eldre kontosvar; det må ikke blokkere andre visningers optimistiske oppdateringer.
   useEffect(() => {
@@ -65,9 +80,9 @@ export function useUiPref<T>(
     if (valid(fromAccount)) setValue(fromAccount);
     else {
       const local = readLocal(key);
-      if (valid(local)) setValue(local);
+      setValue(valid(local) ? local : fallback);
     }
-  }, [fromAccount, key, valid]);
+  }, [fromAccount, key, valid, userId]);
   const set = useCallback(
     (next: T) => {
       touched.current = true;
@@ -75,7 +90,7 @@ export function useUiPref<T>(
       writeLocal(key, next);
       window.dispatchEvent(new CustomEvent(PREF_CHANGED, { detail: { key, value: next } }));
       // Oppdater hurtigbufferen, så andre visninger ser valget med én gang
-      qc.setQueryData<MyAccount | null>(MY_ACCOUNT_KEY, (a) =>
+      qc.setQueryData<MyAccount | null>(myAccountKey(userId), (a) =>
         a ? { ...a, uiPrefs: { ...a.uiPrefs, [key]: next } } : a,
       );
       pending[key] = next;
@@ -84,10 +99,10 @@ export function useUiPref<T>(
         const batch = { ...pending };
         for (const k of Object.keys(pending)) delete pending[k];
         timer = null;
-        void saveUiPrefs(batch).catch(() => undefined);
+        if (userId !== null && userId === getSessionUserId()) void saveUiPrefs(batch).catch(() => undefined);
       }, 800);
     },
-    [key, qc],
+    [key, qc, userId],
   );
   return [value, set];
 }
