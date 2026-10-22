@@ -119,6 +119,6 @@ await h.scenario(`b118-${lang}`, occ.id, lang, async (page) => {
   await page.getByRole("button", { name: lang === "en" ? "Export animatic" : "Eksporter animatic" }).first().click();
   const dialog = page.getByRole("dialog");
   await dialog.waitFor();
-  await checkSelect("eksport", dialog.locator('button[aria-haspopup="listbox"]').first());
+  await checkSelect("eksport", dialog.getByRole("button", { name: lang === "en" ? /^First scene/ : /^Første scene/ }));
 });
 await h.finish();
