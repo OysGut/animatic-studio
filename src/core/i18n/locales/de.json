@@ -54393,8 +54393,8 @@
     "review": "machine"
   },
   "ptg3b.readme-titlecard": {
-    "text": "Titelkarten: Jede Einstellung hat eine eigene 1-Sekunden-Komposition <Einstellung>_TITTEL mit QR-Code. <Einstellung>_RENDER setzt die Titelkarte vor die Einstellung und beginnt bei Timecode −00:00:01:00, sodass Bild 0 der Einstellung wie in der Shotliste und der FBX-Datei 00:00:00:00 ist. Die Einstellungskomposition und die Hauptkomposition bleiben unverändert. Rendern Sie <Einstellung>_RENDER und importieren Sie den Film über den QR-Code; die Titelkarte wird beim Import abgeschnitten.",
-    "sourceHash": "a7bc3e23e848d2e856dae2df2faae9e0957b6f5de65ef2edccfb98bb3afe4645",
+    "text": "Titelkarten: Jede Einstellung hat eine eigene 1-Sekunden-Komposition <Einstellung>_TITLE mit QR-Code. <Einstellung>_RENDER setzt die Titelkarte vor die Einstellung und beginnt bei Timecode −00:00:01:00, sodass Bild 0 der Einstellung wie in der Shotliste und der FBX-Datei 00:00:00:00 ist. Die Einstellungskomposition und die Hauptkomposition bleiben unverändert. Rendern Sie <Einstellung>_RENDER und importieren Sie den Film über den QR-Code; die Titelkarte wird beim Import abgeschnitten.",
+    "sourceHash": "2c06ced2714140605e4c45af4cc095285ff8bea203b5436e3dc808a03f464bce",
     "review": "machine"
   },
   "ptg3b.route-title": {

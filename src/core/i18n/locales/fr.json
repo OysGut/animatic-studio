@@ -54467,8 +54467,8 @@
     "review": "machine"
   },
   "ptg3b.readme-titlecard": {
-    "text": "Cartons titres : chaque plan a sa propre composition <plan>_TITTEL d’une seconde avec un code QR. <plan>_RENDER place le carton avant le plan et commence au timecode −00:00:01:00, donc l’image 0 du plan est 00:00:00:00 comme dans la liste des plans et le fichier FBX. La composition du plan et la composition principale sont inchangées. Rendez <plan>_RENDER et importez le film avec le code QR ; le carton est coupé à l’import.",
-    "sourceHash": "a7bc3e23e848d2e856dae2df2faae9e0957b6f5de65ef2edccfb98bb3afe4645",
+    "text": "Cartons titres : chaque plan a sa propre composition <plan>_TITLE d’une seconde avec un code QR. <plan>_RENDER place le carton avant le plan et commence au timecode −00:00:01:00, donc l’image 0 du plan est 00:00:00:00 comme dans la liste des plans et le fichier FBX. La composition du plan et la composition principale sont inchangées. Rendez <plan>_RENDER et importez le film avec le code QR ; le carton est coupé à l’import.",
+    "sourceHash": "2c06ced2714140605e4c45af4cc095285ff8bea203b5436e3dc808a03f464bce",
     "review": "machine"
   },
   "ptg3b.route-title": {

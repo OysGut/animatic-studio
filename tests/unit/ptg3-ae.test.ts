@@ -210,12 +210,12 @@ describe("PTG3 After Effects bygg.jsx", () => {
 
     it("tittelkort på 1 s i egen komp foran skuddet; RENDER starter på −1 s", () => {
       const { log, comps } = runJsx(withCard);
-      expect(log.comps.find(c => c.name === "TEST_SC001_SH001_v001_TITTEL")!.dur).toBe(1);
+      expect(log.comps.find(c => c.name === "TEST_SC001_SH001_v001_TITLE")!.dur).toBe(1);
       const render = comps.find(c => c.name === "TEST_SC001_SH001_v001_RENDER")!;
       expect(render.dur).toBe(2);
       expect(render.displayStartTime).toBe(-1);
       const inRender = log.adds.filter(x => x.comp === render.name).map(x => [x.item, x.layer.startTime]);
-      expect(inRender).toEqual([["TEST_SC001_SH001_v001", 1], ["TEST_SC001_SH001_v001_TITTEL", 0]]);
+      expect(inRender).toEqual([["TEST_SC001_SH001_v001", 1], ["TEST_SC001_SH001_v001_TITLE", 0]]);
       expect(comps.find(c => c.name === "TEST_hoved_RENDER")!.displayStartTime).toBe(-1);
       expect(log.texts).toEqual(expect.arrayContaining(["Jula på Dovre", "SC001 – Scene – TEST_SC001_SH001_v001", "Forklaring", "Eksportert fra From Pen to Glass"]));
       expect(log.imports).toContain("tittelkort/TEST_SC001_SH001_v001_qr.png");

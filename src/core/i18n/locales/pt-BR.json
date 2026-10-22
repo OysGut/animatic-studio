@@ -54467,8 +54467,8 @@
     "review": "machine"
   },
   "ptg3b.readme-titlecard": {
-    "text": "Cartões de título: cada plano tem sua própria composição <plano>_TITTEL de 1 segundo com um código QR. <plano>_RENDER coloca o cartão antes do plano e começa no timecode −00:00:01:00, então o quadro 0 do plano é 00:00:00:00 como na lista de planos e no arquivo FBX. A composição do plano e a principal não mudam. Renderize <plano>_RENDER e importe o filme pelo código QR; o cartão é cortado na importação.",
-    "sourceHash": "a7bc3e23e848d2e856dae2df2faae9e0957b6f5de65ef2edccfb98bb3afe4645",
+    "text": "Cartões de título: cada plano tem sua própria composição <plano>_TITLE de 1 segundo com um código QR. <plano>_RENDER coloca o cartão antes do plano e começa no timecode −00:00:01:00, então o quadro 0 do plano é 00:00:00:00 como na lista de planos e no arquivo FBX. A composição do plano e a principal não mudam. Renderize <plano>_RENDER e importe o filme pelo código QR; o cartão é cortado na importação.",
+    "sourceHash": "2c06ced2714140605e4c45af4cc095285ff8bea203b5436e3dc808a03f464bce",
     "review": "machine"
   },
   "ptg3b.route-title": {

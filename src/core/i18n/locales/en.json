@@ -74809,7 +74809,7 @@
     "text": "Title card with QR"
   },
   "ptg3b.readme-titlecard": {
-    "text": "Title cards: each shot has its own 1-second composition <shot>_TITTEL with a QR code. <shot>_RENDER places the title card before the shot and starts at timecode −00:00:01:00, so frame 0 of the shot is 00:00:00:00 as in the shot list and the FBX file. The shot composition itself and the main composition are unchanged. Render <shot>_RENDER and import the film with the QR code; the title card is trimmed off on import."
+    "text": "Title cards: each shot has its own 1-second composition <shot>_TITLE with a QR code. <shot>_RENDER places the title card before the shot and starts at timecode −00:00:01:00, so frame 0 of the shot is 00:00:00:00 as in the shot list and the FBX file. The shot composition itself and the main composition are unchanged. Render <shot>_RENDER and import the film with the QR code; the title card is trimmed off on import."
   },
   "ptg3b.route-title": {
     "text": "Import film from After Effects – From Pen to Glass"

@@ -16,7 +16,7 @@ export type AeCameraMode = "ae" | "parallax";
 
 /**
  * PTG3b (B-115): tittelkort på TITLE_CARD_SECONDS foran hvert skudd. Kortet er en egen komposisjon
- * `<skudd>_TITTEL`; `<skudd>_RENDER` legger kortet før skuddkomposisjonen (start-tidskode −1 s), så
+ * `<skudd>_TITLE`; `<skudd>_RENDER` legger kortet før skuddkomposisjonen (start-tidskode −1 s), så
  * skuddkomposisjonen selv er uendret: bilde 0 og tidskode som i skuddlisten og FBX-filen.
  * Tekstene kommer ferdig oversatt fra eksportøren; `qrPath` er QR-bildets relative sti i pakken.
  */
@@ -292,7 +292,7 @@ function emitShot(out: string[], doc: InterchangeDoc, shot: Shot, refs: Readonly
 function emitTitleCard(out: string[], doc: InterchangeDoc, name: string, lenFrames: number, contentVar: string, tc: AeTitleCards, scene: string | null, qr: string | null): void {
   const w = doc.frameSize.width; const h = doc.frameSize.height; const f = r6(fpsFloat(doc));
   const card = TITLE_CARD_SECONDS;
-  out.push(`var tk = app.project.items.addComp(${js(name + "_TITTEL")}, ${w}, ${h}, 1, ${card}, ${f}); tk.parentFolder = rot;`);
+  out.push(`var tk = app.project.items.addComp(${js(name + "_TITLE")}, ${w}, ${h}, 1, ${card}, ${f}); tk.parentFolder = rot;`);
   out.push(`tk.layers.addSolid(${js(CARD_BG)}, "BG", ${w}, ${h}, 1, ${card});`);
   out.push(`ptgTekst(tk, ${js(tc.filmTitle)}, ${r6(h * 0.06)}, [${r6(w / 2)}, ${r6(h * 0.13)}], ${js(CARD_FG)}, null);`);
   if (scene) out.push(`ptgTekst(tk, ${js(scene)}, ${r6(h * 0.038)}, [${r6(w / 2)}, ${r6(h * 0.2)}], ${js(CARD_ACCENT)}, null);`);
@@ -304,8 +304,8 @@ function emitTitleCard(out: string[], doc: InterchangeDoc, name: string, lenFram
   out.push(`ptgTekst(tk, ${js(tc.footer)}, ${r6(h * 0.02)}, [${r6(w / 2)}, ${r6(h * 0.95)}], ${js(CARD_MUTED)}, null);`);
   out.push(`var rk = app.project.items.addComp(${js(name + "_RENDER")}, ${w}, ${h}, 1, ${r6(card + sec(doc, lenFrames))}, ${f}); rk.parentFolder = rot;`);
   out.push(`try { rk.displayStartTime = -${card}; } catch (e) {}`);
-  out.push(`var rkInnhold = rk.layers.add(${contentVar}); rkInnhold.startTime = ${card};`);
-  out.push(`var rkKort = rk.layers.add(tk); rkKort.startTime = 0;`);
+  out.push(`var rkBody = rk.layers.add(${contentVar}); rkBody.startTime = ${card};`);
+  out.push(`var rkCard = rk.layers.add(tk); rkCard.startTime = 0;`);
 }
 
 /**

@@ -54467,8 +54467,8 @@
     "review": "machine"
   },
   "ptg3b.readme-titlecard": {
-    "text": "Cartelli del titolo: ogni inquadratura ha una propria composizione <inquadratura>_TITTEL di 1 secondo con un codice QR. <inquadratura>_RENDER mette il cartello prima dell’inquadratura e parte dal timecode −00:00:01:00, quindi il fotogramma 0 dell’inquadratura è 00:00:00:00 come nella lista inquadrature e nel file FBX. La composizione dell’inquadratura e quella principale restano invariate. Renderizza <inquadratura>_RENDER e importa il film tramite il codice QR; il cartello viene tagliato all’importazione.",
-    "sourceHash": "a7bc3e23e848d2e856dae2df2faae9e0957b6f5de65ef2edccfb98bb3afe4645",
+    "text": "Cartelli del titolo: ogni inquadratura ha una propria composizione <inquadratura>_TITLE di 1 secondo con un codice QR. <inquadratura>_RENDER mette il cartello prima dell’inquadratura e parte dal timecode −00:00:01:00, quindi il fotogramma 0 dell’inquadratura è 00:00:00:00 come nella lista inquadrature e nel file FBX. La composizione dell’inquadratura e quella principale restano invariate. Renderizza <inquadratura>_RENDER e importa il film tramite il codice QR; il cartello viene tagliato all’importazione.",
+    "sourceHash": "2c06ced2714140605e4c45af4cc095285ff8bea203b5436e3dc808a03f464bce",
     "review": "machine"
   },
   "ptg3b.route-title": {

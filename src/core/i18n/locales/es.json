@@ -54467,8 +54467,8 @@
     "review": "machine"
   },
   "ptg3b.readme-titlecard": {
-    "text": "Rótulos de título: cada plano tiene su propia composición <plano>_TITTEL de 1 segundo con un código QR. <plano>_RENDER coloca el rótulo antes del plano y empieza en el código de tiempo −00:00:01:00, así que el fotograma 0 del plano es 00:00:00:00 como en la lista de planos y el archivo FBX. La composición del plano y la principal no cambian. Renderiza <plano>_RENDER e importa la película con el código QR; el rótulo se recorta al importar.",
-    "sourceHash": "a7bc3e23e848d2e856dae2df2faae9e0957b6f5de65ef2edccfb98bb3afe4645",
+    "text": "Rótulos de título: cada plano tiene su propia composición <plano>_TITLE de 1 segundo con un código QR. <plano>_RENDER coloca el rótulo antes del plano y empieza en el código de tiempo −00:00:01:00, así que el fotograma 0 del plano es 00:00:00:00 como en la lista de planos y el archivo FBX. La composición del plano y la principal no cambian. Renderiza <plano>_RENDER e importa la película con el código QR; el rótulo se recorta al importar.",
+    "sourceHash": "2c06ced2714140605e4c45af4cc095285ff8bea203b5436e3dc808a03f464bce",
     "review": "machine"
   },
   "ptg3b.route-title": {

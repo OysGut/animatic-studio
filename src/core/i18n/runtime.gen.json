@@ -31986,7 +31986,7 @@
       "text": "Tittelkort med QR"
     },
     "ptg3b.readme-titlecard": {
-      "text": "Tittelkort: hvert skudd har en egen komposisjon <skudd>_TITTEL på 1 sekund med QR-kode. <skudd>_RENDER legger tittelkortet foran skuddet og starter på tidskode −00:00:01:00, så skuddets bilde 0 er 00:00:00:00 som i skuddlisten og FBX-filen. Selve skuddkomposisjonen og hovedkomposisjonen er uendret. Render <skudd>_RENDER og les inn filmen med QR-koden; tittelkortet klippes bort ved importen."
+      "text": "Tittelkort: hvert skudd har en egen komposisjon <skudd>_TITLE på 1 sekund med QR-kode. <skudd>_RENDER legger tittelkortet foran skuddet og starter på tidskode −00:00:01:00, så skuddets bilde 0 er 00:00:00:00 som i skuddlisten og FBX-filen. Selve skuddkomposisjonen og hovedkomposisjonen er uendret. Render <skudd>_RENDER og les inn filmen med QR-koden; tittelkortet klippes bort ved importen."
     },
     "ptg3b.route-description": {
       "text": "Last opp den ferdige filmen til skuddet den ble eksportert fra."
@@ -64470,7 +64470,7 @@
       "text": "Title card with QR"
     },
     "ptg3b.readme-titlecard": {
-      "text": "Title cards: each shot has its own 1-second composition <shot>_TITTEL with a QR code. <shot>_RENDER places the title card before the shot and starts at timecode −00:00:01:00, so frame 0 of the shot is 00:00:00:00 as in the shot list and the FBX file. The shot composition itself and the main composition are unchanged. Render <shot>_RENDER and import the film with the QR code; the title card is trimmed off on import."
+      "text": "Title cards: each shot has its own 1-second composition <shot>_TITLE with a QR code. <shot>_RENDER places the title card before the shot and starts at timecode −00:00:01:00, so frame 0 of the shot is 00:00:00:00 as in the shot list and the FBX file. The shot composition itself and the main composition are unchanged. Render <shot>_RENDER and import the film with the QR code; the title card is trimmed off on import."
     },
     "ptg3b.route-description": {
       "text": "Upload the finished film to the shot it was exported from."
