@@ -4,7 +4,8 @@
  * rett til disken mens den lages (store prosjekter); ellers samles den i minnet og lastes ned til slutt.
  * Bare på klienten.
  */
-import { Zip, ZipPassThrough } from "fflate";
+import { zipCentralHeader, zipCrcUpdate, zipDescriptor, zipEndRecords, zipLocalHeader, type ZipDirectoryEntry } from "./zip64";
+import { interchangeReadme } from "@/core/interchange/readme";
 import type { ZipEntry } from "@/core";
 
 import { t as tk } from "@/core/i18n/keyed";
@@ -106,37 +107,33 @@ export async function writeZip(
     extra?: readonly { readonly path: string; readonly data: Uint8Array }[] | AsyncIterable<{ readonly path: string; readonly data: Uint8Array }>;
   } = {},
 ): Promise<{ missing: string[] }> {
-  let chain = Promise.resolve();
-  let failure: unknown = null;
-  let written = 0;
-  const zip = new Zip((err, data, final) => {
-    if (err) {
-      failure = err;
-      return;
-    }
-    // Zip uten ZIP64 tåler ikke over 4 GB: stopp heller enn å lage en fil som ikke kan leses
-    written += data.byteLength;
-    if (written > 4_200_000_000) {
-      failure = new Error(
-        tk("engine-export-zip.zip.message.d8988ee64a25"),
-      );
-      return;
-    }
-    chain = chain.then(() => sink.write(data));
-    if (final) chain = chain.then(() => sink.close());
-  });
+  let written = 0n;
+  const directory: ZipDirectoryEntry[] = [];
+  const names = new Set<string>();
+  const check = () => { if (o.signal?.aborted) throw new DOMException(tk("engine-export-zip.write-zip.message.080bb98d06cc"), "AbortError"); };
+  const write = async (data: Uint8Array) => { check(); await sink.write(data); written += BigInt(data.byteLength); };
+  const add = async (name: string, chunks: AsyncIterable<Uint8Array>) => {
+    if (names.has(name)) throw new Error(tk("ptg1.duplicate-file"));
+    names.add(name);
+    const offset = written;
+    await write(zipLocalHeader(name));
+    let size = 0n;
+    let crc = 0xffffffff;
+    for await (const data of chunks) { check(); crc = zipCrcUpdate(crc, data); size += BigInt(data.byteLength); await write(data); }
+    crc = (crc ^ 0xffffffff) >>> 0;
+    await write(zipDescriptor(crc, size));
+    directory.push({ name, offset, size, crc });
+  };
+  async function* one(data: Uint8Array) { yield data; }
   const totalBytes = entries.reduce((t, e) => t + e.byteSize, 0);
   let bytes = 0;
   const missing: string[] = [];
   try {
     for await (const x of o.extra ?? []) {
       if (o.signal?.aborted) throw new DOMException(tk("engine-export-zip.write-zip.message.080bb98d06cc"), "AbortError");
-      const f = new ZipPassThrough(x.path);
-      zip.add(f);
-      f.push(x.data, true);
-      await chain;
-      if (failure) throw failure;
+      await add(x.path, one(x.data));
     }
+    if (!names.has("LESMEG.txt")) await add("LESMEG.txt", one(interchangeReadme()));
     for (let i = 0; i < entries.length; i++) {
       if (o.signal?.aborted) throw new DOMException(tk("engine-export-zip.write-zip.message.080bb98d06cc.2"), "AbortError");
       const e = entries[i];
@@ -148,41 +145,35 @@ export async function writeZip(
         bytes += e.byteSize;
         continue;
       }
-      const f = new ZipPassThrough(e.path);
-      zip.add(f);
       const reader = res.body.getReader();
-      for (;;) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        f.push(value);
-        bytes += value.byteLength;
-        // Ikke la minnet fylles: vent til skrivingen har tatt igjen
-        await chain;
-        if (failure) throw failure;
-        o.onProgress?.({ files: i, totalFiles: entries.length, bytes, totalBytes });
+      async function* chunks() {
+        try {
+          for (;;) {
+            check(); const { done, value } = await reader.read(); if (done) break;
+            bytes += value.byteLength;
+            yield value;
+            o.onProgress?.({ files: i, totalFiles: entries.length, bytes, totalBytes });
+          }
+        } finally { await reader.cancel().catch(() => undefined); reader.releaseLock(); }
       }
-      f.push(new Uint8Array(0), true);
-      await chain;
+      await add(e.path, chunks());
       o.onProgress?.({ files: i + 1, totalFiles: entries.length, bytes, totalBytes });
     }
     if (missing.length > 0) {
-      const note = new ZipPassThrough("MANGLER.txt"); // i18n-ignore
-      zip.add(note);
-      note.push(
+      await add("MANGLER.txt", one(
         new TextEncoder().encode(
           tk("engine-export-zip.write-zip.new-text-encoder-encode.d311a09da39a", { value1: String(missing.join("\n")) }),
         ),
-        true,
-      );
+      ));
     }
     if (o.signal?.aborted) throw new DOMException(tk("engine-export-zip.write-zip.message.080bb98d06cc.3"), "AbortError");
-    zip.end();
-    await chain;
-    if (failure) throw failure;
+    const directoryOffset = written;
+    for (const e of directory) await write(zipCentralHeader(e));
+    const directorySize = written - directoryOffset;
+    await write(zipEndRecords(BigInt(directory.length), directorySize, directoryOffset));
+    await sink.close();
     return { missing };
   } catch (e) {
-    zip.terminate();
-    await chain.catch(() => undefined);
     await sink.abort().catch(() => undefined);
     throw e;
   }
