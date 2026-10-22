@@ -89,18 +89,35 @@ export async function copyDerivedFiles(
   /** Kildestiene må ligge under dette prefikset (eget prosjekt eller egen gruppe); andre hoppes over. */
   fromPrefix: string,
 ): Promise<GlobalDerivedFiles | undefined> {
-  if (!derived || typeof derived !== "object") return undefined;
+  const plan = planDerivedFiles(derived, to, fromPrefix);
   const out: GlobalDerivedFiles = {};
+  for (const { key, file, target } of plan) {
+    const err = await copyFile(a, file.path, target);
+    if (err) throw new Error(err);
+    out[key] = { ...file, path: target };
+  }
+  return Object.keys(out).length > 0 ? out : undefined;
+}
+
+/** N1: målstiene for de avledede filene (for reservasjonen før kopieringen). */
+export function planDerivedFiles(
+  derived: GlobalDerivedFiles | null | undefined,
+  to: (d: GlobalDerivedFile) => string,
+  fromPrefix: string,
+): { key: "working" | "proxy" | "thumbnail" | "originalRaw"; file: GlobalDerivedFile; target: string }[] {
+  if (!derived || typeof derived !== "object") return [];
+  const out: { key: "working" | "proxy" | "thumbnail" | "originalRaw"; file: GlobalDerivedFile; target: string }[] = [];
   for (const key of ["working", "proxy", "thumbnail", "originalRaw"] as const) {
     const d = derived[key];
     if (!d || typeof d.path !== "string" || !d.path) continue;
     if (!d.path.startsWith(fromPrefix) || d.path.includes("..")) continue;
-    const target = to(d);
-    const err = await copyFile(a, d.path, target);
-    if (err) throw new Error(err);
-    out[key] = { ...d, path: target };
+    out.push({ key, file: d, target: to(d) });
   }
-  return Object.keys(out).length > 0 ? out : undefined;
+  return out;
+}
+
+async function reservations() {
+  return import("./global-reservation.server");
 }
 
 type Storage = {
@@ -159,9 +176,9 @@ export const createGlobalUpload = createServerFn({ method: "POST" })
     const ext = x["ext"];
     if (typeof sha256 !== "string" || !/^[0-9a-f]{64}$/.test(sha256)) bad();
     if (typeof ext !== "string" || !/^[a-z0-9]{1,8}$/i.test(ext)) bad();
-    return { workspaceId: uuid(x["workspaceId"]), globalAssetId: uuid(x["globalAssetId"]), sha256, ext };
+    return { workspaceId: uuid(x["workspaceId"]), globalAssetId: uuid(x["globalAssetId"]), variantId: uuid(x["variantId"]), sha256, ext };
   })
-  .handler(async ({ data, context }): Promise<{ path: string; token: string }> => {
+  .handler(async ({ data, context }): Promise<{ path: string; token: string; reservationId: string }> => {
     const db = context.supabase as unknown as AnyClient;
     if ((await workspaceRank(db, data.workspaceId, context.userId)) < 2)
       throw new Error(
@@ -175,11 +192,14 @@ export const createGlobalUpload = createServerFn({ method: "POST" })
       .maybeSingle();
     if (!ga) throw new Error(tk("adapters-global-global-library-functions.create-global-upload.create-server-fn-method-post-middleware-require-supabase-auth-validator-d-unknown-const-x-obj-d-const-sha256-x-sha256-const-ext-x-ext-if-typeof-sha256-string-0-9a-f-64-test-sha256-bad-if-typeof-ext-string-a-z0-9-1-8-i-test-ext-bad-return-workspace-id-uuid-x-workspace-id-global-asset-id-uuid-x-global-asset-id-sha256-ext-handler.88b0cfae5299"));
     const path = globalFilePath(data.workspaceId, data.globalAssetId, data.sha256, data.ext);
+    // N1: reservasjon før opplastingen (redaktørrolle og sti sjekkes i databasen)
+    const { reserveGlobalVersion, releaseGlobalReservation } = await reservations();
+    const reservationId = await reserveGlobalVersion(db, data.variantId, [path]);
     const { data: up, error } = await storageOf(await admin())
       .from(BUCKET)
       .createSignedUploadUrl(path, { upsert: true });
-    if (error || !up) throw new Error(error?.message ?? tk("adapters-global-global-library-functions.create-global-upload.create-server-fn-method-post-middleware-require-supabase-auth-validator-d-unknown-const-x-obj-d-const-sha256-x-sha256-const-ext-x-ext-if-typeof-sha256-string-0-9a-f-64-test-sha256-bad-if-typeof-ext-string-a-z0-9-1-8-i-test-ext-bad-return-workspace-id-uuid-x-workspace-id-global-asset-id-uuid-x-global-asset-id-sha256-ext-handler.ca2b638ccbcc"));
-    return { path, token: up.token };
+    if (error || !up) { await releaseGlobalReservation(await admin(), reservationId, context.userId); throw new Error(error?.message ?? tk("adapters-global-global-library-functions.create-global-upload.create-server-fn-method-post-middleware-require-supabase-auth-validator-d-unknown-const-x-obj-d-const-sha256-x-sha256-const-ext-x-ext-if-typeof-sha256-string-0-9a-f-64-test-sha256-bad-if-typeof-ext-string-a-z0-9-1-8-i-test-ext-bad-return-workspace-id-uuid-x-workspace-id-global-asset-id-uuid-x-global-asset-id-sha256-ext-handler.ca2b638ccbcc")); }
+    return { path, token: up.token, reservationId };
   });
 
 async function fileExists(a: AnyClient, path: string): Promise<boolean> {
@@ -192,6 +212,7 @@ async function fileExists(a: AnyClient, path: string): Promise<boolean> {
 
 export interface GlobalVersionInput {
   readonly variantId: string;
+  readonly reservationId: string;
   readonly path: string;
   readonly mimeType: string;
   readonly width: number | null;
@@ -225,6 +246,7 @@ export const registerGlobalVersion = createServerFn({ method: "POST" })
     }
     return {
       variantId: uuid(x["variantId"]),
+      reservationId: uuid(x["reservationId"]),
       path: s("path", 600),
       mimeType: s("mimeType", 100),
       width: intOrNull(x["width"]),
@@ -246,22 +268,34 @@ export const registerGlobalVersion = createServerFn({ method: "POST" })
     const row = v as { workspace_id: string; global_asset_id: string } | null;
     if (!row || !isGlobalPathOf(data.path, row.workspace_id, row.global_asset_id))
       throw new Error(tk("adapters-global-global-library-functions.register-global-version.create-server-fn-method-post-middleware-require-supabase-auth-validator-d-unknown-global-version-input-const-x-obj-d-const-s-k-string-max-number-const-v-x-k-if-typeof-v-string-v-length-max-bad-return-v-const-byte-size-x-byte-size-if-typeof-byte-size-number-number-is-integer-byte-size-byte-size-0-bad-const-template-x-template-null-if-template-null-const-error-template-error-template-if-error-throw-new-error-error-return-variant-id-uuid-x-variant-id-path-s-path-600-mime-type-s-mime-type-100-width-int-or-null-x-width-height-int-or-null-x-height-byte-size-sha256-s-sha256-64-duration-ms-int-or-null-x-duration-ms-note-s-note-2000-template-template-as-template-definition-null-handler.7ad1560b4c41"));
-    if (!(await fileExists(await admin(), data.path)))
-      throw new Error(tk("adapters-global-global-library-functions.register-global-version.create-server-fn-method-post-middleware-require-supabase-auth-validator-d-unknown-global-version-input-const-x-obj-d-const-s-k-string-max-number-const-v-x-k-if-typeof-v-string-v-length-max-bad-return-v-const-byte-size-x-byte-size-if-typeof-byte-size-number-number-is-integer-byte-size-byte-size-0-bad-const-template-x-template-null-if-template-null-const-error-template-error-template-if-error-throw-new-error-error-return-variant-id-uuid-x-variant-id-path-s-path-600-mime-type-s-mime-type-100-width-int-or-null-x-width-height-int-or-null-x-height-byte-size-sha256-s-sha256-64-duration-ms-int-or-null-x-duration-ms-note-s-note-2000-template-template-as-template-definition-null-handler.8a2981a00f8b"));
-    const { data: id, error } = await db.rpc("global_add_version", {
-      p_variant: data.variantId,
-      p_storage_key: data.path,
-      p_mime: data.mimeType,
-      p_width: data.width,
-      p_height: data.height,
-      p_bytes: data.byteSize,
-      p_sha256: data.sha256,
-      p_duration_ms: data.durationMs,
-      p_note: data.note,
-      p_template_spec: data.template ?? null,
-    });
-    if (error) throw new Error(error.message);
-    return id as string;
+    // N1: kontroll og commit; ved feil slettes filen og reservasjonen frigjøres
+    const { commitGlobalVersion, releaseGlobalReservation } = await reservations();
+    const sa = await admin();
+    try {
+      if (!(await fileExists(sa, data.path))) throw new Error(tk("adapters-global-global-library-functions.register-global-version.create-server-fn-method-post-middleware-require-supabase-auth-validator-d-unknown-global-version-input-const-x-obj-d-const-s-k-string-max-number-const-v-x-k-if-typeof-v-string-v-length-max-bad-return-v-const-byte-size-x-byte-size-if-typeof-byte-size-number-number-is-integer-byte-size-byte-size-0-bad-const-template-x-template-null-if-template-null-const-error-template-error-template-if-error-throw-new-error-error-return-variant-id-uuid-x-variant-id-path-s-path-600-mime-type-s-mime-type-100-width-int-or-null-x-width-height-int-or-null-x-height-byte-size-sha256-s-sha256-64-duration-ms-int-or-null-x-duration-ms-note-s-note-2000-template-template-as-template-definition-null-handler.8a2981a00f8b"));
+      return await commitGlobalVersion(db, sa, data.reservationId, [data.path], {
+        mime: data.mimeType, width: data.width, height: data.height, bytes: data.byteSize, sha256: data.sha256,
+        durationMs: data.durationMs, note: data.note, templateSpec: data.template ?? null,
+      });
+    } catch (e) {
+      const outcome = await releaseGlobalReservation(sa, data.reservationId, context.userId);
+      if (outcome === "committed") {
+        const { data: r } = await sa.from("global_version_reservations").select("committed_version_id").eq("id", data.reservationId).maybeSingle();
+        const id = (r as { committed_version_id?: string } | null)?.committed_version_id;
+        if (id) return id;
+      }
+      throw e;
+    }
+  });
+
+/** N1: opplastingen i nettleseren feilet; slett filen (om den er trygg å slette) og frigjør reservasjonen. */
+export const abandonGlobalUpload = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .validator((d: unknown) => ({ reservationId: uuid(obj(d)["reservationId"]) }))
+  .handler(async ({ data, context }): Promise<{ ok: boolean }> => {
+    const { releaseGlobalReservation } = await reservations();
+    const r = await releaseGlobalReservation(await admin(), data.reservationId, context.userId);
+    return { ok: r !== "kept" };
   });
 
 // ---------- «Lagre i globalt bibliotek» (§6, G2) ----------
@@ -359,28 +393,25 @@ export const saveAssetToGlobal = createServerFn({ method: "POST" })
       if (e2) throw new Error(e2.message);
       for (const ver of vers.filter((x) => x.variant_id === v.id)) {
         const to = globalFilePath(data.workspaceId, globalAssetId, ver.sha256, extensionOf(ver.media_path));
-        const err = await copyFile(sa, ver.media_path, to);
-        if (err) throw new Error(err);
-        // B-105a: de avledede filene følger med til det globale biblioteket
-        const derivedFiles = await copyDerivedFiles(sa, ver.derived_files, (d) =>
-          globalFilePath(data.workspaceId, globalAssetId, d.sha256, extensionOf(d.path)),
-          `${data.projectId}/`,
-        );
-        const { error: e3 } = await db.rpc("global_add_version", {
-          p_variant: gv as string,
-          p_storage_key: to,
-          p_mime: ver.mime_type,
-          p_width: ver.width,
-          p_height: ver.height,
-          p_bytes: ver.byte_size_big,
-          p_sha256: ver.sha256,
-          p_duration_ms: ver.duration_ms,
-          p_note: ver.note ?? "",
-          p_template_spec: ver.template_spec ?? null,
-          ...(ver.font_spec ? { p_font_spec: ver.font_spec } : {}),
-          ...(derivedFiles ? { p_derived_files: derivedFiles } : {}),
+        const toDerived = (d: GlobalDerivedFile) => globalFilePath(data.workspaceId, globalAssetId, d.sha256, extensionOf(d.path));
+        const derivedPlan = planDerivedFiles(ver.derived_files, toDerived, `${data.projectId}/`);
+        let derivedFiles: GlobalDerivedFiles | undefined;
+        // N1: reservasjon → kopi → kontroll → commit; ved feil ryddes filene og reservasjonen
+        await (await reservations()).storeGlobalVersionAtomically({
+          user: db, admin: sa, actor: context.userId, variantId: gv as string,
+          keys: [to, ...derivedPlan.map((d) => d.target)],
+          put: async () => {
+            const err = await copyFile(sa, ver.media_path, to);
+            if (err) throw new Error(err);
+            // B-105a: de avledede filene følger med til det globale biblioteket
+            derivedFiles = await copyDerivedFiles(sa, ver.derived_files, toDerived, `${data.projectId}/`);
+          },
+          params: () => ({
+            mime: ver.mime_type, width: ver.width, height: ver.height, bytes: ver.byte_size_big, sha256: ver.sha256,
+            durationMs: ver.duration_ms, note: ver.note ?? "", templateSpec: ver.template_spec ?? null,
+            fontSpec: ver.font_spec ?? null, derivedFiles: derivedFiles ?? null,
+          }),
         });
-        if (e3) throw new Error(e3.message);
         count++;
       }
     }
@@ -584,23 +615,26 @@ export const publishVersionToGlobal = createServerFn({ method: "POST" })
       newVariant = true;
     }
     const to = globalFilePath(data.workspaceId, globalAssetId, v.sha256, extensionOf(v.media_path));
-    const err = await copyFile(await admin(), v.media_path, to);
-    if (err) throw new Error(err);
-    // B-105a: de avledede filene følger med til det globale biblioteket
-    const derivedFiles = await copyDerivedFiles(
-      await admin(),
-      v.derived_files,
-      (d) => globalFilePath(data.workspaceId, globalAssetId, d.sha256, extensionOf(d.path)),
-      `${data.projectId}/`,
-    );
-    const { data: gid, error: e2 } = await db.rpc("global_add_version", {
-      p_variant: globalVariantId, p_storage_key: to, p_mime: v.mime_type, p_width: v.width, p_height: v.height,
-      p_bytes: v.byte_size_big, p_sha256: v.sha256, p_duration_ms: v.duration_ms, p_note: v.note ?? "",
-      p_template_spec: v.template_spec ?? null,
-      ...(v.font_spec ? { p_font_spec: v.font_spec } : {}),
-      ...(derivedFiles ? { p_derived_files: derivedFiles } : {}),
+    const sa = await admin();
+    const toDerived = (d: GlobalDerivedFile) => globalFilePath(data.workspaceId, globalAssetId, d.sha256, extensionOf(d.path));
+    const derivedPlan = planDerivedFiles(v.derived_files, toDerived, `${data.projectId}/`);
+    let derivedFiles: GlobalDerivedFiles | undefined;
+    // N1: reservasjon → kopi → kontroll → commit; ved feil ryddes filene og reservasjonen
+    const gid = await (await reservations()).storeGlobalVersionAtomically({
+      user: db, admin: sa, actor: context.userId, variantId: globalVariantId,
+      keys: [to, ...derivedPlan.map((d) => d.target)],
+      put: async () => {
+        const err = await copyFile(sa, v.media_path, to);
+        if (err) throw new Error(err);
+        // B-105a: de avledede filene følger med til det globale biblioteket
+        derivedFiles = await copyDerivedFiles(sa, v.derived_files, toDerived, `${data.projectId}/`);
+      },
+      params: () => ({
+        mime: v.mime_type, width: v.width, height: v.height, bytes: v.byte_size_big, sha256: v.sha256,
+        durationMs: v.duration_ms, note: v.note ?? "", templateSpec: v.template_spec ?? null,
+        fontSpec: v.font_spec ?? null, derivedFiles: derivedFiles ?? null,
+      }),
     });
-    if (e2) throw new Error(e2.message);
     const { data: num } = await db.from("global_asset_versions").select("number").eq("id", gid as string).maybeSingle();
     return {
       globalAssetId, globalVariantId, globalVersionId: gid as string,

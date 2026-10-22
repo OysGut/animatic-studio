@@ -5176,6 +5176,7 @@ export type Database = {
           id: boolean
           registration_message: string | null
           registration_open: boolean
+          showcase_require_approval: boolean
         }
         Insert: {
           changed_at?: string | null
@@ -5183,6 +5184,7 @@ export type Database = {
           id?: boolean
           registration_message?: string | null
           registration_open?: boolean
+          showcase_require_approval?: boolean
         }
         Update: {
           changed_at?: string | null
@@ -5190,8 +5192,159 @@ export type Database = {
           id?: boolean
           registration_message?: string | null
           registration_open?: boolean
+          showcase_require_approval?: boolean
         }
         Relationships: []
+      }
+      showcase_comments: {
+        Row: {
+          author: string
+          created_at: string
+          id: string
+          item_id: string
+          removed: boolean
+          text: string
+        }
+        Insert: {
+          author: string
+          created_at?: string
+          id?: string
+          item_id: string
+          removed?: boolean
+          text: string
+        }
+        Update: {
+          author?: string
+          created_at?: string
+          id?: string
+          item_id?: string
+          removed?: boolean
+          text?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "showcase_comments_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "showcase_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      showcase_items: {
+        Row: {
+          approved_at: string | null
+          approved_by: string | null
+          created_at: string
+          created_by: string
+          duration_ms: number | null
+          excerpt: string | null
+          expires_at: string
+          height: number | null
+          id: string
+          kind: string
+          mime: string | null
+          project_id: string
+          revoked_at: string | null
+          status: string
+          storage_key: string | null
+          text: string
+          title: string
+          updated_at: string
+          width: number | null
+        }
+        Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          created_by: string
+          duration_ms?: number | null
+          excerpt?: string | null
+          expires_at?: string
+          height?: number | null
+          id?: string
+          kind: string
+          mime?: string | null
+          project_id: string
+          revoked_at?: string | null
+          status?: string
+          storage_key?: string | null
+          text?: string
+          title: string
+          updated_at?: string
+          width?: number | null
+        }
+        Update: {
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          created_by?: string
+          duration_ms?: number | null
+          excerpt?: string | null
+          expires_at?: string
+          height?: number | null
+          id?: string
+          kind?: string
+          mime?: string | null
+          project_id?: string
+          revoked_at?: string | null
+          status?: string
+          storage_key?: string | null
+          text?: string
+          title?: string
+          updated_at?: string
+          width?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "showcase_items_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      showcase_reservations: {
+        Row: {
+          created_at: string
+          created_by: string
+          expires_at: string
+          id: string
+          payload: Json
+          project_id: string
+          source_key: string | null
+          storage_key: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          expires_at?: string
+          id: string
+          payload: Json
+          project_id: string
+          source_key?: string | null
+          storage_key?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          expires_at?: string
+          id?: string
+          payload?: Json
+          project_id?: string
+          source_key?: string | null
+          storage_key?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "showcase_reservations_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       signup_passes: {
         Row: {
@@ -6588,6 +6741,10 @@ export type Database = {
         }
         Returns: string
       }
+      add_showcase_comment: {
+        Args: { p_item: string; p_text: string }
+        Returns: string
+      }
       admin_country_counts: {
         Args: never
         Returns: {
@@ -6610,6 +6767,10 @@ export type Database = {
       admin_list_features: { Args: never; Returns: Json }
       admin_registration_settings: { Args: never; Returns: Json }
       admin_report_queue: { Args: never; Returns: Json }
+      admin_review_showcase_item: {
+        Args: { p_approve: boolean; p_id: string }
+        Returns: undefined
+      }
       admin_set_feature: {
         Args: { p_key: string; p_message?: string; p_state: string }
         Returns: undefined
@@ -6618,6 +6779,11 @@ export type Database = {
         Args: { p_key: string; p_users: string[] }
         Returns: number
       }
+      admin_set_showcase_approval: {
+        Args: { p_required: boolean }
+        Returns: undefined
+      }
+      admin_showcase_queue: { Args: never; Returns: Json }
       apply_changes: {
         Args: {
           p_actor: string
@@ -6634,6 +6800,10 @@ export type Database = {
         Returns: number
       }
       block_user: { Args: { p_user: string }; Returns: undefined }
+      cancel_showcase_item: {
+        Args: { p_actor: string; p_reservation: string }
+        Returns: undefined
+      }
       claim_dialogue_batch: {
         Args: { p_batch: string; p_lease: string }
         Returns: Json
@@ -6744,6 +6914,10 @@ export type Database = {
           p_production: string
           p_project: string
         }
+        Returns: string
+      }
+      create_showcase_item: {
+        Args: { p_actor: string; p_reservation: string }
         Returns: string
       }
       create_workspace: { Args: { p_name: string }; Returns: string }
@@ -7003,6 +7177,20 @@ export type Database = {
       }
       my_account: { Args: never; Returns: Json }
       my_features: { Args: never; Returns: Json }
+      my_public_profile: { Args: never; Returns: Json }
+      my_showcase_items: { Args: never; Returns: Json }
+      prepare_showcase_item: {
+        Args: {
+          p_expires_at: string
+          p_kind: string
+          p_lines: string[]
+          p_project: string
+          p_source: string
+          p_text: string
+          p_title: string
+        }
+        Returns: Json
+      }
       print_copy_codes: {
         Args: { p_job: string; p_project: string }
         Returns: {
@@ -7064,11 +7252,16 @@ export type Database = {
         Returns: string
       }
       registration_status: { Args: never; Returns: Json }
+      release_stale_showcase_reservation: {
+        Args: { p_reservation: string }
+        Returns: boolean
+      }
       remove_member: {
         Args: { p_project: string; p_user: string }
         Returns: undefined
       }
       remove_review_comment: { Args: { p_id: string }; Returns: undefined }
+      remove_showcase_comment: { Args: { p_id: string }; Returns: undefined }
       remove_workspace_member: {
         Args: { p_user: string; p_workspace: string }
         Returns: undefined
@@ -7111,6 +7304,7 @@ export type Database = {
         Returns: number
       }
       revoke_publication: { Args: { p_id: string }; Returns: undefined }
+      revoke_showcase_item: { Args: { p_id: string }; Returns: undefined }
       revoke_upload_session: { Args: { p_id: string }; Returns: undefined }
       revoke_workspace_invitation: {
         Args: { p_invitation: string }
@@ -7178,6 +7372,20 @@ export type Database = {
         Args: { p_role: string; p_user: string; p_workspace: string }
         Returns: undefined
       }
+      showcase_comments: { Args: { p_item: string }; Returns: Json }
+      showcase_feed: { Args: never; Returns: Json }
+      showcase_item_outcome: {
+        Args: { p_actor: string; p_item: string }
+        Returns: boolean
+      }
+      showcase_media: { Args: { p_item: string }; Returns: Json }
+      stale_showcase_reservations: {
+        Args: { p_project: string }
+        Returns: {
+          id: string
+          storage_key: string
+        }[]
+      }
       touch_activity: { Args: never; Returns: undefined }
       transition_dialogue_batch_item: {
         Args: { p_item: string; p_lease: string; p_patch: Json }
@@ -7189,6 +7397,10 @@ export type Database = {
       }
       unblock_user: { Args: { p_user: string }; Returns: undefined }
       update_publication: {
+        Args: { p_id: string; p_patch: Json }
+        Returns: undefined
+      }
+      update_showcase_item: {
         Args: { p_id: string; p_patch: Json }
         Returns: undefined
       }

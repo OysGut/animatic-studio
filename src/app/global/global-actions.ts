@@ -4,6 +4,7 @@
 import { extensionOf, latestGlobalVersions, linkedProjectAsset, linkedProjectVersion, newId, planUseGlobal, type AssetId, type AssetVariantId, type AssetVersionId, type GlobalAssetBundle, type GlobalVersion, type ProjectState, type UseGlobalItem } from "@/core";
 import {
   copyGlobalToProject,
+  abandonGlobalUpload,
   createGlobalUpload,
   registerGlobalVersion,
 } from "@/adapters/global/global-library.functions";
@@ -123,12 +124,19 @@ export async function uploadGlobalVersion(
   const bytes = new Uint8Array(await file.arrayBuffer());
   const sha256 = await sha256Hex(bytes);
   const ext = extensionOf(file.name);
-  const { path, token } = await createGlobalUpload({ data: { workspaceId, globalAssetId, sha256, ext } });
-  await uploadToSignedPath(path, token, file);
+  const { path, token, reservationId } = await createGlobalUpload({ data: { workspaceId, globalAssetId, variantId, sha256, ext } });
+  try {
+    await uploadToSignedPath(path, token, file);
+  } catch (e) {
+    // N1: opplastingen feilet; filen slettes og reservasjonen frigjøres (ellers tar sweepen den)
+    await abandonGlobalUpload({ data: { reservationId } }).catch(() => undefined);
+    throw e;
+  }
   const size = await imageSize(file);
   await registerGlobalVersion({
     data: {
       variantId,
+      reservationId,
       path,
       mimeType: file.type || "application/octet-stream",
       width: size.width,
