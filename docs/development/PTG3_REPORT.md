@@ -23,7 +23,7 @@ Dato: 22.10.2026. Grunnlag: `docs/development/PHASE3_PTG_SPEC.md` §4 og PTG-F1,
 ## Tester og verifisering
 
 - `tests/unit/ptg3-camera.test.ts` — 6/6: kamerautledning per bilde, begge moduser, parallakse, toere, 25 fps-opptak, manglende rigg → null.
-- `tests/unit/ptg3-fbx.test.ts` — 6/6: parserbasert kontroll av KTime, enheter (tommer/mm/cm), pan/høyde/rull, null-objekter og null-kamera. **Begrensning:** testen validerer vår egen formatterer/parser, ikke en ekstern FBX-importer. Eksempel-FBX ligger i `tests/fixtures/ptg3/example.fbx`.
+- `tests/unit/ptg3-fbx.test.ts` — 6/6: parserbasert kontroll av KTime, enheter (tommer/mm/cm), pan/høyde/rull, null-objekter og null-kamera. **Begrensning:** testen validerer vår egen formatterer/parser, ikke en ekstern FBX-importer. Eksempel-FBX ligger i `tests/fixtures/ptg3/example.fbx` (én nøkkel per bilde, låst med test).
 - `tests/unit/ptg3-ae.test.ts` — 8/8: ES3-mock som «kjører» scriptet mot en After Effects-modell og kontrollerer komper, nøkler, baner, bildeskifter, masker, lyd og begge kameramoduser. **Begrensning:** mocken fanger syntaks- og strukturfeil, men ikke faktisk AE-oppførsel (maskekeyframes sampler siste verdi; matte-lag settes som lag men ikke koblet som track matte — kjent forenkling).
 - `tests/architecture/eksport-uten-ai.test.ts` — utvidet med PTG3-kjerne og eksportører; eksportene virker uten AI.
 - `tsc --noEmit` (NODE_OPTIONS=--max-old-space-size=6144): grønn.
@@ -69,3 +69,8 @@ Dato: 22.10.2026. Grunnlag: `docs/development/PHASE3_PTG_SPEC.md` §4 og PTG-F1,
 - `tests/fixtures/ptg3/example.fbx` — generert eksempel.
 - `scripts/i18n/references.v1.json`, `scripts/i18n/candidates.v1.json` — regenerert inventar.
 - `docs/development/PTG3_REPORT.md` — denne rapporten.
+
+## Rettinger etter Claudes verifisering (22.10)
+- `tests/visual/ptg3-camera.mjs`: fixturen har nå en gyldig rigg (B-087, modus «moving», kalibrert) for scenen «Stua – åpning» med zoom og panorering. AE-modus må gi `addCamera`, 2D-parallakse må gi `PAR_`; egen kontroll for skudd uten rigg (navn og årsak i LESMEG, «camera omitted» i bygg.jsx). nb 30/30, en 30/30.
+- LESMEG: «Kamera er null i PTG1» er erstattet. Nytt avsnitt forklarer kameramodusene og nøkkeltettheten; skudd uten kamera listes med navn og årsak (`cameraMissing`: ingen 2D-komposisjon, ingen rigg, ugyldig rigg). FBX-pakken sier at mange programmer, Blender blant dem, bare leser binær FBX. Binær variant er ikke bygget (se TODO).
+- Nøkkeltetthet: ekte eksport gir én prøve per eksponering (testet i `ptg3-camera.test.ts`: 250/250 på enere, 125 på toere), og FBX skriver én nøkkel per prøve (96 nøkler i den visuelle testen). `example.fbx` er laget på nytt av eksportøren: 1 s på 24 bilder/s, 25 nøkler, og en test sjekker at filen er identisk med eksportørens utdata.
