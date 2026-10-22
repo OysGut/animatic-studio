@@ -3,7 +3,8 @@
  * har den tittelkortet (ett sekund ekstra), klippes første sekund bort med mediabunny før opplasting.
  * Regelen for klipping og lengdeavvik ligger i kjernen (decideTitleCardTrim).
  */
-import { decideTitleCardTrim, type Rational, type TitleCardDecision } from "@/core/interchange/titlecard-public";
+import type { Rational } from "@/core";
+import { decideTitleCardTrim, type TitleCardDecision } from "@/core/interchange/titlecard";
 import { readFilmMetadata, mimeOf } from "./film-import";
 
 export async function prepareAeFilm(file: File, expectedFrames: number, fps: Rational): Promise<{ file: File; decision: TitleCardDecision }> {
@@ -19,6 +20,6 @@ export async function prepareAeFilm(file: File, expectedFrames: number, fps: Rat
   const conv = await mb.Conversion.init({ input, output, trim: { start: decision.trimSeconds } });
   await conv.execute();
   const buf = target.buffer;
-  if (!buf) throw new Error("trim");
+  if (!buf) throw new Error("trim"); // i18n-ignore: intern, erstattes av generell feilmelding
   return { file: new File([buf], file.name, { type: mime }), decision };
 }
