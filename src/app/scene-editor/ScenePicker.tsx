@@ -18,6 +18,7 @@ import { t } from "@/core/i18n/keyed";
 import type { SceneLastChange } from "@/adapters/browser/last-changed";
 import { useTimeFormat } from "@/app/i18n/time-format";
 import { SceneMark } from "@/app/shell/SceneMark";
+import { joinNames } from "@/app/project/presence-view";
 
 export function ScenePicker({
   state,
@@ -27,7 +28,10 @@ export function ScenePicker({
   onPick,
   synced,
   lastChanged,
+  presence,
 }: {
+  /** K-1: navnene på andre som står i hver sceneforekomst nå. */
+  presence?: ReadonlyMap<string, readonly string[]> | undefined;
   /** B-097: siste lagrede endring per scene (scene-ID). Uten verdi vises ikke kolonnen. */
   lastChanged?: ReadonlyMap<string, SceneLastChange> | null | undefined;
   /** Scener laget med en eldre ressursversjon (flagget «Ressurs oppdatert», REQ-0022). */
@@ -218,6 +222,15 @@ export function ScenePicker({
                       <span className="sr-only"> {t("app-scene-editor-scene-picker.scene-picker.span.e53812e40fcb")}</span>
                     )}
                   </SceneMark>
+                  {presence?.get(r.o.id)?.length ? (
+                    <span
+                      data-testid="scene-presence-dot"
+                      role="img"
+                      className="size-2 shrink-0 self-center rounded-full bg-accent-brand"
+                      title={t("k1.presence.dot", { names: joinNames(presence.get(r.o.id)!) })}
+                      aria-label={t("k1.presence.dot", { names: joinNames(presence.get(r.o.id)!) })}
+                    />
+                  ) : null}
                   {synced?.has(r.o.id) ? (
                     <span
                       className="inline-flex shrink-0 items-center gap-0.5 text-[11px] text-status-uncertain"
