@@ -165,5 +165,6 @@ export function buildInterchange(state: ProjectState, o: InterchangeOptions): In
     }
   }
   return { project: { id: s.project.id, code, name: s.project.name }, production: { id: o.productionId, name: s.productions[o.productionId]?.name ?? "" },
-    language: lang, fps, sourceFps, captureFps: capture.fps, exposureStep, lengthFrames, shots, references: [...refs.values()], namingVersion: "1" };
+    language: lang, fps, sourceFps, captureFps: capture.fps, frameSize: { width: s.project.frameWidth, height: s.project.frameHeight },
+    exposureStep, lengthFrames, shots, references: [...refs.values()], namingVersion: "1" };
 }
