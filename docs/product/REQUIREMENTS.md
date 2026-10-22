@@ -8,7 +8,7 @@ Autoritativ kilde for krav-ID-er. Mandatkrav er utledet fra `MASTER_SPECIFICATIO
 - Antall krav: **924**
 - Prioritet: P0: 147, P1: 569, P2: 169, P3: 39
 - Opprinnelse: mandat: 520, brukerbeslutning: 397, teknisk-anbefaling: 7
-- Status: Verifisert: 729, Ikke startet: 69, Implementert – ikke verifisert: 113, Utgått: 1, Under arbeid: 12
+- Status: Verifisert: 735, Ikke startet: 63, Implementert – ikke verifisert: 113, Utgått: 1, Under arbeid: 12
 
 ## Prioritetsdefinisjoner
 - **P0** Kritisk – ufravikelig prinsipp/systeminvariant. Gjelder fra første kodelinje som berører området, også når selve funksjonen bygges i en senere fase (feltet `phase`).
@@ -12237,10 +12237,11 @@ A1: Én figur kan skrives ut i 20 identiske eksemplarer.
 
 - **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** EXPORT, PRESENT
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - A1: Én figur kan skrives ut i 20 identiske eksemplarer.
 - **Tester:**
+- **Implementering:** src/core/print/job/, src/engine/export/rig-pdf.ts, src/app/rig/PrintJobSection.tsx, db/migrations/0079_rig_print_jobs.sql
 - **Merknad:** Bygges i Runde 5 (batch, kopier, QR, tosidig utskrift og mobiloppslag; migrasjon 0072).
 
 #### REQ-0880 – Rigg & 2D-utskrift A2: Identiske utskrifter fjernes ikke automatisk
@@ -12248,10 +12249,11 @@ A2: Identiske utskrifter fjernes ikke automatisk.
 
 - **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** EXPORT
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - A2: Identiske utskrifter fjernes ikke automatisk.
 - **Tester:**
+- **Implementering:** src/core/print/job/, src/engine/export/rig-pdf.ts, src/app/rig/PrintJobSection.tsx, db/migrations/0079_rig_print_jobs.sql
 - **Merknad:** Bygges i Runde 5 (batch, kopier, QR, tosidig utskrift og mobiloppslag; migrasjon 0072).
 
 #### REQ-0881 – Rigg & 2D-utskrift A3: 20 etterfølgende frames gir 20 utskrifter selv om enkelte er identiske
@@ -12259,10 +12261,11 @@ A3: 20 etterfølgende frames gir 20 utskrifter selv om enkelte er identiske.
 
 - **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** EXPORT, TIMELINE
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - A3: 20 etterfølgende frames gir 20 utskrifter selv om enkelte er identiske.
 - **Tester:**
+- **Implementering:** src/core/print/job/, src/engine/export/rig-pdf.ts, src/app/rig/PrintJobSection.tsx, db/migrations/0079_rig_print_jobs.sql
 - **Merknad:** Bygges i Runde 5 (batch, kopier, QR, tosidig utskrift og mobiloppslag; migrasjon 0072).
 
 #### REQ-0882 – Rigg & 2D-utskrift A4: Valg mellom full farge, full figur med klippelinje og bare kontur
@@ -12390,10 +12393,11 @@ A14: Felles utskriftsinnstillinger for en hel batch.
 
 - **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** EXPORT, UI
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - A14: Felles utskriftsinnstillinger for en hel batch.
 - **Tester:**
+- **Implementering:** src/core/print/job/, src/engine/export/rig-pdf.ts, src/app/rig/PrintJobSection.tsx, db/migrations/0079_rig_print_jobs.sql
 - **Merknad:** Bygges i Runde 5 (batch, kopier, QR, tosidig utskrift og mobiloppslag; migrasjon 0072).
 
 #### REQ-0893 – Rigg & 2D-utskrift A15: QR og konturmodus fungerer også i batch
@@ -12401,10 +12405,11 @@ A15: QR og konturmodus fungerer også i batch.
 
 - **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** EXPORT, SECURITY
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - A15: QR og konturmodus fungerer også i batch.
 - **Tester:**
+- **Implementering:** src/core/print/job/, src/engine/export/rig-pdf.ts, src/app/rig/PrintJobSection.tsx, db/migrations/0079_rig_print_jobs.sql
 - **Merknad:** Bygges i Runde 5 (batch, kopier, QR, tosidig utskrift og mobiloppslag; migrasjon 0072).
 
 #### REQ-0894 – Rigg & 2D-utskrift A16: 2D-utskrift kan leveres uten 3D-generering
@@ -12412,10 +12417,11 @@ A16: 2D-utskrift kan leveres uten 3D-generering.
 
 - **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** EXPORT
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - A16: 2D-utskrift kan leveres uten 3D-generering.
 - **Tester:**
+- **Implementering:** src/core/print/job/, src/engine/export/rig-pdf.ts, src/app/rig/PrintJobSection.tsx, db/migrations/0079_rig_print_jobs.sql
 - **Merknad:** Bygges i Runde 4 (PDF-motor i mm, tre moduser, kalibrering og tiling).
 
 #### REQ-0895 – Rigg & 2D-utskrift A17: Hele 3D-omfanget er dokumentert i en egen fremtidig TODO
