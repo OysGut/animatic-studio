@@ -8,7 +8,7 @@ Autoritativ kilde for krav-ID-er. Mandatkrav er utledet fra `MASTER_SPECIFICATIO
 - Antall krav: **924**
 - Prioritet: P0: 147, P1: 569, P2: 169, P3: 39
 - Opprinnelse: mandat: 520, brukerbeslutning: 397, teknisk-anbefaling: 7
-- Status: Verifisert: 814, Ikke startet: 63, Implementert – ikke verifisert: 34, Utgått: 1, Under arbeid: 12
+- Status: Verifisert: 814, Ikke startet: 63, Implementert – ikke verifisert: 46, Utgått: 1
 
 ## Prioritetsdefinisjoner
 - **P0** Kritisk – ufravikelig prinsipp/systeminvariant. Gjelder fra første kodelinje som berører området, også når selve funksjonen bygges i en senere fase (feltet `phase`).
@@ -6125,7 +6125,7 @@ Fase 1: Arkitektur og datamodell skal definere prosjekt, produksjon, scene, manu
 - **Kilde:** Kap. Fase 1 (l. 1356-1368) · **Opprinnelse:** mandat · **Type:** prosess · **Prioritet:** P1 · **Fase:** 1
 - **Moduler:** PROCESS
 - **Avhengigheter:** REQ-0450
-- **Status:** Under arbeid
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - Når fase 1 avsluttes, er alle listede leveranser ferdige med testbare akseptansekriterier, og de bygger på leveransene i foregående fase.
 - **Tester:**
@@ -6185,7 +6185,7 @@ Fase 4: Tidslinje, lyd og filmmontering skal implementere toveis manussynkronise
 - **Kilde:** Kap. Fase 4 (l. 1389-1395) · **Opprinnelse:** mandat · **Type:** prosess · **Prioritet:** P1 · **Fase:** 4
 - **Moduler:** PROCESS
 - **Avhengigheter:** REQ-0454
-- **Status:** Under arbeid
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - Når fase 4 avsluttes, er alle listede leveranser ferdige med testbare akseptansekriterier, og de bygger på leveransene i foregående fase.
 - **Tester:**
@@ -10130,7 +10130,7 @@ Brukeren starter med en kort filmidé. Adaptive spørsmål utvikler plot, karakt
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Under arbeid
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - Brukeren starter med en kort filmidé. Adaptive spørsmål utvikler plot, karakterer og miljøer på skrivecanvaset. Godkjente forslag overføres som redigerbart prosjektinnhold.
 - **Tester:**
@@ -10145,7 +10145,7 @@ Maja åpnes fra karakteroversikten. Profilen kan åpnes og redigeres, og egenska
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Under arbeid
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - Maja åpnes fra karakteroversikten. Profilen kan åpnes og redigeres, og egenskapene bevares. Brukeren går tilbake til canvaset uten å miste arbeid.
 - **Tester:**
@@ -10159,7 +10159,7 @@ Maja svarer ut fra profil og valgt fortellingstid. Brukeren kan bytte til analys
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Under arbeid
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - Maja svarer ut fra profil og valgt fortellingstid. Brukeren kan bytte til analysemodus.
 - **Tester:**
@@ -10174,7 +10174,7 @@ Brukeren velger Maja og Ola og beskriver en situasjon. Karakterene improviserer.
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Under arbeid
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - Brukeren velger Maja og Ola og beskriver en situasjon. Karakterene improviserer. Regissøren kan stoppe, pause, stille spørsmål og endre instrukser.
 - **Tester:**
@@ -10189,7 +10189,7 @@ Regi som «Maja er bakfull» påvirker improvisasjonen uten å endre den permane
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Under arbeid
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - Regi som «Maja er bakfull» påvirker improvisasjonen uten å endre den permanente profilen.
 - **Tester:**
@@ -10203,7 +10203,7 @@ Før en avsløring kjenner karakterene ikke avsløringen. Kunnskap skilles per d
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Under arbeid
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - Før en avsløring kjenner karakterene ikke avsløringen. Kunnskap skilles per deltaker og følger fortellingstid. Andres hemmeligheter lekker aldri.
 - **Tester:**
@@ -10218,7 +10218,7 @@ Dialog og handling analyseres mot profiler og kontekst. Forslag forklares; origi
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Under arbeid
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - Dialog og handling analyseres mot profiler og kontekst. Forslag forklares; originalen endres ikke automatisk.
 - **Tester:**
@@ -10233,7 +10233,7 @@ To improvisasjoner med ulike instrukser kan lagres og sammenlignes. Brukeren vel
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Under arbeid
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - To improvisasjoner med ulike instrukser kan lagres og sammenlignes. Brukeren velger elementer fra begge.
 - **Tester:**
@@ -10248,7 +10248,7 @@ Et utdrag blir et redigerbart manusforslag. Brukeren godkjenner før overføring
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Under arbeid
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - Et utdrag blir et redigerbart manusforslag. Brukeren godkjenner før overføring; ingenting overskrives automatisk. Overføring bruker vanlige kommandoer og én angregruppe.
 - **Tester:**
@@ -10263,7 +10263,7 @@ Integrasjonsplanen bevarer VennTing-data. Ø-9 presiserer kopi inne i Animatic S
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** arkitektur · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Under arbeid
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - Integrasjonsplanen bevarer VennTing-data. Ø-9 presiserer kopi inne i Animatic Studio, ikke levende synkronisering. VennTing røres ikke.
 - **Tester:**

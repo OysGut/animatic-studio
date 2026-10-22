@@ -17866,7 +17866,7 @@ requirements:
     i foregående fase.
   tests:
   - 'manuell: fasegjennomgang/milepælsrevisjon'
-  status: Under arbeid
+  status: Implementert – ikke verifisert
   implementation:
   - src/core/
   - db/migrations/0001_core.sql
@@ -17878,6 +17878,9 @@ requirements:
   - date: '2026-10-08'
     decision: DEC-0022
     change: 'M1: delvis implementert (se implementation)'
+  - date: '2026-10-22'
+    decision: DEC-0006
+    change: "N7: avstemt mot kode og tester – implementert og delvis testet, men akseptkriteriet er ikke samlet verifisert; ikke flyttet til Verifisert."
   notes: Prosesskrav (rekkefølge); de enkelte funksjonene er spesifisert som funksjonskrav i sine fagkapitler. Fase
     1 sier «Definer» (datamodell), ikke «Implementer».
 - id: REQ-0452
@@ -17999,7 +18002,7 @@ requirements:
     i foregående fase.
   tests:
   - 'manuell: fasegjennomgang/milepælsrevisjon'
-  status: Under arbeid
+  status: Implementert – ikke verifisert
   implementation:
   - "src/app/assembly/"
   verification: []
@@ -18010,6 +18013,9 @@ requirements:
   - date: '2026-10-09'
     decision: DEC-0043
     change: "M4 del 1 levert: filmtidslinje, avspilling og eksport"
+  - date: '2026-10-22'
+    decision: DEC-0006
+    change: "N7: avstemt mot kode og tester – implementert og delvis testet, men akseptkriteriet er ikke samlet verifisert; ikke flyttet til Verifisert."
   notes: Prosesskrav (rekkefølge); de enkelte funksjonene er spesifisert som funksjonskrav i sine fagkapitler.
 - id: REQ-0456
   title: 'Fase 5: Genereringsmotor og AI-integrasjoner'
@@ -27846,7 +27852,7 @@ requirements:
   - tests/unit/storylab-interview.test.ts
   - tests/unit/storylab-canvas.test.ts
   - tests/visual/storylab-canvas-ui.mjs
-  status: Under arbeid
+  status: Implementert – ikke verifisert
   implementation:
   - src/app/storylab/new-project-idea.ts
   - src/app/storylab/InterviewView.tsx
@@ -27861,6 +27867,9 @@ requirements:
   - date: '2026-10-19'
     decision: DEC-0099
     change: Registrert fra Øysteins B2-kilde kap. 42–51. Deldekning er oppgitt, ikke forvekslet med full akseptanse.
+  - date: '2026-10-22'
+    decision: DEC-0006
+    change: "N7: avstemt mot kode og tester – implementert og delvis testet, men akseptkriteriet er ikke samlet verifisert; ikke flyttet til Verifisert."
 
 - id: REQ-0741
   title: Psykologisk karaktereditor og bevart arbeid
@@ -27885,7 +27894,7 @@ requirements:
   tests:
   - tests/unit/storylab-replay.test.ts
   - tests/visual/storylab-ui.mjs
-  status: Under arbeid
+  status: Implementert – ikke verifisert
   implementation:
   - src/app/storylab/CharacterWorkspace.tsx
   - src/core/storylab/profile.ts
@@ -27897,6 +27906,9 @@ requirements:
   - date: '2026-10-19'
     decision: DEC-0099
     change: Registrert fra Øysteins B2-kilde kap. 42–51. Deldekning er oppgitt, ikke forvekslet med full akseptanse.
+  - date: '2026-10-22'
+    decision: DEC-0006
+    change: "N7: avstemt mot kode og tester – implementert og delvis testet, men akseptkriteriet er ikke samlet verifisert; ikke flyttet til Verifisert."
 
 - id: REQ-0742
   title: Individuell samtale ved valgt tidspunkt
@@ -27920,7 +27932,7 @@ requirements:
   - tests/unit/storylab-knowledge.test.ts
   - tests/unit/storylab-replay.test.ts
   - tests/visual/storylab-ui.mjs
-  status: Under arbeid
+  status: Implementert – ikke verifisert
   implementation:
   - src/app/storylab/ConversationView.tsx
   - src/core/storylab/prompts.ts
@@ -27933,6 +27945,9 @@ requirements:
   - date: '2026-10-19'
     decision: DEC-0099
     change: Registrert fra Øysteins B2-kilde kap. 42–51. Deldekning er oppgitt, ikke forvekslet med full akseptanse.
+  - date: '2026-10-22'
+    decision: DEC-0006
+    change: "N7: avstemt mot kode og tester – implementert og delvis testet, men akseptkriteriet er ikke samlet verifisert; ikke flyttet til Verifisert."
 
 - id: REQ-0743
   title: Gruppesamtale med regi og pause
@@ -27958,7 +27973,7 @@ requirements:
   - tests/unit/storylab-engine.test.ts
   - tests/unit/storylab-group-view.test.tsx
   - tests/visual/storylab-group-ui.mjs
-  status: Under arbeid
+  status: Implementert – ikke verifisert
   implementation:
   - src/app/storylab/GroupConversationView.tsx
   - src/core/storylab/engine.ts
@@ -27971,6 +27986,9 @@ requirements:
   - date: '2026-10-19'
     decision: DEC-0099
     change: Registrert fra Øysteins B2-kilde kap. 42–51. Deldekning er oppgitt, ikke forvekslet med full akseptanse.
+  - date: '2026-10-22'
+    decision: DEC-0006
+    change: "N7: avstemt mot kode og tester – implementert og delvis testet, men akseptkriteriet er ikke samlet verifisert; ikke flyttet til Verifisert."
 
 - id: REQ-0744
   title: Midlertidige tilstander endrer ikke profilen
@@ -27993,7 +28011,7 @@ requirements:
   tests:
   - tests/unit/storylab-engine.test.ts
   - tests/unit/storylab-group-prompts.test.ts
-  status: Under arbeid
+  status: Implementert – ikke verifisert
   implementation:
   - src/core/storylab/engine.ts
   - src/core/storylab/prompts.ts
@@ -28005,6 +28023,9 @@ requirements:
   - date: '2026-10-19'
     decision: DEC-0099
     change: Registrert fra Øysteins B2-kilde kap. 42–51. Deldekning er oppgitt, ikke forvekslet med full akseptanse.
+  - date: '2026-10-22'
+    decision: DEC-0006
+    change: "N7: avstemt mot kode og tester – implementert og delvis testet, men akseptkriteriet er ikke samlet verifisert; ikke flyttet til Verifisert."
 
 - id: REQ-0745
   title: Kunnskapsgrenser per deltaker
@@ -28030,7 +28051,7 @@ requirements:
   - tests/unit/storylab-knowledge.test.ts
   - tests/unit/storylab-group-prompts.test.ts
   - tests/visual/storylab-scene-ui.mjs
-  status: Under arbeid
+  status: Implementert – ikke verifisert
   implementation:
   - src/core/storylab/facts.ts
   - src/core/storylab/prompts.ts
@@ -28044,6 +28065,9 @@ requirements:
   - date: '2026-10-19'
     decision: DEC-0099
     change: Registrert fra Øysteins B2-kilde kap. 42–51. Deldekning er oppgitt, ikke forvekslet med full akseptanse.
+  - date: '2026-10-22'
+    decision: DEC-0006
+    change: "N7: avstemt mot kode og tester – implementert og delvis testet, men akseptkriteriet er ikke samlet verifisert; ikke flyttet til Verifisert."
 
 - id: REQ-0746
   title: Rådgivende analyse av eksisterende scene
@@ -28067,7 +28091,7 @@ requirements:
   - tests/unit/storylab-scene-batch.test.ts
   - tests/unit/storylab-line-check.test.ts
   - tests/visual/storylab-scene-ui.mjs
-  status: Under arbeid
+  status: Implementert – ikke verifisert
   implementation:
   - src/app/storylab/SceneLab.tsx
   - src/core/storylab/line-check.ts
@@ -28080,6 +28104,9 @@ requirements:
   - date: '2026-10-19'
     decision: DEC-0099
     change: Registrert fra Øysteins B2-kilde kap. 42–51. Deldekning er oppgitt, ikke forvekslet med full akseptanse.
+  - date: '2026-10-22'
+    decision: DEC-0006
+    change: "N7: avstemt mot kode og tester – implementert og delvis testet, men akseptkriteriet er ikke samlet verifisert; ikke flyttet til Verifisert."
 
 - id: REQ-0747
   title: Alternative improvisasjoner og sammenligning
@@ -28103,7 +28130,7 @@ requirements:
   - tests/unit/storylab-suggestions-view.test.tsx
   - tests/visual/storylab-scene-ui.mjs
   - tests/visual/storylab-suggestions-ui.mjs
-  status: Under arbeid
+  status: Implementert – ikke verifisert
   implementation:
   - src/app/storylab/SceneLab.tsx
   - src/app/storylab/SuggestionsPanel.tsx
@@ -28117,6 +28144,9 @@ requirements:
   - date: '2026-10-19'
     decision: DEC-0099
     change: Registrert fra Øysteins B2-kilde kap. 42–51. Deldekning er oppgitt, ikke forvekslet med full akseptanse.
+  - date: '2026-10-22'
+    decision: DEC-0006
+    change: "N7: avstemt mot kode og tester – implementert og delvis testet, men akseptkriteriet er ikke samlet verifisert; ikke flyttet til Verifisert."
 
 - id: REQ-0748
   title: Godkjent overføring til redigerbart manus
@@ -28142,7 +28172,7 @@ requirements:
   - tests/unit/storylab-transfer.test.ts
   - tests/unit/storylab-transfer-undo.test.tsx
   - tests/visual/storylab-suggestions-ui.mjs
-  status: Under arbeid
+  status: Implementert – ikke verifisert
   implementation:
   - src/core/storylab/transfer.ts
   - src/app/storylab/SuggestionPreview.tsx
@@ -28156,6 +28186,9 @@ requirements:
   - date: '2026-10-19'
     decision: DEC-0099
     change: Registrert fra Øysteins B2-kilde kap. 42–51. Deldekning er oppgitt, ikke forvekslet med full akseptanse.
+  - date: '2026-10-22'
+    decision: DEC-0006
+    change: "N7: avstemt mot kode og tester – implementert og delvis testet, men akseptkriteriet er ikke samlet verifisert; ikke flyttet til Verifisert."
 
 - id: REQ-0749
   title: VennTing-teknologien er en selvstendig kopi
@@ -28179,7 +28212,7 @@ requirements:
     VennTing røres ikke.
   tests:
   - tests/unit/storylab-prompts.test.ts
-  status: Under arbeid
+  status: Implementert – ikke verifisert
   implementation:
   - src/core/storylab/prompts.ts
   verification:
@@ -28190,6 +28223,9 @@ requirements:
   - date: '2026-10-19'
     decision: DEC-0099
     change: Registrert fra Øysteins B2-kilde kap. 42–51. Deldekning er oppgitt, ikke forvekslet med full akseptanse.
+  - date: '2026-10-22'
+    decision: DEC-0006
+    change: "N7: avstemt mot kode og tester – implementert og delvis testet, men akseptkriteriet er ikke samlet verifisert; ikke flyttet til Verifisert."
 
 - id: REQ-0750
   title: 'DV M1: enkeltklikk på tidsplassert replikk flytter avspillingshodet'
