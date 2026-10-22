@@ -11,8 +11,8 @@ const P = "11111111-1111-4111-8111-111111111111";
 const now = Date.parse("2026-10-22T12:00:00Z");
 
 describe("funksjonsbrytere", () => {
-  it("har de fem nøklene fra start", () => {
-    expect([...FEATURE_KEYS]).toEqual(["community.sharing", "community.review", "community.abtest", "community.profiles", "community.public"]);
+  it("har nøklene fra start, inkludert testspråkbryteren", () => {
+    expect([...FEATURE_KEYS]).toEqual(["community.sharing", "community.review", "community.abtest", "community.profiles", "community.public", "ui.test-languages"]);
   });
   it("av gir ingen, beta bare innloggede testere, på alle", () => {
     expect(featureEnabled("off", true, true)).toBe(false);
@@ -25,8 +25,10 @@ describe("funksjonsbrytere", () => {
     const f = parseMyFeatures({ "community.review": true, "community.sharing": "yes", "other.x": true });
     expect(f["community.review"]).toBe(true);
     expect(f["community.sharing"]).toBe(false);
-    expect(Object.keys(f)).toHaveLength(5);
+    expect(Object.keys(f)).toHaveLength(6);
     expect(parseMyFeatures(null)["community.public"]).toBe(false);
+    // B-115: testspråket en-XA er av som standard, også når bryterraden mangler i databasen
+    expect(parseMyFeatures(null)["ui.test-languages"]).toBe(false);
   });
 });
 
