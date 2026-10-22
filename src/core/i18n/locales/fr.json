@@ -54337,8 +54337,8 @@
     "review": "machine"
   },
   "ptg1.readme": {
-    "text": "La coupe se situe au milieu du chevauchement, arrondie sur le film. La durée des plans est la différence entre les limites arrondies. handleIn et handleOut sont les portions chez le voisin : filmez aussi ces poignées. Sans chevauchement, elles valent 0. Le son et les mots appartiennent au plan où ils commencent, gardent leur durée entière et leurs temps absolus et relatifs ; crossesCut=true signale une traversée. Sur deux : 12 expositions/s sur une chronologie à 24 images/s. La sortie est exclusive. Un film vide a 0 image ; un plan très court peut avoir 0 image et reste dans la liste. La caméra est null dans PTG1.",
-    "sourceHash": "c2bc23ed4767d9ef2f64d31a3495aef22dc03598c58430e55f3ca528c1171661",
+    "text": "La coupe se situe au milieu du chevauchement, arrondie sur le film. La durée des plans est la différence entre les limites arrondies. handleIn et handleOut sont les portions chez le voisin : filmez aussi ces poignées. Sans chevauchement, elles valent 0. Le son et les mots appartiennent au plan où ils commencent, gardent leur durée entière et leurs temps absolus et relatifs ; crossesCut=true signale une traversée. Sur deux : 12 expositions/s sur une chronologie à 24 images/s. La sortie est exclusive. Un film vide a 0 image ; un plan très court peut avoir 0 image et reste dans la liste. Le champ caméra est construit à partir du rig de la scène (B-087) avec un échantillon par exposition ; il est null si le plan n'a pas de composition 2D ou de rig utilisable.",
+    "sourceHash": "11811c23c134a1d7c760c35aaa3b346859e101c53078b88835a51c68c2aecbf8",
     "review": "machine"
   },
   "b115.privacy.terms.heading": {
@@ -54446,9 +54446,34 @@
     "sourceHash": "a59acf40a6874c00ae5fa771104398edc097bea8db3e884a2c5bb6c9a06df334",
     "review": "machine"
   },
-  "ptg3.readme-no-rig": {
-    "text": "Ces plans n'ont pas de rig, la caméra manque donc : {value1}",
-    "sourceHash": "ed7970a28bcc3404f732ec9af9a5bece24034d09861f8acb2ab346c93e9fe4af",
+  "ptg3.readme-modes": {
+    "text": "Modes de caméra : « Caméra AE (3D) » crée une caméra 3D dans After Effects avec la focale et le capteur du rig. « Parallaxe 2D » ne crée pas de caméra ; chaque plaque reçoit à la place un objet nul (PAR_) qui déplace et met à l'échelle ses calques selon la parallaxe de la plaque. Les fichiers FBX contiennent toujours la caméra 3D. La caméra a une clé par exposition à la cadence de prise de vue (une image sur deux en deux).",
+    "sourceHash": "d0c1bea25c1229837dd727cde88357ecfee91c63da4da46d8b4c0b015b2c5ee0",
+    "review": "machine"
+  },
+  "ptg3.readme-fbx-binary": {
+    "text": "Les fichiers sont en FBX ASCII. De nombreux programmes, dont Blender, ne lisent que le FBX binaire ; convertissez alors d'abord le fichier, par exemple avec Autodesk FBX Converter ou Assimp. L'export FBX reste expérimental tant qu'il n'a pas été essayé dans Dragonframe ou un autre logiciel de production.",
+    "sourceHash": "b41931ac2721ac993b6942b4ea8efa6636fa894469a064ea5124b3df2107f8a1",
+    "review": "machine"
+  },
+  "ptg3.readme-missing-heading": {
+    "text": "Plans sans caméra :",
+    "sourceHash": "fbf77eb23db4b22cc43652d2addeaa798833b46df147fd4aef64cd53f7716bf9",
+    "review": "machine"
+  },
+  "ptg3.missing.no-composition": {
+    "text": "{value1} : le plan n'a pas de composition 2D, il n'y a donc aucun mouvement de caméra à exporter.",
+    "sourceHash": "f914756ca11ab8ec970518f993bb1571b8efccfb7ca50d4e678132686e457357",
+    "review": "machine"
+  },
+  "ptg3.missing.no-rig": {
+    "text": "{value1} : ni la scène ni le projet n'ont de rig, la caméra ne peut donc pas être convertie en unités physiques. Ajoutez un rig pour la scène.",
+    "sourceHash": "757fe3f6505982bd45769ddadf966ea28723ef33037c1021ac987829e2506401",
+    "review": "machine"
+  },
+  "ptg3.missing.invalid-rig": {
+    "text": "{value1} : le rig n'a pas de mesures valides (caméra, plaques ou calibrage), la caméra est donc omise.",
+    "sourceHash": "ffffb290a1bc0d742e81c869f55369757fd112cf0fb45d6f7a4642c0fd6db372",
     "review": "machine"
   },
   "ptg3b.card-explain": {

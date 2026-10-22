@@ -74791,7 +74791,7 @@
     "text": "Pakken inneholder to filer med samme navn."
   },
   "ptg1.readme": {
-    "text": "Klippunktet ligger midt i overlappen, avrundet langs filmen. Skuddlengder er differansen mellom avrundede grenser. handleIn og handleOut er overlapp på naboens side; skyt inkludert håndtakene. Uten overlapp er håndtakene 0. Lyd og ord tilhører skuddet der hendelsen starter, beholder hele lengden og har absolutte og relative tider; crossesCut=true markerer kryssing. Toere er 12 eksponeringer/s på en 24 bilder/s-tidslinje, hvert andre bilde. Tidskode ut og Frame Out er eksklusive. Tom film har 0 bilder; en scene kortere enn ett opptaksbilde kan få 0 bilder og beholdes i listen. Kamera er null i PTG1."
+    "text": "Klippunktet ligger midt i overlappen, avrundet langs filmen. Skuddlengder er differansen mellom avrundede grenser. handleIn og handleOut er overlapp på naboens side; skyt inkludert håndtakene. Uten overlapp er håndtakene 0. Lyd og ord tilhører skuddet der hendelsen starter, beholder hele lengden og har absolutte og relative tider; crossesCut=true markerer kryssing. Toere er 12 eksponeringer/s på en 24 bilder/s-tidslinje, hvert andre bilde. Tidskode ut og Frame Out er eksklusive. Tom film har 0 bilder; en scene kortere enn ett opptaksbilde kan få 0 bilder og beholdes i listen. Kamerafeltet bygges fra scenens rigg (B-087) med én prøve per eksponering; det er null når skuddet mangler 2D-komposisjon eller brukbar rigg."
   },
   "ptg3.camera-fbx": {
     "text": "Kamera (FBX)"
@@ -74814,8 +74814,23 @@
   "ptg3.readme-ae": {
     "text": "Åpne After Effects, velg File > Scripts > Run Script File og kjør bygg.jsx fra denne mappen. Scriptet bygger én komposisjon per skudd og en hovedkomposisjon med lag, nøkkelbilder, bildeskifter, masker og lyd. Overganger mellom scener er ikke med. Tekstlag gjenskapes ikke."
   },
-  "ptg3.readme-no-rig": {
-    "text": "Disse skuddene har ingen rigg, så kameraet mangler: {value1}"
+  "ptg3.readme-modes": {
+    "text": "Kameramoduser: «AE-kamera (3D)» lager et 3D-kamera i After Effects med fokallengde og sensor fra riggen. «2D-parallakse» lager ikke noe kamera; hver plate får i stedet et nullobjekt (PAR_) som flytter og skalerer lagene sine etter platens parallakse. FBX-filene inneholder alltid 3D-kameraet. Kameraet har én nøkkel per eksponering på opptakets bildefrekvens (på toere hvert andre bilde)."
+  },
+  "ptg3.readme-fbx-binary": {
+    "text": "Filene er ASCII-FBX. Mange programmer, blant dem Blender, leser bare binær FBX; konverter da filen først, for eksempel med Autodesk FBX Converter eller Assimp. FBX-eksporten er eksperimentell til den er prøvd i Dragonframe eller et annet produksjonsprogram."
+  },
+  "ptg3.readme-missing-heading": {
+    "text": "Skudd uten kamera:"
+  },
+  "ptg3.missing.no-composition": {
+    "text": "{value1}: skuddet har ingen 2D-komposisjon, så det finnes ingen kamerabevegelse å eksportere."
+  },
+  "ptg3.missing.no-rig": {
+    "text": "{value1}: verken scenen eller prosjektet har en rigg, så kameraet kan ikke regnes om til fysiske mål. Legg til en rigg for scenen."
+  },
+  "ptg3.missing.invalid-rig": {
+    "text": "{value1}: riggen mangler gyldige mål (kamera, plater eller kalibrering), så kameraet er utelatt."
   },
   "ptg3b.card-explain": {
     "text": "Denne QR-koden brukes til å importere den ferdige After Effects-filmen. Filmen legger seg der denne scenen ble eksportert fra."

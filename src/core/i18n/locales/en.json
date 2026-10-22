@@ -74773,7 +74773,7 @@
     "text": "The package contains two files with the same name."
   },
   "ptg1.readme": {
-    "text": "The cut is at the midpoint of the overlap, rounded along the film. Shot lengths are differences between rounded boundaries. handleIn and handleOut are overlap on the neighbour’s side; shoot including the handles. Without overlap, handles are 0. Audio and words belong to the shot where the event starts, retain their full length and include absolute and relative times; crossesCut=true marks a crossing. Twos are 12 exposures/s on a 24 fps timeline, every other frame. Out timecode and Frame Out are exclusive. An empty film has 0 frames; a scene shorter than one capture frame may have 0 frames and remains listed. Camera is null in PTG1."
+    "text": "The cut is at the midpoint of the overlap, rounded along the film. Shot lengths are differences between rounded boundaries. handleIn and handleOut are overlap on the neighbour’s side; shoot including the handles. Without overlap, handles are 0. Audio and words belong to the shot where the event starts, retain their full length and include absolute and relative times; crossesCut=true marks a crossing. Twos are 12 exposures/s on a 24 fps timeline, every other frame. Out timecode and Frame Out are exclusive. An empty film has 0 frames; a scene shorter than one capture frame may have 0 frames and remains listed. The camera field is built from the scene's rig (B-087) with one sample per exposure; it is null when the shot lacks a 2D composition or a usable rig."
   },
   "ptg3.camera-fbx": {
     "text": "Camera (FBX)"
@@ -74796,8 +74796,23 @@
   "ptg3.readme-ae": {
     "text": "Open After Effects, choose File > Scripts > Run Script File and run bygg.jsx from this folder. The script builds one composition per shot and a main composition with layers, keyframes, image swaps, masks and audio. Transitions between scenes are not included. Text layers are not recreated."
   },
-  "ptg3.readme-no-rig": {
-    "text": "These shots have no rig, so the camera is missing: {value1}"
+  "ptg3.readme-modes": {
+    "text": "Camera modes: \"AE camera (3D)\" creates a 3D camera in After Effects with the focal length and sensor from the rig. \"2D parallax\" creates no camera; instead each plate gets a null object (PAR_) that moves and scales its layers according to the plate's parallax. The FBX files always contain the 3D camera. The camera has one key per exposure at the capture frame rate (every other frame on twos)."
+  },
+  "ptg3.readme-fbx-binary": {
+    "text": "The files are ASCII FBX. Many programs, Blender among them, only read binary FBX; convert the file first, for example with Autodesk FBX Converter or Assimp. The FBX export is experimental until it has been tried in Dragonframe or another production program."
+  },
+  "ptg3.readme-missing-heading": {
+    "text": "Shots without a camera:"
+  },
+  "ptg3.missing.no-composition": {
+    "text": "{value1}: the shot has no 2D composition, so there is no camera move to export."
+  },
+  "ptg3.missing.no-rig": {
+    "text": "{value1}: neither the scene nor the project has a rig, so the camera cannot be converted to physical units. Add a rig for the scene."
+  },
+  "ptg3.missing.invalid-rig": {
+    "text": "{value1}: the rig lacks valid measurements (camera, plates or calibration), so the camera is omitted."
   },
   "ptg3b.card-explain": {
     "text": "This QR code is used to import the finished After Effects film. The film is placed where this scene was exported from."

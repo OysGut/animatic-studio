@@ -54189,8 +54189,8 @@
     "review": "machine"
   },
   "ptg1.readme": {
-    "text": "컷은 필름 전체 기준으로 반올림한 겹침의 중간에 있습니다. 샷 길이는 반올림한 경계의 차이입니다. handleIn과 handleOut은 이웃 샷 쪽의 겹침이며 핸들을 포함하여 촬영합니다. 겹침이 없으면 0입니다. 오디오와 단어는 시작한 샷에 속하며 전체 길이와 절대·상대 시간을 유지합니다. crossesCut=true는 컷을 넘는 것을 나타냅니다. 2프레임 촬영은 24fps 타임라인에서 초당 12번 노출, 한 프레임씩 건너뜁니다. 종료 경계는 포함하지 않습니다. 빈 필름은 0프레임이며 매우 짧은 샷도 0프레임으로 목록에 남습니다. PTG1의 카메라는 null입니다.",
-    "sourceHash": "c2bc23ed4767d9ef2f64d31a3495aef22dc03598c58430e55f3ca528c1171661",
+    "text": "컷은 필름 전체 기준으로 반올림한 겹침의 중간에 있습니다. 샷 길이는 반올림한 경계의 차이입니다. handleIn과 handleOut은 이웃 샷 쪽의 겹침이며 핸들을 포함하여 촬영합니다. 겹침이 없으면 0입니다. 오디오와 단어는 시작한 샷에 속하며 전체 길이와 절대·상대 시간을 유지합니다. crossesCut=true는 컷을 넘는 것을 나타냅니다. 2프레임 촬영은 24fps 타임라인에서 초당 12번 노출, 한 프레임씩 건너뜁니다. 종료 경계는 포함하지 않습니다. 빈 필름은 0프레임이며 매우 짧은 샷도 0프레임으로 목록에 남습니다. 카메라 필드는 장면의 리그(B-087)에서 노출마다 샘플 하나씩으로 만들어집니다. 샷에 2D 컴포지션이나 사용할 수 있는 리그가 없으면 null입니다.",
+    "sourceHash": "11811c23c134a1d7c760c35aaa3b346859e101c53078b88835a51c68c2aecbf8",
     "review": "machine"
   },
   "b115.privacy.terms.heading": {
@@ -54298,9 +54298,34 @@
     "sourceHash": "a59acf40a6874c00ae5fa771104398edc097bea8db3e884a2c5bb6c9a06df334",
     "review": "machine"
   },
-  "ptg3.readme-no-rig": {
-    "text": "이 샷에는 리그가 없으므로 카메라가 없습니다: {value1}",
-    "sourceHash": "ed7970a28bcc3404f732ec9af9a5bece24034d09861f8acb2ab346c93e9fe4af",
+  "ptg3.readme-modes": {
+    "text": "카메라 모드: 「AE 카메라(3D)」는 리그의 초점 거리와 센서로 After Effects에 3D 카메라를 만듭니다. 「2D 패럴랙스」는 카메라를 만들지 않고, 대신 각 플레이트에 널 오브젝트(PAR_)를 만들어 플레이트의 패럴랙스에 따라 레이어를 이동하고 크기를 조정합니다. FBX 파일에는 항상 3D 카메라가 들어 있습니다. 카메라는 촬영 프레임 레이트에서 노출마다 키가 하나씩 있습니다(투스에서는 한 프레임 걸러).",
+    "sourceHash": "d0c1bea25c1229837dd727cde88357ecfee91c63da4da46d8b4c0b015b2c5ee0",
+    "review": "machine"
+  },
+  "ptg3.readme-fbx-binary": {
+    "text": "파일은 ASCII FBX입니다. Blender를 비롯한 많은 프로그램은 바이너리 FBX만 읽습니다. 그런 경우 Autodesk FBX Converter나 Assimp 등으로 먼저 파일을 변환하세요. FBX 내보내기는 Dragonframe 또는 다른 제작 프로그램에서 시험될 때까지 실험적입니다.",
+    "sourceHash": "b41931ac2721ac993b6942b4ea8efa6636fa894469a064ea5124b3df2107f8a1",
+    "review": "machine"
+  },
+  "ptg3.readme-missing-heading": {
+    "text": "카메라가 없는 샷:",
+    "sourceHash": "fbf77eb23db4b22cc43652d2addeaa798833b46df147fd4aef64cd53f7716bf9",
+    "review": "machine"
+  },
+  "ptg3.missing.no-composition": {
+    "text": "{value1}: 이 샷에는 2D 컴포지션이 없어서 내보낼 카메라 움직임이 없습니다.",
+    "sourceHash": "f914756ca11ab8ec970518f993bb1571b8efccfb7ca50d4e678132686e457357",
+    "review": "machine"
+  },
+  "ptg3.missing.no-rig": {
+    "text": "{value1}: 장면과 프로젝트 모두 리그가 없어서 카메라를 물리 단위로 환산할 수 없습니다. 장면에 리그를 추가하세요.",
+    "sourceHash": "757fe3f6505982bd45769ddadf966ea28723ef33037c1021ac987829e2506401",
+    "review": "machine"
+  },
+  "ptg3.missing.invalid-rig": {
+    "text": "{value1}: 리그에 유효한 치수(카메라, 플레이트 또는 보정)가 없어서 카메라가 생략되었습니다.",
+    "sourceHash": "ffffb290a1bc0d742e81c869f55369757fd112cf0fb45d6f7a4642c0fd6db372",
     "review": "machine"
   },
   "ptg3b.card-explain": {
