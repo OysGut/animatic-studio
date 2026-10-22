@@ -126,7 +126,7 @@ async function mock(ctx) {
     if (table === "project_members")
       return json([{ user_id: USER.id, role: "owner", joined_at: "2026-10-08T10:00:00Z" }]);
     if (table === "profiles") return json([{ user_id: USER.id, display_name: "Mars" }]);
-    if (table === "rpc/issue_print_copies") { const b = JSON.parse(req.postData() ?? "{}"); RPCS.push({ name: "issue", body: b }); const before = COPIES.length; if (!COPIES.length) for (let i = 0; i < 20; i++) COPIES.push({ copy_id: id(500 + i), element_id: JOB_ELEMENT.id, copy_number: i + 1, key: `k${String(i).padStart(2, "0")}${"A".repeat(40)}`, short_code: `ABCD${String(i).padStart(2, "0")}EF`.replace(/[^0-9A-Z]/g, "0").slice(0, 8) }); return json(COPIES.length - before); }
+    if (table === "rpc/issue_print_copies") { const b = JSON.parse(req.postData() ?? "{}"); RPCS.push({ name: "issue", body: b }); const before = COPIES.length; const save = COMMANDS.filter((c) => c.includes("SavePrintJob")).at(-1) ?? ""; JOB_ELEMENT.id = /\\?"elements\\?":\[\{\\?"id\\?":\\?"([0-9a-f-]{36})/.exec(save)?.[1] ?? ""; if (!COPIES.length) for (let i = 0; i < 20; i++) COPIES.push({ copy_id: id(500 + i), element_id: JOB_ELEMENT.id, copy_number: i + 1, key: `k${String(i).padStart(2, "0")}${"A".repeat(40)}`, short_code: `ABCD${String(i).padStart(2, "0")}EF`.replace(/[^0-9A-Z]/g, "0").slice(0, 8) }); return json(COPIES.length - before); }
     if (table === "rpc/print_copy_codes") return json(COPIES);
     if (table === "rpc/lookup_print_copy") {
       const b = JSON.parse(req.postData() ?? "{}"); RPCS.push({ name: "lookup", body: b });
@@ -231,7 +231,7 @@ await step("«Lag PDF» lagrer jobben som én kommando og gir én PDF med 20 fig
   await job.screenshot({ path: `${out}/before-create-${lang}.png` });
   const dl = page.waitForEvent("download", { timeout: 30000 });
   await job.getByTestId("print-job-create").click({ timeout: 5000 }).catch(async (e) => { dl.catch(() => {}); throw new Error(`${e.message.split("\n")[0]} | ${await job.getByTestId("print-job-create").evaluate((b) => b.getAttributeNames().join(","))}`); });
-  const d = await dl; const p = await d.path();
+  const d = await dl.catch(async (e) => { throw new Error(`${e.message.split("\n")[0]} | ${await job.getByTestId("print-job-message").innerText().catch(() => "")} | el=${JOB_ELEMENT.id} | ${COMMANDS.at(-1)?.slice(0, 300)}`); }); const p = await d.path();
   pdfText = readFileSync(p).toString("latin1");
   assert(pdfText.startsWith("%PDF-"), "ikke PDF");
   const save = COMMANDS.filter((c) => c.includes("SavePrintJob"));
