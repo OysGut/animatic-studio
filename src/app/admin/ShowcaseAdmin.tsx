@@ -10,7 +10,8 @@ import { t } from "@/core/i18n/keyed";
 
 export const ADMIN_SHOWCASE_KEY = ["admin-showcase"] as const;
 
-const KIND_LABEL = {
+export function ShowcaseAdmin() {
+  const KIND_LABEL = {
   character: t("b116.kind.character"),
   asset: t("b116.kind.asset"),
   scene: t("b116.kind.scene"),
@@ -18,7 +19,6 @@ const KIND_LABEL = {
   audio: t("b116.kind.audio"),
 } as const;
 
-export function ShowcaseAdmin() {
   const qc = useQueryClient();
   const q = useQuery({ queryKey: ADMIN_SHOWCASE_KEY, queryFn: fetchAdminShowcaseQueue });
   const [busy, setBusy] = useState(false);

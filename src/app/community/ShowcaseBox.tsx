@@ -6,7 +6,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
-import { Sparkles } from "lucide-react";
+import { Share2 } from "lucide-react";
 import { useFeature } from "./use-feature";
 import { ShowcaseCard } from "./ShowcaseCard";
 import {
@@ -30,21 +30,21 @@ import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { t } from "@/core/i18n/keyed";
 
-const KIND_LABEL: Record<ShowcaseKind, string> = {
+const kindLabel = (kind: ShowcaseKind): string => ({
   character: t("b116.kind.character"),
   asset: t("b116.kind.asset"),
   scene: t("b116.kind.scene"),
   script: t("b116.kind.script"),
   audio: t("b116.kind.audio"),
-};
+})[kind];
 
 const EXPIRES_CHOICES = [7, 14, 30, 90] as const;
-const EXPIRES_LABEL: Record<number, string> = {
+const expiresLabel = (days: number): string => ({
   7: t("b116.expires.7"),
   14: t("b116.expires.14"),
   30: t("b116.expires.30"),
   90: t("b116.expires.90"),
-};
+} as Record<number, string>)[days] ?? "";
 
 export interface ShowcaseProject {
   readonly id: string;
@@ -62,7 +62,7 @@ export function ShowcaseBox({ projects }: { projects: readonly ShowcaseProject[]
   return (
     <section data-testid="showcase-box" className="mb-6 flex flex-col gap-2 rounded-md border border-border bg-surface-1 p-4">
       <h2 className="flex items-center gap-2 text-sm font-semibold text-text-primary">
-        <Sparkles className="size-4 text-accent-brand" aria-hidden />
+        <Share2 className="size-4 text-accent-brand" aria-hidden />
         {t("b116.box.title")}
       </h2>
       <p className="text-xs text-text-secondary">{t("b116.box.hint")}</p>
@@ -203,7 +203,7 @@ function CreateDialog({ projects, open, onOpenChange }: { projects: readonly Sho
                   <button key={k} type="button" role="radio" aria-checked={kind === k} data-testid={`showcase-kind-${k}`}
                     onClick={() => { setKind(k); setCandidate(null); }}
                     className={"rounded-sm border px-2.5 py-1 text-xs " + (kind === k ? "border-accent-brand bg-accent-selection text-text-primary" : "border-border-control text-text-secondary hover:bg-surface-2")}>
-                    {KIND_LABEL[k]}
+                    {kindLabel(k)}
                   </button>
                 ))}
               </div>
@@ -218,7 +218,7 @@ function CreateDialog({ projects, open, onOpenChange }: { projects: readonly Sho
               </div>
             ) : (
               <div className="flex flex-col gap-1.5">
-                <span className="text-xs text-text-secondary">{KIND_LABEL[kind]}</span>
+                <span className="text-xs text-text-secondary">{kindLabel(kind)}</span>
                 {candidates.isLoading ? (
                   <p className="text-[11px] text-text-tertiary">{t("b116.loading")}</p>
                 ) : list.length === 0 ? (
@@ -253,7 +253,7 @@ function CreateDialog({ projects, open, onOpenChange }: { projects: readonly Sho
               <Label htmlFor="showcase-expires" className="text-xs text-text-secondary">{t("b116.create.expires")}</Label>
               <select id="showcase-expires" data-testid="showcase-expires" value={days} onChange={(e) => setDays(Number(e.target.value))}
                 className="h-8 rounded-sm border border-border-control bg-surface-3 px-2 text-xs text-text-primary">
-                {EXPIRES_CHOICES.map((d) => <option key={d} value={d}>{EXPIRES_LABEL[d]}</option>)}
+                {EXPIRES_CHOICES.map((d) => <option key={d} value={d}>{expiresLabel(d)}</option>)}
               </select>
             </div>
             <div className="flex justify-end gap-2">

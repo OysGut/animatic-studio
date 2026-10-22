@@ -6,6 +6,7 @@
  */
 import { chromium } from "playwright";
 import { VISUAL_SCHEMA_VERSION } from "./schema-version.mjs";
+import { uiLang, byLang } from "./ui-lang.mjs";
 import { readFileSync, mkdirSync } from "node:fs";
 const [base = "http://127.0.0.1:8080", out = "/tmp/b116-showcase"] = process.argv.slice(2);
 mkdirSync(out, { recursive: true });
@@ -79,6 +80,7 @@ const freshState = (over = {}) => ({
 });
 
 async function run(name, path, act, { lang = "nb", signedIn = true, ...state } = {}) {
+  lang = uiLang(lang);
   const st = freshState({ lang, ...state });
   const ctx = await browser.newContext({ viewport: { width: 1280, height: 1800 } });
   await mock(ctx, st);
@@ -86,10 +88,14 @@ async function run(name, path, act, { lang = "nb", signedIn = true, ...state } =
   const errors = [];
   page.on("pageerror", (e) => errors.push(String(e)));
   const exp = Math.floor(Date.now() / 1000) + 86400;
-  await page.addInitScript(([k, v, l]) => {
+  await page.goto(base, { waitUntil: "domcontentloaded" });
+  await page.evaluate(([k, v, l, id]) => {
     localStorage.setItem("animatic:lang", l);
-    if (v) localStorage.setItem(k, v);
-  }, [`sb-${ref}-auth-token`, signedIn ? JSON.stringify({ access_token: "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ4In0.sig", refresh_token: "r", token_type: "bearer", expires_in: 86400, expires_at: exp, user: USER }) : null, lang]);
+    if (v) {
+      localStorage.setItem(k, v);
+      localStorage.setItem(`animatic:lang:${id}`, l);
+    }
+  }, [`sb-${ref}-auth-token`, signedIn ? JSON.stringify({ access_token: "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ4In0.sig", refresh_token: "r", token_type: "bearer", expires_in: 86400, expires_at: exp, user: USER }) : null, lang, USER.id]);
   await page.goto(base + path, { waitUntil: "networkidle" });
   await page.waitForTimeout(2500);
   try { await act(page, st); } catch (e) { errors.push("act: " + e.message); fail++; }
@@ -107,7 +113,7 @@ await run("b116-bryter-av", "/", async (page) => {
 await run("b116-boks-og-oppretting", "/", async (page, st) => {
   const box = page.getByTestId("showcase-box");
   check(await box.isVisible(), "boksen vises på prosjektlisten");
-  check((await box.innerText()).includes("Vil du vise frem litt av hva du jobber med?"), "tittel på nb");
+  check((await box.innerText()).includes(byLang("nb", "Vil du vise frem litt av hva du jobber med?", "Want to show a little of what you're working on?")), "tittel på valgt språk");
   await page.getByTestId("showcase-share-open").click();
   await page.getByTestId("showcase-kind-character").click();
   await page.getByTestId("showcase-candidate-asset-1").click();
@@ -119,7 +125,7 @@ await run("b116-boks-og-oppretting", "/", async (page, st) => {
   await page.getByTestId("showcase-submit").click();
   await page.waitForTimeout(1200);
   check(st.created === true, "bidraget opprettes via serverfunksjonen");
-  check((await page.getByTestId("showcase-create").innerText()).includes("venter på godkjenning"), "melding om godkjenning");
+  check((await page.getByTestId("showcase-create").innerText()).includes(byLang("nb", "venter på godkjenning", "waiting for approval")), "melding om godkjenning");
   await page.screenshot({ path: `${out}/b116-01-oppretting.png` });
 }, { features: ON });
 
@@ -135,15 +141,16 @@ await run("b116-manusutdrag-advarsel", "/", async (page) => {
 }, { features: ON });
 
 await run("b116-mine-delinger", "/delinger", async (page) => {
-  check((await page.getByTestId("showcase-mine").innerText()).includes("Mine delinger"), "siden vises");
-  check((await page.getByTestId("showcase-status-mine-1").innerText()).includes("Venter godkjenning"), "status «venter godkjenning»");
+  check((await page.getByTestId("showcase-mine").innerText()).includes(byLang("nb", "Mine delinger", "My shares")), "siden vises");
+  check((await page.getByTestId("showcase-status-mine-1").innerText()).includes(byLang("nb", "Venter godkjenning", "Awaiting approval")), "status «venter godkjenning»");
   await page.getByTestId("showcase-revoke-mine-1").click();
-  check((await page.getByTestId("showcase-revoke-dialog").innerText()).includes("forsvinner fra karusellen"), "bekreftelse før tilbaketrekking");
+  check((await page.getByTestId("showcase-revoke-dialog").innerText()).includes(byLang("nb", "forsvinner fra karusellen", "disappears from the carousel")), "bekreftelse før tilbaketrekking");
   await page.screenshot({ path: `${out}/b116-02-mine.png` });
 }, { features: ON, mine: [MY_ITEM] });
 
 await run("b116-kommentarer", "/", async (page, st) => {
   await page.getByTestId("showcase-comments-toggle").click();
+  await page.getByTestId("showcase-comments").getByText("Fin rev!", { exact: true }).waitFor({ state: "visible" });
   check((await page.getByTestId("showcase-comments").innerText()).includes("Fin rev!"), "kommentaren vises");
   await page.getByTestId("showcase-comment-input").fill("Supert!");
   await page.getByTestId("showcase-comment-submit").click();
@@ -164,7 +171,7 @@ await run("b116-innlogging-uendret", "/", async (page) => {
   }
   check((await page.getByTestId("showcase-comments").count()) === 0, "utlogget ser ikke kommentarfelt før utvidelse");
   await page.getByTestId("showcase-comments-toggle").click();
-  check((await page.getByTestId("showcase-comments").innerText()).includes("Logg inn for å kommentere"), "utlogget kan ikke kommentere");
+  check((await page.getByTestId("showcase-comments").innerText()).includes(byLang("nb", "Logg inn for å kommentere", "Sign in to comment")), "utlogget kan ikke kommentere");
   await page.screenshot({ path: `${out}/b116-03-innlogging.png` });
 }, { signedIn: false, feed: [FEED_ITEM], comments: [{ id: "c1", text: "Fin rev!", created_at: "2026-10-21T00:00:00Z", author_name: "Bo", mine: false }] });
 
@@ -180,13 +187,13 @@ await run("b116-admin", "/admin", async (page, st) => {
 
 await run("b116-en", "/", async (page) => {
   const t = await page.getByTestId("showcase-box").innerText();
-  for (const s of ["Want to show a little of what you're working on?", "Share something", "My shares"]) check(t.includes(s), `en: «${s}»`);
+  for (const s of [byLang("en", "Vil du vise frem litt av hva du jobber med?", "Want to show a little of what you're working on?"), byLang("en", "Del noe", "Share something"), byLang("en", "Mine delinger", "My shares")]) check(t.includes(s), `språk: «${s}»`);
   await page.getByTestId("showcase-share-open").click();
   await page.getByTestId("showcase-kind-script").click();
   await page.getByTestId("showcase-excerpt").fill("FOX: Merry Christmas!");
   await page.getByTestId("showcase-title").fill("Opening");
   await page.getByTestId("showcase-preview").click();
-  check((await page.getByTestId("showcase-script-warning").innerText()).includes("becomes public"), "en: advarsel om offentlig tekst");
+  check((await page.getByTestId("showcase-script-warning").innerText()).includes(byLang("en", "blir offentlig", "becomes public")), "advarsel om offentlig tekst på valgt språk");
   await page.screenshot({ path: `${out}/b116-05-en.png` });
 }, { lang: "en", features: ON });
 

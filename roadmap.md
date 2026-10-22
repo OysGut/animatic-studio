@@ -1,9 +1,11 @@
 # Veikart
 
 ## B-116 – Utstillingsvindu (22.10.2026)
+- [x] Fullfør 19:04-oppdraget: statusoppslag ved tegning, b116-showcase 37/37 nb/en, Vitest 2422/0, DB 170/0, i18n alle språk 100 % og B116_REPORT.md; ingen Cloud-kjøring.
 - [x] Migrasjon 0087 (additiv oppå 0086): showcase_items, showcase_comments, godkjenningsbryter, RPC-er, delete_project; Claude kjører i Cloud.
-- [ ] Kjerne, serverfunksjoner, brukerflate (boks, forhåndsvisning, Mine delinger, karusell, kommentarer, admin-kø).
-- [ ] Tester: DB, enhetstester, b116-showcase.mjs nb/en, full vitest og i18n; rapport B116_REPORT.md.
+- [x] Kjerne og brukerflater finnes; språk-/testferdigstillingen er verifisert, med begrensninger i rapporten.
+- [x] Tester: DB, enhetstester, b116-showcase.mjs nb/en, full vitest og i18n; rapport B116_REPORT.md med skjermbilder.
+- [ ] Før Cloud-aktivering: Claude må avklare utvidet retting av offentlig storage_key, kopiering før autorisasjon og scene-/utdragsgrenser; gjeldende oppdrag omfatter språk/test/rapport, se B116_REPORT.md.
 
 ## D-2 – Restfunn før demoen
 - [x] Rett og kontroller SSR/hydrering og språkverktøytips etter gjenopprettingen (ML2 318/318).
