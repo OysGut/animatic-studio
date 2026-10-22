@@ -5285,10 +5285,10 @@ requirements:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
-  notes: Stilharmonisering er i fase 8.
   - date: '2026-10-22'
     decision: DEC-0099
     change: "N6: verifisert av automatisk test som sjekker akseptansekriteriet."
+  notes: Stilharmonisering er i fase 8.
 - id: REQ-0138
   title: Harmoniseringsdimensjoner
   text: Karakterbilder skal kunne tilpasses en felles tegnestil, fargepalett, lyssetting, tekstur, detaljgrad og
@@ -5326,10 +5326,10 @@ requirements:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
-  notes: ''
   - date: '2026-10-22'
     decision: DEC-0099
     change: "N6: verifisert av automatisk test som sjekker akseptansekriteriet."
+  notes: ''
 - id: REQ-0139
   title: Bevar gjenkjennelig identitet
   text: Stilharmoniseringen skal bevare karakterens gjenkjennelige identitet så langt som mulig.
@@ -5365,10 +5365,10 @@ requirements:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
-  notes: «Så langt som mulig» – ikke absolutt.
   - date: '2026-10-22'
     decision: DEC-0099
     change: "N6: krever ekstern prøving: gjenkjennelighet må vurderes av et menneske på ekte genererte bilder (betalt kall)."
+  notes: «Så langt som mulig» – ikke absolutt.
 - id: REQ-0140
   title: Sammenligne original og harmonisert
   text: Brukeren skal kunne sammenligne original og harmonisert variant før godkjenning.
@@ -5407,10 +5407,10 @@ requirements:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
-  notes: ''
   - date: '2026-10-22'
     decision: DEC-0099
     change: "N6: verifisert av automatisk test som sjekker akseptansekriteriet."
+  notes: ''
 - id: REQ-0141
   title: Harmonisert bilde brukt lokalt
   text: Et harmonisert karakterbilde skal kunne brukes bare i den aktuelle plakaten eller scenen.
@@ -5450,10 +5450,10 @@ requirements:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
-  notes: ''
   - date: '2026-10-22'
     decision: DEC-0099
     change: "N6: verifisert av automatisk test som sjekker akseptansekriteriet."
+  notes: ''
 - id: REQ-0142
   title: Harmonisert bilde som alternativ variant
   text: Et harmonisert karakterbilde skal kunne lagres som en alternativ variant.
@@ -5492,10 +5492,10 @@ requirements:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
-  notes: ''
   - date: '2026-10-22'
     decision: DEC-0099
     change: "N6: verifisert av automatisk test som sjekker akseptansekriteriet."
+  notes: ''
 - id: REQ-0143
   title: Publisering til globalt karakterbibliotek
   text: Et harmonisert karakterbilde skal kunne godkjennes og publiseres til det globale karakterbiblioteket.
@@ -5570,10 +5570,10 @@ requirements:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
-  notes: ''
   - date: '2026-10-22'
     decision: DEC-0099
     change: "N6: verifisert av automatisk test som sjekker akseptansekriteriet."
+  notes: ''
 - id: REQ-0145
   title: Publisering er eksplisitt brukerhandling
   text: Publisering av en variant til det globale biblioteket skal være en eksplisitt brukerhandling.
@@ -15819,10 +15819,10 @@ requirements:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
-  notes: ''
   - date: '2026-10-22'
     decision: DEC-0099
     change: "N6: verifisert av automatisk test som sjekker akseptansekriteriet."
+  notes: ''
 - id: REQ-0401
   title: Valg av kvalitetsnivå og modell for harmonisering
   text: Brukeren skal kunne velge ønsket kvalitetsnivå og modell for stilharmonisering.
