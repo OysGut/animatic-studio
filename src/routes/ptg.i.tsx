@@ -96,7 +96,7 @@ function ImportPanel({ r, userId }: { r: PtgImportRef; userId: string }) {
       {result ? <div data-testid="ptg-import-done" role="status" className="mt-3 space-y-1 text-xs text-text-primary">
         <p>{t("ptg3b.import-done")}</p>
         {result.trimmed ? <p data-testid="ptg-import-trimmed">{t("ptg3b.import-trimmed")}</p> : null}
-        {result.mismatch !== null ? <p data-testid="ptg-import-mismatch" className="text-status-warning">{t("ptg3b.import-mismatch", { value1: String(result.mismatch), value2: String(r.lengthFrames) })}</p> : null}
+        {result.mismatch !== null ? <p data-testid="ptg-import-mismatch" className="text-status-discrepancy">{t("ptg3b.import-mismatch", { value1: String(result.mismatch), value2: String(r.lengthFrames) })}</p> : null}
         <Link to="/prosjekt/$projectId/montering" params={{ projectId: r.projectId }} search={{ scene: r.occurrenceId }} className="underline">{t("ptg3b.import-open-assembly")}</Link>
       </div> : null}
       {error ? <p role="alert" className="mt-3 text-xs text-status-danger">{error}</p> : null}
