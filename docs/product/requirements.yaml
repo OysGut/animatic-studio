@@ -5267,12 +5267,13 @@ requirements:
   - Brukeren kan velge flere bilder og starte stilharmonisering (med kostnadsgodkjenning).
   tests:
   - 'integrasjon: harmonisering via mock-adapter'
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/core/generation/style-harmonize.ts
   - src/app/library/HarmonizePanel.tsx
   - src/adapters/ai/image-run.server.ts
   verification:
+  - "tests/visual/p8-style-harmonize.mjs::serveren setter sammen prompten (oppgaven harmonize sendt)"
   - tests/unit/style-harmonize.test.ts
   - tests/unit/harmonize-batch.test.ts
   - tests/db/run-db-tests.ts
@@ -5284,6 +5285,9 @@ requirements:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-22'
+    decision: DEC-0099
+    change: "N6: verifisert av automatisk test som sjekker akseptansekriteriet."
   notes: Stilharmonisering er i fase 8.
 - id: REQ-0138
   title: Harmoniseringsdimensjoner
@@ -5306,10 +5310,11 @@ requirements:
   - Harmoniseringsprompten inkluderer målverdier for alle seks dimensjonene.
   tests:
   - 'enhet: promptbygger for harmonisering'
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/core/generation/style-harmonize.ts
   verification:
+  - "tests/unit/style-harmonize.test.ts::dekker alle seks dimensjonene, bevarer identiteten og tar med det som skal unngås"
   - tests/unit/style-harmonize.test.ts
   - tests/unit/harmonize-batch.test.ts
   - tests/db/run-db-tests.ts
@@ -5321,6 +5326,9 @@ requirements:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-22'
+    decision: DEC-0099
+    change: "N6: verifisert av automatisk test som sjekker akseptansekriteriet."
   notes: ''
 - id: REQ-0139
   title: Bevar gjenkjennelig identitet
@@ -5357,6 +5365,9 @@ requirements:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-22'
+    decision: DEC-0099
+    change: "N6: krever ekstern prøving: gjenkjennelighet må vurderes av et menneske på ekte genererte bilder (betalt kall)."
   notes: «Så langt som mulig» – ikke absolutt.
 - id: REQ-0140
   title: Sammenligne original og harmonisert
@@ -5379,10 +5390,12 @@ requirements:
   - Side-ved-side/før-etter-visning finnes før godkjenningsknappen.
   tests:
   - 'e2e: sammenligning før godkjenning'
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/app/library/HarmonizeCompare.tsx
   verification:
+  - "tests/visual/p8-style-harmonize.mjs::skyver i sammenligningen"
+  - "tests/visual/p8-style-harmonize.mjs::ingenting lagret før godkjenning"
   - tests/unit/style-harmonize.test.ts
   - tests/unit/harmonize-batch.test.ts
   - tests/db/run-db-tests.ts
@@ -5394,6 +5407,9 @@ requirements:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-22'
+    decision: DEC-0099
+    change: "N6: verifisert av automatisk test som sjekker akseptansekriteriet."
   notes: ''
 - id: REQ-0141
   title: Harmonisert bilde brukt lokalt
@@ -5415,13 +5431,14 @@ requirements:
   - Bildet kan brukes lokalt uten å bli synlig i det globale biblioteket.
   tests:
   - 'integrasjon: lokal bruk'
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/core/commands/apply.ts
   - src/app/library/HarmonizePanel.tsx
   - src/app/scene-editor/LayerImageDialog.tsx
   - src/app/release/PosterHarmonizeDialog.tsx
   verification:
+  - "tests/visual/p8-style-harmonize.mjs::scene: laget peker på det harmoniserte bildet"
   - tests/unit/style-harmonize.test.ts
   - tests/unit/harmonize-batch.test.ts
   - tests/db/run-db-tests.ts
@@ -5433,6 +5450,9 @@ requirements:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-22'
+    decision: DEC-0099
+    change: "N6: verifisert av automatisk test som sjekker akseptansekriteriet."
   notes: ''
 - id: REQ-0142
   title: Harmonisert bilde som alternativ variant
@@ -5454,11 +5474,13 @@ requirements:
   - Bildet lagres som ny variant under karakteren uten å erstatte eksisterende.
   tests:
   - 'enhet: lagre som variant'
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/core/commands/apply.ts
   - src/app/library/HarmonizePanel.tsx
   verification:
+  - "tests/visual/p8-style-harmonize.mjs::variant: ny synlig variant"
+  - "tests/unit/style-harmonize.test.ts::ny variant, ny versjon og metadata i én angrbar kommando; originalen er uendret"
   - tests/unit/style-harmonize.test.ts
   - tests/unit/harmonize-batch.test.ts
   - tests/db/run-db-tests.ts
@@ -5470,6 +5492,9 @@ requirements:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-22'
+    decision: DEC-0099
+    change: "N6: verifisert av automatisk test som sjekker akseptansekriteriet."
   notes: ''
 - id: REQ-0143
   title: Publisering til globalt karakterbibliotek
@@ -5527,11 +5552,13 @@ requirements:
   - For en karakter og stilprofil kan nøyaktig én variant være foretrukket referanse.
   tests:
   - 'enhet: foretrukket-referanse per (karakter, stilprofil)'
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/core/commands/apply.ts
   - db/migrations/0065_style_harmonization.sql
   verification:
+  - "tests/unit/style-harmonize.test.ts::nøyaktig én per par; byttet er atomisk og kan angres og gjøres om"
+  - "tests/visual/p8-style-harmonize.mjs::variant: foretrukket referanse med eget klikk"
   - tests/unit/style-harmonize.test.ts
   - tests/unit/harmonize-batch.test.ts
   - tests/db/run-db-tests.ts
@@ -5543,6 +5570,9 @@ requirements:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-22'
+    decision: DEC-0099
+    change: "N6: verifisert av automatisk test som sjekker akseptansekriteriet."
   notes: ''
 - id: REQ-0145
   title: Publisering er eksplisitt brukerhandling
@@ -15771,11 +15801,13 @@ requirements:
   tests:
   - 'integrasjon: harmonisering lager nye versjoner'
   - 'manuell: visuell konsistens'
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/app/release/PosterInspector.tsx
   - src/app/release/PosterHarmonizeDialog.tsx
   verification:
+  - "tests/visual/p8-style-harmonize.mjs::poster: harmonisert bilde lagret"
+  - "tests/visual/p8-style-harmonize.mjs::poster: bare dette plakatelementet endret"
   - tests/unit/style-harmonize.test.ts
   - tests/unit/harmonize-batch.test.ts
   - tests/db/run-db-tests.ts
@@ -15787,6 +15819,9 @@ requirements:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-22'
+    decision: DEC-0099
+    change: "N6: verifisert av automatisk test som sjekker akseptansekriteriet."
   notes: ''
 - id: REQ-0401
   title: Valg av kvalitetsnivå og modell for harmonisering
@@ -28215,11 +28250,12 @@ requirements:
   tests:
   - tests/visual/dv1-script-nav.mjs
   - tests/unit/dialogue-navigation.test.ts
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/core/dialogue/navigation.ts
   - src/app/scene-editor/SceneScriptPanel.tsx
-  verification: []
+  verification:
+  - "tests/visual/dv1-script-nav.mjs::enkeltklikk markerer replikken (M2)"
   notes: 'Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §126. DEC-0099
     er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte
     testkall. Status Implementert innebærer ikke full Cloud-verifikasjon.'
@@ -28227,6 +28263,9 @@ requirements:
   - date: '2026-10-19'
     decision: DEC-0099
     change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+  - date: '2026-10-22'
+    decision: DEC-0099
+    change: "N6: verifisert av automatisk test som sjekker akseptansekriteriet."
 - id: REQ-0752
   title: 'DV M3: dobbeltklikk åpner riktig dialogeditor'
   text: dobbeltklikk åpner riktig dialogeditor
@@ -28248,11 +28287,12 @@ requirements:
   tests:
   - tests/visual/dv1-script-nav.mjs
   - tests/unit/dialogue-navigation.test.ts
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/core/dialogue/navigation.ts
   - src/app/scene-editor/SceneScriptPanel.tsx
-  verification: []
+  verification:
+  - "tests/visual/dv1-script-nav.mjs::dobbeltklikk åpner den eksisterende opptaksdialogen (M3)"
   notes: 'Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §126. DEC-0099
     er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte
     testkall. Status Implementert innebærer ikke full Cloud-verifikasjon.'
@@ -28260,6 +28300,9 @@ requirements:
   - date: '2026-10-19'
     decision: DEC-0099
     change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+  - date: '2026-10-22'
+    decision: DEC-0099
+    change: "N6: verifisert av automatisk test som sjekker akseptansekriteriet."
 - id: REQ-0753
   title: 'DV M4: riktig replikk forhåndsvalgt'
   text: riktig replikk forhåndsvalgt
@@ -28281,11 +28324,12 @@ requirements:
   tests:
   - tests/visual/dv1-script-nav.mjs
   - tests/unit/dialogue-navigation.test.ts
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/core/dialogue/navigation.ts
   - src/app/scene-editor/SceneScriptPanel.tsx
-  verification: []
+  verification:
+  - "tests/visual/dv1-script-nav.mjs::riktig replikk er forhåndsvalgt (M4)"
   notes: 'Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §126. DEC-0099
     er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte
     testkall. Status Implementert innebærer ikke full Cloud-verifikasjon.'
@@ -28293,6 +28337,9 @@ requirements:
   - date: '2026-10-19'
     decision: DEC-0099
     change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+  - date: '2026-10-22'
+    decision: DEC-0099
+    change: "N6: verifisert av automatisk test som sjekker akseptansekriteriet."
 - id: REQ-0754
   title: 'DV M5: manglende timing uten falsk presisjon'
   text: manglende timing uten falsk presisjon
@@ -28352,12 +28399,14 @@ requirements:
   - tests/visual/dv3-dialogue-editor.mjs
   - tests/unit/dv3-dv4.test.ts
   - tests/invariants/dialogue-lossless.test.ts
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/app/scene-editor/RecordAudioDialog.tsx
   - src/app/scene-editor/DialogueVersions.tsx
   - src/core/dialogue/characters.ts
-  verification: []
+  verification:
+  - "tests/visual/dv3-dialogue-editor.mjs::active text remains readable"
+  - "tests/visual/dv3-dialogue-editor.mjs::active line remains visible during scene recording"
   notes: 'Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §127. DEC-0099
     er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte
     testkall. Status Implementert innebærer ikke full Cloud-verifikasjon.'
@@ -28365,6 +28414,9 @@ requirements:
   - date: '2026-10-19'
     decision: DEC-0099
     change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+  - date: '2026-10-22'
+    decision: DEC-0099
+    change: "N6: verifisert av automatisk test som sjekker akseptansekriteriet."
 - id: REQ-0756
   title: 'DV D2: kontekst i ca. 70 % styrke'
   text: kontekst i ca. 70 % styrke
@@ -28387,12 +28439,14 @@ requirements:
   - tests/visual/dv3-dialogue-editor.mjs
   - tests/unit/dv3-dv4.test.ts
   - tests/invariants/dialogue-lossless.test.ts
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/app/scene-editor/RecordAudioDialog.tsx
   - src/app/scene-editor/DialogueVersions.tsx
   - src/core/dialogue/characters.ts
-  verification: []
+  verification:
+  - "tests/visual/dv3-dialogue-editor.mjs::context shown at about 70 %"
+  - "tests/visual/dv3-dialogue-editor.mjs::active line at full strength"
   notes: 'Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §127. DEC-0099
     er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte
     testkall. Status Implementert innebærer ikke full Cloud-verifikasjon.'
@@ -28400,6 +28454,9 @@ requirements:
   - date: '2026-10-19'
     decision: DEC-0099
     change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+  - date: '2026-10-22'
+    decision: DEC-0099
+    change: "N6: verifisert av automatisk test som sjekker akseptansekriteriet."
 - id: REQ-0757
   title: 'DV D3: miniatyr når den finnes'
   text: miniatyr når den finnes
@@ -28457,12 +28514,13 @@ requirements:
   - tests/visual/dv3-dialogue-editor.mjs
   - tests/unit/dv3-dv4.test.ts
   - tests/invariants/dialogue-lossless.test.ts
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/app/scene-editor/RecordAudioDialog.tsx
   - src/app/scene-editor/DialogueVersions.tsx
   - src/core/dialogue/characters.ts
-  verification: []
+  verification:
+  - "tests/visual/dv3-dialogue-editor.mjs::speaker name visible"
   notes: 'Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §127. DEC-0099
     er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte
     testkall. Status Implementert innebærer ikke full Cloud-verifikasjon.'
@@ -28470,6 +28528,9 @@ requirements:
   - date: '2026-10-19'
     decision: DEC-0099
     change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+  - date: '2026-10-22'
+    decision: DEC-0099
+    change: "N6: verifisert av automatisk test som sjekker akseptansekriteriet."
 - id: REQ-0759
   title: 'DV D5: velge annen replikk i nedtrekkslisten'
   text: velge annen replikk i nedtrekkslisten
@@ -28492,12 +28553,14 @@ requirements:
   - tests/visual/dv3-dialogue-editor.mjs
   - tests/unit/dv3-dv4.test.ts
   - tests/invariants/dialogue-lossless.test.ts
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/app/scene-editor/RecordAudioDialog.tsx
   - src/app/scene-editor/DialogueVersions.tsx
   - src/core/dialogue/characters.ts
-  verification: []
+  verification:
+  - "tests/visual/dv3-dialogue-editor.mjs::another line can be chosen in the dropdown"
+  - "tests/visual/dv3-dialogue-editor.mjs::choosing a line writes nothing"
   notes: 'Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §127. DEC-0099
     er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte
     testkall. Status Implementert innebærer ikke full Cloud-verifikasjon.'
@@ -28505,6 +28568,9 @@ requirements:
   - date: '2026-10-19'
     decision: DEC-0099
     change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+  - date: '2026-10-22'
+    decision: DEC-0099
+    change: "N6: verifisert av automatisk test som sjekker akseptansekriteriet."
 - id: REQ-0760
   title: 'DV D6: sceneavspilling under opptak virker'
   text: sceneavspilling under opptak virker
@@ -28750,12 +28816,13 @@ requirements:
   - tests/visual/dv3-dialogue-editor.mjs
   - tests/unit/dv3-dv4.test.ts
   - tests/invariants/dialogue-lossless.test.ts
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/app/scene-editor/RecordAudioDialog.tsx
   - src/app/scene-editor/DialogueVersions.tsx
   - src/core/dialogue/characters.ts
-  verification: []
+  verification:
+  - "tests/visual/dv3-dialogue-editor.mjs::preserved versions stacked"
   notes: 'Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §129. DEC-0099
     er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte
     testkall. Status Implementert innebærer ikke full Cloud-verifikasjon.'
@@ -28763,6 +28830,9 @@ requirements:
   - date: '2026-10-19'
     decision: DEC-0099
     change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+  - date: '2026-10-22'
+    decision: DEC-0099
+    change: "N6: verifisert av automatisk test som sjekker akseptansekriteriet."
 - id: REQ-0767
   title: 'DV L5: forhåndslytting'
   text: forhåndslytting
@@ -28785,12 +28855,14 @@ requirements:
   - tests/visual/dv3-dialogue-editor.mjs
   - tests/unit/dv3-dv4.test.ts
   - tests/invariants/dialogue-lossless.test.ts
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/app/scene-editor/RecordAudioDialog.tsx
   - src/app/scene-editor/DialogueVersions.tsx
   - src/core/dialogue/characters.ts
-  verification: []
+  verification:
+  - "tests/visual/dv3-dialogue-editor.mjs::alternative preview starts"
+  - "tests/visual/dv3-dialogue-editor.mjs::preview never changes film active version"
   notes: 'Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §129. DEC-0099
     er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte
     testkall. Status Implementert innebærer ikke full Cloud-verifikasjon.'
@@ -28798,6 +28870,9 @@ requirements:
   - date: '2026-10-19'
     decision: DEC-0099
     change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+  - date: '2026-10-22'
+    decision: DEC-0099
+    change: "N6: verifisert av automatisk test som sjekker akseptansekriteriet."
 - id: REQ-0768
   title: 'DV L6: bare aktiv versjon spilles i scenen'
   text: bare aktiv versjon spilles i scenen
@@ -29017,12 +29092,13 @@ requirements:
   - tests/visual/dv4-voice.mjs
   - tests/unit/dv4-speech-server.test.ts
   - tests/unit/dv3-dv4.test.ts
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/app/library/CharacterVoiceSection.tsx
   - src/app/scene-editor/GenerateDialogue.tsx
   - src/adapters/ai/speech.functions.ts
-  verification: []
+  verification:
+  - "tests/visual/dv4-voice.mjs::generated file becomes a separate dialogue version"
   notes: 'Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §128. DEC-0099
     er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte
     testkall. Status Implementert innebærer ikke full Cloud-verifikasjon.'
@@ -29030,6 +29106,9 @@ requirements:
   - date: '2026-10-19'
     decision: DEC-0099
     change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+  - date: '2026-10-22'
+    decision: DEC-0099
+    change: "N6: verifisert av automatisk test som sjekker akseptansekriteriet."
 - id: REQ-0774
   title: 'DV V2: standardstemme forhåndsvalgt'
   text: standardstemme forhåndsvalgt
@@ -29052,12 +29131,13 @@ requirements:
   - tests/visual/dv4-voice.mjs
   - tests/unit/dv4-speech-server.test.ts
   - tests/unit/dv3-dv4.test.ts
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/app/library/CharacterVoiceSection.tsx
   - src/app/scene-editor/GenerateDialogue.tsx
   - src/adapters/ai/speech.functions.ts
-  verification: []
+  verification:
+  - "tests/visual/dv4-voice.mjs::character default preselected"
   notes: 'Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §128. DEC-0099
     er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte
     testkall. Status Implementert innebærer ikke full Cloud-verifikasjon.'
@@ -29065,6 +29145,9 @@ requirements:
   - date: '2026-10-19'
     decision: DEC-0099
     change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+  - date: '2026-10-22'
+    decision: DEC-0099
+    change: "N6: verifisert av automatisk test som sjekker akseptansekriteriet."
 - id: REQ-0775
   title: 'DV V3: lokale overstyringer'
   text: lokale overstyringer
@@ -29165,12 +29248,13 @@ requirements:
   - tests/visual/dv4-voice.mjs
   - tests/unit/dv4-speech-server.test.ts
   - tests/unit/dv3-dv4.test.ts
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/app/library/CharacterVoiceSection.tsx
   - src/app/scene-editor/GenerateDialogue.tsx
   - src/adapters/ai/speech.functions.ts
-  verification: []
+  verification:
+  - "tests/visual/dv4-voice.mjs::character library owns Audio / Voice section"
   notes: 'Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §128. DEC-0099
     er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte
     testkall. Status Implementert innebærer ikke full Cloud-verifikasjon.'
@@ -29178,6 +29262,9 @@ requirements:
   - date: '2026-10-19'
     decision: DEC-0099
     change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+  - date: '2026-10-22'
+    decision: DEC-0099
+    change: "N6: verifisert av automatisk test som sjekker akseptansekriteriet."
 - id: REQ-0778
   title: 'DV V6: velge ElevenLabs-stemme når integrasjonen finnes'
   text: velge ElevenLabs-stemme når integrasjonen finnes
@@ -29278,7 +29365,7 @@ requirements:
   - tests/invariants/dialogue-lossless.test.ts
   - tests/db/run-db-tests.ts
   - tests/visual/dv5-batch.mjs
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/core/dialogue/batch.ts
   - src/core/dialogue/languages.ts
@@ -29286,7 +29373,8 @@ requirements:
   - src/adapters/storage/dialogue-batch.server.ts
   - src/app/library/DialogueBatchPanel.tsx
   - db/migrations/0061_dialogue_batch_languages.sql
-  verification: []
+  verification:
+  - "tests/visual/dv5-batch.mjs::only active project and chosen character"
   notes: 'Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse.
     Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon
     gjenstår.'
@@ -29294,6 +29382,9 @@ requirements:
   - date: '2026-10-19'
     decision: DEC-0099
     change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+  - date: '2026-10-22'
+    decision: DEC-0099
+    change: "N6: verifisert av automatisk test som sjekker akseptansekriteriet."
 - id: REQ-0781
   title: 'DV G2: dekning viser scener som mangler tale helt eller delvis'
   text: dekning viser scener som mangler tale helt eller delvis
@@ -29651,7 +29742,7 @@ requirements:
   - tests/invariants/dialogue-lossless.test.ts
   - tests/db/run-db-tests.ts
   - tests/visual/dv5-batch.mjs
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/core/dialogue/batch.ts
   - src/core/dialogue/languages.ts
@@ -29659,7 +29750,8 @@ requirements:
   - src/adapters/storage/dialogue-batch.server.ts
   - src/app/library/DialogueBatchPanel.tsx
   - db/migrations/0061_dialogue_batch_languages.sql
-  verification: []
+  verification:
+  - "tests/visual/dv5-batch.mjs::per-line progress reads back"
   notes: 'Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse.
     Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon
     gjenstår.'
@@ -29667,6 +29759,9 @@ requirements:
   - date: '2026-10-19'
     decision: DEC-0099
     change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+  - date: '2026-10-22'
+    decision: DEC-0099
+    change: "N6: verifisert av automatisk test som sjekker akseptansekriteriet."
 - id: REQ-0790
   title: 'DV G11: automatisk plassering i riktig replikk og scene'
   text: automatisk plassering i riktig replikk og scene
@@ -29815,7 +29910,7 @@ requirements:
   - tests/invariants/dialogue-lossless.test.ts
   - tests/db/run-db-tests.ts
   - tests/visual/dv6-languages.mjs
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/core/dialogue/batch.ts
   - src/core/dialogue/languages.ts
@@ -29823,7 +29918,8 @@ requirements:
   - src/adapters/storage/dialogue-batch.server.ts
   - src/app/library/DialogueBatchPanel.tsx
   - db/migrations/0061_dialogue_batch_languages.sql
-  verification: []
+  verification:
+  - "tests/visual/dv6-languages.mjs::spoken language independent from manuscript"
   notes: 'Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse.
     Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon
     gjenstår.'
@@ -29831,6 +29927,9 @@ requirements:
   - date: '2026-10-19'
     decision: DEC-0099
     change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+  - date: '2026-10-22'
+    decision: DEC-0099
+    change: "N6: verifisert av automatisk test som sjekker akseptansekriteriet."
 - id: REQ-0794
   title: 'DV S2: flere BCP-47-talespråk i samme prosjekt'
   text: flere BCP-47-talespråk i samme prosjekt
@@ -29854,7 +29953,7 @@ requirements:
   - tests/invariants/dialogue-lossless.test.ts
   - tests/db/run-db-tests.ts
   - tests/visual/dv6-languages.mjs
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/core/dialogue/batch.ts
   - src/core/dialogue/languages.ts
@@ -29862,7 +29961,9 @@ requirements:
   - src/adapters/storage/dialogue-batch.server.ts
   - src/app/library/DialogueBatchPanel.tsx
   - db/migrations/0061_dialogue_batch_languages.sql
-  verification: []
+  verification:
+  - "tests/visual/dv6-languages.mjs::project language uses BCP-47 command"
+  - "tests/visual/dv6-languages.mjs::each job preserves its own language"
   notes: 'Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse.
     Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon
     gjenstår.'
@@ -29870,6 +29971,9 @@ requirements:
   - date: '2026-10-19'
     decision: DEC-0099
     change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+  - date: '2026-10-22'
+    decision: DEC-0099
+    change: "N6: verifisert av automatisk test som sjekker akseptansekriteriet."
 - id: REQ-0795
   title: 'DV S3: talespråk kan overstyres per replikk'
   text: talespråk kan overstyres per replikk
@@ -29980,7 +30084,7 @@ requirements:
   - tests/invariants/dialogue-lossless.test.ts
   - tests/db/run-db-tests.ts
   - tests/visual/dv6-languages.mjs
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/core/dialogue/batch.ts
   - src/core/dialogue/languages.ts
@@ -29988,7 +30092,8 @@ requirements:
   - src/adapters/storage/dialogue-batch.server.ts
   - src/app/library/DialogueBatchPanel.tsx
   - db/migrations/0061_dialogue_batch_languages.sql
-  verification: []
+  verification:
+  - "tests/visual/dv6-languages.mjs::language detection never generates automatically"
   notes: 'Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse.
     Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon
     gjenstår.'
@@ -29996,6 +30101,9 @@ requirements:
   - date: '2026-10-19'
     decision: DEC-0099
     change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+  - date: '2026-10-22'
+    decision: DEC-0099
+    change: "N6: verifisert av automatisk test som sjekker akseptansekriteriet."
 - id: REQ-0798
   title: 'DV S6: brukeren kan velge samlet generering med advarsel'
   text: brukeren kan velge samlet generering med advarsel
@@ -30058,7 +30166,7 @@ requirements:
   - tests/invariants/dialogue-lossless.test.ts
   - tests/db/run-db-tests.ts
   - tests/visual/dv6-languages.mjs
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/core/dialogue/batch.ts
   - src/core/dialogue/languages.ts
@@ -30066,7 +30174,9 @@ requirements:
   - src/adapters/storage/dialogue-batch.server.ts
   - src/app/library/DialogueBatchPanel.tsx
   - db/migrations/0061_dialogue_batch_languages.sql
-  verification: []
+  verification:
+  - "tests/visual/dv6-languages.mjs::split creates separate approved jobs"
+  - "tests/visual/dv6-languages.mjs::each job preserves its own language"
   notes: 'Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse.
     Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon
     gjenstår.'
@@ -30074,6 +30184,9 @@ requirements:
   - date: '2026-10-19'
     decision: DEC-0099
     change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+  - date: '2026-10-22'
+    decision: DEC-0099
+    change: "N6: verifisert av automatisk test som sjekker akseptansekriteriet."
 - id: REQ-0800
   title: 'DV S8: brukeren velger innhold og estimater per språkjobb'
   text: brukeren velger innhold og estimater per språkjobb
@@ -30262,7 +30375,7 @@ requirements:
   - tests/invariants/dialogue-lossless.test.ts
   - tests/db/run-db-tests.ts
   - tests/visual/dv7-drift.mjs
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/core/dialogue/drift.ts
   - src/app/dialogue/DriftBadge.tsx
@@ -30270,13 +30383,19 @@ requirements:
   - src/app/scene-editor/SceneAudioRows.tsx
   - src/app/script-explorer/ScriptExplorer.tsx
   - db/migrations/0062_drift_notes_bookmarks.sql
-  verification: []
+  verification:
+  - "tests/visual/dv7-drift.mjs::status icon in the scene editor script"
+  - "tests/visual/dv7-drift.mjs::red segment in the animation tab"
+  - "tests/visual/dv7-drift.mjs::drift list in the script explorer"
   notes: 'Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse.
     Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.'
   history:
   - date: '2026-10-20'
     decision: DEC-0099
     change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+  - date: '2026-10-22'
+    decision: DEC-0099
+    change: "N6: verifisert av automatisk test som sjekker akseptansekriteriet."
 - id: REQ-0805
   title: 'DV A5: lenke ut til riktig scene'
   text: lenke ut til riktig scene
@@ -30376,7 +30495,7 @@ requirements:
   - tests/invariants/dialogue-lossless.test.ts
   - tests/db/run-db-tests.ts
   - tests/visual/dv7-drift.mjs
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/core/dialogue/drift.ts
   - src/app/dialogue/DriftBadge.tsx
@@ -30384,13 +30503,17 @@ requirements:
   - src/app/scene-editor/SceneAudioRows.tsx
   - src/app/script-explorer/ScriptExplorer.tsx
   - db/migrations/0062_drift_notes_bookmarks.sql
-  verification: []
+  verification:
+  - "tests/visual/dv7-drift.mjs::playback does not start automatically"
   notes: 'Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse.
     Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.'
   history:
   - date: '2026-10-20'
     decision: DEC-0099
     change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+  - date: '2026-10-22'
+    decision: DEC-0099
+    change: "N6: verifisert av automatisk test som sjekker akseptansekriteriet."
 - id: REQ-0808
   title: 'DV A8: endringer vises i rødt i dialogeditoren'
   text: endringer vises i rødt i dialogeditoren
@@ -30414,7 +30537,7 @@ requirements:
   - tests/invariants/dialogue-lossless.test.ts
   - tests/db/run-db-tests.ts
   - tests/visual/dv7-drift.mjs
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/core/dialogue/drift.ts
   - src/app/dialogue/DriftBadge.tsx
@@ -30422,13 +30545,17 @@ requirements:
   - src/app/scene-editor/SceneAudioRows.tsx
   - src/app/script-explorer/ScriptExplorer.tsx
   - db/migrations/0062_drift_notes_bookmarks.sql
-  verification: []
+  verification:
+  - "tests/visual/dv7-drift.mjs::changed words shown in red"
   notes: 'Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse.
     Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.'
   history:
   - date: '2026-10-20'
     decision: DEC-0099
     change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+  - date: '2026-10-22'
+    decision: DEC-0099
+    change: "N6: verifisert av automatisk test som sjekker akseptansekriteriet."
 - id: REQ-0809
   title: 'DV A9: «Merk som gjennomgått» krever eksplisitt handling'
   text: «Merk som gjennomgått» krever eksplisitt handling
@@ -30656,18 +30783,22 @@ requirements:
   - tests/invariants/dialogue-lossless.test.ts
   - tests/db/run-db-tests.ts
   - tests/visual/dv7-drift.mjs
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/app/library/DialogueBatchPanel.tsx
   - src/adapters/storage/dialogue-batch.server.ts
   - src/core/commands/apply.ts
-  verification: []
+  verification:
+  - "tests/visual/dv7-drift.mjs::red lines listed"
   notes: 'Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse.
     Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.'
   history:
   - date: '2026-10-20'
     decision: DEC-0099
     change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+  - date: '2026-10-22'
+    decision: DEC-0099
+    change: "N6: verifisert av automatisk test som sjekker akseptansekriteriet."
 - id: REQ-0815
   title: 'DV R3: brukeren velger replikker'
   text: brukeren velger replikker
@@ -31328,20 +31459,24 @@ requirements:
   - tests/invariants/dialogue-lossless.test.ts
   - tests/db/run-db-tests.ts
   - tests/visual/dv8-notes.mjs
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/core/notes/flags.ts
   - src/app/dialogue/NoteFlagControl.tsx
   - src/app/projects/NoteFlagsOverview.tsx
   - src/adapters/storage/commands.functions.ts
   - db/migrations/0062_drift_notes_bookmarks.sql
-  verification: []
+  verification:
+  - "tests/visual/dv8-notes.mjs::notes and flags box on the project page"
   notes: 'Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse.
     Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.'
   history:
   - date: '2026-10-20'
     decision: DEC-0099
     change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+  - date: '2026-10-22'
+    decision: DEC-0099
+    change: "N6: verifisert av automatisk test som sjekker akseptansekriteriet."
 - id: REQ-0832
   title: 'DV H10: sortering etter dato og manusplassering'
   text: sortering etter dato og manusplassering

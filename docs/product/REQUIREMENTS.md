@@ -8,7 +8,7 @@ Autoritativ kilde for krav-ID-er. Mandatkrav er utledet fra `MASTER_SPECIFICATIO
 - Antall krav: **924**
 - Prioritet: P0: 147, P1: 569, P2: 169, P3: 39
 - Opprinnelse: mandat: 520, brukerbeslutning: 397, teknisk-anbefaling: 7
-- Status: Verifisert: 784, Ikke startet: 63, Implementert – ikke verifisert: 64, Utgått: 1, Under arbeid: 12
+- Status: Verifisert: 814, Ikke startet: 63, Implementert – ikke verifisert: 34, Utgått: 1, Under arbeid: 12
 
 ## Prioritetsdefinisjoner
 - **P0** Kritisk – ufravikelig prinsipp/systeminvariant. Gjelder fra første kodelinje som berører området, også når selve funksjonen bygges i en senere fase (feltet `phase`).
@@ -1847,7 +1847,7 @@ Når bilder fra forskjellige kilder brukes sammen, skal programmet kunne tilby A
 
 - **Kilde:** Kap. 9.2 (l. 404) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P3 · **Fase:** 8
 - **Moduler:** PROMPT, PROVIDER, LIBRARY · **Invarianter:** INV-12
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Brukeren kan velge flere bilder og starte stilharmonisering (med kostnadsgodkjenning).
 - **Tester:**
@@ -1861,7 +1861,7 @@ Karakterbilder skal kunne tilpasses en felles tegnestil, fargepalett, lyssetting
 - **Kilde:** Kap. 9.2 (l. 405-411) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P3 · **Fase:** 8
 - **Moduler:** PROMPT, LIBRARY
 - **Avhengigheter:** REQ-0137
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Harmoniseringsprompten inkluderer målverdier for alle seks dimensjonene.
 - **Tester:**
@@ -1888,7 +1888,7 @@ Brukeren skal kunne sammenligne original og harmonisert variant før godkjenning
 - **Kilde:** Kap. 9.2 (l. 413) · **Opprinnelse:** mandat · **Type:** ux · **Prioritet:** P3 · **Fase:** 8
 - **Moduler:** UI, LIBRARY · **Invarianter:** INV-08
 - **Avhengigheter:** REQ-0137
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Side-ved-side/før-etter-visning finnes før godkjenningsknappen.
 - **Tester:**
@@ -1901,7 +1901,7 @@ Et harmonisert karakterbilde skal kunne brukes bare i den aktuelle plakaten elle
 - **Kilde:** Kap. 9.3 (l. 415-416) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P3 · **Fase:** 8
 - **Moduler:** LIBRARY, PRESENT
 - **Avhengigheter:** REQ-0137
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Bildet kan brukes lokalt uten å bli synlig i det globale biblioteket.
 - **Tester:**
@@ -1914,7 +1914,7 @@ Et harmonisert karakterbilde skal kunne lagres som en alternativ variant.
 - **Kilde:** Kap. 9.3 (l. 417) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P3 · **Fase:** 8
 - **Moduler:** LIBRARY · **Invarianter:** INV-13
 - **Avhengigheter:** REQ-0135
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Bildet lagres som ny variant under karakteren uten å erstatte eksisterende.
 - **Tester:**
@@ -1941,7 +1941,7 @@ Et harmonisert karakterbilde skal kunne merkes som foretrukket referanse for en 
 - **Kilde:** Kap. 9.3 (l. 419) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P3 · **Fase:** 8
 - **Moduler:** LIBRARY
 - **Avhengigheter:** REQ-0147
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - For en karakter og stilprofil kan nøyaktig én variant være foretrukket referanse.
 - **Tester:**
@@ -5425,7 +5425,7 @@ Plakatmodulen skal kunne harmonisere karakterbilder til samme tegnestil, lyssett
 - **Kilde:** Kap. 26.7 (l. 1146-1147) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P3 · **Fase:** 8
 - **Moduler:** PRESENT, PROMPT, PROVIDER · **Invarianter:** INV-12
 - **Avhengigheter:** REQ-0384; Prompt Orchestration og Provider Adapters (fase 5)
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt karakterbilder i ulike stiler, når brukeren harmoniserer, så produseres nye versjoner i felles tegnestil, lyssetting og fargepalett uten at originalene endres.
 - **Tester:**
@@ -10290,7 +10290,7 @@ hovedvisningen oppdateres
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - hovedvisningen oppdateres
 - **Tester:**
@@ -10304,7 +10304,7 @@ dobbeltklikk åpner riktig dialogeditor
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - dobbeltklikk åpner riktig dialogeditor
 - **Tester:**
@@ -10318,7 +10318,7 @@ riktig replikk forhåndsvalgt
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - riktig replikk forhåndsvalgt
 - **Tester:**
@@ -10346,7 +10346,7 @@ aktiv replikk lesbar under opptak
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - aktiv replikk lesbar under opptak
 - **Tester:**
@@ -10361,7 +10361,7 @@ kontekst i ca. 70 % styrke
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - kontekst i ca. 70 % styrke
 - **Tester:**
@@ -10391,7 +10391,7 @@ navn tydelig
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - navn tydelig
 - **Tester:**
@@ -10406,7 +10406,7 @@ velge annen replikk i nedtrekkslisten
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - velge annen replikk i nedtrekkslisten
 - **Tester:**
@@ -10511,7 +10511,7 @@ versjoner stablet i dialogeditoren
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - versjoner stablet i dialogeditoren
 - **Tester:**
@@ -10526,7 +10526,7 @@ forhåndslytting
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - forhåndslytting
 - **Tester:**
@@ -10616,7 +10616,7 @@ ulik varighet uten utilsiktet overlapp
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - «Generer lydfil»
 - **Tester:**
@@ -10631,7 +10631,7 @@ standardstemme forhåndsvalgt
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - standardstemme forhåndsvalgt
 - **Tester:**
@@ -10676,7 +10676,7 @@ Lyd / Stemme-seksjon per karakter
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Lyd / Stemme-seksjon per karakter
 - **Tester:**
@@ -10721,7 +10721,7 @@ handlingen i Asset Library gjelder bare aktivt prosjekt
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - handlingen i Asset Library gjelder bare aktivt prosjekt
 - **Tester:**
@@ -10865,7 +10865,7 @@ varig fremdrift per replikk med gjenopptak
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - varig fremdrift per replikk med gjenopptak
 - **Tester:**
@@ -10929,7 +10929,7 @@ UiLocale, scriptLanguage og speechLanguage er uavhengige
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - UiLocale, scriptLanguage og speechLanguage er uavhengige
 - **Tester:**
@@ -10945,7 +10945,7 @@ flere BCP-47-talespråk i samme prosjekt
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - flere BCP-47-talespråk i samme prosjekt
 - **Tester:**
@@ -10993,7 +10993,7 @@ usikker språkdeteksjon varsler før massegenerering
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - usikker språkdeteksjon varsler før massegenerering
 - **Tester:**
@@ -11025,7 +11025,7 @@ separate språkjobber med egne stemmer og modeller
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - separate språkjobber med egne stemmer og modeller
 - **Tester:**
@@ -11105,7 +11105,7 @@ avviket er synlig overalt der manuset vises
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - avviket er synlig overalt der manuset vises
 - **Tester:**
@@ -11153,7 +11153,7 @@ ingen automatisk avspilling
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - ingen automatisk avspilling
 - **Tester:**
@@ -11169,7 +11169,7 @@ endringer vises i rødt i dialogeditoren
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - endringer vises i rødt i dialogeditoren
 - **Tester:**
@@ -11265,7 +11265,7 @@ berørte scener og replikker vises
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - berørte scener og replikker vises
 - **Tester:**
@@ -11537,7 +11537,7 @@ boks på prosjektsiden
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - boks på prosjektsiden
 - **Tester:**

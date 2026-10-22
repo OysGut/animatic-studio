@@ -320,3 +320,7 @@
 - [x] AssetVoice.provider leverandøruavhengig; REQ-0269 Verifisert
 - [x] «Angre hele jobben» hopper over resultater angret fra angrelisten (uten migrasjon)
 - [ ] Videre ytelse: tidslinjen, tegnetrinnet og knappene tegnes fortsatt per bilde
+
+## N6: Verifiseringsrunde 2
+- [x] 30 krav flyttet til Verifisert (64 → 34), nye kontroller for D2 og D5 i dv3-dialogue-editor
+- [ ] 33 krav mangler målrettet test; REQ-0139 krever ekstern prøving (se TODO.md)

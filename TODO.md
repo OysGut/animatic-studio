@@ -129,9 +129,9 @@ Maskinelt avstemt fra requirements.yaml 2026-10-21 (878 krav: 708 Verifisert, 11
 - REQ-0748 – Godkjent overføring til redigerbart manus
 - REQ-0749 – VennTing-teknologien er en selvstendig kopi
 
-### Implementert – ikke verifisert (65)
+### Implementert – ikke verifisert (34)
 
-N4 (22.10) flyttet 48 krav til Verifisert; se docs/development/N4_REPORT.md.
+N4 (22.10) flyttet 48 krav til Verifisert; se docs/development/N4_REPORT.md. N6 (22.10) flyttet 30 til; se docs/development/N6_REPORT.md. Listen under er ikke ryddet for de 30 og skal leses sammen med requirements.yaml.
 
 **P0 (4)**
 
@@ -212,7 +212,8 @@ N4 (22.10) flyttet 48 krav til Verifisert; se docs/development/N4_REPORT.md.
 **N4-avvik og ekstern prøving**
 
 - REQ-0269 (N5 rettet): AssetVoice.provider er leverandør-ID fra katalogen; kravet er Verifisert.
-- Krever ekstern prøving: REQ-0291, REQ-0293, REQ-0504 (lukket fane og gjenåpning mot ekte bakgrunnsjobb og leverandør), REQ-0685, REQ-0687, REQ-0689, REQ-0711 (ekte telefoner og opptak).
+- Krever ekstern prøving: REQ-0291, REQ-0293, REQ-0504 (lukket fane og gjenåpning mot ekte bakgrunnsjobb og leverandør), REQ-0685, REQ-0687, REQ-0689, REQ-0711 (ekte telefoner og opptak), REQ-0139 (N6: menneskelig vurdering av gjenkjennelighet på ekte genererte bilder).
+- N6: ingen nye avvik funnet. Mangler fortsatt målrettet test (ikke avvik): REQ-0757 (miniatyr, fixture har ingen omslagsbilde), REQ-0760, REQ-0762, REQ-0764, REQ-0778, REQ-0781–0783, REQ-0790, REQ-0798, REQ-0800, REQ-0805, REQ-0806, REQ-0813, REQ-0815, REQ-0816, REQ-0143, REQ-0402, REQ-0401, REQ-0571, REQ-0699, REQ-0704, REQ-0708, REQ-0709, REQ-0121, REQ-0839 (VP9-alfa må prøves i en nettleser som koder alfa).
 
 ### Ikke startet (82)
 
