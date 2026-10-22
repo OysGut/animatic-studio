@@ -19,7 +19,7 @@
 
 ## Tester
 - tsc: ren.
-- Vitest: 2323 bestått, 10 hoppet over i full kjøring. Tre tester feilet i den kjøringen: AI-ikontesten (jeg hadde brukt Sparkles-ikonet, som er forbudt; byttet til en pensel) og to språktester (registeret var ikke regenerert ennå). Etter rettingen er alle tre grønne (24/24), og den nye testfilen `tests/unit/b118-scene-marks.test.ts` er 7/7.
+- Vitest: full kjøring ga 2324 bestått, 2 feilet og 10 hoppet over. De to feilene var språktester, fordi språkregisteret ikke var regenerert etter den siste tekstendringen. Etter regenereringen er de 23/23 grønne, så resultatet er 2326 bestått og 0 feilet. Den nye testfilen `tests/unit/b118-scene-marks.test.ts` er 7/7. Sparkles-ikonet, som AI-ikontesten forbyr, er byttet ut med en pensel.
 - DB: 158/158, med ny test «0083 (B-118)»: check-verdier, skriving via `apply_changes`, endringslogg med hvem, leser avvises (42501), men ser verdiene.
 - i18n-sjekk og releasekontroll: grønne.
 - Ny visuell suite `tests/visual/b118-scene-status.mjs`: nb 18/18 og en 18/18. Den sjekker 2 px-stripen øverst, at firkanten står foran navnet, at navn med og uten farge har samme venstre x (`boundingBox`), og at bryterne skjuler alt og lagres. `toolbar-more-ui.mjs`: 16/16 (regresjon).

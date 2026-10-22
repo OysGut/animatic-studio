@@ -213,3 +213,4 @@
 - [ ] Ekte AE-kjøring av tittelkortet og ekte opplasting/klipping av en AE-render: ekstern kontroll
 
 - [x] PTG2 «Send til Dragonframe» (B-102): pakke, referansefilm, lydstemmer, X-sheet, LESMEG – rapport i docs/development/PTG2_REPORT.md. Ekte Dragonframe-import gjenstår (ekstern kontroll).
+- [x] B-118 scenestatus og scenefarge (migrasjon 0083 venter på kjøring i Cloud)
