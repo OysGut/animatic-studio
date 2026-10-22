@@ -8,6 +8,7 @@ import { useMemo, useState } from "react";
 
 import type { Command, CompositionLayer, ProjectState } from "@/core";
 import { newId } from "@/core";
+import { layerVersion } from "@/core/composition/render";
 import { planPrint, type PrintInput, type PrintItem } from "@/core/print/pdf";
 import {
   DEFAULT_JOB_SETTINGS, frameRange, frameRangeTimes, frameTimeLabel, jobPrintItems, jobTotals, planCopies,
@@ -85,7 +86,6 @@ export function PrintJobSection({
   const comp = state.compositions[layer.compositionId];
   const variant = comp && state.variants[comp.variantId];
   const sceneId = variant?.sceneId ?? "";
-  const versionId = layer.versionId ?? "";
   const fps = state.project.fps.num / state.project.fps.den;
 
   const jobs = Object.values(state.printJobs ?? {}).filter((j) => !j.removed && Object.values(state.printJobElements ?? {}).some((e) => e.jobId === j.id && !e.removed && e.layerId === layer.id));
@@ -97,8 +97,9 @@ export function PrintJobSection({
   const [to, setTo] = useState(frame);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
-  const base = { layerId: layer.id, versionId, sceneId, maskId: null, note: "", upArrow: baseItem.upArrow ?? true };
-  const add = (els: PrintJobElement[]) => setElements([...elements, ...els]);
+  const base = { layerId: layer.id, versionId: "", sceneId, maskId: null, note: "", upArrow: baseItem.upArrow ?? true };
+  // Hver frame peker til bildet laget faktisk viser der (bildeskift gir ulike kildeversjoner).
+  const add = (els: PrintJobElement[]) => setElements([...elements, ...els.map((e) => ({ ...e, versionId: layerVersion(state, layer, e.frame)?.id ?? "" }))]);
   const open = (id: string) => {
     const job = state.printJobs?.[id];
     if (!job) return;
@@ -286,7 +287,7 @@ export function PrintJobSection({
       )}
       {error && <p role="alert">{errorLabel(error)}</p>}
       {message && <p role="status" data-testid="print-job-message">{message}</p>}
-      <Button data-testid="print-job-create" disabled={!editable || busy || !elements.length || !!error || !versionId} onClick={() => void create()}>
+      <Button data-testid="print-job-create" disabled={!editable || busy || !elements.length || !!error || elements.some((e) => !e.versionId)} onClick={() => void create()}>
         {busy ? t("app-print.busy") : jobId ? t("print-job.reprint") : t("print-job.create")}
       </Button>
     </section>
