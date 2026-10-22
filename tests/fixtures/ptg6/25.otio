@@ -1,0 +1,254 @@
+{
+  "OTIO_SCHEMA": "Timeline.1",
+  "name": "PTG6 & test",
+  "global_start_time": {
+    "OTIO_SCHEMA": "RationalTime.1",
+    "value": 0,
+    "rate": 25
+  },
+  "metadata": {},
+  "tracks": {
+    "OTIO_SCHEMA": "Stack.1",
+    "name": "Hovedfilm",
+    "children": [
+      {
+        "OTIO_SCHEMA": "Track.1",
+        "name": "Hovedfilm",
+        "kind": "Video",
+        "children": [
+          {
+            "OTIO_SCHEMA": "Clip.2",
+            "name": "PTG6-TEST_SC001_SH010_v001",
+            "source_range": {
+              "OTIO_SCHEMA": "TimeRange.1",
+              "start_time": {
+                "OTIO_SCHEMA": "RationalTime.1",
+                "value": 0,
+                "rate": 25
+              },
+              "duration": {
+                "OTIO_SCHEMA": "RationalTime.1",
+                "value": 22,
+                "rate": 25
+              }
+            },
+            "media_references": {
+              "DEFAULT_MEDIA": {
+                "OTIO_SCHEMA": "ExternalReference.1",
+                "target_url": "PTG6-TEST_SC001_SH010_v001/PTG6-TEST_SC001_SH010_v001_ref.mp4",
+                "available_range": {
+                  "OTIO_SCHEMA": "TimeRange.1",
+                  "start_time": {
+                    "OTIO_SCHEMA": "RationalTime.1",
+                    "value": 0,
+                    "rate": 25
+                  },
+                  "duration": {
+                    "OTIO_SCHEMA": "RationalTime.1",
+                    "value": 25,
+                    "rate": 25
+                  }
+                },
+                "metadata": {}
+              }
+            },
+            "active_media_reference_key": "DEFAULT_MEDIA",
+            "enabled": true,
+            "effects": [],
+            "markers": [],
+            "metadata": {
+              "ptg": {
+                "occurrenceId": "00000000-0000-7000-8000-000000000020",
+                "reel": "PTG6TEST",
+                "version": 1
+              }
+            }
+          },
+          {
+            "OTIO_SCHEMA": "Transition.1",
+            "name": "dissolve",
+            "transition_type": "SMPTE_Dissolve",
+            "in_offset": {
+              "OTIO_SCHEMA": "RationalTime.1",
+              "value": 2,
+              "rate": 25
+            },
+            "out_offset": {
+              "OTIO_SCHEMA": "RationalTime.1",
+              "value": 3,
+              "rate": 25
+            },
+            "metadata": {
+              "ptg": {
+                "type": "dissolve"
+              }
+            }
+          },
+          {
+            "OTIO_SCHEMA": "Clip.2",
+            "name": "PTG6-TEST_SC002_SH010_v001",
+            "source_range": {
+              "OTIO_SCHEMA": "TimeRange.1",
+              "start_time": {
+                "OTIO_SCHEMA": "RationalTime.1",
+                "value": 2,
+                "rate": 25
+              },
+              "duration": {
+                "OTIO_SCHEMA": "RationalTime.1",
+                "value": 23,
+                "rate": 25
+              }
+            },
+            "media_references": {
+              "DEFAULT_MEDIA": {
+                "OTIO_SCHEMA": "ExternalReference.1",
+                "target_url": "PTG6-TEST_SC002_SH010_v001/PTG6-TEST_SC002_SH010_v001_ref.mp4",
+                "available_range": {
+                  "OTIO_SCHEMA": "TimeRange.1",
+                  "start_time": {
+                    "OTIO_SCHEMA": "RationalTime.1",
+                    "value": 0,
+                    "rate": 25
+                  },
+                  "duration": {
+                    "OTIO_SCHEMA": "RationalTime.1",
+                    "value": 25,
+                    "rate": 25
+                  }
+                },
+                "metadata": {}
+              }
+            },
+            "active_media_reference_key": "DEFAULT_MEDIA",
+            "enabled": true,
+            "effects": [],
+            "markers": [],
+            "metadata": {
+              "ptg": {
+                "occurrenceId": "00000000-0000-7000-8000-000000000027",
+                "reel": "PTG6TES1",
+                "version": 1
+              }
+            }
+          }
+        ],
+        "source_range": null,
+        "effects": [],
+        "markers": [],
+        "metadata": {}
+      },
+      {
+        "OTIO_SCHEMA": "Track.1",
+        "name": "MIX",
+        "kind": "Audio",
+        "children": [
+          {
+            "OTIO_SCHEMA": "Clip.2",
+            "name": "PTG6-TEST_SC001_SH010_v001",
+            "source_range": {
+              "OTIO_SCHEMA": "TimeRange.1",
+              "start_time": {
+                "OTIO_SCHEMA": "RationalTime.1",
+                "value": 0,
+                "rate": 25
+              },
+              "duration": {
+                "OTIO_SCHEMA": "RationalTime.1",
+                "value": 22,
+                "rate": 25
+              }
+            },
+            "media_references": {
+              "DEFAULT_MEDIA": {
+                "OTIO_SCHEMA": "ExternalReference.1",
+                "target_url": "PTG6-TEST_SC001_SH010_v001/audio/PTG6-TEST_SC001_SH010_v001_MIX.wav",
+                "available_range": {
+                  "OTIO_SCHEMA": "TimeRange.1",
+                  "start_time": {
+                    "OTIO_SCHEMA": "RationalTime.1",
+                    "value": 0,
+                    "rate": 25
+                  },
+                  "duration": {
+                    "OTIO_SCHEMA": "RationalTime.1",
+                    "value": 25,
+                    "rate": 25
+                  }
+                },
+                "metadata": {}
+              }
+            },
+            "active_media_reference_key": "DEFAULT_MEDIA",
+            "enabled": true,
+            "effects": [],
+            "markers": [],
+            "metadata": {
+              "ptg": {
+                "occurrenceId": "00000000-0000-7000-8000-000000000020",
+                "reel": "PTG6TEST",
+                "version": 1
+              }
+            }
+          },
+          {
+            "OTIO_SCHEMA": "Clip.2",
+            "name": "PTG6-TEST_SC002_SH010_v001",
+            "source_range": {
+              "OTIO_SCHEMA": "TimeRange.1",
+              "start_time": {
+                "OTIO_SCHEMA": "RationalTime.1",
+                "value": 2,
+                "rate": 25
+              },
+              "duration": {
+                "OTIO_SCHEMA": "RationalTime.1",
+                "value": 23,
+                "rate": 25
+              }
+            },
+            "media_references": {
+              "DEFAULT_MEDIA": {
+                "OTIO_SCHEMA": "ExternalReference.1",
+                "target_url": "PTG6-TEST_SC002_SH010_v001/audio/PTG6-TEST_SC002_SH010_v001_MIX.wav",
+                "available_range": {
+                  "OTIO_SCHEMA": "TimeRange.1",
+                  "start_time": {
+                    "OTIO_SCHEMA": "RationalTime.1",
+                    "value": 0,
+                    "rate": 25
+                  },
+                  "duration": {
+                    "OTIO_SCHEMA": "RationalTime.1",
+                    "value": 25,
+                    "rate": 25
+                  }
+                },
+                "metadata": {}
+              }
+            },
+            "active_media_reference_key": "DEFAULT_MEDIA",
+            "enabled": true,
+            "effects": [],
+            "markers": [],
+            "metadata": {
+              "ptg": {
+                "occurrenceId": "00000000-0000-7000-8000-000000000027",
+                "reel": "PTG6TES1",
+                "version": 1
+              }
+            }
+          }
+        ],
+        "source_range": null,
+        "effects": [],
+        "markers": [],
+        "metadata": {}
+      }
+    ],
+    "source_range": null,
+    "effects": [],
+    "markers": [],
+    "metadata": {}
+  }
+}

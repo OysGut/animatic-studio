@@ -55034,5 +55034,40 @@
     "text": "Сравнить дубли",
     "sourceHash": "d9f7566df61531c4d52691ea0a0a2d0ef48934d468d79b8b1c67d45a87c7658c",
     "review": "machine"
+  },
+  "ptg6.export": {
+    "text": "Файлы монтажа (OTIO, XML, EDL)",
+    "sourceHash": "63c37c9190d668a3484b39fb9c5e66326c3fb37430b34e2583a2947f09c63e99",
+    "review": "machine"
+  },
+  "ptg6.include-media": {
+    "text": "Включить медиа в монтажный пакет",
+    "sourceHash": "4123f2b6a3bfdc4eb9b14a0431a33b9d966090b2e35ddb025bab5a40a588364e",
+    "review": "machine"
+  },
+  "ptg6.readme": {
+    "text": "Импортируйте OTIO, FCP7-XML (xmeml v5) или CMX 3600 EDL. Пути относительные. Таймкод без drop-frame. Съёмка на двойках сохраняет 24 кадр/с. Референсные фильмы включают запас кадров; переходы применяются в редакторе, а не в фильмах. Звук: микс каждого плана с точками громкости и затуханиями, без дополнительного перехода. Используется активный дубль, иначе аниматик. Wipe/push/iris описаны в метаданных; стандартный переход — перекрёстное растворение. Без ИИ.",
+    "sourceHash": "74b505185bf1ac31e7c4e47d609a8d28d4fd407ab9c26985cf9b0163ec22c5bf",
+    "review": "machine"
+  },
+  "ptg6.reel-table": {
+    "text": "Reel → название плана → видеофайл",
+    "sourceHash": "928a04281f3bc6ded71a8c34bfa6bd8dbbf3f4482bdd8d3c7e5cb2b1bda97de9",
+    "review": "machine"
+  },
+  "ptg6.audio-table": {
+    "text": "Название плана → аудиофайл",
+    "sourceHash": "b7f023c9a448cd5f1194fce41d4225edf24c27e4e11a7fe8dce6d3dba7fddd9f",
+    "review": "machine"
+  },
+  "ptg6.media-included": {
+    "text": "Медиа включены. Распакуйте весь пакет перед импортом.",
+    "sourceHash": "605b077f970ba1fa4042fe2b76fd04fe913ddc308faba754bcd7ecf3040a7ff9",
+    "review": "machine"
+  },
+  "ptg6.media-linked": {
+    "text": "Медиа не включены. Поместите референсные фильмы и звук MIX по указанным относительным путям или переподключите их в редакторе.",
+    "sourceHash": "14497b40a48f46ad9145a7d2cbcab34354b9aa78490083d62fcae24bd1a603d3",
+    "review": "machine"
   }
 }

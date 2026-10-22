@@ -54886,5 +54886,40 @@
     "text": "Takes vergleichen",
     "sourceHash": "d9f7566df61531c4d52691ea0a0a2d0ef48934d468d79b8b1c67d45a87c7658c",
     "review": "machine"
+  },
+  "ptg6.export": {
+    "text": "Schnittdateien (OTIO, XML, EDL)",
+    "sourceHash": "63c37c9190d668a3484b39fb9c5e66326c3fb37430b34e2583a2947f09c63e99",
+    "review": "machine"
+  },
+  "ptg6.include-media": {
+    "text": "Medien ins Schnittpaket aufnehmen",
+    "sourceHash": "4123f2b6a3bfdc4eb9b14a0431a33b9d966090b2e35ddb025bab5a40a588364e",
+    "review": "machine"
+  },
+  "ptg6.readme": {
+    "text": "OTIO, FCP7-XML (xmeml v5) oder CMX 3600 EDL importieren. Pfade sind relativ zum Paket. Non-Drop-Frame-Timecode. Zweierbelichtung bleibt bei 24 fps. Referenzfilme enthalten Handles; Übergänge werden im Schnittprogramm angewendet, nicht in die Filme eingebrannt. Ton: Mischung pro Einstellung mit Lautstärkepunkten und Fades, ohne zusätzlichen Tonübergang. Aktiver Take, sonst Animatic. Wipe/push/iris stehen in den Metadaten; Standardübergang ist eine Kreuzblende. Ohne KI.",
+    "sourceHash": "74b505185bf1ac31e7c4e47d609a8d28d4fd407ab9c26985cf9b0163ec22c5bf",
+    "review": "machine"
+  },
+  "ptg6.reel-table": {
+    "text": "Reel → Einstellungsname → Videodatei",
+    "sourceHash": "928a04281f3bc6ded71a8c34bfa6bd8dbbf3f4482bdd8d3c7e5cb2b1bda97de9",
+    "review": "machine"
+  },
+  "ptg6.audio-table": {
+    "text": "Einstellungsname → Audiodatei",
+    "sourceHash": "b7f023c9a448cd5f1194fce41d4225edf24c27e4e11a7fe8dce6d3dba7fddd9f",
+    "review": "machine"
+  },
+  "ptg6.media-included": {
+    "text": "Medien sind enthalten. Vor dem Import das gesamte Paket entpacken.",
+    "sourceHash": "605b077f970ba1fa4042fe2b76fd04fe913ddc308faba754bcd7ecf3040a7ff9",
+    "review": "machine"
+  },
+  "ptg6.media-linked": {
+    "text": "Medien sind nicht enthalten. Referenzfilme und MIX-Audio unter den angegebenen relativen Pfaden ablegen oder im Schnittprogramm neu verknüpfen.",
+    "sourceHash": "14497b40a48f46ad9145a7d2cbcab34354b9aa78490083d62fcae24bd1a603d3",
+    "review": "machine"
   }
 }

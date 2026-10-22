@@ -16,6 +16,7 @@ import { exportShotlist } from "@/engine/export/shotlist";
 import { exportCameraFbx } from "@/engine/export/camera-export";
 import { exportAePackage } from "@/engine/export/ae-export";
 import { exportDragonframe } from "@/engine/export/dragonframe";
+import { exportEditorial } from "@/engine/export/editorial";
 import { filmAudio } from "@/core/audio";
 import { audioBank } from "@/app/audio/use-audio-playback";
 import type { AeCameraMode } from "@/core/interchange/ae-jsx";
@@ -41,6 +42,7 @@ export function ShotlistExport({ state, productionId, clips, language, disabled 
   const [titleCard, setTitleCard] = useState(true); // PTG3b: på som standard
   const [dfPng, setDfPng] = useState(false); // PTG2: PNG-sekvens er valgfri
   const [dfBurnIn, setDfBurnIn] = useState(true);
+  const [editorialMedia, setEditorialMedia] = useState(true);
   const [progress, setProgress] = useState<{ done: number; total: number } | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [ready, setReady] = useState<{ url: string; name: string } | null>(null);
@@ -107,9 +109,9 @@ export function ShotlistExport({ state, productionId, clips, language, disabled 
       if (!ctrl.signal.aborted) setError(t("ptg1.export-failed"));
     } finally { abort.current = null; setProgress(null); }
   }
-  async function startDragonframe() {
+  async function startDragonframe(editorial = false) {
     const initial = buildInterchange(state, { productionId, language, occurrenceIds: clips.map(c => c.occurrenceId) });
-    const fileName = `${initial.project.code}-dragonframe.zip`;
+    const fileName = `${initial.project.code}-${editorial ? "editorial" : "dragonframe"}.zip`;
     // Picker must be opened synchronously from the click, before waiting for commands.
     const sinkPromise = openZipSink(fileName);
     const ctrl = new AbortController(); abort.current = ctrl;
@@ -119,18 +121,20 @@ export function ShotlistExport({ state, productionId, clips, language, disabled 
     try {
       await commands.whenIdle();
       const reservation = await reserveInterchangeExport({ projectId: state.project.id, productionId, occurrenceIds: clips.map(c => c.occurrenceId), fileName,
-        settings: { format: "dragonframe", language: language.dialogue, png: dfPng, burnIn: dfBurnIn, captureFpsNum: initial.captureFps.num, captureFpsDen: initial.captureFps.den } });
+        settings: { format: editorial ? "editorial" : "dragonframe", language: language.dialogue, png: dfPng, burnIn: dfBurnIn, includeMedia: editorialMedia, captureFpsNum: initial.captureFps.num, captureFpsDen: initial.captureFps.den } });
       const doc = buildInterchange(state, { productionId, language, occurrenceIds: clips.map(c => c.occurrenceId), versions: reservation.versions });
       const ls = languageState(state, language.dialogue);
       const imagePaths = doc.references.filter(r => r.mimeType.startsWith("image/")).map(r => r.mediaPath);
-      const { images } = await loadImages(await signedUrls(imagePaths, 600));
+      const { images } = await loadImages(await signedUrls(editorial && !editorialMedia ? [] : imagePaths, 600));
       const filmPaths = clips.flatMap(c => c.parts.flatMap(p => p.take?.mediaRef ? [p.take.mediaRef] : []));
       const items = filmAudio(ls, clips, ls.project.fps, language.dialogue);
       const audioPaths = [...new Set(items.flatMap(it => it.version ? [it.version.mediaPath] : []))];
-      await audioBank.loadAll(await signedUrls(audioPaths, 600));
-      await exportDragonframe({ doc, state: ls, clips, images, filmUrls: await signedUrls([...new Set(filmPaths)], 600),
-        audio: { items, bank: audioBank }, png: dfPng, burnIn: dfBurnIn, sink, signal: ctrl.signal,
-        onProgress: (done, total) => setProgress({ done, total }) });
+      if (!editorial || editorialMedia) await audioBank.loadAll(await signedUrls(audioPaths, 600));
+      const options = { doc, state: ls, clips, images, filmUrls: await signedUrls(editorial && !editorialMedia ? [] : [...new Set(filmPaths)], 600),
+        audio: { items, bank: audioBank }, sink, signal: ctrl.signal,
+        onProgress: (done: number, total: number) => setProgress({ done, total }) };
+      if (editorial) await exportEditorial({ ...options, includeMedia: editorialMedia });
+      else await exportDragonframe({ ...options, png: dfPng, burnIn: dfBurnIn });
       setReady(sink.link?.() ?? null);
       await completeInterchangeExport(state.project.id, reservation.batchId);
       void qc.invalidateQueries({ queryKey: exportRecordsKey(productionId) });
@@ -169,6 +173,11 @@ export function ShotlistExport({ state, productionId, clips, language, disabled 
         {t("ptg2.option-burnin")}
       </label>
       <Button data-testid="ptg-export-dragonframe" size="sm" variant="outline" disabled={disabled || !!progress || clips.length === 0 || !userId} onClick={() => void startDragonframe()}><Download />{t("ptg2.send")}</Button>
+      <label className="flex items-center gap-2 text-xs text-text-secondary">
+        <input type="checkbox" data-testid="ptg-editorial-media" disabled={disabled || !!progress} checked={editorialMedia} onChange={e => setEditorialMedia(e.target.checked)} />
+        {t("ptg6.include-media")}
+      </label>
+      <Button data-testid="ptg-export-editorial" size="sm" variant="outline" disabled={disabled || !!progress || clips.length === 0 || !userId} onClick={() => void startDragonframe(true)}><Download />{t("ptg6.export")}</Button>
       {progress ? <><span role="status" className="text-xs text-text-secondary">{progress.done} / {progress.total}</span><Button size="icon" variant="ghost" aria-label={t("ptg1.cancel")} onClick={() => abort.current?.abort()}><X /></Button></> : null}
     </div>
     {ready ? <a data-testid="ptg-download" href={ready.url} download={ready.name} className="mt-2 block text-xs text-text-primary">{ready.name}</a> : null}

@@ -75104,5 +75104,26 @@
   },
   "ptg5.compare": {
     "text": "Compare takes"
+  },
+  "ptg6.export": {
+    "text": "Editorial files (OTIO, XML, EDL)"
+  },
+  "ptg6.include-media": {
+    "text": "Include media in editorial package"
+  },
+  "ptg6.readme": {
+    "text": "Editorial files: import OTIO, FCP7-XML (xmeml v5) or CMX 3600 EDL. Paths are relative to the package. Timecode is non-drop-frame. Twos retain 24 fps. Reference films include handles; transitions are applied in the editor, not baked into reference films. Audio is a per-shot mix with volume keys and fades baked in; no extra audio transition. The active take is used, otherwise the animatic. Wipe/push/iris are described in metadata, but the standard editorial transition is a cross dissolve. No AI is used."
+  },
+  "ptg6.reel-table": {
+    "text": "Reel → shot name → video file"
+  },
+  "ptg6.audio-table": {
+    "text": "Shot name → audio file"
+  },
+  "ptg6.media-included": {
+    "text": "Media files are included. Extract the entire package before import."
+  },
+  "ptg6.media-linked": {
+    "text": "Media files are not included. Place reference films and MIX audio at the listed relative paths, or relink them in your editor."
   }
 }

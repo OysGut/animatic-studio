@@ -1,5 +1,8 @@
 # TODO – From Pen to Glass
 
+## PTG6 – manuell klippeimport
+- Prøv OTIO, FCP7-XML og CMX 3600 i Resolve, Premiere og Avid med og uten mediefiler. Kontroller relative stier, reel-tabell, håndtak, oddetallsoverlapp, lyd og aktiv Dragonframe-take. Claude kan lese eksemplene i tests/fixtures/ptg6 med OpenTimelineIO og adapterne. Ekte programimport må bekreftes av brukerne.
+
 ## PTG3 – venter på tilbakemelding fra ekte bruk
 - AE-matter og animerte maskepunkter i bygg.jsx: bygges først når vi har tilbakemelding fra ekte After Effects-bruk.
 - FBX forblir «eksperimentell» til noen har importert den i Dragonframe eller et annet ekte program. Valgfri binær FBX-variant er ikke bygget; LESMEG sier at Blender og mange andre bare leser binær FBX.

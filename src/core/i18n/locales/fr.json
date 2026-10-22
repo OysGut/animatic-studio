@@ -54960,5 +54960,40 @@
     "text": "Comparer les prises",
     "sourceHash": "d9f7566df61531c4d52691ea0a0a2d0ef48934d468d79b8b1c67d45a87c7658c",
     "review": "machine"
+  },
+  "ptg6.export": {
+    "text": "Fichiers de montage (OTIO, XML, EDL)",
+    "sourceHash": "63c37c9190d668a3484b39fb9c5e66326c3fb37430b34e2583a2947f09c63e99",
+    "review": "machine"
+  },
+  "ptg6.include-media": {
+    "text": "Inclure les médias dans le paquet de montage",
+    "sourceHash": "4123f2b6a3bfdc4eb9b14a0431a33b9d966090b2e35ddb025bab5a40a588364e",
+    "review": "machine"
+  },
+  "ptg6.readme": {
+    "text": "Montage : importez OTIO, FCP7-XML (xmeml v5) ou CMX 3600 EDL. Chemins relatifs au paquet. Timecode sans drop-frame. Les expositions doubles restent à 24 i/s. Les films de référence incluent les poignées ; les transitions sont appliquées au montage, sans être intégrées aux films. Audio : mixage par plan avec points de volume et fondus intégrés, sans transition audio supplémentaire. Prise active, sinon animatique. Wipe/push/iris sont décrits dans les métadonnées ; la transition standard est un fondu enchaîné. Aucune IA.",
+    "sourceHash": "74b505185bf1ac31e7c4e47d609a8d28d4fd407ab9c26985cf9b0163ec22c5bf",
+    "review": "machine"
+  },
+  "ptg6.reel-table": {
+    "text": "Reel → nom du plan → fichier vidéo",
+    "sourceHash": "928a04281f3bc6ded71a8c34bfa6bd8dbbf3f4482bdd8d3c7e5cb2b1bda97de9",
+    "review": "machine"
+  },
+  "ptg6.audio-table": {
+    "text": "Nom du plan → fichier audio",
+    "sourceHash": "b7f023c9a448cd5f1194fce41d4225edf24c27e4e11a7fe8dce6d3dba7fddd9f",
+    "review": "machine"
+  },
+  "ptg6.media-included": {
+    "text": "Les médias sont inclus. Décompressez tout le paquet avant importation.",
+    "sourceHash": "605b077f970ba1fa4042fe2b76fd04fe913ddc308faba754bcd7ecf3040a7ff9",
+    "review": "machine"
+  },
+  "ptg6.media-linked": {
+    "text": "Les médias ne sont pas inclus. Placez les films de référence et le son MIX aux chemins relatifs indiqués, ou reconnectez-les dans votre logiciel de montage.",
+    "sourceHash": "14497b40a48f46ad9145a7d2cbcab34354b9aa78490083d62fcae24bd1a603d3",
+    "review": "machine"
   }
 }

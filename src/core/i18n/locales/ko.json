@@ -54812,5 +54812,40 @@
     "text": "테이크 비교",
     "sourceHash": "d9f7566df61531c4d52691ea0a0a2d0ef48934d468d79b8b1c67d45a87c7658c",
     "review": "machine"
+  },
+  "ptg6.export": {
+    "text": "편집 파일 (OTIO, XML, EDL)",
+    "sourceHash": "63c37c9190d668a3484b39fb9c5e66326c3fb37430b34e2583a2947f09c63e99",
+    "review": "machine"
+  },
+  "ptg6.include-media": {
+    "text": "편집 패키지에 미디어 포함",
+    "sourceHash": "4123f2b6a3bfdc4eb9b14a0431a33b9d966090b2e35ddb025bab5a40a588364e",
+    "review": "machine"
+  },
+  "ptg6.readme": {
+    "text": "OTIO, FCP7-XML (xmeml v5) 또는 CMX 3600 EDL을 가져오세요. 경로는 패키지 기준 상대 경로입니다. 타임코드는 논드롭프레임입니다. 2프레임 촬영도 24 fps를 유지합니다. 참조 영상에는 핸들이 포함되며 전환은 영상에 삽입하지 않고 편집기에서 적용합니다. 오디오는 샷별 믹스로 볼륨 키와 페이드가 반영되어 있으며 추가 오디오 전환은 없습니다. 활성 테이크를 사용하며 없으면 애니매틱을 사용합니다. Wipe/push/iris는 메타데이터에 기록되지만 기본 전환은 크로스 디졸브입니다. AI를 사용하지 않습니다.",
+    "sourceHash": "74b505185bf1ac31e7c4e47d609a8d28d4fd407ab9c26985cf9b0163ec22c5bf",
+    "review": "machine"
+  },
+  "ptg6.reel-table": {
+    "text": "릴 → 샷 이름 → 영상 파일",
+    "sourceHash": "928a04281f3bc6ded71a8c34bfa6bd8dbbf3f4482bdd8d3c7e5cb2b1bda97de9",
+    "review": "machine"
+  },
+  "ptg6.audio-table": {
+    "text": "샷 이름 → 오디오 파일",
+    "sourceHash": "b7f023c9a448cd5f1194fce41d4225edf24c27e4e11a7fe8dce6d3dba7fddd9f",
+    "review": "machine"
+  },
+  "ptg6.media-included": {
+    "text": "미디어가 포함되어 있습니다. 가져오기 전에 전체 패키지를 압축 해제하세요.",
+    "sourceHash": "605b077f970ba1fa4042fe2b76fd04fe913ddc308faba754bcd7ecf3040a7ff9",
+    "review": "machine"
+  },
+  "ptg6.media-linked": {
+    "text": "미디어는 포함되어 있지 않습니다. 참조 영상과 MIX 오디오를 지정된 상대 경로에 놓거나 편집기에서 다시 연결하세요.",
+    "sourceHash": "14497b40a48f46ad9145a7d2cbcab34354b9aa78490083d62fcae24bd1a603d3",
+    "review": "machine"
   }
 }
