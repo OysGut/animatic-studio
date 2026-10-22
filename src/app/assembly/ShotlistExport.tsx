@@ -16,12 +16,16 @@ import { exportShotlist } from "@/engine/export/shotlist";
 import { loadImages } from "@/engine/export/animatic";
 import { signedUrls } from "@/app/library/asset-images";
 import { t } from "@/core/i18n/keyed";
+import { useQueryClient } from "@tanstack/react-query";
+import { exportRecordsKey } from "@/app/projects/use-history-records";
+import { ExportHistory } from "@/app/projects/ExportHistory";
 
 export function ShotlistExport({ state, productionId, clips, language, disabled }: {
   state: ProjectState; productionId: string; clips: readonly FilmClip[];
   language: { dialogue: string; subtitles: string | null }; disabled: boolean;
 }) {
   const session = useSession();
+  const qc = useQueryClient();
   const userId = session.status === "signed-in" ? session.session.user.id : "";
   const members = useMembers(state.project.id);
   const editable = canEdit(members.data?.find(m => m.user_id === userId)?.role);
@@ -53,6 +57,7 @@ export function ShotlistExport({ state, productionId, clips, language, disabled 
         onProgress: (done, total) => setProgress({ done, total }) });
       setReady(sink.link?.() ?? null);
       await completeInterchangeExport(state.project.id, reservation.batchId);
+      void qc.invalidateQueries({ queryKey: exportRecordsKey(productionId) });
     } catch (e) {
       await sink.abort().catch(() => undefined);
       if (!ctrl.signal.aborted) setError(t("ptg1.export-failed"));
@@ -70,7 +75,8 @@ export function ShotlistExport({ state, productionId, clips, language, disabled 
       <Button data-testid="ptg-export-shotlist" size="sm" variant="outline" disabled={disabled || !!progress || clips.length === 0 || !userId} onClick={() => void start()}><Download />{t("ptg1.shotlist")}</Button>
       {progress ? <><span role="status" className="text-xs text-text-secondary">{progress.done} / {progress.total}</span><Button size="icon" variant="ghost" aria-label={t("ptg1.cancel")} onClick={() => abort.current?.abort()}><X /></Button></> : null}
     </div>
-    {ready ? <a data-testid="ptg-download" href={ready.url} download={ready.name} className="mt-2 block text-xs text-accent">{ready.name}</a> : null}
+    {ready ? <a data-testid="ptg-download" href={ready.url} download={ready.name} className="mt-2 block text-xs text-text-primary">{ready.name}</a> : null}
     {error ? <p role="alert" className="mt-2 text-xs text-status-danger">{error}</p> : null}
+    <div className="mt-2"><ExportHistory productionId={productionId} kinds={["script"]} /></div>
   </section>;
 }
