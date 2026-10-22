@@ -19,7 +19,13 @@ export function cameraReadmeLines(doc: InterchangeDoc): string[] {
     out.push("", t("ptg3.readme-modes", {}, lang));
     if (missing.length) {
       out.push("", t("ptg3.readme-missing-heading", {}, lang));
-      for (const s of missing) out.push(`- ${t(`ptg3.missing.${s.cameraMissing ?? "no-rig"}`, { value1: s.name }, lang)}`);
+      for (const s of missing) {
+        const p = { value1: s.name };
+        const line = s.cameraMissing === "no-composition" ? t("ptg3.missing.no-composition", p, lang)
+          : s.cameraMissing === "invalid-rig" ? t("ptg3.missing.invalid-rig", p, lang)
+          : t("ptg3.missing.no-rig", p, lang);
+        out.push(`- ${line}`);
+      }
     }
   }
   return out;

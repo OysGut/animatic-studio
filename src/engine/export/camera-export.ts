@@ -5,18 +5,17 @@
  */
 import type { InterchangeDoc } from "@/core/interchange";
 import { buildShotFbx } from "@/core/interchange/fbx";
-import { interchangeReadme } from "@/core/interchange/readme";
+import { cameraReadmeLines, interchangeReadme } from "@/core/interchange/readme";
 import { writeZip, type ZipSink } from "./zip";
 import { t } from "@/core/i18n/keyed";
 
 export async function exportCameraFbx(o: { doc: InterchangeDoc; sink: ZipSink; signal: AbortSignal }): Promise<void> {
   const { doc, signal } = o;
-  const skipped: string[] = [];
   async function* files() {
     for (const shot of doc.shots) {
       if (signal.aborted) throw new DOMException(t("ptg1.cancelled"), "AbortError");
       const fbx = buildShotFbx(shot, doc.fps);
-      if (!fbx) { skipped.push(shot.name); continue; }
+      if (!fbx) continue;
       yield { path: `camera/${shot.name}.fbx`, data: new TextEncoder().encode(fbx) };
     }
     yield {
@@ -26,7 +25,11 @@ export async function exportCameraFbx(o: { doc: InterchangeDoc; sink: ZipSink; s
         t("ptg3.readme-camera", {}, "nb"),
         "",
         t("ptg3.readme-camera", {}, "en"),
-        ...(skipped.length ? ["", t("ptg3.readme-no-rig", { value1: skipped.join(", ") }, "nb"), t("ptg3.readme-no-rig", { value1: skipped.join(", ") }, "en")] : []),
+        "",
+        t("ptg3.readme-fbx-binary", {}, "nb"),
+        "",
+        t("ptg3.readme-fbx-binary", {}, "en"),
+        ...cameraReadmeLines(doc),
       ].join("\n")),
     };
   }
