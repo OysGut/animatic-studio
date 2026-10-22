@@ -137,8 +137,9 @@ function compile(): Compiled[] {
  * setninger oversettes setning for setning. Ukjent tekst vises som den er.
  */
 export function tm(message: string): string {
-  if (current === "nb" || !message) return message;
-  if (current === "en-XA") {
+  const language = getUiLanguage();
+  if (language === "nb" || !message) return message;
+  if (language === "en-XA") {
     const en = tmEn(message);
     return en === message ? message : pseudoText(en);
   }
