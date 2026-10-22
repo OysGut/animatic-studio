@@ -82,7 +82,7 @@ type GlobalDerivedFile = {
 type GlobalDerivedFiles = Partial<Record<"working" | "proxy" | "thumbnail" | "originalRaw", GlobalDerivedFile>>;
 
 /** Kopierer de avledede filene og returnerer samme struktur med de nye stiene (undefined når det ikke er noen). */
-async function copyDerivedFiles(
+export async function copyDerivedFiles(
   a: AnyClient,
   derived: GlobalDerivedFiles | null | undefined,
   to: (d: GlobalDerivedFile) => string,
