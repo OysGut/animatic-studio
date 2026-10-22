@@ -1,5 +1,9 @@
 # TODO – From Pen to Glass
 
+## PTG3 – venter på tilbakemelding fra ekte bruk
+- AE-matter og animerte maskepunkter i bygg.jsx: bygges først når vi har tilbakemelding fra ekte After Effects-bruk.
+- FBX forblir «eksperimentell» til noen har importert den i Dragonframe eller et annet ekte program. Valgfri binær FBX-variant er ikke bygget; LESMEG sier at Blender og mange andre bare leser binær FBX.
+
 ## B-049
 - ML1 akseptanse: kontroller verifisering4 i Claudes miljø; Courier Prime måles 6,439 em her (57/58 med portabel falsk mikrofon). Se ML1_REPORT.md.
 - ML2–ML4 følger senere oppdrag. Gå gjennom 266 inventarkonflikter eksplisitt, ikke slå sammen automatisk. Mars avgjør tredjespråk/kvalitetssikrere senere; bruk en-XA i ML2-testene.

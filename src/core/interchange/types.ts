@@ -127,6 +127,8 @@ export interface Shot {
   readonly status: string;
   readonly layers: readonly LayerTrack[];
   readonly camera: CameraTrack | null;
+  /** Why camera is null: no 2D composition, no rig for the scene, or a rig that cannot be used. */
+  readonly cameraMissing?: "no-composition" | "no-rig" | "invalid-rig" | null;
   readonly audio: AudioTrack[];
   readonly dialogue: InterchangeDialogueLine[];
   readonly words: WordEvent[];

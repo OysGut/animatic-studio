@@ -7,6 +7,21 @@ const lang = process.env.UI_LANG ?? "nb";
 const occ = h.rows.scene_occurrences.find(o => o.active);
 if (!occ) throw new Error("Missing fixture");
 h.fx.project.code = "PTG-TEST";
+// Gyldig rigg (B-087) bare for scenen «Stua – åpning», som har zoom og panorering i kameraet. Alle
+// andre skudd mangler rigg, slik at LESMEG må nevne dem med årsak.
+const RIG_SCENE = "00000000-0000-7000-8000-000000000004";
+const rid = n => `00000000-0000-4000-8000-${String(n).padStart(12, "0")}`;
+const rigSpec = {
+  format: "1",
+  camera: { sensorWidthMm: 36, sensorHeightMm: 24, focalLengthMm: 50, cameraHeightMm: 900, mode: "moving" },
+  plates: [
+    { id: rid(8101), name: "Bord", heightMm: 0, glassThicknessMm: null },
+    { id: rid(8102), name: "Plate 1", heightMm: 100, glassThicknessMm: 4 },
+  ],
+  calibration: { cameraHeightMm: 900, focalLengthMm: 50, sensorWidthMm: 36, sensorHeightMm: 24, referencePlateId: rid(8101), pxPerMm: 3, calibratedAt: "2026-10-01T10:00:00Z", valid: true },
+};
+h.rows.rig_setups = [{ id: rid(8103), project_id: h.fx.project.id, revision: 1, scene_id: RIG_SCENE, template_id: null, name: "PTG3 rigg", spec: rigSpec, removed: false }];
+const rigShotPrefix = "PTG-TEST_SC";
 let version = 0;
 h.hooks.rest = (table, req) => {
   if (table === "rpc/reserve_interchange_export") {
@@ -33,13 +48,19 @@ await h.scenario(`ptg3-${lang}`, occ.id, lang, async page => {
   const readmeFbx = new TextDecoder().decode(fbxZip["LESMEG.txt"]);
   h.check(readmeFbx.includes("KTime") && (readmeFbx.includes("eksperimentell") || readmeFbx.includes("experimental")), `${lang}/fbx: LESMEG beskriver FBX-formatet`);
   const fbxFiles = fbxNames.filter(n => n.startsWith("camera/") && n.endsWith(".fbx"));
+  h.check(fbxFiles.length === 1, `${lang}/fbx: nøyaktig ett FBX-skudd (skuddet med rigg), fant ${fbxFiles.length}`);
   if (fbxFiles.length) {
     const text = new TextDecoder().decode(fbxZip[fbxFiles[0]]);
     h.check(text.includes("FBXVersion: 7400") && text.includes("FilmWidth") && text.includes("FocalLength"), `${lang}/fbx: ASCII 7.4 med sensor og objektiv`);
     h.check(text.includes("46186158000") || text.includes("KTime"), `${lang}/fbx: KTime-tider`);
-  } else {
-    h.check(readmeFbx.includes("rigg") || readmeFbx.includes("rig"), `${lang}/fbx: skudd uten rigg forklares i LESMEG`);
+    const keys = /KeyTime: \*(\d+)/.exec(text);
+    h.check(!!keys && Number(keys[1]) > 3, `${lang}/fbx: én nøkkel per eksponering (${keys?.[1]} nøkler)`);
   }
+  // Kontroll for skudd uten rigg: LESMEG nevner skuddnavnet og årsaken.
+  const missingLine = readmeFbx.split("\n").find(l => l.startsWith("- ") && l.includes(rigShotPrefix) && /rigg|rig/.test(l));
+  h.check(!!missingLine, `${lang}/fbx: skudd uten rigg står med navn og årsak i LESMEG`);
+  h.check(!readmeFbx.includes("null i PTG1") && !readmeFbx.includes("null in PTG1"), `${lang}/fbx: LESMEG sier ikke lenger «null i PTG1»`);
+  h.check(readmeFbx.includes("PAR_") && readmeFbx.includes("Blender"), `${lang}/fbx: LESMEG forklarer kameramodusene og binær FBX`);
 
   // After Effects-pakken i begge kameramodus
   for (const mode of ["ae", "parallax"]) {
@@ -54,11 +75,12 @@ await h.scenario(`ptg3-${lang}`, occ.id, lang, async page => {
     const jsx = new TextDecoder().decode(zip["bygg.jsx"]);
     h.check(jsx.includes("app.project.items.addComp"), `${lang}/ae-${mode}: komposisjoner bygges`);
     h.check(!/\b(let|const)\s/.test(jsx) && !jsx.includes("=>"), `${lang}/ae-${mode}: ren ES3`);
-    // Fixturen kan mangle rigg: da utelates kameraet med forklaring (og ingen parallakse-nuller lages)
-    const noRig = jsx.includes("camera omitted") || (mode === "parallax" && !jsx.includes("addCamera") && !jsx.includes("PAR_") && zip["LESMEG.txt"] && new TextDecoder().decode(zip["LESMEG.txt"]).match(/rigg|rig/));
-    h.check(mode === "ae" ? (jsx.includes("addCamera") || jsx.includes("camera omitted")) : !jsx.includes("addCamera"), `${lang}/ae-${mode}: kameramodus følges`);
-    h.check(mode === "parallax" ? (jsx.includes("PAR_") || !!noRig) : !jsx.includes("PAR_"), `${lang}/ae-${mode}: parallakse-nuller bare i 2D-modus`);
+    h.check(mode === "ae" ? jsx.includes("addCamera") : !jsx.includes("addCamera"), `${lang}/ae-${mode}: kameramodus følges`);
+    h.check(mode === "parallax" ? jsx.includes("PAR_") : !jsx.includes("PAR_"), `${lang}/ae-${mode}: parallakse-nuller bare i 2D-modus`);
+    if (mode === "ae") h.check(jsx.includes("camera omitted"), `${lang}/ae-${mode}: skudd uten rigg får ingen kamera`);
     const readme = new TextDecoder().decode(zip["LESMEG.txt"]);
+    h.check(readme.split("\n").some(l => l.startsWith("- ") && l.includes(rigShotPrefix)), `${lang}/ae-${mode}: LESMEG nevner skudd uten rigg`);
+    h.check(!readme.includes("null i PTG1") && !readme.includes("null in PTG1"), `${lang}/ae-${mode}: LESMEG sier ikke lenger «null i PTG1»`);
     h.check(readme.includes("bygg.jsx"), `${lang}/ae-${mode}: LESMEG forklarer kjøringen`);
   }
   await section.screenshot({ path: `${h.out}/${lang}-section.png` });

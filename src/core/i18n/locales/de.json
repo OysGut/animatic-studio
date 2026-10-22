@@ -54263,8 +54263,8 @@
     "review": "machine"
   },
   "ptg1.readme": {
-    "text": "Der Schnitt liegt in der entlang des Films gerundeten Mitte der Überlappung. Die Länge ist die Differenz gerundeter Grenzen. handleIn und handleOut sind die Überlappung auf der Nachbarseite; mit diesen Handles aufnehmen. Ohne Überlappung sind sie 0. Ton und Wörter gehören zur Einstellung ihres Beginns, behalten ihre volle Länge und absolute sowie relative Zeiten; crossesCut=true markiert eine Überschreitung. Auf Zweien: 12 Belichtungen/s auf einer 24-Bilder/s-Zeitleiste. Das Ende ist exklusiv. Ein leerer Film hat 0 Bilder; sehr kurze Einstellungen können 0 Bilder haben und bleiben aufgeführt. Die Kamera ist in PTG1 null.",
-    "sourceHash": "c2bc23ed4767d9ef2f64d31a3495aef22dc03598c58430e55f3ca528c1171661",
+    "text": "Der Schnitt liegt in der entlang des Films gerundeten Mitte der Überlappung. Die Länge ist die Differenz gerundeter Grenzen. handleIn und handleOut sind die Überlappung auf der Nachbarseite; mit diesen Handles aufnehmen. Ohne Überlappung sind sie 0. Ton und Wörter gehören zur Einstellung ihres Beginns, behalten ihre volle Länge und absolute sowie relative Zeiten; crossesCut=true markiert eine Überschreitung. Auf Zweien: 12 Belichtungen/s auf einer 24-Bilder/s-Zeitleiste. Das Ende ist exklusiv. Ein leerer Film hat 0 Bilder; sehr kurze Einstellungen können 0 Bilder haben und bleiben aufgeführt. Das Kamerafeld wird aus dem Rig der Szene (B-087) mit einer Probe pro Belichtung gebildet; es ist null, wenn der Einstellung eine 2D-Komposition oder ein brauchbares Rig fehlt.",
+    "sourceHash": "11811c23c134a1d7c760c35aaa3b346859e101c53078b88835a51c68c2aecbf8",
     "review": "machine"
   },
   "b115.privacy.terms.heading": {
@@ -54372,9 +54372,34 @@
     "sourceHash": "a59acf40a6874c00ae5fa771104398edc097bea8db3e884a2c5bb6c9a06df334",
     "review": "machine"
   },
-  "ptg3.readme-no-rig": {
-    "text": "Diese Einstellungen haben kein Rig, daher fehlt die Kamera: {value1}",
-    "sourceHash": "ed7970a28bcc3404f732ec9af9a5bece24034d09861f8acb2ab346c93e9fe4af",
+  "ptg3.readme-modes": {
+    "text": "Kameramodi: „AE-Kamera (3D)“ erstellt in After Effects eine 3D-Kamera mit Brennweite und Sensor aus dem Rig. „2D-Parallaxe“ erstellt keine Kamera; stattdessen erhält jede Ebene ein Nullobjekt (PAR_), das ihre Ebenen entsprechend der Parallaxe der Platte bewegt und skaliert. Die FBX-Dateien enthalten immer die 3D-Kamera. Die Kamera hat einen Key pro Belichtung in der Aufnahmebildrate (auf Zweiern jedes zweite Bild).",
+    "sourceHash": "d0c1bea25c1229837dd727cde88357ecfee91c63da4da46d8b4c0b015b2c5ee0",
+    "review": "machine"
+  },
+  "ptg3.readme-fbx-binary": {
+    "text": "Die Dateien sind ASCII-FBX. Viele Programme, darunter Blender, lesen nur binäres FBX; konvertieren Sie die Datei dann zuerst, zum Beispiel mit Autodesk FBX Converter oder Assimp. Der FBX-Export ist experimentell, bis er in Dragonframe oder einem anderen Produktionsprogramm erprobt wurde.",
+    "sourceHash": "b41931ac2721ac993b6942b4ea8efa6636fa894469a064ea5124b3df2107f8a1",
+    "review": "machine"
+  },
+  "ptg3.readme-missing-heading": {
+    "text": "Einstellungen ohne Kamera:",
+    "sourceHash": "fbf77eb23db4b22cc43652d2addeaa798833b46df147fd4aef64cd53f7716bf9",
+    "review": "machine"
+  },
+  "ptg3.missing.no-composition": {
+    "text": "{value1}: Die Einstellung hat keine 2D-Komposition, daher gibt es keine Kamerabewegung zu exportieren.",
+    "sourceHash": "f914756ca11ab8ec970518f993bb1571b8efccfb7ca50d4e678132686e457357",
+    "review": "machine"
+  },
+  "ptg3.missing.no-rig": {
+    "text": "{value1}: Weder die Szene noch das Projekt hat ein Rig, daher kann die Kamera nicht in physische Maße umgerechnet werden. Fügen Sie ein Rig für die Szene hinzu.",
+    "sourceHash": "757fe3f6505982bd45769ddadf966ea28723ef33037c1021ac987829e2506401",
+    "review": "machine"
+  },
+  "ptg3.missing.invalid-rig": {
+    "text": "{value1}: Dem Rig fehlen gültige Maße (Kamera, Platten oder Kalibrierung), daher wird die Kamera weggelassen.",
+    "sourceHash": "ffffb290a1bc0d742e81c869f55369757fd112cf0fb45d6f7a4642c0fd6db372",
     "review": "machine"
   },
   "ptg3b.card-explain": {

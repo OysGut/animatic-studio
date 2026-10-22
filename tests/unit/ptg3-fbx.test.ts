@@ -3,6 +3,7 @@
  * FilmWidth i tommer, FocalLength i mm, kameraposisjon og rull per bilde, og null-objektene for platene.
  */
 import { describe, expect, it } from "vitest";
+import { readFileSync, writeFileSync } from "node:fs";
 import { buildShotFbx, fbxKTime, FBX_KTIME_PER_SECOND } from "@/core/interchange/fbx";
 import type { CameraTrack, Shot } from "@/core/interchange/types";
 import type { CompositionLayer } from "@/core/model";
@@ -100,5 +101,24 @@ describe("PTG3 FBX 7.4", () => {
   it("skuddnavn renskes slik at det aldri bryter ASCII-strukturen", () => {
     const src = buildShotFbx(shot({ name: 'RAR"NAVN {x}' }), fps)!;
     expect(src).toContain("Model::RAR_NAVN__x__CAM");
+  });
+  // Eksempelfilen (tests/fixtures/ptg3/example.fbx) er laget av eksportøren selv: 1 s på 24 bilder/s med
+  // én nøkkel per bilde (25 nøkler, 0 … 24). UPDATE_FBX_EXAMPLE=1 skriver den på nytt.
+  it("eksempelfilen har én nøkkel per opptaksbilde og er identisk med eksportøren", () => {
+    const frames = Array.from({ length: 25 }, (_, f) => {
+      const u = f / 24;
+      return { frame: f, fieldWidthMm: 500, fieldHeightMm: 333.3, panXMm: 80 * u, panYMm: -40 * u,
+        rollDeg: 10 * u, cameraHeightMm: 900 - 200 * u, zoom: 1 + 0.25 * u };
+    });
+    const src = buildShotFbx(shot({ camera: track({ frames }) }), fps)!;
+    const path = "tests/fixtures/ptg3/example.fbx";
+    if (process.env["UPDATE_FBX_EXAMPLE"]) writeFileSync(path, src);
+    const p = parseFbx(src);
+    const times = p.curveTimes(4000000001);
+    expect(times).toHaveLength(25);
+    expect(times).toEqual(frames.map(f => fbxKTime(f.frame, fps)));
+    expect(p.curveValues(4000000002)[0]).toBe(90);
+    expect(p.curveValues(4000000002)[24]).toBe(70);
+    expect(readFileSync(path, "utf8")).toBe(src);
   });
 });

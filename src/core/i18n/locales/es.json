@@ -54337,8 +54337,8 @@
     "review": "machine"
   },
   "ptg1.readme": {
-    "text": "El corte está en el punto medio del solapamiento, redondeado a lo largo de la película. La duración es la diferencia entre límites redondeados. handleIn y handleOut son el solapamiento del lado vecino; rodar con estos márgenes. Sin solapamiento valen 0. Audio y palabras pertenecen al plano donde empiezan, conservan su duración completa y tiempos absolutos y relativos; crossesCut=true indica un cruce. A doses: 12 exposiciones/s en una línea de 24 fotogramas/s. La salida es exclusiva. Una película vacía tiene 0 fotogramas; un plano muy corto puede tener 0 y permanece en la lista. La cámara es null en PTG1.",
-    "sourceHash": "c2bc23ed4767d9ef2f64d31a3495aef22dc03598c58430e55f3ca528c1171661",
+    "text": "El corte está en el punto medio del solapamiento, redondeado a lo largo de la película. La duración es la diferencia entre límites redondeados. handleIn y handleOut son el solapamiento del lado vecino; rodar con estos márgenes. Sin solapamiento valen 0. Audio y palabras pertenecen al plano donde empiezan, conservan su duración completa y tiempos absolutos y relativos; crossesCut=true indica un cruce. A doses: 12 exposiciones/s en una línea de 24 fotogramas/s. La salida es exclusiva. Una película vacía tiene 0 fotogramas; un plano muy corto puede tener 0 y permanece en la lista. El campo de cámara se construye a partir del rig de la escena (B-087) con una muestra por exposición; es null cuando el plano no tiene composición 2D ni un rig utilizable.",
+    "sourceHash": "11811c23c134a1d7c760c35aaa3b346859e101c53078b88835a51c68c2aecbf8",
     "review": "machine"
   },
   "b115.privacy.terms.heading": {
@@ -54446,9 +54446,34 @@
     "sourceHash": "a59acf40a6874c00ae5fa771104398edc097bea8db3e884a2c5bb6c9a06df334",
     "review": "machine"
   },
-  "ptg3.readme-no-rig": {
-    "text": "Estos planos no tienen rig, por lo que falta la cámara: {value1}",
-    "sourceHash": "ed7970a28bcc3404f732ec9af9a5bece24034d09861f8acb2ab346c93e9fe4af",
+  "ptg3.readme-modes": {
+    "text": "Modos de cámara: «Cámara AE (3D)» crea una cámara 3D en After Effects con la distancia focal y el sensor del rig. «Paralaje 2D» no crea cámara; en su lugar, cada placa recibe un objeto nulo (PAR_) que mueve y escala sus capas según el paralaje de la placa. Los archivos FBX siempre contienen la cámara 3D. La cámara tiene una clave por exposición a la cadencia de captura (un fotograma de cada dos en dobles).",
+    "sourceHash": "d0c1bea25c1229837dd727cde88357ecfee91c63da4da46d8b4c0b015b2c5ee0",
+    "review": "machine"
+  },
+  "ptg3.readme-fbx-binary": {
+    "text": "Los archivos son FBX ASCII. Muchos programas, entre ellos Blender, solo leen FBX binario; convierte primero el archivo, por ejemplo con Autodesk FBX Converter o Assimp. La exportación FBX es experimental hasta que se haya probado en Dragonframe u otro programa de producción.",
+    "sourceHash": "b41931ac2721ac993b6942b4ea8efa6636fa894469a064ea5124b3df2107f8a1",
+    "review": "machine"
+  },
+  "ptg3.readme-missing-heading": {
+    "text": "Planos sin cámara:",
+    "sourceHash": "fbf77eb23db4b22cc43652d2addeaa798833b46df147fd4aef64cd53f7716bf9",
+    "review": "machine"
+  },
+  "ptg3.missing.no-composition": {
+    "text": "{value1}: el plano no tiene composición 2D, así que no hay movimiento de cámara que exportar.",
+    "sourceHash": "f914756ca11ab8ec970518f993bb1571b8efccfb7ca50d4e678132686e457357",
+    "review": "machine"
+  },
+  "ptg3.missing.no-rig": {
+    "text": "{value1}: ni la escena ni el proyecto tienen rig, así que la cámara no puede convertirse a unidades físicas. Añade un rig para la escena.",
+    "sourceHash": "757fe3f6505982bd45769ddadf966ea28723ef33037c1021ac987829e2506401",
+    "review": "machine"
+  },
+  "ptg3.missing.invalid-rig": {
+    "text": "{value1}: el rig no tiene medidas válidas (cámara, placas o calibración), así que la cámara se omite.",
+    "sourceHash": "ffffb290a1bc0d742e81c869f55369757fd112cf0fb45d6f7a4642c0fd6db372",
     "review": "machine"
   },
   "ptg3b.card-explain": {

@@ -31905,7 +31905,7 @@
       "text": "Prosjektkode"
     },
     "ptg1.readme": {
-      "text": "Klippunktet ligger midt i overlappen, avrundet langs filmen. Skuddlengder er differansen mellom avrundede grenser. handleIn og handleOut er overlapp på naboens side; skyt inkludert håndtakene. Uten overlapp er håndtakene 0. Lyd og ord tilhører skuddet der hendelsen starter, beholder hele lengden og har absolutte og relative tider; crossesCut=true markerer kryssing. Toere er 12 eksponeringer/s på en 24 bilder/s-tidslinje, hvert andre bilde. Tidskode ut og Frame Out er eksklusive. Tom film har 0 bilder; en scene kortere enn ett opptaksbilde kan få 0 bilder og beholdes i listen. Kamera er null i PTG1."
+      "text": "Klippunktet ligger midt i overlappen, avrundet langs filmen. Skuddlengder er differansen mellom avrundede grenser. handleIn og handleOut er overlapp på naboens side; skyt inkludert håndtakene. Uten overlapp er håndtakene 0. Lyd og ord tilhører skuddet der hendelsen starter, beholder hele lengden og har absolutte og relative tider; crossesCut=true markerer kryssing. Toere er 12 eksponeringer/s på en 24 bilder/s-tidslinje, hvert andre bilde. Tidskode ut og Frame Out er eksklusive. Tom film har 0 bilder; en scene kortere enn ett opptaksbilde kan få 0 bilder og beholdes i listen. Kamerafeltet bygges fra scenens rigg (B-087) med én prøve per eksponering; det er null når skuddet mangler 2D-komposisjon eller brukbar rigg."
     },
     "ptg1.save-settings": {
       "text": "Lagre innstillinger"
@@ -31931,6 +31931,15 @@
     "ptg3.camera-mode": {
       "text": "Kameramodus"
     },
+    "ptg3.missing.invalid-rig": {
+      "text": "{value1}: riggen mangler gyldige mål (kamera, plater eller kalibrering), så kameraet er utelatt."
+    },
+    "ptg3.missing.no-composition": {
+      "text": "{value1}: skuddet har ingen 2D-komposisjon, så det finnes ingen kamerabevegelse å eksportere."
+    },
+    "ptg3.missing.no-rig": {
+      "text": "{value1}: verken scenen eller prosjektet har en rigg, så kameraet kan ikke regnes om til fysiske mål. Legg til en rigg for scenen."
+    },
     "ptg3.mode-ae": {
       "text": "AE-kamera (3D)"
     },
@@ -31943,8 +31952,14 @@
     "ptg3.readme-camera": {
       "text": "Denne pakken inneholder én FBX-fil (ASCII 7.4) per skudd med kamerabevegelsen i fysiske mål: tid i KTime (46 186 158 000 per sekund), FilmWidth i tommer, FocalLength i mm og platene som null-objekter. FBX-eksporten er eksperimentell – prøv den på riggen din og rapporter avvik."
     },
-    "ptg3.readme-no-rig": {
-      "text": "Disse skuddene har ingen rigg, så kameraet mangler: {value1}"
+    "ptg3.readme-fbx-binary": {
+      "text": "Filene er ASCII-FBX. Mange programmer, blant dem Blender, leser bare binær FBX; konverter da filen først, for eksempel med Autodesk FBX Converter eller Assimp. FBX-eksporten er eksperimentell til den er prøvd i Dragonframe eller et annet produksjonsprogram."
+    },
+    "ptg3.readme-missing-heading": {
+      "text": "Skudd uten kamera:"
+    },
+    "ptg3.readme-modes": {
+      "text": "Kameramoduser: «AE-kamera (3D)» lager et 3D-kamera i After Effects med fokallengde og sensor fra riggen. «2D-parallakse» lager ikke noe kamera; hver plate får i stedet et nullobjekt (PAR_) som flytter og skalerer lagene sine etter platens parallakse. FBX-filene inneholder alltid 3D-kameraet. Kameraet har én nøkkel per eksponering på opptakets bildefrekvens (på toere hvert andre bilde)."
     },
     "ptg3b.card-explain": {
       "text": "Denne QR-koden brukes til å importere den ferdige After Effects-filmen. Filmen legger seg der denne scenen ble eksportert fra."
@@ -64389,7 +64404,7 @@
       "text": "Project code"
     },
     "ptg1.readme": {
-      "text": "The cut is at the midpoint of the overlap, rounded along the film. Shot lengths are differences between rounded boundaries. handleIn and handleOut are overlap on the neighbour’s side; shoot including the handles. Without overlap, handles are 0. Audio and words belong to the shot where the event starts, retain their full length and include absolute and relative times; crossesCut=true marks a crossing. Twos are 12 exposures/s on a 24 fps timeline, every other frame. Out timecode and Frame Out are exclusive. An empty film has 0 frames; a scene shorter than one capture frame may have 0 frames and remains listed. Camera is null in PTG1."
+      "text": "The cut is at the midpoint of the overlap, rounded along the film. Shot lengths are differences between rounded boundaries. handleIn and handleOut are overlap on the neighbour’s side; shoot including the handles. Without overlap, handles are 0. Audio and words belong to the shot where the event starts, retain their full length and include absolute and relative times; crossesCut=true marks a crossing. Twos are 12 exposures/s on a 24 fps timeline, every other frame. Out timecode and Frame Out are exclusive. An empty film has 0 frames; a scene shorter than one capture frame may have 0 frames and remains listed. The camera field is built from the scene's rig (B-087) with one sample per exposure; it is null when the shot lacks a 2D composition or a usable rig."
     },
     "ptg1.save-settings": {
       "text": "Save settings"
@@ -64415,6 +64430,15 @@
     "ptg3.camera-mode": {
       "text": "Camera mode"
     },
+    "ptg3.missing.invalid-rig": {
+      "text": "{value1}: the rig lacks valid measurements (camera, plates or calibration), so the camera is omitted."
+    },
+    "ptg3.missing.no-composition": {
+      "text": "{value1}: the shot has no 2D composition, so there is no camera move to export."
+    },
+    "ptg3.missing.no-rig": {
+      "text": "{value1}: neither the scene nor the project has a rig, so the camera cannot be converted to physical units. Add a rig for the scene."
+    },
     "ptg3.mode-ae": {
       "text": "AE camera (3D)"
     },
@@ -64427,8 +64451,14 @@
     "ptg3.readme-camera": {
       "text": "This package contains one FBX file (ASCII 7.4) per shot with the camera move in physical units: time in KTime (46,186,158,000 per second), FilmWidth in inches, FocalLength in mm, and the plates as null objects. The FBX export is experimental – try it on your rig and report any discrepancies."
     },
-    "ptg3.readme-no-rig": {
-      "text": "These shots have no rig, so the camera is missing: {value1}"
+    "ptg3.readme-fbx-binary": {
+      "text": "The files are ASCII FBX. Many programs, Blender among them, only read binary FBX; convert the file first, for example with Autodesk FBX Converter or Assimp. The FBX export is experimental until it has been tried in Dragonframe or another production program."
+    },
+    "ptg3.readme-missing-heading": {
+      "text": "Shots without a camera:"
+    },
+    "ptg3.readme-modes": {
+      "text": "Camera modes: \"AE camera (3D)\" creates a 3D camera in After Effects with the focal length and sensor from the rig. \"2D parallax\" creates no camera; instead each plate gets a null object (PAR_) that moves and scales its layers according to the plate's parallax. The FBX files always contain the 3D camera. The camera has one key per exposure at the capture frame rate (every other frame on twos)."
     },
     "ptg3b.card-explain": {
       "text": "This QR code is used to import the finished After Effects film. The film is placed where this scene was exported from."

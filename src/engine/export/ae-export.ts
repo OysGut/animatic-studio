@@ -7,7 +7,7 @@ import type { InterchangeDoc } from "@/core/interchange";
 import { buildAeJsx, type AeCameraMode, type AeTitleCards } from "@/core/interchange/ae-jsx";
 import { ptgImportUrl, qrMatrixToPng } from "@/core/interchange/titlecard";
 import type { Shot } from "@/core/interchange/types";
-import { interchangeReadme } from "@/core/interchange/readme";
+import { cameraReadmeLines, interchangeReadme } from "@/core/interchange/readme";
 import { writeZip, type ZipSink, type ZipProgress } from "./zip";
 import { t } from "@/core/i18n/keyed";
 
@@ -51,7 +51,6 @@ export async function exportAePackage(o: {
   const tc = o.titleCard ? aeTitleCards(doc) : null;
   const jsx = buildAeJsx(doc, { cameraMode: o.cameraMode, titleCards: tc });
   const origin = o.titleCard?.origin ?? "";
-  const missingRig = doc.shots.filter(s => !s.camera).map(s => s.name);
   async function* files() {
     yield { path: "bygg.jsx", data: new TextEncoder().encode(jsx) };
     if (tc) for (const s of doc.shots) {
@@ -65,7 +64,7 @@ export async function exportAePackage(o: {
         "",
         t("ptg3.readme-ae", {}, "en"),
         ...(tc ? ["", t("ptg3b.readme-titlecard", {}, "nb"), "", t("ptg3b.readme-titlecard", {}, "en")] : []),
-        ...(missingRig.length ? ["", t("ptg3.readme-no-rig", { value1: missingRig.join(", ") }, "nb"), t("ptg3.readme-no-rig", { value1: missingRig.join(", ") }, "en")] : []),
+        ...cameraReadmeLines(doc),
       ].join("\n")),
     };
   }

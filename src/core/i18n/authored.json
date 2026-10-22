@@ -8624,10 +8624,10 @@
     },
     "ptg1.readme": {
       "nb": {
-        "text": "Klippunktet ligger midt i overlappen, avrundet langs filmen. Skuddlengder er differansen mellom avrundede grenser. handleIn og handleOut er overlapp på naboens side; skyt inkludert håndtakene. Uten overlapp er håndtakene 0. Lyd og ord tilhører skuddet der hendelsen starter, beholder hele lengden og har absolutte og relative tider; crossesCut=true markerer kryssing. Toere er 12 eksponeringer/s på en 24 bilder/s-tidslinje, hvert andre bilde. Tidskode ut og Frame Out er eksklusive. Tom film har 0 bilder; en scene kortere enn ett opptaksbilde kan få 0 bilder og beholdes i listen. Kamera er null i PTG1."
+        "text": "Klippunktet ligger midt i overlappen, avrundet langs filmen. Skuddlengder er differansen mellom avrundede grenser. handleIn og handleOut er overlapp på naboens side; skyt inkludert håndtakene. Uten overlapp er håndtakene 0. Lyd og ord tilhører skuddet der hendelsen starter, beholder hele lengden og har absolutte og relative tider; crossesCut=true markerer kryssing. Toere er 12 eksponeringer/s på en 24 bilder/s-tidslinje, hvert andre bilde. Tidskode ut og Frame Out er eksklusive. Tom film har 0 bilder; en scene kortere enn ett opptaksbilde kan få 0 bilder og beholdes i listen. Kamerafeltet bygges fra scenens rigg (B-087) med én prøve per eksponering; det er null når skuddet mangler 2D-komposisjon eller brukbar rigg."
       },
       "en": {
-        "text": "The cut is at the midpoint of the overlap, rounded along the film. Shot lengths are differences between rounded boundaries. handleIn and handleOut are overlap on the neighbour’s side; shoot including the handles. Without overlap, handles are 0. Audio and words belong to the shot where the event starts, retain their full length and include absolute and relative times; crossesCut=true marks a crossing. Twos are 12 exposures/s on a 24 fps timeline, every other frame. Out timecode and Frame Out are exclusive. An empty film has 0 frames; a scene shorter than one capture frame may have 0 frames and remains listed. Camera is null in PTG1."
+        "text": "The cut is at the midpoint of the overlap, rounded along the film. Shot lengths are differences between rounded boundaries. handleIn and handleOut are overlap on the neighbour’s side; shoot including the handles. Without overlap, handles are 0. Audio and words belong to the shot where the event starts, retain their full length and include absolute and relative times; crossesCut=true marks a crossing. Twos are 12 exposures/s on a 24 fps timeline, every other frame. Out timecode and Frame Out are exclusive. An empty film has 0 frames; a scene shorter than one capture frame may have 0 frames and remains listed. The camera field is built from the scene's rig (B-087) with one sample per exposure; it is null when the shot lacks a 2D composition or a usable rig."
       }
     },
     "ptg3.camera-fbx": {
@@ -8686,12 +8686,52 @@
         "text": "Open After Effects, choose File > Scripts > Run Script File and run bygg.jsx from this folder. The script builds one composition per shot and a main composition with layers, keyframes, image swaps, masks and audio. Transitions between scenes are not included. Text layers are not recreated."
       }
     },
-    "ptg3.readme-no-rig": {
+    "ptg3.readme-modes": {
       "nb": {
-        "text": "Disse skuddene har ingen rigg, så kameraet mangler: {value1}"
+        "text": "Kameramoduser: «AE-kamera (3D)» lager et 3D-kamera i After Effects med fokallengde og sensor fra riggen. «2D-parallakse» lager ikke noe kamera; hver plate får i stedet et nullobjekt (PAR_) som flytter og skalerer lagene sine etter platens parallakse. FBX-filene inneholder alltid 3D-kameraet. Kameraet har én nøkkel per eksponering på opptakets bildefrekvens (på toere hvert andre bilde)."
       },
       "en": {
-        "text": "These shots have no rig, so the camera is missing: {value1}"
+        "text": "Camera modes: \"AE camera (3D)\" creates a 3D camera in After Effects with the focal length and sensor from the rig. \"2D parallax\" creates no camera; instead each plate gets a null object (PAR_) that moves and scales its layers according to the plate's parallax. The FBX files always contain the 3D camera. The camera has one key per exposure at the capture frame rate (every other frame on twos)."
+      }
+    },
+    "ptg3.readme-fbx-binary": {
+      "nb": {
+        "text": "Filene er ASCII-FBX. Mange programmer, blant dem Blender, leser bare binær FBX; konverter da filen først, for eksempel med Autodesk FBX Converter eller Assimp. FBX-eksporten er eksperimentell til den er prøvd i Dragonframe eller et annet produksjonsprogram."
+      },
+      "en": {
+        "text": "The files are ASCII FBX. Many programs, Blender among them, only read binary FBX; convert the file first, for example with Autodesk FBX Converter or Assimp. The FBX export is experimental until it has been tried in Dragonframe or another production program."
+      }
+    },
+    "ptg3.readme-missing-heading": {
+      "nb": {
+        "text": "Skudd uten kamera:"
+      },
+      "en": {
+        "text": "Shots without a camera:"
+      }
+    },
+    "ptg3.missing.no-composition": {
+      "nb": {
+        "text": "{value1}: skuddet har ingen 2D-komposisjon, så det finnes ingen kamerabevegelse å eksportere."
+      },
+      "en": {
+        "text": "{value1}: the shot has no 2D composition, so there is no camera move to export."
+      }
+    },
+    "ptg3.missing.no-rig": {
+      "nb": {
+        "text": "{value1}: verken scenen eller prosjektet har en rigg, så kameraet kan ikke regnes om til fysiske mål. Legg til en rigg for scenen."
+      },
+      "en": {
+        "text": "{value1}: neither the scene nor the project has a rig, so the camera cannot be converted to physical units. Add a rig for the scene."
+      }
+    },
+    "ptg3.missing.invalid-rig": {
+      "nb": {
+        "text": "{value1}: riggen mangler gyldige mål (kamera, plater eller kalibrering), så kameraet er utelatt."
+      },
+      "en": {
+        "text": "{value1}: the rig lacks valid measurements (camera, plates or calibration), so the camera is omitted."
       }
     },
     "ptg3b.card-explain": {

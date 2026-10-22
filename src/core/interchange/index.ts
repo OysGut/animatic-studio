@@ -103,14 +103,18 @@ export function buildInterchange(state: ProjectState, o: InterchangeOptions): In
             ...(w.transition ? { transition: { ...w.transition, frames: frame(c.startFrame + w.frame + w.transition.frames) - frame(c.startFrame + w.frame) } } : {}) })),
           activeRange: l.activeRange ? { startFrame: local(l.activeRange.from), endFrame: local(l.activeRange.to + 1) } : null,
           path: l.path ? { ...l.path, startFrame: local(l.path.startFrame), endFrame: local(l.path.endFrame) } : null };
-      }), camera: (() => {
-        // PTG3: kameraet avledes alltid fra scenens rigg; uten rigg eller 2D-scene er det null (LESMEG forklarer).
+      }), ...(() => {
+        // PTG3: kameraet avledes alltid fra scenens rigg; uten rigg eller 2D-scene er det null, og
+        // cameraMissing sier hvorfor (LESMEG nevner skuddet og årsaken).
         const composition = c.compositionId ? s.compositions[c.compositionId] : null;
         const rigSetup = resolveSceneRig(s, occurrence?.sceneId ?? c.sceneId);
-        return composition && rigSetup && multiplaneRigSpecError(rigSetup.spec) === null
+        if (!composition) return { camera: null, cameraMissing: "no-composition" as const };
+        if (!rigSetup) return { camera: null, cameraMissing: "no-rig" as const };
+        const camera = multiplaneRigSpecError(rigSetup.spec) === null
           ? buildCameraTrack(rigSetup, composition, { startFrame, lengthFrames: endFrame - startFrame,
               exposureStep, fps, sourceFps, sourceStartFrame: c.startFrame })
           : null;
+        return camera ? { camera, cameraMissing: null } : { camera: null, cameraMissing: "invalid-rig" as const };
       })(), audio: [], dialogue: [], words: [] };
   });
   // Ownership is determined by the rounded absolute start, including events from a neighbour's handle.

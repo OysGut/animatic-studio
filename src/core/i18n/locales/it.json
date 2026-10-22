@@ -54337,8 +54337,8 @@
     "review": "machine"
   },
   "ptg1.readme": {
-    "text": "Il taglio è al punto medio della sovrapposizione, arrotondato lungo il film. Le durate sono differenze fra limiti arrotondati. handleIn e handleOut sono la sovrapposizione sul lato vicino; riprendere anche questi margini. Senza sovrapposizione sono 0. Audio e parole appartengono all’inquadratura in cui iniziano, conservano la durata intera e tempi assoluti e relativi; crossesCut=true indica un attraversamento. Su due: 12 esposizioni/s su una timeline a 24 fotogrammi/s. L’uscita è esclusiva. Un film vuoto ha 0 fotogrammi; un’inquadratura molto breve può avere 0 e resta nell’elenco. La camera è null in PTG1.",
-    "sourceHash": "c2bc23ed4767d9ef2f64d31a3495aef22dc03598c58430e55f3ca528c1171661",
+    "text": "Il taglio è al punto medio della sovrapposizione, arrotondato lungo il film. Le durate sono differenze fra limiti arrotondati. handleIn e handleOut sono la sovrapposizione sul lato vicino; riprendere anche questi margini. Senza sovrapposizione sono 0. Audio e parole appartengono all’inquadratura in cui iniziano, conservano la durata intera e tempi assoluti e relativi; crossesCut=true indica un attraversamento. Su due: 12 esposizioni/s su una timeline a 24 fotogrammi/s. L’uscita è esclusiva. Un film vuoto ha 0 fotogrammi; un’inquadratura molto breve può avere 0 e resta nell’elenco. Il campo camera è costruito dal rig della scena (B-087) con un campione per esposizione; è null quando l'inquadratura non ha una composizione 2D o un rig utilizzabile.",
+    "sourceHash": "11811c23c134a1d7c760c35aaa3b346859e101c53078b88835a51c68c2aecbf8",
     "review": "machine"
   },
   "b115.privacy.terms.heading": {
@@ -54446,9 +54446,34 @@
     "sourceHash": "a59acf40a6874c00ae5fa771104398edc097bea8db3e884a2c5bb6c9a06df334",
     "review": "machine"
   },
-  "ptg3.readme-no-rig": {
-    "text": "Queste inquadrature non hanno un rig, quindi manca la fotocamera: {value1}",
-    "sourceHash": "ed7970a28bcc3404f732ec9af9a5bece24034d09861f8acb2ab346c93e9fe4af",
+  "ptg3.readme-modes": {
+    "text": "Modalità camera: «Camera AE (3D)» crea una camera 3D in After Effects con lunghezza focale e sensore del rig. «Parallasse 2D» non crea alcuna camera; ogni lastra riceve invece un oggetto nullo (PAR_) che sposta e scala i suoi livelli secondo la parallasse della lastra. I file FBX contengono sempre la camera 3D. La camera ha una chiave per esposizione alla frequenza di ripresa (un fotogramma su due a passo due).",
+    "sourceHash": "d0c1bea25c1229837dd727cde88357ecfee91c63da4da46d8b4c0b015b2c5ee0",
+    "review": "machine"
+  },
+  "ptg3.readme-fbx-binary": {
+    "text": "I file sono FBX ASCII. Molti programmi, tra cui Blender, leggono solo FBX binario; converti prima il file, ad esempio con Autodesk FBX Converter o Assimp. L'esportazione FBX è sperimentale finché non è stata provata in Dragonframe o in un altro programma di produzione.",
+    "sourceHash": "b41931ac2721ac993b6942b4ea8efa6636fa894469a064ea5124b3df2107f8a1",
+    "review": "machine"
+  },
+  "ptg3.readme-missing-heading": {
+    "text": "Inquadrature senza camera:",
+    "sourceHash": "fbf77eb23db4b22cc43652d2addeaa798833b46df147fd4aef64cd53f7716bf9",
+    "review": "machine"
+  },
+  "ptg3.missing.no-composition": {
+    "text": "{value1}: l'inquadratura non ha una composizione 2D, quindi non c'è alcun movimento di camera da esportare.",
+    "sourceHash": "f914756ca11ab8ec970518f993bb1571b8efccfb7ca50d4e678132686e457357",
+    "review": "machine"
+  },
+  "ptg3.missing.no-rig": {
+    "text": "{value1}: né la scena né il progetto hanno un rig, quindi la camera non può essere convertita in unità fisiche. Aggiungi un rig per la scena.",
+    "sourceHash": "757fe3f6505982bd45769ddadf966ea28723ef33037c1021ac987829e2506401",
+    "review": "machine"
+  },
+  "ptg3.missing.invalid-rig": {
+    "text": "{value1}: il rig non ha misure valide (camera, lastre o calibrazione), quindi la camera è omessa.",
+    "sourceHash": "ffffb290a1bc0d742e81c869f55369757fd112cf0fb45d6f7a4642c0fd6db372",
     "review": "machine"
   },
   "ptg3b.card-explain": {
