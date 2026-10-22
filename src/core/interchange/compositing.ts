@@ -76,10 +76,12 @@ function mediaPath(doc: InterchangeDoc, layer: LayerTrack): string {
 }
 
 export function nukeScript(doc: InterchangeDoc, shot: Shot): string {
+  // i18n-ignore: Nuke file syntax, not interface copy ("last" is a knob identifier).
   const out = ['version 13.0 v1', `Root {\n first_frame 0\n last_frame ${Math.max(0, shot.lengthFrames - 1)}\n fps ${n(doc.fps.num / doc.fps.den)}\n format "${doc.frameSize.width} ${doc.frameSize.height} 0 0 ${doc.frameSize.width} ${doc.frameSize.height} 1 PTG"\n}`];
   const layers = compositingLayers(doc, shot);
   for (const [i, item] of layers.entries()) {
     const f = item.frames;
+    // i18n-ignore: Nuke Read node syntax; last/label are file-format identifiers.
     out.push(`Read {\n file ${quote(mediaPath(doc, item.layer))}\n first 0\n last ${Math.max(0, shot.lengthFrames - 1)}\n name Read_${i + 1}\n label ${quote(item.layer.source.name)}\n}`, `set read_${i} [stack 0]`);
     out.push(`Multiply {\n value ${curve(f, s => s.opacity)}\n name Opacity_${i + 1}\n}`);
     if (shot.camera) {
@@ -137,7 +139,7 @@ export function fusionComp(doc: InterchangeDoc, shot: Shot): string {
     tools.push(`Merge_${i} = Merge { Inputs = { Background = Input { SourceOp = "${i === 1 ? 'Plate_1' : `Merge_${i - 1}`}", Source = "Output" }, Foreground = Input { SourceOp = "Plate_${i + 1}", Source = "Output" } } }`);
   }
   const body = tools.join(',\n').replace(/([A-Za-z_][A-Za-z_0-9]*)\.([A-Za-z_][A-Za-z_0-9.]*) = Input/g, (_, a: string, b: string) => `["${a}.${b}"] = Input`)
-    .replace(/([A-Za-z_][A-Za-z_0-9]*)_(Transform3DOp\.[A-Za-z.]+) = BezierSpline/g, (_, a: string, b: string) => `${a}_${b.replaceAll('.', '_')} = BezierSpline`)
+    .replace(/([A-Za-z_][A-Za-z_0-9.]*) = BezierSpline/g, (_, a: string) => `${a.replaceAll('.', '_')} = BezierSpline`)
     .replace(/SourceOp = "([^"]+)"/g, (_, value: string) => `SourceOp = "${value.replaceAll('.', '_')}"`);
   return `{ Tools = ordered() {\n${body}\n}, GlobalRange = { 0, ${Math.max(0, shot.lengthFrames - 1)} }, CurrentTime = 0, Prefs = { Comp = { FrameFormat = { Width = ${doc.frameSize.width}, Height = ${doc.frameSize.height}, Rate = ${n(doc.fps.num / doc.fps.den)} } } } }\n`;
 }
