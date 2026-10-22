@@ -54262,5 +54262,45 @@
     "text": "テスト言語 (en-XA)",
     "sourceHash": "3f3982ad23d2d48e9b8dd0d71ef768d65c1702834235e0e1d0f596ac6b6e80d4",
     "review": "machine"
+  },
+  "ptg3.camera-fbx": {
+    "text": "カメラ (FBX)",
+    "sourceHash": "93ed6bfff66b84aa7c59b430f70aa0ff556294f26e95cc1f94ae30defdd495ee",
+    "review": "machine"
+  },
+  "ptg3.ae-package": {
+    "text": "After Effects パッケージ",
+    "sourceHash": "0557114dec7da306f83a2d19fc6fbe921b59cacc01f754d1cbb37039387cb6b8",
+    "review": "machine"
+  },
+  "ptg3.camera-mode": {
+    "text": "カメラモード",
+    "sourceHash": "dc4ef8cb58d7c0ed46f90e5aaa839a65be3d3d1698ac605f17bfe62950e0b355",
+    "review": "machine"
+  },
+  "ptg3.mode-ae": {
+    "text": "AE カメラ (3D)",
+    "sourceHash": "ec25921caf667e6321075142e59a12fe02201f2bbe177df707e3984338d336e8",
+    "review": "machine"
+  },
+  "ptg3.mode-parallax": {
+    "text": "2D パララックス",
+    "sourceHash": "627ffc92928972a9ce454f5a91eeb8d49fdec0ae7341a4d71d9c16dce2d721f1",
+    "review": "machine"
+  },
+  "ptg3.readme-camera": {
+    "text": "このパッケージには、ショットごとの FBX ファイル (ASCII 7.4) が含まれ、カメラの動きが物理単位で記録されています: 時間は KTime (1 秒あたり 46 186 158 000)、FilmWidth はインチ、FocalLength は mm、プレートはヌルオブジェクトです。FBX エクスポートは試験的です。リグで試して、ずれがあれば報告してください。",
+    "sourceHash": "77bd41f505361e3390c39cf91dbd85ca218df66856049512a74af31234ad60ee",
+    "review": "machine"
+  },
+  "ptg3.readme-ae": {
+    "text": "After Effects を開き、File > Scripts > Run Script File を選んで、このフォルダーから bygg.jsx を実行します。スクリプトはショットごとのコンポジションと、レイヤー、キーフレーム、画像切り替え、マスク、オーディオを含むメインコンポジションを作成します。シーン間のトランジションは含まれません。テキストレイヤーは再作成されません。",
+    "sourceHash": "a59acf40a6874c00ae5fa771104398edc097bea8db3e884a2c5bb6c9a06df334",
+    "review": "machine"
+  },
+  "ptg3.readme-no-rig": {
+    "text": "これらのショットにはリグがないため、カメラがありません: {value1}",
+    "sourceHash": "ed7970a28bcc3404f732ec9af9a5bece24034d09861f8acb2ab346c93e9fe4af",
+    "review": "machine"
   }
 }

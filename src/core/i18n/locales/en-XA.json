@@ -74774,5 +74774,29 @@
   },
   "ptg1.readme": {
     "text": "[!! TThhëë ccüütt ïïss áátt tthhëë mmïïddppôôïïnntt ôôff tthhëë ôôvvëërrlláápp, rrôôüünnddëëdd áállôônngg tthhëë ffïïllmm. SShhôôtt llëënnggtthhss áárrëë ddïïffffëërrëënnccëëss bbëëttwwëëëënn rrôôüünnddëëdd bbôôüünnddáárrïïëëss. hháánnddllëëÏÏnn áánndd hháánnddllëëÔÔüütt áárrëë ôôvvëërrlláápp ôônn tthhëë nnëëïïgghhbbôôüürr’ss ssïïddëë; sshhôôôôtt ïïnnccllüüddïïnngg tthhëë hháánnddllëëss. WWïïtthhôôüütt ôôvvëërrlláápp, hháánnddllëëss áárrëë 0. ÁÁüüddïïôô áánndd wwôôrrddss bbëëllôônngg ttôô tthhëë sshhôôtt wwhhëërrëë tthhëë ëëvvëënntt ssttáárrttss, rrëëttááïïnn tthhëëïïrr ffüüllll llëënnggtthh áánndd ïïnnccllüüddëë áábbssôôllüüttëë áánndd rrëëllááttïïvvëë ttïïmmëëss; ccrrôôssssëëssCCüütt=ttrrüüëë mmáárrkkss áá ccrrôôssssïïnngg. TTwwôôss áárrëë 12 ëëxxppôôssüürrëëss/ss ôônn áá 24 ffppss ttïïmmëëllïïnnëë, ëëvvëërryy ôôtthhëërr ffrráámmëë. ÔÔüütt ttïïmmëëccôôddëë áánndd FFrráámmëë ÔÔüütt áárrëë ëëxxccllüüssïïvvëë. ÁÁnn ëëmmppttyy ffïïllmm hhááss 0 ffrráámmëëss; áá ssccëënnëë sshhôôrrttëërr tthháánn ôônnëë ccááppttüürrëë ffrráámmëë mmááyy hháávvëë 0 ffrráámmëëss áánndd rrëëmmááïïnnss llïïssttëëdd. CCáámmëërráá ïïss nnüüllll ïïnn PPTTGG1. !!]"
+  },
+  "ptg3.camera-fbx": {
+    "text": "[!! CCáámmëërráá (FFBBXX) !!]"
+  },
+  "ptg3.ae-package": {
+    "text": "[!! ÁÁffttëërr ËËffffëëccttss ppáácckkáággëë !!]"
+  },
+  "ptg3.camera-mode": {
+    "text": "[!! CCáámmëërráá mmôôddëë !!]"
+  },
+  "ptg3.mode-ae": {
+    "text": "[!! ÁÁËË ccáámmëërráá (3DD) !!]"
+  },
+  "ptg3.mode-parallax": {
+    "text": "[!! 2DD ppáárráállllááxx !!]"
+  },
+  "ptg3.readme-camera": {
+    "text": "[!! TThhïïss ppáácckkáággëë ccôônnttááïïnnss ôônnëë FFBBXX ffïïllëë (ÁÁSSCCÏÏÏÏ 7.4) ppëërr sshhôôtt wwïïtthh tthhëë ccáámmëërráá mmôôvvëë ïïnn pphhyyssïïccááll üünnïïttss: ttïïmmëë ïïnn KKTTïïmmëë (46,186,158,000 ppëërr ssëëccôônndd), FFïïllmmWWïïddtthh ïïnn ïïnncchhëëss, FFôôccáállLLëënnggtthh ïïnn mmmm, áánndd tthhëë ppllááttëëss ááss nnüüllll ôôbbjjëëccttss. TThhëë FFBBXX ëëxxppôôrrtt ïïss ëëxxppëërrïïmmëënnttááll – ttrryy ïïtt ôônn yyôôüürr rrïïgg áánndd rrëëppôôrrtt áánnyy ddïïssccrrëëppáánnccïïëëss. !!]"
+  },
+  "ptg3.readme-ae": {
+    "text": "[!! ÔÔppëënn ÁÁffttëërr ËËffffëëccttss, cchhôôôôssëë FFïïllëë > SSccrrïïppttss > RRüünn SSccrrïïpptt FFïïllëë áánndd rrüünn bbyygggg.jjssxx ffrrôômm tthhïïss ffôôllddëërr. TThhëë ssccrrïïpptt bbüüïïllddss ôônnëë ccôômmppôôssïïttïïôônn ppëërr sshhôôtt áánndd áá mmááïïnn ccôômmppôôssïïttïïôônn wwïïtthh llááyyëërrss, kkëëyyffrráámmëëss, ïïmmáággëë sswwááppss, mmáásskkss áánndd ááüüddïïôô. TTrráánnssïïttïïôônnss bbëëttwwëëëënn ssccëënnëëss áárrëë nnôôtt ïïnnccllüüddëëdd. TTëëxxtt llááyyëërrss áárrëë nnôôtt rrëëccrrëëááttëëdd. !!]"
+  },
+  "ptg3.readme-no-rig": {
+    "text": "[!! TThhëëssëë sshhôôttss hháávvëë nnôô rrïïgg, ssôô tthhëë ccáámmëërráá ïïss mmïïssssïïnngg: {value1} !!]"
   }
 }

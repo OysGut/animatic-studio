@@ -74774,5 +74774,29 @@
   },
   "ptg1.readme": {
     "text": "The cut is at the midpoint of the overlap, rounded along the film. Shot lengths are differences between rounded boundaries. handleIn and handleOut are overlap on the neighbour’s side; shoot including the handles. Without overlap, handles are 0. Audio and words belong to the shot where the event starts, retain their full length and include absolute and relative times; crossesCut=true marks a crossing. Twos are 12 exposures/s on a 24 fps timeline, every other frame. Out timecode and Frame Out are exclusive. An empty film has 0 frames; a scene shorter than one capture frame may have 0 frames and remains listed. Camera is null in PTG1."
+  },
+  "ptg3.camera-fbx": {
+    "text": "Camera (FBX)"
+  },
+  "ptg3.ae-package": {
+    "text": "After Effects package"
+  },
+  "ptg3.camera-mode": {
+    "text": "Camera mode"
+  },
+  "ptg3.mode-ae": {
+    "text": "AE camera (3D)"
+  },
+  "ptg3.mode-parallax": {
+    "text": "2D parallax"
+  },
+  "ptg3.readme-camera": {
+    "text": "This package contains one FBX file (ASCII 7.4) per shot with the camera move in physical units: time in KTime (46,186,158,000 per second), FilmWidth in inches, FocalLength in mm, and the plates as null objects. The FBX export is experimental – try it on your rig and report any discrepancies."
+  },
+  "ptg3.readme-ae": {
+    "text": "Open After Effects, choose File > Scripts > Run Script File and run bygg.jsx from this folder. The script builds one composition per shot and a main composition with layers, keyframes, image swaps, masks and audio. Transitions between scenes are not included. Text layers are not recreated."
+  },
+  "ptg3.readme-no-rig": {
+    "text": "These shots have no rig, so the camera is missing: {value1}"
   }
 }

@@ -54410,5 +54410,45 @@
     "text": "Langue de test (en-XA)",
     "sourceHash": "3f3982ad23d2d48e9b8dd0d71ef768d65c1702834235e0e1d0f596ac6b6e80d4",
     "review": "machine"
+  },
+  "ptg3.camera-fbx": {
+    "text": "Caméra (FBX)",
+    "sourceHash": "93ed6bfff66b84aa7c59b430f70aa0ff556294f26e95cc1f94ae30defdd495ee",
+    "review": "machine"
+  },
+  "ptg3.ae-package": {
+    "text": "Package After Effects",
+    "sourceHash": "0557114dec7da306f83a2d19fc6fbe921b59cacc01f754d1cbb37039387cb6b8",
+    "review": "machine"
+  },
+  "ptg3.camera-mode": {
+    "text": "Mode caméra",
+    "sourceHash": "dc4ef8cb58d7c0ed46f90e5aaa839a65be3d3d1698ac605f17bfe62950e0b355",
+    "review": "machine"
+  },
+  "ptg3.mode-ae": {
+    "text": "Caméra AE (3D)",
+    "sourceHash": "ec25921caf667e6321075142e59a12fe02201f2bbe177df707e3984338d336e8",
+    "review": "machine"
+  },
+  "ptg3.mode-parallax": {
+    "text": "Parallaxe 2D",
+    "sourceHash": "627ffc92928972a9ce454f5a91eeb8d49fdec0ae7341a4d71d9c16dce2d721f1",
+    "review": "machine"
+  },
+  "ptg3.readme-camera": {
+    "text": "Ce paquet contient un fichier FBX (ASCII 7.4) par plan avec le mouvement de caméra en unités physiques : temps en KTime (46 186 158 000 par seconde), FilmWidth en pouces, FocalLength en mm et les plateaux comme objets nuls. L'export FBX est expérimental – essayez-le sur votre rig et signalez tout écart.",
+    "sourceHash": "77bd41f505361e3390c39cf91dbd85ca218df66856049512a74af31234ad60ee",
+    "review": "machine"
+  },
+  "ptg3.readme-ae": {
+    "text": "Ouvrez After Effects, choisissez File > Scripts > Run Script File et exécutez bygg.jsx depuis ce dossier. Le script crée une composition par plan et une composition principale avec calques, images-clés, changements d'image, masques et audio. Les transitions entre scènes ne sont pas incluses. Les calques de texte ne sont pas recréés.",
+    "sourceHash": "a59acf40a6874c00ae5fa771104398edc097bea8db3e884a2c5bb6c9a06df334",
+    "review": "machine"
+  },
+  "ptg3.readme-no-rig": {
+    "text": "Ces plans n'ont pas de rig, la caméra manque donc : {value1}",
+    "sourceHash": "ed7970a28bcc3404f732ec9af9a5bece24034d09861f8acb2ab346c93e9fe4af",
+    "review": "machine"
   }
 }

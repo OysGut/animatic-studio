@@ -54410,5 +54410,45 @@
     "text": "Lingua di test (en-XA)",
     "sourceHash": "3f3982ad23d2d48e9b8dd0d71ef768d65c1702834235e0e1d0f596ac6b6e80d4",
     "review": "machine"
+  },
+  "ptg3.camera-fbx": {
+    "text": "Fotocamera (FBX)",
+    "sourceHash": "93ed6bfff66b84aa7c59b430f70aa0ff556294f26e95cc1f94ae30defdd495ee",
+    "review": "machine"
+  },
+  "ptg3.ae-package": {
+    "text": "Pacchetto After Effects",
+    "sourceHash": "0557114dec7da306f83a2d19fc6fbe921b59cacc01f754d1cbb37039387cb6b8",
+    "review": "machine"
+  },
+  "ptg3.camera-mode": {
+    "text": "Modalità fotocamera",
+    "sourceHash": "dc4ef8cb58d7c0ed46f90e5aaa839a65be3d3d1698ac605f17bfe62950e0b355",
+    "review": "machine"
+  },
+  "ptg3.mode-ae": {
+    "text": "Fotocamera AE (3D)",
+    "sourceHash": "ec25921caf667e6321075142e59a12fe02201f2bbe177df707e3984338d336e8",
+    "review": "machine"
+  },
+  "ptg3.mode-parallax": {
+    "text": "Parallasse 2D",
+    "sourceHash": "627ffc92928972a9ce454f5a91eeb8d49fdec0ae7341a4d71d9c16dce2d721f1",
+    "review": "machine"
+  },
+  "ptg3.readme-camera": {
+    "text": "Questo pacchetto contiene un file FBX (ASCII 7.4) per inquadratura con il movimento della fotocamera in unità fisiche: tempo in KTime (46 186 158 000 al secondo), FilmWidth in pollici, FocalLength in mm e i piani come oggetti nulli. L'esportazione FBX è sperimentale: provala sul tuo rig e segnala eventuali discrepanze.",
+    "sourceHash": "77bd41f505361e3390c39cf91dbd85ca218df66856049512a74af31234ad60ee",
+    "review": "machine"
+  },
+  "ptg3.readme-ae": {
+    "text": "Apri After Effects, scegli File > Scripts > Run Script File ed esegui bygg.jsx da questa cartella. Lo script crea una composizione per inquadratura e una composizione principale con livelli, fotogrammi chiave, cambi di immagine, maschere e audio. Le transizioni tra scene non sono incluse. I livelli di testo non vengono ricreati.",
+    "sourceHash": "a59acf40a6874c00ae5fa771104398edc097bea8db3e884a2c5bb6c9a06df334",
+    "review": "machine"
+  },
+  "ptg3.readme-no-rig": {
+    "text": "Queste inquadrature non hanno un rig, quindi manca la fotocamera: {value1}",
+    "sourceHash": "ed7970a28bcc3404f732ec9af9a5bece24034d09861f8acb2ab346c93e9fe4af",
+    "review": "machine"
   }
 }

@@ -54410,5 +54410,45 @@
     "text": "Idioma de teste (en-XA)",
     "sourceHash": "3f3982ad23d2d48e9b8dd0d71ef768d65c1702834235e0e1d0f596ac6b6e80d4",
     "review": "machine"
+  },
+  "ptg3.camera-fbx": {
+    "text": "Câmera (FBX)",
+    "sourceHash": "93ed6bfff66b84aa7c59b430f70aa0ff556294f26e95cc1f94ae30defdd495ee",
+    "review": "machine"
+  },
+  "ptg3.ae-package": {
+    "text": "Pacote do After Effects",
+    "sourceHash": "0557114dec7da306f83a2d19fc6fbe921b59cacc01f754d1cbb37039387cb6b8",
+    "review": "machine"
+  },
+  "ptg3.camera-mode": {
+    "text": "Modo de câmera",
+    "sourceHash": "dc4ef8cb58d7c0ed46f90e5aaa839a65be3d3d1698ac605f17bfe62950e0b355",
+    "review": "machine"
+  },
+  "ptg3.mode-ae": {
+    "text": "Câmera AE (3D)",
+    "sourceHash": "ec25921caf667e6321075142e59a12fe02201f2bbe177df707e3984338d336e8",
+    "review": "machine"
+  },
+  "ptg3.mode-parallax": {
+    "text": "Paralaxe 2D",
+    "sourceHash": "627ffc92928972a9ce454f5a91eeb8d49fdec0ae7341a4d71d9c16dce2d721f1",
+    "review": "machine"
+  },
+  "ptg3.readme-camera": {
+    "text": "Este pacote contém um arquivo FBX (ASCII 7.4) por tomada com o movimento da câmera em unidades físicas: tempo em KTime (46 186 158 000 por segundo), FilmWidth em polegadas, FocalLength em mm e as placas como objetos nulos. A exportação FBX é experimental – teste-a no seu rig e relate divergências.",
+    "sourceHash": "77bd41f505361e3390c39cf91dbd85ca218df66856049512a74af31234ad60ee",
+    "review": "machine"
+  },
+  "ptg3.readme-ae": {
+    "text": "Abra o After Effects, escolha File > Scripts > Run Script File e execute bygg.jsx nesta pasta. O script cria uma composição por tomada e uma composição principal com camadas, quadros-chave, trocas de imagem, máscaras e áudio. Transições entre cenas não estão incluídas. Camadas de texto não são recriadas.",
+    "sourceHash": "a59acf40a6874c00ae5fa771104398edc097bea8db3e884a2c5bb6c9a06df334",
+    "review": "machine"
+  },
+  "ptg3.readme-no-rig": {
+    "text": "Estas tomadas não têm rig, portanto a câmera está faltando: {value1}",
+    "sourceHash": "ed7970a28bcc3404f732ec9af9a5bece24034d09861f8acb2ab346c93e9fe4af",
+    "review": "machine"
   }
 }
