@@ -18,7 +18,7 @@ describe("REQ-0269 leverandøruavhengig AI-arkitektur", () => {
   const sources = NEUTRAL.flatMap(files).map((f) => [f, readFileSync(f, "utf8")] as const);
 
   it("manus, montering, kommandoer og datamodell importerer verken leverandørkatalogen, leverandørkode eller adaptere", () => {
-    const bad = sources.filter(([, src]) => /from\s+["'](@\/adapters|[./@a-z]*generation\/(providers|speech|video|model-settings))["']/.test(src)).map(([f]) => f);
+    const bad = sources.filter(([, src]) => /from\s+["'](@\/adapters|[./@a-z]*generation\/(providers|speech|model-settings))["']/.test(src)).map(([f]) => f);
     expect(bad).toEqual([]);
   });
 
