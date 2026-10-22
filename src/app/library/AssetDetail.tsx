@@ -27,6 +27,7 @@ import { ContinuityPanel } from "./ContinuityPanel";
 import { ApproveImpactDialog } from "./ApproveImpactDialog";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { SaveToGlobalButton } from "@/app/global/SaveToGlobalButton";
+import { VersionRights } from "@/app/community/VersionRights";
 import { ASSET_KIND_LABEL, ASSET_KINDS, ASSET_MIME_TYPES, USAGE_LABEL, VISUAL_STYLES, allAssetUsage, assetVersionImpact, contentSyncByScene, contentSyncText, provenanceDetail, provenanceLabel, formatHeading, hasContinuity, newId, variantsOf, versionsOf, versionFromFileName, type Asset, type AssetFields, type AssetNameKind, type AssetVariant, type AssetVersion, type GenerationJob, type ProjectState, type SceneContentSync, type VersionOrigin, type VersionProvenance, type VisualStyle, workingImageMaxSide, assetUsageCounts, locale } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
 import { useProfiles } from "@/app/project/use-project";
@@ -1118,6 +1119,7 @@ function VariantCard({
                 }
               >
                 <div className="flex justify-end"><NoteFlagControl state={state} kind="asset_version" targetId={ver.id} run={cmds.run} editable={editable} /></div>
+                <VersionRights rights={ver.rights} />
                 {asset.kind === "sound" ? (
                   <div className="flex h-[120px] flex-col items-center justify-center gap-2 bg-surface-3 px-1">
                     <Music className="size-6 text-text-tertiary" aria-hidden />
