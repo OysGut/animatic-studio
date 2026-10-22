@@ -47,7 +47,9 @@ create table public.showcase_items (
   updated_at timestamptz not null default now(),
   check (kind = 'script' or (storage_key is not null and mime is not null)),
   check (kind <> 'script' or excerpt is not null),
-  check (kind <> 'scene' or (mime like 'image/%' or (mime like 'video/%' and duration_ms is not null and duration_ms between 1 and 15000)))
+  -- Klipp (film/video) deles ikke før en server-laget kort eksport finnes: scener bare som stillbilde.
+  check (kind <> 'scene' or mime like 'image/%'),
+  check (mime is null or mime not like 'video/%')
 );
 grant all on public.showcase_items to service_role;
 alter table public.showcase_items enable row level security;
@@ -106,6 +108,12 @@ language sql stable security definer set search_path = '' as $$
     select 1 from public.showcase_items i
     where i.id = p_item and i.status = 'live' and i.approved_at is not null and i.revoked_at is null and i.expires_at > now()
       and exists (select 1 from public.projects p where p.id = i.project_id and p.deleted_at is null)
+      -- Kontoen må finnes og være aktiv (ikke sperret, under sletting eller slettet).
+      and exists (select 1 from auth.users u where u.id = i.created_by)
+      and coalesce((select s.status from public.account_status s where s.user_id = i.created_by), 'active') = 'active'
+      -- En åpen eller behandlet (actioned) rapport skjuler bidraget; avviste rapporter skjuler ikke.
+      and not exists (select 1 from public.content_reports r
+        where r.target_kind = 'showcase' and r.target_id = i.id and r.status in ('open', 'actioned'))
       and not private.blocked_between(i.created_by, p_user))
 $$;
 revoke all on function private.showcase_visible(uuid, uuid) from public, anon, authenticated;
@@ -193,25 +201,25 @@ begin
         and ((p_kind in ('character','asset','scene') and av.mime_type like 'image/%'
           and (p_kind <> 'character' or a.kind = 'character')) or (p_kind = 'audio' and av.mime_type like 'audio/%'));
     if v_key is null and p_kind = 'scene' then
-      select tk.media_ref, case when tk.kind = 'still' then 'image/png' else 'video/mp4' end,
-        case when tk.kind = 'still' then null else ceil(tk.duration_frames::numeric * pr.fps_den * 1000 / pr.fps_num)::integer end
+      -- Bare stillbilde-takes; klipp avvises til server-laget kort eksport finnes.
+      select tk.media_ref, 'image/png', null::integer
         into v_key, v_mime, v_duration
         from public.takes tk
         join public.scene_occurrences occ on occ.id = tk.occurrence_id and occ.project_id = p_project and occ.active
         join public.productions pr on pr.id = occ.production_id and pr.project_id = p_project
         where tk.id = p_source and tk.project_id = p_project
-          and tk.kind in ('still','imported_film','ai_video');
+          and tk.kind = 'still';
     end if;
     if v_key is null or split_part(v_key,'/',1) <> p_project::text or position('..' in v_key) > 0 then
       raise exception 'showcase.error.media' using errcode = '42501';
     end if;
-    if p_kind = 'scene' and v_mime like 'video/%' and (v_duration is null or v_duration not between 1 and 15000) then
+    if v_mime like 'video/%' then
       raise exception 'showcase.error.media' using errcode = '22023';
     end if;
     -- Fast filnavn: ingen klientsti eller filnavn i målet. Mime fra registrert kilde.
     v_ext := case when v_mime = 'image/jpeg' then 'jpg' when v_mime = 'image/webp' then 'webp'
       when v_mime = 'image/gif' then 'gif' when v_mime like 'image/%' then 'png'
-      when v_mime like 'video/%' then 'mp4' when v_mime = 'audio/mpeg' then 'mp3'
+      when v_mime = 'audio/mpeg' then 'mp3'
       when v_mime = 'audio/ogg' then 'ogg' else 'wav' end;
     v_target := p_project::text || '/shares/' || v_id::text || '/media.' || v_ext;
   end if;
@@ -265,6 +273,29 @@ language sql security definer set search_path = '' as $$
 $$;
 revoke all on function public.cancel_showcase_item(uuid,uuid) from public, anon, authenticated;
 grant execute on function public.cancel_showcase_item(uuid,uuid) to service_role;
+
+-- Opprydding (orphan-cleanup): reservasjoner eldre enn TTL + 1 time uten sluttført bidrag.
+create function public.stale_showcase_reservations(p_project uuid) returns table (id uuid, storage_key text)
+language sql stable security definer set search_path = '' as $$
+  select r.id, r.storage_key from public.showcase_reservations r
+  where r.project_id = p_project and r.expires_at + interval '1 hour' < now()
+    and not exists (select 1 from public.showcase_items i where i.id = r.id)
+  order by r.created_at limit 200
+$$;
+revoke all on function public.stale_showcase_reservations(uuid) from public, anon, authenticated;
+grant execute on function public.stale_showcase_reservations(uuid) to service_role;
+
+-- Frigjøres bare etter vellykket filsletting, og bare når den fortsatt er utløpt og uten bidrag.
+create function public.release_stale_showcase_reservation(p_reservation uuid) returns boolean
+language plpgsql security definer set search_path = '' as $$
+begin
+  delete from public.showcase_reservations r where r.id = p_reservation
+    and r.expires_at + interval '1 hour' < now()
+    and not exists (select 1 from public.showcase_items i where i.id = r.id);
+  return found;
+end $$;
+revoke all on function public.release_stale_showcase_reservation(uuid) from public, anon, authenticated;
+grant execute on function public.release_stale_showcase_reservation(uuid) to service_role;
 
 -- Egne bidrag, alle statuser, for «Mine delinger».
 create function public.my_showcase_items() returns jsonb

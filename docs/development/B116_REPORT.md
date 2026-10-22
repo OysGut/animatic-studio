@@ -24,7 +24,7 @@ Sluttføring er idempotent. Service-only `showcase_item_outcome` avklarer tapt s
 
 ### 3. Innholdsgrenser
 
-- Scene: registrert stillbilde eller take-klipp. Databasegrensen er **1–15000 ms**, også ved direkte service-skriving; NULL-varighet for video avvises. Kandidatlisten utelater lengre/ukjente klipp.
+- Scene: **bare stillbilde** (registrert bildeversjon eller take av typen `still`). Klippvalget er fjernet fra kandidatlisten. I databasen avviser `prepare_showcase_item` film-/video-takes og alle videokilder, og tabellen har CHECK `kind <> 'scene' or mime like 'image/%'` og `mime not like 'video/%'`; `kind = 'film'` avvises av både kind-CHECK og RPC (22023). Delt klipp kommer som egen sak (se TODO).
 - Manus: **1–12 ulike replikk-ID-er**, bare ikke-fjernede dialogue-blokker fra samme prosjekt. Fremmede/ukjente ID-er og 13 replikker avvises. Tekst hentes i databasen ved reservasjon og lagres som snapshot, aldri klientfritekst. Senere manusendring endrer ikke snapshot. En defensiv totalgrense på 120000 tegn gjelder snapshot.
 - Beskrivelse: **maks 280 tegn**, både oppretting og endring. Forhåndsvisningen beholdes, men manusfeltet er erstattet med replikkvalg. Tittelgrensen er fortsatt 200 tegn.
 - Standardutløp er fortsatt 7 dager; 7/14/30/90-dagersvalg, tilbaketrekking, statusvisning, godkjenningskø og karusell beholdes.
@@ -62,41 +62,46 @@ To endrede etiketter er oppdatert samtidig på nb/en/fr/es/ru/ja/pt-BR/de/it/ko,
 16. `public.admin_showcase_queue()`
 17. `public.admin_review_showcase_item(uuid, boolean)`
 18. `public.admin_set_showcase_approval(boolean)`
+19. `public.stale_showcase_reservations(uuid)` – service-only; reservasjoner eldre enn TTL + 1 time uten bidrag
+20. `public.release_stale_showcase_reservation(uuid)` – service-only; frigjør bare utløpt reservasjon uten bidrag
 
 Det gamle create_showcase_item-signaturforslaget i tidligere, ukjørte 0087 er fjernet, ikke erstattet som en allerede installert funksjon.
 
 Nye tabeller: showcase_items, showcase_comments, showcase_reservations. Alle har eksplisitte service_role-grants etter CREATE TABLE og RLS uten direkte klientpolicyer. Eksisterende objekter: service_settings.showcase_require_approval, content_reports_target_kind_check (tidligere verdier pluss showcase), schema_version-rad 87. `apply_changes`, `purge_project_assets`, `purge_removed_assets`, `report_content`, `set_my_public_profile`, `globe_points` og `registration_status` erstattes ikke.
 
+## Siste runde før Cloud (22.10, 20:26)
+
+1. **Varighet:** Klipp deles ikke. Scener deles bare som stillbilde (se punkt 3 over). Ny sak i `TODO.md` og `roadmap.md`: «delt klipp via server-generert kort eksport (≤15 s), med målt varighet og MIME».
+2. **Opprydding:** Den eksisterende orphan-cleanup-jobben (`confirmOrphanCleanup`, eierbekreftet) kjører nå `sweepShowcaseReservations` først. Den henter utløpte reservasjoner (eldre enn TTL + 1 time, uten ferdig bidrag), sletter filen under `<prosjekt>/shares/<id>/` og frigjør reservasjonen bare når slettingen lyktes. Ved slettefeil beholdes reservasjonen til neste kjøring, og feilen logges med prosjekt- og reservasjons-ID, aldri lagringsnøkkel. Mål utenfor `shares/<id>/` slettes aldri. Merk: sweepen kjører når eieren bekrefter en opprydding; det finnes ingen tidsstyrt jobb for dette i dag.
+3. **Offentlig feed:** `private.showcase_visible` (brukt av feed og medieoppslag) skjuler nå bidrag fra kontoer med status `blocked`, `deleting` eller `deleted`, kontoer som ikke lenger finnes i auth, og bidrag med en innholdsrapport med status `open` eller `actioned`. En avvist (`dismissed`) rapport skjuler ikke. Merk: ettersom en åpen rapport skjuler, kan én innlogget bruker skjule et bidrag midlertidig ved å rapportere det; admin opphever ved å avvise rapporten.
+4. **Globus:** uendret (vedtatt i B-117).
+5. **Aktivering:** `community.public` legges inn som `'off'` i seed i 0080 (`insert into public.features … ('community.public', 'off')`). 0087 endrer ikke `public.features`. Feed, medier, delingsboksen og alle skrive-RPC-er sjekker `private.feature_enabled('community.public', …)`; når bryteren er av, returnerer feeden `[]`, så karusellen før innlogging tegner ingenting, og delingsboksen skjules (`useFeature`, standard av).
+
 ## Faktisk verifisering
 
 | Kontroll | Resultat |
 | --- | --- |
-| Full `bunx vitest run`, siste kjøring | **2434 bestått, 0 feilet, 10 eksisterende hoppet over**; 302 filer bestått, 2 hoppet over |
-| Lokal full DB-suite, hele migrasjonskjeden | **176 bestått, 0 feilet** |
-| B116 nettlesersuite UI_LANG=nb | **37 bestått, 0 feilet** |
-| B116 nettlesersuite UI_LANG=en | **37 bestått, 0 feilet** |
-| Målrettet sikkerhet/kjerne/i18n | **45 bestått, 0 feilet** |
-| `node scripts/i18n/check.mjs` | **0 tekster uten engelsk i 0 filer** |
-| `node scripts/i18n/validate.mjs` | Avsluttet med kode 0 |
-| releaseCoverage | **100 % alle ti språk og en-XA; 0 problemer** |
-| Automatisk type-/byggkontroll | **build OK**, siste observerte signal 20:06:16 UTC |
+| Full `bunx vitest run` | **2438 bestått, 0 feilet, 10 eksisterende hoppet over**; 303 filer |
+| Typekontroll (`tsgo --noEmit`) | **0 feil** |
+| Lokal full DB-suite, hele migrasjonskjeden | **178 bestått, 0 feilet** |
+| B116 nettlesersuite nb | **37 bestått, 0 feilet** (første kjøring rett etter omstart av utviklingsserveren ga 1 tidsavbrudd på manusfeltet; ny kjøring grønn) |
+| B116 nettlesersuite en | **37 bestått, 0 feilet** |
+| `node scripts/i18n/check.mjs` / `validate.mjs` | **0 tekster uten engelsk**; grønn |
 
-`npx tsc --noEmit` er ikke kjørt separat: miljøet forbyr manuell typekontroll/bygging. Tidligere automatiske typefeil er rettet; siste automatiske kontroll er grønn. Ingen test er svekket eller hoppet over i denne endringen, ingen pakker lagt til, ingen betalte AI-/ElevenLabs-kall.
+Nye/endrede tester: `tests/unit/showcase-sweep.test.ts` (4: sletting + frigjøring, slettefeil beholder reservasjon og logger uten nøkkel, aldri utenfor shares/<id>/, manus uten fil). DB: «scener bare som stillbilde, klipp/film avvises», «feed skjuler sperrede/slettede kontoer og rapporterte bidrag», «sweep lister bare reservasjoner eldre enn TTL + 1 time uten bidrag» (erstatter 15-sekunderstesten for klipp). Ingen betalte AI-/ElevenLabs-kall. Nettleserprøvene bruker mockede svar.
 
-Nettleserprøvene bruker mockede svar og kunstig innlogging, ikke ekte Cloud. De verifiserer brukerflate og kall. Databaseprøvene verifiserer reell SQL/RPC/grants/RLS i isolert lokal Postgres. Ny testfil: `tests/unit/showcase-security-server.test.ts` (9 tester). Eksisterende `showcase-b116.test.ts` er utvidet til 13 tester.
+## Gjenværende begrensninger
 
-Skjermbilder kontrollert visuelt: `/tmp/browser/b116-followup-nb/b116-01-oppretting.png` (godkjenningsmelding) og `/tmp/browser/b116-followup-en/b116-03-innlogging.png` (innloggingsskjema/globus og karusell adskilt). Login/globus-koden er ikke endret. Ingen nye skjermbilder er kopiert til docs. Mediebidraget i prøvene har ingen ekte fil. Mobil og geometrisk før/etter-baseline er ikke verifisert.
-
-## Gjenværende begrensninger før sikkerhetsgodkjenning
-
-1. **Faktisk videofilvarighet er ikke verifisert.** Grensen håndheves på registrert take-duration_frames omregnet med produksjonens FPS. En take som representerer et utsnitt av en lengre kildefil kan dermed ha kort registrert varighet mens den kopierte filen er lengre. MIME for take er avledet av kind (still PNG, film MP4), ikke målt fra bytes. Oppdragets DB-grense er testet, men dette er ikke bevis for en fysisk 15-sekundersfil. En serververifisert filvarighet eller ferdig kort eksport/derivat må avklares/bygges før fullt produktgodkjent klippdeling.
-2. **Krasj-/slettefeilgjenoppretting:** Reservasjonens ti minutters TTL stopper sen sluttføring, men ingen automatisk sweeper eller kvote er bygget. Ved slettefeil/uavklart commit beholdes referansen bevisst; en driftsrutine må rydde slike reservasjoner/files. Frigjøring er testet når oppryddingen faktisk lykkes.
-3. **Offentlig server-feed er anon-visning:** Den bruker ikke innlogget seers identitet, så personlige blokkeringer/beta-tester-tilgang følges ikke av akkurat denne feeden. Direkte RPC og kommentarer bruker auth.uid(). Dette viderefører eksisterende offentlige feedmodell og er ikke rettet med ny auth-arkitektur her.
-4. **Eksisterende globus:** Stabil forskjøvet posisjon/aktivitet kan følges ved gjentatte anonyme oppslag selv uten ID. Dette er et tidligere vedtatt B-117-krav, ikke endret i B-116.
-
-**Konklusjon:** De opprinnelige nøkkel-/kopierings-/fritekstfeilene er rettet og de bestilte testgrensene er grønne, men punktene over gjør at leveransen ikke erklæres fullt sikkerhetsgodkjent eller Cloud-verifisert. Claude må gjennomgå disse før aktivering.
+1. Delt klipp er ikke bygget (egen sak).
+2. Reservasjonssweepen kjører bare ved eierbekreftet opprydding, ikke automatisk.
+3. Åpne rapporter skjuler umiddelbart (kan misbrukes til midlertidig skjuling).
+4. Globus: vedtatt i B-117.
 
 ## Nøyaktig endrede filer i oppfølgingen
+
+Siste runde: `db/migrations/0087_showcase.sql`, `src/adapters/browser/showcase.ts`, `src/adapters/storage/orphan-cleanup.server.ts`, `src/adapters/storage/orphan-cleanup.functions.ts`, `tests/unit/showcase-sweep.test.ts` (ny), `tests/db/run-db-tests.ts`, `scripts/i18n/references.v1.json`, `scripts/i18n/candidates.v1.json`, `scripts/i18n/inventory-report.json` (regenerert), `TODO.md`, `roadmap.md`, `docs/development/B116_REPORT.md`.
+
+Tidligere runde:
 
 - `db/migrations/0087_showcase.sql`: sikkerhetsflyt, reserverte kilder, offentlige svar, innholdsgrenser, utfallsoppslag og sletting.
 - `src/core/community/showcase.ts`: 280 tegn, 12 replikk-ID-er, scenegrense og DTO-tilpasning.
