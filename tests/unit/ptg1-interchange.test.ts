@@ -45,7 +45,8 @@ describe("PTG1 utveksling", () => {
     const { state, mainId } = seedProject(1);
     expect(buildInterchange(state, { productionId: mainId, language: "nb", occurrenceIds: [] }).lengthFrames).toBe(0);
     const takes = Object.fromEntries(Object.entries(state.takes).map(([id, take]) => [id, { ...take, durationFrames: 1 }]));
-    const s = { ...state, project: { ...state.project, fps: { num: 30, den: 1 } }, takes };
+    const occurrences = Object.fromEntries(Object.entries(state.occurrences).map(([id, occurrence]) => [id, { ...occurrence, plannedMs: 1 }]));
+    const s = { ...state, project: { ...state.project, fps: { num: 30, den: 1 } }, takes, occurrences };
     const doc = buildInterchange(s, { productionId: mainId, language: "nb", capture: { mode: "custom", fps: { num: 12, den: 1 } } });
     expect(doc.shots[0]?.lengthFrames).toBe(0); expect(doc.lengthFrames).toBe(0);
   });
