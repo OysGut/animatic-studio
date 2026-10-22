@@ -1,5 +1,12 @@
 # Veikart
 
+## PTG7 – Nuke og Fusion (22.10.2026)
+- [ ] Rene nodeoppsett og kamerakurver fra utvekslingsmodellen; 2D uten rigg.
+- [ ] Strømmet ZIP med medier, nb/en LESMEG og knapp i Til produksjonen.
+- [ ] Gyldne tester, syntakskontroll, eksempelfiler og visuell suite nb/en; full Vitest og i18n.
+- [ ] Norsk PTG7-rapport og TODO for ekte import.
+- Språk- og kontofiler som venter på sammenslåing røres ikke; midlertidig importunntak beholdes.
+
 ## Oppfølging – eksplisitt feilregistrering (22.10.2026)
 - [x] Avslutt lekkasjesporet: lagret språkvalg uten oversatt tekst forklares av katalogfeilen, ikke påvist lekkasje.
 - [x] Gjør feilregistreringen eksplisitt og idempotent før serveroppstart.
