@@ -1,9 +1,10 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { cleanup, render, waitFor } from '@testing-library/react';
+import { cleanup, fireEvent, render, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import manifest from '@/core/i18n/manifest.json';
 import { parseMyFeatures } from '@/core/community';
-import { LanguageRoot, LanguageSwitch, availableLanguages } from '@/app/i18n/language';
+import { LanguageRoot, LanguageSwitch, availableLanguages, applyProfileLanguage, chooseLanguage, useLanguage } from '@/app/i18n/language';
+import { t } from '@/core/i18n/keyed';
 
 const fixture = vi.hoisted(() => ({ signedIn: false, feature: false, failure: false }));
 vi.mock('@/adapters/browser/auth', () => ({
@@ -25,8 +26,38 @@ afterEach(() => {
 });
 
 const regular = manifest.languages.filter(l => !('testOnly' in l && l.testOnly)).map(l => l.tag);
+const changeKey = 'app-i18n-language.language-switch.change-title';
+function TranslatedText() {
+  useLanguage();
+  return <output data-testid="translated-text">{t(changeKey)}</output>;
+}
 
 describe('B-107: ordinary languages never depend on login or the test-language feature', () => {
+  for (const signedIn of [false, true]) {
+    for (const [language, expected] of [['fr', 'Changer de langue'], ['ja', '言語を変更']] as const) {
+      it(`uses actual ${language} catalog after selection and restoring ${signedIn ? 'account' : 'local'} choice`, async () => {
+        fixture.signedIn = signedIn;
+        fixture.feature = false;
+        fixture.failure = true;
+        await applyProfileLanguage(signedIn ? 'en' : null);
+        const client = new QueryClient({ defaultOptions: { queries: { retry: false, gcTime: 0 } } });
+        const mount = () => render(<QueryClientProvider client={client}><LanguageSwitch /><TranslatedText /></QueryClientProvider>);
+        let view = mount();
+        fireEvent.click(view.getByTestId(`language-${language}`));
+        await waitFor(() => expect(view.getByTestId('translated-text')).toHaveTextContent(expected));
+        expect(view.getByTestId('translated-text').textContent).not.toBe(t(changeKey, {}, 'en'));
+        view.unmount();
+        await chooseLanguage('en');
+        window.localStorage.setItem('animatic:lang', language);
+        await applyProfileLanguage(signedIn ? language : null);
+        view = mount();
+        expect(view.getByTestId('translated-text')).toHaveTextContent(expected);
+        view.unmount();
+        client.clear();
+        await applyProfileLanguage(null);
+      });
+    }
+  }
   it('offers the ten approved languages with test languages disabled or enabled', () => {
     expect(regular).toEqual(['nb', 'en', 'fr', 'es', 'ru', 'ja', 'pt-BR', 'de', 'it', 'ko']);
     expect(availableLanguages(false).map(l => l.tag)).toEqual(regular);

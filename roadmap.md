@@ -1,7 +1,10 @@
 # Veikart
 
 ## Hastekontroll – språkvelger (22.10.2026)
-- [x] Publisert innloggingsside og lokal forhåndsvisning viser alle ti vanlige språk; feilen er ikke gjenskapt.
+- [x] Presisering: FR/JA-valg gir engelsk på publisert side, mens lokal utviklingsvisning oversetter; ingen katalogforespørsler i publisert økt.
+- [x] Erstatt registrering via sideeffektimport med eksplisitt initialisering i router og språkvalg.
+- [x] Faktisk fransk/japansk tekst etter valg og omlasting: nettlesersuite 116/0, full Vitest 2384/0, i18n grønn; rapport oppdatert. Ingen publisering.
+- [x] Første kontroll bekreftet bare at alle ti språkknapper vises; presiseringen ovenfor avdekket katalogfeilen.
 - [x] Regresjonskontroll for språkvelgeren ved utlogget/innlogget økt og utilgjengelig testspråkbryter: 7 nye tester, full Vitest 2380/0.
 - [x] Nettleserkontroll av offentlig innlogging og simulert innlogget toppstripe/kontoside; kort rapport i B107_LANGUAGE_SWITCH_REPORT.md.
 - [ ] Ekte innlogget kontroll på publisert side: testøkt kunne ikke opprettes; brukeren må logge inn i forhåndsvisningen.

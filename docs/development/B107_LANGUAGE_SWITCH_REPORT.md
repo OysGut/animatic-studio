@@ -1,7 +1,23 @@
 # Hastekontroll: språkvelgeren – 22.10.2026
 
-## Resultat
-Feilen med bare norsk og engelsk lot seg ikke gjenskape. Ingen endring er gjort i språkvelgeren, språkmanifestet, funksjonsbryteren eller databasen; en årsak er derfor ikke fastslått, og rapporten hevder ikke at feilen er rettet.
+## Presisering og årsak – oppfølging kl. 09:49 UTC
+Den første kontrollen nedenfor gjaldt bare synlige språkvalg og bekreftet ikke oversatt tekst. Etter Øysteins presisering er den faktiske feilen gjenskapt på publisert side: FR og JA velges og `<html lang>` endres riktig, men innloggingsknappene står fortsatt på engelsk, også etter omlasting. Ingen fransk eller japansk katalog ble forespurt. Lokal utviklingsvisning lastet katalogene og viste oversettelsene.
+
+Årsaken ligger i oppstarten av katalogadapteren: routeren importerte en modul bare for dens sideeffekt (`installCatalogLoader`). Prosjektet erklærer `sideEffects: false`, slik at produksjonsoptimalisering kan fjerne denne registreringen. Undersøkte publiserte JavaScript-filer inneholdt manifestet, men ikke katalogimportkartet. Uten registrert adapter returnerer `loadUiCatalog` uten å laste; språket velges likevel, og oversetteren bruker engelsk reserve. Det er ikke testspråkbryteren eller profilspråket som endrer valget tilbake til engelsk.
+
+## Retting og ny verifisering
+- Adapteren eksporterer nå `initializeUiCatalogLoader()`, som kalles eksplisitt i routerens oppstart (klient og SSR) og før språkvalg fullføres. Ingen pakker, katalogtekster eller databaseinnstillinger endret.
+- Fire nye regresjonstester krever faktisk «Changer de langue» og «言語を変更» etter valg og gjenoppretting av lokalt eller simulert kontovalg; ikke bare knapper eller språk-ID.
+- Nettlesersuiten krever «Se connecter» / «ログイン» på innloggingssiden etter valg og omlasting, oversatt SSR-beskrivelse og fransk/japansk tekst i simulert innlogget konto etter lagring og omlasting. Innloggingsskjemaet er klientstyrt og SSR viser derfor en venteskjerm; SSR-kontrollen bruker den reelle sidebeskrivelsen.
+- `b107-languages.mjs`: **116 bestått, 0 feilet**. Kjørt med den eksisterende Playwright-pakken som følger Python-installasjonen, via en midlertidig pakkelenke; ingen pakker installert.
+- Målrettet Vitest: **19 bestått**. Full Vitest etter regenerert referanseoversikt: **2384 bestått, 0 feilet, 10 eksisterende hoppet over**.
+- i18n-sjekk og releasekontroll grønne. Siste byggsignal: **build OK**.
+- Oversettelsenes genererte referanse-/kandidatoversikt og inventarrapport er oppdatert etter endrede importlinjer; ingen oversettelser er omskrevet.
+
+**Ikke publisert.** Rettet produksjonsartefakt er derfor ikke kontrollert på offentlig side ennå; den publiserte siden har fortsatt den gjenskapte feilen. Ekte innlogget konto kunne ikke åpnes automatisk i denne økten; innlogget regresjon bruker simulerte kontosvar. Ingen DB-endringer eller migrasjoner.
+
+## Første kontroll (før presiseringen, historisk)
+Feilen med bare norsk og engelsk lot seg ikke gjenskape. Denne kontrollen gjaldt språkknappene, ikke katalogene.
 
 - `https://pentoglass.com/` returnerte HTTP 200 og viste alle ti vanlige språk: nb, en, fr, es, ru, ja, pt-BR, de, it og ko. Ingen nettleserfeil.
 - Lokal forhåndsvisning viste de samme ti synlige valgene. Skjermbildene bekrefter dette.
@@ -21,10 +37,18 @@ Feilen med bare norsk og engelsk lot seg ikke gjenskape. Ingen endring er gjort 
 ## Begrensninger og neste kontroll
 Den eksterne forhåndsvisningsadressen sendte kontrollen til innlogging for redigeringsverktøyet; lokal forhåndsvisning ble kontrollert i stedet. En ekte innlogget testøkt kunne ikke opprettes automatisk for den forespørrende brukeren. Ekte innlogget publisert toppstripe og kontoside er derfor **ikke verifisert**; simulert kontroll er ikke en erstatning for det.
 
-Hvis problemet fortsatt vises hos Øystein, trengs den konkrete adressen og et skjermbilde fra økten som viser bare to språk, samt innlogging i forhåndsvisningen for ekte kontokontroll. Gammel nettleserøkt/cache er en mulig forklaring, ikke en bekreftet årsak. Ingen publisering er utført.
+Dette var begrensningen ved første kontroll. Presiseringen ovenfor erstatter den tidligere cache-hypotesen; feilen med engelsk reservetekst er nå gjenskapt.
 
 ## Endrede filer
+- `src/adapters/i18n/catalog-loader.ts`
+- `src/router.tsx`
+- `src/app/i18n/language.tsx`
+- `tests/unit/b107-languages.test.ts`
 - `tests/unit/b107-language-switch.test.tsx`
 - `tests/visual/b107-languages.mjs`
+- `scripts/i18n/references.v1.json`
+- `scripts/i18n/candidates.v1.json`
+- `scripts/i18n/inventory-report.json`
+- `AGENTS.md`
 - `roadmap.md`
 - `docs/development/B107_LANGUAGE_SWITCH_REPORT.md`

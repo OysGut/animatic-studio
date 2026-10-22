@@ -3,9 +3,10 @@ import { createRouter } from "@tanstack/react-router";
 import { routeTree } from "./routeTree.gen";
 import { isUiLang, setLanguage } from './core/i18n';
 import { loadUiCatalog } from './core/i18n/keyed';
-import './adapters/i18n/catalog-loader';
+import { initializeUiCatalogLoader } from './adapters/i18n/catalog-loader';
 
 export const getRouter = async () => {
+  initializeUiCatalogLoader();
   // Bootstrap before hydration, never a render-time browser read.
   if (typeof document !== 'undefined') {
     const initial = document.documentElement.lang;
