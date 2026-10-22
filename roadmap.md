@@ -3,7 +3,7 @@
 ## Oppfølging – eksplisitt feilregistrering (22.10.2026)
 - [x] Avslutt lekkasjesporet: lagret språkvalg uten oversatt tekst forklares av katalogfeilen, ikke påvist lekkasje.
 - [x] Gjør feilregistreringen eksplisitt og idempotent før serveroppstart.
-- [ ] Kjør regresjonskontroll for sideeffektimporter og feilregistrering.
+- [x] Regresjonskontroll for sideeffektimporter og feilregistrering: 3/3 tester bestått; automatisk bygg OK.
 - [ ] Øystein slår sammen lovable-sync med main; denne arbeidskopien mangler fortsatt cb9118c og har den eldre katalogimporten.
 
 ## B-117 – globus ved innloggingen (22.10.2026)
