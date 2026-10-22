@@ -55194,5 +55194,40 @@
     "text": "PDF и CSV показывают экспозиции по персонажу и рту. JSON считает кадры с 0, включая запас. Moho DAT использует рты Papagayo и кадры с 1 при частоте съёмки; двойки повторяются. Устаревшие треки экспортируются без изменений и помечаются в JSON. NB Uttale (CC0) и CMUdict (BSD) работают локально. Без ИИ и платных вызовов.",
     "sourceHash": "1c3cf65983733b2abb484a4f3672509e6bc2f0ad9b3dd49c3360f1d86c6caaf0",
     "review": "machine"
+  },
+  "b117.city.label": {
+    "text": "Город",
+    "sourceHash": "14cb2eb812c53c19b36288572808c9f9486bab846008b3f34dfe33342e10b20c",
+    "review": "machine"
+  },
+  "b117.city.choose": {
+    "text": "Выберите город (необязательно)…",
+    "sourceHash": "752f0469085b7a85c2f8fff09ba0888ee4f7dc3ee4cdd195c6f01fafab66cddd",
+    "review": "machine"
+  },
+  "b117.city.search": {
+    "text": "Поиск города",
+    "sourceHash": "dba88a651069ecd1627e2fe312fce87ea6e720b097a78a1c87744d734be999ac",
+    "review": "machine"
+  },
+  "b117.city.none": {
+    "text": "Город не найден",
+    "sourceHash": "5165d377410edf230a1c93d11453d15210b7aafd68676ecc8b01426c2695aef3",
+    "review": "machine"
+  },
+  "b117.city.clear": {
+    "text": "Удалить город",
+    "sourceHash": "eb57dd42807a4d2aca45871da53b59e26b00cd33bdae3c26d8843f20aff0436d",
+    "review": "machine"
+  },
+  "b117.city.saved": {
+    "text": "Город сохранён.",
+    "sourceHash": "7c9901283308b3b09c557b275cb58d4d633fa68fa5936015771e3e97fc7de1e8",
+    "review": "machine"
+  },
+  "b117.city.credit": {
+    "text": "Без города вы отображаетесь в столице. Данные о городах: GeoNames (CC BY 4.0).",
+    "sourceHash": "7438bd66192a524b869f08c04f7646f0ff15506c7794bad938cf8b6998f330b3",
+    "review": "machine"
   }
 }

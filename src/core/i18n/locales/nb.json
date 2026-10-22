@@ -75218,5 +75218,26 @@
   },
   "ptg4.readme": {
     "text": "Munnliste: PDF og CSV viser eksponeringer per karakter og munn. JSON bruker bilder fra 0, med håndtak. Moho DAT bruker Papagayo-munner og bilder fra 1, i opptakets bildefrekvens; toere gjentas. Utdaterte spor eksporteres uendret og merkes i JSON. NB Uttale (CC0) og CMUdict (BSD) brukes lokalt. Ingen KI eller betalte kall."
+  },
+  "b117.city.label": {
+    "text": "By"
+  },
+  "b117.city.choose": {
+    "text": "Velg by (valgfritt) …"
+  },
+  "b117.city.search": {
+    "text": "Søk etter by"
+  },
+  "b117.city.none": {
+    "text": "Fant ingen by"
+  },
+  "b117.city.clear": {
+    "text": "Fjern byen"
+  },
+  "b117.city.saved": {
+    "text": "Byen er lagret."
+  },
+  "b117.city.credit": {
+    "text": "Uten by vises du ved hovedstaden. Bydata: GeoNames (CC BY 4.0)."
   }
 }
