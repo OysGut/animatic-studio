@@ -100,3 +100,26 @@ describe("profil og rettigheter", () => {
     expect(assetRightsValid([])).toBe(false);
   });
 });
+
+import { toRow } from "@/core/patch";
+import { shareKeyAllowed, PUBLICATION_SIGNED_SECONDS } from "@/adapters/community/publication.functions";
+import { ORPHAN_REFERENCE_TABLES } from "@/adapters/storage/orphan-cleanup.server";
+
+describe("C0: rettigheter, delingsfiler og opprydding", () => {
+  it("rettighetene på en versjon skrives til raden; mangler = null (privat)", () => {
+    const base = { id: "v", variantId: "a", number: 1, mediaPath: "p/o.png", mimeType: "image/png", byteSize: 1, sha256: "x", createdAt: "2026-01-01", createdBy: "u", revision: 1 } as never;
+    expect(toRow("assetVersions" as never, base, "p")["rights"]).toBeNull();
+    const withRights = { ...(base as object), rights: { license: "CC BY 4.0", shareable: true } } as never;
+    expect(toRow("assetVersions" as never, withRights, "p")["rights"]).toEqual({ license: "CC BY 4.0", shareable: true });
+  });
+  it("bare filer under <prosjekt>/shares/ signeres, og lenkene varer 600 sekunder", () => {
+    const p = "11111111-1111-7111-8111-111111111111";
+    expect(shareKeyAllowed(`${p}/shares/x/film.mp4`)).toBe(true);
+    expect(shareKeyAllowed(`${p}/source/film.mp4`)).toBe(false);
+    expect(shareKeyAllowed(`${p}/shares/../film.mp4`)).toBe(false);
+    expect(PUBLICATION_SIGNED_SECONDS).toBe(600);
+  });
+  it("publication_media er med i oppryddingens referansetabeller (regel 36)", () => {
+    expect(ORPHAN_REFERENCE_TABLES).toContain("publication_media");
+  });
+});
