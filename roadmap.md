@@ -1,5 +1,11 @@
 # Veikart
 
+## B-117 – globus ved innloggingen (22.10.2026)
+- [x] Wireframe-globus bak innloggingen (Natural Earth 50m), prikker med puls, dra med etterslep, selvrotasjon, redusert bevegelse
+- [x] Valgfri by på kontoen (GeoNames cities15000, CC BY 4.0), migrasjon 0085 skrevet (Claude kjører i Cloud)
+- [x] globe_points uten identitet, last_seen_at høyst hvert 5. min
+- [x] Tester: unit 12, DB 160/0, b117-globe nb/en 12/12, full Vitest, i18n
+
 ## PTG4 – leppesynk og munnliste (22.10.2026)
 - [x] Munnsett/munnspor, additive 0084, kommando/angring, lasting og sikkerhetskopi.
 - [x] Uttaleutvalg og regelreserve, fonemtabeller, ordtider og opptaksavrunding uten AI.

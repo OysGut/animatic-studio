@@ -53,3 +53,7 @@ Nettlesertestene (`tests/visual/*.mjs`) kjøres med Playwright mot `bunx vite de
 
 ## Lovable
 Prosjektet kjøres i [Lovable](https://lovable.dev/projects/27853fcb-6a27-4342-b359-72ab82e87cfa) (Lovable Cloud: database, lagring, hemmeligheter, forhåndsvisning og publisering).
+
+## Data fra tredjepart
+- Kystlinjer på innloggingssiden: Natural Earth 50m via `world-atlas@2` (offentlig eiendom), forenklet til `src/app/auth/globe-land.json`.
+- Byer og hovedsteder: GeoNames cities15000 (https://www.geonames.org/), lisens CC BY 4.0, komprimert til `src/core/geo/cities.json` og `private.globe_places` (migrasjon 0085). Krediteres også ved byvalget på kontosiden.
