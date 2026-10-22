@@ -5,7 +5,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { normalizeShortCode } from "@/core/print/job";
 import { t } from "@/core/i18n/keyed";
 import { Button } from "@/components/ui/button";
-import { resolveCopyCode } from "./copy-lookup";
+import { resolveCopyCode } from "@/adapters/browser/copy-lookup";
 
 export function CopyCodeEntry({ projectId }: { projectId?: string }) {
   const navigate = useNavigate();
