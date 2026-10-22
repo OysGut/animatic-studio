@@ -150,6 +150,7 @@ await run("b116-mine-delinger", "/delinger", async (page) => {
 
 await run("b116-kommentarer", "/", async (page, st) => {
   await page.getByTestId("showcase-comments-toggle").click();
+  await page.getByTestId("showcase-comments").getByText("Fin rev!", { exact: true }).waitFor({ state: "visible" });
   check((await page.getByTestId("showcase-comments").innerText()).includes("Fin rev!"), "kommentaren vises");
   await page.getByTestId("showcase-comment-input").fill("Supert!");
   await page.getByTestId("showcase-comment-submit").click();
