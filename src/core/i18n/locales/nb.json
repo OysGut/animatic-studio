@@ -75322,7 +75322,7 @@
     "text": "Lydbit"
   },
   "b116.create.excerptLabel": {
-    "text": "Manusutdrag (noen få replikker)"
+    "text": "Velg replikker (maks 12)"
   },
   "b116.create.excerptWarning": {
     "text": "Teksten blir offentlig. Del bare det du vil at alle skal kunne lese."
@@ -75331,7 +75331,7 @@
     "text": "Tittel"
   },
   "b116.create.textLabel": {
-    "text": "Om filmprosjektet og deg selv (valgfritt)"
+    "text": "Om filmprosjektet og deg selv (valgfritt, maks 280 tegn)"
   },
   "b116.create.expires": {
     "text": "Synlig i"

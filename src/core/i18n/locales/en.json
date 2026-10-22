@@ -75304,7 +75304,7 @@
     "text": "Audio clip"
   },
   "b116.create.excerptLabel": {
-    "text": "Script excerpt (a few lines)"
+    "text": "Select dialogue lines (max 12)"
   },
   "b116.create.excerptWarning": {
     "text": "The text becomes public. Share only what you want everyone to be able to read."
@@ -75313,7 +75313,7 @@
     "text": "Title"
   },
   "b116.create.textLabel": {
-    "text": "About the film project and yourself (optional)"
+    "text": "About the film project and yourself (optional, max 280 characters)"
   },
   "b116.create.expires": {
     "text": "Visible for"

@@ -5,7 +5,8 @@
 - [x] Migrasjon 0087 (additiv oppå 0086): showcase_items, showcase_comments, godkjenningsbryter, RPC-er, delete_project; Claude kjører i Cloud.
 - [x] Kjerne og brukerflater finnes; språk-/testferdigstillingen er verifisert, med begrensninger i rapporten.
 - [x] Tester: DB, enhetstester, b116-showcase.mjs nb/en, full vitest og i18n; rapport B116_REPORT.md med skjermbilder.
-- [ ] Før Cloud-aktivering: Claude må avklare utvidet retting av offentlig storage_key, kopiering før autorisasjon og scene-/utdragsgrenser; gjeldende oppdrag omfatter språk/test/rapport, se B116_REPORT.md.
+- [x] B-116 19:37: offentlige felter, autorisert kilde/reservasjon/opprydding og DB-innholdsgrenser i 0087; Vitest 2434/0, DB 176/0, UI 37/37 nb/en, i18n grønn, norsk rapport. Ingen Cloud-kjøring/publisering; versjon 87 beholdes.
+- [ ] B-116 sikkerhetsgodkjenning: faktisk kildefilvarighet/MIME, slettefeil-/krasjgjenoppretting og seeravhengig feed gjenstår; krever avklaring av medie-/driftsløsning, se B116_REPORT.md.
 
 ## D-2 – Restfunn før demoen
 - [x] Rett og kontroller SSR/hydrering og språkverktøytips etter gjenopprettingen (ML2 318/318).
