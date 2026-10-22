@@ -75200,5 +75200,26 @@
   },
   "ptg4.readme": {
     "text": "Mouth list: PDF and CSV show exposures per character and mouth. JSON uses zero-based frames, including handles. Moho DAT uses Papagayo mouths and one-based frames at capture fps; twos repeat. Outdated tracks are exported unchanged and marked in JSON. NB Uttale (CC0) and CMUdict (BSD) run locally. No AI or paid calls."
+  },
+  "b117.city.label": {
+    "text": "City"
+  },
+  "b117.city.choose": {
+    "text": "Choose city (optional) …"
+  },
+  "b117.city.search": {
+    "text": "Search cities"
+  },
+  "b117.city.none": {
+    "text": "No city found"
+  },
+  "b117.city.clear": {
+    "text": "Remove city"
+  },
+  "b117.city.saved": {
+    "text": "City saved."
+  },
+  "b117.city.credit": {
+    "text": "Without a city you are shown at the capital. City data: GeoNames (CC BY 4.0)."
   }
 }

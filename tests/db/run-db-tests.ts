@@ -5835,7 +5835,7 @@ try {
     assert(noRls.length === 0, `uten RLS: ${noRls.map((r) => r["relname"]).join(", ")}`);
     const noPath = await sql`select p.proname from pg_proc p join pg_namespace n on n.oid = p.pronamespace where n.nspname in ('public', 'private') and p.prosecdef and not exists (select 1 from unnest(coalesce(p.proconfig, '{}')) c where c like 'search_path=%')`;
     assert(noPath.length === 0, `security definer uten search_path: ${noPath.map((r) => r["proname"]).join(", ")}`);
-    const anonFns = await sql`select p.proname from pg_proc p join pg_namespace n on n.oid = p.pronamespace where n.nspname = 'public' and p.prosecdef and has_function_privilege('anon', p.oid, 'execute') and p.proname not in ('registration_status', 'public_profile')`; // B-109: gir bare {open, message}; B-114 C0: public_profile gir bare offentlige felt og bare når community.profiles og profilen er offentlig
+    const anonFns = await sql`select p.proname from pg_proc p join pg_namespace n on n.oid = p.pronamespace where n.nspname = 'public' and p.prosecdef and has_function_privilege('anon', p.oid, 'execute') and p.proname not in ('registration_status', 'public_profile', 'globe_points')`; // B-117: globe_points gir bare forskjøvne lat/lon og active; // B-109: gir bare {open, message}; B-114 C0: public_profile gir bare offentlige felt og bare når community.profiles og profilen er offentlig
     assert(anonFns.length === 0, `anon kan kjøre: ${anonFns.map((r) => r["proname"]).join(", ")}`);
     const anonTables = await sql`select relname from pg_class c join pg_namespace n on n.oid = c.relnamespace where n.nspname = 'public' and relkind in ('r', 'p', 'v', 'm') and relname not in ('schema_version', 'privacy_policy') and (has_table_privilege('anon', c.oid, 'select') or has_table_privilege('anon', c.oid, 'insert') or has_table_privilege('anon', c.oid, 'update') or has_table_privilege('anon', c.oid, 'delete'))`;
     assert(anonTables.length === 0, `anon har tabelltilgang: ${anonTables.map((r) => r["relname"]).join(", ")}`);
@@ -7268,6 +7268,56 @@ try {
     assert(BACKUP_STATE_TABLES.includes('mouth_sets')&&BACKUP_STATE_TABLES.includes('mouth_tracks'),'backup tar med begge tabeller');
     await as('service_role',null,tx=>tx`select public.delete_project(${projectId},${ALICE})`);
     assert((await sql`select id from public.mouth_tracks where project_id=${projectId} union all select id from public.mouth_sets where project_id=${projectId}`).length===0,'delete_project sletter spor før sett');
+  });
+  await test("0085 B-117: by på kontoen, globe_points uten identitet, bare aktive kontoer", async () => {
+    assert(Number((await sql`select max(version) v from public.schema_version`)[0]?.["v"]) >= 85, "schema version 85");
+    const ids = ["a1170000-0000-7000-8000-000000000001", "a1170000-0000-7000-8000-000000000002", "a1170000-0000-7000-8000-000000000003", "a1170000-0000-7000-8000-000000000004"];
+    for (const [i, u] of ids.entries()) {
+      await sql`insert into auth.users (id, email) values (${u}, ${`globe${i}@example.com`}) on conflict do nothing`;
+      await as("authenticated", u, (tx) => tx`select public.set_my_country('NO')`);
+    }
+    const OSLO = 3143244, BERGEN = 3161732;
+    // By: må finnes i landet; kan fjernes; kan ikke leses direkte
+    await as("authenticated", ids[0]!, (tx) => tx`select public.set_my_city(${BERGEN})`);
+    assert(((await as("authenticated", ids[0]!, (tx) => tx`select public.my_account() a`))[0]!["a"] as Record<string, unknown>)["city"] === BERGEN, "my_account gir byen");
+    await expectError(as("authenticated", ids[0]!, (tx) => tx`select public.set_my_city(2643743)`), "22023"); // London er ikke i Norge
+    await expectError(as("anon", null, (tx) => tx`select public.set_my_city(${OSLO})`), "42501");
+    await expectError(as("authenticated", ids[0]!, (tx) => tx`select city from public.profiles`), "42501");
+    await expectError(as("authenticated", ids[0]!, (tx) => tx`select last_seen_at from public.account_status`), "42501");
+    await expectError(sql`update public.profiles set city = 0 where user_id = ${ids[0]!}`, "23514");
+    await as("authenticated", ids[1]!, (tx) => tx`select public.set_my_city(${OSLO})`);
+    await as("authenticated", ids[1]!, (tx) => tx`select public.set_my_city(null)`);
+    assert(((await as("authenticated", ids[1]!, (tx) => tx`select public.my_account() a`))[0]!["a"] as Record<string, unknown>)["city"] === null, "by fjernet");
+    // Inne nå: touch_activity skriver last_seen_at høyst hvert 5. min
+    await as("authenticated", ids[0]!, (tx) => tx`select public.touch_activity()`);
+    const seen1 = (await sql`select last_seen_at from public.account_status where user_id=${ids[0]!}`)[0]!["last_seen_at"];
+    await as("authenticated", ids[0]!, (tx) => tx`select public.touch_activity()`);
+    const seen2 = (await sql`select last_seen_at from public.account_status where user_id=${ids[0]!}`)[0]!["last_seen_at"];
+    assert(String(seen1) === String(seen2) && seen1 != null, "ingen ny skriving innen 5 min");
+    // Slettet og sperret konto utelates
+    await sql`insert into public.account_status (user_id, status, delete_after) values (${ids[2]!}, 'deleted', null) on conflict (user_id) do update set status='deleted'`;
+    await sql`insert into public.account_status (user_id, status) values (${ids[3]!}, 'blocked') on conflict (user_id) do update set status='blocked'`;
+    const before = Number((await sql`select count(*) n from public.globe_points()`)[0]!["n"]);
+    const anonPts = await as("anon", null, (tx) => tx`select * from public.globe_points()`);
+    assert(anonPts.length === before && before >= 2, "anon får punkter");
+    assert(Object.keys(anonPts[0] ?? {}).sort().join(",") === "active,lat,lon", "bare lat, lon, active");
+    const text = JSON.stringify(anonPts);
+    for (const u of ids) assert(!text.includes(u), "ingen bruker-ID");
+    assert(!text.includes("example.com"), "ingen e-post");
+    // Punkt 0 (Bergen) er 2–12 km fra Bergen og aktivt; de to utelatte gir ingen ekstra punkter
+    const bergen = { lat: 60.392, lon: 5.324 };
+    const km = (p: Record<string, unknown>) => {
+      const r = Math.PI / 180, dLat = (Number(p["lat"]) - bergen.lat) * r, dLon = (Number(p["lon"]) - bergen.lon) * r;
+      const h = Math.sin(dLat / 2) ** 2 + Math.cos(bergen.lat * r) * Math.cos(Number(p["lat"]) * r) * Math.sin(dLon / 2) ** 2;
+      return 2 * 6371 * Math.asin(Math.sqrt(h));
+    };
+    const near = anonPts.filter((p) => km(p) < 13);
+    assert(near.length === 1 && km(near[0]!) >= 1.9 && near[0]!["active"] === true, "Bergen-punktet er forskjøvet 2–12 km og aktivt");
+    const stable = await as("anon", null, (tx) => tx`select * from public.globe_points()`);
+    assert(JSON.stringify(stable) === text, "stabile punkter");
+    await sql`update public.account_status set status='active' where user_id=${ids[3]!}`;
+    assert(Number((await sql`select count(*) n from public.globe_points()`)[0]!["n"]) === before + 1, "sperret konto telles først når den er aktiv igjen");
+    await expectError(as("anon", null, (tx) => tx`select * from private.globe_places`), "42501");
   });
 } finally {
   await sql.end();

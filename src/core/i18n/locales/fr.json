@@ -55120,5 +55120,40 @@
     "text": "PDF et CSV indiquent les expositions par personnage et bouche. JSON utilise les images à partir de 0, avec poignées. Moho DAT utilise les bouches Papagayo et les images à partir de 1 à la cadence de capture ; les doubles sont répétés. Les pistes obsolètes sont exportées sans modification et signalées en JSON. NB Uttale (CC0) et CMUdict (BSD) fonctionnent localement. Sans IA ni appels payants.",
     "sourceHash": "1c3cf65983733b2abb484a4f3672509e6bc2f0ad9b3dd49c3360f1d86c6caaf0",
     "review": "machine"
+  },
+  "b117.city.label": {
+    "text": "Ville",
+    "sourceHash": "14cb2eb812c53c19b36288572808c9f9486bab846008b3f34dfe33342e10b20c",
+    "review": "machine"
+  },
+  "b117.city.choose": {
+    "text": "Choisir une ville (facultatif)…",
+    "sourceHash": "752f0469085b7a85c2f8fff09ba0888ee4f7dc3ee4cdd195c6f01fafab66cddd",
+    "review": "machine"
+  },
+  "b117.city.search": {
+    "text": "Rechercher une ville",
+    "sourceHash": "dba88a651069ecd1627e2fe312fce87ea6e720b097a78a1c87744d734be999ac",
+    "review": "machine"
+  },
+  "b117.city.none": {
+    "text": "Aucune ville trouvée",
+    "sourceHash": "5165d377410edf230a1c93d11453d15210b7aafd68676ecc8b01426c2695aef3",
+    "review": "machine"
+  },
+  "b117.city.clear": {
+    "text": "Supprimer la ville",
+    "sourceHash": "eb57dd42807a4d2aca45871da53b59e26b00cd33bdae3c26d8843f20aff0436d",
+    "review": "machine"
+  },
+  "b117.city.saved": {
+    "text": "Ville enregistrée.",
+    "sourceHash": "7c9901283308b3b09c557b275cb58d4d633fa68fa5936015771e3e97fc7de1e8",
+    "review": "machine"
+  },
+  "b117.city.credit": {
+    "text": "Sans ville, vous apparaissez dans la capitale. Données des villes : GeoNames (CC BY 4.0).",
+    "sourceHash": "7438bd66192a524b869f08c04f7646f0ff15506c7794bad938cf8b6998f330b3",
+    "review": "machine"
   }
 }

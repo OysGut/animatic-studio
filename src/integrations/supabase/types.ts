@@ -3295,6 +3295,151 @@ export type Database = {
           },
         ]
       }
+      mouth_sets: {
+        Row: {
+          character_id: string
+          created_at: string
+          created_by: string | null
+          id: string
+          project_id: string
+          removed: boolean
+          revision: number
+          system: string
+          variants: Json
+        }
+        Insert: {
+          character_id: string
+          created_at?: string
+          created_by?: string | null
+          id: string
+          project_id: string
+          removed?: boolean
+          revision?: number
+          system?: string
+          variants?: Json
+        }
+        Update: {
+          character_id?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          project_id?: string
+          removed?: boolean
+          revision?: number
+          system?: string
+          variants?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mouth_sets_character_id_fkey"
+            columns: ["character_id"]
+            isOneToOne: false
+            referencedRelation: "assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mouth_sets_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mouth_tracks: {
+        Row: {
+          block_id: string
+          character_id: string
+          clip_id: string
+          created_at: string
+          created_by: string | null
+          id: string
+          language: string
+          occurrence_id: string
+          project_id: string
+          removed: boolean
+          revision: number
+          set_id: string
+          source: Json
+          spans: Json
+        }
+        Insert: {
+          block_id: string
+          character_id: string
+          clip_id: string
+          created_at?: string
+          created_by?: string | null
+          id: string
+          language: string
+          occurrence_id: string
+          project_id: string
+          removed?: boolean
+          revision?: number
+          set_id: string
+          source: Json
+          spans?: Json
+        }
+        Update: {
+          block_id?: string
+          character_id?: string
+          clip_id?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          language?: string
+          occurrence_id?: string
+          project_id?: string
+          removed?: boolean
+          revision?: number
+          set_id?: string
+          source?: Json
+          spans?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mouth_tracks_block_id_fkey"
+            columns: ["block_id"]
+            isOneToOne: false
+            referencedRelation: "script_blocks"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mouth_tracks_character_id_fkey"
+            columns: ["character_id"]
+            isOneToOne: false
+            referencedRelation: "assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mouth_tracks_clip_id_fkey"
+            columns: ["clip_id"]
+            isOneToOne: false
+            referencedRelation: "audio_clips"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mouth_tracks_occurrence_id_fkey"
+            columns: ["occurrence_id"]
+            isOneToOne: false
+            referencedRelation: "scene_occurrences"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mouth_tracks_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mouth_tracks_set_id_fkey"
+            columns: ["set_id"]
+            isOneToOne: false
+            referencedRelation: "mouth_sets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       note_flags: {
         Row: {
           created_at: string

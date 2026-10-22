@@ -58,16 +58,21 @@ export function AccountWatcher() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Sist aktiv: høyst én gang i timen fra denne nettleseren (databasen sjekker også)
+  // Sist aktiv / inne nå (B-117): høyst én gang per 5 min fra denne nettleseren (databasen sjekker også)
   useEffect(() => {
-    try {
-      const last = Number(window.localStorage.getItem(TOUCH_KEY) ?? 0);
-      if (Date.now() - last < 60 * 60 * 1000) return;
-      window.localStorage.setItem(TOUCH_KEY, String(Date.now()));
-    } catch {
-      /* privat vindu */
-    }
-    void touchActivity().catch(() => undefined);
+    const touch = () => {
+      try {
+        const last = Number(window.localStorage.getItem(TOUCH_KEY) ?? 0);
+        if (Date.now() - last < 5 * 60 * 1000) return;
+        window.localStorage.setItem(TOUCH_KEY, String(Date.now()));
+      } catch {
+        /* privat vindu */
+      }
+      void touchActivity().catch(() => undefined);
+    };
+    touch();
+    const id = window.setInterval(() => { if (!document.hidden) touch(); }, 60 * 1000);
+    return () => window.clearInterval(id);
   }, []);
 
   // Profile wins once per sign-in. Only explicit user choices are persisted, never browser detection.

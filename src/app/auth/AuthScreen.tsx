@@ -11,6 +11,7 @@ import {
   signUp,
 } from "@/adapters/browser/captcha-auth";
 import { TurnstileBox } from "./TurnstileBox";
+import { LoginGlobe } from "./LoginGlobe";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -203,7 +204,8 @@ export function AuthScreen({ invited = false }: { invited?: boolean } = {}) {
   }, [captchaToken, pending, captchaAction]);
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-bg-app px-4">
+    <main className="isolate flex min-h-screen items-center justify-center bg-bg-app px-4">
+      <LoginGlobe />
       <div className="w-full max-w-[360px]">
         <div className="mb-8">
           <h1 className="text-2xl font-semibold tracking-tight text-text-primary">

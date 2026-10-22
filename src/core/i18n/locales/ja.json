@@ -54972,5 +54972,40 @@
     "text": "PDFとCSVにはキャラクターと口ごとの露光数を記載します。JSONはハンドルを含み0から数えます。Moho DATはPapagayoの口と撮影fpsで1からのフレームを使用し、2コマ撮りは繰り返します。古いトラックは変更せず出力しJSONで示します。NB Uttale（CC0）とCMUdict（BSD）はローカルで動作します。AIや有料呼び出しはありません。",
     "sourceHash": "1c3cf65983733b2abb484a4f3672509e6bc2f0ad9b3dd49c3360f1d86c6caaf0",
     "review": "machine"
+  },
+  "b117.city.label": {
+    "text": "都市",
+    "sourceHash": "14cb2eb812c53c19b36288572808c9f9486bab846008b3f34dfe33342e10b20c",
+    "review": "machine"
+  },
+  "b117.city.choose": {
+    "text": "都市を選択（任意）…",
+    "sourceHash": "752f0469085b7a85c2f8fff09ba0888ee4f7dc3ee4cdd195c6f01fafab66cddd",
+    "review": "machine"
+  },
+  "b117.city.search": {
+    "text": "都市を検索",
+    "sourceHash": "dba88a651069ecd1627e2fe312fce87ea6e720b097a78a1c87744d734be999ac",
+    "review": "machine"
+  },
+  "b117.city.none": {
+    "text": "都市が見つかりません",
+    "sourceHash": "5165d377410edf230a1c93d11453d15210b7aafd68676ecc8b01426c2695aef3",
+    "review": "machine"
+  },
+  "b117.city.clear": {
+    "text": "都市を削除",
+    "sourceHash": "eb57dd42807a4d2aca45871da53b59e26b00cd33bdae3c26d8843f20aff0436d",
+    "review": "machine"
+  },
+  "b117.city.saved": {
+    "text": "都市を保存しました。",
+    "sourceHash": "7c9901283308b3b09c557b275cb58d4d633fa68fa5936015771e3e97fc7de1e8",
+    "review": "machine"
+  },
+  "b117.city.credit": {
+    "text": "都市を選ばない場合は首都に表示されます。都市データ：GeoNames（CC BY 4.0）。",
+    "sourceHash": "7438bd66192a524b869f08c04f7646f0ff15506c7794bad938cf8b6998f330b3",
+    "review": "machine"
   }
 }

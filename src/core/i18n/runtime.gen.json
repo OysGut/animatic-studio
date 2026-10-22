@@ -24542,6 +24542,27 @@
     "b115.privacy.terms.heading": {
       "text": "Vilkår for bruk og ansvarsfraskrivelse"
     },
+    "b117.city.choose": {
+      "text": "Velg by (valgfritt) …"
+    },
+    "b117.city.clear": {
+      "text": "Fjern byen"
+    },
+    "b117.city.credit": {
+      "text": "Uten by vises du ved hovedstaden. Bydata: GeoNames (CC BY 4.0)."
+    },
+    "b117.city.label": {
+      "text": "By"
+    },
+    "b117.city.none": {
+      "text": "Fant ingen by"
+    },
+    "b117.city.saved": {
+      "text": "Byen er lagret."
+    },
+    "b117.city.search": {
+      "text": "Søk etter by"
+    },
     "b118.color-aria": {
       "text": "Scenefarge: {value}"
     },
@@ -57379,6 +57400,27 @@
     },
     "b115.privacy.terms.heading": {
       "text": "Terms of use and disclaimer"
+    },
+    "b117.city.choose": {
+      "text": "Choose city (optional) …"
+    },
+    "b117.city.clear": {
+      "text": "Remove city"
+    },
+    "b117.city.credit": {
+      "text": "Without a city you are shown at the capital. City data: GeoNames (CC BY 4.0)."
+    },
+    "b117.city.label": {
+      "text": "City"
+    },
+    "b117.city.none": {
+      "text": "No city found"
+    },
+    "b117.city.saved": {
+      "text": "City saved."
+    },
+    "b117.city.search": {
+      "text": "Search cities"
     },
     "b118.color-aria": {
       "text": "Scene colour: {value}"

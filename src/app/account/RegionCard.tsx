@@ -4,10 +4,11 @@
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { formatExactTime, formatRelativeTime, type ClockPref, type DateFormatPref, tm } from "@/core";
-import { saveMyCountry } from "@/adapters/browser/account";
+import { saveMyCity, saveMyCountry } from "@/adapters/browser/account";
 import { useLanguage } from "@/app/i18n/language";
 import { useClockPref, useDateFormatPref } from "@/app/i18n/time-format";
 import { CountryPicker } from "./CountryPicker";
+import { CityPicker } from "./CityPicker";
 import { MY_ACCOUNT_KEY, useMyAccount } from "./use-account";
 import { t } from "@/core/i18n/keyed";
 
@@ -24,9 +25,20 @@ export function RegionSettings() {
   const country = account.data?.country ?? null;
   const unavailable = account.data?.country === undefined;
 
+  const city = account.data?.city ?? null;
+  const cityUnavailable = account.data?.city === undefined;
+
   async function changeCountry(c: string) {
     const e = await saveMyCountry(c);
+    // B-117: byen hører til landet; nytt land fjerner byen
+    if (!e && c !== country && city && !cityUnavailable) await saveMyCity(null);
     setMsg(e ? { ok: false, text: tm(e.message) } : { ok: true, text: t("b097.region.saved") });
+    if (!e) void qc.invalidateQueries({ queryKey: MY_ACCOUNT_KEY });
+  }
+
+  async function changeCity(c: number | null) {
+    const e = await saveMyCity(c);
+    setMsg(e ? { ok: false, text: tm(e.message) } : { ok: true, text: t("b117.city.saved") });
     if (!e) void qc.invalidateQueries({ queryKey: MY_ACCOUNT_KEY });
   }
 
@@ -63,6 +75,17 @@ export function RegionSettings() {
             <CountryPicker id="account-country" value={country} onChange={(c) => void changeCountry(c)} testId="account-country" />
           )}
         </div>
+        {!unavailable && !cityUnavailable ? (
+          <>
+            <label htmlFor="account-city" className="text-text-tertiary">
+              {t("b117.city.label")}
+            </label>
+            <div>
+              <CityPicker id="account-city" country={country} value={city} onChange={(c) => void changeCity(c)} testId="account-city" />
+              <p className="mt-1 text-[11px] text-text-tertiary">{t("b117.city.credit")}</p>
+            </div>
+          </>
+        ) : null}
         <label htmlFor="account-clock" className="text-text-tertiary">
           {t("b097.region.clock")}
         </label>

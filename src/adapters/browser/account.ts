@@ -18,6 +18,8 @@ export interface MyAccount {
   readonly uiPrefs: Readonly<Record<string, unknown>>;
   /** B-097 (migrasjon 0073): ISO 3166-1 alpha-2. null = ikke valgt; undefined = før migrasjonen. */
   readonly country: string | null | undefined;
+  /** B-117 (migrasjon 0085): GeoNames-id. null = ingen by; undefined = før migrasjonen. */
+  readonly city: number | null | undefined;
 }
 
 /** Min konto, eller null før migrasjon 0033. */
@@ -44,6 +46,7 @@ export async function fetchMyAccount(): Promise<MyAccount | null> {
       : typeof a["country"] === "string" && /^[A-Z]{2}$/.test(a["country"])
         ? a["country"]
         : null,
+    city: !("city" in a) ? undefined : typeof a["city"] === "number" && a["city"] > 0 ? a["city"] : null,
   };
 }
 
@@ -147,4 +150,25 @@ export async function fetchProjectLock(projectId: string): Promise<ProjectLockIn
 export async function saveUiPrefs(prefs: Record<string, unknown>): Promise<BackendError | null> {
   const { error } = await db.rpc("set_my_ui_prefs", { p_prefs: prefs });
   return plainError(error);
+}
+
+/** B-117: min by (GeoNames-id), null fjerner. */
+export async function saveMyCity(city: number | null): Promise<BackendError | null> {
+  const { error } = await db.rpc("set_my_city", { p_city: city });
+  return plainError(error);
+}
+
+export interface GlobePoint {
+  readonly lat: number;
+  readonly lon: number;
+  readonly active: boolean;
+}
+
+/** B-117: anonyme punkter til globusen på innloggingssiden. Tom liste før migrasjon 0085 eller ved feil. */
+export async function fetchGlobePoints(): Promise<GlobePoint[]> {
+  const { data, error } = await db.rpc("globe_points", {});
+  if (error || !Array.isArray(data)) return [];
+  return (data as Record<string, unknown>[])
+    .map((r) => ({ lat: Number(r["lat"]), lon: Number(r["lon"]), active: r["active"] === true }))
+    .filter((p) => Number.isFinite(p.lat) && Number.isFinite(p.lon));
 }
