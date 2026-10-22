@@ -1,6 +1,7 @@
 # Veikart
 
 ## B-116 – Utstillingsvindu (22.10.2026)
+- [ ] Fullfør 19:04-oppdraget: statusoppslag ved tegning, b116-showcase 37/37 nb/en, full Vitest/DB/i18n og rapport med erstattede 0087-funksjoner; ingen Cloud-kjøring.
 - [x] Migrasjon 0087 (additiv oppå 0086): showcase_items, showcase_comments, godkjenningsbryter, RPC-er, delete_project; Claude kjører i Cloud.
 - [ ] Kjerne, serverfunksjoner, brukerflate (boks, forhåndsvisning, Mine delinger, karusell, kommentarer, admin-kø).
 - [ ] Tester: DB, enhetstester, b116-showcase.mjs nb/en, full vitest og i18n; rapport B116_REPORT.md.

@@ -16,7 +16,8 @@ import { useTimeFormat } from "@/app/i18n/time-format";
 
 export const MY_SHOWCASE_KEY = ["showcase-mine"] as const;
 
-const statusLabel = (s: ShowcaseDisplayStatus): string =>
+export function MyShowcasePage() {
+  const statusLabel = (s: ShowcaseDisplayStatus): string =>
   s === "pending"
     ? t("b116.status.pending")
     : s === "live"
@@ -27,10 +28,6 @@ const statusLabel = (s: ShowcaseDisplayStatus): string =>
           ? t("b116.status.revoked")
           : t("b116.status.rejected");
 
-const editExpiresLabel = (days: number): string =>
-  days === 7 ? t("b116.expires.7") : days === 14 ? t("b116.expires.14") : days === 30 ? t("b116.expires.30") : t("b116.expires.90");
-
-export function MyShowcasePage() {
   const time = useTimeFormat();
   const qc = useQueryClient();
   const q = useQuery({ queryKey: MY_SHOWCASE_KEY, queryFn: () => fetchMyShowcaseItems(Date.now()) });
@@ -101,6 +98,8 @@ export function MyShowcasePage() {
 }
 
 function EditDialog({ item, onClose, onSaved }: { item: MyShowcaseItem | null; onClose: () => void; onSaved: () => void }) {
+  const editExpiresLabel = (days: number): string =>
+    days === 7 ? t("b116.expires.7") : days === 14 ? t("b116.expires.14") : days === 30 ? t("b116.expires.30") : t("b116.expires.90");
   const [title, setTitle] = useState("");
   const [text, setText] = useState("");
   const [days, setDays] = useState(7);
