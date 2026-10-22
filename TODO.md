@@ -3,6 +3,7 @@
 ## PTG3 – venter på tilbakemelding fra ekte bruk
 - AE-matter og animerte maskepunkter i bygg.jsx: bygges først når vi har tilbakemelding fra ekte After Effects-bruk.
 - FBX forblir «eksperimentell» til noen har importert den i Dragonframe eller et annet ekte program. Valgfri binær FBX-variant er ikke bygget; LESMEG sier at Blender og mange andre bare leser binær FBX.
+- PTG2 (B-102): ekte import av Dragonframe-pakken (referansefilm, PNG-sekvens per eksponering, lydstemmer, X-sheet CSV/PDF og FBX) i Dragonframe prøves av Trollfilm. Funn meldes tilbake.
 
 ## B-049
 - ML1 akseptanse: kontroller verifisering4 i Claudes miljø; Courier Prime måles 6,439 em her (57/58 med portabel falsk mikrofon). Se ML1_REPORT.md.

@@ -11,8 +11,8 @@ import type { InterchangeDoc, Shot } from "@/core/interchange";
 import { buildShotFbx } from "@/core/interchange/fbx";
 import { cameraReadmeLines, interchangeReadme } from "@/core/interchange/readme";
 import {
-  buildXsheets, dragonframePaths, referenceFrames, shotSamples, shotWindow, stemGroups, wav24, xsheetCsv,
-  xsheetLayout, XSHEET_ROW_MM, type XsheetPaper, type XsheetRow,
+  buildXsheets, dragonframePaths, pdfScriptOf, pdfScriptsNeeded, pngExposureIndices, referenceFrames, shotSamples, shotWindow, stemGroups, wav24, xsheetCsv,
+  xsheetLayout, XSHEET_ROW_MM, type PdfScript, type XsheetPaper, type XsheetRow,
 } from "@/core/interchange/dragonframe";
 import { formatTimecode, framesToSeconds } from "@/core/time";
 import { type AudioBank, renderAudio } from "../audio/mixer";
@@ -43,27 +43,66 @@ export function xsheetHeaders(lang?: string): string[] {
     t("ptg2.col-action", {}, lang), t("ptg2.col-layers", {}, lang), t("ptg2.col-notes", {}, lang)];
 }
 
-/** X-sheet som PDF. Standardfonten (Helvetica) dekker latinske tegn; andre skrifttegn står i CSV-en. */
-export function xsheetPdf(shot: Shot, rows: readonly XsheetRow[], paper: XsheetPaper, title: string): Uint8Array {
+/** Innebygde PDF-fonter (base64 TTF). jsPDF bygger bare inn glyfene som brukes (delsett). */
+export type PdfFonts = Partial<Record<PdfScript, string>>;
+const PDF_FONT_FILES: Record<PdfScript, string> = {
+  latin: "/fonts/pdf/NotoSans-Regular.ttf", jp: "/fonts/pdf/NotoSansJP.ttf", kr: "/fonts/pdf/NotoSansKR.ttf",
+};
+const fontCache = new Map<PdfScript, Promise<string>>();
+function toBase64(bytes: Uint8Array): string {
+  let s = "";
+  for (let i = 0; i < bytes.length; i += 0x8000) s += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
+  return btoa(s);
+}
+/** Laster bare fontene teksten trenger (CJK-fontene er store). */
+export async function loadPdfFonts(scripts: readonly PdfScript[]): Promise<PdfFonts> {
+  const out: PdfFonts = {};
+  for (const s of scripts) {
+    if (!fontCache.has(s)) fontCache.set(s, fetch(PDF_FONT_FILES[s]).then(async r => {
+      if (!r.ok) throw new Error(t("ptg1.export-failed"));
+      return toBase64(new Uint8Array(await r.arrayBuffer()));
+    }));
+    try { out[s] = await fontCache.get(s)!; } catch (e) { fontCache.delete(s); throw e; }
+  }
+  return out;
+}
+
+/** X-sheet som PDF med innebygd Noto Sans (latin/kyrillisk) og Noto Sans JP/KR der teksten krever det. */
+export function xsheetPdf(shot: Shot, rows: readonly XsheetRow[], paper: XsheetPaper, title: string, fonts: PdfFonts = {}): Uint8Array {
   const L = xsheetLayout(paper, rows.length);
   const doc = new jsPDF({ unit: "mm", format: [L.width, L.height], orientation: "portrait", compress: true });
+  const names: Partial<Record<PdfScript, string>> = {};
+  for (const s of ["latin", "jp", "kr"] as const) {
+    const data = fonts[s];
+    if (!data) continue;
+    const file = `ptg-${s}.ttf`;
+    doc.addFileToVFS(file, data);
+    doc.addFont(file, `PTG-${s}`, "normal");
+    names[s] = `PTG-${s}`;
+  }
+  const useFont = (text: string) => {
+    const name = names[pdfScriptOf(text)] ?? names.latin;
+    if (name) doc.setFont(name, "normal");
+  };
+  const write = (text: string, x: number, y: number, opts?: { align: "right" }) => { useFont(text); doc.text(text, x, y, opts); };
+  const fit = (text: string, width: number) => { useFont(text); return String(doc.splitTextToSize(text, width)[0] ?? ""); };
   const headers = xsheetHeaders();
   const cells = (r: XsheetRow) => [String(r.frame), String(r.shotFrame), r.timecode, r.character, r.dialogue, r.mouth, r.action, r.layers, r.notes];
   L.pages.forEach((page, p) => {
     if (p) doc.addPage([L.width, L.height], "portrait");
     doc.setTextColor(0); doc.setDrawColor(0); doc.setLineWidth(0.1);
-    doc.setFontSize(10); doc.text(`${title} · ${shot.name}`, L.margin, L.margin + 4);
-    doc.setFontSize(7); doc.text(t("ptg2.page", { value1: String(p + 1), value2: String(L.pages.length) }), L.width - L.margin, L.margin + 4, { align: "right" });
+    doc.setFontSize(10); write(`${title} · ${shot.name}`, L.margin, L.margin + 4);
+    doc.setFontSize(7); write(t("ptg2.page", { value1: String(p + 1), value2: String(L.pages.length) }), L.width - L.margin, L.margin + 4, { align: "right" });
     const top = L.margin + L.header - XSHEET_ROW_MM;
-    headers.forEach((h, i) => doc.text(doc.splitTextToSize(h, L.columns[i]!.width - 1)[0] ?? "", L.columns[i]!.x + 0.5, top + 3.5));
+    headers.forEach((h, i) => { const s = fit(h, L.columns[i]!.width - 1); if (s) write(s, L.columns[i]!.x + 0.5, top + 3.5); });
     doc.line(L.margin, top + XSHEET_ROW_MM, L.width - L.margin, top + XSHEET_ROW_MM);
     for (let i = page.from; i < page.to; i++) {
       const r = rows[i]!;
       const y = top + XSHEET_ROW_MM * (i - page.from + 1);
       if (r.shotFrame === 0) { doc.setLineWidth(0.5); doc.line(L.margin, y, L.width - L.margin, y); doc.setLineWidth(0.1); }
       cells(r).forEach((c, k) => {
-        const line = doc.splitTextToSize(c, L.columns[k]!.width - 1)[0] ?? "";
-        if (line) doc.text(String(line), L.columns[k]!.x + 0.5, y + 3.5);
+        const line = fit(c, L.columns[k]!.width - 1);
+        if (line) write(line, L.columns[k]!.x + 0.5, y + 3.5);
       });
       doc.line(L.margin, y + XSHEET_ROW_MM, L.width - L.margin, y + XSHEET_ROW_MM);
     }
@@ -101,6 +140,9 @@ export async function exportDragonframe(o: DragonframeOptions): Promise<void> {
   });
   const groups = stemGroups(o.audio.items, id => o.state.assets[id]?.name ?? id);
   const total = doc.shots.length;
+  const texts: string[] = [doc.project.name, ...xsheetHeaders(), ...doc.shots.map(s => s.name)];
+  for (const rows of xsheets.values()) for (const r of rows) texts.push(r.character, r.dialogue, r.action, r.layers, r.notes);
+  const fonts = await loadPdfFonts(pdfScriptsNeeded(texts));
   async function* files() {
     yield {
       path: "LESMEG.txt",
@@ -112,6 +154,8 @@ export async function exportDragonframe(o: DragonframeOptions): Promise<void> {
       const paths = dragonframePaths(shot);
       const frames = referenceFrames(doc, shot);
       const pngs: Uint8Array[] = [];
+      // PNG: én fil per eksponering (stemmer med X-sheet-radene); videoen beholder alle bilder.
+      const pngAt = new Set(pngExposureIndices(doc, shot));
       if (frames.length) {
         const w = shotWindow(shot);
         const video = await exportAnimatic({
@@ -119,7 +163,7 @@ export async function exportDragonframe(o: DragonframeOptions): Promise<void> {
           width: doc.frameSize.width, height: doc.frameSize.height, fps: doc.fps, images: o.images,
           filmUrls: o.filmUrls, mp4: true, signal,
           ...(o.burnIn ? { overlay: (ctx: CanvasRenderingContext2D, i: number, width: number, height: number) => burnIn(ctx, shot, w.from + i, i, doc, width, height) } : {}),
-          ...(o.png ? { onFrame: async (canvas: HTMLCanvasElement) => { pngs.push(await canvasPng(canvas)); } } : {}),
+          ...(o.png ? { onFrame: async (canvas: HTMLCanvasElement, i: number) => { if (pngAt.has(i)) pngs.push(await canvasPng(canvas)); } } : {}),
         });
         yield { path: paths.video, data: video.bytes };
         for (let i = 0; i < pngs.length; i++) yield { path: paths.png(i), data: pngs[i]! };
@@ -127,7 +171,7 @@ export async function exportDragonframe(o: DragonframeOptions): Promise<void> {
       for (const s of await shotStems(doc, shot, groups, o.audio.bank)) yield { path: paths.audio(s.suffix), data: s.data };
       const rows = xsheets.get(shot.id) ?? [];
       yield { path: paths.xsheetCsv, data: xsheetCsv(rows, xsheetHeaders()) };
-      for (const paper of ["a4", "letter"] as const) yield { path: paths.xsheetPdf(paper), data: xsheetPdf(shot, rows, paper, doc.project.name) };
+      for (const paper of ["a4", "letter"] as const) yield { path: paths.xsheetPdf(paper), data: xsheetPdf(shot, rows, paper, doc.project.name, fonts) };
       const fbx = buildShotFbx(shot, doc.fps);
       if (fbx) yield { path: paths.fbx, data: new TextEncoder().encode(fbx) };
       o.onProgress?.(++done, total);
