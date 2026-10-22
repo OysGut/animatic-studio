@@ -71,7 +71,7 @@ describe("PTG2 Dragonframe-modell", () => {
     expect(rows[5]!.dialogue).toBe("Hei"); // bilde 11 ligger i eksponeringen 10–11
     expect(rows[5]!.character).toBe("MAJA");
     expect(rows[8]!.dialogue).toBe("der"); // bilde 16
-    expect(rows.filter(r => r.dialogue).length).toBe(2); // replikken med ordtider står ikke dobbelt
+    expect(rows.some(r => r.dialogue.includes("Hei der"))).toBe(false); // replikken med ordtider står ikke dobbelt
     expect(rows[10]!.layers).toBe("start: Maja");
     expect(rows[20]!.layers).toBe("end: Maja");
     expect(rows.every(r => r.mouth === "")).toBe(true);

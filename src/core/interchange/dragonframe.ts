@@ -195,7 +195,7 @@ export function xsheetLayout(paper: XsheetPaper, rowCount: number) {
 
 /** Kortnavn for filnavn: store bokstaver, bare A–Z, 0–9 og _. */
 export function fileToken(name: string): string {
-  const t = name.normalize("NFKD").replace(/[\u0300-\u036f]/g, "").replace(/[^A-Za-z0-9]+/g, "_").replace(/^_+|_+$/g, "").toUpperCase();
+  const t = name.replace(/[øØ]/g, "O").replace(/[æÆ]/g, "AE").replace(/ß/g, "SS").normalize("NFKD").replace(/[\u0300-\u036f]/g, "").replace(/[^A-Za-z0-9]+/g, "_").replace(/^_+|_+$/g, "").toUpperCase();
   return t || "X";
 }
 
