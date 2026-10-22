@@ -1,5 +1,9 @@
 # Veikart
 
+## Aktivt (22.10.2026)
+- [ ] Personvernerklæringen utvides med vilkår/ansvarsfraskrivelse (seksjoner 10–15, b115.privacy.*) på alle språk.
+- [ ] Flytte språkvelgeren på forsiden: under «Logg inn»-boksen og over Personvern-lenken.
+
 ## PTG1 (B-102) – implementert, databaseverifisering gjenstår
 - [x] Klipp midt i overlapp; håndtak og overgangsdata; hele lyd-/ordhendelser, gyllen oddetallstest og LESMEG-regel.
 - [x] Ren utvekslingsmodell, felles avrunding, toere og versjonerte skuddnavn.
