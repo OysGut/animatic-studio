@@ -1,5 +1,8 @@
 # TODO – From Pen to Glass
 
+## B-116 – delt klipp
+- Delt klipp via server-generert kort eksport (≤15 s), med målt varighet og MIME. Til da deles scener bare som stillbilde, og 0087 avviser video.
+
 ## PTG7 – ekte Nuke- og Fusion-import
 - Importer tests/fixtures/ptg7 og en eksportert pakke i Nuke og Fusion Studio. Kontroller relative mediestier, Card2/ImagePlane3D, plater i riktig dybde, aksene, synsfelt og kamerakurver i begge riggmoduser og på toere. Syntaks- og modelltall er ikke bevis for ekte programimport. Resolve kan kreve MediaIn/MediaOut i stedet for Loader.
 
