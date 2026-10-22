@@ -54812,5 +54812,40 @@
     "text": "テイクを比較",
     "sourceHash": "d9f7566df61531c4d52691ea0a0a2d0ef48934d468d79b8b1c67d45a87c7658c",
     "review": "machine"
+  },
+  "ptg6.export": {
+    "text": "編集ファイル（OTIO、XML、EDL）",
+    "sourceHash": "63c37c9190d668a3484b39fb9c5e66326c3fb37430b34e2583a2947f09c63e99",
+    "review": "machine"
+  },
+  "ptg6.include-media": {
+    "text": "編集パッケージにメディアを含める",
+    "sourceHash": "4123f2b6a3bfdc4eb9b14a0431a33b9d966090b2e35ddb025bab5a40a588364e",
+    "review": "machine"
+  },
+  "ptg6.readme": {
+    "text": "OTIO、FCP7-XML（xmeml v5）、CMX 3600 EDL を読み込みます。パスはパッケージからの相対パスです。タイムコードはノンドロップフレームです。2コマ撮りでも24 fpsを維持します。参考動画にはハンドルを含み、トランジションは動画に焼き込まず編集ソフトで適用します。音声はショットごとのミックスで、音量キーとフェードを反映済みです。追加の音声トランジションはありません。有効なテイクを使用し、なければアニマティックを使用します。Wipe/push/irisはメタデータに記録されますが、標準トランジションはクロスディゾルブです。AIは使用しません。",
+    "sourceHash": "74b505185bf1ac31e7c4e47d609a8d28d4fd407ab9c26985cf9b0163ec22c5bf",
+    "review": "machine"
+  },
+  "ptg6.reel-table": {
+    "text": "リール → ショット名 → 動画ファイル",
+    "sourceHash": "928a04281f3bc6ded71a8c34bfa6bd8dbbf3f4482bdd8d3c7e5cb2b1bda97de9",
+    "review": "machine"
+  },
+  "ptg6.audio-table": {
+    "text": "ショット名 → 音声ファイル",
+    "sourceHash": "b7f023c9a448cd5f1194fce41d4225edf24c27e4e11a7fe8dce6d3dba7fddd9f",
+    "review": "machine"
+  },
+  "ptg6.media-included": {
+    "text": "メディアが含まれています。読み込む前にパッケージ全体を展開してください。",
+    "sourceHash": "605b077f970ba1fa4042fe2b76fd04fe913ddc308faba754bcd7ecf3040a7ff9",
+    "review": "machine"
+  },
+  "ptg6.media-linked": {
+    "text": "メディアは含まれていません。参考動画とMIX音声を指定された相対パスに置くか、編集ソフトで再リンクしてください。",
+    "sourceHash": "14497b40a48f46ad9145a7d2cbcab34354b9aa78490083d62fcae24bd1a603d3",
+    "review": "machine"
   }
 }

@@ -1,5 +1,12 @@
 # Veikart
 
+## PTG6 – klippefiler (22.10.2026)
+- [x] Ren OTIO/FCP7-XML/CMX 3600-modell med PTG1-navn, midtpunktklipp og håndtak.
+- [x] Til produksjonen: klippepakke med valgfrie referansefilmer/lyd, aktiv take ellers animatic, ZIP64 og tospråklig LESMEG/reeltabell.
+- [x] Gyldne fixturer, OpenTimelineIO 12/12, ptg6 nb/en 23/23 og sekvensielle ptg1/ptg2/ptg5-regresjoner; full Vitest 2346/0, DB 158/0 og i18n.
+- [x] Norsk PTG6_REPORT.md og manuell import i Resolve/Premiere/Avid i TODO.md.
+- [ ] Ekte programimport og produksjonsmedier: krever Resolve/Premiere/Avid og brukernes opptak; se TODO.md og rapporten.
+
 ## PTG5 og scenevelgeroppfølging (22.10.2026)
 - [x] Regel om SceneSelect/SceneMark i AGENTS.md.
 - [x] interactions-e2e setter nb eksplisitt og består (44/44).

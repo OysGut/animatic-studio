@@ -75122,5 +75122,26 @@
   },
   "ptg5.compare": {
     "text": "Sammenlign takes"
+  },
+  "ptg6.export": {
+    "text": "Klippefiler (OTIO, XML, EDL)"
+  },
+  "ptg6.include-media": {
+    "text": "Ta med medier i klippepakken"
+  },
+  "ptg6.readme": {
+    "text": "Klippefiler: importer OTIO, FCP7-XML (xmeml v5) eller CMX 3600 EDL. Stiene er relative til pakken. Tidskode er uten drop-frame. Toere beholder 24 bilder/s. Referansefilmene har håndtak; overganger legges på i klippeprogrammet, ikke i referansefilmene. Lyd er samlet miks per skudd med volumpunkter og fade bakt inn; ingen ekstra lydovergang. Aktiv take brukes, ellers animatic. Wipe/push/iris beskrives i metadata, men klippefilenes standardovergang er kryssoppløsning. Ingen KI brukes."
+  },
+  "ptg6.reel-table": {
+    "text": "Reel → skuddnavn → videofil"
+  },
+  "ptg6.audio-table": {
+    "text": "Skuddnavn → lydfil"
+  },
+  "ptg6.media-included": {
+    "text": "Mediefilene følger med. Pakk ut hele pakken før import."
+  },
+  "ptg6.media-linked": {
+    "text": "Mediefilene følger ikke med. Legg referansefilmer og MIX-lydfiler på de oppgitte relative stiene, eller koble dem på nytt i klippeprogrammet."
   }
 }
