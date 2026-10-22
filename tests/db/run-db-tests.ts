@@ -5835,7 +5835,7 @@ try {
     assert(noRls.length === 0, `uten RLS: ${noRls.map((r) => r["relname"]).join(", ")}`);
     const noPath = await sql`select p.proname from pg_proc p join pg_namespace n on n.oid = p.pronamespace where n.nspname in ('public', 'private') and p.prosecdef and not exists (select 1 from unnest(coalesce(p.proconfig, '{}')) c where c like 'search_path=%')`;
     assert(noPath.length === 0, `security definer uten search_path: ${noPath.map((r) => r["proname"]).join(", ")}`);
-    const anonFns = await sql`select p.proname from pg_proc p join pg_namespace n on n.oid = p.pronamespace where n.nspname = 'public' and p.prosecdef and has_function_privilege('anon', p.oid, 'execute') and p.proname not in ('registration_status', 'public_profile', 'globe_points')`; // B-117: globe_points gir bare forskjøvne lat/lon og active; // B-109: gir bare {open, message}; B-114 C0: public_profile gir bare offentlige felt og bare når community.profiles og profilen er offentlig
+    const anonFns = await sql`select p.proname from pg_proc p join pg_namespace n on n.oid = p.pronamespace where n.nspname = 'public' and p.prosecdef and has_function_privilege('anon', p.oid, 'execute') and p.proname not in ('registration_status', 'public_profile', 'globe_points', 'showcase_feed', 'showcase_comments')`; // B-117: globe_points gir bare forskjøvne lat/lon og active; // B-109: gir bare {open, message}; B-114 C0: public_profile gir bare offentlige felt og bare når community.profiles og profilen er offentlig; B-116 (0087): showcase_feed og showcase_comments gir bare godkjente, aktive bidrag uten bruker-ID/e-post – karusellen er offentlig før innlogging
     assert(anonFns.length === 0, `anon kan kjøre: ${anonFns.map((r) => r["proname"]).join(", ")}`);
     const anonTables = await sql`select relname from pg_class c join pg_namespace n on n.oid = c.relnamespace where n.nspname = 'public' and relkind in ('r', 'p', 'v', 'm') and relname not in ('schema_version', 'privacy_policy') and (has_table_privilege('anon', c.oid, 'select') or has_table_privilege('anon', c.oid, 'insert') or has_table_privilege('anon', c.oid, 'update') or has_table_privilege('anon', c.oid, 'delete'))`;
     assert(anonTables.length === 0, `anon har tabelltilgang: ${anonTables.map((r) => r["relname"]).join(", ")}`);
@@ -7454,15 +7454,15 @@ try {
     assert(JSON.stringify((await as('anon', null, tx => tx`select public.showcase_feed() f`))[0]?.['f']).includes(id), 'live med en gang uten krav');
     await as('authenticated', other, tx => tx`select public.admin_set_showcase_approval(true)`);
     // Endring av innholdet sender bidraget tilbake til «venter»
-    await as('authenticated', owner, tx => tx`select public.update_showcase_item(${id}, ${JSON.stringify({ title: 'Gaupa' })}::jsonb)`);
+    await as('authenticated', owner, tx => tx`select public.update_showcase_item(${id}, ${tx.json({ title: 'Gaupa' })})`);
     const mine = JSON.stringify((await as('authenticated', owner, tx => tx`select public.my_showcase_items() m`))[0]?.['m']);
     assert(mine.includes('"status":"pending"') && mine.includes('Gaupa'), 'tilbake til ventende ved endring');
-    await expectError(as('authenticated', other, tx => tx`select public.update_showcase_item(${id}, '{}'::jsonb)`), '42501');
-    await expectError(as('authenticated', owner, tx => tx`select public.update_showcase_item(${id}, ${JSON.stringify({ status: 'live' })}::jsonb)`), '22023');
+    await expectError(as('authenticated', other, tx => tx`select public.update_showcase_item(${id}, ${tx.json({})})`), '42501');
+    await expectError(as('authenticated', owner, tx => tx`select public.update_showcase_item(${id}, ${tx.json({ status: 'live' })})`), '22023');
     // Tilbaketrekking når som helst, bare eier/admin; kan ikke endres etterpå
     await expectError(as('authenticated', other, tx => tx`select public.revoke_showcase_item(${id})`), '42501');
     await as('authenticated', owner, tx => tx`select public.revoke_showcase_item(${id})`);
-    await expectError(as('authenticated', owner, tx => tx`select public.update_showcase_item(${id}, ${JSON.stringify({ title: 'X' })}::jsonb)`), '22023');
+    await expectError(as('authenticated', owner, tx => tx`select public.update_showcase_item(${id}, ${tx.json({ title: 'X' })})`), '22023');
     assert(JSON.stringify((await as('authenticated', owner, tx => tx`select public.my_showcase_items() m`))[0]?.['m']).includes('"status":"revoked"'), 'trukket tilbake i listen');
     await sql`delete from public.app_admins where user_id = ${other}`;
   });
