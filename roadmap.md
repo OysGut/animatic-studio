@@ -21,7 +21,7 @@
 - [x] Oppdater eksplisitte RPC-lister, Story Lab- og U2-kontrakter; REQ-0050 4/4 og g07 bestått.
 - [x] Sikre at AI-innstillingsspørringen alltid returnerer en verdi, med fem regresjonstester.
 - [x] Kjør demoflyt nb/en 28/28, full Vitest 2412/0, lokal DB 164/164 og i18n; lever D2_REPORT.md uten publisering.
-- [ ] REQ-0210: årsaken til 252–301 ms avvik i lang verifisering4-ui er uavklart; isolert avspilling 6/6 (89 ms). Ingen toleranser svekket; se D2_REPORT.md.
+- [x] REQ-0210 (N2): bildet fulgte en egen klokke med annen startforsinkelse enn lyden; bildet følger nå lydklokken. Lang kjøring 132–181 ms, isolert 132 ms (grense < 200 ms uendret). Se REQ0210_REPORT.md.
 
 ## D-1 – Demoklar gjennomgang
 - [x] Kjør aktive visuelle suiter én om gangen på nb og på en der det støttes; dokumenter hver suite i D1_REPORT.md.
