@@ -50,6 +50,15 @@ export interface AnimaticExportOptions {
   readonly bitrateKbps?: number | null;
   /** CA8: «main» utelater karakterlag satt til eget lag; «separate» lager filen med bare dem. */
   readonly characterPass?: "all" | "main" | "separate";
+  /**
+   * PTG2: monteringsbildet for hvert videobilde (bildefrekvensen regnes om i modellen, ikke her). Når den
+   * er satt, er videoen `frames.length` bilder lang og `startFrame`/`endFrame` brukes ikke.
+   */
+  readonly frames?: readonly number[];
+  /** PTG2: tegnes oppå hvert bilde (påskrift). `i` er videobildets nummer. */
+  readonly overlay?: (ctx: CanvasRenderingContext2D, i: number, width: number, height: number) => void;
+  /** PTG2: kalles med det ferdige bildet før det kodes (for PNG-sekvens av nøyaktig samme bilde). */
+  readonly onFrame?: (canvas: HTMLCanvasElement, i: number) => Promise<void>;
 }
 
 export interface AnimaticFile {
@@ -80,7 +89,8 @@ export async function exportAnimatic(o: AnimaticExportOptions): Promise<Animatic
     throw new ExportError(
       tk("engine-export-animatic.export-animatic.message.f12f66905cf1"),
     );
-  const total = o.endFrame - o.startFrame;
+  const total = o.frames ? o.frames.length : o.endFrame - o.startFrame;
+  const filmFrame = (i: number) => (o.frames ? o.frames[i]! : o.startFrame + i);
   if (total <= 0) throw new ExportError(tk("engine-export-animatic.export-animatic.message.c17e79a74249"));
   const width = even(o.width);
   const height = even(o.height);
@@ -161,8 +171,8 @@ export async function exportAnimatic(o: AnimaticExportOptions): Promise<Animatic
       if (o.signal?.aborted) throw new DOMException(tk("engine-export-animatic.export-animatic.message.25b057ed803a"), "AbortError");
       // Lyden ligger litt foran bildet, så filen flettes jevnt
       if (i * step >= audioDone - 1) await addAudioUntil(i * step + AUDIO_CHUNK);
-      if (video) await video.prepare(o.state, o.clips, o.startFrame + i);
-      drawFilmFrame(ctx, o.state, o.clips, o.startFrame + i, {
+      if (video) await video.prepare(o.state, o.clips, filmFrame(i));
+      drawFilmFrame(ctx, o.state, o.clips, filmFrame(i), {
         width,
         height,
         images: o.images,
@@ -174,6 +184,8 @@ export async function exportAnimatic(o: AnimaticExportOptions): Promise<Animatic
           ? { subtitle: cueAt(o.subtitles, (o.startFrame + i) * step * 1000)?.text ?? null }
           : {}),
       });
+      o.overlay?.(ctx, i, width, height);
+      if (o.onFrame) await o.onFrame(canvas, i);
       await source.add(i * step, step);
       if (i % 6 === 0 || i === total - 1) {
         o.onProgress?.(i + 1, total);

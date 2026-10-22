@@ -54555,5 +54555,95 @@
     "text": "L’importation a échoué : {value1}",
     "sourceHash": "2c2567bb25a599f10c58fd8640fe8d53f3eb86491fbaed7152c9b25ae4eda848",
     "review": "machine"
+  },
+  "ptg2.col-frame": {
+    "text": "Image",
+    "sourceHash": "b84078f055f70f479b3f44ac6fceafd41586c1fe9ae989e2f854692710e49ef6",
+    "review": "machine"
+  },
+  "ptg2.col-shot-frame": {
+    "text": "Image du plan",
+    "sourceHash": "dd29f93e7e5ebc401fc21ac4def84a05e1d639a137fd440b0887a4a7a4e8c2b3",
+    "review": "machine"
+  },
+  "ptg2.col-timecode": {
+    "text": "Timecode",
+    "sourceHash": "fbfb8d0b35684e11aecfd9589411a05f3f34cf18d5e08b09bd0004791a0b22bb",
+    "review": "machine"
+  },
+  "ptg2.col-character": {
+    "text": "Personnage",
+    "sourceHash": "4f4a650cdc41931d714685042197b87c9411b38002e220232a5f1eb512514500",
+    "review": "machine"
+  },
+  "ptg2.col-dialogue": {
+    "text": "Réplique",
+    "sourceHash": "d74f5425eb9a0ab831a15a4fbfeaf912fc4c959eecea292514df0aeffc73bb92",
+    "review": "machine"
+  },
+  "ptg2.col-mouth": {
+    "text": "Bouche",
+    "sourceHash": "b54b142805da5be382e89257990d5de6b002e7f4f612212249798171d5bc25fe",
+    "review": "machine"
+  },
+  "ptg2.col-action": {
+    "text": "Action",
+    "sourceHash": "c511f75d7319d2d785bdd0ab6a1a82143b9750a56875623e96ae2d046a656e2b",
+    "review": "machine"
+  },
+  "ptg2.col-layers": {
+    "text": "Calques",
+    "sourceHash": "96c5cd64d83640d54a9be8f2141b82be537d2c6f8266ebee12e2b1382bca6bb2",
+    "review": "machine"
+  },
+  "ptg2.col-notes": {
+    "text": "Notes",
+    "sourceHash": "066c61b12326fabc5e195c15c5170d23909cadafaaa99d8ca22f9c9c5068d6ad",
+    "review": "machine"
+  },
+  "ptg2.page": {
+    "text": "Page {value1} sur {value2}",
+    "sourceHash": "d087805548c6c481543e2fb98e8f86b2a5fcf1b97f80bbc15007157a6d7e43bb",
+    "review": "machine"
+  },
+  "ptg2.layer-start": {
+    "text": "début : {value1}",
+    "sourceHash": "395a5ee8f1ed2edb963e66a7f04bb21228f495c7fc7eafe47f60fef7fb2666d9",
+    "review": "machine"
+  },
+  "ptg2.layer-end": {
+    "text": "fin : {value1}",
+    "sourceHash": "121799ec0daf3e847d87e49ea788cf2c50ab96a446d92e4c6ca73b8439bc7c38",
+    "review": "machine"
+  },
+  "ptg2.burn-frame": {
+    "text": "Image",
+    "sourceHash": "b84078f055f70f479b3f44ac6fceafd41586c1fe9ae989e2f854692710e49ef6",
+    "review": "machine"
+  },
+  "ptg2.burn-mouth": {
+    "text": "Bouche",
+    "sourceHash": "b54b142805da5be382e89257990d5de6b002e7f4f612212249798171d5bc25fe",
+    "review": "machine"
+  },
+  "ptg2.option-png": {
+    "text": "Séquence PNG",
+    "sourceHash": "9c25df7349b12db272ec755dcc1942ce9fe47e2fe1d393469107d2d5b73cc2e0",
+    "review": "machine"
+  },
+  "ptg2.option-burnin": {
+    "text": "Incrustation",
+    "sourceHash": "7ca96be31501fd07f2391e03880239acb0d33d9b2e0582cb10bfbb91449636bc",
+    "review": "machine"
+  },
+  "ptg2.send": {
+    "text": "Envoyer vers Dragonframe",
+    "sourceHash": "3d894b39a6a4c9ee8004092a2c7d821fef2d25a83f5444fd26c082061d37a992",
+    "review": "machine"
+  },
+  "ptg2.readme": {
+    "text": "Paquet Dragonframe : un dossier par plan, nommé comme dans la liste des plans. Chaque dossier contient un film de référence (_ref.mp4, H.264) à la cadence de prise de vue, précis à l'image près et avec les poignées ; en deux, chaque exposition est affichée sur deux images. La séquence PNG facultative (png/) contient exactement les mêmes images. Le son (audio/) est en WAV 48 kHz 24 bits, de la même durée que le plan avec poignées, avec points de volume et fondus intégrés : une piste par personnage (DIA_), ambiance (AMB), musique (MUS), effets (SFX) et un mixage complet (MIX), dans la version linguistique choisie. La feuille d'exposition est fournie en CSV et PDF (A4 et Letter), avec une ligne par exposition ; la colonne bouche reste vide jusqu'à l'ajout des noms de bouche. Import dans Dragonframe : 1) Ouvrez la scène, choisissez Video Assist / calque de référence et importez _ref.mp4 (ou la séquence PNG) comme référence. 2) Importez le fichier MIX, ou la piste de dialogue, dans la fenêtre Audio et placez son début à l'image 1. 3) Ouvrez le X-Sheet et importez xsheet.csv, ou imprimez le PDF à côté du banc. L'IA peut servir à la lecture de piste du dialogue, mais le paquet est créé entièrement sans IA.",
+    "sourceHash": "be35d9f12482b38d49a6fac8da96aa3ab5fec543fb0cbad73622e6e3bbfdaaa6",
+    "review": "machine"
   }
 }
