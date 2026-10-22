@@ -129,18 +129,18 @@ Maskinelt avstemt fra requirements.yaml 2026-10-21 (878 krav: 708 Verifisert, 11
 - REQ-0748 – Godkjent overføring til redigerbart manus
 - REQ-0749 – VennTing-teknologien er en selvstendig kopi
 
-### Implementert – ikke verifisert (112)
+### Implementert – ikke verifisert (65)
 
-**P0 (6)**
+N4 (22.10) flyttet 48 krav til Verifisert; se docs/development/N4_REPORT.md.
+
+**P0 (4)**
 
 - REQ-0269 – Leverandøruavhengig AI-arkitektur
 - REQ-0291 – Jobber uavhengige av nettleserfane
 - REQ-0293 – Vedvarende backend-jobbarkitektur
 - REQ-0504 – Prinsipp 26: Jobber og status bevares mellom økter
-- REQ-0769 – DV L7: tidligere versjoner bevares
-- REQ-0770 – DV L8: volumkurver, klipping, hastighet og fades bevares ved bytte
 
-**P1 (95)**
+**P1 (49)**
 
 - REQ-0121 – Sentralt ressursbibliotek
 - REQ-0685 – Hele dialogteksten vises under opptak
@@ -151,92 +151,50 @@ Maskinelt avstemt fra requirements.yaml 2026-10-21 (878 krav: 708 Verifisert, 11
 - REQ-0708 – Naturlig romlyd i pauser
 - REQ-0709 – Romlyd i overganger mellom takes
 - REQ-0711 – Nettleserkompatibilitet for kamera, mikrofon og deling
-- REQ-0750 – DV M1: enkeltklikk på tidsplassert replikk flytter avspillingshodet
 - REQ-0751 – DV M2: hovedvisningen oppdateres
 - REQ-0752 – DV M3: dobbeltklikk åpner riktig dialogeditor
 - REQ-0753 – DV M4: riktig replikk forhåndsvalgt
-- REQ-0754 – DV M5: manglende timing uten falsk presisjon
 - REQ-0755 – DV D1: aktiv replikk lesbar under opptak
 - REQ-0756 – DV D2: kontekst i ca. 70 % styrke
 - REQ-0757 – DV D3: miniatyr når den finnes
 - REQ-0758 – DV D4: navn tydelig
 - REQ-0759 – DV D5: velge annen replikk i nedtrekkslisten
 - REQ-0760 – DV D6: sceneavspilling under opptak virker
-- REQ-0761 – DV D7: flere takes uten overskriving
 - REQ-0762 – DV D8: eksisterende lydprofil (volumkurver, hastighet, bølgeform) virker
-- REQ-0763 – DV L1: ett felles spor per karakter
 - REQ-0764 – DV L2: spornavn er karakternavn
-- REQ-0765 – DV L3: replikker er separate segmenter
 - REQ-0766 – DV L4: versjoner stablet i dialogeditoren
 - REQ-0767 – DV L5: forhåndslytting
-- REQ-0768 – DV L6: bare aktiv versjon spilles i scenen
-- REQ-0771 – DV L9: gjenvalgt versjon arver gjeldende plassering
-- REQ-0772 – DV L10: ulik varighet uten utilsiktet overlapp
 - REQ-0773 – DV V1: «Generer lydfil»
 - REQ-0774 – DV V2: standardstemme forhåndsvalgt
-- REQ-0775 – DV V3: lokale overstyringer
-- REQ-0776 – DV V4: nye genereringer som separate versjoner
 - REQ-0777 – DV V5: Lyd / Stemme-seksjon per karakter
 - REQ-0778 – DV V6: velge ElevenLabs-stemme når integrasjonen finnes
-- REQ-0779 – DV V7: endret standardstemme endrer ikke tidligere filer
 - REQ-0780 – DV G1: handlingen i Asset Library gjelder bare aktivt prosjekt
 - REQ-0781 – DV G2: dekning viser scener som mangler tale helt eller delvis
 - REQ-0782 – DV G3: brukeren velger scener og replikker
 - REQ-0783 – DV G4: ordrett advarsel ved eksisterende lyd
-- REQ-0784 – DV G5: ny generering blir aktiv versjon
-- REQ-0785 – DV G6: ingen eksisterende lyd eller redigering slettes
-- REQ-0786 – DV G7: feil lar tidligere aktiv versjon stå
-- REQ-0787 – DV G8: kostnadsestimat og eksplisitt bekreftelse før betalte kall
-- REQ-0788 – DV G9: usikkert tidsestimat når forsvarlig
 - REQ-0789 – DV G10: varig fremdrift per replikk med gjenopptak
 - REQ-0790 – DV G11: automatisk plassering i riktig replikk og scene
-- REQ-0791 – DV G12: minimal gyldig 2D-scene opprettes ved behov
-- REQ-0792 – DV G13: tekniske gjentak oppretter ingen duplikater
 - REQ-0793 – DV S1: UiLocale, scriptLanguage og speechLanguage er uavhengige
 - REQ-0794 – DV S2: flere BCP-47-talespråk i samme prosjekt
-- REQ-0795 – DV S3: talespråk kan overstyres per replikk
-- REQ-0796 – DV S4: støtte kontrolleres mot modellens levende språkdata
 - REQ-0797 – DV S5: usikker språkdeteksjon varsler før massegenerering
 - REQ-0798 – DV S6: brukeren kan velge samlet generering med advarsel
 - REQ-0799 – DV S7: separate språkjobber med egne stemmer og modeller
 - REQ-0800 – DV S8: brukeren velger innhold og estimater per språkjobb
-- REQ-0801 – DV A1: manusendring gir rød status
-- REQ-0802 – DV A2: aktiv versjon bestemmer status
-- REQ-0803 – DV A3: endrede og fjernede passasjer identifiseres
 - REQ-0804 – DV A4: avviket er synlig overalt der manuset vises
 - REQ-0805 – DV A5: lenke ut til riktig scene
 - REQ-0806 – DV A6: avspillingshodet settes på replikkstart
 - REQ-0807 – DV A7: ingen automatisk avspilling
 - REQ-0808 – DV A8: endringer vises i rødt i dialogeditoren
-- REQ-0809 – DV A9: «Merk som gjennomgått» krever eksplisitt handling
-- REQ-0810 – DV A10: historikken bevares
-- REQ-0811 – DV A11: ny manusendring gir rødt igjen
-- REQ-0812 – DV A12: eldre versjon kan gi avvik igjen
 - REQ-0813 – DV R1: handlingen ligger i Asset Library
 - REQ-0814 – DV R2: berørte scener og replikker vises
 - REQ-0815 – DV R3: brukeren velger replikker
 - REQ-0816 – DV R4: språk og kostnad vises før generering
-- REQ-0817 – DV R5: nye filer blir aktive, gamle bevares
-- REQ-0818 – DV R6: riktig manusrevisjon registreres
-- REQ-0819 – DV B1: sette personlig bokmerke
-- REQ-0820 – DV B2: «Fortsett ved bokmerke» åpner riktig sted
-- REQ-0821 – DV B3: bokmerket fjernes etter vellykket navigasjon
-- REQ-0822 – DV B4: andres bokmerker påvirkes ikke
-- REQ-0823 – DV H1: merke lyd
-- REQ-0824 – DV H2: merke bilde
-- REQ-0825 – DV H3: valgfri tekst
-- REQ-0826 – DV H4: av/på
-- REQ-0827 – DV H5: avmarkering sletter ikke tekst
-- REQ-0828 – DV H6: andre autoriserte ser lappen
-- REQ-0829 – DV H7: synkronisering
-- REQ-0830 – DV H8: oppretter og dato
 - REQ-0831 – DV H9: boks på prosjektsiden
-- REQ-0832 – DV H10: sortering etter dato og manusplassering
-- REQ-0833 – DV H11: filter på oppretter
-- REQ-0834 – DV H12: klikk åpner riktig sted
-- REQ-0835 – DV H13: virker selv om elementet er flyttet
-- REQ-0836 – DV H14: rettigheter følger samarbeidsmodellen
 - REQ-0839 – P4: WebM VP9 med eksplisitt alfastøtte
+
+**P2 (1)**
+
+- REQ-0571 – Globale ressurser på tvers av prosjekter
 
 **P3 (11)**
 
@@ -251,6 +209,11 @@ Maskinelt avstemt fra requirements.yaml 2026-10-21 (878 krav: 708 Verifisert, 11
 - REQ-0400 – Stilharmonisering av karakterbilder i plakat
 - REQ-0401 – Valg av kvalitetsnivå og modell for harmonisering
 - REQ-0402 – Publisere harmoniserte bilder til globalt bibliotek
+
+**N4-avvik og ekstern prøving**
+
+- AVVIK REQ-0269: AssetVoice.provider i src/core/model.ts er låst til «elevenlabs»; en ny taleleverandør krever endring i datamodellen. Låst av tests/architecture/n4-provider-agnostic.test.ts (listen skal bare krympe).
+- Krever ekstern prøving: REQ-0291, REQ-0293, REQ-0504 (lukket fane og gjenåpning mot ekte bakgrunnsjobb og leverandør), REQ-0685, REQ-0687, REQ-0689, REQ-0711 (ekte telefoner og opptak).
 
 ### Ikke startet (82)
 
