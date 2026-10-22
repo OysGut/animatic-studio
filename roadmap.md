@@ -201,5 +201,13 @@
 - [x] Eksportdialog: «Kamera (FBX, eksperimentell)» og «After Effects-pakke» med kameramodusvalg
 - [x] tsc grønn, i18n grønn, full Vitest 2300 bestått/10 hoppet over; ingen migrasjon nødvendig
 - [x] Rapport docs/development/PTG3_REPORT.md
-- [ ] Visuell suite ptg3-camera.mjs nb/en og regresjoner (ptg1-shotlist, export-e2e, p4): playwright mangler i dette miljøet; kjøres av Claude
+- [x] Visuell suite ptg3-camera.mjs nb/en 19/19 og regresjoner (ptg1-shotlist 35/35, export-e2e, p4 41/41), kjørt under PTG3b
 - [ ] Ekte FBX-import (Blender/Maya) og AE-kjøring av bygg.jsx: ekstern kontroll
+
+## PTG3b: Tittelkort med QR i AE-pakken (B-115)
+- [x] Tittelkort 1 s i egen komp foran skuddet (_TITLE/_RENDER, −1 s), tidskoder uendret
+- [x] QR med ikke-hemmelig importlenke /ptg/i, nøytral melding uten tilgang
+- [x] Importside: ny take (ikke aktivert), klipper tittelkortet, advarer ved lengdeavvik
+- [x] Valg «Tittelkort med QR» (på som standard), tekster på alle språk
+- [x] Tester: unit, QR-dekoding, ptg3b-titlecard.mjs nb/en 9/9, full Vitest/DB/i18n
+- [ ] Ekte AE-kjøring av tittelkortet og ekte opplasting/klipping av en AE-render: ekstern kontroll
