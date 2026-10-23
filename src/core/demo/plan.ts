@@ -61,7 +61,7 @@ function shapeLayer(
     assetId: assetId as never,
     assetVariantId: null,
     versionId: null,
-    fill,
+    fill: assetId ? null : fill,
     width: Math.round(w),
     height: Math.round(h),
     parallax,
@@ -73,7 +73,8 @@ function shapeLayer(
     swaps: [],
     path: null,
     anchor: null,
-    shape: { type: shape, radius: shape === "rect" ? 12 : 0, stroke: null },
+    // Former er bare for fargeflater; ressurslag uten bilde vises som plassholder i ressursens farge
+    ...(assetId ? {} : { shape: { type: shape, radius: shape === "rect" ? 12 : 0, stroke: null } }),
   };
 }
 
@@ -189,7 +190,8 @@ export function planDemoProject(o: DemoPlanOptions): Command[] {
       fields: { name: sc.location[L], width: W, height: H, durationFrames, background: place.sky },
     });
     const layers: LayerFields[] = [
-      shapeLayer("background", place.name[L], assetIds[sc.place], place.ground, W, H * 0.35, W / 2, H * 0.825, "rect", 1),
+      shapeLayer("background", place.name[L], assetIds[sc.place], place.ground, W, H, W / 2, H / 2, "rect", 1),
+      shapeLayer("midground", "Ground", null, place.ground, W, H * 0.35, W / 2, H * 0.825, "rect", 1),
     ];
     sc.cast.forEach((c, n) => {
       const x = sc.cast.length === 1 ? W * 0.4 : W * (0.32 + n * 0.3);
