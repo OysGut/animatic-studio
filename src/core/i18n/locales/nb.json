@@ -76142,5 +76142,38 @@
   },
   "g6-inherit.source.default": {
     "text": "standard"
+  },
+  "sb1.schema": {
+    "text": "Databasen mangler storyboardgrunnmuren. Kjør migrasjon 0102 først."
+  },
+  "sb1.error.invalid-panel": {
+    "text": "Ugyldig storyboardpanel."
+  },
+  "sb1.error.not-panel": {
+    "text": "Komposisjonen er ikke et storyboardpanel."
+  },
+  "sb1.error.blocks-variant": {
+    "text": "Blokkene hører ikke til scenens variant."
+  },
+  "sb1.error.invalid-status": {
+    "text": "Ugyldig produksjonsstatus."
+  },
+  "sb1.error.not-approved": {
+    "text": "Panelet må være godkjent før en ny revisjon kan startes."
+  },
+  "sb1.error.invalid-layer": {
+    "text": "Ugyldig storyboardlag."
+  },
+  "sb1.error.layer-kind": {
+    "text": "Lagtypen er bare tillatt i storyboardpaneler."
+  },
+  "sb1.layer-note": {
+    "text": "Lapp"
+  },
+  "sb1.layer-arrow": {
+    "text": "Pil"
+  },
+  "sb1.layer-camera-mark": {
+    "text": "Kameramerke"
   }
 }
