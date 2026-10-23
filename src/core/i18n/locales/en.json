@@ -71735,6 +71735,24 @@
     "parameters": [],
     "executable": true
   },
+  "core-script-assist-prompts.message.message.975880aef759": {
+    "text": "All lines already have an English translation",
+    "source": "\"All lines already have an English translation\"",
+    "parameters": [],
+    "executable": true
+  },
+  "app-script-assist-writing-panel.writing-panel.p.44cd5e7686d9": {
+    "text": "The draft is saved as an uncertain translation and must be approved. The Norwegian script is not changed.",
+    "source": "\"The draft is saved as an uncertain translation and must be approved. The Norwegian script is not changed.\"",
+    "parameters": [],
+    "executable": true
+  },
+  "app-script-assist-writing-panel.writing-panel.toolbar-button.51ceafe95950": {
+    "text": "English draft",
+    "source": "\"English draft\"",
+    "parameters": [],
+    "executable": true
+  },
   "adapters-account-lock-server.owner-blocked": {
     "text": "The project is locked because the owner is blocked. Contact the administrator ({admin})."
   },

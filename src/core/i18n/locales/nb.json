@@ -71753,6 +71753,24 @@
     "parameters": [],
     "executable": true
   },
+  "core-script-assist-prompts.message.message.975880aef759": {
+    "text": "Alle linjene har allerede engelsk oversettelse",
+    "source": "\"Alle linjene har allerede engelsk oversettelse\"",
+    "parameters": [],
+    "executable": true
+  },
+  "app-script-assist-writing-panel.writing-panel.p.44cd5e7686d9": {
+    "text": "Utkastet lagres som usikker oversettelse og må godkjennes. Det norske manuset endres ikke.",
+    "source": "\"Utkastet lagres som usikker oversettelse og må godkjennes. Det norske manuset endres ikke.\"",
+    "parameters": [],
+    "executable": true
+  },
+  "app-script-assist-writing-panel.writing-panel.toolbar-button.51ceafe95950": {
+    "text": "Engelsk utkast",
+    "source": "\"Engelsk utkast\"",
+    "parameters": [],
+    "executable": true
+  },
   "adapters-account-lock-server.owner-blocked": {
     "text": "Prosjektet er låst fordi eieren er blokkert. Kontakt administrator ({admin})."
   },
