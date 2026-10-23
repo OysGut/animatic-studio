@@ -1780,7 +1780,7 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         productionId: str(x["production_id"]) as never,
         name: str(x["name"] ?? ""),
         kind: (x["kind"] === "character_map" ? "character_map" : "pitch") as PosterKind,
-        language: (x["language"] === "en" ? "en" : "nb") as Poster["language"],
+        language: str(x["language"] ?? "und"),
         widthMm: num(x["width_mm"] ?? 700),
         heightMm: num(x["height_mm"] ?? 1000),
         document: json(x["document"]) as PosterDocument,

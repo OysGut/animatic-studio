@@ -10,7 +10,8 @@ import { numbersByOccurrence, exportNumbering, exportNotes, exportPaginationInpu
 import { ScriptLanguageSelect } from "./ScriptLanguageSelect";
 import { savedTitlePage } from "@/core/commands/export-settings";
 import { screenplayDocx } from "@/engine/export/screenplay-docx";
-import { screenplayPdf } from "@/engine/export/screenplay-pdf";
+import { screenplayPdf, screenplayPdfUnicode } from "@/engine/export/screenplay-pdf";
+import { loadNotoFonts } from "@/engine/export/pdf-fonts";
 import { isEmbedded, prepareDownload, type ReadyFile } from "@/app/download";
 import { useVersionList, useVersionSnapshot } from "@/app/project/use-versions";
 import { ExportHistory } from "@/app/projects/ExportHistory";
@@ -168,7 +169,7 @@ export function ExportDialog({
   );
   const fontBlocked = !!fontCheck?.blocking;
 
-  function doExport() {
+  async function doExport() {
     if (languageBlocked || fontBlocked) return;
     setBusy(true);
     setError(null);
@@ -201,11 +202,16 @@ export function ExportDialog({
       if (format === "pdf") {
         const pages = paginate(input).pages;
         const texts = new Map(input.flatMap((x) => x.blocks.map((b) => [b.id, b.text] as const)));
-        const bytes = screenplayPdf(pages, {
-          title: state.project.name,
-          titlePage,
-          ...(notes ? { notes: placeNotes(pages, texts, notes) } : {}),
-        });
+        const placed = notes ? { notes: placeNotes(pages, texts, notes) } : {};
+        const bytes = fontCheck?.embedded?.length
+          ? await screenplayPdfUnicode(pages, {
+              title: state.project.name,
+              titlePage,
+              language: isSourceLanguage(sourceState ?? state, language) ? sourceLanguageOf(sourceState ?? state) : language,
+              fonts: await loadNotoFonts(fontCheck.embedded),
+              ...placed,
+            })
+          : screenplayPdf(pages, { title: state.project.name, titlePage, ...placed });
         setReady(prepareDownload(bytes, `${base}.pdf`, "application/pdf"));
       } else if (format === "fountain") {
         const text = screenplayFountain(input, { titlePage, ...(notes ? { notes } : {}) });

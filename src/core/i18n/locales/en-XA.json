@@ -39977,18 +39977,6 @@
     "parameters": [],
     "executable": true
   },
-  "app-release-poster-dialogs.new-poster-dialog.option.e3870b997183": {
-    "text": "[!! NNôôrrwwëëggïïáánn !!]",
-    "source": "\"Norwegian\"",
-    "parameters": [],
-    "executable": true
-  },
-  "app-release-poster-dialogs.new-poster-dialog.option.39e4c15e4b70": {
-    "text": "[!! ËËnnggllïïsshh !!]",
-    "source": "\"English\"",
-    "parameters": [],
-    "executable": true
-  },
   "app-release-poster-dialogs.new-poster-dialog.label.5b853b6b614f": {
     "text": "[!! NNáámmëë !!]",
     "source": "\"Name\"",
@@ -40088,18 +40076,6 @@
   "app-release-poster-dialogs.export-poster-dialog.label.de5a73993ed1": {
     "text": "[!! LLáánnggüüáággëë !!]",
     "source": "\"Language\"",
-    "parameters": [],
-    "executable": true
-  },
-  "app-release-poster-dialogs.export-poster-dialog.option.2ba2c82ca3fa": {
-    "text": "[!! NNôôrrwwëëggïïáánn !!]",
-    "source": "\"Norwegian\"",
-    "parameters": [],
-    "executable": true
-  },
-  "app-release-poster-dialogs.export-poster-dialog.option.7d645d203fe3": {
-    "text": "[!! ËËnnggllïïsshh !!]",
-    "source": "\"English\"",
     "parameters": [],
     "executable": true
   },
@@ -40211,18 +40187,6 @@
     "parameters": [],
     "executable": true
   },
-  "app-release-poster-inspector.bilingual.label.e68a78963db2": {
-    "text": "[!! NNôôrrwwëëggïïáánn !!]",
-    "source": "\"Norwegian\"",
-    "parameters": [],
-    "executable": true
-  },
-  "app-release-poster-inspector.bilingual.label.2f1aee6df04c": {
-    "text": "[!! ËËnnggllïïsshh !!]",
-    "source": "\"English\"",
-    "parameters": [],
-    "executable": true
-  },
   "app-release-poster-inspector.bilingual.placeholder.701d079a0cb5": {
     "text": "[!! ËËmmppttyy: tthhëë NNôôrrwwëëggïïáánn ttëëxxtt ïïss üüssëëdd !!]",
     "source": "\"Empty: the Norwegian text is used\"",
@@ -40274,18 +40238,6 @@
   "app-release-poster-inspector.poster-settings.on-poster.3e76f71503df": {
     "text": "[!! CChháánnggëë tthhëë ppôôssttëërr lláánnggüüáággëë !!]",
     "source": "\"Change the poster language\"",
-    "parameters": [],
-    "executable": true
-  },
-  "app-release-poster-inspector.poster-settings.option.cf6b065837cf": {
-    "text": "[!! NNôôrrwwëëggïïáánn !!]",
-    "source": "\"Norwegian\"",
-    "parameters": [],
-    "executable": true
-  },
-  "app-release-poster-inspector.poster-settings.option.e6ed30832c1c": {
-    "text": "[!! ËËnnggllïïsshh !!]",
-    "source": "\"English\"",
     "parameters": [],
     "executable": true
   },
@@ -41162,18 +41114,6 @@
   "app-release-poster-workspace.release.aria-label.616d74b4a361": {
     "text": "[!! LLáánnggüüáággëë ôôff tthhëë pprrëëvvïïëëww !!]",
     "source": "\"Language of the preview\"",
-    "parameters": [],
-    "executable": true
-  },
-  "app-release-poster-workspace.release.option.c8bb36bc83a1": {
-    "text": "[!! NNôôrrwwëëggïïáánn !!]",
-    "source": "\"Norwegian\"",
-    "parameters": [],
-    "executable": true
-  },
-  "app-release-poster-workspace.release.option.cad6bb633625": {
-    "text": "[!! ËËnnggllïïsshh !!]",
-    "source": "\"English\"",
     "parameters": [],
     "executable": true
   },
@@ -71753,6 +71693,66 @@
     "parameters": [],
     "executable": true
   },
+  "app-release-poster-dialogs.export-poster-dialog.option.2ba2c82ca3fa": {
+    "text": "[!! NNôôrrwwëëggïïáánn !!]",
+    "source": "\"Norwegian\"",
+    "parameters": [],
+    "executable": true
+  },
+  "app-release-poster-dialogs.export-poster-dialog.option.7d645d203fe3": {
+    "text": "[!! ËËnnggllïïsshh !!]",
+    "source": "\"English\"",
+    "parameters": [],
+    "executable": true
+  },
+  "app-release-poster-dialogs.new-poster-dialog.option.39e4c15e4b70": {
+    "text": "[!! ËËnnggllïïsshh !!]",
+    "source": "\"English\"",
+    "parameters": [],
+    "executable": true
+  },
+  "app-release-poster-dialogs.new-poster-dialog.option.e3870b997183": {
+    "text": "[!! NNôôrrwwëëggïïáánn !!]",
+    "source": "\"Norwegian\"",
+    "parameters": [],
+    "executable": true
+  },
+  "app-release-poster-inspector.bilingual.label.2f1aee6df04c": {
+    "text": "[!! ËËnnggllïïsshh !!]",
+    "source": "\"English\"",
+    "parameters": [],
+    "executable": true
+  },
+  "app-release-poster-inspector.bilingual.label.e68a78963db2": {
+    "text": "[!! NNôôrrwwëëggïïáánn !!]",
+    "source": "\"Norwegian\"",
+    "parameters": [],
+    "executable": true
+  },
+  "app-release-poster-inspector.poster-settings.option.cf6b065837cf": {
+    "text": "[!! NNôôrrwwëëggïïáánn !!]",
+    "source": "\"Norwegian\"",
+    "parameters": [],
+    "executable": true
+  },
+  "app-release-poster-inspector.poster-settings.option.e6ed30832c1c": {
+    "text": "[!! ËËnnggllïïsshh !!]",
+    "source": "\"English\"",
+    "parameters": [],
+    "executable": true
+  },
+  "app-release-poster-workspace.release.option.c8bb36bc83a1": {
+    "text": "[!! NNôôrrwwëëggïïáánn !!]",
+    "source": "\"Norwegian\"",
+    "parameters": [],
+    "executable": true
+  },
+  "app-release-poster-workspace.release.option.cad6bb633625": {
+    "text": "[!! ËËnnggllïïsshh !!]",
+    "source": "\"English\"",
+    "parameters": [],
+    "executable": true
+  },
   "adapters-account-lock-server.owner-blocked": {
     "text": "[!! TThhëë pprrôôjjëëcctt ïïss llôôcckkëëdd bbëëccááüüssëë tthhëë ôôwwnnëërr ïïss bbllôôcckkëëdd. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ({admin}). !!]"
   },
@@ -75812,5 +75812,26 @@
   },
   "time.weekday-at": {
     "text": "[!! {weekday} áátt {time} !!]"
+  },
+  "g1b.poster.genre-film": {
+    "text": "[!! ÁÁnnïïmmááttëëdd ffïïllmm !!]"
+  },
+  "g1b.poster.genre-family": {
+    "text": "[!! ÁÁnnïïmmááttëëdd ffáámmïïllyy ffïïllmm !!]"
+  },
+  "g1b.poster.feature": {
+    "text": "[!! ÁÁnnïïmmááttëëdd ffëëááttüürrëë !!]"
+  },
+  "g1b.poster.approx-min": {
+    "text": "[!! áápppprrôôxx. {min} mmïïnn !!]"
+  },
+  "g1b.poster.fallback-placeholder": {
+    "text": "[!! ËËmmppttyy: tthhëë {language} ttëëxxtt ïïss üüssëëdd !!]"
+  },
+  "g1b.poster.untranslated-one": {
+    "text": "[!! 1 ttëëxxtt hhááss nnôô {language} vvëërrssïïôônn áánndd ïïss sshhôôwwnn ïïnn áánnôôtthhëërr lláánnggüüáággëë. !!]"
+  },
+  "g1b.poster.untranslated-many": {
+    "text": "[!! {length} ttëëxxttss hháávvëë nnôô {language} vvëërrssïïôônn áánndd áárrëë sshhôôwwnn ïïnn áánnôôtthhëërr lláánnggüüáággëë. !!]"
   }
 }

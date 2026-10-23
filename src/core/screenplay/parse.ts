@@ -12,8 +12,12 @@ import type { BlockKind, SceneHeading } from "../model";
 import type { ParsedElement, ParsedScene, ParsedScreenplay, RawLine, SourceRef } from "./types";
 import { t } from "@/core/i18n/keyed";
 
-const HEADING_RE =
-  /^(?:(\d+[A-Z]{0,2})\s+)?((?:INT\.?\s*\/\s*EXT\.?|EXT\.?\s*\/\s*INT\.?|I\/E\.?|INT\.|EXT\.|INNE\.|UTE\.)\s*.+?)(?:\s+(\d+[A-Z]{0,2}))?$/;
+/**
+ * Innledningen på en sceneoverskrift. G-1b: ikke bare engelsk og norsk – også tysk (INNEN/AUSSEN), russisk
+ * (ИНТ./НАТ.) og japansk (○). Andre språk med INT./EXT. (fransk, spansk, portugisisk, italiensk) dekkes allerede.
+ */
+const HEADING_PREFIX = String.raw`INT\.?\s*\/\s*EXT\.?|EXT\.?\s*\/\s*INT\.?|I\/E\.?|INT\.|EXT\.|INNE\.|UTE\.|INNEN\.|AUSSEN\.|AUẞEN\.|ИНТ\.|НАТ\.|○`;
+const HEADING_RE = new RegExp(String.raw`^(?:(\d+[A-Z]{0,2})\s+)?((?:${HEADING_PREFIX})\s*.+?)(?:\s+(\d+[A-Z]{0,2}))?$`);
 const PAGE_NUMBER_RE = /^\d+[A-Z]?\.?$/;
 const MORE_RE = /^\((MORE|MER|FORTS\.?)\)$/i;
 const CONTD_RE = /\s*\((CONT'D|CONT’D|FORTS\.?|FORTSETTER)\)\s*$/i;
@@ -55,7 +59,7 @@ function splitParenthetical(text: string): { kind: BlockKind; text: string }[] {
 export function parseHeading(raw: string): SceneHeading {
   const text = raw.trim().replace(/\s+/g, " ");
   const m =
-    /^(INT\.?\s*\/\s*EXT\.?|EXT\.?\s*\/\s*INT\.?|I\/E\.?|INT\.|EXT\.|INNE\.|UTE\.)\s*(.*)$/i.exec(
+    new RegExp(String.raw`^(${HEADING_PREFIX})\s*(.*)$`, "i").exec(
       text,
     );
   const intExt = m ? m[1]!.toUpperCase().replace(/\s+/g, "") : "";

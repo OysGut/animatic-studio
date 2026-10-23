@@ -5,13 +5,17 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Download, Loader2 } from "lucide-react";
 import { POSTER_FORMATS, POSTER_KIND_LABEL, newId, paletteLabel, posterAnalysis, posterDraft, posterFileName, renderPoster, type Poster, type PosterKind, type ProjectState, locale } from "@/core";
+import { PosterLanguageSelect } from "./PosterLanguageSelect";
+import { sourceLanguageOf } from "@/core/dialogue/languages";
 import type { Commands } from "@/app/project/use-commands";
 import { signedUrls } from "@/app/library/asset-images";
 import { prepareDownload, type ReadyFile } from "@/app/download";
 import { deflateZlib, posterPdf } from "@/engine/export/poster-pdf";
 import {
   bitmapToPdfImage,
+  ensurePosterNotoFonts,
   fetchBitmap,
+  posterTextImage,
   posterPng,
   posterPngSize,
 } from "@/engine/export/poster-canvas";
@@ -52,7 +56,7 @@ export function NewPosterDialog({
   );
   const [kind, setKind] = useState<PosterKind | null>(null);
   const [format, setFormat] = useState(POSTER_FORMATS[0]!.id);
-  const [language, setLanguage] = useState<"nb" | "en">("nb");
+  const [language, setLanguage] = useState<string>(() => sourceLanguageOf(state));
   const [name, setName] = useState("");
   const [error, setError] = useState<string | null>(null);
   const k = kind ?? analysis?.suggestedKind ?? "pitch";
@@ -73,7 +77,7 @@ export function NewPosterDialog({
           language,
           widthMm: f.w,
           heightMm: f.h,
-          document: posterDraft(state, productionId, k, f.w, f.h),
+          document: posterDraft(state, productionId, k, f.w, f.h, language),
         },
       },
       t("app-release-poster-dialogs.err.cmds-run.854b54ad554a", { value1: String(name.trim() || defaultName) }),
@@ -155,14 +159,7 @@ export function NewPosterDialog({
             </label>
             <label className="flex flex-col gap-1 text-xs text-text-secondary">
               {t("app-release-poster-dialogs.new-poster-dialog.label.3825c170d033")}
-              <select
-                value={language}
-                onChange={(e) => setLanguage(e.target.value as "nb" | "en")}
-                className={control}
-              >
-                <option value="nb">{t("app-release-poster-dialogs.new-poster-dialog.option.e3870b997183")}</option>
-                <option value="en">{t("app-release-poster-dialogs.new-poster-dialog.option.39e4c15e4b70")}</option>
-              </select>
+              <PosterLanguageSelect state={state} value={language} onChange={setLanguage} className={control} testId="poster-new-language" />
             </label>
           </div>
           <label className="flex flex-col gap-1 text-xs text-text-secondary">
@@ -230,7 +227,7 @@ export function ExportPosterDialog({
   onOpenChange: (open: boolean) => void;
 }) {
   const [kind, setKind] = useState<"pdf" | "png">("pdf");
-  const [lang, setLang] = useState<"nb" | "en">(poster.language);
+  const [lang, setLang] = useState<string>(poster.language);
   const [bleed, setBleed] = useState(true);
   const [marks, setMarks] = useState(true);
   const [ppi, setPpi] = useState(150);
@@ -256,6 +253,8 @@ export function ExportPosterDialog({
     setReady(null);
     try {
       const ops = renderPoster(state, poster, lang);
+      // G-1b: Noto-fontene teksten trenger lastes før tegning (bare de som brukes)
+      await ensurePosterNotoFonts(ops, lang);
       const paths = [...new Set(ops.flatMap((o) => (o.op === "image" ? [o.mediaPath] : [])))];
       const urls = paths.length ? await signedUrls(paths, 60 * 60) : {};
       const p = { ...poster, language: lang };
@@ -292,6 +291,7 @@ export function ExportPosterDialog({
             }
           },
           deflateZlib,
+          posterTextImage,
         );
         if (ac.signal.aborted) return;
         setReady(prepareDownload(bytes, posterFileName(p, "pdf"), "application/pdf"));
@@ -374,14 +374,7 @@ export function ExportPosterDialog({
           </fieldset>
           <label className="flex flex-col gap-1 text-xs text-text-secondary">
             {t("app-release-poster-dialogs.export-poster-dialog.label.de5a73993ed1")}
-            <select
-              value={lang}
-              onChange={(e) => setLang(e.target.value as "nb" | "en")}
-              className={control}
-            >
-              <option value="nb">{t("app-release-poster-dialogs.export-poster-dialog.option.2ba2c82ca3fa")}</option>
-              <option value="en">{t("app-release-poster-dialogs.export-poster-dialog.option.7d645d203fe3")}</option>
-            </select>
+            <PosterLanguageSelect state={state} value={lang} onChange={setLang} className={control} testId="poster-export-language" />
           </label>
           {kind === "pdf" ? (
             <div className="flex flex-col gap-1.5">

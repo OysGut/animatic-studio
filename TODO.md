@@ -8,7 +8,8 @@ Ikke foreslå, ikke start og ikke bygg dette før Øystein uttrykkelig ber om de
 ## G-1 – språknøytral grunnmur (23.10.2026)
 - [ ] G-1a gjennomgang: 0090 er skrevet og testet bare lokalt; Claude kjører i Cloud etter gjennomgang.
 - [ ] G-1a rest: full BCP-47-kontrakt, bred hardkodekontroll, kildebytte med bevart dokumenthistorikk, japansk manus-PDF og komplett backup-/avvikdekning.
-- [ ] G-1b: opprettingsvelger, tydelig advarsel ved kildebytte, språkbekreftelse ved Fountain/FDX/Word/PDF-import, nøytrale standardverdier/prompts/fontvalg/formatering og alle språk samtidig.
+- [x] G-1b: opprettingsvelger, advarsel ved kildebytte, språkbekreftelse ved import, nøytrale standarder, Noto-PDF, plakater på alle språk (levert 23.10; 0091 venter på Claudes Cloud-kjøring).
+- [ ] G-1b oppfølging: full forming av devanagari/thai i manus-PDF (jsPDF former dem ikke).
 - [ ] Full arbeidsflyt mot schema 90 etter Claudes Cloud-kjøring. Ikke publiser. N11s 17 restkrav står separat.
 
 ## N11 – gjenstående akseptansekontroller

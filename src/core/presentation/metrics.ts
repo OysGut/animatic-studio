@@ -139,6 +139,12 @@ export function winAnsiCode(ch: string): number {
   return WIN_ANSI_EXTRA[ch] ?? 0x3f;
 }
 
+/** Fullbreddetegn (kana, Han, hangul, fullbredde former). */
+function isWide(ch: string): boolean {
+  const c = ch.codePointAt(0)!;
+  return (c >= 0x2e80 && c <= 0x9fff) || (c >= 0xac00 && c <= 0xd7af) || (c >= 0xf900 && c <= 0xfaff) || (c >= 0xff00 && c <= 0xff60);
+}
+
 /** Bredden av teksten i punkter (sperring i em/1000 per tegn). */
 export function textWidthPt(
   text: string,
@@ -150,7 +156,8 @@ export function textWidthPt(
   let units = 0;
   let n = 0;
   for (const ch of text) {
-    units += w[winAnsiCode(ch) - 32] ?? 500;
+    // G-1b: CJK-tegn er fulle firkanter (1 em); andre tegn utenfor WinAnsi måles som før
+    units += isWide(ch) ? 1000 : (w[winAnsiCode(ch) - 32] ?? 500);
     n++;
   }
   return ((units + tracking * Math.max(0, n - 1)) / 1000) * sizePt;

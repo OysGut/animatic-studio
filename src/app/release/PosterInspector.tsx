@@ -6,7 +6,8 @@
 import { PanelHeader } from "@/app/shell/workspace-chrome";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { AlertTriangle, CheckCircle2, Info, LayoutTemplate, RotateCcw, Trash2 } from "lucide-react";
-import { ASSET_KIND_LABEL, PALETTES, paletteLabel, POSTER_FORMATS, POSTER_KIND_LABEL, POSTER_OPTION_LABEL, ROLE_LABEL, minReadablePt, posterAnalysis, posterChecks, sortedAssets, versionsOf, type LocalizedText, type Poster, type PosterCheck, type PosterDocument, type PosterElement, type PosterKind, type PosterOptions, type ProjectState } from "@/core";
+import { ASSET_KIND_LABEL, PALETTES, paletteLabel, POSTER_FORMATS, POSTER_KIND_LABEL, POSTER_OPTION_LABEL, ROLE_LABEL, minReadablePt, posterAnalysis, posterChecks, sortedAssets, versionsOf, languageLabel, posterLanguages, textIn, type LocalizedText, type Poster, type PosterCheck, type PosterDocument, type PosterElement, type PosterKind, type PosterOptions, type ProjectState } from "@/core";
+import { PosterLanguageSelect } from "./PosterLanguageSelect";
 import { Button } from "@/components/ui/button";
 import { t } from "@/core/i18n/keyed";
 
@@ -93,44 +94,40 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
   );
 }
 
+/** G-1b: ett felt per språk plakaten bruker (plakatens språk og kildespråket). */
 function Bilingual({
   label,
   value,
   onCommit,
   disabled,
   multiline,
+  languages,
 }: {
   label: string;
   value: LocalizedText;
   onCommit: (v: LocalizedText) => void;
   disabled: boolean;
   multiline?: boolean;
+  languages: readonly string[];
 }) {
+  const reserve = languages[languages.length - 1] ?? "";
   return (
     <div className="grid grid-cols-1 gap-1.5">
-      <Field
-        label={`${label} (${t("app-release-poster-inspector.bilingual.label.e68a78963db2")})`}
-        value={value.nb}
-        disabled={disabled}
-        multiline={multiline ?? false}
-        onCommit={(nb) => onCommit({ ...value, nb })}
-      />
-      <Field
-        label={`${label} (${t("app-release-poster-inspector.bilingual.label.2f1aee6df04c")})`}
-        value={value.en}
-        disabled={disabled}
-        multiline={multiline ?? false}
-        placeholder={t("app-release-poster-inspector.bilingual.placeholder.701d079a0cb5")}
-        onCommit={(en) => onCommit({ ...value, en })}
-      />
+      {languages.map((l) => (
+        <Field
+          key={l}
+          label={`${label} (${languageLabel(l)})`}
+          value={textIn(value, l)}
+          disabled={disabled}
+          multiline={multiline ?? false}
+          {...(l !== reserve ? { placeholder: t("g1b.poster.fallback-placeholder", { language: languageLabel(reserve) }) } : {})}
+          onCommit={(v) => onCommit({ ...value, [l]: v })}
+        />
+      ))}
     </div>
   );
 }
 
-/**
- * Fargevelger som lagrer når brukeren har sluttet å dra i fargen (eller forlater feltet), ikke for hver
- * bevegelse – ellers blir det en lagring og ny komposisjon per musebevegelse.
- */
 function ColorInput({
   value,
   onCommit,
@@ -198,6 +195,7 @@ export function PosterSettings({
   onRedraft: () => void;
 }) {
   const doc = poster.document;
+  const langs = posterLanguages(state, poster.language);
   const analysis = useMemo(
     () => posterAnalysis(state, poster.productionId),
     [state, poster.productionId],
@@ -279,20 +277,16 @@ export function PosterSettings({
           </label>
           <label className="flex flex-col gap-0.5 text-[11px] text-text-secondary">
             {t("app-release-poster-inspector.poster-settings.label.d24bde1ca89e")}
-            <select
+            <PosterLanguageSelect
+              state={state}
               value={poster.language}
               disabled={ro}
-              onChange={(e) =>
-                onPoster(
-                  { language: e.target.value as "nb" | "en" },
-                  t("app-release-poster-inspector.poster-settings.on-poster.3e76f71503df"),
-                )
+              testId="poster-language"
+              onChange={(language) =>
+                onPoster({ language }, t("app-release-poster-inspector.poster-settings.on-poster.3e76f71503df"))
               }
               className={control}
-            >
-              <option value="nb">{t("app-release-poster-inspector.poster-settings.option.cf6b065837cf")}</option>
-              <option value="en">{t("app-release-poster-inspector.poster-settings.option.e6ed30832c1c")}</option>
-            </select>
+            />
           </label>
         </div>
         <label className="flex flex-col gap-0.5 text-[11px] text-text-secondary">
@@ -410,18 +404,21 @@ export function PosterSettings({
         <Bilingual
           label={t("app-release-poster-inspector.poster-settings.label.76c766b3293e")}
           value={doc.title}
+          languages={langs}
           disabled={ro}
           onCommit={(title) => onDocument({ ...doc, title }, t("app-release-poster-inspector.poster-settings.on-document.76cb1debf047"))}
         />
         <Bilingual
           label={t("app-release-poster-inspector.poster-settings.label.9843441a4ed2")}
           value={doc.genre}
+          languages={langs}
           disabled={ro}
           onCommit={(genre) => onDocument({ ...doc, genre }, t("app-release-poster-inspector.poster-settings.on-document.413d1b72987d"))}
         />
         <Bilingual
           label={t("app-release-poster-inspector.poster-settings.label.bcea48b950bf")}
           value={doc.tagline}
+          languages={langs}
           disabled={ro}
           onCommit={(tagline) =>
             onDocument({ ...doc, tagline }, t("app-release-poster-inspector.poster-settings.on-document.2a43aa2f90c6"))
@@ -430,6 +427,7 @@ export function PosterSettings({
         <Bilingual
           label="Logline"
           value={doc.logline}
+          languages={langs}
           disabled={ro}
           multiline
           onCommit={(logline) =>
@@ -617,7 +615,8 @@ export function ElementInspector({
         <Section title={t("app-release-poster-inspector.element-inspector.title.e9fbbd403aec")}>
           <Bilingual
             label={t("app-release-poster-inspector.element-inspector.label.e9fbbd403aec")}
-            value={e.text ?? { nb: "", en: "" }}
+            value={e.text ?? {}}
+            languages={posterLanguages(state, poster.language)}
             disabled={ro}
             multiline
             onCommit={(text) => onChange({ text }, t("app-release-poster-inspector.element-inspector.on-change.d2d4d09164ef"))}
@@ -947,7 +946,7 @@ export function PosterChecksList({
 }: {
   state: ProjectState;
   poster: Poster;
-  lang: "nb" | "en";
+  lang: string;
   onShow: (ids: readonly string[]) => void;
 }) {
   const checks = useMemo<PosterCheck[]>(

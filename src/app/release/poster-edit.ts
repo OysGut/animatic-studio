@@ -4,6 +4,7 @@
  */
 import {
   layoutPoster,
+  posterLanguages,
   type Poster,
   type PosterDocument,
   type PosterElement,
@@ -47,9 +48,10 @@ export function relayout(
   s: ProjectState,
   poster: Poster,
   doc: PosterDocument,
-  over?: Partial<Pick<Poster, "kind" | "widthMm" | "heightMm">>,
+  over?: Partial<Pick<Poster, "kind" | "widthMm" | "heightMm" | "language">>,
 ): PosterDocument {
   return layoutPoster(s, {
+    languages: posterLanguages(s, over?.language ?? poster.language),
     kind: over?.kind ?? poster.kind,
     widthMm: over?.widthMm ?? poster.widthMm,
     heightMm: over?.heightMm ?? poster.heightMm,

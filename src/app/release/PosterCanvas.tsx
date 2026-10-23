@@ -65,7 +65,7 @@ export function PosterCanvas({
 }: {
   state: ProjectState;
   poster: Poster;
-  lang: "nb" | "en";
+  lang: string;
   urls: Readonly<Record<string, string>>;
   selectedId: string | null;
   onSelect: (id: string | null) => void;

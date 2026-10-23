@@ -81,16 +81,15 @@ describe("ML4 – eksport med tre eller flere språkversjoner", () => {
     }
   });
 
-  it("fontkontrollen stopper PDF for latinsk og kyrillisk serbisk, i stedet for å skrive «?»", () => {
-    const latn = scriptExportFontCheck(scriptExportTexts(exportsFor(s, "sr-Latn").input), "pdf");
-    expect(latn.blocking).toBe(true);
-    expect(latn.font).toBe("Courier");
-    expect([...latn.unsupported].sort()).toEqual(["Č", "Đ", "ć", "đ"].sort());
-    const cyrl = scriptExportFontCheck(scriptExportTexts(exportsFor(s, "sr-Cyrl").input), "pdf");
-    expect(cyrl.blocking).toBe(true);
-    expect(cyrl.unsupported.slice(0, 2)).toEqual(["Ч", "у"]);
-    expect(cyrl.unsupported.length).toBeLessThanOrEqual(12);
-    expect(cyrl.unsupportedCount).toBeGreaterThan(12);
+  it("G-1b: PDF for latinsk og kyrillisk serbisk bygger inn Noto i stedet for å stoppe eller skrive «?»", () => {
+    for (const language of ["sr-Latn", "sr-Cyrl"]) {
+      const r = scriptExportFontCheck(scriptExportTexts(exportsFor(s, language).input), "pdf");
+      expect(r).toMatchObject({ blocking: false, font: "Noto Sans", unsupportedCount: 0, embedded: ["latin"] });
+    }
+    // Tegn ingen font har (emoji) stopper fortsatt PDF-eksporten
+    expect(scriptExportFontCheck(["Maja 🎬"], "pdf")).toMatchObject({ blocking: true, unsupported: ["🎬"] });
+    // Rent latinsk manus bruker Courier som før
+    expect(scriptExportFontCheck(["Jula på Dovre"], "pdf")).toMatchObject({ font: "Courier", blocking: false });
   });
 
   it("Word (Courier New) og Fountain dekker begge serbiske skriftene", () => {

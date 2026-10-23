@@ -11469,6 +11469,85 @@
       "en": {
         "text": "{weekday} at {time}"
       }
+    },
+    "g1b.poster.genre-film": {
+      "replaces": [],
+      "nb": {
+        "text": "Animasjonsfilm"
+      },
+      "en": {
+        "text": "Animated film"
+      }
+    },
+    "g1b.poster.genre-family": {
+      "replaces": [],
+      "nb": {
+        "text": "Animert familiefilm"
+      },
+      "en": {
+        "text": "Animated family film"
+      }
+    },
+    "g1b.poster.feature": {
+      "replaces": [],
+      "nb": {
+        "text": "Animert spillefilm"
+      },
+      "en": {
+        "text": "Animated feature"
+      }
+    },
+    "g1b.poster.approx-min": {
+      "replaces": [],
+      "nb": {
+        "text": "ca. {min} min"
+      },
+      "en": {
+        "text": "approx. {min} min"
+      }
+    },
+    "g1b.poster.fallback-placeholder": {
+      "replaces": [
+        "app-release-poster-dialogs.export-poster-dialog.option.2ba2c82ca3fa",
+        "app-release-poster-dialogs.export-poster-dialog.option.7d645d203fe3",
+        "app-release-poster-dialogs.new-poster-dialog.option.39e4c15e4b70",
+        "app-release-poster-dialogs.new-poster-dialog.option.e3870b997183",
+        "app-release-poster-inspector.bilingual.label.2f1aee6df04c",
+        "app-release-poster-inspector.bilingual.label.e68a78963db2",
+        "app-release-poster-inspector.bilingual.placeholder.701d079a0cb5",
+        "app-release-poster-inspector.poster-settings.option.cf6b065837cf",
+        "app-release-poster-inspector.poster-settings.option.e6ed30832c1c",
+        "app-release-poster-workspace.release.option.c8bb36bc83a1",
+        "app-release-poster-workspace.release.option.cad6bb633625"
+      ],
+      "nb": {
+        "text": "Tom: teksten på {language} brukes"
+      },
+      "en": {
+        "text": "Empty: the {language} text is used"
+      }
+    },
+    "g1b.poster.untranslated-one": {
+      "replaces": [
+        "core-presentation-poster.text.text.7c664d2f6b00"
+      ],
+      "nb": {
+        "text": "1 tekst finnes ikke på {language} og vises på et annet språk."
+      },
+      "en": {
+        "text": "1 text has no {language} version and is shown in another language."
+      }
+    },
+    "g1b.poster.untranslated-many": {
+      "replaces": [
+        "core-presentation-poster.text.text.fd87329d7c53"
+      ],
+      "nb": {
+        "text": "{length} tekster finnes ikke på {language} og vises på et annet språk."
+      },
+      "en": {
+        "text": "{length} texts have no {language} version and are shown in another language."
+      }
     }
   }
 }

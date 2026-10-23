@@ -5,10 +5,10 @@ Autoritativ kilde for krav-ID-er. Mandatkrav er utledet fra `MASTER_SPECIFICATIO
 **ID-er er permanente. Aldri gjenbruk eller omnummerer. Nye krav får neste ledige nummer. Utgåtte krav beholdes med status Utgått.**
 
 ## Nøkkeltall
-- Antall krav: **924**
-- Prioritet: P0: 147, P1: 569, P2: 169, P3: 39
-- Opprinnelse: mandat: 520, brukerbeslutning: 397, teknisk-anbefaling: 7
-- Status: Verifisert: 823, Ikke startet: 63, Implementert – ikke verifisert: 37, Utgått: 1
+- Antall krav: **925**
+- Prioritet: P0: 147, P1: 570, P2: 169, P3: 39
+- Opprinnelse: mandat: 520, brukerbeslutning: 398, teknisk-anbefaling: 7
+- Status: Verifisert: 824, Ikke startet: 63, Implementert – ikke verifisert: 37, Utgått: 1
 
 ## Prioritetsdefinisjoner
 - **P0** Kritisk – ufravikelig prinsipp/systeminvariant. Gjelder fra første kodelinje som berører området, også når selve funksjonen bygges i en senere fase (feltet `phase`).
@@ -12772,3 +12772,25 @@ Standardspråket er engelsk. Språket velges i rekkefølgen profilens språk, lo
 - **Tester:**
   - enhet: i18n-testene i full Vitest
 - **Implementering:** src/app/i18n/language.tsx
+
+#### REQ-0925 – Språknøytral grunnmur
+Ingen datamodell, logikk eller standardverdi skal anta norsk eller Norge. Manusets valgte språk er kilden, og andre språk kan brukes som mål, tale og grensesnitt uavhengig. Kildetekst endres aldri automatisk av språkversjoner.
+
+- **Kilde:** Beslutning G-1 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** UI · **Invarianter:** INV-05
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Japansk og engelsk manus støtter norsk målspråk; norsk manus fungerer som før.
+  - Brukeren velger og bekrefter kilde ved oppretting, endring og import.
+  - Oversettelse, linjekobling, avvik, tale, eksport og sikkerhetskopi bevarer kildeteksten.
+- **Tester:**
+  - tests/unit/g1-source-foundation.test.ts
+  - tests/unit/g1b-roundtrip.test.ts
+  - tests/unit/g1b-user-flow.test.tsx
+  - tests/unit/g1b-source-language.test.tsx
+  - tests/unit/g1b-poster-languages.test.ts
+  - tests/unit/g1b-pdf-scripts.test.ts
+  - tests/architecture/g1b-no-hardcoded-norwegian.test.ts
+  - tests/db/run-db-tests.ts: 0090 G-1, 0091 plakatspråk
+- **Implementering:** db/migrations/0090_language_neutral_foundation.sql, db/migrations/0091_fdx_import_format.sql, src/core/dialogue/languages.ts, src/core/typography/pdf-scripts.ts, src/core/presentation/poster.ts
+- **Merknad:** 0091 kjøres i Cloud av Claude. Ikke publisert.

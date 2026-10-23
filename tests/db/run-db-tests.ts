@@ -2224,12 +2224,17 @@ try {
     });
     back = await loadState(projectId);
     assert(back.posters[poster]!.language === "en", "endringen ble ikke lagret");
-    assert(back.posters[poster]!.document.title.en === "Title", "dokumentet ble ikke endret");
+    assert(back.posters[poster]!.document.title["en"] === "Title", "dokumentet ble ikke endret");
     await expectError(
       sql`update public.asset_relations set kind = 'enemy' where id = ${rel}`,
       /check/,
     );
     await expectError(sql`update public.posters set width_mm = 10 where id = ${poster}`, /check/);
+    // 0091 (G-1b): plakatspråket er et vanlig BCP-47-merke; ugyldige merker avvises fortsatt
+    await sql`update public.posters set language = 'ja' where id = ${poster}`;
+    await sql`update public.posters set language = 'pt-BR' where id = ${poster}`;
+    await expectError(sql`update public.posters set language = 'Norsk!' where id = ${poster}`, /check/);
+    await sql`update public.posters set language = 'en' where id = ${poster}`;
     // Ressursen kan ikke slettes så lenge relasjonen peker på den
     await expectError(sql`delete from public.assets where id = ${chars[0]!.id}`, /foreign key/);
     // Bare lesing for medlemmer

@@ -19,11 +19,13 @@ import {
 import { classifyEntitiesPrompt, type AIClassification } from "@/core/library/classification-prompt";
 import type { AnyClient } from "@/adapters/storage/project-rows";
 import { t } from "@/core/i18n/keyed";
+import { canonicalLanguageTag } from "@/core/translation/language-tags";
 
 export interface AnalyzeInput {
   readonly projectId: string;
   readonly scope: "all" | { readonly sceneIds: readonly string[] };
-  readonly language: "nb" | "en";
+  /** Svarspråket (grensesnittspråket), BCP-47. */
+  readonly language: string;
 }
 
 export type AnalyzeResult =
@@ -48,7 +50,7 @@ export function validateAnalyzeInput(d: unknown): AnalyzeInput {
       throw new Error(t("adapters-ai-entity-analysis-functions.validate-analyze-input.message.88cc30b04a23"));
     s = { sceneIds: ids as string[] };
   }
-  return { projectId: x["projectId"], scope: s, language: x["language"] === "en" ? "en" : "nb" };
+  return { projectId: x["projectId"], scope: s, language: (typeof x["language"] === "string" && canonicalLanguageTag(x["language"])) || "en" };
 }
 
 async function readStored(db: AnyClient, projectId: string): Promise<StoredSceneAnalysis[]> {

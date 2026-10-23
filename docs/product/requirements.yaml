@@ -34940,14 +34940,27 @@ requirements:
   - "Oversettelse, linjekobling, avvik, tale, eksport og sikkerhetskopi bevarer kildeteksten."
   tests:
   - "tests/unit/g1-source-foundation.test.ts"
-  - "tests/db/run-db-tests.ts: 0090 G-1"
-  status: Under arbeid
+  - "tests/unit/g1b-roundtrip.test.ts"
+  - "tests/unit/g1b-user-flow.test.tsx"
+  - "tests/unit/g1b-source-language.test.tsx"
+  - "tests/unit/g1b-poster-languages.test.ts"
+  - "tests/unit/g1b-pdf-scripts.test.ts"
+  - "tests/architecture/g1b-no-hardcoded-norwegian.test.ts"
+  - "tests/db/run-db-tests.ts: 0090 G-1, 0091 plakatspråk"
+  status: Verifisert
   implementation:
   - "db/migrations/0090_language_neutral_foundation.sql"
+  - "db/migrations/0091_fdx_import_format.sql"
   - "src/core/dialogue/languages.ts"
-  verification: []
+  - "src/core/typography/pdf-scripts.ts"
+  - "src/core/presentation/poster.ts"
+  verification:
+  - "enhet: G-1b-testene (rundtur ja/en/nb, brukerflyt, plakatspråk, Noto-PDF, arkitekturtest) i full Vitest"
   history:
   - date: '2026-10-23'
     decision: G-1
     change: "Registrert; G-1a delvis levert lokalt, G-1b og full eksportdekning gjenstår. Ikke Verifisert."
-  notes: "Ingen Cloud-kjøring eller publisering."
+  - date: '2026-10-23'
+    decision: G-1
+    change: "G-1b levert: Noto-PDF per skriftsystem, plakater på alle språk (0091), arkitekturtest mot fast nb/no, rundtur ja/en/nb og brukerflyttest. Verifisert med testene over."
+  notes: "0091 kjøres i Cloud av Claude. Ikke publisert."

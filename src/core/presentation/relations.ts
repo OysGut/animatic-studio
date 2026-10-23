@@ -10,7 +10,7 @@ import type { Asset, AssetRelation, ProjectState, RelationKind } from "../model"
 import { blocksOfVariant, orderedOccurrences } from "../views";
 import { allAssetUsage, assetNames, nameKey } from "../library";
 import { characterName, mentions } from "../screenplay/filter";
-import { tLocalized } from "@/core/i18n/keyed";
+import { t as tk, tLocalized } from "@/core/i18n/keyed";
 
 export const RELATION_LABEL: Record<RelationKind, string> = {
   family: "Familie",
@@ -25,6 +25,17 @@ export const RELATION_LABEL: Record<RelationKind, string> = {
 
 /** Navn på relasjonstypen i det språket brukeren har valgt (visning i appen). */
 export const RELATION_NAME: Record<RelationKind, string> = tLocalized({ family: "core-presentation-relations.relation-name.family.f255082f3e75", friendship: "core-presentation-relations.relation-name.friendship.fa09f3a467bb", conflict: "core-presentation-relations.relation-name.conflict.af8efcc91dc4", care: "core-presentation-relations.relation-name.care.02ba5a5d5572", romance: "core-presentation-relations.relation-name.romance.430df5ad42ed", mentor: "core-presentation-relations.relation-name.mentor.c0eae1dc0711", hidden: "core-presentation-relations.relation-name.hidden.b8a2c8a2b5fe", other: "core-presentation-relations.relation-name.other.fba6f9802500" });
+/** G-1b: typenavnet på et bestemt språk. */
+const RELATION_NAME_IN: Record<RelationKind, (lang?: string) => string> = {
+  family: (l) => tk("core-presentation-relations.relation-name.family.f255082f3e75", {}, l),
+  friendship: (l) => tk("core-presentation-relations.relation-name.friendship.fa09f3a467bb", {}, l),
+  conflict: (l) => tk("core-presentation-relations.relation-name.conflict.af8efcc91dc4", {}, l),
+  care: (l) => tk("core-presentation-relations.relation-name.care.02ba5a5d5572", {}, l),
+  romance: (l) => tk("core-presentation-relations.relation-name.romance.430df5ad42ed", {}, l),
+  mentor: (l) => tk("core-presentation-relations.relation-name.mentor.c0eae1dc0711", {}, l),
+  hidden: (l) => tk("core-presentation-relations.relation-name.hidden.b8a2c8a2b5fe", {}, l),
+  other: (l) => tk("core-presentation-relations.relation-name.other.fba6f9802500", {}, l),
+};
 
 export const RELATION_LABEL_EN: Record<RelationKind, string> = {
   family: "Family",
@@ -117,8 +128,9 @@ export function approvedRelations(s: ProjectState): AssetRelation[] {
 }
 
 /** Navnet på relasjonen (eget navn, ellers typen) på språket. */
-export function relationName(r: Pick<AssetRelation, "kind" | "label">, lang = "nb"): string {
-  return r.label.trim() || (lang === "en" ? RELATION_LABEL_EN : RELATION_LABEL)[r.kind];
+export function relationName(r: Pick<AssetRelation, "kind" | "label">, lang?: string): string {
+  // G-1b: typenavnet hentes fra språkkatalogen for språket (ikke fast norsk eller engelsk)
+  return r.label.trim() || RELATION_NAME_IN[r.kind](lang);
 }
 
 /**

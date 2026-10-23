@@ -38,6 +38,27 @@ export interface PosterPdfOptions {
   readonly ppi?: number;
 }
 
+type TextOp = Extract<RenderOp, { op: "text" }>;
+/** Tekst tegnet som bilde: bildet og området det dekker (mm, uten rotasjon). */
+export interface TextImage {
+  readonly image: PdfImage;
+  readonly x: number;
+  readonly y: number;
+  readonly w: number;
+  readonly h: number;
+}
+
+/** Trenger teksten andre fonter enn PDF-standardskriftene? */
+export function needsUnicodeText(o: TextOp): boolean {
+  return o.lines.some((l) => [...l.text].some((ch) => ch !== "?" && winAnsiCode(ch) === 0x3f));
+}
+
+/** Området tekstbildet dekker: rammen pluss én skriftstørrelse rundt (lange linjer kan gå utenfor). */
+export function textImageArea(o: TextOp): { x: number; y: number; w: number; h: number } {
+  const pad = o.size * (25.4 / 72);
+  return { x: o.x - pad, y: o.y - pad, w: o.w + 2 * pad, h: o.h + 2 * pad };
+}
+
 /** Plassen rundt den utfallende kanten der skjæremerkene står (mm). */
 export const MARK_AREA_MM = 10;
 
@@ -130,6 +151,11 @@ export async function posterPdf(
   opts: PosterPdfOptions,
   loadImage: (mediaPath: string, maxW: number, maxH: number) => Promise<PdfImage | null>,
   deflate: (bytes: Uint8Array) => Promise<Uint8Array>,
+  /**
+   * G-1b: tekst med tegn utenfor WinAnsi (japansk, arabisk, devanagari …) tegnes av nettleseren med Noto og
+   * legges inn som bilde i trykkoppløsning, med riktig forming og retning. Utelatt: «?» som før.
+   */
+  textImage?: (op: TextOp, ppi: number) => Promise<TextImage | null>,
 ): Promise<Uint8Array> {
   const W = opts.widthMm;
   const H = opts.heightMm;
@@ -207,6 +233,23 @@ export async function posterPdf(
     images.set(path, { name: `Im${++imgNo}`, id });
   }
 
+  // G-1b: tekst utenfor WinAnsi som bilder
+  const textImages = new Map<string, { name: string; area: TextImage }>();
+  if (textImage)
+    for (const o of ops) {
+      if (o.op !== "text" || !needsUnicodeText(o)) continue;
+      const ti = await textImage(o, ppi);
+      if (!ti) continue;
+      const id = reserve();
+      const sid = reserve();
+      const img = ti.image;
+      set(sid, await stream(`/Type /XObject /Subtype /Image /Width ${img.width} /Height ${img.height} /ColorSpace /DeviceGray /BitsPerComponent 8`, img.alpha ?? new Uint8Array(img.width * img.height).fill(255)));
+      set(id, await stream(`/Type /XObject /Subtype /Image /Width ${img.width} /Height ${img.height} /ColorSpace /DeviceRGB /BitsPerComponent 8 /SMask ${sid} 0 R`, img.rgb));
+      const name = `Im${++imgNo}`;
+      images.set(`text:${o.id}`, { name, id });
+      textImages.set(o.id, { name, area: ti });
+    }
+
   // Gjennomsiktighet
   const states = new Map<number, string>();
   const gs = (opacity: number) => {
@@ -247,6 +290,10 @@ export async function posterPdf(
       if (o.clip) c += `${n(o.x)} ${n(o.y)} ${n(o.w)} ${n(o.h)} re W n\n`;
       // Bildet er en enhetsflate; y snus så det står rett
       c += `${n(o.iw)} 0 0 ${n(-o.ih)} ${n(o.ix)} ${n(o.iy + o.ih)} cm /${im.name} Do\nQ\n`;
+    } else if (o.op === "text" && textImages.has(o.id)) {
+      const { name, area } = textImages.get(o.id)!;
+      c += "q\n" + rotate(o) + gs(o.opacity);
+      c += `${n(area.w)} 0 0 ${n(-area.h)} ${n(area.x)} ${n(area.y + area.h)} cm /${name} Do\nQ\n`;
     } else if (o.op === "text") {
       const sizeMm = o.size * (25.4 / 72);
       const font = `F${FONTS.indexOf(o.font) + 1}`;

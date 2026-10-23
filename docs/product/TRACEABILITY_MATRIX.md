@@ -13,7 +13,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | INV-02 | Scenenumre er ikke permanente identifikatorer. | 24 | 24 |
 | INV-03 | En scene beholder identitet gjennom flytting og omnummerering. | 16 | 16 |
 | INV-04 | Spinoffer kan bruke samme kildescene med selvstendig rekkefølge og lokale endringer. | 19 | 19 |
-| INV-05 | Norsk er hovedmanus. | 7 | 7 |
+| INV-05 | Norsk er hovedmanus. | 8 | 8 |
 | INV-06 | Andre språkversjoner endrer ikke norsk hovedmanus automatisk. | 4 | 4 |
 | INV-07 | Ferdige filmsekvenser overskrives ikke automatisk etter manusendringer. | 25 | 25 |
 | INV-08 | Brukeren kan godkjenne avvik, oppdatere produksjonsmateriale eller angre relevant endring. | 27 | 27 |
@@ -49,7 +49,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | EXPORT | Export Engine | 107 | 12 | 87 | 86 |
 | SECURITY | Security & Storage | 52 | 5 | 52 | 50 |
 | COLLAB | Collaboration & Access | 21 | 0 | 21 | 21 |
-| UI | Brukergrensesnitt og designsystem | 360 | 23 | 357 | 336 |
+| UI | Brukergrensesnitt og designsystem | 361 | 23 | 358 | 337 |
 | PROCESS | Arbeidsmåte og utviklingsprosess | 51 | 6 | 9 | 6 |
 
 ## Dekning per fase
@@ -58,7 +58,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 |---|---|---|
 | 1 | 72 | 70 |
 | 2 | 97 | 93 |
-| 3 | 280 | 240 |
+| 3 | 281 | 241 |
 | 4 | 85 | 84 |
 | 5 | 152 | 148 |
 | 6 | 49 | 48 |
@@ -994,3 +994,4 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0922 | Beslutning B-109 | SECURITY | src/routes/admin.tsx, db/migrations/0075_registration_closed.sql | 1 | db: tests/db/run-db-tests.ts 0075 | Verifisert | 2026-10-21 B-109: KR-1: registrert etter B-109. |
 | REQ-0923 | Beslutning B-110 | SECURITY | src/adapters/auth/turnstile.server.ts, db/migrations/0076_signup_captcha_pass.sql | 2 | enhet: tests/unit/b110-captcha.test.ts, db: tests/db/run-db-tests.ts 0076 | Verifisert | 2026-10-21 B-110: KR-1: registrert etter B-110. |
 | REQ-0924 | Beslutning B-111 | UI | src/app/i18n/language.tsx | 1 | enhet: i18n-testene i full Vitest | Verifisert | 2026-10-21 B-111: KR-1: registrert etter B-111. |
+| REQ-0925 | Beslutning G-1 | UI | db/migrations/0090_language_neutral_foundation.sql, db/migrations/0091_fdx_import_format.sql, src/core/dialogue/languages.ts, src/core/typography/pdf-scripts.ts, src/core/presentation/poster.ts | 8 | enhet: G-1b-testene (rundtur ja/en/nb, brukerflyt, plakatspråk, Noto-PDF, arkitekturtest) i full Vitest | Verifisert | 2026-10-23 G-1: G-1b levert: Noto-PDF per skriftsystem, plakater på alle språk (0091), arkitekturtest mot fast nb/no, rundtur ja/en/nb og brukerflyttest. Verifisert med testene over. |

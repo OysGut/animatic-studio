@@ -3,6 +3,7 @@
  * lydtype og eventuelt replikken den hører til. Lyden legges ved avspillingshodet og festes til scenen der.
  */
 import { ResizableDialogContent } from "@/app/shared/ResizableDialogContent";
+import { SOURCE_TEXT_KEY } from "@/core/dialogue/languages";
 import { Loader2, Upload } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AUDIO_KIND_LABEL, FILM_LANGUAGES, LANGUAGE_LABEL, MAIN_LANGUAGE, isVoiceKind, AUDIO_TRACK_ORDER, blocksOfVariant, coverVersion, formatHeading, newId, sortedAssets, collation, type AudioKind, type FilmClip, type ProjectState, languageWord } from "@/core";
@@ -31,7 +32,7 @@ export function AddAudioDialog({
   offsetMs,
   initialKind,
   onAdded,
-  language = "nb",
+  language = SOURCE_TEXT_KEY,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;

@@ -710,7 +710,9 @@ export function suggestStyleGuide(s: ProjectState, productionId: string): StyleG
   const style = (top(styles, 1)[0] ?? "animatic") as keyof typeof STYLE_TEXT;
   const poster = Object.values(s.posters).find((p) => !p.removed);
   const pal = poster?.document.palette;
-  const logline = poster?.document.logline.en.trim() || "";
+  // G-1b: prompten er engelsk; engelsk logline først, ellers den første som finnes
+  const ll = poster?.document.logline ?? {};
+  const logline = (ll["en"]?.trim() || Object.values(ll).find((v) => v.trim())?.trim()) ?? "";
   return {
     version: 1,
     premise: logline,

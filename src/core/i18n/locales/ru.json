@@ -23664,16 +23664,6 @@
     "sourceHash": "7d201a24573e75ff227691cb36afa85b331a655cc125c312ef45685c7c1f7747",
     "review": "user"
   },
-  "app-release-poster-dialogs.export-poster-dialog.option.2ba2c82ca3fa": {
-    "text": "Норвежский",
-    "sourceHash": "a2da552f0e9a3665f46486698db1d0e089faf32c389917d852b5b14a74c3bf92",
-    "review": "user"
-  },
-  "app-release-poster-dialogs.export-poster-dialog.option.7d645d203fe3": {
-    "text": "Английский",
-    "sourceHash": "f058a8bbacc122111897bbb87f0bba0d5e1d4f2941e6f7e1dc61f192d71fcf8b",
-    "review": "user"
-  },
   "app-release-poster-dialogs.export-poster-dialog.option.bc56fd419d66": {
     "text": "72 ppi (экран)",
     "sourceHash": "679358bd50e27069cfbfbf06a7bd6afb6b9d0c13fc23812590778fd0fc5f1f5d",
@@ -23749,16 +23739,6 @@
     "sourceHash": "9bf37575be11ab4b0c7ef52ccf313a51e7e6fb47d740cbe82ec6302a31753ec1",
     "review": "user"
   },
-  "app-release-poster-dialogs.new-poster-dialog.option.39e4c15e4b70": {
-    "text": "Английский",
-    "sourceHash": "f058a8bbacc122111897bbb87f0bba0d5e1d4f2941e6f7e1dc61f192d71fcf8b",
-    "review": "user"
-  },
-  "app-release-poster-dialogs.new-poster-dialog.option.e3870b997183": {
-    "text": "Норвежский",
-    "sourceHash": "a2da552f0e9a3665f46486698db1d0e089faf32c389917d852b5b14a74c3bf92",
-    "review": "user"
-  },
   "app-release-poster-dialogs.new-poster-dialog.p.cfe54518e65d": {
     "text": "утверждено",
     "sourceHash": "5367be206021b618bfd944cf658ca2f7a72ff1464da19d4a28c97562afb89d9a",
@@ -23822,16 +23802,6 @@
   "app-release-poster-inspector.background.background.b4b9947e469f": {
     "text": "Цвет фона",
     "sourceHash": "d096527b2b9dd132edf6e6fcc4d3214fbc21cb1f83bac27deb73e710cf391bcd",
-    "review": "user"
-  },
-  "app-release-poster-inspector.bilingual.label.2f1aee6df04c": {
-    "text": "английский",
-    "sourceHash": "f058a8bbacc122111897bbb87f0bba0d5e1d4f2941e6f7e1dc61f192d71fcf8b",
-    "review": "user"
-  },
-  "app-release-poster-inspector.bilingual.label.e68a78963db2": {
-    "text": "Норвежский",
-    "sourceHash": "a2da552f0e9a3665f46486698db1d0e089faf32c389917d852b5b14a74c3bf92",
     "review": "user"
   },
   "app-release-poster-inspector.bilingual.placeholder.701d079a0cb5": {
@@ -24344,16 +24314,6 @@
     "sourceHash": "a556143eff003b25fa0e13d557d48ec00518d4e0fe8ea8dd7057a744d069f39a",
     "review": "user"
   },
-  "app-release-poster-inspector.poster-settings.option.cf6b065837cf": {
-    "text": "Норвежский",
-    "sourceHash": "a2da552f0e9a3665f46486698db1d0e089faf32c389917d852b5b14a74c3bf92",
-    "review": "user"
-  },
-  "app-release-poster-inspector.poster-settings.option.e6ed30832c1c": {
-    "text": "Английский",
-    "sourceHash": "f058a8bbacc122111897bbb87f0bba0d5e1d4f2941e6f7e1dc61f192d71fcf8b",
-    "review": "user"
-  },
   "app-release-poster-inspector.poster-settings.p.6f14fe5f4a16": {
     "text": "В библиотеке ничего нет.",
     "sourceHash": "b2e4d97949b815b6569a4a1a511885755a7d0d00018833fe9037f8528321f69d",
@@ -24615,16 +24575,6 @@
   "app-release-poster-workspace.release.option.7b256a3b37c8": {
     "text": " (скрыто)",
     "sourceHash": "06c3b152b36f94e1b5e62f106f64f6438aabe1295a45199bfcab35707b01bc5a",
-    "review": "user"
-  },
-  "app-release-poster-workspace.release.option.c8bb36bc83a1": {
-    "text": "Норвежский",
-    "sourceHash": "a2da552f0e9a3665f46486698db1d0e089faf32c389917d852b5b14a74c3bf92",
-    "review": "user"
-  },
-  "app-release-poster-workspace.release.option.cad6bb633625": {
-    "text": "Английский",
-    "sourceHash": "f058a8bbacc122111897bbb87f0bba0d5e1d4f2941e6f7e1dc61f192d71fcf8b",
     "review": "user"
   },
   "app-release-poster-workspace.release.p.619a05121915": {
@@ -56203,6 +56153,41 @@
   "time.weekday-at": {
     "text": "{weekday}, в {time}",
     "sourceHash": "d677d9712719c3de3544d2cc9a624a20950aea5a9a8017bc4c126f1de2c11fb0",
+    "review": "machine"
+  },
+  "g1b.poster.genre-film": {
+    "text": "Анимационный фильм",
+    "sourceHash": "24b323a82e9b88d8725a0417aa556a71c00627069d54607aed5c6ec186e63741",
+    "review": "machine"
+  },
+  "g1b.poster.genre-family": {
+    "text": "Семейный анимационный фильм",
+    "sourceHash": "dc60dedf181281e66413f8b3a978d625b1936b3e05c394d06339f580ef427879",
+    "review": "machine"
+  },
+  "g1b.poster.feature": {
+    "text": "Анимационный полнометражный фильм",
+    "sourceHash": "69eee5f5feebf522d6abef762c51047c413136be31b0759d8185a288c19e5b3d",
+    "review": "machine"
+  },
+  "g1b.poster.approx-min": {
+    "text": "ок. {min} мин",
+    "sourceHash": "40cb57a1479a60bc7be8c573629a05e2e259870a08f793b468893f9cfbeb2224",
+    "review": "machine"
+  },
+  "g1b.poster.fallback-placeholder": {
+    "text": "Пусто: используется текст на языке {language}",
+    "sourceHash": "186c5efd79e6d7b21f9712035586e523cddfb7d2085de72c262d4222bf04da57",
+    "review": "machine"
+  },
+  "g1b.poster.untranslated-one": {
+    "text": "1 текст отсутствует на языке {language} и показан на другом языке.",
+    "sourceHash": "2c0ca0e6f222bf240047a5980df59bfbff104f0cf2a0c63e4500fa24f9e6f0e8",
+    "review": "machine"
+  },
+  "g1b.poster.untranslated-many": {
+    "text": "{length} текстов отсутствуют на языке {language} и показаны на другом языке.",
+    "sourceHash": "f21125e13cbd0118be8f00c41d45bb0963711d198565f3337125e5c304741e84",
     "review": "machine"
   }
 }

@@ -1,3 +1,4 @@
+import { canonicalLanguageTag } from "../translation/language-tags";
 import { briefVersionsError } from "../assets/brief-versions";
 import { applyMeasureSetCommand } from "../print/measure/commands";
 import { applyMouthCommand } from "../interchange/mouth-commands";
@@ -1233,7 +1234,8 @@ function posterFieldsOf(
     );
   if (f.kind !== "pitch" && f.kind !== "character_map")
     fail("invalid", tk("core-commands-apply.poster-fields-of.fail.67222877f93c"));
-  if (f.language !== "nb" && f.language !== "en")
+  // G-1b: plakaten kan vises på alle språk (gyldig BCP-47-merke), ikke bare norsk og engelsk
+  if (typeof f.language !== "string" || canonicalLanguageTag(f.language) !== f.language)
     fail("invalid", tk("core-commands-apply.poster-fields-of.fail.966611c3dc2e"));
   if (
     !Number.isFinite(f.widthMm) ||

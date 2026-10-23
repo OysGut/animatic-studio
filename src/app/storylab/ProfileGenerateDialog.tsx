@@ -3,6 +3,7 @@
  * forhåndsvisning felt for felt mot dagens profil. Ingenting lagres før brukeren velger det.
  */
 import { ResizableDialogContent } from "@/app/shared/ResizableDialogContent";
+import { sourceLanguageOf } from "@/core/dialogue/languages";
 import { useServerFn } from "@tanstack/react-start";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
@@ -41,7 +42,7 @@ export function ProfileGenerateDialog({
   const gen = useServerFn(generateStoryText);
   const lines = useLines ? characterLines(state, asset) : [];
   // B-105a: profilprompten bygges på serveren; replikkene leses der fra manus.
-  const request = { kind: "profileGenerator" as const, assetId: asset.id, description, useLines, language: "nb" };
+  const request = { kind: "profileGenerator" as const, assetId: asset.id, description, useLines, language: sourceLanguageOf(state) };
   const promptChars = useStoryPromptChars(projectId, "storylab_profile", request);
   const est = useTextEstimate("storylab_profile", promptChars || lines.join("\n").length, OUT_TOKENS);
   const defs = fieldDefs().filter((d) => d.type !== "beliefs");

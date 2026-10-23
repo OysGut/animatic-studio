@@ -18,14 +18,19 @@ import { tLocalized } from "@/core/i18n/keyed";
 
 // ---------------------------------------------------------------- Stilanalyse
 
-export const STYLE_ANALYSIS_SYSTEM = `You are the art director of a 2D animated feature film. You are shown reference images that define the film's look, and the film's current style notes.
+/** G-1b: oversettelsen for brukeren skrives på brukerens grensesnittspråk (engelsk navn, f.eks. «Japanese»). */
+export function styleAnalysisSystem(userLanguageName: string): string {
+  return STYLE_ANALYSIS_TEMPLATE.replace("{USER_LANGUAGE}", userLanguageName);
+}
+
+const STYLE_ANALYSIS_TEMPLATE = `You are the art director of a 2D animated feature film. You are shown reference images that define the film's look, and the film's current style notes.
 
 Analyse the VISUAL STYLE of the images (not their content or story) precisely enough that an image-generation model can reproduce it for new characters, props and backgrounds. Be concrete and observable: name the medium and technique, describe the line (presence, weight, colour, texture, consistency), shape language and proportions (e.g. head-to-body ratio, rounded vs angular, simplification), colour (palette with approximate hex codes, saturation, value range, how colour is applied), lighting and shading (flat, cel, soft gradients, cast shadows or none), texture (paper, brush, grain, none), level of detail, and typical composition/staging. Also state what would BREAK the style (e.g. photorealism, gradients, thin uniform vector lines).
 
 If the images disagree with each other, describe what they have in common and note the differences briefly. Do not invent anything you cannot see.
 
-Reply with JSON only, no markdown fences, in exactly this shape (every value a string; English values are used in prompts, so write them as short descriptive phrases or sentences; "nb" is a faithful Norwegian translation of each English field for the user to read):
-{"en":{"summary":"","technique":"","line":"","shapes":"","colour":"","lighting":"","texture":"","detail":"","composition":"","breaks":""},"nb":{"summary":"","technique":"","line":"","shapes":"","colour":"","lighting":"","texture":"","detail":"","composition":"","breaks":""},"colours":["#rrggbb"]}`;
+Reply with JSON only, no markdown fences, in exactly this shape (every value a string; English values are used in prompts, so write them as short descriptive phrases or sentences; "local" is a faithful {USER_LANGUAGE} translation of each English field for the user to read):
+{"en":{"summary":"","technique":"","line":"","shapes":"","colour":"","lighting":"","texture":"","detail":"","composition":"","breaks":""},"local":{"summary":"","technique":"","line":"","shapes":"","colour":"","lighting":"","texture":"","detail":"","composition":"","breaks":""},"colours":["#rrggbb"]}`;
 
 export const STYLE_ANALYSIS_KEYS = [
   "summary",
@@ -45,6 +50,7 @@ export const STYLE_ANALYSIS_LABEL: Record<StyleAnalysisKey, string> = tLocalized
 
 export interface StyleAnalysis {
   readonly en: Readonly<Record<StyleAnalysisKey, string>>;
+  /** Oversettelsen på brukerens grensesnittspråk (feltnavnet er historisk). */
   readonly nb: Readonly<Record<StyleAnalysisKey, string>>;
   /** Fargene modellen så (#rrggbb), høyst 8. */
   readonly colours: readonly string[];
@@ -83,7 +89,8 @@ export function parseStyleAnalysis(raw: string): StyleAnalysis | null {
     return null;
   }
   const en = (j["en"] ?? {}) as Record<string, unknown>;
-  const nb = (j["nb"] ?? {}) as Record<string, unknown>;
+  // «local» (G-1b); eldre svar brukte nøkkelen for norsk
+  const nb = (j["local"] ?? j["nb"] ?? {}) as Record<string, unknown>;
   const pick = (o: Record<string, unknown>) =>
     Object.fromEntries(STYLE_ANALYSIS_KEYS.map((k) => [k, clip(o[k], 600)])) as Record<
       StyleAnalysisKey,
@@ -183,3 +190,6 @@ export function cleanVisualBrief(raw: string): string | null {
   if (!lines.length) return null;
   return lines.join("\n").slice(0, 4000);
 }
+
+/** Uendret engelsk prompt for brukere med engelsk grensesnitt (bakoverkompatibelt navn). */
+export const STYLE_ANALYSIS_SYSTEM = styleAnalysisSystem("English");

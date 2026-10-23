@@ -36,6 +36,16 @@ import {
 } from "./metrics";
 import { RELATION_COLOR, RELATION_DASHED, approvedRelations, relationName } from "./relations";
 import { collation } from "../i18n";
+import { languageLabel, sourceLanguageOf } from "../dialogue/languages";
+
+/** Store bokstaver etter språkets regler; ugyldig språkmerke gir språknøytral omforming. */
+function upper(text: string, lang: string): string {
+  try {
+    return text.toLocaleUpperCase(lang);
+  } catch {
+    return text.toUpperCase();
+  }
+}
 import { t as tk, tLocalized } from "@/core/i18n/keyed";
 
 // ---------- Standarder ----------
@@ -154,7 +164,27 @@ export function paletteLabel(name: string): string {
   return (PALETTE_LABEL as Record<string, string>)[name] ?? name;
 }
 
-const empty: LocalizedText = { nb: "", en: "" };
+const empty: LocalizedText = {};
+
+/** G-1b: teksten på ett språk (tom streng når den mangler). */
+export function textIn(t: LocalizedText | undefined, lang: string): string {
+  return (t && typeof t[lang] === "string" ? t[lang] : "") ?? "";
+}
+/** G-1b: har teksten innhold på noe språk? */
+export function hasText(t: LocalizedText | undefined): boolean {
+  return !!t && Object.values(t).some((v) => typeof v === "string" && v.trim() !== "");
+}
+/** G-1b: samme tekst bygd for hvert språk (unike språk, i rekkefølge). */
+function forLangs(langs: readonly string[], f: (lang: string) => string): LocalizedText {
+  const out: Record<string, string> = {};
+  for (const l of langs) if (!(l in out)) out[l] = f(l);
+  return out;
+}
+/** Språkene programmet lager tekst for: plakatens språk og kildespråket. */
+export function posterLanguages(s: ProjectState, posterLanguage?: string): string[] {
+  const src = sourceLanguageOf(s);
+  return [...new Set([posterLanguage ?? src, src])];
+}
 
 // ---------- Analyse og førsteutkast (REQ-0396) ----------
 
@@ -254,17 +284,20 @@ export function posterDraft(
   kind: PosterKind,
   widthMm = 700,
   heightMm = 1000,
+  language?: string,
 ): PosterDocument {
   const a = posterAnalysis(s, productionId);
   const p = s.productions[productionId];
-  const genre: LocalizedText =
-    p && p.kind !== "main"
-      ? { nb: "Animasjonsfilm", en: "Animated film" }
-      : { nb: "Animert familiefilm", en: "Animated family film" };
+  const langs = posterLanguages(s, language);
+  const src = sourceLanguageOf(s);
+  const spinoff = !!p && p.kind !== "main";
+  const genre = forLangs(langs, (l) =>
+    spinoff ? tk("g1b.poster.genre-film", {}, l) : tk("g1b.poster.genre-family", {}, l),
+  );
   const doc: PosterDocument = {
     version: 1,
     options: defaultOptions(kind),
-    title: { nb: a.title, en: "" },
+    title: { [src]: a.title },
     logline: { ...empty },
     genre,
     tagline: { ...empty },
@@ -274,7 +307,7 @@ export function posterDraft(
     objects: a.objects.slice(0, kind === "pitch" ? 3 : 6).map((c) => c.asset.id),
     elements: [],
   };
-  return layoutPoster(s, { kind, widthMm, heightMm, document: doc, productionId });
+  return layoutPoster(s, { kind, widthMm, heightMm, document: doc, productionId, languages: langs });
 }
 
 // ---------- Komposisjon (REQ-0391) ----------
@@ -291,21 +324,22 @@ function firstSentence(text: string, max = 170): string {
 }
 
 /** Navnet på ressursen på språket (alternativt navn med språk «en», ellers hovednavnet). */
-export function assetDisplayName(a: Asset, lang: "nb" | "en"): string {
-  if (lang === "en") {
-    const en = a.names.find((n) => n.kind === "language" && n.language === "en");
-    if (en) return en.name;
-  }
-  return a.name;
+export function assetDisplayName(a: Asset, lang: string): string {
+  const base = lang.toLowerCase().split("-")[0];
+  const named =
+    a.names.find((n) => n.kind === "language" && n.language?.toLowerCase() === lang.toLowerCase()) ??
+    a.names.find((n) => n.kind === "language" && n.language?.toLowerCase().split("-")[0] === base);
+  return named ? named.name : a.name;
 }
 
-function describe(a: Asset, long: boolean): LocalizedText {
+/** Beskrivelsen står på kildespråket (ressursens tekst er skrevet der). */
+function describe(a: Asset, long: boolean, langs: readonly string[]): LocalizedText {
   const d = a.description.trim();
-  return { nb: long ? d.slice(0, 700) : firstSentence(d), en: "" };
+  return { [langs[langs.length - 1]!]: long ? d.slice(0, 700) : firstSentence(d) };
 }
 
-function names(a: Asset): LocalizedText {
-  return { nb: assetDisplayName(a, "nb"), en: assetDisplayName(a, "en") };
+function names(a: Asset, langs: readonly string[]): LocalizedText {
+  return forLangs(langs, (l) => assetDisplayName(a, l));
 }
 
 /**
@@ -320,9 +354,12 @@ export function layoutPoster(
     readonly heightMm: number;
     readonly document: PosterDocument;
     readonly productionId: string;
+    /** G-1b: språkene programmet lager tekst for (utelatt = kildespråket). Siste er kildespråket. */
+    readonly languages?: readonly string[];
   },
 ): PosterDocument {
   const doc = p.document;
+  const langs = p.languages?.length ? p.languages : [sourceLanguageOf(s)];
   const W = p.widthMm;
   const H = p.heightMm;
   const u = W / 700;
@@ -359,7 +396,8 @@ export function layoutPoster(
     },
   ) => {
     // Størrelsen må passe for den lengste av norsk og engelsk
-    const longest = t.en.length > t.nb.length ? t.en : t.nb;
+    const all = Object.values(t).filter((v): v is string => typeof v === "string");
+    const longest = all.reduce((m, v) => (v.length > m.length ? v : m), "");
     const sample = (style.uppercase ? longest.toUpperCase() : longest) || " ";
     const size = fitTextSize(
       sample,
@@ -375,7 +413,7 @@ export function layoutPoster(
       const key = fontKey(style.font, style.bold, style.italic);
       const lh = size * (style.lineHeight ?? 1.2) * PT_TO_MM;
       const lines = Math.max(
-        ...[t.nb, t.en].map(
+        ...(all.length ? all : [""]).map(
           (x) => wrapPosterText(x || " ", key, size, box.w, style.tracking ?? 0).length,
         ),
       );
@@ -439,7 +477,7 @@ export function layoutPoster(
     });
 
   rect("bg", "background", { x: 0, y: 0, w: W, h: H }, pal.background);
-  const projectLine = projectData(s, p.productionId);
+  const projectLine = projectData(s, p.productionId, langs);
 
   if (p.kind === "pitch") {
     // Bakteppe: det viktigste stedet, tonet ned mot tittelen
@@ -465,7 +503,7 @@ export function layoutPoster(
       text(
         `place:${places[0].id}:desc`,
         "place",
-        describe(places[0], false),
+        describe(places[0], false, langs),
         { x: W * 0.12, y: H * 0.03, w: W * 0.76, h: H * 0.05 },
         { font: "serif", italic: true, max: 20 * u, min: 12 * u, color: pal.muted },
       );
@@ -523,7 +561,7 @@ export function layoutPoster(
       },
     );
     y += H * 0.13;
-    if (doc.tagline.nb || doc.tagline.en)
+    if (hasText(doc.tagline))
       text(
         "tagline",
         "tagline",
@@ -531,14 +569,11 @@ export function layoutPoster(
         { x: W * 0.15, y, w: W * 0.7, h: H * 0.025 },
         { font: "serif", italic: true, max: 24 * u, min: 12 * u, color: pal.muted },
       );
-    if (doc.tagline.nb || doc.tagline.en) y += H * 0.03;
+    if (hasText(doc.tagline)) y += H * 0.03;
     text(
       "names",
       "names",
-      {
-        nb: heroes.map((h) => assetDisplayName(h, "nb").toUpperCase()).join("  ·  "),
-        en: heroes.map((h) => assetDisplayName(h, "en").toUpperCase()).join("  ·  "),
-      },
+      forLangs(langs, (l) => heroes.map((h) => upper(assetDisplayName(h, l), l)).join("  ·  ")),
       { x: W * 0.08, y, w: W * 0.84, h: H * 0.025 },
       { font: "sans", bold: true, max: 20 * u, min: 11 * u, color: pal.muted, tracking: 200 },
     );
@@ -549,7 +584,7 @@ export function layoutPoster(
         text(
           `char:${h.id}:desc`,
           "character",
-          describe(h, long),
+          describe(h, long, langs),
           {
             x: W * 0.06 + (i * W * 0.88) / n,
             y,
@@ -587,7 +622,7 @@ export function layoutPoster(
           text(
             `obj:${ob.id}:name`,
             "object",
-            names(ob),
+            names(ob, langs),
             { x: x - gap / 2, y: H * 0.875 + size + H * 0.004, w: size + gap, h: H * 0.015 },
             {
               font: "sans",
@@ -702,7 +737,7 @@ export function layoutPoster(
       text(
         `char:${c.id}:name`,
         "character",
-        names(c),
+        names(c, langs),
         { x: x0 + cellW * 0.08, y: ny, w: cellW * 0.84, h: cellH * 0.06 },
         {
           font: "sans",
@@ -719,7 +754,7 @@ export function layoutPoster(
         text(
           `char:${c.id}:desc`,
           "character",
-          describe(c, long),
+          describe(c, long, langs),
           { x: x0 + cellW * 0.1, y: dy, w: cellW * 0.8, h: y0 + cellH * 0.95 - dy },
           {
             font: "serif",
@@ -757,18 +792,16 @@ export function layoutPoster(
             dashed: RELATION_DASHED[r.kind],
             text:
               o.namedRelations || o.relationTexts
-                ? {
-                    nb: [
-                      o.namedRelations ? relationName(r, "nb") : "",
-                      o.relationTexts ? r.description : "",
+                ? forLangs(langs, (l) =>
+                    [
+                      o.namedRelations ? relationName(r, l) : "",
+                      // Relasjonsteksten er skrevet på kildespråket
+                      o.relationTexts && l === langs[langs.length - 1] ? r.description : "",
                     ]
                       .filter(Boolean)
                       .join("\n"),
-                    en: [o.namedRelations ? relationName(r, "en") : "", ""]
-                      .filter(Boolean)
-                      .join("\n"),
-                  }
-                : { nb: "", en: "" },
+                  )
+                : forLangs(langs, () => ""),
             font: "sans",
             size: 14 * u,
             color: pal.text,
@@ -795,7 +828,7 @@ export function layoutPoster(
         text(
           `place:${pl.id}:name`,
           "place",
-          names(pl),
+          names(pl, langs),
           { x: x + cw * 0.04, y: by + ih + placeH * 0.03, w: cw * 0.92, h: placeH * 0.1 },
           {
             font: "sans",
@@ -811,7 +844,7 @@ export function layoutPoster(
           text(
             `place:${pl.id}:desc`,
             "place",
-            describe(pl, false),
+            describe(pl, false, langs),
             {
               x: x + cw * 0.04,
               y: by + ih + placeH * 0.14,
@@ -840,7 +873,7 @@ export function layoutPoster(
         text(
           `obj:${ob.id}:name`,
           "object",
-          names(ob),
+          names(ob, langs),
           { x: x + cw * 0.05, y: by + objH * 0.06 + ih, w: cw * 0.9, h: objH * 0.1 },
           {
             font: "sans",
@@ -856,7 +889,7 @@ export function layoutPoster(
           text(
             `obj:${ob.id}:desc`,
             "object",
-            describe(ob, false),
+            describe(ob, false, langs),
             { x: x + cw * 0.05, y: by + objH * 0.17 + ih, w: cw * 0.9, h: objH - ih - objH * 0.19 },
             { font: "serif", max: 12 * u, min: 8 * u, color: pal.muted },
           );
@@ -934,22 +967,20 @@ export function posterKindBase(doc: PosterDocument, kind: PosterKind): PosterDoc
   };
 }
 
-function projectData(s: ProjectState, productionId: string): LocalizedText {
+function projectData(s: ProjectState, productionId: string, langs: readonly string[]): LocalizedText {
   const p = s.productions[productionId];
   const min = Math.round(
     framesToSeconds(filmDurationFrames(filmClips(s, productionId)), s.project.fps) / 60,
   );
-  const nb = [
-    p && p.kind !== "main" ? p.name : "Animert spillefilm",
-    min > 0 ? `ca. ${min} min` : "",
-    `${s.project.frameWidth} × ${s.project.frameHeight}`,
-  ].filter(Boolean);
-  const en = [
-    p && p.kind !== "main" ? p.name : "Animated feature",
-    min > 0 ? `approx. ${min} min` : "",
-    `${s.project.frameWidth} × ${s.project.frameHeight}`,
-  ].filter(Boolean);
-  return { nb: nb.join("  ·  "), en: en.join("  ·  ") };
+  return forLangs(langs, (l) =>
+    [
+      p && p.kind !== "main" ? p.name : tk("g1b.poster.feature", {}, l),
+      min > 0 ? tk("g1b.poster.approx-min", { min: String(min) }, l) : "",
+      `${s.project.frameWidth} × ${s.project.frameHeight}`,
+    ]
+      .filter(Boolean)
+      .join("  ·  "),
+  );
 }
 
 // ---------- Tegneliste (forhåndsvisning, PNG og PDF) ----------
@@ -1031,15 +1062,23 @@ export function elementVersion(s: ProjectState, e: PosterElement): AssetVersion 
   return coverVersion(s, e.assetId);
 }
 
-/** Teksten på språket; mangler den, brukes norsk (og det telles som manglende oversettelse). */
+/**
+ * Teksten på språket. Mangler den, brukes reservespråket (kildespråket) og deretter første tekst som finnes;
+ * det telles som manglende oversettelse (G-1b: ingen fast norsk reserve).
+ */
 export function elementText(
   e: PosterElement,
-  lang: "nb" | "en",
+  lang: string,
+  fallbackLanguage?: string,
 ): { text: string; fallback: boolean } {
   const t = e.text ?? empty;
-  const v = lang === "en" ? t.en : t.nb;
+  const v = textIn(t, lang);
   if (v.trim()) return { text: v, fallback: false };
-  return { text: t.nb, fallback: lang === "en" && !!t.nb.trim() };
+  const reserve =
+    (fallbackLanguage ? textIn(t, fallbackLanguage) : "").trim() ||
+    Object.values(t).find((x) => typeof x === "string" && x.trim()) ||
+    "";
+  return { text: reserve, fallback: !!reserve.trim() };
 }
 
 const center = (e: PosterElement) => ({ x: e.x + e.w / 2, y: e.y + e.h / 2 });
@@ -1111,7 +1150,7 @@ export function renderPoster(s: ProjectState, poster: Poster, lang = poster.lang
         dashed,
         opacity,
       });
-      const label = elementText(e, lang).text.trim();
+      const label = elementText(e, lang, sourceLanguageOf(s)).text.trim();
       if (label) {
         const size = e.size ?? 12;
         const font = fontKey(e.font ?? "sans", e.bold, e.italic);
@@ -1205,8 +1244,8 @@ export function renderPoster(s: ProjectState, poster: Poster, lang = poster.lang
         rotation,
       });
     } else if (e.kind === "text") {
-      const { text: raw } = elementText(e, lang);
-      const t = e.uppercase ? raw.toLocaleUpperCase(lang === "en" ? "en" : "nb") : raw;
+      const { text: raw } = elementText(e, lang, sourceLanguageOf(s));
+      const t = e.uppercase ? upper(raw, lang) : raw;
       if (!t.trim()) continue;
       const font = fontKey(e.font ?? "serif", e.bold, e.italic);
       const size = e.size ?? 14;
@@ -1329,7 +1368,7 @@ export function posterChecks(
       elementIds: missing.map((e) => e.id),
     });
   const empties = poster.document.elements.filter(
-    (e) => e.visible && e.kind === "text" && !elementText(e, lang).text.trim(),
+    (e) => e.visible && e.kind === "text" && !elementText(e, lang, sourceLanguageOf(s)).text.trim(),
   );
   if (empties.length) {
     const roles = [...new Set(empties.map((e) => ROLE_LABEL[e.role] ?? e.role))].join(", ");
@@ -1342,18 +1381,18 @@ export function posterChecks(
       elementIds: empties.map((e) => e.id),
     });
   }
-  if (lang === "en") {
+  if (lang.toLowerCase() !== sourceLanguageOf(s).toLowerCase()) {
     const untranslated = poster.document.elements.filter(
       (e) =>
-        e.visible && (e.kind === "text" || e.kind === "relation") && elementText(e, "en").fallback,
+        e.visible && (e.kind === "text" || e.kind === "relation") && elementText(e, lang, sourceLanguageOf(s)).fallback,
     );
     if (untranslated.length)
       out.push({
         level: "info",
         text:
           untranslated.length === 1
-            ? tk("core-presentation-poster.text.text.7c664d2f6b00")
-            : tk("core-presentation-poster.text.text.fd87329d7c53", { length: String(untranslated.length) }),
+            ? tk("g1b.poster.untranslated-one", { language: languageLabel(lang) })
+            : tk("g1b.poster.untranslated-many", { length: String(untranslated.length), language: languageLabel(lang) }),
         elementIds: untranslated.map((e) => e.id),
       });
   }
@@ -1428,4 +1467,24 @@ export function posterFileName(poster: Pick<Poster, "name" | "language">, ext: s
       .replace(/^-+|-+$/g, "")
       .toLowerCase() || "plakat";
   return `${base}-${poster.language}.${ext}`;
+}
+
+/**
+ * G-1b: språkene en plakat kan vises på: kildespråket, prosjektets språkversjoner, grensesnittspråkene og
+ * plakatens nåværende språk (også om det ikke lenger er i lista). Unike, kildespråket først.
+ */
+export function posterLanguageChoices(
+  s: ProjectState,
+  uiLanguages: readonly string[],
+  current?: string,
+): string[] {
+  const out: string[] = [];
+  const add = (l: string | undefined) => {
+    if (l && !out.some((x) => x.toLowerCase() === l.toLowerCase())) out.push(l);
+  };
+  add(sourceLanguageOf(s));
+  for (const v of Object.values(s.languageVersions ?? {})) if (!v.removed) add(v.language);
+  for (const l of uiLanguages) add(l);
+  add(current);
+  return out;
 }

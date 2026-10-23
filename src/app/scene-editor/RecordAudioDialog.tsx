@@ -4,6 +4,7 @@
  * opptaket startet. Det kan trimmes etterpå uten at opptaket endres (klippets inn- og utpunkt).
  */
 import { ResizableDialogContent } from "@/app/shared/ResizableDialogContent";
+import { isSourceLanguage } from "@/core/dialogue/languages";
 import { Circle, Loader2, Mic, Smartphone, Square } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AUDIO_KIND_LABEL, AUDIO_TRACK_ORDER, lineInfo, lineLabel, microphoneConstraints, sceneNumberOf, type UploadContext, blocksOfVariant, locale, newId, type AudioKind, dialogueSpeaker, suggestedDialogueCharacter, type ProjectState, lineDrift } from "@/core";
@@ -300,7 +301,7 @@ export function RecordAudioDialog({
                 continues: false,
                 volumeKeys: [],
                 // Tale tatt opp mens en annen språkversjon er valgt, hører til det språket (DEC-0059)
-                ...(filmLang.dialogue !== "nb" && (kind === "dialogue" || kind === "narration")
+                ...(!isSourceLanguage(state, filmLang.dialogue) && (kind === "dialogue" || kind === "narration")
                   ? { language: filmLang.dialogue }
                   : {}),
               },

@@ -6,6 +6,7 @@
  * Virker uten AI. Bare på klienten.
  */
 import { jsPDF } from "jspdf";
+import { readmeLanguage } from "@/core/interchange/readme";
 import type { FilmAudioItem, FilmClip, ProjectState } from "@/core";
 import type { InterchangeDoc, Shot } from "@/core/interchange";
 import { buildShotFbx } from "@/core/interchange/fbx";
@@ -149,7 +150,7 @@ export async function exportDragonframe(o: DragonframeOptions): Promise<void> {
     yield { path: "CMUDICT-LICENSE.txt", data: new TextEncoder().encode(cmuLicense) };
     yield {
       path: "LESMEG.txt",
-      data: interchangeReadme(["", t("ptg2.readme", {}, "nb"), "", t("ptg2.readme", {}, "en"), t("ptg4.readme", {}, "nb"), t("ptg4.readme", {}, "en"), ...cameraReadmeLines(doc)].join("\n")),
+      data: interchangeReadme(["", t("ptg2.readme", {}, readmeLanguage()), "", t("ptg2.readme", {}, "en"), t("ptg4.readme", {}, readmeLanguage()), t("ptg4.readme", {}, "en"), ...cameraReadmeLines(doc)].join("\n")),
     };
     let done = 0;
     for (const shot of doc.shots) {

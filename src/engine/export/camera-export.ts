@@ -4,6 +4,7 @@
  * (spesifikasjonen §10) i LESMEG. Virker uten AI.
  */
 import type { InterchangeDoc } from "@/core/interchange";
+import { readmeLanguage } from "@/core/interchange/readme";
 import { buildShotFbx } from "@/core/interchange/fbx";
 import { cameraReadmeLines, interchangeReadme } from "@/core/interchange/readme";
 import { writeZip, type ZipSink } from "./zip";
@@ -22,11 +23,11 @@ export async function exportCameraFbx(o: { doc: InterchangeDoc; sink: ZipSink; s
       path: "LESMEG.txt",
       data: interchangeReadme([
         "",
-        t("ptg3.readme-camera", {}, "nb"),
+        t("ptg3.readme-camera", {}, readmeLanguage()),
         "",
         t("ptg3.readme-camera", {}, "en"),
         "",
-        t("ptg3.readme-fbx-binary", {}, "nb"),
+        t("ptg3.readme-fbx-binary", {}, readmeLanguage()),
         "",
         t("ptg3.readme-fbx-binary", {}, "en"),
         ...cameraReadmeLines(doc),
