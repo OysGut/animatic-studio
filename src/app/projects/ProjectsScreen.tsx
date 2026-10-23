@@ -19,6 +19,7 @@ import {
 import { AiGlyph } from "@/app/design/icons/AiGlyph";
 import { useMemo, useState, type FormEvent } from "react";
 import { rememberIdea } from "@/app/storylab/new-project-idea";
+import { createDemoProject } from "@/app/projects/demo-project";
 import {
   createProject,
   listProductionsFor,
@@ -186,6 +187,15 @@ export function ProjectsScreen({ userId }: { userId: string }) {
 
   const [providers, setProviders] = useState(false);
 
+  // G-9: eksempelprosjektet (eget prosjekt på grensesnittspråket, ellers engelsk)
+  const demo = useMutation({
+    mutationFn: () => createDemoProject(),
+    onSuccess: async (id) => {
+      await qc.invalidateQueries({ queryKey: ["projects"] });
+      void navigate({ to: "/prosjekt/$projectId", params: { projectId: id } });
+    },
+  });
+
   const languageProblem = languageTagError(sourceLanguage.trim());
   const canCreate = Boolean(name.trim()) && !languageProblem;
 
@@ -324,10 +334,27 @@ export function ProjectsScreen({ userId }: { userId: string }) {
           hint={t("app-projects-projects-screen.projects-screen.hint.0f7f0eb700b0")}
           action={
             !creating ? (
-              <Button onClick={() => setCreating(true)} data-testid="projects-empty-create">
-                <Plus />
-                {t("app-projects-projects-screen.projects-screen.button.81fb7f5ba35d")}
-              </Button>
+              <div className="flex flex-col items-center gap-2">
+                <div className="flex flex-wrap justify-center gap-2">
+                  <Button onClick={() => setCreating(true)} data-testid="projects-empty-create">
+                    <Plus />
+                    {t("app-projects-projects-screen.projects-screen.button.81fb7f5ba35d")}
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    data-testid="projects-open-demo"
+                    disabled={demo.isPending}
+                    onClick={() => demo.mutate()}
+                  >
+                    {demo.isPending ? t("g9-demo.opening") : t("g9-demo.open")}
+                  </Button>
+                </div>
+                {demo.isError ? (
+                  <p role="alert" className="text-xs text-destructive">
+                    {t("g9-demo.failed", { message: demo.error instanceof Error ? demo.error.message : String(demo.error) })}
+                  </p>
+                ) : null}
+              </div>
             ) : null
           }
         />
