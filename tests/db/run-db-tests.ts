@@ -8515,6 +8515,69 @@ try {
     await as("service_role", null, (tx) => tx`select public.apply_changes(${g7p}, ${ALICE}, ${newId()}, '{"type":"G7Ok"}'::jsonb, null, ${tx.json({ inserts: { style_preferred_references: [ref(newId())] } } as never)})`);
   });
 
+  // ---------- G-8 sikkerhetsrunde 2 ----------
+  await test("0100 G-8.1: alle tabeller i public har RLS på", async () => {
+    const rows = await sql`select c.relname from pg_class c join pg_namespace n on n.oid = c.relnamespace
+      where n.nspname = 'public' and c.relkind in ('r','p') and not c.relrowsecurity order by 1`;
+    assert(rows.length === 0, `tabeller uten RLS: ${rows.map((r) => String(r["relname"])).join(", ")}`);
+  });
+
+  await test("0100 G-8.2: anon har ingen tabellrettigheter eller policyer i public", async () => {
+    const grants = await sql`select table_name, privilege_type from information_schema.role_table_grants
+      where table_schema = 'public' and grantee in ('anon','PUBLIC') order by 1`;
+    assert(grants.length === 0, `anon/PUBLIC har tabellrettigheter: ${grants.map((r) => `${String(r["table_name"])}:${String(r["privilege_type"])}`).join(", ")}`);
+    const pols = await sql`select tablename, policyname from pg_policies where schemaname = 'public' and ('anon' = any(roles) or 'public' = any(roles))`;
+    assert(pols.length === 0, `policyer for anon/public: ${pols.map((r) => `${String(r["tablename"])}.${String(r["policyname"])}`).join(", ")}`);
+  });
+
+  await test("0100 G-8.3: anon kan bare kjøre de tiltenkte offentlige funksjonene", async () => {
+    const allowed = new Set(["globe_points", "public_profile", "registration_status", "showcase_comments", "showcase_feed"]);
+    const rows = await sql`select p.proname from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+      where n.nspname = 'public' and has_function_privilege('anon', p.oid, 'execute')`;
+    const extra = rows.map((r) => String(r["proname"])).filter((n) => !allowed.has(n));
+    assert(extra.length === 0, `anon kan kjøre uventede funksjoner: ${extra.join(", ")}`);
+    const priv = await sql`select p.proname from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+      where n.nspname = 'private' and p.proname like 'rate_limit%' and (has_function_privilege('anon', p.oid, 'execute') or has_function_privilege('authenticated', p.oid, 'execute'))`;
+    assert(priv.length === 0, "hastighetsgrensens interne funksjoner skal ikke kunne kalles av klienter");
+  });
+
+  await test("0100 G-8.4: rate_limit_hit stopper over taket med PTG15 per nøkkel", async () => {
+    await sql`insert into private.rate_limit_rules (scope, window_seconds, per_key, per_ip) values ('g8_probe', 3600, 3, 2)`;
+    for (let i = 0; i < 3; i++) await as("service_role", null, (tx) => tx`select public.rate_limit_hit('g8_probe', array['u:a'])`);
+    await expectError(as("service_role", null, (tx) => tx`select public.rate_limit_hit('g8_probe', array['u:a'])`), "PTG15");
+    // Annen nøkkel påvirkes ikke; IP-nøkler har eget tak
+    await as("service_role", null, (tx) => tx`select public.rate_limit_hit('g8_probe', array['u:b'])`);
+    for (let i = 0; i < 2; i++) await as("service_role", null, (tx) => tx`select public.rate_limit_hit('g8_probe', array['ip:1.2.3.4'])`);
+    await expectError(as("service_role", null, (tx) => tx`select public.rate_limit_hit('g8_probe', array['ip:1.2.3.4'])`), "PTG15");
+    // Ukjent scope og tomme nøkler gjør ingenting
+    await as("service_role", null, (tx) => tx`select public.rate_limit_hit('finnes_ikke', array['u:a'])`);
+    await as("service_role", null, (tx) => tx`select public.rate_limit_hit('g8_probe', array['u:', 'ip:'])`);
+    await expectError(as("authenticated", ALICE, (tx) => tx`select public.rate_limit_hit('g8_probe', array['u:z'])`), /permission denied/);
+    await sql`delete from private.rate_limit_hits where scope = 'g8_probe'`;
+    await sql`delete from private.rate_limit_rules where scope = 'g8_probe'`;
+  });
+
+  await test("0100 G-8.5: triggere og globe_points bruker hastighetsgrensen", async () => {
+    const trg = await sql`select c.relname from pg_trigger t join pg_class c on c.oid = t.tgrelid where t.tgname = 'g8_rate_limit' order by 1`;
+    const names = trg.map((r) => String(r["relname"]));
+    for (const t of ["content_reports", "export_records", "film_shares", "generation_jobs", "imported_documents", "project_invitations", "showcase_comments", "signup_passes", "upload_sessions", "workspace_invitations"])
+      assert(names.includes(t), `mangler hastighetstrigger på ${t}`);
+    // Registreringspass: sjette pass for samme e-post innen en time stoppes
+    for (let i = 0; i < 5; i++) await as("service_role", null, (tx) => tx`select public.issue_signup_pass('g8@example.no')`);
+    await expectError(as("service_role", null, (tx) => tx`select public.issue_signup_pass('g8@example.no')`), "PTG15");
+    // Globuspunktene teller per IP fra forespørselen
+    await sql`update private.rate_limit_rules set per_ip = 2 where scope = 'globe'`;
+    const call = () => sql.begin(async (tx) => {
+      await tx.unsafe("set local role anon");
+      await tx`select set_config('request.headers', ${JSON.stringify({ "x-forwarded-for": "9.9.9.9, 10.0.0.1" })}, true)`;
+      return tx`select * from public.globe_points()`;
+    });
+    await call(); await call();
+    await expectError(call(), "PTG15");
+    await sql`update private.rate_limit_rules set per_ip = 30 where scope = 'globe'`;
+    await sql`delete from private.rate_limit_hits`;
+  });
+
   // ---------- search_path: alle SECURITY DEFINER-funksjoner skal ha search_path='' ----------
   await test("alle SECURITY DEFINER-funksjoner i public/private har search_path=''", async () => {
     const rows = await sql`
