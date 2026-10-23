@@ -43,9 +43,9 @@ try {
   const prod = String((await sql`select id from public.productions where project_id=${project} and kind='main'`)[0]!["id"]);
 
   await sql.unsafe(`
-    create temp table g4s as select gen_random_uuid() variant, gen_random_uuid() occ, i from generate_series(1, 2000) i;
-    insert into public.scenes (id, project_id, origin_production_id) select gen_random_uuid(), '${project}', '${prod}' from g4s;
-    insert into public.scene_variants (id, project_id, scene_id) select g.variant, '${project}', s.id from g4s g join public.scenes s on s.origin_production_id='${prod}' and s.project_id='${project}';
+    create temp table g4s as select gen_random_uuid() scene, gen_random_uuid() variant, gen_random_uuid() occ, i from generate_series(1, 2000) i;
+    insert into public.scenes (id, project_id, origin_production_id) select scene, '${project}', '${prod}' from g4s;
+    insert into public.scene_variants (id, project_id, scene_id) select variant, '${project}', scene from g4s;
     insert into public.script_blocks (id, project_id, variant_id, kind, order_key, language, text)
       select gen_random_uuid(), '${project}', g.variant, 'action', 'b' || lpad((g.i * 100 + j)::text, 9, '0') || '1', 'nb',
         case (g.i + j) % 5
