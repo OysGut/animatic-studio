@@ -10637,6 +10637,166 @@
       "en": {
         "text": "Double-click to open the scene"
       }
+    },
+    "attach.hint": {
+      "nb": {
+        "text": "Anbefalt: 1–3 stilforbilder. Flere bilder gir ofte mer ujevne resultater og koster mer."
+      },
+      "en": {
+        "text": "Recommended: 1–3 style references. More images often give less consistent results and cost more."
+      }
+    },
+    "attach.identityOff": {
+      "nb": {
+        "text": "Uten dagens bilde kan utseendet endre seg."
+      },
+      "en": {
+        "text": "Without the current image, the appearance may change."
+      }
+    },
+    "attach.limit": {
+      "nb": {
+        "text": "Grensen for denne modellen er nådd: {max} bilder."
+      },
+      "en": {
+        "text": "This model’s limit is reached: {max} images."
+      }
+    },
+    "attach.overLimit": {
+      "nb": {
+        "text": " (over grensen, sendes ikke)"
+      },
+      "en": {
+        "text": " (over the limit, not sent)"
+      }
+    },
+    "attach.add": {
+      "nb": {
+        "text": "Legg til bilde …"
+      },
+      "en": {
+        "text": "Add image …"
+      }
+    },
+    "attach.remove": {
+      "nb": {
+        "text": "Fjern"
+      },
+      "en": {
+        "text": "Remove"
+      }
+    },
+    "attach.role.same": {
+      "nb": {
+        "text": " – samme figur/gjenstand"
+      },
+      "en": {
+        "text": " – same figure/object"
+      }
+    },
+    "attach.include": {
+      "nb": {
+        "text": "Send med: {label}"
+      },
+      "en": {
+        "text": "Send along: {label}"
+      }
+    },
+    "attach.cost.label": {
+      "nb": {
+        "text": "Bilder som sendes med"
+      },
+      "en": {
+        "text": "Images sent along"
+      }
+    },
+    "attach.cost.value": {
+      "nb": {
+        "text": "{count} av høyst {max} (flere bilder kan endre prisen)"
+      },
+      "en": {
+        "text": "{count} of at most {max} (more images can change the price)"
+      }
+    },
+    "attach.picker.title": {
+      "nb": {
+        "text": "Legg til bilde"
+      },
+      "en": {
+        "text": "Add image"
+      }
+    },
+    "attach.picker.search": {
+      "nb": {
+        "text": "Søk etter bilde"
+      },
+      "en": {
+        "text": "Search images"
+      }
+    },
+    "attach.picker.allKinds": {
+      "nb": {
+        "text": "Alle typer"
+      },
+      "en": {
+        "text": "All types"
+      }
+    },
+    "attach.picker.kind": {
+      "nb": {
+        "text": "Type"
+      },
+      "en": {
+        "text": "Type"
+      }
+    },
+    "attach.picker.role": {
+      "nb": {
+        "text": "Rolle"
+      },
+      "en": {
+        "text": "Role"
+      }
+    },
+    "attach.picker.roleStyle": {
+      "nb": {
+        "text": "Bare stilen"
+      },
+      "en": {
+        "text": "Style only"
+      }
+    },
+    "attach.picker.roleSame": {
+      "nb": {
+        "text": "Samme figur/gjenstand"
+      },
+      "en": {
+        "text": "Same figure/object"
+      }
+    },
+    "attach.picker.empty": {
+      "nb": {
+        "text": "Ingen godkjente bilder passer."
+      },
+      "en": {
+        "text": "No approved images match."
+      }
+    },
+    "attach.picker.close": {
+      "nb": {
+        "text": "Lukk"
+      },
+      "en": {
+        "text": "Close"
+      }
+    },
+    "attach.picker.pick": {
+      "nb": {
+        "text": "Legg til {label}"
+      },
+      "en": {
+        "text": "Add {label}"
+      }
     }
   }
 }

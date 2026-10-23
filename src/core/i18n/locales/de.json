@@ -55591,5 +55591,105 @@
     "text": "Doppelklicken, um die Szene zu öffnen",
     "sourceHash": "7c522c850b23b70d940373da2d4a67fc45bd982ab02a3d8cae37416a86042d3f",
     "review": "machine"
+  },
+  "attach.hint": {
+    "text": "Empfohlen: 1–3 Stilvorlagen. Mehr Bilder führen oft zu uneinheitlicheren Ergebnissen und kosten mehr.",
+    "sourceHash": "86b00ad82d0a3e4e872a43465790c4ce53a8ff8f41dd9a51a88226acc732a9b2",
+    "review": "machine"
+  },
+  "attach.identityOff": {
+    "text": "Ohne das aktuelle Bild kann sich das Aussehen ändern.",
+    "sourceHash": "54b9ab1f52d1bac394b115436f3d1b7960b07a51e7f9f16a533ed194a43f351f",
+    "review": "machine"
+  },
+  "attach.limit": {
+    "text": "Die Grenze dieses Modells ist erreicht: {max} Bilder.",
+    "sourceHash": "37618a4c92c730caac91dcc4c9d595c64ab0b069884ae076c1de11fe329c0f72",
+    "review": "machine"
+  },
+  "attach.overLimit": {
+    "text": " (über der Grenze, wird nicht gesendet)",
+    "sourceHash": "8a4e60f321b47929f7d4d2c802e5b29d4bf078f6e08c31361078591572da7a21",
+    "review": "machine"
+  },
+  "attach.add": {
+    "text": "Bild hinzufügen …",
+    "sourceHash": "819862c7328436fb9df96581ead5846612fcab03c30117186b4966fc9dc06fc0",
+    "review": "machine"
+  },
+  "attach.remove": {
+    "text": "Entfernen",
+    "sourceHash": "efa41f7dcba0d2f5b5c7ee29c270d50f2ecd3e8f65636f8336ca5ba934612a15",
+    "review": "machine"
+  },
+  "attach.role.same": {
+    "text": " – gleiche Figur/gleicher Gegenstand",
+    "sourceHash": "b15ea5137ea908352de77df3a0bd01024d5e822adf9f028a1b50cfa5edf8b6e3",
+    "review": "machine"
+  },
+  "attach.include": {
+    "text": "Mitsenden: {label}",
+    "sourceHash": "835be4ff4510c0eb771129cfa550320319cea61f0e8db9dde5701c678ee6d9af",
+    "review": "machine"
+  },
+  "attach.cost.label": {
+    "text": "Mitgesendete Bilder",
+    "sourceHash": "235202e102f36eb7b385b79b7ec615dc95964558ca93dbb2efb3626708e213a2",
+    "review": "machine"
+  },
+  "attach.cost.value": {
+    "text": "{count} von höchstens {max} (mehr Bilder können den Preis ändern)",
+    "sourceHash": "d6b5adbc2df20c5e25d193910e113641ccd4f87a8b1acc110c056a09732d78d7",
+    "review": "machine"
+  },
+  "attach.picker.title": {
+    "text": "Bild hinzufügen",
+    "sourceHash": "011fa939806b381ad8557664aadcbd842be5ffea960dc86c9a36838e213a3027",
+    "review": "machine"
+  },
+  "attach.picker.search": {
+    "text": "Bilder suchen",
+    "sourceHash": "aa8d1ef67305cb1eb40d7cb674a460b1a8b3cbdfba4749975e09a6b3f55c510a",
+    "review": "machine"
+  },
+  "attach.picker.allKinds": {
+    "text": "Alle Typen",
+    "sourceHash": "51a0f5606f5c37f91d6811c7e297f87e3a5a05fd81223c61403a54809cc24340",
+    "review": "machine"
+  },
+  "attach.picker.kind": {
+    "text": "Typ",
+    "sourceHash": "47c06a19df0b0752b30441b7a7df57fe481f3483acd093e630275adc2f4558a3",
+    "review": "machine"
+  },
+  "attach.picker.role": {
+    "text": "Rolle",
+    "sourceHash": "aef958ce00f5d364a329f5d47a7f58d67aa3e994b3d40c840de8bf3fe3c20cfe",
+    "review": "machine"
+  },
+  "attach.picker.roleStyle": {
+    "text": "Nur der Stil",
+    "sourceHash": "4623343f9f29d606197982433e55219ce12a2421d41eef8911c51828721b39c5",
+    "review": "machine"
+  },
+  "attach.picker.roleSame": {
+    "text": "Gleiche Figur/gleicher Gegenstand",
+    "sourceHash": "9dc964ae28701bc1771e0515a9cf192191263984a2caf8d73e62a6dc91db7471",
+    "review": "machine"
+  },
+  "attach.picker.empty": {
+    "text": "Keine freigegebenen Bilder passen.",
+    "sourceHash": "9e97d961b7cf648d7f6dda2322ed86adefcd3243e279ca42af3102aad41ef3d0",
+    "review": "machine"
+  },
+  "attach.picker.close": {
+    "text": "Schließen",
+    "sourceHash": "e8b18396064c1a5f49e211a1cfca295a50ace87cebb16890ebb2c2fae97a4b95",
+    "review": "machine"
+  },
+  "attach.picker.pick": {
+    "text": "{label} hinzufügen",
+    "sourceHash": "649651269dee5d4efa39eb2bfa080e39c0f08d26d90198bf21d6abe533f5f56c",
+    "review": "machine"
   }
 }

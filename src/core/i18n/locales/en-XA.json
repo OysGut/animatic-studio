@@ -75527,5 +75527,65 @@
   },
   "script.openScene.hint": {
     "text": "[!! DDôôüübbllëë-ccllïïcckk ttôô ôôppëënn tthhëë ssccëënnëë !!]"
+  },
+  "attach.hint": {
+    "text": "[!! RRëëccôômmmmëënnddëëdd: 1–3 ssttyyllëë rrëëffëërrëënnccëëss. MMôôrrëë ïïmmáággëëss ôôffttëënn ggïïvvëë llëëssss ccôônnssïïssttëënntt rrëëssûûllttss áánndd ccôôsstt mmôôrrëë. !!]"
+  },
+  "attach.identityOff": {
+    "text": "[!! WWïïtthhôôûûtt tthhëë ccûûrrrrëënntt ïïmmáággëë, tthhëë ááppppëëáárráánnccëë mmááyy cchháánnggëë. !!]"
+  },
+  "attach.limit": {
+    "text": "[!! TThhïïss mmôôddëëll’ss llïïmmïïtt ïïss rrëëáácchhëëdd: {max} ïïmmáággëëss. !!]"
+  },
+  "attach.overLimit": {
+    "text": "[!!  (ôôvvëërr tthhëë llïïmmïïtt, nnôôtt ssëënntt) !!]"
+  },
+  "attach.add": {
+    "text": "[!! áádddd ïïmmáággëë … !!]"
+  },
+  "attach.remove": {
+    "text": "[!! RRëëmmôôvvëë !!]"
+  },
+  "attach.role.same": {
+    "text": "[!!  – ssáámmëë ffïïggûûrrëë/ôôbbjjëëcctt !!]"
+  },
+  "attach.include": {
+    "text": "[!! SSëënndd áállôônngg: {label} !!]"
+  },
+  "attach.cost.label": {
+    "text": "[!! ïïmmáággëëss ssëënntt áállôônngg !!]"
+  },
+  "attach.cost.value": {
+    "text": "[!! {count} ôôff áátt mmôôsstt {max} (mmôôrrëë ïïmmáággëëss ccáánn cchháánnggëë tthhëë pprrïïccëë) !!]"
+  },
+  "attach.picker.title": {
+    "text": "[!! áádddd ïïmmáággëë !!]"
+  },
+  "attach.picker.search": {
+    "text": "[!! SSëëáárrcchh ïïmmáággëëss !!]"
+  },
+  "attach.picker.allKinds": {
+    "text": "[!! áállll ttyyppëëss !!]"
+  },
+  "attach.picker.kind": {
+    "text": "[!! TTyyppëë !!]"
+  },
+  "attach.picker.role": {
+    "text": "[!! RRôôllëë !!]"
+  },
+  "attach.picker.roleStyle": {
+    "text": "[!! SSttyyllëë ôônnllyy !!]"
+  },
+  "attach.picker.roleSame": {
+    "text": "[!! SSáámmëë ffïïggûûrrëë/ôôbbjjëëcctt !!]"
+  },
+  "attach.picker.empty": {
+    "text": "[!! NNôô áápppprrôôvvëëdd ïïmmáággëëss mmááttcchh. !!]"
+  },
+  "attach.picker.close": {
+    "text": "[!! CCllôôssëë !!]"
+  },
+  "attach.picker.pick": {
+    "text": "[!! áádddd {label} !!]"
   }
 }
