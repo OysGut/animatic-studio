@@ -127,6 +127,11 @@ const INVERSE_ONLY = new Set<string>([
   "UndoAddAnnotations",
   "UndoCreateComposition",
   "UndoAddLayers",
+  // SB-1 (migrasjon 0102): inverser fra storyboardgrunnmuren
+  "UndoAddStoryboardPanel",
+  "UndoSeedStoryboardPanels",
+  "UndoSnapshotStoryboardPanel",
+  "RevertProductionStatus",
   "UndoSetProjectFormat",
   "UndoAddAudioClips",
   "UndoCreateStoryProfile",
@@ -677,7 +682,12 @@ export const runCommand = createServerFn({ method: "POST" })
     // DV7/DV8: avviksgjennomganger og huskelapper krever migrasjon 0062
     if (["ReviewDialogueDrift", "UndoReviewDialogueDrift", "AddNoteFlag", "UndoAddNoteFlag", "UpdateNoteFlag", "SetNoteFlagRemoved"].includes(checked.type)) {
       const schema = await checkSchema(admin);
-      if (schema.kind === "missing" || schema.version < 62) return { ok: false, code: "schema", message: tk("adapters-storage-commands-functions.message.message.b87bdd379b23") };
+       if (schema.kind === "missing" || schema.version < 62) return { ok: false, code: "schema", message: tk("adapters-storage-commands-functions.message.message.b87bdd379b23") };
+    }
+    // SB-1: storyboardgrunnmuren krever migrasjon 0102
+    if (["AddStoryboardPanel", "UndoAddStoryboardPanel", "UpdateStoryboardPanel", "SetStoryboardPanelRemoved", "MoveStoryboardPanel", "MoveStoryboardPanelToScene", "SeedStoryboardPanels", "UndoSeedStoryboardPanels", "SnapshotStoryboardPanel", "UndoSnapshotStoryboardPanel", "SetProductionStatus", "RevertProductionStatus"].includes(checked.type)) {
+      const schema = await checkSchema(admin);
+      if (schema.kind === "missing" || schema.version < 102) return { ok: false, code: "schema", message: tk("sb1.schema") };
     }
     // Stempelet på nye notater settes av serveren (navnet i profilen og tidspunktet nå), så ingen kan
     // skrive notater i andres navn. Bare notater fra en importert fil beholder filens navn og tid (DEC-0031).
