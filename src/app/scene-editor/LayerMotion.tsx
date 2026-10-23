@@ -172,7 +172,7 @@ export function LayerMotion({
           ) : null}
           <EaseSlider
             label={tk("app-scene-editor-layer-motion.layer-motion.label.eeb8dbbda81a")}
-            value={shown!.easeOut}
+            value={path.easeOut}
             disabled={off}
             testId="ease-out"
             onDraft={(v) => draft(v === null ? null : { ...path, easeOut: v })}
@@ -182,7 +182,7 @@ export function LayerMotion({
           />
           <EaseSlider
             label={tk("app-scene-editor-layer-motion.layer-motion.label.3c4785e843f8")}
-            value={shown!.easeIn}
+            value={path.easeIn}
             disabled={off}
             testId="ease-in"
             onDraft={(v) => draft(v === null ? null : { ...path, easeIn: v })}
