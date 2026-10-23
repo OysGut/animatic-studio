@@ -52,6 +52,8 @@ export interface Proposal {
   };
   readonly costUsd: number;
   readonly usedFallback: boolean;
+  /** G-1b: målspråket for oversettelsesforslag. */
+  readonly targetLanguage?: string;
 }
 
 type Ids = (kind: string) => string;
@@ -70,7 +72,7 @@ export function proposalFromReply(
 ): Proposal | null {
   const j = parseJsonLoose(raw) as Record<string, unknown> | null;
   if (!j || typeof j !== "object") return null;
-  const base = { id: ids("proposal"), kind: r.kind, productionId: r.productionId, occurrenceId: r.occurrenceId, ...meta };
+  const base = { id: ids("proposal"), kind: r.kind, productionId: r.productionId, occurrenceId: r.occurrenceId, ...(r.targetLanguage ? { targetLanguage: r.targetLanguage } : {}), ...meta };
   if (r.kind === "rewrite" || r.kind === "polish" || r.kind === "translate") {
     const list = j["blocks"];
     if (!Array.isArray(list)) return null;
@@ -154,7 +156,7 @@ export function proposalConflicts(s: ProjectState, p: Proposal): Set<string> {
     if (!i.blockId) continue;
     const b = s.blocks[i.blockId];
     if (!b || b.removed || b.revision !== i.baseRevision || b.text !== i.baseText) out.add(i.key);
-    else if (p.kind === "translate" && Object.values(s.translations).some((t) => !t.removed && t.blockId === i.blockId && t.language === "en"))
+    else if (p.kind === "translate" && Object.values(s.translations).some((t) => !t.removed && t.blockId === i.blockId && t.language.toLowerCase() === (p.targetLanguage ?? "").toLowerCase()))
       out.add(i.key);
   }
   if (p.anchor) {
@@ -208,7 +210,7 @@ export function planApplyProposal(s: ProjectState, p: Proposal, keys: ReadonlySe
         fields: {
           blockId: i.blockId as never,
           variantId: null,
-          language: "en",
+          language: p.targetLanguage ?? "",
           text: i.newText,
           basedOnRev: s.blocks[i.blockId!]!.currentRev,
           // Utkastet må godkjennes (REQ-0335); norsk endres aldri (REQ-0331)
