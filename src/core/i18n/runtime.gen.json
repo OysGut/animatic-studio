@@ -33604,6 +33604,210 @@
     "sb1.schema": {
       "text": "Databasen mangler storyboardgrunnmuren. Kjør migrasjon 0102 først."
     },
+    "sb2.add": {
+      "text": "Nytt panel"
+    },
+    "sb2.cancel": {
+      "text": "Avbryt"
+    },
+    "sb2.deactivate": {
+      "text": "Deaktiver"
+    },
+    "sb2.drag-scene": {
+      "text": "Dra scenen – endrer filmens scenerekkefølge"
+    },
+    "sb2.duplicate": {
+      "text": "Dupliser"
+    },
+    "sb2.empty": {
+      "text": "Produksjonen har ingen aktive scener ennå."
+    },
+    "sb2.filter": {
+      "text": "Filter"
+    },
+    "sb2.filter-area": {
+      "text": "Fagområde for filteret"
+    },
+    "sb2.filter-none": {
+      "text": "Alle"
+    },
+    "sb2.filter-status": {
+      "text": "Status for filteret"
+    },
+    "sb2.gallery": {
+      "text": "Storyboardpaneler"
+    },
+    "sb2.hide": {
+      "text": "Skjul"
+    },
+    "sb2.jump-script": {
+      "text": "Hopp til manus"
+    },
+    "sb2.load-error": {
+      "text": "Storyboardet kunne ikke lastes."
+    },
+    "sb2.loading": {
+      "text": "Laster storyboardet …"
+    },
+    "sb2.mark": {
+      "text": "Åpnet fra storyboardpanel {number} {name}"
+    },
+    "sb2.mark-back": {
+      "text": "Tilbake til storyboardet"
+    },
+    "sb2.move-anchor": {
+      "text": "Ny forankring i manuset (valgfritt)"
+    },
+    "sb2.move-body": {
+      "text": "Panel {number} flyttes og får ny forankring i manuset. Kan angres."
+    },
+    "sb2.move-choose": {
+      "text": "Velg scene"
+    },
+    "sb2.move-confirm": {
+      "text": "Flytt"
+    },
+    "sb2.move-no-blocks": {
+      "text": "Scenen har ingen replikker eller handling."
+    },
+    "sb2.move-target": {
+      "text": "Målscene"
+    },
+    "sb2.move-title": {
+      "text": "Flytt panel til en annen scene"
+    },
+    "sb2.move-to-scene": {
+      "text": "Flytt til scene …"
+    },
+    "sb2.nav": {
+      "text": "Storyboard"
+    },
+    "sb2.none-selected": {
+      "text": "Ingen paneler valgt"
+    },
+    "sb2.notes-count": {
+      "text": "Notater: {count}"
+    },
+    "sb2.panel-actions": {
+      "text": "Valgt panel"
+    },
+    "sb2.panel-label": {
+      "text": "Panel {number}, scene {scene}"
+    },
+    "sb2.panel-size": {
+      "text": "Panelstørrelse"
+    },
+    "sb2.production": {
+      "text": "Produksjon"
+    },
+    "sb2.redo": {
+      "text": "Gjør om"
+    },
+    "sb2.restore": {
+      "text": "Gjeninnfør"
+    },
+    "sb2.route.description": {
+      "text": "Hele filmen som storyboardpaneler, i fortellerrekkefølge."
+    },
+    "sb2.route.title": {
+      "text": "Storyboard – Pen to Glass"
+    },
+    "sb2.scene-earlier": {
+      "text": "Flytt scenen tidligere i filmen"
+    },
+    "sb2.scene-empty": {
+      "text": "Ingen paneler i scenen."
+    },
+    "sb2.scene-later": {
+      "text": "Flytt scenen senere i filmen"
+    },
+    "sb2.scene-order-changed": {
+      "text": "Filmens scenerekkefølge er endret. Manus og montering følger med. Kan angres."
+    },
+    "sb2.scene-order-warning": {
+      "text": "Flytting endrer filmens scenerekkefølge"
+    },
+    "sb2.seed-body": {
+      "text": "Forslag: ett tomt panel per scene ({count} scener). Ingenting lages før du bekrefter, og det kan angres."
+    },
+    "sb2.seed-confirm": {
+      "text": "Lag paneler"
+    },
+    "sb2.seed-later": {
+      "text": "Ikke nå"
+    },
+    "sb2.seed-title": {
+      "text": "Lag storyboardpaneler?"
+    },
+    "sb2.selected": {
+      "text": "Panel {number} valgt"
+    },
+    "sb2.show-hidden": {
+      "text": "Vis skjulte og deaktiverte"
+    },
+    "sb2.show-legend": {
+      "text": "Vis på kortene"
+    },
+    "sb2.show-panel": {
+      "text": "Vis"
+    },
+    "sb2.status-of": {
+      "text": "Status for {area}"
+    },
+    "sb2.text-view": {
+      "text": "Tekstvisning"
+    },
+    "sb2.toolbar": {
+      "text": "Storyboardvisning"
+    },
+    "sb2.undo": {
+      "text": "Angre"
+    },
+    "sb2.undo.activate": {
+      "text": "Gjeninnfør panel"
+    },
+    "sb2.undo.add": {
+      "text": "Nytt storyboardpanel"
+    },
+    "sb2.undo.deactivate": {
+      "text": "Deaktiver panel"
+    },
+    "sb2.undo.duplicate": {
+      "text": "Dupliser panel"
+    },
+    "sb2.undo.hide": {
+      "text": "Skjul panel"
+    },
+    "sb2.undo.move": {
+      "text": "Flytt panel"
+    },
+    "sb2.undo.move-scene": {
+      "text": "Endre filmens scenerekkefølge"
+    },
+    "sb2.undo.move-to-scene": {
+      "text": "Flytt panel til scene"
+    },
+    "sb2.undo.seed": {
+      "text": "Lag storyboardpaneler"
+    },
+    "sb2.undo.show": {
+      "text": "Vis panel"
+    },
+    "sb2.undo.status": {
+      "text": "Endre status"
+    },
+    "sb2.untitled-scene": {
+      "text": "Scene uten overskrift"
+    },
+    "sb2.zoom": {
+      "text": "Zoom"
+    },
+    "sb2.zoom-in": {
+      "text": "Zoom inn (detalj)"
+    },
+    "sb2.zoom-out": {
+      "text": "Zoom ut (oversikt)"
+    },
     "script-explorer2.chip.menu": {
       "text": "Valg for {name}"
     },
@@ -67347,6 +67551,210 @@
     },
     "sb1.schema": {
       "text": "The database is missing the storyboard foundation. Run migration 0102 first."
+    },
+    "sb2.add": {
+      "text": "New panel"
+    },
+    "sb2.cancel": {
+      "text": "Cancel"
+    },
+    "sb2.deactivate": {
+      "text": "Deactivate"
+    },
+    "sb2.drag-scene": {
+      "text": "Drag the scene – changes the film’s scene order"
+    },
+    "sb2.duplicate": {
+      "text": "Duplicate"
+    },
+    "sb2.empty": {
+      "text": "The production has no active scenes yet."
+    },
+    "sb2.filter": {
+      "text": "Filter"
+    },
+    "sb2.filter-area": {
+      "text": "Area to filter on"
+    },
+    "sb2.filter-none": {
+      "text": "All"
+    },
+    "sb2.filter-status": {
+      "text": "Status to filter on"
+    },
+    "sb2.gallery": {
+      "text": "Storyboard panels"
+    },
+    "sb2.hide": {
+      "text": "Hide"
+    },
+    "sb2.jump-script": {
+      "text": "Jump to script"
+    },
+    "sb2.load-error": {
+      "text": "The storyboard could not be loaded."
+    },
+    "sb2.loading": {
+      "text": "Loading the storyboard …"
+    },
+    "sb2.mark": {
+      "text": "Opened from storyboard panel {number} {name}"
+    },
+    "sb2.mark-back": {
+      "text": "Back to the storyboard"
+    },
+    "sb2.move-anchor": {
+      "text": "New anchor in the script (optional)"
+    },
+    "sb2.move-body": {
+      "text": "Panel {number} is moved and gets a new anchor in the script. Can be undone."
+    },
+    "sb2.move-choose": {
+      "text": "Choose scene"
+    },
+    "sb2.move-confirm": {
+      "text": "Move"
+    },
+    "sb2.move-no-blocks": {
+      "text": "The scene has no lines or action."
+    },
+    "sb2.move-target": {
+      "text": "Target scene"
+    },
+    "sb2.move-title": {
+      "text": "Move panel to another scene"
+    },
+    "sb2.move-to-scene": {
+      "text": "Move to scene …"
+    },
+    "sb2.nav": {
+      "text": "Storyboard"
+    },
+    "sb2.none-selected": {
+      "text": "No panel selected"
+    },
+    "sb2.notes-count": {
+      "text": "Notes: {count}"
+    },
+    "sb2.panel-actions": {
+      "text": "Selected panel"
+    },
+    "sb2.panel-label": {
+      "text": "Panel {number}, scene {scene}"
+    },
+    "sb2.panel-size": {
+      "text": "Panel size"
+    },
+    "sb2.production": {
+      "text": "Production"
+    },
+    "sb2.redo": {
+      "text": "Redo"
+    },
+    "sb2.restore": {
+      "text": "Reinstate"
+    },
+    "sb2.route.description": {
+      "text": "The whole film as storyboard panels, in story order."
+    },
+    "sb2.route.title": {
+      "text": "Storyboard – Pen to Glass"
+    },
+    "sb2.scene-earlier": {
+      "text": "Move the scene earlier in the film"
+    },
+    "sb2.scene-empty": {
+      "text": "No panels in the scene."
+    },
+    "sb2.scene-later": {
+      "text": "Move the scene later in the film"
+    },
+    "sb2.scene-order-changed": {
+      "text": "The film’s scene order changed. Script and edit follow. Can be undone."
+    },
+    "sb2.scene-order-warning": {
+      "text": "Moving changes the film’s scene order"
+    },
+    "sb2.seed-body": {
+      "text": "Suggestion: one empty panel per scene ({count} scenes). Nothing is created until you confirm, and it can be undone."
+    },
+    "sb2.seed-confirm": {
+      "text": "Create panels"
+    },
+    "sb2.seed-later": {
+      "text": "Not now"
+    },
+    "sb2.seed-title": {
+      "text": "Create storyboard panels?"
+    },
+    "sb2.selected": {
+      "text": "Panel {number} selected"
+    },
+    "sb2.show-hidden": {
+      "text": "Show hidden and deactivated"
+    },
+    "sb2.show-legend": {
+      "text": "Show on cards"
+    },
+    "sb2.show-panel": {
+      "text": "Show"
+    },
+    "sb2.status-of": {
+      "text": "Status for {area}"
+    },
+    "sb2.text-view": {
+      "text": "Text view"
+    },
+    "sb2.toolbar": {
+      "text": "Storyboard view"
+    },
+    "sb2.undo": {
+      "text": "Undo"
+    },
+    "sb2.undo.activate": {
+      "text": "Reinstate panel"
+    },
+    "sb2.undo.add": {
+      "text": "New storyboard panel"
+    },
+    "sb2.undo.deactivate": {
+      "text": "Deactivate panel"
+    },
+    "sb2.undo.duplicate": {
+      "text": "Duplicate panel"
+    },
+    "sb2.undo.hide": {
+      "text": "Hide panel"
+    },
+    "sb2.undo.move": {
+      "text": "Move panel"
+    },
+    "sb2.undo.move-scene": {
+      "text": "Change the film’s scene order"
+    },
+    "sb2.undo.move-to-scene": {
+      "text": "Move panel to scene"
+    },
+    "sb2.undo.seed": {
+      "text": "Create storyboard panels"
+    },
+    "sb2.undo.show": {
+      "text": "Show panel"
+    },
+    "sb2.undo.status": {
+      "text": "Change status"
+    },
+    "sb2.untitled-scene": {
+      "text": "Scene without heading"
+    },
+    "sb2.zoom": {
+      "text": "Zoom"
+    },
+    "sb2.zoom-in": {
+      "text": "Zoom in (detail)"
+    },
+    "sb2.zoom-out": {
+      "text": "Zoom out (overview)"
     },
     "script-explorer2.chip.menu": {
       "text": "Options for {name}"

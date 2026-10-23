@@ -76157,5 +76157,275 @@
   },
   "sb1.layer-camera-mark": {
     "text": "[!! CCáámmëërráá mmáárrkk !!]"
+  },
+  "sb2.nav": {
+    "text": "[!! SSttôôrryybbôôáárrdd !!]"
+  },
+  "sb2.route.title": {
+    "text": "[!! SSttôôrryybbôôáárrdd – PPëënn ttôô GGlláássss !!]"
+  },
+  "sb2.route.description": {
+    "text": "[!! TThhëë wwhhôôllëë ffïïllmm ááss ssttôôrryybbôôáárrdd ppáánnëëllss, ïïnn ssttôôrryy ôôrrddëërr. !!]"
+  },
+  "sb2.loading": {
+    "text": "[!! LLôôááddïïnngg tthhëë ssttôôrryybbôôáárrdd … !!]"
+  },
+  "sb2.load-error": {
+    "text": "[!! TThhëë ssttôôrryybbôôáárrdd ccôôüülldd nnôôtt bbëë llôôááddëëdd. !!]"
+  },
+  "sb2.toolbar": {
+    "text": "[!! SSttôôrryybbôôáárrdd vvïïëëww !!]"
+  },
+  "sb2.production": {
+    "text": "[!! PPrrôôddüüccttïïôônn !!]"
+  },
+  "sb2.zoom": {
+    "text": "[!! ZZôôôômm !!]"
+  },
+  "sb2.zoom-out": {
+    "text": "[!! ZZôôôômm ôôüütt (ôôvvëërrvvïïëëww) !!]"
+  },
+  "sb2.zoom-in": {
+    "text": "[!! ZZôôôômm ïïnn (ddëëttááïïll) !!]"
+  },
+  "sb2.panel-size": {
+    "text": "[!! PPáánnëëll ssïïzzëë !!]"
+  },
+  "sb2.text-view": {
+    "text": "[!! TTëëxxtt vvïïëëww !!]"
+  },
+  "sb2.show-legend": {
+    "text": "[!! SShhôôww ôônn ccáárrddss !!]"
+  },
+  "sb2.show.name": {
+    "text": "[!! NNáámmëë !!]"
+  },
+  "sb2.show.number": {
+    "text": "[!! NNüümmbbëërr !!]"
+  },
+  "sb2.show.dialogue": {
+    "text": "[!! DDïïáállôôggüüëë !!]"
+  },
+  "sb2.show.script": {
+    "text": "[!! SSccrrïïpptt ttëëxxtt !!]"
+  },
+  "sb2.show.notes": {
+    "text": "[!! NNôôttëëss !!]"
+  },
+  "sb2.show.timing": {
+    "text": "[!! TTïïmmïïnngg !!]"
+  },
+  "sb2.show.status": {
+    "text": "[!! SSttááttüüss !!]"
+  },
+  "sb2.show-hidden": {
+    "text": "[!! SShhôôww hhïïddddëënn áánndd ddëëááccttïïvvááttëëdd !!]"
+  },
+  "sb2.filter": {
+    "text": "[!! FFïïllttëërr !!]"
+  },
+  "sb2.filter-area": {
+    "text": "[!! ÁÁrrëëáá ttôô ffïïllttëërr ôônn !!]"
+  },
+  "sb2.filter-status": {
+    "text": "[!! SSttááttüüss ttôô ffïïllttëërr ôônn !!]"
+  },
+  "sb2.filter-none": {
+    "text": "[!! ÁÁllll !!]"
+  },
+  "sb2.jump-script": {
+    "text": "[!! JJüümmpp ttôô ssccrrïïpptt !!]"
+  },
+  "sb2.undo": {
+    "text": "[!! ÜÜnnddôô !!]"
+  },
+  "sb2.redo": {
+    "text": "[!! RRëëddôô !!]"
+  },
+  "sb2.panel-actions": {
+    "text": "[!! SSëëllëëccttëëdd ppáánnëëll !!]"
+  },
+  "sb2.selected": {
+    "text": "[!! PPáánnëëll {number} ssëëllëëccttëëdd !!]"
+  },
+  "sb2.none-selected": {
+    "text": "[!! NNôô ppáánnëëll ssëëllëëccttëëdd !!]"
+  },
+  "sb2.add": {
+    "text": "[!! NNëëww ppáánnëëll !!]"
+  },
+  "sb2.duplicate": {
+    "text": "[!! DDüüppllïïccááttëë !!]"
+  },
+  "sb2.hide": {
+    "text": "[!! HHïïddëë !!]"
+  },
+  "sb2.show-panel": {
+    "text": "[!! SShhôôww !!]"
+  },
+  "sb2.deactivate": {
+    "text": "[!! DDëëááccttïïvvááttëë !!]"
+  },
+  "sb2.restore": {
+    "text": "[!! RRëëïïnnssttááttëë !!]"
+  },
+  "sb2.move-to-scene": {
+    "text": "[!! MMôôvvëë ttôô ssccëënnëë … !!]"
+  },
+  "sb2.status-of": {
+    "text": "[!! SSttááttüüss ffôôrr {area} !!]"
+  },
+  "sb2.area.script": {
+    "text": "[!! SSccrrïïpptt !!]"
+  },
+  "sb2.area.storyboard": {
+    "text": "[!! SSttôôrryybbôôáárrdd !!]"
+  },
+  "sb2.area.animation": {
+    "text": "[!! ÁÁnnïïmmááttïïôônn !!]"
+  },
+  "sb2.area.sound": {
+    "text": "[!! SSôôüünndd !!]"
+  },
+  "sb2.area.film": {
+    "text": "[!! FFïïllmm !!]"
+  },
+  "sb2.area-short.script": {
+    "text": "[!! SS !!]"
+  },
+  "sb2.area-short.storyboard": {
+    "text": "[!! SSBB !!]"
+  },
+  "sb2.area-short.animation": {
+    "text": "[!! ÁÁ !!]"
+  },
+  "sb2.area-short.sound": {
+    "text": "[!! SSnndd !!]"
+  },
+  "sb2.area-short.film": {
+    "text": "[!! FF !!]"
+  },
+  "sb2.status.not-started": {
+    "text": "[!! NNôôtt ssttáárrttëëdd !!]"
+  },
+  "sb2.status.in-progress": {
+    "text": "[!! ÏÏnn pprrôôggrrëëssss !!]"
+  },
+  "sb2.status.review": {
+    "text": "[!! RRëëááddyy ffôôrr rrëëvvïïëëww !!]"
+  },
+  "sb2.status.changes-requested": {
+    "text": "[!! CChháánnggëëss rrëëqqüüëëssttëëdd !!]"
+  },
+  "sb2.status.done": {
+    "text": "[!! DDôônnëë !!]"
+  },
+  "sb2.gallery": {
+    "text": "[!! SSttôôrryybbôôáárrdd ppáánnëëllss !!]"
+  },
+  "sb2.empty": {
+    "text": "[!! TThhëë pprrôôddüüccttïïôônn hhááss nnôô ááccttïïvvëë ssccëënnëëss yyëëtt. !!]"
+  },
+  "sb2.drag-scene": {
+    "text": "[!! DDrráágg tthhëë ssccëënnëë – cchháánnggëëss tthhëë ffïïllmm’ss ssccëënnëë ôôrrddëërr !!]"
+  },
+  "sb2.untitled-scene": {
+    "text": "[!! SSccëënnëë wwïïtthhôôüütt hhëëááddïïnngg !!]"
+  },
+  "sb2.scene-order-warning": {
+    "text": "[!! MMôôvvïïnngg cchháánnggëëss tthhëë ffïïllmm’ss ssccëënnëë ôôrrddëërr !!]"
+  },
+  "sb2.scene-earlier": {
+    "text": "[!! MMôôvvëë tthhëë ssccëënnëë ëëáárrllïïëërr ïïnn tthhëë ffïïllmm !!]"
+  },
+  "sb2.scene-later": {
+    "text": "[!! MMôôvvëë tthhëë ssccëënnëë llááttëërr ïïnn tthhëë ffïïllmm !!]"
+  },
+  "sb2.scene-order-changed": {
+    "text": "[!! TThhëë ffïïllmm’ss ssccëënnëë ôôrrddëërr cchháánnggëëdd. SSccrrïïpptt áánndd ëëddïïtt ffôôllllôôww. CCáánn bbëë üünnddôônnëë. !!]"
+  },
+  "sb2.scene-empty": {
+    "text": "[!! NNôô ppáánnëëllss ïïnn tthhëë ssccëënnëë. !!]"
+  },
+  "sb2.panel-label": {
+    "text": "[!! PPáánnëëll {number}, ssccëënnëë {scene} !!]"
+  },
+  "sb2.notes-count": {
+    "text": "[!! NNôôttëëss: {count} !!]"
+  },
+  "sb2.seed-title": {
+    "text": "[!! CCrrëëááttëë ssttôôrryybbôôáárrdd ppáánnëëllss? !!]"
+  },
+  "sb2.seed-body": {
+    "text": "[!! SSüüggggëëssttïïôônn: ôônnëë ëëmmppttyy ppáánnëëll ppëërr ssccëënnëë ({count} ssccëënnëëss). NNôôtthhïïnngg ïïss ccrrëëááttëëdd üünnttïïll yyôôüü ccôônnffïïrrmm, áánndd ïïtt ccáánn bbëë üünnddôônnëë. !!]"
+  },
+  "sb2.seed-confirm": {
+    "text": "[!! CCrrëëááttëë ppáánnëëllss !!]"
+  },
+  "sb2.seed-later": {
+    "text": "[!! NNôôtt nnôôww !!]"
+  },
+  "sb2.move-title": {
+    "text": "[!! MMôôvvëë ppáánnëëll ttôô áánnôôtthhëërr ssccëënnëë !!]"
+  },
+  "sb2.move-body": {
+    "text": "[!! PPáánnëëll {number} ïïss mmôôvvëëdd áánndd ggëëttss áá nnëëww áánncchhôôrr ïïnn tthhëë ssccrrïïpptt. CCáánn bbëë üünnddôônnëë. !!]"
+  },
+  "sb2.move-target": {
+    "text": "[!! TTáárrggëëtt ssccëënnëë !!]"
+  },
+  "sb2.move-choose": {
+    "text": "[!! CChhôôôôssëë ssccëënnëë !!]"
+  },
+  "sb2.move-anchor": {
+    "text": "[!! NNëëww áánncchhôôrr ïïnn tthhëë ssccrrïïpptt (ôôppttïïôônnááll) !!]"
+  },
+  "sb2.move-no-blocks": {
+    "text": "[!! TThhëë ssccëënnëë hhááss nnôô llïïnnëëss ôôrr ááccttïïôônn. !!]"
+  },
+  "sb2.move-confirm": {
+    "text": "[!! MMôôvvëë !!]"
+  },
+  "sb2.cancel": {
+    "text": "[!! CCáánnccëëll !!]"
+  },
+  "sb2.mark": {
+    "text": "[!! ÔÔppëënnëëdd ffrrôômm ssttôôrryybbôôáárrdd ppáánnëëll {number} {name} !!]"
+  },
+  "sb2.mark-back": {
+    "text": "[!! BBáácckk ttôô tthhëë ssttôôrryybbôôáárrdd !!]"
+  },
+  "sb2.undo.add": {
+    "text": "[!! NNëëww ssttôôrryybbôôáárrdd ppáánnëëll !!]"
+  },
+  "sb2.undo.duplicate": {
+    "text": "[!! DDüüppllïïccááttëë ppáánnëëll !!]"
+  },
+  "sb2.undo.hide": {
+    "text": "[!! HHïïddëë ppáánnëëll !!]"
+  },
+  "sb2.undo.show": {
+    "text": "[!! SShhôôww ppáánnëëll !!]"
+  },
+  "sb2.undo.deactivate": {
+    "text": "[!! DDëëááccttïïvvááttëë ppáánnëëll !!]"
+  },
+  "sb2.undo.activate": {
+    "text": "[!! RRëëïïnnssttááttëë ppáánnëëll !!]"
+  },
+  "sb2.undo.move": {
+    "text": "[!! MMôôvvëë ppáánnëëll !!]"
+  },
+  "sb2.undo.move-scene": {
+    "text": "[!! CChháánnggëë tthhëë ffïïllmm’ss ssccëënnëë ôôrrddëërr !!]"
+  },
+  "sb2.undo.move-to-scene": {
+    "text": "[!! MMôôvvëë ppáánnëëll ttôô ssccëënnëë !!]"
+  },
+  "sb2.undo.seed": {
+    "text": "[!! CCrrëëááttëë ssttôôrryybbôôáárrdd ppáánnëëllss !!]"
+  },
+  "sb2.undo.status": {
+    "text": "[!! CChháánnggëë ssttááttüüss !!]"
   }
 }

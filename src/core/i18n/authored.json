@@ -12418,6 +12418,726 @@
       "en": {
         "text": "Camera mark"
       }
+    },
+    "sb2.nav": {
+      "nb": {
+        "text": "Storyboard"
+      },
+      "en": {
+        "text": "Storyboard"
+      }
+    },
+    "sb2.route.title": {
+      "nb": {
+        "text": "Storyboard – Pen to Glass"
+      },
+      "en": {
+        "text": "Storyboard – Pen to Glass"
+      }
+    },
+    "sb2.route.description": {
+      "nb": {
+        "text": "Hele filmen som storyboardpaneler, i fortellerrekkefølge."
+      },
+      "en": {
+        "text": "The whole film as storyboard panels, in story order."
+      }
+    },
+    "sb2.loading": {
+      "nb": {
+        "text": "Laster storyboardet …"
+      },
+      "en": {
+        "text": "Loading the storyboard …"
+      }
+    },
+    "sb2.load-error": {
+      "nb": {
+        "text": "Storyboardet kunne ikke lastes."
+      },
+      "en": {
+        "text": "The storyboard could not be loaded."
+      }
+    },
+    "sb2.toolbar": {
+      "nb": {
+        "text": "Storyboardvisning"
+      },
+      "en": {
+        "text": "Storyboard view"
+      }
+    },
+    "sb2.production": {
+      "nb": {
+        "text": "Produksjon"
+      },
+      "en": {
+        "text": "Production"
+      }
+    },
+    "sb2.zoom": {
+      "nb": {
+        "text": "Zoom"
+      },
+      "en": {
+        "text": "Zoom"
+      }
+    },
+    "sb2.zoom-out": {
+      "nb": {
+        "text": "Zoom ut (oversikt)"
+      },
+      "en": {
+        "text": "Zoom out (overview)"
+      }
+    },
+    "sb2.zoom-in": {
+      "nb": {
+        "text": "Zoom inn (detalj)"
+      },
+      "en": {
+        "text": "Zoom in (detail)"
+      }
+    },
+    "sb2.panel-size": {
+      "nb": {
+        "text": "Panelstørrelse"
+      },
+      "en": {
+        "text": "Panel size"
+      }
+    },
+    "sb2.text-view": {
+      "nb": {
+        "text": "Tekstvisning"
+      },
+      "en": {
+        "text": "Text view"
+      }
+    },
+    "sb2.show-legend": {
+      "nb": {
+        "text": "Vis på kortene"
+      },
+      "en": {
+        "text": "Show on cards"
+      }
+    },
+    "sb2.show.name": {
+      "nb": {
+        "text": "Navn"
+      },
+      "en": {
+        "text": "Name"
+      }
+    },
+    "sb2.show.number": {
+      "nb": {
+        "text": "Nummer"
+      },
+      "en": {
+        "text": "Number"
+      }
+    },
+    "sb2.show.dialogue": {
+      "nb": {
+        "text": "Dialog"
+      },
+      "en": {
+        "text": "Dialogue"
+      }
+    },
+    "sb2.show.script": {
+      "nb": {
+        "text": "Manustekst"
+      },
+      "en": {
+        "text": "Script text"
+      }
+    },
+    "sb2.show.notes": {
+      "nb": {
+        "text": "Notater"
+      },
+      "en": {
+        "text": "Notes"
+      }
+    },
+    "sb2.show.timing": {
+      "nb": {
+        "text": "Timing"
+      },
+      "en": {
+        "text": "Timing"
+      }
+    },
+    "sb2.show.status": {
+      "nb": {
+        "text": "Status"
+      },
+      "en": {
+        "text": "Status"
+      }
+    },
+    "sb2.show-hidden": {
+      "nb": {
+        "text": "Vis skjulte og deaktiverte"
+      },
+      "en": {
+        "text": "Show hidden and deactivated"
+      }
+    },
+    "sb2.filter": {
+      "nb": {
+        "text": "Filter"
+      },
+      "en": {
+        "text": "Filter"
+      }
+    },
+    "sb2.filter-area": {
+      "nb": {
+        "text": "Fagområde for filteret"
+      },
+      "en": {
+        "text": "Area to filter on"
+      }
+    },
+    "sb2.filter-status": {
+      "nb": {
+        "text": "Status for filteret"
+      },
+      "en": {
+        "text": "Status to filter on"
+      }
+    },
+    "sb2.filter-none": {
+      "nb": {
+        "text": "Alle"
+      },
+      "en": {
+        "text": "All"
+      }
+    },
+    "sb2.jump-script": {
+      "nb": {
+        "text": "Hopp til manus"
+      },
+      "en": {
+        "text": "Jump to script"
+      }
+    },
+    "sb2.undo": {
+      "nb": {
+        "text": "Angre"
+      },
+      "en": {
+        "text": "Undo"
+      }
+    },
+    "sb2.redo": {
+      "nb": {
+        "text": "Gjør om"
+      },
+      "en": {
+        "text": "Redo"
+      }
+    },
+    "sb2.panel-actions": {
+      "nb": {
+        "text": "Valgt panel"
+      },
+      "en": {
+        "text": "Selected panel"
+      }
+    },
+    "sb2.selected": {
+      "nb": {
+        "text": "Panel {number} valgt"
+      },
+      "en": {
+        "text": "Panel {number} selected"
+      }
+    },
+    "sb2.none-selected": {
+      "nb": {
+        "text": "Ingen paneler valgt"
+      },
+      "en": {
+        "text": "No panel selected"
+      }
+    },
+    "sb2.add": {
+      "nb": {
+        "text": "Nytt panel"
+      },
+      "en": {
+        "text": "New panel"
+      }
+    },
+    "sb2.duplicate": {
+      "nb": {
+        "text": "Dupliser"
+      },
+      "en": {
+        "text": "Duplicate"
+      }
+    },
+    "sb2.hide": {
+      "nb": {
+        "text": "Skjul"
+      },
+      "en": {
+        "text": "Hide"
+      }
+    },
+    "sb2.show-panel": {
+      "nb": {
+        "text": "Vis"
+      },
+      "en": {
+        "text": "Show"
+      }
+    },
+    "sb2.deactivate": {
+      "nb": {
+        "text": "Deaktiver"
+      },
+      "en": {
+        "text": "Deactivate"
+      }
+    },
+    "sb2.restore": {
+      "nb": {
+        "text": "Gjeninnfør"
+      },
+      "en": {
+        "text": "Reinstate"
+      }
+    },
+    "sb2.move-to-scene": {
+      "nb": {
+        "text": "Flytt til scene …"
+      },
+      "en": {
+        "text": "Move to scene …"
+      }
+    },
+    "sb2.status-of": {
+      "nb": {
+        "text": "Status for {area}"
+      },
+      "en": {
+        "text": "Status for {area}"
+      }
+    },
+    "sb2.area.script": {
+      "nb": {
+        "text": "Manus"
+      },
+      "en": {
+        "text": "Script"
+      }
+    },
+    "sb2.area.storyboard": {
+      "nb": {
+        "text": "Storyboard"
+      },
+      "en": {
+        "text": "Storyboard"
+      }
+    },
+    "sb2.area.animation": {
+      "nb": {
+        "text": "Animasjon"
+      },
+      "en": {
+        "text": "Animation"
+      }
+    },
+    "sb2.area.sound": {
+      "nb": {
+        "text": "Lyd"
+      },
+      "en": {
+        "text": "Sound"
+      }
+    },
+    "sb2.area.film": {
+      "nb": {
+        "text": "Film"
+      },
+      "en": {
+        "text": "Film"
+      }
+    },
+    "sb2.area-short.script": {
+      "nb": {
+        "text": "M"
+      },
+      "en": {
+        "text": "S"
+      }
+    },
+    "sb2.area-short.storyboard": {
+      "nb": {
+        "text": "SB"
+      },
+      "en": {
+        "text": "SB"
+      }
+    },
+    "sb2.area-short.animation": {
+      "nb": {
+        "text": "A"
+      },
+      "en": {
+        "text": "A"
+      }
+    },
+    "sb2.area-short.sound": {
+      "nb": {
+        "text": "L"
+      },
+      "en": {
+        "text": "Snd"
+      }
+    },
+    "sb2.area-short.film": {
+      "nb": {
+        "text": "F"
+      },
+      "en": {
+        "text": "F"
+      }
+    },
+    "sb2.status.not-started": {
+      "nb": {
+        "text": "Ikke startet"
+      },
+      "en": {
+        "text": "Not started"
+      }
+    },
+    "sb2.status.in-progress": {
+      "nb": {
+        "text": "Under arbeid"
+      },
+      "en": {
+        "text": "In progress"
+      }
+    },
+    "sb2.status.review": {
+      "nb": {
+        "text": "Klar for gjennomgang"
+      },
+      "en": {
+        "text": "Ready for review"
+      }
+    },
+    "sb2.status.changes-requested": {
+      "nb": {
+        "text": "Endringer ønskes"
+      },
+      "en": {
+        "text": "Changes requested"
+      }
+    },
+    "sb2.status.done": {
+      "nb": {
+        "text": "Ferdig"
+      },
+      "en": {
+        "text": "Done"
+      }
+    },
+    "sb2.gallery": {
+      "nb": {
+        "text": "Storyboardpaneler"
+      },
+      "en": {
+        "text": "Storyboard panels"
+      }
+    },
+    "sb2.empty": {
+      "nb": {
+        "text": "Produksjonen har ingen aktive scener ennå."
+      },
+      "en": {
+        "text": "The production has no active scenes yet."
+      }
+    },
+    "sb2.drag-scene": {
+      "nb": {
+        "text": "Dra scenen – endrer filmens scenerekkefølge"
+      },
+      "en": {
+        "text": "Drag the scene – changes the film’s scene order"
+      }
+    },
+    "sb2.untitled-scene": {
+      "nb": {
+        "text": "Scene uten overskrift"
+      },
+      "en": {
+        "text": "Scene without heading"
+      }
+    },
+    "sb2.scene-order-warning": {
+      "nb": {
+        "text": "Flytting endrer filmens scenerekkefølge"
+      },
+      "en": {
+        "text": "Moving changes the film’s scene order"
+      }
+    },
+    "sb2.scene-earlier": {
+      "nb": {
+        "text": "Flytt scenen tidligere i filmen"
+      },
+      "en": {
+        "text": "Move the scene earlier in the film"
+      }
+    },
+    "sb2.scene-later": {
+      "nb": {
+        "text": "Flytt scenen senere i filmen"
+      },
+      "en": {
+        "text": "Move the scene later in the film"
+      }
+    },
+    "sb2.scene-order-changed": {
+      "nb": {
+        "text": "Filmens scenerekkefølge er endret. Manus og montering følger med. Kan angres."
+      },
+      "en": {
+        "text": "The film’s scene order changed. Script and edit follow. Can be undone."
+      }
+    },
+    "sb2.scene-empty": {
+      "nb": {
+        "text": "Ingen paneler i scenen."
+      },
+      "en": {
+        "text": "No panels in the scene."
+      }
+    },
+    "sb2.panel-label": {
+      "nb": {
+        "text": "Panel {number}, scene {scene}"
+      },
+      "en": {
+        "text": "Panel {number}, scene {scene}"
+      }
+    },
+    "sb2.notes-count": {
+      "nb": {
+        "text": "Notater: {count}"
+      },
+      "en": {
+        "text": "Notes: {count}"
+      }
+    },
+    "sb2.seed-title": {
+      "nb": {
+        "text": "Lag storyboardpaneler?"
+      },
+      "en": {
+        "text": "Create storyboard panels?"
+      }
+    },
+    "sb2.seed-body": {
+      "nb": {
+        "text": "Forslag: ett tomt panel per scene ({count} scener). Ingenting lages før du bekrefter, og det kan angres."
+      },
+      "en": {
+        "text": "Suggestion: one empty panel per scene ({count} scenes). Nothing is created until you confirm, and it can be undone."
+      }
+    },
+    "sb2.seed-confirm": {
+      "nb": {
+        "text": "Lag paneler"
+      },
+      "en": {
+        "text": "Create panels"
+      }
+    },
+    "sb2.seed-later": {
+      "nb": {
+        "text": "Ikke nå"
+      },
+      "en": {
+        "text": "Not now"
+      }
+    },
+    "sb2.move-title": {
+      "nb": {
+        "text": "Flytt panel til en annen scene"
+      },
+      "en": {
+        "text": "Move panel to another scene"
+      }
+    },
+    "sb2.move-body": {
+      "nb": {
+        "text": "Panel {number} flyttes og får ny forankring i manuset. Kan angres."
+      },
+      "en": {
+        "text": "Panel {number} is moved and gets a new anchor in the script. Can be undone."
+      }
+    },
+    "sb2.move-target": {
+      "nb": {
+        "text": "Målscene"
+      },
+      "en": {
+        "text": "Target scene"
+      }
+    },
+    "sb2.move-choose": {
+      "nb": {
+        "text": "Velg scene"
+      },
+      "en": {
+        "text": "Choose scene"
+      }
+    },
+    "sb2.move-anchor": {
+      "nb": {
+        "text": "Ny forankring i manuset (valgfritt)"
+      },
+      "en": {
+        "text": "New anchor in the script (optional)"
+      }
+    },
+    "sb2.move-no-blocks": {
+      "nb": {
+        "text": "Scenen har ingen replikker eller handling."
+      },
+      "en": {
+        "text": "The scene has no lines or action."
+      }
+    },
+    "sb2.move-confirm": {
+      "nb": {
+        "text": "Flytt"
+      },
+      "en": {
+        "text": "Move"
+      }
+    },
+    "sb2.cancel": {
+      "nb": {
+        "text": "Avbryt"
+      },
+      "en": {
+        "text": "Cancel"
+      }
+    },
+    "sb2.mark": {
+      "nb": {
+        "text": "Åpnet fra storyboardpanel {number} {name}"
+      },
+      "en": {
+        "text": "Opened from storyboard panel {number} {name}"
+      }
+    },
+    "sb2.mark-back": {
+      "nb": {
+        "text": "Tilbake til storyboardet"
+      },
+      "en": {
+        "text": "Back to the storyboard"
+      }
+    },
+    "sb2.undo.add": {
+      "nb": {
+        "text": "Nytt storyboardpanel"
+      },
+      "en": {
+        "text": "New storyboard panel"
+      }
+    },
+    "sb2.undo.duplicate": {
+      "nb": {
+        "text": "Dupliser panel"
+      },
+      "en": {
+        "text": "Duplicate panel"
+      }
+    },
+    "sb2.undo.hide": {
+      "nb": {
+        "text": "Skjul panel"
+      },
+      "en": {
+        "text": "Hide panel"
+      }
+    },
+    "sb2.undo.show": {
+      "nb": {
+        "text": "Vis panel"
+      },
+      "en": {
+        "text": "Show panel"
+      }
+    },
+    "sb2.undo.deactivate": {
+      "nb": {
+        "text": "Deaktiver panel"
+      },
+      "en": {
+        "text": "Deactivate panel"
+      }
+    },
+    "sb2.undo.activate": {
+      "nb": {
+        "text": "Gjeninnfør panel"
+      },
+      "en": {
+        "text": "Reinstate panel"
+      }
+    },
+    "sb2.undo.move": {
+      "nb": {
+        "text": "Flytt panel"
+      },
+      "en": {
+        "text": "Move panel"
+      }
+    },
+    "sb2.undo.move-scene": {
+      "nb": {
+        "text": "Endre filmens scenerekkefølge"
+      },
+      "en": {
+        "text": "Change the film’s scene order"
+      }
+    },
+    "sb2.undo.move-to-scene": {
+      "nb": {
+        "text": "Flytt panel til scene"
+      },
+      "en": {
+        "text": "Move panel to scene"
+      }
+    },
+    "sb2.undo.seed": {
+      "nb": {
+        "text": "Lag storyboardpaneler"
+      },
+      "en": {
+        "text": "Create storyboard panels"
+      }
+    },
+    "sb2.undo.status": {
+      "nb": {
+        "text": "Endre status"
+      },
+      "en": {
+        "text": "Change status"
+      }
     }
   }
 }
