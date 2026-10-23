@@ -6,6 +6,8 @@
 import type { FontSpec } from "@/core/typography/project-fonts";
 import { isGlobalKind, type GlobalAsset, type GlobalAssetBundle, type GlobalKind, type GlobalVariant, type GlobalVersion, type VisualStyle, type TemplateDefinition } from "@/core";
 import type { GlobalAnimationSpec } from "@/core/animation/global-rig";
+import { parseCharacterBundle, type CharacterBundle } from "@/core/global/character-bundle";
+import type { WorkspaceProfile } from "@/core/global/workspace-profiles";
 import { browserClient, db } from "./client";
 import { t } from "@/core/i18n/keyed";
 
