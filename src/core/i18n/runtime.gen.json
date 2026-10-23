@@ -32120,6 +32120,12 @@
     "n10.playback.stopped": {
       "text": "Stoppet på {timecode}"
     },
+    "pathSpacing.aria": {
+      "text": "Avstanden laget flytter seg per bilde langs banen. Tette merker er sakte, spredte merker er fort."
+    },
+    "pathSpacing.track": {
+      "text": "Avstand"
+    },
     "print-job.add-frame": {
       "text": "Denne framen ({frame}) × {count}"
     },
@@ -65419,6 +65425,12 @@
     },
     "n10.playback.stopped": {
       "text": "Stopped at {timecode}"
+    },
+    "pathSpacing.aria": {
+      "text": "How far the layer moves per frame along the path. Close marks are slow, spread marks are fast."
+    },
+    "pathSpacing.track": {
+      "text": "Spacing"
     },
     "print-job.add-frame": {
       "text": "This frame ({frame}) × {count}"

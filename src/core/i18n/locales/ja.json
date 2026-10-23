@@ -55742,5 +55742,15 @@
     "text": "注意：.jsx ファイルは ExtendScript を持つすべての Adobe アプリに関連付けられているため、bygg-after-effects.jsx をダブルクリックすると Audition など別の Adobe アプリが開くことがあります。その場合は起動ファイル「Åpne i After Effects」を使ってください。または右クリックして「このアプリケーションで開く」から After Effects を選ぶか、Finder の「情報を見る」→「このアプリケーションで開く」で選んでください。",
     "sourceHash": "9b460fe08f45bd18a5eb3e5fbac17d7bac30413d288b1bef41ea89a9174e425b",
     "review": "machine"
+  },
+  "pathSpacing.track": {
+    "text": "間隔",
+    "sourceHash": "4485bba46008c27e0e3dc71b3e26c80d79e793d59b2e9183398c791c0e5ed05c",
+    "review": "machine"
+  },
+  "pathSpacing.aria": {
+    "text": "パスに沿ってレイヤーが1フレームごとに移動する距離。間隔が狭いと遅く、広いと速い動きです。",
+    "sourceHash": "de16a9e1d33b4f0d764b2f3a76fdda8fdf478f73acdb622f246135f45b6796ee",
+    "review": "machine"
   }
 }

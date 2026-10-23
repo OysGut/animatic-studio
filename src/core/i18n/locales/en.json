@@ -75662,5 +75662,11 @@
   },
   "ptg3.readme-ae-other-app": {
     "text": "Note: double-clicking bygg-after-effects.jsx may open another Adobe app, such as Audition, because .jsx files are linked to every Adobe app with ExtendScript. In that case, use the launcher “Åpne i After Effects”. Alternatively, right-click the file and choose After Effects under “Open With”, or in Finder choose “Get Info” → “Open with”."
+  },
+  "pathSpacing.track": {
+    "text": "Spacing"
+  },
+  "pathSpacing.aria": {
+    "text": "How far the layer moves per frame along the path. Close marks are slow, spread marks are fast."
   }
 }

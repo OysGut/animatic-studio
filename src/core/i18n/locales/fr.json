@@ -55890,5 +55890,15 @@
     "text": "Remarque : un double-clic sur bygg-after-effects.jsx peut ouvrir une autre application Adobe, comme Audition, car les fichiers .jsx sont associés à toutes les applications Adobe dotées d’ExtendScript. Utilisez alors le fichier de lancement « Åpne i After Effects ». Vous pouvez aussi faire un clic droit et choisir After Effects dans « Ouvrir avec », ou dans le Finder « Lire les informations » → « Ouvrir avec ».",
     "sourceHash": "9b460fe08f45bd18a5eb3e5fbac17d7bac30413d288b1bef41ea89a9174e425b",
     "review": "machine"
+  },
+  "pathSpacing.track": {
+    "text": "Espacement",
+    "sourceHash": "4485bba46008c27e0e3dc71b3e26c80d79e793d59b2e9183398c791c0e5ed05c",
+    "review": "machine"
+  },
+  "pathSpacing.aria": {
+    "text": "Distance parcourue par le calque à chaque image le long de la trajectoire. Des repères serrés sont lents, des repères espacés sont rapides.",
+    "sourceHash": "de16a9e1d33b4f0d764b2f3a76fdda8fdf478f73acdb622f246135f45b6796ee",
+    "review": "machine"
   }
 }

@@ -36,6 +36,7 @@ import { FrameValue, useFrame, type Playback } from "./use-playback";
 import { compositionFieldsOf, layerEventMarks, type LayerEventMark } from "./timeline-helpers";
 import { RetimeDialog } from "./RetimeDialog";
 import { SpacingRow, type SpacingHover } from "./SpacingDrag";
+import { PathSpacingTrack } from "./PathSpacingTrack";
 import { useLanguage } from "@/app/i18n/language";
 import { t as tk, tLocalized } from "@/core/i18n/keyed";
 
@@ -1624,6 +1625,9 @@ export function Timeline({
                 events={eventMarks.get(l.id)}
                 onEventPointerDown={onEventPointerDown}
               />
+              {l.id === selectedLayerId ? (
+                <PathSpacingTrack layer={l} ppf={ppf} gutter={GUTTER} labelCss={LABEL_CSS} playback={playback} />
+              ) : null}
               </SpacingRow>
             ))
           )}
