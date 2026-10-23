@@ -32,8 +32,8 @@ vi.mock("@/integrations/supabase/client.server", () => ({
     return h.db;
   },
 }));
-vi.mock("@/adapters/ai/fact-sheet.server", async (orig) => {
-  const real = await orig<typeof import("@/adapters/ai/fact-sheet.server")>();
+vi.mock("@/adapters/storage/fact-sheet.server", async (orig) => {
+  const real = await orig<typeof import("@/adapters/storage/fact-sheet.server")>();
   return {
     ...real,
     loadFactSheetSubject: async () =>

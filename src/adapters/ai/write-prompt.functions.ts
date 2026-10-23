@@ -451,7 +451,7 @@ export const writeImagePrompt = createServerFn({ method: "POST" })
     // Faktaarket brukes alltid når AI skriver bildeteksten for en ressurs (Øystein 23.10)
     if (data.task !== "prompt" || !data.assetId)
       return runJob({ task: data.task, brief: data.brief, images: data.images });
-    const { loadFactSheetSubject, saveFactSheet, sha256Hex } = await import("./fact-sheet.server");
+    const { loadFactSheetSubject, saveFactSheet, sha256Hex } = await import("@/adapters/storage/fact-sheet.server");
     const assetId = data.assetId;
     const subject = await loadFactSheetSubject(admin, data.projectId, assetId);
     if (!subject)

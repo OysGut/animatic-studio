@@ -2,7 +2,8 @@
  * Faktaarket på serveren (Øystein 23.10): hentes fra ressursen, og studien av manuset bygges og lagres her
  * når det mangler. Lagringen er en vanlig, angrebar kommando (SetAssetVisualBrief via apply_changes), så den
  * synes for alle med sanntidsoppdateringen og kan tas inn på brukerens angreliste.
- * Ingen prompter logges.
+ * Ligger under storage (ikke ai/): AI-koden skriver aldri prosjektdata selv (REQ-0326); bare denne
+ * lagringen av det godkjente faktaarket går via apply_changes. Ingen prompter logges.
  */
 import { applyCommand, diffStates, factSheetStudy, newId, type Command } from "@/core";
 import { loadProjectState, type AnyClient } from "@/adapters/storage/project-rows";
