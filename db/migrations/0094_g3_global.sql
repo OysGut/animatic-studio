@@ -60,7 +60,7 @@ create or replace function public.set_my_time_zone(p_time_zone text) returns voi
 as $$
 begin
   if auth.uid() is null then raise exception 'not_authenticated'; end if;
-  if p_time_zone is not null and not private.is_iana_time_zone(p_time_zone) then
+  if p_time_zone is not null and not exists (select 1 from pg_timezone_names where name = p_time_zone) then
     raise exception 'invalid_time_zone';
   end if;
   insert into public.profiles (user_id, time_zone) values (auth.uid(), p_time_zone)
@@ -80,7 +80,7 @@ begin
       and m.user_id = auth.uid() and m.role = 'owner' and m.removed_at is null) then
     raise exception 'not_workspace_owner';
   end if;
-  if p_time_zone is not null and not private.is_iana_time_zone(p_time_zone) then
+  if p_time_zone is not null and not exists (select 1 from pg_timezone_names where name = p_time_zone) then
     raise exception 'invalid_time_zone';
   end if;
   update public.workspaces
@@ -100,6 +100,7 @@ create table public.fx_rates (
   fetched_at timestamptz not null default now(),
   primary key (base, quote, rate_date)
 );
+revoke all on public.fx_rates from anon, authenticated;
 grant select on public.fx_rates to authenticated;
 grant all on public.fx_rates to service_role;
 alter table public.fx_rates enable row level security;
