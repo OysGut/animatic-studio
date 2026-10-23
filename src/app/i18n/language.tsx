@@ -9,7 +9,7 @@
  */
 import { Languages } from "lucide-react";
 import { useHydrated } from '@tanstack/react-router';
-import { useEffect, useLayoutEffect, useSyncExternalStore, type ReactNode } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore, type KeyboardEvent, type ReactNode } from "react";
 import { getSessionUserId, onSessionChange } from '@/adapters/browser/auth';
 import { useQueryClient } from '@tanstack/react-query';
 import { getUiLanguage, isUiLang, onLanguageChange, setLanguage, type UiLang } from "@/core";
@@ -244,6 +244,91 @@ export function LanguageSwitch({ compact = false }: { compact?: boolean }) {
           {compact ? short(o.tag) : label(o)}
         </Button>
       ))}
+    </div>
+  );
+}
+
+/**
+ * Kompakt språkvelger for toppmenyen etter innlogging: viser bare koden for gjeldende språk. Klikk (eller
+ * Enter/mellomrom) folder ut de andre kodene på stedet som en radiogruppe; valg, klikk utenfor eller Esc lukker.
+ * Bare visningen er ny – valget går gjennom chooseLanguage som før.
+ */
+export function CompactLanguageSwitch() {
+  const lang = useLanguage();
+  const testLangs = useFeature("ui.test_languages");
+  useEffect(() => { adminTestLanguages = testLangs; }, [testLangs]);
+  const hydrated = useHydrated();
+  const options = hydrated ? availableLanguages(testLangs || testLanguagesEnabled()) : availableLanguages(false, false);
+  const [open, setOpen] = useState(false);
+  const root = useRef<HTMLDivElement>(null);
+  const toggle = useRef<HTMLButtonElement>(null);
+  const radios = useRef<(HTMLButtonElement | null)[]>([]);
+  const current = options.find((o) => o.tag === lang);
+  const groupLabel = t("app-i18n-language.language-switch.aria-label.a2595484506d");
+  const close = (focus: boolean) => { setOpen(false); if (focus) window.requestAnimationFrame(() => toggle.current?.focus()); };
+  useEffect(() => {
+    if (!open) return;
+    const i = Math.max(0, options.findIndex((o) => o.tag === lang));
+    radios.current[i]?.focus();
+    const outside = (e: PointerEvent) => { if (root.current && !root.current.contains(e.target as Node)) setOpen(false); };
+    document.addEventListener("pointerdown", outside);
+    return () => document.removeEventListener("pointerdown", outside);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open]);
+  const onKey = (e: KeyboardEvent<HTMLDivElement>, i: number) => {
+    const n = options.length;
+    const move = (to: number) => { e.preventDefault(); radios.current[(to + n) % n]?.focus(); };
+    if (e.key === "ArrowRight" || e.key === "ArrowDown") move(i + 1);
+    else if (e.key === "ArrowLeft" || e.key === "ArrowUp") move(i - 1);
+    else if (e.key === "Home") move(0);
+    else if (e.key === "End") move(n - 1);
+    else if (e.key === "Escape") { e.preventDefault(); close(true); }
+  };
+  const pick = (tag: UiLang) => { void chooseLanguage(tag); close(true); };
+  const code = "rounded-sm px-1.5 py-0.5 text-xs font-medium tracking-wide";
+  return (
+    <div ref={root} data-testid="language-compact" className="flex max-w-[60vw] flex-wrap items-center justify-end gap-0.5">
+      <button
+        ref={toggle}
+        type="button"
+        data-testid="language-compact-toggle"
+        aria-expanded={open}
+        aria-controls="language-compact-options"
+        aria-label={`${groupLabel}: ${current?.nativeName ?? lang}`}
+        title={t("app-i18n-language.language-switch.change-title")}
+        onClick={() => setOpen((x) => !x)}
+        className={`${code} text-text-secondary hover:bg-surface-3 hover:text-text-primary focus-visible:outline focus-visible:outline-1 focus-visible:outline-accent-selection`}
+        lang={lang}
+      >
+        {lang.toUpperCase()}
+      </button>
+      {open ? (
+        <div id="language-compact-options" role="radiogroup" aria-label={groupLabel} className="flex flex-wrap items-center gap-0.5 rounded-sm border border-border bg-surface-1 p-0.5 animate-in fade-in slide-in-from-right-1">
+          {options.map((o, i) => {
+            const on = o.tag === lang;
+            const name = o.testOnly ? t("app-i18n-language.language-switch.title.52f62cdf7cf1") : o.nativeName;
+            return (
+              <button
+                key={o.tag}
+                ref={(el) => { radios.current[i] = el; }}
+                type="button"
+                role="radio"
+                aria-checked={on}
+                tabIndex={on ? 0 : -1}
+                aria-label={name}
+                title={name}
+                data-testid={`language-compact-${o.tag}`}
+                lang={o.tag}
+                onKeyDown={(e) => onKey(e as unknown as KeyboardEvent<HTMLDivElement>, i)}
+                onClick={() => pick(o.tag)}
+                className={`${code} ${on ? "bg-accent-selection text-text-primary" : "text-text-secondary hover:bg-surface-3"}`}
+              >
+                {o.tag.toUpperCase()}
+              </button>
+            );
+          })}
+        </div>
+      ) : null}
     </div>
   );
 }
