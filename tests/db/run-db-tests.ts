@@ -8138,7 +8138,8 @@ try {
     // Admin ser kvoten med brukstall
     const rows = await as("authenticated", CAROL, (tx) => tx`select * from public.admin_usage_quotas()`);
     const mine = rows.find((r) => String(r["user_id"]) === G5USER);
-    assert(mine && Number(mine["max_projects"]) === 1 && Number(mine["used_projects"]) === 1, `admin_usage_quotas: ${JSON.stringify(mine)}`);
+    // admin_set_usage_quota erstatter hele raden (null fjerner en grense); siste kall satte bare lagring
+    assert(mine && Number(mine["max_storage_bytes"]) === 1000 && Number(mine["used_projects"]) === 1, `admin_usage_quotas: ${JSON.stringify(mine)}`);
     // Triggerne finnes
     const trg = await sql`select tgname from pg_trigger where tgname in ('change_log_quota', 'asset_versions_quota', 'mobile_imports_quota')`;
     assert(trg.length === 3, `mangler kvotetriggere: ${trg.length} av 3`);
