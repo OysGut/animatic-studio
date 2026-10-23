@@ -33,14 +33,18 @@ function setViewport(w: number, h: number) {
   Object.defineProperty(window, "innerHeight", { value: h, configurable: true });
 }
 
+const { QueryClient, QueryClientProvider } = await import("@tanstack/react-query");
+const qc = new QueryClient();
 function Box() {
   return (
+    <QueryClientProvider client={qc}>
     <Dialog open>
       <ResizableDialogContent sizeKey="test" minWidth={500} minHeight={300}>
         <DialogTitle>X</DialogTitle>
         <DialogDescription>Y</DialogDescription>
       </ResizableDialogContent>
     </Dialog>
+    </QueryClientProvider>
   );
 }
 const content = () => document.querySelector<HTMLElement>('[data-dialog-size="test"]')!;
@@ -114,6 +118,21 @@ describe("ResizableDialogContent", () => {
     render(<Box />);
     fireEvent.click(screen.getByTestId("dialog-size-reset"));
     expect(store.get("dialogSize.test")).toBeNull();
+  });
+
+  it("uten kontoens lager: størrelsen huskes i nettleseren", () => {
+    window.localStorage.setItem("animatic:ui:local:dialogSize.test", JSON.stringify({ w: 800, h: 500 }));
+    render(
+      <Dialog open>
+        <ResizableDialogContent sizeKey="test">
+          <DialogTitle>X</DialogTitle>
+          <DialogDescription>Y</DialogDescription>
+        </ResizableDialogContent>
+      </Dialog>,
+    );
+    expect(content().style.width).toBe("800px");
+    fireEvent.doubleClick(screen.getByTestId("dialog-size-grip"));
+    expect(window.localStorage.getItem("animatic:ui:local:dialogSize.test")).toBeNull();
   });
 
   it("smal skjerm: ingen grep og ingen egen størrelse", () => {
