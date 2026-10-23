@@ -409,7 +409,7 @@ export function SceneNavigator({
                     : isInView
                       ? " bg-surface-3/60 shadow-[inset_3px_0_0_var(--accent-brand)]"
                       : "") +
-                  (o.active ? "" : " opacity-60") +
+                  (o.active ? "" : " opacity-80") +
                   (dragId === o.id ? " opacity-40" : "")
                 }
               >

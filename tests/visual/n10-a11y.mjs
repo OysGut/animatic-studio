@@ -37,7 +37,7 @@ const PAGES = [
 for (const lang of ["nb", "en"]) {
   await h.scenario(`a11y-${lang}`, occ, lang, async (page) => {
     for (const p of PAGES) {
-      await page.goto(`${h.base}${p.path}`, { waitUntil: "networkidle" });
+      await page.goto(`${h.base}${p.path}`, { waitUntil: "networkidle" }).catch(() => page.goto(`${h.base}${p.path}`, { waitUntil: "networkidle" }));
       await page.waitForTimeout(2000);
       await axe(page, `${p.name} ${lang}`);
     }
@@ -109,12 +109,12 @@ await h.scenario("tastatur", occ, "nb", async (page) => {
 });
 
 await h.scenario("dialog-fokus", occ, "nb", async (page) => {
-  const target = page.getByTestId("scene-script").locator(`[data-script-block="${clip.block_id}"] [data-script-text]`);
+  const target = page.getByTestId("scene-script").locator(`[data-script-block="${clip.block_id}"]`);
   await target.focus();
+  h.check(await target.evaluate((el) => el === document.activeElement), "replikken kan få fokus med tastaturet");
   await page.keyboard.press("Enter");
   const dialog = page.getByRole("dialog").first();
-  const opened = await dialog.waitFor({ timeout: 5000 }).then(() => true).catch(() => false);
-  if (!opened) { await target.dblclick(); await dialog.waitFor({ timeout: 5000 }); }
+  h.check(await dialog.waitFor({ timeout: 5000 }).then(() => true).catch(() => false), "Enter på replikken åpner dialogen");
   h.check(await page.evaluate(() => !!document.activeElement?.closest('[role="dialog"]')), "fokus flyttes inn i dialogen");
   for (let i = 0; i < 40; i++) await page.keyboard.press("Tab");
   h.check(await page.evaluate(() => !!document.activeElement?.closest('[role="dialog"]')), "fokus holdes i den modale dialogen");

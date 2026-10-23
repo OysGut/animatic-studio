@@ -420,7 +420,7 @@ export const LayersPanel = memo(function LayersPanel({
           <button
             type="button"
             onClick={newGroup}
-            className="ml-auto inline-flex items-center gap-1 rounded-sm px-1.5 py-0.5 opacity-60 group-hover:opacity-100 focus-visible:opacity-100 text-[11px] text-text-secondary hover:bg-surface-3 hover:text-text-primary"
+            className="ml-auto inline-flex items-center gap-1 rounded-sm px-1.5 py-0.5 text-[11px] text-text-tertiary group-hover:text-text-secondary focus-visible:text-text-secondary hover:bg-surface-3 hover:text-text-primary"
             title={tk("app-scene-editor-layers-panel.layers-panel.title.5db177ece09b")}
           >
             <Group className="size-3.5" aria-hidden />
