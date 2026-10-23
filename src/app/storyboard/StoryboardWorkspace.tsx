@@ -354,7 +354,7 @@ export function Gallery({
     const d = drag.current;
     drag.current = null;
     if (!d || d.kind !== "scene" || d.id === scene.occurrence.id || !editable) return;
-    const order = gallery.map((g) => g.occurrence.id).filter((id) => id !== d.id);
+    const order = gallery.map((g) => g.occurrence.id);
     moveScene(d.id, Math.max(0, order.indexOf(scene.occurrence.id)));
   };
   const [moveTarget, setMoveTarget] = useState<string>("");
@@ -552,7 +552,7 @@ export function Gallery({
                       <div className="flex min-h-0 flex-col gap-0.5 px-2 py-1">
                         {prefs.show.name || prefs.show.number || prefs.show.timing ? (
                           <div className="flex items-center gap-2 truncate text-text-primary">
-                            {prefs.show.number ? <span className="font-mono">{scene.number ? `${scene.number}.` : ""}{p.index + 1}</span> : null}
+                            {prefs.show.number ? <span className="font-mono">{scene.number ? `${scene.number}.` : ""}{p.panel.storyboard?.number || p.index + 1}</span> : null}
                             {prefs.show.name ? <span className="truncate" dir="auto">{p.panel.name || scene.heading}</span> : null}
                             {prefs.show.timing ? <span className="ms-auto font-mono text-text-tertiary" data-testid="sb-timing">{fmtSeconds(p.frames, fps)}</span> : null}
                           </div>
@@ -563,6 +563,7 @@ export function Gallery({
                           </p>
                         ) : null}
                         {prefs.show.script && lines ? <p className="line-clamp-2 text-text-tertiary" dir="auto" data-testid="sb-script">{lines.script.join(" ")}</p> : null}
+                        {p.panel.storyboard ? <div className="text-[11px] text-text-secondary" dir="auto">{[p.panel.storyboard.shot,p.panel.storyboard.angle,p.panel.storyboard.focalMm ? `${p.panel.storyboard.focalMm} mm` : "",p.panel.storyboard.movement,...Object.values(p.panel.storyboard.fields)].filter(Boolean).join(" · ")}</div> : null}
                         {prefs.show.status ? <StatusBadges statuses={p.statuses} /> : null}
                         {prefs.show.notes ? <span className="text-text-tertiary">{tk("sb2.notes-count", { count: String(noteCount) })}</span> : null}
                       </div>

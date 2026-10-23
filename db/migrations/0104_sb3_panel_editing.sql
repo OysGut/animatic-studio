@@ -1,7 +1,7 @@
 -- SB-3: panelopplysninger og koblinger til eksisterende notater. 0103 og eldre er låst.
 -- Nye validatorer registreres i G-7; prosjektradens eksplisitte kolonne oppdateres.
-alter table public.compositions add column storyboard jsonb check (storyboard is null or (kind = 'storyboard' and jsonb_typeof(storyboard) = 'object' and octet_length(storyboard::text) <= 600000));
-alter table public.projects add column storyboard_fields jsonb check (storyboard_fields is null or (jsonb_typeof(storyboard_fields) = 'array' and jsonb_array_length(storyboard_fields) <= 50 and octet_length(storyboard_fields::text) <= 20000));
+alter table public.compositions add column storyboard jsonb check (storyboard is null or (kind = 'storyboard' and jsonb_typeof(storyboard) = 'object' and pg_column_size(storyboard) <= 600000));
+alter table public.projects add column storyboard_fields jsonb check (storyboard_fields is null or (jsonb_typeof(storyboard_fields) = 'array' and jsonb_array_length(storyboard_fields) <= 50 and pg_column_size(storyboard_fields) <= 20000));
 alter table public.script_annotations add column panel_id uuid references public.compositions(id) on delete restrict;
 alter table public.script_annotations add column layer_id uuid references public.composition_layers(id) on delete restrict;
 alter table public.script_annotations add constraint sb3_annotation_target check (layer_id is null or panel_id is not null);
