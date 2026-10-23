@@ -108,3 +108,21 @@ Ingen funksjoner erstattes. `apply_changes` tar med nye kolonner automatisk. Ser
 **Ikke kjørt:** Den visuelle sjekken på nb og en (at faktaarket vises på karakterkortet etterpå) krever at 0089 er kjørt i Cloud. Den står i TODO.md.
 
 **Nye tekster:** `factSheet.auto.label`, `.cost.study`, `.cost.ready`, `.error.study`, `.error.save`, `.retry`, `.history`. Jeg skrev nb og en selv. de, es, fr, it, ja, ko, pt-BR og ru er maskinoversatt og merket for gjennomlesing.
+
+## D. Dobbeltklikk åpner scenen fra Manus-siden (Øystein 23.10, lite ønske)
+
+**Slik virker det:**
+- **Sceneoverskriften i manusteksten:** dobbeltklikk åpner sceneeditoren med akkurat den scenen (`/prosjekt/<id>/scene?scene=<forekomst>`).
+- **Scenelisten (navigatoren):** dobbeltklikk gjør det samme, og det gjør også Enter på en fokusert scene. Piltastene og Alt+piltastene virker som før.
+- **Vanlig manustekst** (replikker, handling, rollenavn) virker som før. Dobbeltklikk markerer ordet i nettleseren og flytter fokus til tekstfeltet for redigering; scenen åpnes ikke.
+- **Flere forekomster:** Manus-siden viser forekomstene i den aktive produksjonen. Det er denne forekomsten som åpnes.
+- **Verktøytips:** «Dobbeltklikk for å åpne scenen» / «Double-click to open the scene» på sceneoverskriften og på scenene i listen (`script.openScene.hint`). de, es, fr, it, ja, ko, pt-BR og ru er maskinoversatt og merket for gjennomlesing.
+
+**Omfang:** Jeg fant to steder der en scene vises som eget element på Manus-siden: sceneoverskriftene og scenelisten. Inspektøren viser den valgte scenen som felt, og der er ikke lagt inn dobbeltklikk.
+
+**Test:** `tests/unit/manus-open-scene.test.tsx` (jsdom, 4 tester):
+- Dobbeltklikk på sceneoverskriften åpner riktig scene.
+- Dobbeltklikk i vanlig tekst åpner ikke scenen og stopper ikke ordmarkeringen (`defaultPrevented` er false).
+- Dobbeltklikk og Enter i scenelisten åpner riktig scene, med verktøytipset, på både nb og en.
+
+tsc 0. Hele Vitest-kjøringen: 2521 bestått, 10 hoppet over, 0 feilet. Språkkontrollen er grønn. Ingen migrasjon.
