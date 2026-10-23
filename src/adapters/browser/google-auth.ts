@@ -1,6 +1,6 @@
 /**
  * Innlogging med Google via Lovable Clouds administrerte OAuth. Ingen nøkler i koden.
- * redirect_uri er alltid nettstedets egen rot (forhåndsvisning og pentoglass.com godtas automatisk).
+ * redirect_uri er alltid nettstedets egen rot (forhåndsvisning og eget domene godtas automatisk).
  * Siden brukeren kom fra (invitasjon, QR, mobilside, prosjekt) lagres for økten og åpnes etter innlogging.
  */
 import { lovable } from "@/integrations/lovable/index";
