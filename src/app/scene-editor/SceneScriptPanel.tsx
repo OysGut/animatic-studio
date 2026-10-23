@@ -231,13 +231,24 @@ export const SceneScriptPanel = memo(function SceneScriptPanel({
                 singleClick(b.id, e.clientX, e.clientY);
               }}
               onDoubleClick={() => doubleClick(b.id)}
+              // N10: replikker kan nås og åpnes med tastaturet (Enter = dobbeltklikk); dialogen gir fokus tilbake hit
+              tabIndex={onOpenDialogue && b.kind === "dialogue" ? 0 : undefined}
+              onKeyDown={
+                onOpenDialogue && b.kind === "dialogue"
+                  ? (e) => {
+                      if (e.key !== "Enter" || e.target !== e.currentTarget) return;
+                      e.preventDefault();
+                      doubleClick(b.id);
+                    }
+                  : undefined
+              }
               title={
                 onOpenDialogue && (b.kind === "dialogue" || b.kind === "character")
                   ? tk("app-scene-editor-scene-script-panel.scene-script-panel.title.b4d8bc9bdb42")
                   : tk("app-scene-editor-scene-script-panel.scene-script-panel.title.5401d3d2e97c")
               }
               className={
-                "relative cursor-default whitespace-pre-wrap rounded-sm " +
+                "relative cursor-default whitespace-pre-wrap rounded-sm focus-visible:outline-2 focus-visible:outline-focus-ring " +
                 KIND_CLASS[b.kind] +
                 " " +
                 gapBefore(b.kind, i > 0 ? blocks[i - 1]!.kind : "heading") +
@@ -253,6 +264,7 @@ export const SceneScriptPanel = memo(function SceneScriptPanel({
               {notes ? (
                 <span
                   className="absolute -right-2.5 top-0 text-note"
+                  role="img"
                   aria-label={tk("app-scene-editor-scene-script-panel.scene-script-panel.aria-label.f8c627eda4f7", { notes: String(notes) })}
                 >
                   <MessageSquare className="size-2.5" aria-hidden />

@@ -75482,5 +75482,11 @@
   },
   "dv5.background-result.undo-label": {
     "text": "[!! ÁÁdddd bbáácckkggrrôôüünndd rrëëssüülltt !!]"
+  },
+  "n10.playback.playing": {
+    "text": "[!! PPllááyyïïnngg !!]"
+  },
+  "n10.playback.stopped": {
+    "text": "[!! SSttôôppppëëdd áátt {timecode} !!]"
   }
 }

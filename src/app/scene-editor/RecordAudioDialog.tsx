@@ -334,12 +334,22 @@ export function RecordAudioDialog({
   const busy = generating || phase === "starting" || phase === "recording" || phase === "saving";
   const select =
     "h-8 min-w-0 rounded-sm border border-border-control bg-surface-3 px-2 text-[13px] text-text-primary disabled:opacity-50";
+  /** N10: replikken fokus skal tilbake til når dialogen lukkes. */
+  const returnTo = useRef<string | null>(null);
   const legend = "text-[11px] font-medium uppercase tracking-[0.04em] text-text-tertiary";
   const at = (ms: number) => `${(Math.round(ms / 100) / 10).toLocaleString(locale())} s`;
 
+  if (open && initialBlockId) returnTo.current = initialBlockId;
   return (
     <Dialog open={open} onOpenChange={(o) => !busy && onOpenChange(o)}>
-      <DialogContent className="max-h-[90vh] max-w-[860px] overflow-y-auto border-border bg-surface-2" data-testid="record-audio-dialog">
+      <DialogContent className="max-h-[90vh] max-w-[860px] overflow-y-auto border-border bg-surface-2" data-testid="record-audio-dialog"
+        onCloseAutoFocus={(e) => {
+          // N10: fokus tilbake til replikken i manuspanelet når dialogen ble åpnet derfra
+          const id = returnTo.current;
+          returnTo.current = null;
+          const el = id ? document.querySelector<HTMLElement>(`[data-testid="scene-script"] [data-script-block="${CSS.escape(id)}"]`) : null;
+          if (el) { e.preventDefault(); el.focus(); }
+        }}>
         <DialogHeader>
           <DialogTitle>{tk("app-scene-editor-record-audio-dialog.record-audio-dialog.dialog-title.98648fefb495")}</DialogTitle>
           <DialogDescription>

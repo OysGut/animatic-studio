@@ -68,7 +68,7 @@ export function SceneTrackGroups({ title, state, duration, playback, range, onRa
     <section data-testid="scene-track-groups" data-open={open ? "true" : "false"} className="flex min-h-8 shrink flex-col overflow-hidden border-t border-border bg-surface-1">
       <div className="flex h-8 shrink-0 items-center gap-2 px-2 text-xs text-text-secondary">
         <button type="button" data-testid="scene-track-groups-toggle" aria-expanded={open}
-          aria-label={open ? t("b100.tracks.close") : t("b100.tracks.open")}
+          aria-description={open ? t("b100.tracks.close") : t("b100.tracks.open")}
           className="flex items-center gap-1 text-text-primary" onClick={toggle}>
           {open ? <ChevronDown className="size-3.5" aria-hidden /> : <ChevronRight className="size-3.5" aria-hidden />}
           {selectedLayerName ? `${title} – ${selectedLayerName}` : title}

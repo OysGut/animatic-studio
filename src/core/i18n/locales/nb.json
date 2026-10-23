@@ -75500,5 +75500,11 @@
   },
   "dv5.background-result.undo-label": {
     "text": "Legg inn bakgrunnsresultat"
+  },
+  "n10.playback.playing": {
+    "text": "Spiller av"
+  },
+  "n10.playback.stopped": {
+    "text": "Stoppet på {timecode}"
   }
 }

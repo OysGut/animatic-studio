@@ -117,7 +117,7 @@ export function ScenePicker({
           <button
             type="button"
             className="flex h-7 min-w-[160px] max-w-[220px] flex-1 items-center gap-2 truncate rounded-sm border border-border-control bg-surface-3 px-2 text-[13px] text-text-primary hover:bg-surface-2"
-            aria-label={
+            aria-description={
               current
                 ? t("app-scene-editor-scene-picker.scene-picker.aria-label.f414f98573da", { number: String(current.number), heading: String(current.heading) })
                 : t("app-scene-editor-scene-picker.scene-picker.aria-label.b9b4cafeca5e")

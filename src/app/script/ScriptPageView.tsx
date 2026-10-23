@@ -287,6 +287,7 @@ function Line({
           className="absolute select-none rounded-sm bg-status-danger"
           style={{ top, left: "3.4em", width: "0.25em", height: "1em" }}
           title={t("app-script-script-page-view.line.title.203abf286a8a")}
+          role="img"
           aria-label={t("app-script-script-page-view.line.aria-label.80023fd8c0e5")}
         />
       ) : null}

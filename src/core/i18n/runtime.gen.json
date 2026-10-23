@@ -32012,6 +32012,12 @@
     "ml4-export-fonts.pdf-blocked": {
       "text": "PDF-fonten ({font}) kan ikke vise {count} tegn i denne språkversjonen: {chars}. De ville blitt «?» i filen, så PDF-eksporten er stoppet. Velg Word eller Fountain, som beholder alle tegn."
     },
+    "n10.playback.playing": {
+      "text": "Spiller av"
+    },
+    "n10.playback.stopped": {
+      "text": "Stoppet på {timecode}"
+    },
     "print-job.add-frame": {
       "text": "Denne framen ({frame}) × {count}"
     },
@@ -65131,6 +65137,12 @@
     },
     "ml4-export-fonts.pdf-blocked": {
       "text": "The PDF font ({font}) cannot show {count} characters in this language version: {chars}. They would become \"?\" in the file, so the PDF export is stopped. Choose Word or Fountain, which keep every character."
+    },
+    "n10.playback.playing": {
+      "text": "Playing"
+    },
+    "n10.playback.stopped": {
+      "text": "Stopped at {timecode}"
     },
     "print-job.add-frame": {
       "text": "This frame ({frame}) × {count}"

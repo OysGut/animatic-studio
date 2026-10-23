@@ -221,7 +221,7 @@ export function PaneResizer({
         place +
         (active
           ? " bg-accent-brand/60"
-          : " hover:bg-accent-brand/40 focus-visible:bg-accent-brand/40")
+          : " hover:bg-accent-brand/40 focus-visible:bg-accent-brand/60 focus-visible:ring-2 focus-visible:ring-focus-ring")
       }
     />
   );
