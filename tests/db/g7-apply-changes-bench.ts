@@ -36,9 +36,14 @@ try {
       return tx`select public.create_project('G7', 25, 1, 'nb') id`;
     }))[0]!["id"],
   );
-  const variant = String(
-    (await sql`select v.id from public.scene_variants v join public.scenes s on s.id = v.scene_id where v.project_id = ${project} limit 1`)[0]!["id"],
-  );
+  const prod = String((await sql`select id from public.productions where project_id = ${project} and kind = 'main'`)[0]!["id"]);
+  const scene = crypto.randomUUID();
+  const variant = crypto.randomUUID();
+  await sql.begin(async (tx) => {
+    await tx.unsafe(`set local role service_role`);
+    await tx`insert into public.scenes (id, project_id, origin_production_id) values (${scene}, ${project}, ${prod})`;
+    await tx`insert into public.scene_variants (id, project_id, scene_id) values (${variant}, ${project}, ${scene})`;
+  });
 
   // 10 000 blokker i bolker via apply_changes (service_role, slik runCommand gjør)
   const t0 = performance.now();
