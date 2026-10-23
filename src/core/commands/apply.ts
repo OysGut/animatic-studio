@@ -776,6 +776,10 @@ function layerFields(s: ProjectState, f: LayerFields, prev?: CompositionLayer): 
       template: f.template === undefined ? (prev.template ?? null) : f.template,
       // Sideovergang (MTS MT6): utelatt = uendret
       pageTransition: f.pageTransition === undefined ? (prev.pageTransition ?? null) : f.pageTransition,
+      // Lapp, pil og kameramerke (SB-1): utelatt = uendret
+      note: f.note === undefined ? (prev.note ?? null) : f.note,
+      arrow: f.arrow === undefined ? (prev.arrow ?? null) : f.arrow,
+      cameraMark: f.cameraMark === undefined ? (prev.cameraMark ?? null) : f.cameraMark,
     };
   // Nytt bilde i laget (annen ressurs): bilder per språk av den gamle ressursen passer ikke lenger
   if (prev && f.assetId !== prev.assetId)
@@ -901,6 +905,9 @@ function fieldsOfLayer(l: CompositionLayer): LayerFields {
     ...(l.shape ? { shape: l.shape } : {}),
     ...(l.effects ? { effects: l.effects } : {}),
     ...(l.template ? { template: l.template } : {}),
+    ...(l.note ? { note: l.note } : {}),
+    ...(l.arrow ? { arrow: l.arrow } : {}),
+    ...(l.cameraMark ? { cameraMark: l.cameraMark } : {}),
   };
 }
 
@@ -7773,6 +7780,9 @@ function run(
         if (comp.removed)
           fail("invalid", tk("core-commands-apply.run.fail.838d32162c1a.2"));
         const fields = layerFields(s, n.fields);
+        // SB-1: lapp, pil og kameramerke er bare tillatt i storyboardkomposisjoner
+        if (layerKindInCompositionError(fields.kind, comp.kind ?? "scene"))
+          fail("invalid", tk("sb1.error.layer-kind"));
         let orderKey = n.orderKey;
         const keys = Object.values(layers)
           .filter((l) => l.compositionId === comp.id)
@@ -7896,7 +7906,11 @@ function run(
           template: _tp,
           ...rest
         } = l;
-        layers[l.id] = { ...rest, ...layerFields(s, u.fields, l), revision: rev(l) };
+        const upFields = layerFields(s, u.fields, l);
+        // SB-1: lapp, pil og kameramerke er bare tillatt i storyboardkomposisjoner
+        if (layerKindInCompositionError(upFields.kind, s.compositions[l.compositionId]?.kind ?? "scene"))
+          fail("invalid", tk("sb1.error.layer-kind"));
+        layers[l.id] = { ...rest, ...upFields, revision: rev(l) };
       }
       checkGroups(
         s,
