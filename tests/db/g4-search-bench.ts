@@ -66,22 +66,23 @@ try {
   // ETTER: foldet søk med trigramindeks
   await sql.unsafe(`create index script_blocks_fold_trgm_idx on public.script_blocks using gin (private.fold_text(text) extensions.gin_trgm_ops)`);
   await sql`analyze`;
+  // Måles som eier (direkte uttrykk krever USAGE på private, som authenticated ikke har; appen går via RPC-en)
   await ms("fold_med_indeks_ms", () =>
-    asAlice((tx) => tx`select count(*) n from public.script_blocks b where b.project_id=${project} and private.fold_text(b.text) like '%' || private.fold_text('café') || '%'`));
+    sql`select count(*) n from public.script_blocks b where b.project_id=${project} and private.fold_text(b.text) like '%' || private.fold_text('café') || '%'`);
   await ms("fold_cjk_ms", () =>
-    asAlice((tx) => tx`select count(*) n from public.script_blocks b where b.project_id=${project} and private.fold_text(b.text) like '%' || private.fold_text('字幕') || '%'`));
+    sql`select count(*) n from public.script_blocks b where b.project_id=${project} and private.fold_text(b.text) like '%' || private.fold_text('字幕') || '%'`);
   await ms("rpc_search_ms", () =>
     asAlice((tx) => tx`select count(*) n from public.search_script_blocks(${project}, 'cafe', 50)`));
 
   // Planen må bruke trigramindeksen
-  const plan = await asAlice((tx) => tx.unsafe(`
+  const plan = await sql.unsafe(`
     explain (format json)
     select count(*) from public.script_blocks b
-    where b.project_id = '${project}' and private.fold_text(b.text) like '%cafe%'`));
+    where b.project_id = '${project}' and private.fold_text(b.text) like '%cafe%'`);
   out["plan_bruker_trgm"] = JSON.stringify(plan).includes("script_blocks_fold_trgm_idx") ? "ja" : "NEI";
 
   // Riktighet: foldet søk finner aksentert tekst, og RPC-en ser samme rader
-  const direkte = Number((await asAlice((tx) => tx`select count(*) n from public.script_blocks b where b.project_id=${project} and private.fold_text(b.text) like '%cafe%'`))[0]!["n"]);
+  const direkte = Number((await sql`select count(*) n from public.script_blocks b where b.project_id=${project} and private.fold_text(b.text) like '%cafe%'`)[0]!["n"]);
   const rpc = Number((await asAlice((tx) => tx`select count(*) n from (select 1 from public.search_script_blocks(${project}, 'café', 200)) x`))[0]!["n"]);
   out["treff_fold"] = direkte;
   out["treff_rpc"] = rpc;

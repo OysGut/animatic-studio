@@ -43,13 +43,14 @@ create index if not exists global_assets_name_fold_trgm_idx
 create index if not exists profiles_display_name_fold_trgm_idx
   on public.profiles using gin (private.fold_text(display_name) extensions.gin_trgm_ops);
 
--- SECURITY INVOKER: RLS på script_blocks håndhever medlemskap (G-2, my_project_ids).
--- Returnerer blokker i prosjektet som matcher søket foldet (aksent- og skriftolerant, CJK via trigram).
+-- SECURITY DEFINER fordi kroppen bruker private.fold_text (authenticated har ikke USAGE på private,
+-- og SECURITY INVOKER ville derfor feilet). Medlemskapet sjekkes eksplisitt med samme kilde som RLS
+-- (G-2, private.my_project_ids), så en som ikke er medlem, får null treff.
 create or replace function public.search_script_blocks(p_project uuid, p_query text, p_limit integer default 50)
 returns table (block_id uuid, variant_id uuid, kind text, text text, score real)
 language sql
 stable
-security invoker
+security definer
 set search_path = ''
 as $$
   select
@@ -60,6 +61,7 @@ as $$
     extensions.similarity(private.fold_text(b.text), private.fold_text(btrim(p_query))) as score
   from public.script_blocks b
   where b.project_id = p_project
+    and p_project in (select private.my_project_ids())
     and not b.removed
     and private.fold_text(b.text) like '%' || private.fold_text(btrim(p_query)) || '%'
   order by score desc, b.order_key
