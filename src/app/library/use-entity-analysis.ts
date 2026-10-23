@@ -5,7 +5,7 @@
  * - ellers 30 sekunder etter siste manusendring.
  * Én kjøring om gangen per fane. Ingenting opprettes; resultatet brukes bare i forslagsdialogen.
  */
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useMemo, useRef } from "react";
 import { mainProduction, type ProjectState } from "@/core";
@@ -16,8 +16,7 @@ import {
   type StoredSceneAnalysis,
 } from "@/core/library/analysis-hash";
 import { analyzeScriptEntities, listEntityAnalysis } from "@/adapters/ai/entity-analysis.functions";
-import { fetchProjectState } from "@/adapters/browser/project-data";
-import { projectStateKey } from "@/app/project/use-project";
+import { projectStateKey, projectStateQueryFn } from "@/app/project/use-project";
 import { useLanguage } from "@/app/i18n/language";
 import {
   NOW_EVENT,
@@ -31,6 +30,7 @@ export { requestAnalysisNow } from "./entity-analysis-store";
 
 export function EntityAnalysisWatcher({ projectId, editable }: { projectId: string; editable: boolean }) {
   const language = useLanguage();
+  const qc = useQueryClient();
   const analyze = useServerFn(analyzeScriptEntities);
   const list = useServerFn(listEntityAnalysis);
   const state = useQuery({
