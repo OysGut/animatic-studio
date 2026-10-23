@@ -35,3 +35,15 @@ Disse rettes ikke automatisk. «Tilbakestill proporsjoner» finnes allerede som 
 - tests/unit/placeholder-refit.test.ts (ny), tests/visual/placeholder-refit.mjs (ny)
 - scripts/i18n/ (inventaret er laget på nytt, ingen nye tekster)
 - AGENTS.md (regel 57), TODO.md, roadmap.md, docs/development/PLASSHOLDER_FIX_REPORT.md (ny)
+
+## Del 2: miniatyrbilder med riktige proporsjoner
+
+**Årsak:** Miniatyrfilene ble aldri beskåret: `planImageIngest` lager miniatyren med `fit(256)` langs lengste side (1:2 → 128 × 256, 2:1 → 256 × 128), og nettleserkoderen tegner hele bildet. Feilen lå i visningen: ti steder brukte `object-cover` i en kvadratisk eller fast boks, og klippet bildet («bare magen»).
+
+**Retting:** Ny felles komponent `src/app/shared/Thumbnail.tsx` viser hele bildet sentrert med `object-contain` over et nøytralt sjakkmønster (`thumb-checker` i styles.css, laget av temafargene). Tatt i bruk i lagpanelet, ressursminiaturen `AssetThumb` (brukes i biblioteket, ressurspanelet, velgere, nedtrekkslister og kort), papirkurven, scene-til-video-dialogen, mobilsiden, mobilimporten og oppryddingsdialogen. Steder som allerede brukte `object-contain` (Asset Studio-varianter, stilprofiler, stillbildevelger, sammenligning) var riktige og er uendret. Profilbildet i utstillingsvinduet er et rundt avatarbilde, ikke en miniatyr, og er bevisst unntatt.
+
+**Gamle miniatyrer:** Ingen eksisterende miniatyrfiler er beskåret, så ingen må lages på nytt. Ingen betalte kall.
+
+**Bytte av aktiv versjon:** Miniatyrene hentes fra gjeldende versjon hver gang, og viser nå hele bildet. Den gamle plassholderformen vises derfor ikke.
+
+**Tester:** `tests/unit/thumbnail-contain.test.tsx` sjekker at Thumbnail bruker contain uten faste mål, at generatoren gir 128 × 256 for 1:2 og 256 × 128 for 2:1, og at ingen fil i src/app bruker `object-cover`. AGENTS.md regel 58.

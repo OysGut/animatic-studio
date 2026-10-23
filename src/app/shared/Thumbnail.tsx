@@ -1,6 +1,6 @@
 /**
  * Felles miniatyrbilde (plassholderretting del 2): viser alltid hele bildet med egne proporsjoner
- * (object-contain, sentrert) over et nøytralt sjakkmønster for alfa. Aldri object-cover eller strekking.
+ * (object-contain, sentrert) over et nøytralt sjakkmønster for alfa. Aldri beskjæring eller strekking.
  */
 import type { ComponentProps } from "react";
 import { cn } from "@/lib/utils";
