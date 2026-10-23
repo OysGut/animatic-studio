@@ -68,13 +68,11 @@ export function applyChangesErrorMessage(
 export function quotaErrorMessage(
   error: { readonly code?: string | null; readonly message?: string | null },
 ): { readonly code: string; readonly message: string } | null {
-  const key =
-    error.code === "PTG11" ? "adapters-storage-commands-functions.quota-projects"
-    : error.code === "PTG12" ? "adapters-storage-commands-functions.quota-change-log"
-    : error.code === "PTG13" ? "adapters-storage-commands-functions.quota-storage"
-    : error.code === "PTG14" ? "adapters-storage-commands-functions.quota-uploads"
-    : null;
-  return key ? { code: "quota", message: tk(key) } : null;
+  if (error.code === "PTG11") return { code: "quota", message: tk("adapters-storage-commands-functions.quota-projects") };
+  if (error.code === "PTG12") return { code: "quota", message: tk("adapters-storage-commands-functions.quota-change-log") };
+  if (error.code === "PTG13") return { code: "quota", message: tk("adapters-storage-commands-functions.quota-storage") };
+  if (error.code === "PTG14") return { code: "quota", message: tk("adapters-storage-commands-functions.quota-uploads") };
+  return null;
 }
 
 export type RunCommandResult =
