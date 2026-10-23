@@ -104,3 +104,5 @@
 - [ ] Midlertidig lyd per panel (opptak/QR/opplasting), aldri blandet inn uten bekreftelse
 - [ ] Felles posisjon mellom Manus/Storyboard/Scene/Montering/Manusutforsker, hurtigtast, tilbake-knapp, replikk↔panel
 - [ ] Tester + rapport docs/development/SB4_REPORT.md
+- [ ] Presisering (Øystein): eksport via eksisterende ExportAnimaticDialog/«Til produksjonen», valg «Bildekilde: animasjon / film / storyboardpaneler», én felles bildekilde-adapter; SB-4 = kildevalg + filmeksport (MP4/ProRes/PNG); tester: rekkefølge/timing/lyd, uendret med animasjon som kilde
+- [ ] SB-6: utskrift/pitch (3/6/9 per side) og CSV/XLSX som nye kort i samme eksportvindu
