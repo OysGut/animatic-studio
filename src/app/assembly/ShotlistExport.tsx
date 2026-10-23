@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import type * as React from "react";
 import { Download, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { ProjectState } from "@/core/model";
@@ -26,8 +27,9 @@ import { signedUrls } from "@/app/library/asset-images";
 import { t } from "@/core/i18n/keyed";
 import { useQueryClient } from "@tanstack/react-query";
 import { exportRecordsKey } from "@/app/projects/use-history-records";
-import { ExportHistory } from "@/app/projects/ExportHistory";
 import { exportMouthPackage } from "@/engine/export/mouth-list";
+
+type PtgCard = "shotlist" | "dragonframe" | "ae" | "fbx" | "editorial" | "compositing" | "mouth";
 
 export function ShotlistExport({ state, productionId, clips, language, disabled }: {
   state: ProjectState; productionId: string; clips: readonly FilmClip[];
@@ -49,6 +51,7 @@ export function ShotlistExport({ state, productionId, clips, language, disabled 
   const [error, setError] = useState<string | null>(null);
   const [ready, setReady] = useState<{ url: string; name: string } | null>(null);
   const abort = useRef<AbortController | null>(null);
+  const [active, setActive] = useState<PtgCard | null>(null);
   async function start() {
     const initial = buildInterchange(state, { productionId, language, occurrenceIds: clips.map(c => c.occurrenceId) });
     const fileName = `${initial.project.code}-shotlist.zip`;
@@ -148,47 +151,69 @@ export function ShotlistExport({ state, productionId, clips, language, disabled 
       if (!ctrl.signal.aborted) setError(t("ptg1.export-failed"));
     } finally { abort.current = null; setProgress(null); }
   }
-  return <section data-testid="ptg-export-section" className="border-t border-border pt-3">
-    <h3 className="mb-3 text-sm font-semibold text-text-primary">{t("ptg1.to-production")}</h3>
-    <InterchangeSettings state={state} userId={userId} editable={editable} disabled={disabled || !!progress} />
-    <div className="mt-3 flex flex-wrap items-center gap-3">
-      <label className="flex items-center gap-2 text-xs text-text-secondary">{t("ptg1.profile")}
-        <select data-testid="ptg-profile" disabled={disabled || !!progress} value={profile} onChange={e => setProfile(e.target.value as ShotlistProfile)} className="h-8 rounded-sm border border-border-control bg-surface-3 px-2 text-text-primary">
-          <option value="standard">{t("ptg1.standard")}</option><option value="flow">Flow</option><option value="ftrack">ftrack</option><option value="kitsu">Kitsu</option>
-        </select>
-      </label>
-      <Button data-testid="ptg-export-shotlist" size="sm" variant="outline" disabled={disabled || !!progress || clips.length === 0 || !userId} onClick={() => void start()}><Download />{t("ptg1.shotlist")}</Button>
-      <label className="flex items-center gap-2 text-xs text-text-secondary">{t("ptg3.camera-mode")}
-        <select data-testid="ptg-camera-mode" disabled={disabled || !!progress} value={cameraMode} onChange={e => setCameraMode(e.target.value as AeCameraMode)} className="h-8 rounded-sm border border-border-control bg-surface-3 px-2 text-text-primary">
-          <option value="ae">{t("ptg3.mode-ae")}</option><option value="parallax">{t("ptg3.mode-parallax")}</option>
-        </select>
-      </label>
-      <Button data-testid="ptg-export-fbx" size="sm" variant="outline" disabled={disabled || !!progress || clips.length === 0 || !userId} onClick={() => void startPackage("fbx")}><Download />{t("ptg3.camera-fbx")}</Button>
-      <label className="flex items-center gap-2 text-xs text-text-secondary">
-        <input type="checkbox" data-testid="ptg-title-card" disabled={disabled || !!progress} checked={titleCard} onChange={e => setTitleCard(e.target.checked)} />
-        {t("ptg3b.option")}
-      </label>
-      <Button data-testid="ptg-export-ae" size="sm" variant="outline" disabled={disabled || !!progress || clips.length === 0 || !userId} onClick={() => void startPackage("ae")}><Download />{t("ptg3.ae-package")}</Button>
-      <label className="flex items-center gap-2 text-xs text-text-secondary">
-        <input type="checkbox" data-testid="ptg-df-png" disabled={disabled || !!progress} checked={dfPng} onChange={e => setDfPng(e.target.checked)} />
-        {t("ptg2.option-png")}
-      </label>
-      <label className="flex items-center gap-2 text-xs text-text-secondary">
-        <input type="checkbox" data-testid="ptg-df-burnin" disabled={disabled || !!progress} checked={dfBurnIn} onChange={e => setDfBurnIn(e.target.checked)} />
-        {t("ptg2.option-burnin")}
-      </label>
-      <Button data-testid="ptg-export-dragonframe" size="sm" variant="outline" disabled={disabled || !!progress || clips.length === 0 || !userId} onClick={() => void startDragonframe()}><Download />{t("ptg2.send")}</Button>
-      <label className="flex items-center gap-2 text-xs text-text-secondary">
-        <input type="checkbox" data-testid="ptg-editorial-media" disabled={disabled || !!progress} checked={editorialMedia} onChange={e => setEditorialMedia(e.target.checked)} />
-        {t("ptg6.include-media")}
-      </label>
-      <Button data-testid="ptg-export-editorial" size="sm" variant="outline" disabled={disabled || !!progress || clips.length === 0 || !userId} onClick={() => void startDragonframe(true)}><Download />{t("ptg6.export")}</Button>
-      <Button data-testid="ptg-export-compositing" size="sm" variant="outline" disabled={disabled || !!progress || clips.length === 0 || !userId} onClick={() => void startPackage("compositing")}><Download />{t("ptg7.export")}</Button>
-      <Button data-testid="ptg4-export" size="sm" variant="outline" disabled={disabled || !!progress || clips.length === 0 || !userId} onClick={() => void startPackage("mouth")}><Download />{t("ptg4.export")}</Button>
-      {progress ? <><span role="status" className="text-xs text-text-secondary">{progress.done} / {progress.total}</span><Button size="icon" variant="ghost" aria-label={t("ptg1.cancel")} onClick={() => abort.current?.abort()}><X /></Button></> : null}
+  const off = disabled || !!progress;
+  const noRun = off || clips.length === 0 || !userId;
+  const field = "flex items-center gap-2 text-xs text-text-secondary";
+  const sel = "h-8 min-w-0 rounded-sm border border-border-control bg-surface-3 px-2 text-text-primary";
+  const cameraSelect = (testId?: string) => (
+    <label className={field}>{t("ptg3.camera-mode")}
+      <select data-testid={testId} disabled={off} value={cameraMode} onChange={e => setCameraMode(e.target.value as AeCameraMode)} className={sel}>
+        <option value="ae">{t("ptg3.mode-ae")}</option><option value="parallax">{t("ptg3.mode-parallax")}</option>
+      </select>
+    </label>
+  );
+  const run = (card: PtgCard, fn: () => Promise<void>) => { setActive(card); void fn(); };
+  const card = (id: PtgCard, title: string, desc: string, options: React.ReactNode, button: React.ReactNode) => (
+    <div data-testid={`ptg-card-${id}`} className="flex min-w-0 flex-col gap-2 rounded-sm border border-border bg-surface-1 p-3">
+      <div>
+        <h4 className="text-[13px] font-semibold text-text-primary">{title}</h4>
+        <p className="text-xs text-text-tertiary">{desc}</p>
+      </div>
+      {options ? <div className="flex flex-wrap items-center gap-x-4 gap-y-2">{options}</div> : null}
+      <div className="mt-auto flex flex-wrap items-center justify-end gap-2 pt-1">
+        {active === id && progress ? <><span role="status" className="text-xs text-text-secondary">{progress.done} / {progress.total}</span><Button size="icon" variant="ghost" aria-label={t("ptg1.cancel")} onClick={() => abort.current?.abort()}><X /></Button></> : null}
+        {button}
+      </div>
+      {active === id && ready ? <a data-testid="ptg-download" href={ready.url} download={ready.name} className="block text-right text-xs text-text-primary">{ready.name}</a> : null}
+      {active === id && error ? <p role="alert" className="text-xs text-status-danger">{error}</p> : null}
     </div>
-    {ready ? <a data-testid="ptg-download" href={ready.url} download={ready.name} className="mt-2 block text-xs text-text-primary">{ready.name}</a> : null}
-    {error ? <p role="alert" className="mt-2 text-xs text-status-danger">{error}</p> : null}
-    <div className="mt-2"><ExportHistory productionId={productionId} kinds={["script"]} /></div>
+  );
+  return <section data-testid="ptg-export-section" className="@container flex min-w-0 flex-col gap-3">
+    <h3 className="text-sm font-semibold text-text-primary">{t("ptg1.to-production")}</h3>
+    <div className="rounded-sm border border-border bg-surface-1 px-3 py-2">
+      <div className="mb-1 text-[11px] font-medium uppercase tracking-[0.04em] text-text-tertiary">{t("ptg.layout.shared")}</div>
+      <InterchangeSettings state={state} userId={userId} editable={editable} disabled={off} />
+    </div>
+    <div className="grid grid-cols-1 gap-3 @[560px]:grid-cols-2">
+      {card("shotlist", t("ptg.card.shotlist.title"), t("ptg.card.shotlist.desc"),
+        <label className={field}>{t("ptg1.profile")}
+          <select data-testid="ptg-profile" disabled={off} value={profile} onChange={e => setProfile(e.target.value as ShotlistProfile)} className={sel}>
+            <option value="standard">{t("ptg1.standard")}</option><option value="flow">Flow</option><option value="ftrack">ftrack</option><option value="kitsu">Kitsu</option>
+          </select>
+        </label>,
+        <Button data-testid="ptg-export-shotlist" size="sm" variant="outline" disabled={noRun} onClick={() => run("shotlist", start)}><Download />{t("ptg1.shotlist")}</Button>)}
+      {card("dragonframe", t("ptg.card.dragonframe.title"), t("ptg.card.dragonframe.desc"),
+        <>
+          <label className={field}><input type="checkbox" data-testid="ptg-df-png" disabled={off} checked={dfPng} onChange={e => setDfPng(e.target.checked)} />{t("ptg2.option-png")}</label>
+          <label className={field}><input type="checkbox" data-testid="ptg-df-burnin" disabled={off} checked={dfBurnIn} onChange={e => setDfBurnIn(e.target.checked)} />{t("ptg2.option-burnin")}</label>
+        </>,
+        <Button data-testid="ptg-export-dragonframe" size="sm" variant="outline" disabled={noRun} onClick={() => run("dragonframe", () => startDragonframe())}><Download />{t("ptg2.send")}</Button>)}
+      {card("ae", t("ptg.card.ae.title"), t("ptg.card.ae.desc"),
+        <>
+          {cameraSelect("ptg-camera-mode")}
+          <label className={field}><input type="checkbox" data-testid="ptg-title-card" disabled={off} checked={titleCard} onChange={e => setTitleCard(e.target.checked)} />{t("ptg3b.option")}</label>
+        </>,
+        <Button data-testid="ptg-export-ae" size="sm" variant="outline" disabled={noRun} onClick={() => run("ae", () => startPackage("ae"))}><Download />{t("ptg3.ae-package")}</Button>)}
+      {card("fbx", t("ptg.card.fbx.title"), t("ptg.card.fbx.desc"),
+        cameraSelect("ptg-camera-mode-fbx"),
+        <Button data-testid="ptg-export-fbx" size="sm" variant="outline" disabled={noRun} onClick={() => run("fbx", () => startPackage("fbx"))}><Download />{t("ptg3.camera-fbx")}</Button>)}
+      {card("editorial", t("ptg.card.editorial.title"), t("ptg.card.editorial.desc"),
+        <label className={field}><input type="checkbox" data-testid="ptg-editorial-media" disabled={off} checked={editorialMedia} onChange={e => setEditorialMedia(e.target.checked)} />{t("ptg6.include-media")}</label>,
+        <Button data-testid="ptg-export-editorial" size="sm" variant="outline" disabled={noRun} onClick={() => run("editorial", () => startDragonframe(true))}><Download />{t("ptg6.export")}</Button>)}
+      {card("compositing", t("ptg.card.compositing.title"), t("ptg.card.compositing.desc"), null,
+        <Button data-testid="ptg-export-compositing" size="sm" variant="outline" disabled={noRun} onClick={() => run("compositing", () => startPackage("compositing"))}><Download />{t("ptg7.export")}</Button>)}
+      {card("mouth", t("ptg.card.mouth.title"), t("ptg.card.mouth.desc"), null,
+        <Button data-testid="ptg4-export" size="sm" variant="outline" disabled={noRun} onClick={() => run("mouth", () => startPackage("mouth"))}><Download />{t("ptg4.export")}</Button>)}
+    </div>
   </section>;
 }
