@@ -284,3 +284,5 @@ export function planStoryboardSeed(s: ProjectState, productionId: string): Story
     .map((o) => ({ occurrenceId: o.id, variantId: o.variantId }));
 }
 export * from "./gallery";
+export * from "./editing";
+export type { StoryboardEditingCommand } from "./editing-commands";

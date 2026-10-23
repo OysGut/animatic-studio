@@ -1,4 +1,5 @@
 import { canonicalLanguageTag } from "../translation/language-tags";
+import { applyStoryboardEditing } from "../storyboard/editing-commands";
 import { briefVersionsError } from "../assets/brief-versions";
 import { applyMeasureSetCommand } from "../print/measure/commands";
 import { applyMouthCommand } from "../interchange/mouth-commands";
@@ -1959,6 +1960,9 @@ function run(
   });
 
   switch (c.type) {
+    case "SetStoryboardDetails": case "SetStoryboardFields": {
+      try { return applyStoryboardEditing(s, c); } catch (error) { fail("invalid", error instanceof Error ? error.message : tk("sb1.error.invalid-panel")); }
+    }
     case "SaveMouthSet": case "SaveMouthTrack": case "UndoMouthChange": {
       try { return applyMouthCommand(s, c); } catch (error) { fail("invalid", error instanceof Error ? error.message : tk("ptg4.invalid")); }
     }

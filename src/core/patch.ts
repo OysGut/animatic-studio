@@ -415,6 +415,7 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         order_key: c.orderKey ?? null,
         active: c.active ?? true,
         hidden: c.hidden ?? false,
+        storyboard: c.storyboard ?? null,
       };
     }
     case "layers": {
@@ -925,6 +926,7 @@ export function diffStates(before: ProjectState, after: ProjectState): ChangeSet
         expected_revision: before.project.revision,
         name: after.project.name,
         ...(after.project.code !== before.project.code ? { code: after.project.code ?? null } : {}),
+        ...(after.project.storyboardFields !== before.project.storyboardFields ? { storyboard_fields: after.project.storyboardFields ?? null } : {}),
         ...(after.project.capture !== before.project.capture ? { capture_mode: after.project.capture?.mode ?? "ones", capture_fps_num: after.project.capture?.fps.num ?? 24, capture_fps_den: after.project.capture?.fps.den ?? 1 } : {}),
         ...(sourceLanguageOf(after) !== sourceLanguageOf(before) ? { source_language: sourceLanguageOf(after) } : {}),
         fps_num: after.project.fps.num,
@@ -1237,6 +1239,7 @@ export function stateFromRows(r: ProjectRows): ProjectState {
       id: str(p["id"]) as never,
       revision: num(p["revision"]),
       name: str(p["name"]),
+      ...(p["storyboard_fields"] ? { storyboardFields: json(p["storyboard_fields"]) as import("./storyboard/editing").PanelField[] } : {}),
       ...(p["code"] === undefined ? {} : { code: typeof p["code"] === "string" ? p["code"] : null }),
       ...(p["capture_mode"] === undefined ? {} : { capture: { mode: p["capture_mode"] as import("./interchange/settings").CaptureMode, fps: { num: num(p["capture_fps_num"] ?? 24), den: num(p["capture_fps_den"] ?? 1) } } }),
       fps: { num: num(p["fps_num"]), den: num(p["fps_den"]) },
@@ -1572,6 +1575,7 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         ...(x["order_key"] ? { orderKey: String(x["order_key"]) } : {}),
         ...(x["active"] === false ? { active: false } : {}),
         ...(x["hidden"] === true ? { hidden: true } : {}),
+        ...(x["storyboard"] ? { storyboard: json(x["storyboard"]) as import("./storyboard/editing").PanelDetails } : {}),
       })),
     ),
     layers: byId(
