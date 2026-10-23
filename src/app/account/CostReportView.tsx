@@ -14,6 +14,7 @@ import {
 } from "@/adapters/account/account.functions";
 import { Button } from "@/components/ui/button";
 import { exportCostReport, type ExportFormat } from "./cost-export";
+import { useMyAccount } from "./use-account";
 import { t as tk } from "@/core/i18n/keyed";
 
 const money = (n: number | null, cur: string) =>
@@ -44,7 +45,11 @@ export function CostReportView({
     staleTime: 30_000,
   });
   const [month, setMonth] = useState<string>("all");
-  const [currency, setCurrency] = useState<Currency>("NOK");
+  // G-1: standardvaluta følger brukerens land (Norge → kroner, ellers dollar), ikke en fast norsk standard
+  const [currencyChoice, setCurrencyChoice] = useState<Currency | null>(null);
+  const account = useMyAccount();
+  const currency: Currency = currencyChoice ?? (account.data?.country === "NO" ? "NOK" : "USD");
+  const setCurrency = (c: Currency) => setCurrencyChoice(c);
   const [busy, setBusy] = useState<ExportFormat | null>(null);
   const [error, setError] = useState<string | null>(null);
   const rows = useMemo(() => usage.data?.rows ?? [], [usage.data]);
