@@ -1036,7 +1036,7 @@ export interface ProjectState {
   readonly rigSetups: Readonly<Record<string, import("./rig/multiplane").RigSetup>>;
   /** SB-1 (migrasjon 0102): panelenes forankring i manusblokker, statusspor med historikk og bevarte panelrevisjoner. */
   readonly panelBlocks: Readonly<Record<string, import("./storyboard").PanelBlockLink>>;
-  readonly productionStatuses: Readonly<Record<string, import("./storyboard").ProductionStatus>>;
+  readonly productionStatuses: Readonly<Record<string, import("./storyboard").ProductionStatusRow>>;
   readonly productionStatusEvents: Readonly<Record<string, import("./storyboard").ProductionStatusEvent>>;
   readonly panelSnapshots: Readonly<Record<string, import("./storyboard").PanelSnapshot>>;
   readonly project: Project;

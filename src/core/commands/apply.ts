@@ -21,7 +21,7 @@ import {
   productionStatusOf,
   type PanelBlockLink,
   type PanelSnapshot,
-  type ProductionStatus,
+  type ProductionStatusRow,
   type ProductionStatusEvent,
 } from "../storyboard";
 import type { StoryboardBlockRef } from "./types";
@@ -7311,7 +7311,7 @@ function run(
       const existing = productionStatusOf(s, c.area, target as never);
       const statusId = existing?.id ?? c.statusId;
       if (!existing) assertNewId(s, c.statusId);
-      const row: ProductionStatus = {
+      const row: ProductionStatusRow = {
         id: statusId,
         revision: existing ? rev(existing) : 1,
         area: c.area,

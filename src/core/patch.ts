@@ -542,7 +542,7 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
       return { ...base, panel_id: p.panelId, block_id: p.blockId, order_key: p.orderKey, removed: p.removed };
     }
     case "productionStatuses": {
-      const p = e as unknown as import("./storyboard").ProductionStatus;
+      const p = e as unknown as import("./storyboard").ProductionStatusRow;
       return { ...base, area: p.area, occurrence_id: p.occurrenceId, composition_id: p.compositionId, status: p.status, removed: p.removed };
     }
     case "productionStatusEvents": {
@@ -1799,7 +1799,7 @@ export function stateFromRows(r: ProjectRows): ProjectState {
     rigSetups: byId((r.rig_setups ?? []).map((x): import("./rig/multiplane").RigSetup => ({id:str(x["id"]) as never,revision:num(x["revision"]),sceneId:optStr(x["scene_id"]) as never,templateId:optStr(x["template_id"]) as never,name:str(x["name"] ?? ""),spec:(json(x["spec"]) ?? {}) as never,removed:x["removed"]===true}))),
     // SB-1 (migrasjon 0102): storyboardgrunnmur
     panelBlocks: byId((r.storyboard_panel_blocks ?? []).map((x): import("./storyboard").PanelBlockLink => ({id:str(x["id"]),revision:num(x["revision"]),panelId:str(x["panel_id"]) as never,blockId:str(x["block_id"]) as never,orderKey:str(x["order_key"]),removed:x["removed"]===true}))),
-    productionStatuses: byId((r.production_statuses ?? []).map((x): import("./storyboard").ProductionStatus => ({id:str(x["id"]),revision:num(x["revision"]),area:str(x["area"]) as never,occurrenceId:optStr(x["occurrence_id"]) as never,compositionId:optStr(x["composition_id"]) as never,status:str(x["status"]) as never,removed:x["removed"]===true}))),
+    productionStatuses: byId((r.production_statuses ?? []).map((x): import("./storyboard").ProductionStatusRow => ({id:str(x["id"]),revision:num(x["revision"]),area:str(x["area"]) as never,occurrenceId:optStr(x["occurrence_id"]) as never,compositionId:optStr(x["composition_id"]) as never,status:str(x["status"]) as never,removed:x["removed"]===true}))),
     productionStatusEvents: byId((r.production_status_events ?? []).map((x): import("./storyboard").ProductionStatusEvent => ({id:str(x["id"]),revision:num(x["revision"]),statusId:str(x["status_id"]),area:str(x["area"]) as never,occurrenceId:optStr(x["occurrence_id"]) as never,compositionId:optStr(x["composition_id"]) as never,status:str(x["status"]) as never,removed:x["removed"]===true}))),
     panelSnapshots: byId((r.storyboard_panel_snapshots ?? []).map((x): import("./storyboard").PanelSnapshot => ({id:str(x["id"]),revision:num(x["revision"]),panelId:str(x["panel_id"]) as never,panelRevision:num(x["panel_revision"]),snapshot:(json(x["snapshot"]) ?? {}) as never,removed:x["removed"]===true}))),
     translations: byId(

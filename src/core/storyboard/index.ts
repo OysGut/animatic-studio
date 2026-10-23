@@ -84,7 +84,7 @@ export const PRODUCTION_STATUSES = ["not_started", "in_progress", "review", "cha
 export type ProductionStatusValue = (typeof PRODUCTION_STATUSES)[number];
 
 /** Gjeldende status for ett fagområde på én forekomst eller ett panel (migrasjon 0102). */
-export interface ProductionStatus {
+export interface ProductionStatusRow {
   readonly id: string;
   readonly revision: number;
   readonly area: ProductionArea;
@@ -230,7 +230,7 @@ export function productionStatusOf(
   s: ProjectState,
   area: ProductionArea,
   target: { readonly occurrenceId: OccurrenceId } | { readonly compositionId: CompositionId },
-): ProductionStatus | undefined {
+): ProductionStatusRow | undefined {
   return Object.values(s.productionStatuses).find(
     (p) =>
       !p.removed &&
