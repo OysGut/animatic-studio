@@ -6,6 +6,7 @@
  * sceneoverskrift. Forrige og neste scene kan vises over og under, bare til lesing.
  */
 import { Redo2, Undo2 } from "lucide-react";
+import { SOURCE_TEXT_KEY } from "@/core/dialogue/languages";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { filterPages, formatHeading, orderedOccurrences, sceneNumberOf, scriptPages, type ProjectState } from "@/core";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
@@ -264,7 +265,7 @@ function Body({
             structureEditing={false}
             authorName={authorName}
             focusNote={null}
-            language="nb"
+            language={SOURCE_TEXT_KEY}
             cmds={cmds}
           />
         </div>

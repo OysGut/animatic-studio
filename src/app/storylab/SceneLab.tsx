@@ -1,5 +1,6 @@
 /** SL5: sceneanalyse, replikksjekk og improvisasjon. Manus er alltid skrivebeskyttet. */
 import { useEffect, useRef, useState } from "react";
+import { sourceLanguageOf } from "@/core/dialogue/languages";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { ANALYSIS_ASPECTS, ANALYSIS_ASPECT_LABEL, lineCheckFromJson, newId, parseJsonLoose, profileAt, sceneAnalysisFromJson, unreadableReplyMessage, type LineCheckResult, type ProjectState, type SceneAnalysisPoint } from "@/core";
@@ -97,7 +98,7 @@ export function SceneLab({ state, projectId, sceneId, editable, initialSession, 
   const checkRequest = speaker && block ? { kind: "lineCheck" as const, sceneId, blockId: block.id, language } : null;
   const request = dialog === "check" && checkRequest ? checkRequest : analysisRequest;
   const first = data.participants[0];
-  const batchRequest = first ? { kind: "character" as const, assetId: first.id, sceneId, situation, directions: [], language: "nb" } : null;
+  const batchRequest = first ? { kind: "character" as const, assetId: first.id, sceneId, situation, directions: [], language: sourceLanguageOf(state) } : null;
   const batchMode = dialog === "variants" || dialog === "improv";
   const promptChars = useStoryPromptChars(projectId, batchMode ? "storylab_group" : "storylab_analysis", batchMode ? batchRequest : request, batchMode ? !!batchRequest : true);
   const batchChars = promptChars
@@ -159,7 +160,7 @@ export function SceneLab({ state, projectId, sceneId, editable, initialSession, 
       if (!r.ok) throw new Error(r.message);
       let branch = await save(r.session, [{ id: `d:session:all:${newId<"direction">()}`, speaker: "director", kind: "direction", text: direction, at: new Date().toISOString(), to: null }], 0, "active");
       added.push(branch); setVariants((old) => [...old, branch]);
-      await runSceneBatch({ state, session: branch, language: "nb", shouldStop: () => stopped.current,
+      await runSceneBatch({ state, session: branch, language: sourceLanguageOf(state), shouldStop: () => stopped.current,
         generate: async (input) => { const result = await gen({ data: { projectId, task: "storylab_group", ...input, maxTokens: 2000 } }); if (!result.ok) throw new Error(result.message); if (result.usedFallback && mounted.current) setNote(tk("app-storylab-scene-lab.generate.set-note.16319cc4cfd3")); return result; },
         save: async (turn, cost) => {
           retrySave.current = async () => { branch = await save(branch, [turn], cost); setVariants((old) => old.map((s) => s.id === branch.id ? branch : s)); retrySave.current = null; };
@@ -230,7 +231,7 @@ export function SceneLab({ state, projectId, sceneId, editable, initialSession, 
       <p className="text-sm text-text-secondary">{tk("app-storylab-scene-lab.scene-lab.p.3a246d42f794", { value1: String(usd(estimate.usd * (dialog === "variants" ? directions.filter((d) => d.trim()).length * 8 : dialog === "improv" ? 8 : 1))), label: String(estimate.label) })}</p>
       <ToolbarButton variant="primary" data-testid="storylab-scene-confirm" disabled={busy || estimate.loading || !!estimate.error || (dialog === "variants" && !directions.some((d) => d.trim()))} onClick={() => { const action = dialog; setDialog(null); if (action === "analysis") void analyze(); else if (action === "check") { setCheckApproved(true); void checkLine(); } else if (action === "variants") void runVariants(); else void perform(async () => {
         let s = await make("scene_improv"); setTab("improv");
-        await runSceneBatch({ state, session: s, language: "nb", shouldStop: () => stopped.current,
+        await runSceneBatch({ state, session: s, language: sourceLanguageOf(state), shouldStop: () => stopped.current,
           generate: async (input) => { const r = await gen({ data: { projectId, task: "storylab_group", ...input, maxTokens: 2000 } }); if (!r.ok) throw new Error(r.message); if (r.usedFallback) setNote(tk("app-storylab-scene-lab.generate.set-note.16319cc4cfd3.2")); return r; },
           save: async (turn, cost) => {
             retrySave.current = async () => { s = await save(s, [turn], cost); setSession(s); retrySave.current = null; };

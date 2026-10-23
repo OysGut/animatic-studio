@@ -39995,18 +39995,6 @@
     "parameters": [],
     "executable": true
   },
-  "app-release-poster-dialogs.new-poster-dialog.option.e3870b997183": {
-    "text": "Norsk",
-    "source": "\"Norsk\"",
-    "parameters": [],
-    "executable": true
-  },
-  "app-release-poster-dialogs.new-poster-dialog.option.39e4c15e4b70": {
-    "text": "Engelsk",
-    "source": "\"Engelsk\"",
-    "parameters": [],
-    "executable": true
-  },
   "app-release-poster-dialogs.new-poster-dialog.label.5b853b6b614f": {
     "text": "Navn",
     "source": "\"Navn\"",
@@ -40106,18 +40094,6 @@
   "app-release-poster-dialogs.export-poster-dialog.label.de5a73993ed1": {
     "text": "Språk",
     "source": "\"Språk\"",
-    "parameters": [],
-    "executable": true
-  },
-  "app-release-poster-dialogs.export-poster-dialog.option.2ba2c82ca3fa": {
-    "text": "Norsk",
-    "source": "\"Norsk\"",
-    "parameters": [],
-    "executable": true
-  },
-  "app-release-poster-dialogs.export-poster-dialog.option.7d645d203fe3": {
-    "text": "Engelsk",
-    "source": "\"Engelsk\"",
     "parameters": [],
     "executable": true
   },
@@ -40229,18 +40205,6 @@
     "parameters": [],
     "executable": true
   },
-  "app-release-poster-inspector.bilingual.label.e68a78963db2": {
-    "text": "norsk",
-    "source": "\"norsk\"",
-    "parameters": [],
-    "executable": true
-  },
-  "app-release-poster-inspector.bilingual.label.2f1aee6df04c": {
-    "text": "engelsk",
-    "source": "\"engelsk\"",
-    "parameters": [],
-    "executable": true
-  },
   "app-release-poster-inspector.bilingual.placeholder.701d079a0cb5": {
     "text": "Tom: norsk tekst brukes",
     "source": "\"Tom: norsk tekst brukes\"",
@@ -40292,18 +40256,6 @@
   "app-release-poster-inspector.poster-settings.on-poster.3e76f71503df": {
     "text": "Endre språk på plakaten",
     "source": "\"Endre språk på plakaten\"",
-    "parameters": [],
-    "executable": true
-  },
-  "app-release-poster-inspector.poster-settings.option.cf6b065837cf": {
-    "text": "Norsk",
-    "source": "\"Norsk\"",
-    "parameters": [],
-    "executable": true
-  },
-  "app-release-poster-inspector.poster-settings.option.e6ed30832c1c": {
-    "text": "Engelsk",
-    "source": "\"Engelsk\"",
     "parameters": [],
     "executable": true
   },
@@ -41180,18 +41132,6 @@
   "app-release-poster-workspace.release.aria-label.616d74b4a361": {
     "text": "Språk i forhåndsvisningen",
     "source": "\"Språk i forhåndsvisningen\"",
-    "parameters": [],
-    "executable": true
-  },
-  "app-release-poster-workspace.release.option.c8bb36bc83a1": {
-    "text": "Norsk",
-    "source": "\"Norsk\"",
-    "parameters": [],
-    "executable": true
-  },
-  "app-release-poster-workspace.release.option.cad6bb633625": {
-    "text": "Engelsk",
-    "source": "\"Engelsk\"",
     "parameters": [],
     "executable": true
   },
@@ -75830,5 +75770,26 @@
   },
   "time.weekday-at": {
     "text": "{weekday} kl. {time}"
+  },
+  "g1b.poster.genre-film": {
+    "text": "Animasjonsfilm"
+  },
+  "g1b.poster.genre-family": {
+    "text": "Animert familiefilm"
+  },
+  "g1b.poster.feature": {
+    "text": "Animert spillefilm"
+  },
+  "g1b.poster.approx-min": {
+    "text": "ca. {min} min"
+  },
+  "g1b.poster.fallback-placeholder": {
+    "text": "Tom: teksten på {language} brukes"
+  },
+  "g1b.poster.untranslated-one": {
+    "text": "1 tekst finnes ikke på {language} og vises på et annet språk."
+  },
+  "g1b.poster.untranslated-many": {
+    "text": "{length} tekster finnes ikke på {language} og vises på et annet språk."
   }
 }

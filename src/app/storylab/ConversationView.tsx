@@ -5,6 +5,7 @@
  * av regi som en tom tur «r:<id>». Systemprompten lagres aldri.
  */
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { sourceLanguageOf } from "@/core/dialogue/languages";
 import { useServerFn } from "@tanstack/react-start";
 import { GitBranch, Loader2, Send, X } from "lucide-react";
 import { useMemo, useState } from "react";
@@ -216,7 +217,8 @@ function Conversation({
   const knowledge = knowledgeAt(state, ctx.assetId, ctx.sceneId as never);
   const profile = ctx.profile ?? profileAt(state, ctx.assetId, ctx.sceneId as never) ?? emptyStoryProfile();
   const replies = turns.filter((t) => t.kind === "line" || t.kind === "analysis").length;
-  const language = "nb";
+  // G-1: replikkene skrives på manusets språk
+  const language = sourceLanguageOf(state);
   const uiLang = useLanguage();
 
   const build = (question: string, m: Mode) => {

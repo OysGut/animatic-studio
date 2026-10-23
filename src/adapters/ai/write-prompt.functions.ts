@@ -10,12 +10,14 @@
  * Kostnadsport: bare redaktører, eget tak per bruker per time, logg i generation_jobs (kind «prompt»,
  * migrasjon 0022). Slike kall koster en brøkdel av et bilde og teller ikke i bildebudsjettet.
  */
+import { englishLanguageName } from "@/core/translation/language-tags";
+import { getUiLanguage } from "@/core/i18n";
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import {
   cleanVisualBrief,
   cleanWrittenPrompt,
-  STYLE_ANALYSIS_SYSTEM,
+  styleAnalysisSystem,
   VISUAL_BRIEF_SYSTEM,
   isUuid,
   newId,
@@ -367,7 +369,7 @@ export const writeImagePrompt = createServerFn({ method: "POST" })
             : `${job.brief}${skipped.length ? `\n\nNot shown to you: ${skipped.join("; ")}` : ""}`;
         const system =
           job.task === "style"
-            ? STYLE_ANALYSIS_SYSTEM
+            ? styleAnalysisSystem(englishLanguageName(getUiLanguage()))
             : job.task === "visual"
               ? VISUAL_BRIEF_SYSTEM
               : job.task === "scene"

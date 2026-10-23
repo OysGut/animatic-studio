@@ -5,6 +5,7 @@
  * scenen som vanlig på samme sted.
  */
 import { Pause, Play } from "lucide-react";
+import { SOURCE_TEXT_KEY } from "@/core/dialogue/languages";
 import { useEffect, useMemo, useRef } from "react";
 import { locale, clipFrameToComposition, compositionFrameInClip, filmAudio, filmMediaPaths, filmTakeAudio, formatHeading, framesToSeconds, neighbourRange, type FilmClip, type ProjectState } from "@/core";
 import { useImageUrls } from "@/app/library/asset-images";
@@ -24,7 +25,7 @@ export function NeighbourScenes({
   scenePlaying,
   onSceneFrame,
   onPauseScene,
-  language = "nb",
+  language = SOURCE_TEXT_KEY,
 }: {
   state: ProjectState;
   film: readonly FilmClip[];

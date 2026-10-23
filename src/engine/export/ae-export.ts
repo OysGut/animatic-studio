@@ -4,6 +4,7 @@
  * tid, kamera eller navn selv; alt leses fra InterchangeDoc. Virker uten AI.
  */
 import type { InterchangeDoc } from "@/core/interchange";
+import { bilingual, readmeLanguage } from "@/core/interchange/readme";
 import { aeProjectFileName, buildAeJsx, type AeCameraMode, type AeJsxMessages, type AeTitleCards } from "@/core/interchange/ae-jsx";
 import { AE_JSX_FILE, AE_LAUNCHER_MAC, AE_LAUNCHER_MAC_MODE, AE_LAUNCHER_WINDOWS, aeMacLauncher, aeWindowsLauncher } from "@/core/interchange/ae-launchers";
 import { ptgImportUrl, qrMatrixToPng } from "@/core/interchange/titlecard";
@@ -40,10 +41,10 @@ export function aeTitleCards(doc: InterchangeDoc): AeTitleCards {
 /** Varslene i bygg-after-effects.jsx på norsk og engelsk (skriptet kjøres utenfor appen). */
 export function aeJsxMessages(): AeJsxMessages {
   return {
-    missing: `${t("ptg3.ae-missing", {}, "nb")}\n${t("ptg3.ae-missing", {}, "en")}`,
-    wrongHost: `${t("ptg3.ae-wrong-host", {}, "nb")}\n\n${t("ptg3.ae-wrong-host", {}, "en")}`,
-    saveFailed: `${t("ptg3.ae-save-failed", {}, "nb")}\n\n${t("ptg3.ae-save-failed", {}, "en")}`,
-    importFailed: `${t("ptg3.ae-import-failed", {}, "nb")}\n${t("ptg3.ae-import-failed", {}, "en")}`,
+    missing: `${bilingual(t("ptg3.ae-missing", {}, readmeLanguage()), t("ptg3.ae-missing", {}, "en"), "\n")}`,
+    wrongHost: `${bilingual(t("ptg3.ae-wrong-host", {}, readmeLanguage()), t("ptg3.ae-wrong-host", {}, "en"), "\n\n")}`,
+    saveFailed: `${bilingual(t("ptg3.ae-save-failed", {}, readmeLanguage()), t("ptg3.ae-save-failed", {}, "en"), "\n\n")}`,
+    importFailed: `${bilingual(t("ptg3.ae-import-failed", {}, readmeLanguage()), t("ptg3.ae-import-failed", {}, "en"), "\n")}`,
   };
 }
 
@@ -65,7 +66,7 @@ export async function exportAePackage(o: {
   const failed: string[] = [];
   const tc = o.titleCard ? aeTitleCards(doc) : null;
   const jsx = buildAeJsx(doc, { cameraMode: o.cameraMode, titleCards: tc, messages: aeJsxMessages() });
-  const notFound = [t("ptg3.ae-not-found", {}, "nb"), t("ptg3.ae-not-found", {}, "en")];
+  const notFound = [t("ptg3.ae-not-found", {}, readmeLanguage()), t("ptg3.ae-not-found", {}, "en")];
   const enc = new TextEncoder();
   const origin = o.titleCard?.origin ?? "";
   async function* files() {
@@ -80,18 +81,18 @@ export async function exportAePackage(o: {
       path: "LESMEG.txt",
       data: interchangeReadme([
         "",
-        t("ptg3.readme-ae", {}, "nb"),
+        t("ptg3.readme-ae", {}, readmeLanguage()),
         "",
-        t("ptg3.readme-ae-open", { value1: aeProjectFileName(doc) }, "nb"),
+        t("ptg3.readme-ae-open", { value1: aeProjectFileName(doc) }, readmeLanguage()),
         "",
-        t("ptg3.readme-ae-other-app", {}, "nb"),
+        t("ptg3.readme-ae-other-app", {}, readmeLanguage()),
         "",
         t("ptg3.readme-ae", {}, "en"),
         "",
         t("ptg3.readme-ae-open", { value1: aeProjectFileName(doc) }, "en"),
         "",
         t("ptg3.readme-ae-other-app", {}, "en"),
-        ...(tc ? ["", t("ptg3b.readme-titlecard", {}, "nb"), "", t("ptg3b.readme-titlecard", {}, "en")] : []),
+        ...(tc ? ["", t("ptg3b.readme-titlecard", {}, readmeLanguage()), "", t("ptg3b.readme-titlecard", {}, "en")] : []),
         ...cameraReadmeLines(doc),
       ].join("\n")),
     };

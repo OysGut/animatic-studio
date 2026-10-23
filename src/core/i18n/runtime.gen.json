@@ -14042,12 +14042,6 @@
     "app-release-poster-dialogs.export-poster-dialog.legend.2eeae0ebdfaa": {
       "text": "Filtype"
     },
-    "app-release-poster-dialogs.export-poster-dialog.option.2ba2c82ca3fa": {
-      "text": "Norsk"
-    },
-    "app-release-poster-dialogs.export-poster-dialog.option.7d645d203fe3": {
-      "text": "Engelsk"
-    },
     "app-release-poster-dialogs.export-poster-dialog.option.bc56fd419d66": {
       "text": "72 ppi (skjerm)"
     },
@@ -14093,12 +14087,6 @@
     "app-release-poster-dialogs.new-poster-dialog.label.5b853b6b614f": {
       "text": "Navn"
     },
-    "app-release-poster-dialogs.new-poster-dialog.option.39e4c15e4b70": {
-      "text": "Engelsk"
-    },
-    "app-release-poster-dialogs.new-poster-dialog.option.e3870b997183": {
-      "text": "Norsk"
-    },
     "app-release-poster-dialogs.new-poster-dialog.p.cfe54518e65d": {
       "text": "godkjente"
     },
@@ -14137,15 +14125,6 @@
     },
     "app-release-poster-inspector.background.background.b4b9947e469f": {
       "text": "Bakgrunnsfarge"
-    },
-    "app-release-poster-inspector.bilingual.label.2f1aee6df04c": {
-      "text": "engelsk"
-    },
-    "app-release-poster-inspector.bilingual.label.e68a78963db2": {
-      "text": "norsk"
-    },
-    "app-release-poster-inspector.bilingual.placeholder.701d079a0cb5": {
-      "text": "Tom: norsk tekst brukes"
     },
     "app-release-poster-inspector.characters.characters.6813a139c3eb": {
       "text": "Karakterer"
@@ -14450,12 +14429,6 @@
     "app-release-poster-inspector.poster-settings.option.baae3966c5fc": {
       "text": "Egen"
     },
-    "app-release-poster-inspector.poster-settings.option.cf6b065837cf": {
-      "text": "Norsk"
-    },
-    "app-release-poster-inspector.poster-settings.option.e6ed30832c1c": {
-      "text": "Engelsk"
-    },
     "app-release-poster-inspector.poster-settings.p.6f14fe5f4a16": {
       "text": "Ingen i biblioteket."
     },
@@ -14613,12 +14586,6 @@
     },
     "app-release-poster-workspace.release.option.7b256a3b37c8": {
       "text": " (skjult)"
-    },
-    "app-release-poster-workspace.release.option.c8bb36bc83a1": {
-      "text": "Norsk"
-    },
-    "app-release-poster-workspace.release.option.cad6bb633625": {
-      "text": "Engelsk"
     },
     "app-release-poster-workspace.release.p.619a05121915": {
       "text": "Lag en kinopitch-plakat eller et karakter- og universkart. Programmet lager et førsteutkast fra manuset og biblioteket, som du kan endre fritt og eksportere til trykk."
@@ -30719,9 +30686,6 @@
     "core-presentation-poster.text.text.6bb38c6ede97": {
       "text": "Redusert lesbarhet: "
     },
-    "core-presentation-poster.text.text.7c664d2f6b00": {
-      "text": "1 tekst mangler engelsk versjon og vises på norsk."
-    },
     "core-presentation-poster.text.text.d9a904701da5": {
       "text": "1 bilde mangler i biblioteket og vises som tom ramme."
     },
@@ -30730,9 +30694,6 @@
     },
     "core-presentation-poster.text.text.f4a6cdaa039a": {
       "text": "Ett tekstfelt er tomt ({roles}) og vises ikke."
-    },
-    "core-presentation-poster.text.text.fd87329d7c53": {
-      "text": "{length} tekster mangler engelsk versjon og vises på norsk."
     },
     "core-presentation-poster.tip-part.message.864ebbede266": {
       "text": " Forslag: {value1}."
@@ -31977,6 +31938,27 @@
     },
     "g1b-fdx.import.invalid": {
       "text": "Filen er ikke en gyldig Final Draft-fil (.fdx)."
+    },
+    "g1b.poster.approx-min": {
+      "text": "ca. {min} min"
+    },
+    "g1b.poster.fallback-placeholder": {
+      "text": "Tom: teksten på {language} brukes"
+    },
+    "g1b.poster.feature": {
+      "text": "Animert spillefilm"
+    },
+    "g1b.poster.genre-family": {
+      "text": "Animert familiefilm"
+    },
+    "g1b.poster.genre-film": {
+      "text": "Animasjonsfilm"
+    },
+    "g1b.poster.untranslated-many": {
+      "text": "{length} tekster finnes ikke på {language} og vises på et annet språk."
+    },
+    "g1b.poster.untranslated-one": {
+      "text": "1 tekst finnes ikke på {language} og vises på et annet språk."
     },
     "id3.derived-from.invalid": {
       "text": "Kildeversjonen finnes ikke i denne ressursen."
@@ -47480,12 +47462,6 @@
     "app-release-poster-dialogs.export-poster-dialog.legend.2eeae0ebdfaa": {
       "text": "File type"
     },
-    "app-release-poster-dialogs.export-poster-dialog.option.2ba2c82ca3fa": {
-      "text": "Norwegian"
-    },
-    "app-release-poster-dialogs.export-poster-dialog.option.7d645d203fe3": {
-      "text": "English"
-    },
     "app-release-poster-dialogs.export-poster-dialog.option.bc56fd419d66": {
       "text": "72 ppi (screen)"
     },
@@ -47531,12 +47507,6 @@
     "app-release-poster-dialogs.new-poster-dialog.label.5b853b6b614f": {
       "text": "Name"
     },
-    "app-release-poster-dialogs.new-poster-dialog.option.39e4c15e4b70": {
-      "text": "English"
-    },
-    "app-release-poster-dialogs.new-poster-dialog.option.e3870b997183": {
-      "text": "Norwegian"
-    },
     "app-release-poster-dialogs.new-poster-dialog.p.cfe54518e65d": {
       "text": "approved"
     },
@@ -47575,15 +47545,6 @@
     },
     "app-release-poster-inspector.background.background.b4b9947e469f": {
       "text": "Background colour"
-    },
-    "app-release-poster-inspector.bilingual.label.2f1aee6df04c": {
-      "text": "English"
-    },
-    "app-release-poster-inspector.bilingual.label.e68a78963db2": {
-      "text": "Norwegian"
-    },
-    "app-release-poster-inspector.bilingual.placeholder.701d079a0cb5": {
-      "text": "Empty: the Norwegian text is used"
     },
     "app-release-poster-inspector.characters.characters.6813a139c3eb": {
       "text": "Characters"
@@ -47888,12 +47849,6 @@
     "app-release-poster-inspector.poster-settings.option.baae3966c5fc": {
       "text": "Custom"
     },
-    "app-release-poster-inspector.poster-settings.option.cf6b065837cf": {
-      "text": "Norwegian"
-    },
-    "app-release-poster-inspector.poster-settings.option.e6ed30832c1c": {
-      "text": "English"
-    },
     "app-release-poster-inspector.poster-settings.p.6f14fe5f4a16": {
       "text": "None in the library."
     },
@@ -48051,12 +48006,6 @@
     },
     "app-release-poster-workspace.release.option.7b256a3b37c8": {
       "text": " (hidden)"
-    },
-    "app-release-poster-workspace.release.option.c8bb36bc83a1": {
-      "text": "Norwegian"
-    },
-    "app-release-poster-workspace.release.option.cad6bb633625": {
-      "text": "English"
     },
     "app-release-poster-workspace.release.p.619a05121915": {
       "text": "Make a cinema pitch poster or a character and universe map. The app makes a first draft from the script and the library, which you can change freely and export for print."
@@ -64157,9 +64106,6 @@
     "core-presentation-poster.text.text.6bb38c6ede97": {
       "text": "Reduced legibility: "
     },
-    "core-presentation-poster.text.text.7c664d2f6b00": {
-      "text": "1 text has no English version and is shown in Norwegian."
-    },
     "core-presentation-poster.text.text.d9a904701da5": {
       "text": "1 image is missing from the library and is shown as an empty frame."
     },
@@ -64168,9 +64114,6 @@
     },
     "core-presentation-poster.text.text.f4a6cdaa039a": {
       "text": "One text field is empty ({roles}) and is not shown."
-    },
-    "core-presentation-poster.text.text.fd87329d7c53": {
-      "text": "{length} texts have no English version and are shown in Norwegian."
     },
     "core-presentation-poster.tip-part.message.864ebbede266": {
       "text": " Suggestions: {value1}."
@@ -65415,6 +65358,27 @@
     },
     "g1b-fdx.import.invalid": {
       "text": "The file is not a valid Final Draft file (.fdx)."
+    },
+    "g1b.poster.approx-min": {
+      "text": "approx. {min} min"
+    },
+    "g1b.poster.fallback-placeholder": {
+      "text": "Empty: the {language} text is used"
+    },
+    "g1b.poster.feature": {
+      "text": "Animated feature"
+    },
+    "g1b.poster.genre-family": {
+      "text": "Animated family film"
+    },
+    "g1b.poster.genre-film": {
+      "text": "Animated film"
+    },
+    "g1b.poster.untranslated-many": {
+      "text": "{length} texts have no {language} version and are shown in another language."
+    },
+    "g1b.poster.untranslated-one": {
+      "text": "1 text has no {language} version and is shown in another language."
     },
     "id3.derived-from.invalid": {
       "text": "The source version does not exist in this asset."

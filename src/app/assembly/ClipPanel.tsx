@@ -4,6 +4,7 @@
  * Tekniske detaljer vises her, ikke i manuset (mandat 6.3).
  */
 import { TransitionEditor } from "./TransitionEditor";
+import { isSourceLanguage } from "@/core/dialogue/languages";
 import { ScriptChanges, useSceneDiscrepancies } from "./ScriptChanges";
 import { Link } from "@tanstack/react-router";
 import {
@@ -902,7 +903,7 @@ function Versions({
             </span>
             <select
               aria-label={`${tk("app-assembly-clip-panel.versions.aria-label.7b455c5c63ce")} ${t.media?.fileName ?? tk("app-assembly-clip-panel.versions.aria-label.014bb29ad9fe.2")}`}
-              value={t.audioLanguage === "nb" ? "" : (t.audioLanguage ?? "")}
+              value={!t.audioLanguage || isSourceLanguage(state, t.audioLanguage) ? "" : t.audioLanguage}
               disabled={!editable || !run}
               onChange={(e) =>
                 run?.(

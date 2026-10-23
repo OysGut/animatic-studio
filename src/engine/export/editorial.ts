@@ -1,5 +1,6 @@
 /** PTG6 browser rendering. Policy, paths, timing and serializers stay in core/interchange. */
 import { editorialClip, editorialFiles, editorialFrames, editorialShots } from "@/core/interchange/editorial";
+import { readmeLanguage } from "@/core/interchange/readme";
 import { interchangeReadme } from "@/core/interchange/readme";
 import { t } from "@/core/i18n/keyed";
 import { exportAnimatic } from "./animatic";
@@ -10,10 +11,10 @@ export type EditorialOptions = Omit<DragonframeOptions, "png" | "burnIn"> & { re
 export async function exportEditorial(o: EditorialOptions): Promise<void> {
   const shots = editorialShots(o.doc);
   async function* files() {
-    yield { path: "LESMEG.txt", data: interchangeReadme([t("ptg6.readme", {}, "nb"), t("ptg6.readme", {}, "en"),
-      t("ptg6.reel-table", {}, "nb"), t("ptg6.reel-table", {}, "en"), ...shots.map(s => `${s.reel}\t${s.shot.name}\t${s.video}`),
-      t("ptg6.audio-table", {}, "nb"), t("ptg6.audio-table", {}, "en"), ...shots.map(s => `${s.shot.name}\t${s.audio}`),
-      o.includeMedia ? t("ptg6.media-included", {}, "nb") : t("ptg6.media-linked", {}, "nb"),
+    yield { path: "LESMEG.txt", data: interchangeReadme([t("ptg6.readme", {}, readmeLanguage()), t("ptg6.readme", {}, "en"),
+      t("ptg6.reel-table", {}, readmeLanguage()), t("ptg6.reel-table", {}, "en"), ...shots.map(s => `${s.reel}\t${s.shot.name}\t${s.video}`),
+      t("ptg6.audio-table", {}, readmeLanguage()), t("ptg6.audio-table", {}, "en"), ...shots.map(s => `${s.shot.name}\t${s.audio}`),
+      o.includeMedia ? t("ptg6.media-included", {}, readmeLanguage()) : t("ptg6.media-linked", {}, readmeLanguage()),
       o.includeMedia ? t("ptg6.media-included", {}, "en") : t("ptg6.media-linked", {}, "en")].join("\n\n")) };
     for (const f of editorialFiles(o.doc)) yield f;
     let done = 0;

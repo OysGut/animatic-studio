@@ -1,5 +1,6 @@
 /** SL4: brukerstartede, sekvensielle grupperunder. Hver replikk lagres før neste AI-kall. */
 import { useEffect, useRef, useState } from "react";
+import { sourceLanguageOf } from "@/core/dialogue/languages";
 import { useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { GitBranch, Pause, Play, Square, X } from "lucide-react";
@@ -84,7 +85,7 @@ function GroupConversation({ state, projectId, session, participants, editable, 
     const e = engineOf(ts);
     return {
       request: { kind: "character" as const, assetId: id, sceneId, situation, profile: profiles[id] ?? null,
-        directions: activeDirections(e, id).map((d) => d.text), language: "nb" },
+        directions: activeDirections(e, id).map((d) => d.text), language: sourceLanguageOf(state) },
       messages: groupTurnMessages(e, id, names).messages,
     };
   };

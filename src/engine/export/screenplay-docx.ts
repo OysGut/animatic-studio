@@ -228,7 +228,7 @@ export function screenplayDocx(
   const styles =
     `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n` +
     `<w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">` +
-    `<w:docDefaults><w:rPrDefault><w:rPr>${rpr(opts.language ?? "nb-NO")}</w:rPr></w:rPrDefault>` +
+    `<w:docDefaults><w:rPrDefault><w:rPr>${rpr(opts.language ?? "und")}</w:rPr></w:rPrDefault>` +
     `<w:pPrDefault><w:pPr><w:spacing w:before="0" w:after="0" w:line="${LINE}" w:lineRule="exact"/><w:widowControl w:val="0"/></w:pPr></w:pPrDefault></w:docDefaults>` +
     `<w:style w:type="paragraph" w:default="1" w:styleId="Normal"><w:name w:val="Normal"/></w:style></w:styles>`;
 

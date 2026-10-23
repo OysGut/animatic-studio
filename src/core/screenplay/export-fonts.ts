@@ -2,14 +2,15 @@
  * ML4 (B-049): fontkontroll for manuseksport. Sjekker hvilke tegn eksportformatets font kan vise,
  * før filen lages. Ingen tegn erstattes i stillhet.
  *
- * - PDF bruker standardfonten Courier med WinAnsi-koding. Tegn utenfor tegnsettet (for eksempel
- *   kyrillisk og «č ć đ» i latinsk serbisk) ville blitt «?». Eksporten blir derfor stoppet.
+ * - PDF bruker Courier når WinAnsi dekker teksten. Ellers (G-1b) bygges Noto-fonter inn per skriftsystem;
+ *   eksporten stoppes bare for tegn ingen av fontene har.
  * - Word bruker Courier New, som dekker latin (også utvidet), gresk og kyrillisk. Andre tegn beholdes i
  *   filen, men Word bytter da til en annen font for dem. Det vises som en advarsel, ikke en stopp.
  * - Fountain er ren UTF-8-tekst, og alle tegn beholdes.
  */
 import { winAnsiCode } from "../presentation/metrics";
 import type { PaginationScene } from "./paginate";
+import { notoScriptsNeeded, notoUncovered, type NotoScript } from "../typography/pdf-scripts";
 
 export type ScriptExportFormat = "pdf" | "docx" | "fountain";
 
@@ -23,6 +24,8 @@ export interface ScriptFontCheck {
   readonly unsupportedCount: number;
   /** Sann når eksporten ville mistet tekst og derfor skal stoppes. */
   readonly blocking: boolean;
+  /** G-1b: PDF med tegn utenfor WinAnsi lages med innebygde Noto-fonter for disse skriftsystemene. */
+  readonly embedded?: readonly NotoScript[];
 }
 
 const CONTROL = new Set(["\n", "\r", "\t"]);
@@ -57,17 +60,34 @@ export function scriptExportFontCheck(
   limit = 12,
 ): ScriptFontCheck {
   if (format === "fountain") return { format, font: null, unsupported: [], unsupportedCount: 0, blocking: false };
-  const covers = format === "pdf" ? pdfCovers : docxCovers;
+  if (format === "pdf") {
+    // G-1b: Courier når WinAnsi dekker alt (byte-identisk som før), ellers Noto per skriftsystem. Stopp bare for
+    // tegn ingen av fontene har (for eksempel emoji) – ingen tegn erstattes i stillhet.
+    const list = [...texts];
+    let courier = true;
+    for (const text of list) for (const ch of text) if (!CONTROL.has(ch) && !pdfCovers(ch)) courier = false;
+    if (courier) return { format, font: "Courier", unsupported: [], unsupportedCount: 0, blocking: false };
+    const missing = notoUncovered(list);
+    return {
+      format,
+      font: "Noto Sans",
+      unsupported: missing.slice(0, limit),
+      unsupportedCount: missing.length,
+      blocking: missing.length > 0,
+      embedded: notoScriptsNeeded(list),
+    };
+  }
+  const covers = docxCovers;
   const seen = new Set<string>();
   for (const text of texts)
     for (const ch of text) if (!CONTROL.has(ch) && !seen.has(ch) && !covers(ch)) seen.add(ch);
   const all = [...seen];
   return {
     format,
-    font: format === "pdf" ? "Courier" : "Courier New",
+    font: "Courier New",
     unsupported: all.slice(0, limit),
     unsupportedCount: all.length,
-    blocking: format === "pdf" && all.length > 0,
+    blocking: false,
   };
 }
 

@@ -4,16 +4,60 @@
  * mål når den er sperret, så linjene blir like lange overalt.
  */
 import { CSS_FONT, PT_TO_MM, textWidthPt, type RenderOp } from "@/core";
-import { imagePixelNeeds, type PdfImage } from "./poster-pdf";
+import { imagePixelNeeds, textImageArea, type PdfImage, type TextImage } from "./poster-pdf";
+import { notoScriptsNeeded } from "@/core/typography/pdf-scripts";
+import { NOTO_FONT_FILES } from "./pdf-fonts";
 import { PNG_MAX_WIDTH, encodePngStrips } from "./png-writer";
 import { t } from "@/core/i18n/keyed";
+
+/** G-1b: Noto-fontene (lastet ved behov) som reserve for skriftsystemer standardskriftene ikke har. */
+const NOTO_FALLBACK = ', "PTG Noto latin", "PTG Noto jp", "PTG Noto kr", "PTG Noto sc", "PTG Noto arabic", "PTG Noto hebrew", "PTG Noto devanagari", "PTG Noto thai"';
+const registered = new Set<string>();
+
+/** Laster og registrerer Noto-fontene teksten på plakaten trenger (bare én gang per økt). */
+export async function ensurePosterNotoFonts(ops: readonly RenderOp[], language?: string): Promise<void> {
+  if (typeof FontFace === "undefined" || typeof document === "undefined") return;
+  const texts = ops.flatMap((o) => (o.op === "text" ? o.lines.map((l) => l.text) : []));
+  const scripts = notoScriptsNeeded(texts, language).filter((s) => !registered.has(s));
+  if (scripts.length <= 1 && scripts[0] === "latin" && texts.every((t) => [...t].every((ch) => ch.codePointAt(0)! < 0x250))) return;
+  for (const s of scripts) {
+    const face = new FontFace(`PTG Noto ${s}`, `url(${NOTO_FONT_FILES[s]})`);
+    await face.load();
+    document.fonts.add(face);
+    registered.add(s);
+  }
+}
+
+/** G-1b: én tekst tegnet som bilde for trykk-PDF-en (nettleseren former og snur teksten). */
+export async function posterTextImage(op: Extract<RenderOp, { op: "text" }>, ppi: number): Promise<TextImage | null> {
+  const area = textImageArea(op);
+  const pxPerMm = ppi / 25.4;
+  const w = Math.max(1, Math.ceil(area.w * pxPerMm));
+  const h = Math.max(1, Math.ceil(area.h * pxPerMm));
+  if (w * h > MAX_CANVAS_PIXELS) return null;
+  const canvas = new OffscreenCanvas(w, h);
+  const ctx = canvas.getContext("2d") as unknown as CanvasRenderingContext2D | null;
+  if (!ctx) return null;
+  ctx.translate(-area.x * pxPerMm, -area.y * pxPerMm);
+  drawPosterOps(ctx, [{ ...op, rotation: 0, opacity: 1 }], pxPerMm, new Map());
+  const data = ctx.getImageData(0, 0, w, h).data;
+  const rgb = new Uint8Array(w * h * 3);
+  const alpha = new Uint8Array(w * h);
+  for (let i = 0; i < w * h; i++) {
+    rgb[i * 3] = data[i * 4]!;
+    rgb[i * 3 + 1] = data[i * 4 + 1]!;
+    rgb[i * 3 + 2] = data[i * 4 + 2]!;
+    alpha[i] = data[i * 4 + 3]!;
+  }
+  return { image: { width: w, height: h, rgb, alpha }, ...area };
+}
 
 type Img = CanvasImageSource & { readonly width: number; readonly height: number };
 
 function cssFont(op: Extract<RenderOp, { op: "text" }>, pxPerMm: number): string {
   const bold = op.font === "sansBold" || op.font === "serifBold";
   const italic = op.font === "serifItalic";
-  return `${italic ? "italic " : ""}${bold ? "700 " : "400 "}${op.size * PT_TO_MM * pxPerMm}px ${CSS_FONT[op.font]}`;
+  return `${italic ? "italic " : ""}${bold ? "700 " : "400 "}${op.size * PT_TO_MM * pxPerMm}px ${CSS_FONT[op.font]}${NOTO_FALLBACK}`;
 }
 
 function withRotation(

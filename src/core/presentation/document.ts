@@ -5,6 +5,7 @@
 
 import type { LocalizedText, PosterDocument, PosterElement, PosterOptions } from "../model";
 import { t as tk } from "@/core/i18n/keyed";
+import { canonicalLanguageTag } from "../translation/language-tags";
 
 export const POSTER_OPTION_KEYS: readonly (keyof PosterOptions)[] = [
   "imagesAndNamesOnly",
@@ -30,12 +31,13 @@ const finite = (n: unknown) => typeof n === "number" && Number.isFinite(n);
 /** Gyldig plakatdokument? Feilmelding eller null. Kontrollerer form og grenser, ikke ressursene. */
 export function posterDocumentError(d: PosterDocument): string | null {
   if (!d || typeof d !== "object" || d.version !== 1) return tk("core-presentation-document.poster-document-error.message.888b7a1f0354");
+  // G-1b: tekst per språkmerke; høyst 40 språk og 4000 tegn per tekst
   const lt = (t: LocalizedText | undefined) =>
     !!t &&
-    typeof t.nb === "string" &&
-    typeof t.en === "string" &&
-    t.nb.length <= 4000 &&
-    t.en.length <= 4000;
+    typeof t === "object" &&
+    !Array.isArray(t) &&
+    Object.keys(t).length <= 40 &&
+    Object.entries(t).every(([k, v]) => canonicalLanguageTag(k) !== null && typeof v === "string" && v.length <= 4000);
   if (!lt(d.title) || !lt(d.logline) || !lt(d.genre) || !lt(d.tagline))
     return tk("core-presentation-document.poster-document-error.message.0a9c01bd87b8");
   const pal = d.palette;

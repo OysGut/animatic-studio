@@ -1278,11 +1278,11 @@ export interface AssetRelation extends Entity<AssetRelationId> {
 
 export type PosterKind = "pitch" | "character_map";
 
-/** Tekst på norsk og engelsk (REQ-0404). */
-export interface LocalizedText {
-  readonly nb: string;
-  readonly en: string;
-}
+/**
+ * Tekst per språk (REQ-0404, G-1b): nøkkelen er et BCP-47-språkmerke (kildespråket, en språkversjon eller et
+ * grensesnittspråk). Eldre plakater har nøklene «nb» og «en», som da bare er vanlige språkmerker.
+ */
+export type LocalizedText = { readonly [language: string]: string };
 
 /** Innholdsvalgene (mandat 26.3, REQ-0390). */
 export interface PosterOptions {
@@ -1386,7 +1386,7 @@ export interface Poster extends Entity<PosterId> {
   readonly name: string;
   readonly kind: PosterKind;
   /** Språket plakaten vises og eksporteres på (REQ-0404). */
-  readonly language: "nb" | "en";
+  readonly language: string;
   /** Format i millimeter (minst 700 × 1000 stående, REQ-0386). */
   readonly widthMm: number;
   readonly heightMm: number;

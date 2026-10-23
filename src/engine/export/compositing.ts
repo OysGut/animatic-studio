@@ -1,5 +1,6 @@
 /** PTG7 media streaming only; all graph, geometry and timing policy lives in core/interchange. */
 import type { InterchangeDoc } from '@/core/interchange/types';
+import { readmeLanguage } from "@/core/interchange/readme";
 import { compositingFiles } from '@/core/interchange/compositing';
 import { interchangeReadme } from '@/core/interchange/readme';
 import { t } from '@/core/i18n/keyed';
@@ -20,8 +21,8 @@ export async function exportCompositing(o: {
   async function* files() {
     for (const file of compositingFiles(doc)) yield { path: file.path, data: new TextEncoder().encode(file.data) };
     yield { path: 'LESMEG.txt', data: interchangeReadme([
-      t('ptg7.readme', {}, 'nb'), t('ptg7.readme', {}, 'en'),
-      ...doc.shots.filter(s => !s.camera).flatMap(s => [t('ptg7.no-rig', { shot: s.name }, 'nb'), t('ptg7.no-rig', { shot: s.name }, 'en')]),
+      t('ptg7.readme', {}, readmeLanguage()), t('ptg7.readme', {}, 'en'),
+      ...doc.shots.filter(s => !s.camera).flatMap(s => [t('ptg7.no-rig', { shot: s.name }, readmeLanguage()), t('ptg7.no-rig', { shot: s.name }, 'en')]),
     ].join('\n\n')) };
     yield* convertedMediaFiles({ convert: plan.convert, urls: o.urls, fps: doc.fps, signal: o.signal, failed, ...(o.converter ? { converter: o.converter } : {}) });
   }

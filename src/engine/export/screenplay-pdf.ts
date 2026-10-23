@@ -215,3 +215,67 @@ export function screenplayPdf(pages: readonly Page[], opts: PdfOptions = {}): Ui
   for (let i = 0; i < out.length; i++) bytes[i] = out.charCodeAt(i) & 0xff;
   return bytes;
 }
+
+/**
+ * G-1b punkt 5: manus-PDF for tekst utenfor WinAnsi (japansk, kyrillisk, arabisk …). Samme sider, linjer og
+ * posisjoner som screenplayPdf, men med innebygde Noto-fonter valgt per skriftsystem. Brukes bare når
+ * Courier ikke dekker teksten, slik at latinske manus fortsatt blir byte-identiske.
+ */
+export async function screenplayPdfUnicode(
+  pages: readonly Page[],
+  opts: PdfOptions & { readonly language?: string; readonly fonts: import("./pdf-fonts").NotoFonts },
+): Promise<Uint8Array> {
+  const { jsPDF } = await import("jspdf");
+  const { registerNotoFonts, drawRuns, runsWidth } = await import("./pdf-fonts");
+  const doc = new jsPDF({ unit: "pt", format: [PAGE_W, PAGE_H], orientation: "portrait", compress: true });
+  const names = registerNotoFonts(doc, opts.fonts, "Script");
+  doc.setFontSize(11);
+  if (opts.title) doc.setProperties({ title: opts.title, creator: "From Pen to Glass" });
+  if (opts.language) doc.setLanguage(opts.language as never);
+  let first = true;
+  const next = () => {
+    if (!first) doc.addPage([PAGE_W, PAGE_H], "portrait");
+    first = false;
+  };
+  const put = (x: number, yTop: number, text: string) => drawRuns(doc, names, text, x, yTop, opts.language);
+  if (opts.titlePage?.length) {
+    next();
+    let y = 252;
+    for (const t of opts.titlePage) {
+      const w = runsWidth(doc, names, t, opts.language);
+      put(Math.max(72, (PAGE_W - w) / 2), y, t);
+      y += 2 * LINE;
+    }
+  }
+  const byPage = new Map<number, NotePlacement[]>();
+  for (const n of opts.notes ?? []) byPage.set(n.page, [...(byPage.get(n.page) ?? []), n]);
+  for (const page of pages) {
+    next();
+    if (opts.pageNumbers !== false && page.number > 1) {
+      const t = `${page.number}.`;
+      put(PAGE_NUMBER_RIGHT - t.length * CHAR, BODY_TOP - 3 * LINE, t);
+    }
+    for (const l of page.lines) {
+      if (!l.text) continue;
+      const y = BODY_TOP + l.row * LINE;
+      put(l.left * CHAR, y, l.text);
+      if (l.kind === "heading" && l.first && l.sceneNumber) {
+        put(SCENE_NUMBER_LEFT, y, l.sceneNumber);
+        put(SCENE_NUMBER_RIGHT, y, l.sceneNumber);
+      }
+    }
+    for (const n of byPage.get(page.number) ?? []) {
+      const part = n.parts[0];
+      if (!part) continue;
+      doc.createAnnotation({
+        type: "text",
+        title: n.note.author,
+        contents: n.note.text,
+        bounds: { x: part.left * CHAR, y: BODY_TOP + part.row * LINE - 10, w: 12, h: 12 },
+        open: false,
+      } as never);
+    }
+  }
+  if (first) next();
+  return new Uint8Array(doc.output("arraybuffer"));
+}

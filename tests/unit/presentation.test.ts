@@ -168,7 +168,7 @@ describe("førsteutkast og komposisjon (REQ-0388–0391, REQ-0396)", () => {
     expect(ids).toContain(`char:${anne.id}:img`);
     expect(doc.elements.some((e) => e.kind === "relation")).toBe(false);
     expect(doc.elements.every((e) => e.auto && e.visible)).toBe(true);
-    expect(doc.title.nb).toBe(s0.project.name);
+    expect(doc.title["nb"]).toBe(s0.project.name);
   });
 
   it("karakterkart: godkjente relasjoner blir linjer mellom portrettene, bak dem", () => {
@@ -178,7 +178,7 @@ describe("førsteutkast og komposisjon (REQ-0388–0391, REQ-0396)", () => {
     expect(rel.kind).toBe("relation");
     expect(rel.fromElementId).toBe(`char:${maja.id}:img`);
     expect(rel.toElementId).toBe(`char:${anne.id}:img`);
-    expect(rel.text?.nb).toContain("Barnebarn og bestemor");
+    expect(rel.text?.["nb"]).toContain("Barnebarn og bestemor");
     const idx = (id: string) => doc.elements.findIndex((e) => e.id === id);
     expect(idx(rel.id)).toBeLessThan(idx(`char:${maja.id}:img`));
     // Uten navngitte relasjoner: bare linjen
@@ -192,7 +192,7 @@ describe("førsteutkast og komposisjon (REQ-0388–0391, REQ-0396)", () => {
         options: { ...doc.options, namedRelations: false, relationTexts: false },
       },
     });
-    expect(plain.elements.find((e) => e.id === rel.id)!.text?.nb).toBe("");
+    expect(plain.elements.find((e) => e.id === rel.id)!.text?.["nb"]).toBe("");
   });
 
   it("nye innholdsvalg lager programmets elementer på nytt, men brukerens endringer står", () => {
@@ -236,12 +236,12 @@ describe("førsteutkast og komposisjon (REQ-0388–0391, REQ-0396)", () => {
       },
     });
     const title = re.elements.find((e) => e.id === "title")!;
-    expect(title.text?.nb).toBe("EGEN TITTEL");
+    expect(title.text?.["nb"]).toBe("EGEN TITTEL");
     expect(title.y).toBe(doc.elements.find((e) => e.id === "title")!.y + 50);
     // Den endrede beskrivelsen er slått av: skjult, ikke slettet
     const d = re.elements.find((e) => e.id === desc)!;
     expect(d.visible).toBe(false);
-    expect(d.text?.nb).toBe("Egen tekst om Maja");
+    expect(d.text?.["nb"]).toBe("Egen tekst om Maja");
     // Programmets beskrivelse av Bestemor Anne er borte, og loglinen likeså
     expect(re.elements.some((e) => e.id === `char:${anne.id}:desc`)).toBe(false);
     expect(re.elements.some((e) => e.id === "logline")).toBe(false);
@@ -255,7 +255,7 @@ describe("førsteutkast og komposisjon (REQ-0388–0391, REQ-0396)", () => {
       productionId: main.id,
       document: { ...re, options: { ...re.options, imagesAndNamesOnly: false } },
     });
-    expect(on.elements.find((e) => e.id === desc)!.text?.nb).toBe("Egen tekst om Maja");
+    expect(on.elements.find((e) => e.id === desc)!.text?.["nb"]).toBe("Egen tekst om Maja");
   });
 
   it("tilpasser seg andre formater (A3 og 50 × 70)", () => {
@@ -607,7 +607,7 @@ describe("rettelser etter gjennomgang (DEC-0061)", () => {
       document: { ...moved, title: { nb: "Ny tittel", en: "New title" } },
     });
     const t = re.elements.find((e) => e.id === "title")!;
-    expect(t.text?.nb).toBe("Ny tittel");
+    expect(t.text?.["nb"]).toBe("Ny tittel");
     expect(t.y).toBe(doc.elements.find((e) => e.id === "title")!.y + 40);
     // Bak: rett over bakgrunnen, også etter ny komposisjon
     const bgAt = doc.elements.findIndex((e) => e.id === "bg");

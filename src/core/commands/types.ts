@@ -1409,7 +1409,8 @@ export interface PosterFields {
   readonly productionId: ProductionId;
   readonly name: string;
   readonly kind: PosterKind;
-  readonly language: "nb" | "en";
+  /** G-1b: BCP-47-språkmerket plakaten vises på. */
+  readonly language: string;
   readonly widthMm: number;
   readonly heightMm: number;
   readonly document: PosterDocument;

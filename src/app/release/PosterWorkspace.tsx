@@ -18,6 +18,8 @@ import {
   Undo2,
 } from "lucide-react";
 import { collation, POSTER_KIND_LABEL, ROLE_LABEL, posterDraft, posterKindBase, renderPoster, sortedAssets, type Poster, type PosterDocument, type PosterElement, type ProjectState } from "@/core";
+import { PosterLanguageSelect } from "./PosterLanguageSelect";
+import { sourceLanguageOf } from "@/core/dialogue/languages";
 import { canEdit, useMembers, useProjectState } from "@/app/project/use-project";
 import { useCommands, type Commands } from "@/app/project/use-commands";
 import { useActiveProduction } from "@/app/project/use-production";
@@ -48,7 +50,7 @@ function elementLabel(state: ProjectState, e: PosterElement): string {
   const rel = e.relationId ? state.assetRelations[e.relationId] : undefined;
   if (rel)
     return `${role}: ${state.assets[rel.fromAssetId]?.name ?? "?"} – ${state.assets[rel.toAssetId]?.name ?? "?"}`;
-  const t = e.text?.nb.trim();
+  const t = (e.text ? Object.values(e.text).find((v) => v.trim()) : undefined)?.trim();
   if (t) return `${role}: ${t.length > 30 ? `${t.slice(0, 30)}…` : t}`;
   // Kortene og bildene har ressursen i ID-en
   const m = /^(?:char|place|obj):([0-9a-f-]{36})/.exec(e.id);
@@ -129,7 +131,7 @@ function Release({
   const [selected, setSelected] = useState<string | null>(null);
   const [highlight, setHighlight] = useState<readonly string[]>([]);
   const [tab, setTab] = useState<Tab>("poster");
-  const [preview, setPreview] = useState<"nb" | "en" | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
   const [newOpen, setNewOpen] = useState(false);
   const [exportOpen, setExportOpen] = useState(false);
   const [relOpen, setRelOpen] = useState(false);
@@ -137,7 +139,7 @@ function Release({
   const [listWidth, setListWidth] = usePaneSize("release-list", 220, 160, 360);
   const [sideWidth, setSideWidth] = usePaneSize("release-inspector", 320, 260, 520);
 
-  const lang = preview ?? shownPoster?.language ?? "nb";
+  const lang = preview ?? shownPoster?.language ?? sourceLanguageOf(state);
   const element =
     shownPoster && selected
       ? shownPoster.document.elements.find((e) => e.id === selected)
@@ -288,6 +290,10 @@ function Release({
         heightMm: h,
       });
       save(shownPoster, { ...patch, document: doc }, label);
+    } else if (patch.language && patch.language !== shownPoster.language) {
+      // G-1b: programmets tekster (navn, sjanger, prosjektdata) lages også på det nye språket
+      const doc = relayout(state, shownPoster, shownPoster.document, { language: patch.language });
+      save(shownPoster, { ...patch, document: doc }, label);
     } else save(shownPoster, patch, label);
   };
 
@@ -300,6 +306,7 @@ function Release({
       shownPoster.kind,
       shownPoster.widthMm,
       shownPoster.heightMm,
+      shownPoster.language,
     );
     // Tekstene, stilen, innholdsvalgene og utvalget beholdes; elementene lages på nytt
     const doc = relayout(state, shownPoster, {
@@ -448,15 +455,14 @@ function Release({
             <ToolbarSeparator />
             <label className="flex items-center gap-1.5 whitespace-nowrap text-xs text-text-secondary">
               <span className="hidden xl:inline">{tk("app-release-poster-workspace.release.span.557f279fecfa")}</span>
-              <select
-                aria-label={tk("app-release-poster-workspace.release.aria-label.616d74b4a361")}
+              <PosterLanguageSelect
+                state={state}
+                ariaLabel={tk("app-release-poster-workspace.release.aria-label.616d74b4a361")}
                 value={lang}
-                onChange={(e) => setPreview(e.target.value as "nb" | "en")}
+                onChange={setPreview}
+                testId="poster-preview-language"
                 className="h-7 rounded-sm border border-border-control bg-surface-3 px-2 text-xs text-text-primary"
-              >
-                <option value="nb">{tk("app-release-poster-workspace.release.option.c8bb36bc83a1")}</option>
-                <option value="en">{tk("app-release-poster-workspace.release.option.cad6bb633625")}</option>
-              </select>
+              />
             </label>
             <ToolbarButton variant="primary" data-testid="poster-export-open" onClick={() => setExportOpen(true)}>
               <Download />
