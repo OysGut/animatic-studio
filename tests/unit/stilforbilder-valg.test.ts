@@ -89,17 +89,22 @@ describe("stilforbilder: brukerens valg", () => {
   });
 
   it("teksten om bildene følger valget: samme antall og rekkefølge som bildene som sendes", () => {
-    const r = composeImagePrompt(s, {
-      kind: "asset", assetId: uid(1), variantId: uid(101), referenceVersionId: uid(201), productionId: PROD,
-      occurrenceId: null, style: true, excluded: [uid(202), uid(203)], added: [{ versionId: uid(209), role: "view" }],
-      maxImages: 4, fullSize: false, family: "narrative", transparent: false,
-    })!;
-    expect(r.attached).toHaveLength(4);
-    expect(r.attached.map((a) => a.versionId)).not.toContain(uid(202));
-    const p = finalImagePrompt(r, "Tegn figuren.");
+    // Serveren bygger listen i teksten (finalImagePrompt → withAttachedLegend) fra de samme vedleggene
+    const attached = attachedImages(s, {
+      ...input,
+      choice: { excluded: [uid(202), uid(203)], added: [{ versionId: uid(209), role: "view" }] },
+      max: 4,
+    });
+    expect(attached).toHaveLength(4);
+    expect(attached.map((a) => a.versionId)).not.toContain(uid(202));
+    const p = finalImagePrompt(
+      { body: "", negative: null, summary: null, attached, referencePaths: attached.map((a) => a.path), identityFirst: true, assetName: "Figur1" },
+      "Tegn figuren.\n\nATTACHED IMAGES\nImage 1: gammel\nImage 2: gammel\nImage 3: gammel\nImage 4: gammel\nImage 5: gammel",
+    );
     expect(p).toContain("Exactly 4 image(s) are attached.");
     expect(p).not.toContain("Image 5:");
-    expect(r.referencePaths).toEqual(r.attached.map((a) => a.path));
+    expect(p).not.toContain("gammel");
+    expect(p).toContain("Image 4: Figur9");
     expect(withAttachedLegend("x", "Figur1", [])).toBe("x");
   });
 
