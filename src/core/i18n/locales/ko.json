@@ -55477,5 +55477,40 @@
     "text": "아래 텍스트로 만듦",
     "sourceHash": "d787cb32abcbd828b73103417c1b1752ef796a23781bd5e5192a56397178ba4f",
     "review": "machine"
+  },
+  "factSheet.auto.label": {
+    "text": "대본에서 자동으로 만듦 {date}",
+    "sourceHash": "50dab74b2e7368e778dec500eb56bbb73421dac67f91bd5bfa30bb6c0503e814",
+    "review": "machine"
+  },
+  "factSheet.cost.study": {
+    "text": "아직 비주얼 시트가 없습니다. 먼저 대본 분석을 실행하고(추가 텍스트 호출 1회, 이미지보다 훨씬 저렴) 그다음 텍스트를 씁니다. 한 번의 클릭으로 두 호출을 모두 승인합니다.",
+    "sourceHash": "dc1ebf1109ec05d4e1c15d825e8ebbff763554316a7bf5b58004809a90e3ed6c",
+    "review": "machine"
+  },
+  "factSheet.cost.ready": {
+    "text": "대본의 비주얼 시트는 입력란의 텍스트와 함께 항상 사용됩니다.",
+    "sourceHash": "c6119bb61a3db1e0f71a945a999205c869829c98cc81d3a89eeccf3bbd5f6776",
+    "review": "machine"
+  },
+  "factSheet.error.study": {
+    "text": "대본에서 비주얼 시트를 만들 수 없어 텍스트를 쓰지 않았습니다. {message}",
+    "sourceHash": "e787f2a90e9b3f360300aa340f4d506bba548578fc48bd7d27a25ec35e330c4f",
+    "review": "machine"
+  },
+  "factSheet.error.save": {
+    "text": "비주얼 시트를 에셋에 저장할 수 없습니다.",
+    "sourceHash": "fc6b40dd0b5013f101584156c84f4c2b137538b06a5e8163a207779e70c358bd",
+    "review": "machine"
+  },
+  "factSheet.retry": {
+    "text": "다시 시도",
+    "sourceHash": "d9e949c5c342cf66a13e8b0c74f61da560c11f6357a5a910ff650880c0e98647",
+    "review": "machine"
+  },
+  "factSheet.history": {
+    "text": "대본에서 비주얼 시트 만듦({name})",
+    "sourceHash": "c4840be19e58aadc64429d2043adb7aa9806b851453722dddce9763ec476fdc2",
+    "review": "machine"
   }
 }
