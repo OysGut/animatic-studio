@@ -1,3 +1,5 @@
+import { briefVersionsError } from "./assets/brief-versions";
+import type { BriefVersion } from "./model";
 import { DEFAULT_JOB_SETTINGS as DEFAULT_JOB_SETTINGS_FOR_ROWS } from "./print/job";
 import { isSceneColor, isWorkStatus } from "./assembly/scene-marks";
 import type { TranslationLineLink, TranslationLine } from "./translation/line-align-prompt";
@@ -296,6 +298,10 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         removed: a.removed === true,
         // Migrasjon 0030 (DEC-0080)
         visual_brief: a.visualBrief ?? "",
+        // Migrasjon 0089: tekstversjoner skrives bare når ressursen har dem (eldre databaser uten kolonnen)
+        ...(a.briefVersions !== undefined
+          ? { brief_versions: a.briefVersions, active_brief_id: a.activeBriefId ?? null }
+          : {}),
         // Migrasjon 0046 (GP2): kobling til det globale biblioteket
         source_global_asset_id: a.globalAssetId ?? null,
       };
@@ -348,6 +354,8 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         font_spec: v.font ?? null,
         // Migrasjon 0069 (REQ-0037): kildeversjonen som permanent ID
         derived_from_version_id: v.derivedFromVersionId ?? null,
+        // Migrasjon 0089: tekstversjonen bildet ble laget fra
+        ...(v.briefVersionId !== undefined ? { brief_version_id: v.briefVersionId } : {}),
         // Migrasjon 0078 (B-105a): avledede filer (arbeidskopi, proxy, miniatyr, rå TIFF)
         derived_files: v.derivedFiles ?? null,
         // Migrasjon 0080 (B-114 C0): rettigheter; null = privat/forbeholdt
@@ -1396,6 +1404,13 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         ...(typeof x["visual_brief"] === "string" && x["visual_brief"]
           ? { visualBrief: x["visual_brief"] }
           : {}),
+        ...(Array.isArray(json(x["brief_versions"])) && (json(x["brief_versions"]) as unknown[]).length > 0 &&
+        !briefVersionsError(json(x["brief_versions"]), typeof x["active_brief_id"] === "string" ? x["active_brief_id"] : null)
+          ? {
+              briefVersions: json(x["brief_versions"]) as BriefVersion[],
+              ...(typeof x["active_brief_id"] === "string" ? { activeBriefId: x["active_brief_id"] } : {}),
+            }
+          : {}),
         ...(typeof x["source_global_asset_id"] === "string"
           ? { globalAssetId: x["source_global_asset_id"] }
           : {}),
@@ -1442,6 +1457,7 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         ...(typeof x["derived_from_version_id"] === "string"
           ? { derivedFromVersionId: x["derived_from_version_id"] as never }
           : {}),
+        ...(typeof x["brief_version_id"] === "string" ? { briefVersionId: x["brief_version_id"] } : {}),
         ...(json(x["derived_files"]) && typeof json(x["derived_files"]) === "object" &&
         !derivedFilesError(json(x["derived_files"]))
           ? { derivedFiles: json(x["derived_files"]) as never }

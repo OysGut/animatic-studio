@@ -3134,6 +3134,33 @@ try {
     assert(row!["view"] === null, "vinkelen ble endret utenom apply_changes");
   });
 
+  await test("0089: tekstversjoner av beskrivelsen og bildets referanse lagres og leses likt; bildet uforanderlig", async () => {
+    const [v] = await sql`select max(version) as v from public.schema_version`;
+    assert(Number(v!["v"]) >= 89, "schema_version er ikke 89");
+    let st = await loadState(projectId);
+    const aId = "89890000-0000-7000-8000-000000000001";
+    const vaId = "89890000-0000-7000-8000-000000000002";
+    const verId = "89890000-0000-7000-8000-000000000003";
+    st = await runCommand(st, ALICE, { type: "CreateAssets", assets: [{ assetId: aId as never, fields: { kind: "character", name: "Tekstfigur", names: [], description: "", category: "", tags: [] } }] });
+    st = await runCommand(st, ALICE, { type: "CreateAssetVariant", variantId: vaId as never, assetId: aId as never, fields: { name: "Animatic", style: "animatic", appearance: "" } });
+    const versions = [
+      { id: "b1", text: "En jente med rød lue", createdAt: "2026-10-23T02:00:00.000Z" },
+      { id: "b2", text: "En jente med blå lue", createdAt: "2026-10-23T02:01:00.000Z" },
+    ];
+    st = await runCommand(st, ALICE, { type: "SetAssetBriefVersions", assetId: aId as never, versions, activeId: "b1" });
+    st = await runCommand(st, ALICE, {
+      type: "AddAssetVersion", versionId: verId as never, variantId: vaId as never,
+      media: { path: `${projectId}/${aId}/${verId}/bilde.png`, mimeType: "image/png", width: 100, height: 200, byteSize: 10, sha256: "c".repeat(64) },
+      note: "", briefVersionId: "b1",
+    });
+    const loaded = await loadState(projectId);
+    assert(isDeepStrictEqual(loaded.assets[aId]?.briefVersions, versions), "tekstversjonene ble ikke lagret likt");
+    assert(loaded.assets[aId]?.activeBriefId === "b1", "aktiv tekstversjon ble ikke lagret");
+    assert(loaded.assetVersions[verId]?.briefVersionId === "b1", "bildets referanse til teksten ble ikke lagret");
+    await expectError(sql`update public.asset_versions set brief_version_id = 'b2' where id = ${verId}`, /INV-13/);
+    await expectError(sql`update public.assets set brief_versions = '{}'::jsonb where id = ${aId}`, /check/);
+  });
+
   await test("0031 (DEC-0082): notat på produksjonen lagres, leses tilbake og angres", async () => {
     const [v] = await sql`select max(version) as v from public.schema_version`;
     assert(Number(v!["v"]) >= 31, "schema_version er ikke 31");

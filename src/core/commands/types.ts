@@ -592,6 +592,13 @@ export type Command = import("../animation/rig-commands").RigCommand
       readonly assetId: AssetId;
       readonly text: string;
     }
+  /** Tekstversjoner av bildebeskrivelsen (migrasjon 0089): hele listen og den aktive; inversen er forrige. */
+  | {
+      readonly type: "SetAssetBriefVersions";
+      readonly assetId: AssetId;
+      readonly versions: readonly import("../model").BriefVersion[];
+      readonly activeId: string | null;
+    }
   /** «Animer på toere» (DEC-0079): bevegelsen oppdateres hvert n-te bilde (1–4) i 2D-scenen. */
   | {
       readonly type: "SetCompositionStep";
@@ -709,6 +716,8 @@ export type Command = import("../animation/rig-commands").RigCommand
       readonly alignment?: import("../audio/alignment").WordAlignment;
       /** Kopiert fra en global versjon (GP2). Bare metadata. */
       readonly globalSource?: import("../model").GlobalSource;
+      /** Tekstversjonen bildet ble generert fra (migrasjon 0089). */
+      readonly briefVersionId?: string;
       /** Maldefinisjonen (MTS MT4) når ressursen er en mal; filen er malens miniatyr. */
       readonly template?: import("../typography/template").TemplateDefinition;
       /** Fontmetadata (B-098) når ressursen er en font; filen er fontpakken. */

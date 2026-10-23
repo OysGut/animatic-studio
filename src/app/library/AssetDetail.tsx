@@ -3,6 +3,7 @@
  * visuelle varianter med bildeversjoner og godkjenning (REQ-0135, REQ-0136, REQ-0146, REQ-0149)
  * og scenene der ressursen er brukt (REQ-0131). Kontinuitet (DEC-0055) i ContinuityPanel.
  */
+import { useRevealNew } from "@/app/shared/reveal";
 import { Thumbnail } from "@/app/shared/Thumbnail";
 import { NoteFlagControl } from "@/app/dialogue/NoteFlagControl";
 import { Link } from "@tanstack/react-router";
@@ -63,6 +64,8 @@ interface Props {
   readonly editable: boolean;
   readonly cmds: Commands;
   readonly onGoToScene: (occurrenceId: string) => void;
+  /** Versjonen lenken ber om (?version=): rulles inn i synet og markeres kort. */
+  readonly focusVersionId?: string | null;
   /** Opphav per versjon (REQ-0121, DEC-0078); mangler = vises ikke. */
   readonly provenance?: ReadonlyMap<string, VersionProvenance>;
   /** Filteret i biblioteket: vis bare versjoner med dette opphavet. */
@@ -613,13 +616,18 @@ function Variants({
   cmds,
   provenance,
   origin = "all",
+  focusVersionId = null,
 }: Props) {
   const variants = variantsOf(state, asset.id);
   const [name, setName] = useState("");
   const [style, setStyle] = useState<VisualStyle>("animatic");
   const [appearance, setAppearance] = useState("");
   const [err, setErr] = useState<string | null>(null);
-  const [showArchived, setShowArchived] = useState(false);
+  // Versjonen lenken ber om, skal synes selv om varianten er arkivert
+  const [showArchived, setShowArchived] = useState(() => {
+    const fv = focusVersionId ? state.assetVersions[focusVersionId] : undefined;
+    return fv ? state.assetVariants[fv.variantId]?.archived === true : false;
+  });
   const paths = variants.flatMap((v) => versionsOf(state, v.id).map((x) => x.mediaPath));
   const urls = useImageUrls(paths);
   const shown = variants.filter((v) => showArchived || !v.archived);
@@ -690,6 +698,7 @@ function Variants({
       {shown.map((v) => (
         <VariantCard
           key={v.id}
+          focusVersionId={focusVersionId}
           state={state}
           projectId={projectId}
           productionId={productionId}
@@ -795,7 +804,9 @@ function VariantCard({
   urls,
   provenance,
   origin,
+  focusVersionId,
 }: {
+  focusVersionId: string | null;
   state: ProjectState;
   projectId: string;
   productionId: string;
@@ -814,6 +825,9 @@ function VariantCard({
       ? versions
       : versions.filter((v) => provenance.get(v.id)?.origin === origin);
   const hiddenByFilter = versions.length - shownVersions.length;
+  // Nye resultater og versjonen lenken ber om, rulles inn i synet og markeres kort (Øystein 23.10)
+  const stripRef = useRef<HTMLUListElement | null>(null);
+  const flash = useRevealNew(stripRef, shownVersions.map((v) => v.id), focusVersionId);
   const profiles = useProfiles([...new Set(versions.map((v) => v.createdBy).filter(Boolean))]);
   const [uploading, setUploading] = useState(false);
   const [err, setErr] = useState<string | null>(null);
@@ -1104,7 +1118,9 @@ function VariantCard({
         </p>
       ) : (
         <ul
-          className="flex gap-2 overflow-x-auto pb-1"
+          ref={stripRef}
+          data-testid="version-strip"
+          className="flex flex-wrap gap-2 pb-1"
           aria-label={tk("app-library-asset-detail.variant-card.aria-label.f94499f2a6b1", { name: String(variant.name) })}
         >
           {shownVersions.map((ver) => {
@@ -1114,8 +1130,11 @@ function VariantCard({
             return (
               <li
                 key={ver.id}
+                data-reveal-id={ver.id}
+                data-revealed={flash === ver.id ? "true" : undefined}
                 className={
-                  "flex w-[148px] shrink-0 flex-col gap-1 border p-1.5 " +
+                  "flex w-[148px] shrink-0 scroll-m-4 flex-col gap-1 border p-1.5 transition-shadow " +
+                  (flash === ver.id ? "ring-2 ring-accent-brand " : "") +
                   (approved ? "border-status-success bg-status-success-bg" : "border-border")
                 }
               >

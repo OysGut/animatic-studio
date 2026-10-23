@@ -10533,6 +10533,46 @@
       "en": {
         "text": "Stopped at {timecode}"
       }
+    },
+    "brief.versions.previous": {
+      "nb": {
+        "text": "Forrige tekstversjon"
+      },
+      "en": {
+        "text": "Previous text version"
+      }
+    },
+    "brief.versions.next": {
+      "nb": {
+        "text": "Neste tekstversjon"
+      },
+      "en": {
+        "text": "Next text version"
+      }
+    },
+    "brief.versions.counter": {
+      "nb": {
+        "text": "Tekstversjon {current} av {total}"
+      },
+      "en": {
+        "text": "Text version {current} of {total}"
+      }
+    },
+    "brief.versions.save": {
+      "nb": {
+        "text": "Lagre beskrivelsen av {name}"
+      },
+      "en": {
+        "text": "Save the description of {name}"
+      }
+    },
+    "brief.versions.fromText": {
+      "nb": {
+        "text": "Laget fra teksten under"
+      },
+      "en": {
+        "text": "Made from the text below"
+      }
     }
   }
 }

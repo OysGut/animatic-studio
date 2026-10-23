@@ -24899,6 +24899,21 @@
     "b118.undo-status": {
       "text": "Endre scenestatus"
     },
+    "brief.versions.counter": {
+      "text": "Tekstversjon {current} av {total}"
+    },
+    "brief.versions.fromText": {
+      "text": "Laget fra teksten under"
+    },
+    "brief.versions.next": {
+      "text": "Neste tekstversjon"
+    },
+    "brief.versions.previous": {
+      "text": "Forrige tekstversjon"
+    },
+    "brief.versions.save": {
+      "text": "Lagre beskrivelsen av {name}"
+    },
     "components-ui-dialog.dialog-content.span.4e9257a0bdea": {
       "text": "Lukk"
     },
@@ -58024,6 +58039,21 @@
     },
     "b118.undo-status": {
       "text": "Change scene status"
+    },
+    "brief.versions.counter": {
+      "text": "Text version {current} of {total}"
+    },
+    "brief.versions.fromText": {
+      "text": "Made from the text below"
+    },
+    "brief.versions.next": {
+      "text": "Next text version"
+    },
+    "brief.versions.previous": {
+      "text": "Previous text version"
+    },
+    "brief.versions.save": {
+      "text": "Save the description of {name}"
     },
     "components-ui-dialog.dialog-content.span.4e9257a0bdea": {
       "text": "Close"

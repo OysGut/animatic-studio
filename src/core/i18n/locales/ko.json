@@ -55452,5 +55452,30 @@
     "text": "{timecode}에서 정지됨",
     "sourceHash": "0df9933516d2cfcf6e63ef2c9c5f6d4beb5c7bc768d1abd0c06a3d048084f1ee",
     "review": "machine"
+  },
+  "brief.versions.previous": {
+    "text": "이전 텍스트 버전",
+    "sourceHash": "89bdd326345ef4640d63a924feb2c1e78784828bf5b6ee442d8cec101de99933",
+    "review": "machine"
+  },
+  "brief.versions.next": {
+    "text": "다음 텍스트 버전",
+    "sourceHash": "200c8e5ff7239eac1d1b13879a18fcf21be303c620d86c049033e81e03519a19",
+    "review": "machine"
+  },
+  "brief.versions.counter": {
+    "text": "텍스트 버전 {current}/{total}",
+    "sourceHash": "901933c5f2a527aee7f8f5857267d3ed42c0d07997a14daaf4ecdc32042937c0",
+    "review": "machine"
+  },
+  "brief.versions.save": {
+    "text": "{name} 설명 저장",
+    "sourceHash": "e3c7df023a58f9d22fc9f74b348235a5646b2a29594100eed234ef91a0f07ea8",
+    "review": "machine"
+  },
+  "brief.versions.fromText": {
+    "text": "아래 텍스트로 만듦",
+    "sourceHash": "d787cb32abcbd828b73103417c1b1752ef796a23781bd5e5192a56397178ba4f",
+    "review": "machine"
   }
 }

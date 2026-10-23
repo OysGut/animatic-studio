@@ -353,3 +353,7 @@
 - [x] Nytt bilde på en plassholder får egne proporsjoner og vanlig innsettingsstørrelse rundt samme senter; ett angretrinn (tests/unit/placeholder-refit.test.ts, tests/visual/placeholder-refit.mjs).
 
 - [x] Plassholderretting del 2: felles Thumbnail med contain (AGENTS.md regel 58, thumbnail-contain.test.tsx).
+
+- [x] Karaktertekst (Øystein 23.10): tekstversjoner, bildereferanse og fremheving (0089, KARAKTERTEKST_REPORT.md).
+- [x] Resultater i synet: versjonsstriper bryter linjen, lenken ruller resultatet inn i synet.
+- [ ] Plassering av nye lag innenfor gjeldende lerretsvisning.

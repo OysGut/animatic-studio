@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 import { ImageLightbox } from "@/app/library/ImageLightbox";
 import { useMemo, useRef, useState } from "react";
-import { ASSET_KIND_LABEL, coverVersion, layerFieldsOf, layerVersion, newId, partLayers, sortedAssets, variantsOf, versionsOf, type AssetMedia, type AssetVariant, type AssetVersion, type CompositionLayer, type LayerFields, type ProjectState, workingImageMaxSide, collation } from "@/core";
+import { briefHighlight, ASSET_KIND_LABEL, coverVersion, layerFieldsOf, layerVersion, newId, partLayers, sortedAssets, variantsOf, versionsOf, type AssetMedia, type AssetVariant, type AssetVersion, type CompositionLayer, type LayerFields, type ProjectState, workingImageMaxSide, collation } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
 import {
   IMAGE_ACCEPT,
@@ -169,6 +169,16 @@ function Body({
 
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  // Tekstversjonen i feltet: bildene laget fra den lyser opp (Øystein 23.10)
+  const [activeBrief, setActiveBrief] = useState<string | null>(null);
+  const highlight = useMemo(
+    () =>
+      briefHighlight(
+        variants.flatMap((v) => versionsOf(state, v.id)),
+        activeBrief,
+      ),
+    [variants, state, activeBrief],
+  );
   const [target, setTarget] = useState<string>(layer.assetVariantId ?? variants[0]?.id ?? "");
   const fileRef = useRef<HTMLInputElement | null>(null);
   /** Bildet som frilegges (det laget viser, eller et annet fra stor visning). */
@@ -213,6 +223,7 @@ function Body({
     media: AssetMedia,
     note: string,
     label: string,
+    briefVersionId?: string,
   ): Promise<string | null> {
     if (!asset) return t("app-scene-editor-layer-image-dialog.save-version.message.0eb54ac8c57d");
     let variantId = target;
@@ -240,6 +251,7 @@ function Body({
         variantId: variantId as never,
         media,
         note,
+        ...(briefVersionId ? { briefVersionId } : {}),
       },
       label,
       group,
@@ -430,10 +442,23 @@ function Body({
                   ) : (
                     <div className="grid grid-cols-[repeat(auto-fill,minmax(120px,1fr))] gap-2">
                       {versions.map((ver) => {
+                        const glow = highlight[ver.id] ?? "none";
                         const locked = layer.versionId === ver.id;
                         const on = locked || (followOn && shown?.id === ver.id);
                         return (
-                          <div key={ver.id} className="group/tile relative">
+                          <div
+                            key={ver.id}
+                            data-brief-highlight={glow}
+                            className={
+                              "group/tile relative rounded-sm transition-opacity " +
+                              (glow === "match"
+                                ? "shadow-[0_0_0_2px_var(--accent-brand),0_0_12px_var(--accent-brand)]"
+                                : glow === "dim"
+                                  ? "opacity-60"
+                                  : "")
+                            }
+                            title={glow === "match" ? t("brief.versions.fromText") : undefined}
+                          >
                             <button
                               type="button"
                               disabled={!editable}
@@ -555,6 +580,13 @@ function Body({
               </Button>
             </div>
             <GenerateImagePanel
+              saveBriefVersions={(versions, activeId) =>
+                cmds.run(
+                  { type: "SetAssetBriefVersions", assetId: asset.id, versions, activeId },
+                  t("brief.versions.save", { name: String(asset.name) }),
+                )
+              }
+              onBriefShown={setActiveBrief}
               insertPrompt={insert}
               projectId={projectId}
               filmTitle={state.project.name}
@@ -581,6 +613,7 @@ function Body({
                   img.media,
                   t("app-scene-editor-layer-image-dialog.body.save-version.7051f127d1d4", { model: String(img.model) }),
                   t("app-scene-editor-layer-image-dialog.body.save-version.a78661091aa0", { name: String(asset.name) }),
+                  img.briefVersionId,
                 )
               }
             />
