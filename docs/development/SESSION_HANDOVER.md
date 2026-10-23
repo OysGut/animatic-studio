@@ -1,5 +1,13 @@
 # Handover – Animatic Studio
 
+## N11 – 23.10.2026, delvis levert
+- Rapport: docs/development/N11_REPORT.md med skjermbilder, eksakt filliste og uverifiserte restkrav.
+- scene-panels-ui 39/0 nb og en; draft-refit 2/0; nye batch- og karakterspor-kontroller 8/0; dv4 24/0 og utvidet dv7 38/0 nb/en med faste mockede tjenester.
+- Ni krav flyttet til Verifisert; 17 står igjen. Ingen nye funksjoner utover bestilt refit-retting.
+- 35 rene tester bruker node-miljø i stedet for jsdom; full sammenlignbar måling 148,89 → 142,27 s (4,4 %). Ingen endring av språklastingen eller globale pool-innstillinger.
+- Full Vitest 2708/0, 10 eksisterende hoppet over; automatisk typekontroll/build OK; i18n og check_kb OK. YAML-kontrollen brukte eksisterende ruamel via midlertidig kompatibilitetslag i /tmp, uten pakkeinstallasjon.
+- Ikke migrert eller publisert; ingen ekte/betalte AI-kall. 300-credit-grensen er ikke målt separat.
+
 ## B-049 ML1 – 20.10.2026
 - Godkjent ML1 → ML2 → ML3 → ML4; bare ML1 kode levert. Inventar/mapping/kataloger, t og validering, en-XA, frozen baseline; gammel bro uendret. Ingen migrasjon.
 - Rapport: docs/development/ML1_REPORT.md. 9963 par, 266 konflikter beholdt; 13 nye tester, full Vitest 1926/0, lokal DB 140/0, U5 65/T2 69/DV3 48/paneler 39; build_docs/check_kb OK (878 krav).

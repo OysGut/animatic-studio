@@ -1,5 +1,11 @@
 # Kjente problemer og risikoer – Animatic Studio
 
+## N11 – 23.10.2026
+- 17 N6-restkrav er ikke fullverifisert; se N11_REPORT.md for konkret manglende akseptanse per krav.
+- REQ-0571 krever avklaring av «ikke kopiering» mot gjeldende autorisert filkopiering. Ingen produktvalg er tatt.
+- REQ-0839 har sterkere negative tester, men ekte VP9-alfa-koding er ikke prøvd. Ingen svart reservefil tillates.
+- Vitest-gevinsten er moderat: 4,4 % i sammenlignbar kjøring, ikke dokumentasjon for at Claudes ni minutter blir tilsvarende redusert.
+
 ## DV5/DV6 – 19.10.2026 (N7: 0061 er kjørt i Cloud; lokal angreliste koblet i N3/N5)
 - Doble forslag grupperes per permanent replikk/ressurs; bekreftelse kobler alle tilhørende klipp.
 - Massegenerering i karakterens Lyd/Stemme-seksjon: scene-/linjevalg, dekning, ordrett eksisterende-lyd-advarsel, eksplisitt kostnadsgodkjenning, separate språkjobber og varig fremdrift. Ukjent pris blokkerer start. Tidsanslag er uttrykkelig usikkert.

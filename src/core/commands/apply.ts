@@ -8246,8 +8246,8 @@ export function applyCommand(state: ProjectState, env: CommandEnvelope): ApplyRe
     let next = ran.state;
     // Plassholder → bilde (23.10): lag som nå viser et annet bilde, får bildets egne proporsjoner rundt
     // samme senter, i samme endring og samme angretrinn
-    // (ikke for Asset Studio-utkast, som lagrer sine egne lagfelter i utkastet)
-    if (env.command.type !== "WithLayerRefit" && env.command.type !== "UpdateSceneDraft") {
+    // Også samlet Asset Studio-utkast: tilpasningen beregnes fra endelig tilstand, ikke som et redigert utkastfelt.
+    if (env.command.type !== "WithLayerRefit") {
       const refits = planLayerRefits(state, next, fullLayerFields);
       if (refits.length) {
         // Kan tilpasningen ikke gjøres (ugyldige lagfelter), gjennomføres endringen som før uten den

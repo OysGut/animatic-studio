@@ -1,3 +1,4 @@
+// @vitest-environment node
 /** Betegnelser i bestemte linjer og stemmer (mandat 8.2, REQ-0127, DEC-0071). */
 import { describe, expect, it } from "vitest";
 import {

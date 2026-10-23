@@ -1,3 +1,4 @@
+// @vitest-environment node
 /** Replikkens koblinger (DEC-0072, REQ-0095/0099): opptak, tidspunkt, 2D-hendelse og filmklipp. */
 import { describe, expect, it } from "vitest";
 import {

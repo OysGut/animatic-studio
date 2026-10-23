@@ -1,3 +1,4 @@
+// @vitest-environment node
 /** REQ-0273 (DEC-0075): katalogen beskriver modellenes faktiske muligheter strukturert. */
 import { describe, expect, it } from "vitest";
 import { PROVIDERS, estimateCostUsd, modelCapabilities, providerModel } from "@/core";

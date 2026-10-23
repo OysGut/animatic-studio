@@ -1,3 +1,4 @@
+// @vitest-environment node
 /** DEC-0086: kostnadsrapporten (sammendrag, fordelinger, kurs, merknader) og eksportens tabeller. */
 import { describe, expect, it } from "vitest";
 import {

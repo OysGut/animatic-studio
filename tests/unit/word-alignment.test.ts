@@ -1,3 +1,4 @@
+// @vitest-environment node
 /**
  * Fase 2, bolk D (DEC-0095, REQ-0698–0704): ord-til-lyd. Tjenestens ord pares med manusets ord (også når
  * tjenesten mangler eller har ekstra ord), markering av ett eller flere ord gir riktig tidsrom, retting for

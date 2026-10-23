@@ -1,3 +1,4 @@
+// @vitest-environment node
 /**
  * B-104: produktet heter «From Pen to Glass» (kortform «Pen to Glass»). Testen feiler hvis det gamle
  * navnet «Animatic Studio» står i tekst brukeren kan se: alle filer i src/ og public/, og tekstene i

@@ -1,5 +1,11 @@
 # Pågående arbeid
 
+## N11 – 23.10.2026, delvis levert
+- Paneltesten er rettet og består nb/en (39/0 hver); UpdateSceneDraft følger plassholderrefit med angring og feltvis rebase.
+- Ni N6-restkrav har beståtte målrettede tester og status Verifisert. 17 mangler fortsatt full akseptansetest; se N11_REPORT.md. Ikke fullt ferdig.
+- Full Vitest 2708/0, 10 eksisterende hoppet over; automatisk typekontroll OK, i18n og check_kb OK. Sammenlignbar kjøring 148,89 → 142,27 s.
+- Ingen migrasjon, Cloud-endring, betalte tjenestekall eller publisering.
+
 ## B-049 ML1 – 20.10.2026
 - Språkgrunnlaget levert uten synlig endring/migrasjon. 9963 par, 266 beholdte gjennomgangspunkter; nb/en/en-XA og frozen baseline. Se ML1_REPORT.md.
 - Automatisk typekontroll OK; Vitest 1926/0 (10 eksisterende hoppet over), ML1 13, lokal DB 140/0; U5 65, T2 69, DV3 48, paneler 39.

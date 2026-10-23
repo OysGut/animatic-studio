@@ -28775,15 +28775,17 @@ requirements:
   acceptance:
   - spornavn er karakternavn
   tests:
+  - tests/unit/n11-scene-audio.test.tsx
   - tests/visual/dv3-dialogue-editor.mjs
   - tests/unit/dv3-dv4.test.ts
   - tests/invariants/dialogue-lossless.test.ts
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/app/scene-editor/RecordAudioDialog.tsx
   - src/app/scene-editor/DialogueVersions.tsx
   - src/core/dialogue/characters.ts
-  verification: []
+  verification:
+  - "tests/unit/n11-scene-audio.test.tsx::REQ-0764: to karakterer får hver sin navngitte rad; to replikker deler første rad"
   notes: 'Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §129. DEC-0099
     er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte
     testkall. Status Implementert innebærer ikke full Cloud-verifikasjon.'
@@ -28791,6 +28793,9 @@ requirements:
   - date: '2026-10-19'
     decision: DEC-0099
     change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+  - date: '2026-10-23'
+    decision: DEC-0099
+    change: "N11: verifisert av målrettet akseptansetest; tjenestekall er mocket, ingen Cloud-verifikasjon."
 - id: REQ-0765
   title: 'DV L3: replikker er separate segmenter'
   text: replikker er separate segmenter
@@ -29323,12 +29328,13 @@ requirements:
   - tests/visual/dv4-voice.mjs
   - tests/unit/dv4-speech-server.test.ts
   - tests/unit/dv3-dv4.test.ts
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/app/library/CharacterVoiceSection.tsx
   - src/app/scene-editor/GenerateDialogue.tsx
   - src/adapters/ai/speech.functions.ts
-  verification: []
+  verification:
+  - "tests/visual/dv4-voice.mjs::generation metadata preserves local settings"
   notes: 'Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §128. DEC-0099
     er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte
     testkall. Status Implementert innebærer ikke full Cloud-verifikasjon. Kontoens eksisterende stemmer/modeller
@@ -29338,6 +29344,9 @@ requirements:
   - date: '2026-10-19'
     decision: DEC-0099
     change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+  - date: '2026-10-23'
+    decision: DEC-0099
+    change: "N11: verifisert av målrettet akseptansetest; tjenestekall er mocket, ingen Cloud-verifikasjon."
 - id: REQ-0779
   title: 'DV V7: endret standardstemme endrer ikke tidligere filer'
   text: endret standardstemme endrer ikke tidligere filer
@@ -29479,11 +29488,12 @@ requirements:
   acceptance:
   - brukeren velger scener og replikker
   tests:
+  - tests/unit/n11-dialogue-batch.test.tsx
   - tests/unit/dv5-dv6.test.ts
   - tests/invariants/dialogue-lossless.test.ts
   - tests/db/run-db-tests.ts
   - tests/visual/dv5-batch.mjs
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/core/dialogue/batch.ts
   - src/core/dialogue/languages.ts
@@ -29491,7 +29501,8 @@ requirements:
   - src/adapters/storage/dialogue-batch.server.ts
   - src/app/library/DialogueBatchPanel.tsx
   - db/migrations/0061_dialogue_batch_languages.sql
-  verification: []
+  verification:
+  - "tests/unit/n11-dialogue-batch.test.tsx::REQ-0782/0815: scene og enkeltreplikk kan velges bort; bare valgte permanente ID-er sendes"
   notes: 'Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse.
     Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon
     gjenstår.'
@@ -29499,6 +29510,9 @@ requirements:
   - date: '2026-10-19'
     decision: DEC-0099
     change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+  - date: '2026-10-23'
+    decision: DEC-0099
+    change: "N11: verifisert av målrettet akseptansetest; tjenestekall er mocket, ingen Cloud-verifikasjon."
 - id: REQ-0783
   title: 'DV G4: ordrett advarsel ved eksisterende lyd'
   text: ordrett advarsel ved eksisterende lyd
@@ -29821,7 +29835,7 @@ requirements:
   - tests/invariants/dialogue-lossless.test.ts
   - tests/db/run-db-tests.ts
   - tests/visual/dv5-batch.mjs
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/core/dialogue/batch.ts
   - src/core/dialogue/languages.ts
@@ -29829,7 +29843,8 @@ requirements:
   - src/adapters/storage/dialogue-batch.server.ts
   - src/app/library/DialogueBatchPanel.tsx
   - db/migrations/0061_dialogue_batch_languages.sql
-  verification: []
+  verification:
+  - "tests/unit/dv5-dv6.test.ts::a missing 2D scene and missing clip are created once, without images"
   notes: 'Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse.
     Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon
     gjenstår.'
@@ -29837,6 +29852,9 @@ requirements:
   - date: '2026-10-19'
     decision: DEC-0099
     change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+  - date: '2026-10-23'
+    decision: DEC-0099
+    change: "N11: verifisert av målrettet akseptansetest; tjenestekall er mocket, ingen Cloud-verifikasjon."
 - id: REQ-0791
   title: 'DV G12: minimal gyldig 2D-scene opprettes ved behov'
   text: minimal gyldig 2D-scene opprettes ved behov
@@ -30159,11 +30177,12 @@ requirements:
   acceptance:
   - brukeren kan velge samlet generering med advarsel
   tests:
+  - tests/unit/n11-dialogue-batch.test.tsx
   - tests/unit/dv5-dv6.test.ts
   - tests/invariants/dialogue-lossless.test.ts
   - tests/db/run-db-tests.ts
   - tests/visual/dv6-languages.mjs
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/core/dialogue/batch.ts
   - src/core/dialogue/languages.ts
@@ -30171,7 +30190,8 @@ requirements:
   - src/adapters/storage/dialogue-batch.server.ts
   - src/app/library/DialogueBatchPanel.tsx
   - db/migrations/0061_dialogue_batch_languages.sql
-  verification: []
+  verification:
+  - "tests/unit/n11-dialogue-batch.test.tsx::REQ-0798/0816: samlet valg og kostnad er synlige før godkjenning; generering starter ikke på egen hånd"
   notes: 'Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse.
     Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon
     gjenstår.'
@@ -30179,6 +30199,9 @@ requirements:
   - date: '2026-10-19'
     decision: DEC-0099
     change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+  - date: '2026-10-23'
+    decision: DEC-0099
+    change: "N11: verifisert av målrettet akseptansetest; tjenestekall er mocket, ingen Cloud-verifikasjon."
 - id: REQ-0799
   title: 'DV S7: separate språkjobber med egne stemmer og modeller'
   text: separate språkjobber med egne stemmer og modeller
@@ -30242,11 +30265,12 @@ requirements:
   acceptance:
   - brukeren velger innhold og estimater per språkjobb
   tests:
+  - tests/unit/n11-dialogue-batch.test.tsx
   - tests/unit/dv5-dv6.test.ts
   - tests/invariants/dialogue-lossless.test.ts
   - tests/db/run-db-tests.ts
   - tests/visual/dv6-languages.mjs
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/core/dialogue/batch.ts
   - src/core/dialogue/languages.ts
@@ -30254,7 +30278,8 @@ requirements:
   - src/adapters/storage/dialogue-batch.server.ts
   - src/app/library/DialogueBatchPanel.tsx
   - db/migrations/0061_dialogue_batch_languages.sql
-  verification: []
+  verification:
+  - "tests/unit/n11-dialogue-batch.test.tsx::REQ-0800: valgte replikker fordeles i språkjobber med egen pris og sendes bare til sitt språk"
   notes: 'Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse.
     Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon
     gjenstår.'
@@ -30262,6 +30287,9 @@ requirements:
   - date: '2026-10-19'
     decision: DEC-0099
     change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+  - date: '2026-10-23'
+    decision: DEC-0099
+    change: "N11: verifisert av målrettet akseptansetest; tjenestekall er mocket, ingen Cloud-verifikasjon."
 - id: REQ-0801
   title: 'DV A1: manusendring gir rød status'
   text: manusendring gir rød status
@@ -30784,18 +30812,22 @@ requirements:
   - tests/invariants/dialogue-lossless.test.ts
   - tests/db/run-db-tests.ts
   - tests/visual/dv7-drift.mjs
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/app/library/DialogueBatchPanel.tsx
   - src/adapters/storage/dialogue-batch.server.ts
   - src/core/commands/apply.ts
-  verification: []
+  verification:
+  - "tests/visual/dv7-drift.mjs::REQ-0813: red-line action opens from the character library"
   notes: 'Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse.
     Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.'
   history:
   - date: '2026-10-20'
     decision: DEC-0099
     change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+  - date: '2026-10-23'
+    decision: DEC-0099
+    change: "N11: verifisert av målrettet akseptansetest; tjenestekall er mocket, ingen Cloud-verifikasjon."
 - id: REQ-0814
   title: 'DV R2: berørte scener og replikker vises'
   text: berørte scener og replikker vises
@@ -30858,18 +30890,22 @@ requirements:
   - tests/invariants/dialogue-lossless.test.ts
   - tests/db/run-db-tests.ts
   - tests/visual/dv7-drift.mjs
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/app/library/DialogueBatchPanel.tsx
   - src/adapters/storage/dialogue-batch.server.ts
   - src/core/commands/apply.ts
-  verification: []
+  verification:
+  - "tests/visual/dv7-drift.mjs::REQ-0815: individual red line can be deselected without changing others"
   notes: 'Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse.
     Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.'
   history:
   - date: '2026-10-20'
     decision: DEC-0099
     change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+  - date: '2026-10-23'
+    decision: DEC-0099
+    change: "N11: verifisert av målrettet akseptansetest; tjenestekall er mocket, ingen Cloud-verifikasjon."
 - id: REQ-0816
   title: 'DV R4: språk og kostnad vises før generering'
   text: språk og kostnad vises før generering
@@ -30893,18 +30929,23 @@ requirements:
   - tests/invariants/dialogue-lossless.test.ts
   - tests/db/run-db-tests.ts
   - tests/visual/dv7-drift.mjs
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/app/library/DialogueBatchPanel.tsx
   - src/adapters/storage/dialogue-batch.server.ts
   - src/core/commands/apply.ts
-  verification: []
+  verification:
+  - "tests/visual/dv7-drift.mjs::REQ-0816: cost is shown before generating red lines"
+  - "tests/visual/dv7-drift.mjs::REQ-0816: language is shown with the cost before generating red lines"
   notes: 'Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse.
     Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.'
   history:
   - date: '2026-10-20'
     decision: DEC-0099
     change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+  - date: '2026-10-23'
+    decision: DEC-0099
+    change: "N11: verifisert av målrettet akseptansetest; tjenestekall er mocket, ingen Cloud-verifikasjon."
 - id: REQ-0817
   title: 'DV R5: nye filer blir aktive, gamle bevares'
   text: nye filer blir aktive, gamle bevares

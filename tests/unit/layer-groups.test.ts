@@ -1,3 +1,4 @@
+// @vitest-environment node
 /** Grupper i laglisten kan lukkes og åpnes, «slik en kan i Photoshop» (Mars 15.10.2026). */
 import { describe, expect, it } from "vitest";
 import {

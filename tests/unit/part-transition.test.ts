@@ -1,3 +1,4 @@
+// @vitest-environment node
 /** Myke overganger mellom deler i en scene (DEC-0071, REQ-0265). */
 import { describe, expect, it } from "vitest";
 import {

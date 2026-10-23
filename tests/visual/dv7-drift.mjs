@@ -33,10 +33,22 @@ for (const lang of ["nb", "en"]) await h.scenario(`dv7-${lang}`, driftOcc, lang,
   // Lyd/Stemme: «Generer alle røde replikker» med samme dialog og kostnadsport
   await page.goto(`${h.base}${h.P}/bibliotek?asset=${character.id}`, { waitUntil: "networkidle" });
   await page.getByTestId("dialogue-drift-open").click();
+  h.check(page.url().includes("/bibliotek?asset=" + character.id), "REQ-0813: red-line action opens from the character library");
   const lines = page.getByTestId("dialogue-batch-dialog").getByTestId("dialogue-batch-line");
   h.check(await lines.count() > 0, "red lines listed");
   h.check((await lines.evaluateAll(ls => ls.every(l => l.getAttribute("data-drift") === "true"))), "only red lines");
   h.check(!h.state.rpcs.some(r => r.name === "createDialogueBatch"), "nothing generated before approval");
+  // N11 REQ-0815/0816: valget og pris/språk kontrolleres i avvikslisten, ikke bare vanlig batch.
+  const before = await lines.evaluateAll(ls => ls.map(l => l.checked));
+  await lines.first().uncheck();
+  const after = await lines.evaluateAll(ls => ls.map(l => l.checked));
+  h.check(before[0] === true && after[0] === false && after.slice(1).every((v, i) => v === before[i + 1]), "REQ-0815: individual red line can be deselected without changing others");
+  await lines.first().check();
+  await page.getByTestId("dialogue-batch-together").check();
+  const estimate = page.getByTestId("dialogue-batch-estimate");
+  h.check(await estimate.isVisible() && /\$\d+\.\d{2}/.test(await estimate.innerText()), "REQ-0816: cost is shown before generating red lines");
+  h.check((await estimate.innerText()).includes("(nb)"), "REQ-0816: language is shown with the cost before generating red lines");
+  h.check(!h.state.rpcs.some(r => r.name === "createDialogueBatch"), "REQ-0816: inspecting cost and language never starts generation");
   await page.getByTestId("dialogue-batch-dialog").screenshot({ path: `${h.out}/${lang}-batch.png` });
 });
 await h.finish();

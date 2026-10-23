@@ -1,3 +1,4 @@
+// @vitest-environment node
 /**
  * Fase 2, bolk E (DEC-0096, REQ-0712): ytelse. Bølgeformen for en lang replikk (2 minutter, 48 kHz) tegnes raskt
  * og hurtigbufres per opptak; romlydsøket i et langt opptak går raskt nok til å kjøres etter hver pauseendring.
