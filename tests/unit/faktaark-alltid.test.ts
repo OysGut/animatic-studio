@@ -203,3 +203,23 @@ describe("Faktaarket alltid – regelen i kjernen", () => {
     expect(failed).toEqual({ ok: false, stage: "study", message: "nei" });
   });
 });
+
+describe("Faktaarket alltid – lagret merke «laget automatisk»", async () => {
+  const { fixture } = await import("../visual/fixture-state");
+  const { mustApply } = await import("../helpers/fixtures");
+  const { needsSchema89 } = await import("@/adapters/storage/commands.functions");
+  const s0 = fixture.state;
+  const maja = Object.values(s0.assets).find((a) => a.name === "Maja")!;
+  it("SetAssetVisualBrief med autoAt merker arket, og angring fjerner både tekst og merke", async () => {
+    const { applyCommand } = await import("@/core");
+    const cmd = { type: "SetAssetVisualBrief" as const, assetId: maja.id, text: "- Red cap", autoAt: "2026-10-23T02:00:00.000Z" };
+    const s = mustApply(s0, cmd);
+    expect(s.assets[maja.id]!.visualBrief).toBe("- Red cap");
+    expect(s.assets[maja.id]!.visualBriefAuto).toBe("2026-10-23T02:00:00.000Z");
+    expect(needsSchema89(cmd)).toBe(true);
+    const r = applyCommand(s, { id: "c2" as never, actor: "u" as never, at: "2026-10-23T02:01:00.000Z", command: { type: "SetAssetVisualBrief", assetId: maja.id, text: "- Red cap" } });
+    expect(r.ok && r.state.assets[maja.id]!.visualBriefAuto).toBeUndefined();
+    const undo = applyCommand(s, { id: "c3" as never, actor: "u" as never, at: "2026-10-23T02:01:00.000Z", command: { type: "SetAssetVisualBrief", assetId: maja.id, text: maja.visualBrief ?? "" } });
+    expect(undo.ok && undo.state.assets[maja.id]!.visualBriefAuto).toBeUndefined();
+  });
+});
