@@ -775,6 +775,7 @@ export type Database = {
           created_at: string
           created_by: string | null
           description: string
+          global_bundle_number: number | null
           id: string
           kind: string
           name: string
@@ -799,6 +800,7 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           description?: string
+          global_bundle_number?: number | null
           id: string
           kind: string
           name: string
@@ -823,6 +825,7 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           description?: string
+          global_bundle_number?: number | null
           id?: string
           kind?: string
           name?: string
@@ -2735,6 +2738,69 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "global_assets_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      global_character_bundles: {
+        Row: {
+          active_brief_id: string | null
+          approved_version_ids: string[]
+          brief_versions: Json
+          created_at: string
+          created_by: string
+          global_asset_id: string
+          id: string
+          mouth_sets: Json
+          note: string
+          number: number
+          rig_setup: Json | null
+          voice: Json | null
+          workspace_id: string
+        }
+        Insert: {
+          active_brief_id?: string | null
+          approved_version_ids?: string[]
+          brief_versions?: Json
+          created_at?: string
+          created_by: string
+          global_asset_id: string
+          id?: string
+          mouth_sets?: Json
+          note?: string
+          number: number
+          rig_setup?: Json | null
+          voice?: Json | null
+          workspace_id: string
+        }
+        Update: {
+          active_brief_id?: string | null
+          approved_version_ids?: string[]
+          brief_versions?: Json
+          created_at?: string
+          created_by?: string
+          global_asset_id?: string
+          id?: string
+          mouth_sets?: Json
+          note?: string
+          number?: number
+          rig_setup?: Json | null
+          voice?: Json | null
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "global_character_bundles_global_asset_id_fkey"
+            columns: ["global_asset_id"]
+            isOneToOne: false
+            referencedRelation: "global_assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "global_character_bundles_workspace_id_fkey"
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"
@@ -5278,6 +5344,8 @@ export type Database = {
       }
       service_settings: {
         Row: {
+          change_log_max_rows: number
+          change_log_retention_days: number
           changed_at: string | null
           changed_by: string | null
           id: boolean
@@ -5286,6 +5354,8 @@ export type Database = {
           showcase_require_approval: boolean
         }
         Insert: {
+          change_log_max_rows?: number
+          change_log_retention_days?: number
           changed_at?: string | null
           changed_by?: string | null
           id?: boolean
@@ -5294,6 +5364,8 @@ export type Database = {
           showcase_require_approval?: boolean
         }
         Update: {
+          change_log_max_rows?: number
+          change_log_retention_days?: number
           changed_at?: string | null
           changed_by?: string | null
           id?: boolean
@@ -6651,6 +6723,50 @@ export type Database = {
           },
         ]
       }
+      usage_quotas: {
+        Row: {
+          id: string
+          max_change_log_rows: number | null
+          max_projects: number | null
+          max_storage_bytes: number | null
+          max_uploads_per_hour: number | null
+          set_by: string | null
+          updated_at: string
+          user_id: string | null
+          workspace_id: string | null
+        }
+        Insert: {
+          id?: string
+          max_change_log_rows?: number | null
+          max_projects?: number | null
+          max_storage_bytes?: number | null
+          max_uploads_per_hour?: number | null
+          set_by?: string | null
+          updated_at?: string
+          user_id?: string | null
+          workspace_id?: string | null
+        }
+        Update: {
+          id?: string
+          max_change_log_rows?: number | null
+          max_projects?: number | null
+          max_storage_bytes?: number | null
+          max_uploads_per_hour?: number | null
+          set_by?: string | null
+          updated_at?: string
+          user_id?: string | null
+          workspace_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "usage_quotas_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_blocks: {
         Row: {
           blocked: string
@@ -6783,6 +6899,53 @@ export type Database = {
           },
         ]
       }
+      workspace_profiles: {
+        Row: {
+          archived_at: string | null
+          created_at: string
+          created_by: string
+          id: string
+          is_default: boolean
+          kind: string
+          name: string
+          revision: number
+          spec: Json
+          workspace_id: string
+        }
+        Insert: {
+          archived_at?: string | null
+          created_at?: string
+          created_by: string
+          id?: string
+          is_default?: boolean
+          kind: string
+          name: string
+          revision?: number
+          spec: Json
+          workspace_id: string
+        }
+        Update: {
+          archived_at?: string | null
+          created_at?: string
+          created_by?: string
+          id?: string
+          is_default?: boolean
+          kind?: string
+          name?: string
+          revision?: number
+          spec?: Json
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workspace_profiles_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       workspaces: {
         Row: {
           archived_at: string | null
@@ -6861,6 +7024,19 @@ export type Database = {
         Args: { p_item: string; p_text: string }
         Returns: string
       }
+      admin_change_log_stats: {
+        Args: never
+        Returns: {
+          max_rows: number
+          newest_at: string
+          oldest_at: string
+          project_id: string
+          project_name: string
+          retention_days: number
+          rows: number
+          total_bytes: number
+        }[]
+      }
       admin_country_counts: {
         Args: never
         Returns: {
@@ -6868,6 +7044,7 @@ export type Database = {
           users: number
         }[]
       }
+      admin_delete_usage_quota: { Args: { p_id: string }; Returns: undefined }
       admin_find_users: {
         Args: { p_query: string }
         Returns: {
@@ -6887,6 +7064,10 @@ export type Database = {
         Args: { p_approve: boolean; p_id: string }
         Returns: undefined
       }
+      admin_set_change_log_retention: {
+        Args: { p_days: number; p_max_rows: number }
+        Returns: undefined
+      }
       admin_set_feature: {
         Args: { p_key: string; p_message?: string; p_state: string }
         Returns: undefined
@@ -6899,7 +7080,36 @@ export type Database = {
         Args: { p_required: boolean }
         Returns: undefined
       }
+      admin_set_usage_quota: {
+        Args: {
+          p_max_change_log_rows?: number
+          p_max_projects?: number
+          p_max_storage_bytes?: number
+          p_max_uploads_per_hour?: number
+          p_user_id?: string
+          p_workspace_id?: string
+        }
+        Returns: string
+      }
       admin_showcase_queue: { Args: never; Returns: Json }
+      admin_usage_quotas: {
+        Args: never
+        Returns: {
+          email: string
+          max_change_log_rows: number
+          max_projects: number
+          max_storage_bytes: number
+          max_uploads_per_hour: number
+          quota_id: string
+          updated_at: string
+          used_change_log_rows: number
+          used_projects: number
+          used_storage_bytes: number
+          user_id: string
+          workspace_id: string
+          workspace_name: string
+        }[]
+      }
       apply_changes: {
         Args: {
           p_actor: string
@@ -7088,6 +7298,10 @@ export type Database = {
         Args: { p_actor: string; p_reservation: string }
         Returns: boolean
       }
+      global_character_bundle: {
+        Args: { p_global_asset: string; p_number?: number }
+        Returns: Json
+      }
       global_commit_version: {
         Args: {
           p_bytes: number
@@ -7132,6 +7346,19 @@ export type Database = {
           p_variant: string
         }
         Returns: string
+      }
+      global_publish_character_bundle: {
+        Args: {
+          p_active_brief_id: string
+          p_approved_version_ids: string[]
+          p_brief_versions: Json
+          p_global_asset: string
+          p_mouth_sets: Json
+          p_note: string
+          p_rig_setup: Json
+          p_voice: Json
+        }
+        Returns: number
       }
       global_publish_rig_template: {
         Args: {
@@ -7361,6 +7588,13 @@ export type Database = {
       project_snapshot: {
         Args: { p_full_history?: boolean; p_project: string }
         Returns: Json
+      }
+      prune_change_logs: {
+        Args: never
+        Returns: {
+          project_id: string
+          removed: number
+        }[]
       }
       public_profile: { Args: { p_handle: string }; Returns: Json }
       publication_for_me: { Args: { p_id: string }; Returns: Json }
@@ -7605,6 +7839,22 @@ export type Database = {
       }
       user_period_start_date: {
         Args: { p_unit: string; p_user: string }
+        Returns: string
+      }
+      workspace_archive_profile: {
+        Args: { p_archived: boolean; p_profile: string }
+        Returns: undefined
+      }
+      workspace_save_profile: {
+        Args: {
+          p_id: string
+          p_is_default: boolean
+          p_kind: string
+          p_name: string
+          p_revision: number
+          p_spec: Json
+          p_workspace: string
+        }
         Returns: string
       }
     }

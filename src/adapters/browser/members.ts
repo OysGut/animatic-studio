@@ -2,7 +2,7 @@
  * Medlemmer, roller og invitasjoner (DEC-0010, REQ-0529) for nettleseren (KI-181). Tilgangen håndheves i
  * databasen; funksjonene kaster med feilmeldingen derfra.
  */
-import { db, plainError, type BackendResult } from "./client";
+import { backendMessage, db, plainError, type BackendResult } from "./client";
 
 /** Aktive medlemmer i prosjektet. */
 export async function listMembers(projectId: string): Promise<unknown[]> {
@@ -79,7 +79,7 @@ export async function createInvitation(
     p_email: email,
     p_role: role,
   });
-  if (error) throw new Error(error.message);
+  if (error) throw new Error(backendMessage(error));
   return data as string;
 }
 

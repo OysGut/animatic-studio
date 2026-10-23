@@ -75869,5 +75869,8 @@
   },
   "adapters-mobile-mobile-functions.db-message.quota-uploads": {
     "text": "[!! TTôôôô mmáánnyy üüppllôôááddss ïïnn tthhëë lláásstt hhôôüürr. WWááïïtt áá mmôômmëënntt áánndd ttrryy áággááïïnn. !!]"
+  },
+  "adapters-storage-commands-functions.rate-limited": {
+    "text": "[!! TTôôôô mmáánnyy rrëëqqüüëëssttss ïïnn áá sshhôôrrtt ttïïmmëë. WWááïïtt áá mmôômmëënntt áánndd ttrryy áággááïïnn. !!]"
   }
 }

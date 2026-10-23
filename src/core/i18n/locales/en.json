@@ -75869,5 +75869,8 @@
   },
   "adapters-mobile-mobile-functions.db-message.quota-uploads": {
     "text": "Too many uploads in the last hour. Wait a moment and try again."
+  },
+  "adapters-storage-commands-functions.rate-limited": {
+    "text": "Too many requests in a short time. Wait a moment and try again."
   }
 }

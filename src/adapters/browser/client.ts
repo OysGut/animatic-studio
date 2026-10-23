@@ -5,6 +5,7 @@
  */
 import { supabase } from "@/integrations/supabase/client";
 import type { AnyClient } from "@/adapters/storage/project-rows";
+import { t } from "@/core/i18n/keyed";
 
 /** Den genererte Supabase-klienten (Auth, Storage, Realtime). Bare for adaptermodulene. */
 export const browserClient = supabase;
@@ -36,6 +37,11 @@ export interface BackendResult<T> {
   readonly error: BackendError | null;
 }
 
-export function plainError(e: { message: string } | null | undefined): BackendError | null {
-  return e ? { message: e.message } : null;
+/** G-8: vennlig, oversatt melding når databasen stopper et kall for hyppig (SQLSTATE PTG15), ellers meldingen. */
+export function backendMessage(e: { readonly message: string; readonly code?: string | null | undefined }): string {
+  return e.code === "PTG15" ? t("adapters-storage-commands-functions.rate-limited") : e.message;
+}
+
+export function plainError(e: { message: string; code?: string | null | undefined } | null | undefined): BackendError | null {
+  return e ? { message: backendMessage(e) } : null;
 }

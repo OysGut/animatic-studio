@@ -11650,6 +11650,14 @@
       "en": {
         "text": "Too many uploads in the last hour. Wait a moment and try again."
       }
+    },
+    "adapters-storage-commands-functions.rate-limited": {
+      "nb": {
+        "text": "For mange forespørsler på kort tid. Vent litt og prøv igjen."
+      },
+      "en": {
+        "text": "Too many requests in a short time. Wait a moment and try again."
+      }
     }
   }
 }

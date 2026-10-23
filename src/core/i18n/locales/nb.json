@@ -75887,5 +75887,8 @@
   },
   "adapters-mobile-mobile-functions.db-message.quota-uploads": {
     "text": "For mange opplastinger den siste timen. Vent litt og prøv igjen."
+  },
+  "adapters-storage-commands-functions.rate-limited": {
+    "text": "For mange forespørsler på kort tid. Vent litt og prøv igjen."
   }
 }

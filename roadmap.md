@@ -42,6 +42,14 @@
 - [x] Rapport: oppdater docs/development/G1_SPRAKNOYTRAL_REPORT.md
 - [ ] Full vitest + i18n + DB-tester grønne
 
+## G-8 sikkerhetsrunde 2 (23.10.2026)
+- [x] 1. Lagring: bøtter, policyer, signerte URL-er og opplasting gjennomgått (valg om filtyper ført i TODO «Krever Øystein»)
+- [x] 2. Felles hastighetsgrenser i databasen (0100, PTG15) + innlogging/pass med IP på serveren
+- [x] 3. Hemmeligheter maskeres i feilrapportering; no-store på serverfunksjoner, API og tokensider
+- [x] 4. RLS-/anon-test og matrise i rapporten
+- [x] 5. Sårbarhetssjekk: 19 av 23 rettet innenfor tillatte versjoner
+- [x] tsc 0, full vitest grønn, DB 216/0; Claude: kjør 0100 i Cloud
+
 ## G-7 robust lagring (23.10.2026)
 - [x] Migrasjon 0099: del apply_changes i liten kjerne + private.validate_<domene> registrert i register-tabell
 - [x] Oppførsel nøyaktig lik: DB-suite før (201/0) og etter (211/0), nye tester per validering (G-7.1–G-7.10)
