@@ -69,8 +69,8 @@
 - [x] Rest G-5/G-6 (0101, adminpaneler, knippe-UI, profiler, arv, snapshot i sikkerhetskopi)
 
 ## SB-1 storyboardgrunnmur (23.10.2026)
-- [~] Kjerne + migrasjon 0102 skrevet; tsc 0, 12 fokuserte enhetstester grønne, i18n grønn
-- [ ] DB-suite (krever lokal Postgres), full Vitest, rapport docs/development/SB1_REPORT.md
+- [x] Kjerne + migrasjon 0102; tsc 0, full Vitest 2868/0/10, DB 224/0, i18n grønn, rapport docs/development/SB1_REPORT.md
+- [ ] Claude: gjennomgå og kjør 0102 i Cloud
 
 ## SB-2 storyboardgalleri og navigasjon (23.10.2026) – kjøres etter SB-1
 - [ ] Fane «Storyboard» + rute prosjekt/$projectId/storyboard med vindu-ID
