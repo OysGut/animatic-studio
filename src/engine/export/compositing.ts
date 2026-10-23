@@ -23,7 +23,6 @@ export async function exportCompositing(o: {
       t('ptg7.readme', {}, 'nb'), t('ptg7.readme', {}, 'en'),
       ...doc.shots.filter(s => !s.camera).flatMap(s => [t('ptg7.no-rig', { shot: s.name }, 'nb'), t('ptg7.no-rig', { shot: s.name }, 'en')]),
     ].join('\n\n')) };
-  }
     yield* convertedMediaFiles({ convert: plan.convert, urls: o.urls, fps: doc.fps, signal: o.signal, failed, ...(o.converter ? { converter: o.converter } : {}) });
   }
   const r = await writeZip(o.sink, entries, o.urls, { extra: files(), signal: o.signal });
