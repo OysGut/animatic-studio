@@ -19,15 +19,20 @@ create extension if not exists pg_trgm with schema extensions;
 
 -- Fold for søk: små bokstaver + fjerning av diakritiske tegn (aksenttolerant).
 -- To-arguments unaccent med eksplisitt ordbok er IMMUTABLE og kan brukes i uttrykksindekser.
+-- SECURITY DEFINER: indeksuttrykket evalueres med innsetterens rettigheter, og authenticated har
+-- ikke USAGE på schema extensions/private – uten definer ville enhver innsetting i en indeksert
+-- tabell feile med «permission denied for schema extensions» (verifisert med DB-test).
 create or replace function private.fold_text(v text)
 returns text
 language sql
 immutable
 parallel safe
+security definer
 set search_path = ''
 as $$
   select pg_catalog.lower(extensions.unaccent('extensions.unaccent'::regdictionary, coalesce(v, '')))
 $$;
+grant execute on function private.fold_text(text) to authenticated, service_role;
 
 -- Trigramindekser på de fire søkeområdene (manusblokker, ressursnavn, notater, bibliotek) + profiler.
 create index if not exists script_blocks_fold_trgm_idx
