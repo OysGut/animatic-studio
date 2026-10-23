@@ -133,7 +133,7 @@ export function GenerateImagePanel({
   const transparent = !!chosenModel?.transparent;
   /** Bildene som sendes med til bildemodellen, i rekkefølge. */
   // Brukerens eget valg av vedlegg (Øystein 23.10), husket per ressurs i økten
-  const [choice, setChoiceState] = useState<AttachedChoice>(EMPTY_ATTACHED_CHOICE);
+  const [attachChoice, setChoiceState] = useState<AttachedChoice>(EMPTY_ATTACHED_CHOICE);
   useEffect(() => setChoiceState(readAttachedChoice(asset.id)), [asset.id]);
   const setChoice = (c: AttachedChoice) => {
     setChoiceState(c);
@@ -150,11 +150,11 @@ export function GenerateImagePanel({
             occurrenceId: context.occurrenceId,
             identityVersionId: identity?.id ?? null,
             style: withStyle,
-            choice,
+            choice: attachChoice,
             max: maxImages,
           })
         : [],
-    [context, asset.id, identity?.id, withStyle, choice, maxImages],
+    [context, asset.id, identity?.id, withStyle, attachChoice, maxImages],
   );
   const attached = useMemo((): readonly AttachedImage[] => {
     if (context) return rows.filter((r) => r.included).map((r) => r.image);
@@ -202,13 +202,13 @@ export function GenerateImagePanel({
   }, [context, asset.id, rows]);
   function toggleRow(r: AttachedImageRow, on: boolean) {
     const id = r.image.versionId;
-    const excluded = choice.excluded.filter((x) => x !== id);
-    if (!on) return setChoice({ excluded: [...excluded, id], added: choice.added });
+    const excluded = attachChoice.excluded.filter((x) => x !== id);
+    if (!on) return setChoice({ excluded: [...excluded, id], added: attachChoice.added });
     // Et forslag utenfor standardutvalget legges til som eget valg, så det sendes
     const added =
-      r.source === "auto" && !r.excluded && !choice.added.some((x) => x.versionId === id)
-        ? [...choice.added, { versionId: id, role: "style" as const }]
-        : choice.added;
+      r.source === "auto" && !r.excluded && !attachChoice.added.some((x) => x.versionId === id)
+        ? [...attachChoice.added, { versionId: id, role: "style" as const }]
+        : attachChoice.added;
     setChoice({ excluded, added });
   }
   const sentPaths = attached.map((a) =>
@@ -239,14 +239,14 @@ export function GenerateImagePanel({
       productionId: context?.productionId ?? null,
       occurrenceId: context?.occurrenceId ?? null,
       style: withStyle,
-      excluded: choice.excluded,
-      added: choice.added,
+      excluded: attachChoice.excluded,
+      added: attachChoice.added,
       maxImages,
       fullSize,
       family,
       transparent,
     }),
-    [asset.id, variant?.id, identity?.id, context?.productionId, context?.occurrenceId, withStyle, choice, maxImages, fullSize, family, transparent],
+    [asset.id, variant?.id, identity?.id, context?.productionId, context?.occurrenceId, withStyle, attachChoice, maxImages, fullSize, family, transparent],
   );
   const serverPreview = useImagePromptPreview(projectId, promptRequest, context?.state ?? asset).data ?? null;
   const summary = serverPreview?.summary ?? null;
@@ -849,8 +849,8 @@ export function GenerateImagePanel({
                           className="text-[11px] text-text-secondary underline"
                           onClick={() =>
                             setChoice({
-                              excluded: choice.excluded.filter((x) => x !== r.image.versionId),
-                              added: choice.added.filter((x) => x.versionId !== r.image.versionId),
+                              excluded: attachChoice.excluded.filter((x) => x !== r.image.versionId),
+                              added: attachChoice.added.filter((x) => x.versionId !== r.image.versionId),
                             })
                           }
                           disabled={!editable || running || writing}
@@ -883,8 +883,8 @@ export function GenerateImagePanel({
                   skip={pickerSkip}
                   onPick={(versionId, role) => {
                     setChoice({
-                      excluded: choice.excluded.filter((x) => x !== versionId),
-                      added: [...choice.added.filter((x) => x.versionId !== versionId), { versionId, role }],
+                      excluded: attachChoice.excluded.filter((x) => x !== versionId),
+                      added: [...attachChoice.added.filter((x) => x.versionId !== versionId), { versionId, role }],
                     });
                     setPicking(false);
                   }}
