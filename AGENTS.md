@@ -26,14 +26,13 @@ Kortversjonen († = detaljer i `docs/development/AGENTS_DETAILS.md`):
 11. Recognition classifies librarySuggestions; AI reviews candidates only, and confirmed commands create assets.
 12. Only recognition and translation alignment (B-047/B-048) bypass the text-AI entry point via server-only service AI (built-in model, no open proxy).
 13. User quotas exclude these two service tasks; service quotas count only built-in service tasks. Visual suites share one schema constant.
-14. RetimeScene uses pure plans and revision checks in one undo; word-gap previews reuse their in-memory audio in saves.
+14. RetimeScene: pure plans, revision checks, one undo; word-gap previews reuse in-memory audio.
 16. Workspaces (GP1) change only via security-definer functions; linking a project never grants access, so project RLS stays the only permission source.
 17. The global library (GP2) is written via security-definer functions; using an asset copies its files once per global version, so projects never depend on workspace membership.
 18. Carry-over (GP3): pure planCarryOver, one undo group, never the source 2D scene.†
 19. Film shares (GP5): a token binds one exported mp4; new tokens derive from a DB-only pepper and are stored only as a peppered digest (film_share_lookup, service role), so /se/$token resolves only via a server function.†
 20. src/core/typography, src/core/animation and src/app/asset-studio have their own AGENTS.md; read it first.
-21. Asset versions sort via compareVersionCreation.
-23. Invitations bind to the invited email: acceptance compares it with the signed-in email, so leaked links grant nobody access.
+23. Invitations bind to the invited email (checked against the signed-in email), so leaked links grant no access.
 
 24. Note resolution is reversible; audio edits persist projected alignment without changing sources.
 25. MP3 encoding is client-only; owner-confirmed AI-source cleanup rechecks references server-side to protect used media.
@@ -44,10 +43,10 @@ Kortversjonen († = detaljer i `docs/development/AGENTS_DETAILS.md`):
 29. Quality profiles use immutable per-result snapshots; a generation_jobs trigger serializes budget reservations under the project lock.
 30. Film/alpha exports share a root-mounted browser queue; navigation keeps work, tab closure cannot resume it.
 
-31. Line links use scene-scoped block/translation IDs and reversible commands; backup remaps both, so Norwegian sources never change. ML3: one language version per project+tag; old rows derive from project+language (no backfill).
+31. Line links use scene-scoped IDs and reversible commands; backup remaps both, so sources never change. ML3: one language version per project+tag.
 32. ProRes: own worker encoder, append-only MOV (moov last), so exports stream to OPFS without GPL code.
 33. Harmonization (P8): one image runner; "only here" is an archived variant; batches keep receipts so billed work never replays.
-34. M6: additive updates, computed forecasts.
+34. M6: additive updates, computed forecasts. Asset versions sort via compareVersionCreation.
 35. i18n: new/changed text ships all registered languages, source hashes and machine-review markers. Missing/stale translations fail checks. Only t()/tLocalized, never new L()/localized().†
 36. New file-path tables/columns join ORPHAN_REFERENCE_TABLES in the same change, with a test, so cleanup keeps used files.
 37. R3: global publish undo/redo is a group-bound history effect (withdraw/republish via security-definer RPC); global rows/files never change.
@@ -82,5 +81,6 @@ Kortversjonen († = detaljer i `docs/development/AGENTS_DETAILS.md`):
 66. Every window (dialog, popup, sheet, floating panel, page) shows its fixed ID from src/app/ui-ids.ts via UiId or the uiId prop on shared contents; new windows get the next free number with `node scripts/ui-ids/ui-ids.mjs --assign`, numbers are never reused (removed ones stay as «fjernet»), and tests/architecture/ui-ids.test.ts fails on missing, duplicate or unregistered IDs.
 67. Punkter under SPERRET i TODO.md skal ikke implementeres eller forberedes, verken helt eller delvis, før Øystein uttrykkelig ber om det.
 68. A migration file is locked once Claude reports it run in Cloud or it predates the published EXPECTED_SCHEMA_VERSION; changes go in a new file (next number), and if in doubt, make a new file. MD5s in tests/fixtures/migration-hashes.json (checked by migration-hashes.test.ts) guard locked bytes; Claude updates them after each Cloud run.
-69. Google sign-in uses managed Lovable OAuth with redirect_uri = site root and a sanitized same-origin return path in sessionStorage; registration rules stay in the auth.users triggers (0092), so no client check decides who may register.
+69. Google sign-in: managed Lovable OAuth, redirect_uri = site root, sanitized same-origin return path; registration rules live only in auth.users triggers (0092).
+70. G-2: browsers load via project_snapshot (history merged after) and apply foreign change_log commands in project_seq order, fetching gaps; full reload is logged last resort; RLS uses my_project_ids().
 

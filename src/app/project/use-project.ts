@@ -3,10 +3,16 @@
  * andre medlemmer gjør endringer (sanntid på change_log, REQ-0520–0522). Egne endringer legges inn
  * lokalt med samme domenekjerne som serveren bruker (se use-commands.ts), så de trenger ingen ny lasting.
  */
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useEffect, useRef } from "react";
-import type { ProjectState } from "@/core";
-import { fetchProjectState, subscribeProjectChanges } from "@/adapters/browser/project-data";
+import { useQuery, useQueryClient, type QueryClient } from "@tanstack/react-query";
+import { useEffect } from "react";
+import { mergeBlockHistory, type ProjectState } from "@/core";
+import {
+  fetchBlockHistory,
+  fetchChangesAfter,
+  fetchProjectSnapshot,
+  subscribeProjectChanges,
+} from "@/adapters/browser/project-data";
+import { createRemoteSync, type RemoteSync } from "./remote-sync";
 import { listMembers, listProfiles } from "@/adapters/browser/members";
 import { useSyncProjectFonts } from "@/app/fonts/project-fonts";
 
@@ -21,38 +27,95 @@ export const commandQueue = { pending: 0, onIdle: new Set<() => void>() };
 /** Varsles med ID-ene andre brukere har endret (brukes til å stoppe angring av noe andre har endret). */
 export const foreignChangeListeners = new Set<(ids: readonly string[]) => void>();
 
+/** G-2: én synkronisering per prosjekt og spørringsklient (alle sider deler samme tilstand). */
+const syncs = new WeakMap<QueryClient, Map<string, RemoteSync>>();
+export function remoteSyncFor(qc: QueryClient, projectId: string): RemoteSync {
+  let m = syncs.get(qc);
+  if (!m) syncs.set(qc, (m = new Map()));
+  let sync = m.get(projectId);
+  if (!sync) {
+    const key = projectStateKey(projectId);
+    sync = createRemoteSync({
+      getState: () => qc.getQueryData<ProjectState>(key),
+      setState: (state) => qc.setQueryData(key, state),
+      isFetching: () => qc.isFetching({ queryKey: key }) > 0,
+      reload: () => void qc.invalidateQueries({ queryKey: key }),
+      fetchAfter: (after) => fetchChangesAfter(projectId, after),
+      isOwn: (id) => ownCommandIds.has(id),
+      isBusy: () => commandQueue.pending > 0,
+      onIdle: (fn) => commandQueue.onIdle.add(fn),
+      onForeign: (ids) => {
+        for (const f of foreignChangeListeners) f(ids);
+      },
+    });
+    m.set(projectId, sync);
+  }
+  return sync;
+}
+
+/**
+ * Full teksthistorikk hentes i bakgrunnen etter åpning og flettes inn (G-2). Kom det endringer fra andre mens den
+ * ble hentet, hentes den én gang til, så historikk serveren kopierte i mellomtiden, kommer med.
+ */
+async function loadHistory(qc: QueryClient, projectId: string, sync: RemoteSync) {
+  const key = projectStateKey(projectId);
+  for (let attempt = 0; attempt < 3; attempt++) {
+    const seq = sync.lastSeq();
+    let history;
+    try {
+      history = await fetchBlockHistory(projectId);
+    } catch (e) {
+      console.warn("[sync] historikk ble ikke hentet", String(e)); // i18n-ignore: logg
+      return;
+    }
+    const s = qc.getQueryData<ProjectState>(key);
+    if (!s) return;
+    if (s.blockHistory !== "current") return; // en full innlasting kom imellom
+    if (sync.lastSeq() !== seq && attempt < 2) continue;
+    qc.setQueryData(key, mergeBlockHistory(s, history));
+    return;
+  }
+}
+
+/**
+ * Henting av prosjekttilstanden (samme for alle som bruker projectStateKey): øyeblikksbilde, ny loggposisjon for
+ * synkroniseringen og historikk i bakgrunnen.
+ */
+export function projectStateQueryFn(qc: QueryClient, projectId: string) {
+  return async (): Promise<ProjectState> => {
+    const sync = remoteSyncFor(qc, projectId);
+    const t0 = performance.now();
+    const { state, logSeq, via } = await fetchProjectSnapshot(projectId);
+    if (typeof console !== "undefined" && import.meta.env?.DEV)
+      console.info(`[sync] prosjektet lastet (${via}) på ${Math.round(performance.now() - t0)} ms`); // i18n-ignore: logg
+    sync.reset(logSeq);
+    if (state.blockHistory === "current") setTimeout(() => void loadHistory(qc, projectId, sync), 0);
+    return state;
+  };
+}
+
 export function useProjectState(projectId: string) {
   const qc = useQueryClient();
   const query = useQuery({
     queryKey: projectStateKey(projectId),
-    queryFn: () => fetchProjectState(projectId),
+    queryFn: projectStateQueryFn(qc, projectId),
     staleTime: Infinity,
     refetchOnWindowFocus: false,
   });
 
-  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   useEffect(() => {
-    const unsubscribe = subscribeProjectChanges(projectId, (row) => {
-      const id = row.id;
-      if (id && ownCommandIds.has(id)) return;
-      const ids = row.affected_ids ?? [];
-      for (const f of foreignChangeListeners) f(ids);
-      // Samle opp raske endringer fra andre og last på nytt én gang – men aldri midt i egen lagring
-      if (timer.current) clearTimeout(timer.current);
-      const refresh = () => {
-        if (commandQueue.pending > 0) {
-          commandQueue.onIdle.add(refresh);
-          return;
-        }
-        void qc.invalidateQueries({ queryKey: projectStateKey(projectId) });
-      };
-      timer.current = setTimeout(refresh, 400);
-    });
+    const sync = remoteSyncFor(qc, projectId);
+    // Andres endringer brukes direkte på lokal tilstand (G-2); egne ekko hoppes over
+    const unsubscribe = subscribeProjectChanges(projectId, (row) => sync.receive(row as Record<string, unknown>));
     return () => {
-      if (timer.current) clearTimeout(timer.current);
       unsubscribe();
     };
   }, [projectId, qc]);
+
+  // Ny tilstand fra en innlasting: bruk det som har ventet
+  useEffect(() => {
+    if (query.dataUpdatedAt) remoteSyncFor(qc, projectId).drainSoon();
+  }, [query.dataUpdatedAt, projectId, qc]);
 
   // B-098: prosjektets egne fonter blir tilgjengelige i alle fontvelgere, forhåndsvisning og eksport
   useSyncProjectFonts(query.data);

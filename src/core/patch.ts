@@ -948,6 +948,8 @@ export interface ProjectRows {
   readonly scene_variants: readonly Row[];
   readonly script_blocks: readonly Row[];
   readonly script_block_revisions: readonly Row[];
+  /** G-2: bare gjeldende revisjon per blokk er med (se ProjectState.blockHistory). */
+  readonly history_partial?: boolean;
   readonly scene_occurrences: readonly Row[];
   readonly production_segments: readonly Row[];
   readonly takes: readonly Row[];
@@ -1289,6 +1291,7 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         createdAt: iso(x["created_at"]),
       }))
       .sort((a, b) => (a.blockId === b.blockId ? a.rev - b.rev : a.blockId < b.blockId ? -1 : 1)),
+    ...(r.history_partial ? { blockHistory: "current" as const } : {}),
     occurrences: byId(
       r.scene_occurrences.map((x) => ({
         id: str(x["id"]) as never,

@@ -3596,7 +3596,7 @@ export type Database = {
           height_mm: number
           id: string
           kind: string
-          language?: string
+          language: string
           name: string
           production_id: string
           project_id: string

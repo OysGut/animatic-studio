@@ -1013,6 +1013,11 @@ export interface ProjectState {
   readonly variants: Readonly<Record<string, SceneVariant>>;
   readonly blocks: Readonly<Record<string, ScriptBlock>>;
   readonly blockRevisions: readonly BlockRevision[];
+  /**
+   * G-2: «current» når bare gjeldende revisjon per blokk er lastet (rask åpning i nettleseren). Full
+   * teksthistorikk hentes etterpå og flettes inn (`mergeBlockHistory`); serveren laster alltid full historikk.
+   */
+  readonly blockHistory?: "current";
   readonly occurrences: Readonly<Record<string, SceneOccurrence>>;
   readonly segments: Readonly<Record<string, ProductionSegment>>;
   readonly takes: Readonly<Record<string, Take>>;

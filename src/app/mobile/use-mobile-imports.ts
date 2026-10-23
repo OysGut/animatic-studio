@@ -15,8 +15,7 @@ import {
   type MobileImportRow,
   type UploadSessionRow,
 } from "@/adapters/browser/mobile-import";
-import { fetchProjectState } from "@/adapters/browser/project-data";
-import { projectStateKey } from "@/app/project/use-project";
+import { projectStateKey, projectStateQueryFn } from "@/app/project/use-project";
 import { useCommands, type Commands } from "@/app/project/use-commands";
 import { mediaFromStoredFile } from "@/app/library/asset-images";
 import { audioMediaFromStoredFile } from "@/app/library/asset-audio";
@@ -199,9 +198,10 @@ export function MobileImportWatcher({
   editable: boolean;
 }) {
   const imports = useMobileImports(projectId, editable);
+  const qc = useQueryClient();
   const project = useQuery({
     queryKey: projectStateKey(projectId),
-    queryFn: () => fetchProjectState(projectId),
+    queryFn: projectStateQueryFn(qc, projectId),
     staleTime: Infinity,
     refetchOnWindowFocus: false,
     enabled: editable,

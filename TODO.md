@@ -5,6 +5,11 @@ Ikke foreslå, ikke start og ikke bygg dette før Øystein uttrykkelig ber om de
 - Eget test- og produksjonsmiljø (Øystein 23.10.2026): en egen testkopi av prosjektet med egen database, der databaseendringer kjøres først. Mellomtrinnet er funksjonsbryterne (av, beta og på). Til da er forhåndsvisningen test og pentoglass.com produksjon, og Claude prøver migrasjoner på en lokal kopi før de kjøres i Cloud.
 
 
+## G-2 skala (23.10.2026)
+- [ ] Claude: kjør 0093 i Cloud (se G2_SKALA_REPORT.md) og oppdater migration-hashes.json.
+- [ ] Mål åpning i Cloud: øyeblikksbildet (project_snapshot) mot tidsavbruddet for innloggede brukere; reserven er sidevis lesing.
+- [ ] Vurder senere: serverens innlasting per kommando (loadProjectState) leser fortsatt hele prosjektet.
+
 ## Google-innlogging (23.10.2026)
 - [ ] Claude: kjør 0092 i Cloud og prøv vernet mot overtakelse én gang med en testadresse.
 - [ ] Øystein: bekreft at nye Google-brukere slipper registreringspasset (begrunnet i GOOGLE_INNLOGGING_REPORT.md), eller velg at de stoppes når pass kreves.
