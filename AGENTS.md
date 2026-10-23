@@ -83,5 +83,4 @@ Kortversjonen († = detaljer i `docs/development/AGENTS_DETAILS.md`):
 67. Punkter under SPERRET i TODO.md skal ikke implementeres eller forberedes, verken helt eller delvis, før Øystein uttrykkelig ber om det.
 68. En migrasjonsfil er låst så snart Claude har meldt den kjørt i Cloud, eller den er eldre enn gjeldende EXPECTED_SCHEMA_VERSION i siste publiserte versjon. Endringer skal da alltid i en ny fil (neste nummer), aldri i den gamle. Er du i tvil, lag ny fil.
     Locked migration bytes are guarded by MD5 entries in `tests/fixtures/migration-hashes.json` and `tests/architecture/migration-hashes.test.ts`, so applied history cannot silently drift; Claude updates the hash list after each Cloud run, never to approve edits to a locked file.
-69. PDF text outside WinAnsi uses lazily loaded Noto fonts chosen per script by pure core/typography/pdf-scripts (screenplay via jsPDF, posters as print-resolution text images), and poster texts are BCP-47 language maps, so no export assumes Norwegian or Latin script.
 
