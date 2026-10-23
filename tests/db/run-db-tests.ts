@@ -8002,7 +8002,7 @@ try {
     const qid = "00000000-0000-7000-8000-009500000001";
     await sql`insert into public.quality_profiles (id, project_id, name, spec, created_by)
       values (${qid}, ${pid}, 'G3', '{"budgetLimit":1}'::jsonb, ${ALICE})`;
-    const params = await sql`select jsonb_build_object('id', ${qid}::uuid, 'name', 'G3', 'spec', '{"budgetLimit":1}'::jsonb) p`;
+    const params = await sql`select jsonb_build_object('qualityProfile', jsonb_build_object('id', ${qid}::uuid, 'name', 'G3', 'spec', '{"budgetLimit":1}'::jsonb)) p`;
     // En jobb fra forrige lokale måned (Auckland), som i UTC kan ligge i inneværende måned
     const j1 = "00000000-0000-7000-8000-009500000002";
     await sql`insert into public.generation_jobs (id, project_id, kind, provider, model, prompt, status, created_by, created_at, params)
