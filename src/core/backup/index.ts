@@ -92,6 +92,10 @@ export const BACKUP_STATE_TABLES = [
   "print_job_elements",
   "rig_templates",
   "rig_setups",
+  "storyboard_panel_blocks",
+  "production_statuses",
+  "production_status_events",
+  "storyboard_panel_snapshots",
 ] as const;
 export type BackupStateTable = (typeof BACKUP_STATE_TABLES)[number];
 
@@ -669,6 +673,10 @@ export function restoredState(
     print_job_elements: t("print_job_elements"),
     rig_templates: t("rig_templates"),
     rig_setups: t("rig_setups"),
+    storyboard_panel_blocks: t("storyboard_panel_blocks"),
+    production_statuses: t("production_statuses"),
+    production_status_events: t("production_status_events"),
+    storyboard_panel_snapshots: t("storyboard_panel_snapshots"),
   };
   let state: ProjectState;
   try {
