@@ -11548,6 +11548,60 @@
       "en": {
         "text": "{length} texts have no {language} version and are shown in another language."
       }
+    },
+    "google.sign-in.button": {
+      "replaces": [],
+      "nb": {
+        "text": "Fortsett med Google"
+      },
+      "en": {
+        "text": "Continue with Google"
+      }
+    },
+    "google.sign-in.or": {
+      "replaces": [],
+      "nb": {
+        "text": "eller"
+      },
+      "en": {
+        "text": "or"
+      }
+    },
+    "google.sign-in.failed": {
+      "replaces": [],
+      "nb": {
+        "text": "Innloggingen med Google ble ikke fullført. Prøv igjen."
+      },
+      "en": {
+        "text": "Signing in with Google was not completed. Please try again."
+      }
+    },
+    "google.account.methods": {
+      "replaces": [],
+      "nb": {
+        "text": "Innlogging"
+      },
+      "en": {
+        "text": "Sign-in"
+      }
+    },
+    "google.account.method-google": {
+      "replaces": [],
+      "nb": {
+        "text": "Google"
+      },
+      "en": {
+        "text": "Google"
+      }
+    },
+    "google.account.method-email": {
+      "replaces": [],
+      "nb": {
+        "text": "E-post og passord"
+      },
+      "en": {
+        "text": "Email and password"
+      }
     }
   }
 }

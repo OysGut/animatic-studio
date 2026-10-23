@@ -75851,5 +75851,23 @@
   },
   "g1b.poster.untranslated-many": {
     "text": "{length} tekster finnes ikke på {language} og vises på et annet språk."
+  },
+  "google.sign-in.button": {
+    "text": "Fortsett med Google"
+  },
+  "google.sign-in.or": {
+    "text": "eller"
+  },
+  "google.sign-in.failed": {
+    "text": "Innloggingen med Google ble ikke fullført. Prøv igjen."
+  },
+  "google.account.methods": {
+    "text": "Innlogging"
+  },
+  "google.account.method-google": {
+    "text": "Google"
+  },
+  "google.account.method-email": {
+    "text": "E-post og passord"
   }
 }

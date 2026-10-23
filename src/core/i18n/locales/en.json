@@ -75833,5 +75833,23 @@
   },
   "g1b.poster.untranslated-many": {
     "text": "{length} texts have no {language} version and are shown in another language."
+  },
+  "google.sign-in.button": {
+    "text": "Continue with Google"
+  },
+  "google.sign-in.or": {
+    "text": "or"
+  },
+  "google.sign-in.failed": {
+    "text": "Signing in with Google was not completed. Please try again."
+  },
+  "google.account.methods": {
+    "text": "Sign-in"
+  },
+  "google.account.method-google": {
+    "text": "Google"
+  },
+  "google.account.method-email": {
+    "text": "Email and password"
   }
 }

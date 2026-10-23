@@ -75833,5 +75833,23 @@
   },
   "g1b.poster.untranslated-many": {
     "text": "[!! {length} ttëëxxttss hháávvëë nnôô {language} vvëërrssïïôônn áánndd áárrëë sshhôôwwnn ïïnn áánnôôtthhëërr lláánnggüüáággëë. !!]"
+  },
+  "google.sign-in.button": {
+    "text": "[!! CCôônnttïïnnüüëë wwïïtthh GGôôôôggllëë !!]"
+  },
+  "google.sign-in.or": {
+    "text": "[!! ôôrr !!]"
+  },
+  "google.sign-in.failed": {
+    "text": "[!! SSïïggnnïïnngg ïïnn wwïïtthh GGôôôôggllëë wwááss nnôôtt ccôômmppllëëttëëdd. PPllëëáássëë ttrryy áággááïïnn. !!]"
+  },
+  "google.account.methods": {
+    "text": "[!! SSïïggnn-ïïnn !!]"
+  },
+  "google.account.method-google": {
+    "text": "[!! GGôôôôggllëë !!]"
+  },
+  "google.account.method-email": {
+    "text": "[!! ËËmmááïïll áánndd ppáásssswwôôrrdd !!]"
   }
 }

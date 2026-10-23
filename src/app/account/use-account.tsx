@@ -13,7 +13,9 @@ import {
   saveMyLocale,
   touchActivity,
 } from "@/adapters/browser/account";
-import { getSessionUserId, signOut, signupCountry } from "@/adapters/browser/auth";
+import { getSession, getSessionUserId, signOut, signupCountry } from "@/adapters/browser/auth";
+import { saveDisplayName } from "@/adapters/browser/account";
+import { googleDisplayName, loginMethods, shouldAdoptGoogleName } from "@/core/auth/google";
 import { saveMyCountry } from "@/adapters/browser/account";
 import { CountryPicker } from "./CountryPicker";
 import { applyProfileLanguage, onExplicitLanguageChoice, useLanguage } from "@/app/i18n/language";
@@ -93,6 +95,22 @@ export function AccountWatcher() {
     });
     return off;
   }, [a?.locale, !!a, qc, userId]);
+  // Google: profilen får navnet fra Google-kontoen én gang, så lenge den har standardnavnet fra e-posten.
+  // Navnet kan endres på Konto-siden; et eget navn overskrives aldri. Profilbildet fra Google brukes ikke.
+  useEffect(() => {
+    if (!a || a.status !== "active") return;
+    let alive = true;
+    void getSession().then((session) => {
+      const user = session?.user;
+      if (!alive || !user || !loginMethods(user).includes("google")) return;
+      const name = googleDisplayName(user.user_metadata as Record<string, unknown>);
+      if (!shouldAdoptGoogleName(a.displayName, user.email, name) || !name) return;
+      void saveDisplayName(name).then((e) => {
+        if (!e && alive) void qc.invalidateQueries({ queryKey: myAccountKey(userId) });
+      });
+    });
+    return () => { alive = false; };
+  }, [a?.displayName, a?.status, !!a, qc, userId]);
   // En konto som er blokkert eller låst for sletting, logges ut (innloggingen er også sperret)
   useEffect(() => {
     if (a && a.status !== "active") void signOut();
