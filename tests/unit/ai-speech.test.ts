@@ -6,7 +6,6 @@ import {
   filmClips,
   mainProduction,
   sceneDialogueLines,
-  SPEECH_LANGUAGE,
   SPEECH_MODEL,
   providerModel,
   speechCostUsd,
@@ -89,7 +88,7 @@ describe("ElevenLabs tale (falskt nettverk)", () => {
       model: SPEECH_MODEL,
       voiceId: "abc123",
       text: "Hører du det?",
-      language: SPEECH_LANGUAGE,
+      language: "no", // regresjonsfixture: norsk sendes eksplisitt (Mars 2026-10-13)
     });
     expect([...out.bytes]).toEqual([1, 2, 3]);
     const last = calls[calls.length - 1]!;
