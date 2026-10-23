@@ -5,6 +5,7 @@
  * hvis bakgrunnskøen er satt opp. Inndelinger som ikke er lagret, lagres først (kan angres som ett steg).
  * Ferdige videoer legges inn som nye versjoner; 2D-scenene endres aldri.
  */
+import { UiId } from "@/app/shared/UiId";
 import { ResizableDialogContent } from "@/app/shared/ResizableDialogContent";
 import { ListOrdered, Loader2 } from "lucide-react";
 import { AiGlyph } from "@/app/design/icons/AiGlyph";
@@ -404,8 +405,8 @@ export function BatchVideoDialog({
                   ref={(el) => el?.scrollIntoView?.({ block: "nearest" })}
                   role="alertdialog"
                   aria-label={tk("app-assembly-batch-video-dialog.batch-video-dialog.aria-label.9b5ada7637b0")}
-                  className="flex flex-col gap-2 rounded-sm border border-accent-warm/60 bg-surface-2 p-2"
-                >
+                  className="relative flex flex-col gap-2 rounded-sm border border-accent-warm/60 bg-surface-2 p-2"
+                ><UiId id="V-145" />
                   <p className="text-xs text-text-primary">
                     {totalSegments}{" "}
                     {totalSegments === 1 ? tk("app-assembly-batch-video-dialog.batch-video-dialog.p.808a703cfc27") : tk("app-assembly-batch-video-dialog.batch-video-dialog.p.7540abeec993")} i{" "}

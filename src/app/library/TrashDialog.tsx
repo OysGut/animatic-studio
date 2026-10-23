@@ -3,6 +3,7 @@
  * igjen; prosjektets eier kan slette for godt (kan ikke angres). Det som fortsatt brukes i filmen, kan ikke
  * slettes for godt før bruken er fjernet.
  */
+import { UiId } from "@/app/shared/UiId";
 import { ResizableDialogContent } from "@/app/shared/ResizableDialogContent";
 import { ArchiveRestore, Loader2, Trash2 } from "lucide-react";
 import { Thumbnail } from "@/app/shared/Thumbnail";
@@ -250,8 +251,8 @@ export function TrashDialog({
           <div
             role="alertdialog"
             aria-label={t("app-library-trash-dialog.trash-dialog.aria-label.21ac42b4bc3f")}
-            className="flex flex-col gap-2 rounded-sm border border-status-danger/60 bg-surface-1 p-2 text-xs"
-          >
+            className="relative flex flex-col gap-2 rounded-sm border border-status-danger/60 bg-surface-1 p-2 text-xs"
+          ><UiId id="V-156" />
             <p className="text-text-primary">
               {t("app-library-trash-dialog.trash-dialog.p.4218a851f3be", { label: String(purging.label) })}
             </p>

@@ -12,6 +12,7 @@
  * Alt som koster penger, viser anslaget og venter på «Ja» (DEC-0077: redaktører kan starte betalte jobber
  * innenfor budsjettet). Resultatene lagres som nye versjoner; originalen beholdes.
  */
+import { UiId } from "@/app/shared/UiId";
 import { Loader2, Rotate3d, Shuffle, ZoomIn } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
@@ -360,8 +361,8 @@ export function TurnaroundPanel({
         <div
           role="alertdialog"
           aria-label={t("app-library-image-ai-panels.turnaround-panel.aria-label.8e29c168bb08")}
-          className="flex flex-col gap-1.5 rounded-sm border border-accent-warm/50 bg-surface-1 p-2"
-        >
+          className="relative flex flex-col gap-1.5 rounded-sm border border-accent-warm/50 bg-surface-1 p-2"
+        ><UiId id="V-155" />
           <p className="text-text-primary">
             {count} {count === 1 ? t("app-library-image-ai-panels.turnaround-panel.p.759ebaf60758") : t("app-library-image-ai-panels.turnaround-panel.p.06ea82e82e75")}{" "}
             {t("app-library-image-ai-panels.turnaround-panel.p.71461a3ed071")} {choice?.model.label}
@@ -556,8 +557,8 @@ export function UpscalePanel({
             <div
               role="alertdialog"
               aria-label={t("app-library-image-ai-panels.upscale-panel.aria-label.dd9477bdabe2")}
-              className="flex flex-col gap-1.5 rounded-sm border border-accent-warm/50 bg-surface-1 p-2"
-            >
+              className="relative flex flex-col gap-1.5 rounded-sm border border-accent-warm/50 bg-surface-1 p-2"
+            ><UiId id="V-154" />
               <p className="text-text-primary">
                 {t("app-library-image-ai-panels.upscale-panel.p.cd444ecd55c2")} {factor}× {t("app-library-image-ai-panels.upscale-panel.p.e1a8e5c99d46")} {choice?.model.label}
                 {cost !== null
@@ -739,8 +740,8 @@ export function CostConfirm({
         <div
           role="alertdialog"
           aria-label={confirmLabel}
-          className="flex flex-col gap-1.5 rounded-sm border border-accent-warm/50 bg-surface-1 p-2"
-        >
+          className="relative flex flex-col gap-1.5 rounded-sm border border-accent-warm/50 bg-surface-1 p-2"
+        ><UiId id="V-153" />
           <p className="text-text-primary">
             {count} {count === 1 ? t("app-library-image-ai-panels.cost-confirm.p.7ff37f5fab39") : t("app-library-image-ai-panels.cost-confirm.p.86b60bd56ab8")}{" "}
             {t("app-library-image-ai-panels.cost-confirm.p.7f644122a14e")} {m.choice?.model.label}

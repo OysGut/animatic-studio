@@ -147,3 +147,23 @@ Merket nederst i hvert vindu viser «V-nnn · commit». Slå opp nummeret her.
 | V-140 | dialog | `src/app/storylab/canvas/CanvasTransferDialog.tsx` | CanvasTransferDialog | Dialog «Opprett scene i manuset» i CanvasTransferDialog | aktiv |
 | V-141 | feilside | `src/routes/__root.tsx` | ErrorComponent | Feilside «Siden finnes ikke eller er flyttet.» i ErrorComponent | aktiv |
 | V-142 | feilside | `src/routes/__root.tsx` | NotFoundComponent | Feilside «Fant ikke siden» i NotFoundComponent | aktiv |
+| V-143 | panel | `src/app/assembly/AiDialogueDialog.tsx` | AiDialogueDialog | Flytende panel i AiDialogueDialog | aktiv |
+| V-144 | panel | `src/app/assembly/AiUpdateSection.tsx` | AiUpdateSection | Flytende panel i AiUpdateSection | aktiv |
+| V-145 | panel | `src/app/assembly/BatchVideoDialog.tsx` | BatchVideoDialog | Flytende panel i BatchVideoDialog | aktiv |
+| V-146 | panel | `src/app/assembly/MaterialUpdateSection.tsx` | MaterialUpdateSection | Flytende panel i MaterialUpdateSection | aktiv |
+| V-147 | panel | `src/app/assembly/SceneVideoSection.tsx` | SceneVideoSection | Flytende panel i SceneVideoSection | aktiv |
+| V-148 | panel | `src/app/assembly/ScriptChanges.tsx` | ScriptChanges | Flytende panel «Sett bare denne linjen tilbake slik den var da materialet ble laget» i ScriptChanges | aktiv |
+| V-149 | panel | `src/app/library/AssetDetail.tsx` | DeleteAssetConfirm | Flytende panel i DeleteAssetConfirm | aktiv |
+| V-150 | panel | `src/app/library/ContextLinkSuggestions.tsx` | ContextLinkSuggestions | Flytende panel «Manuelt mål» i ContextLinkSuggestions | aktiv |
+| V-151 | panel | `src/app/library/GenerateImagePanel.tsx` | GenerateImagePanel | Flytende panel «Kandidater» i GenerateImagePanel | aktiv |
+| V-152 | panel | `src/app/library/GenerateSoundPanel.tsx` | GenerateSoundPanel | Flytende panel «Automatisk» i GenerateSoundPanel | aktiv |
+| V-153 | panel | `src/app/library/ImageAiPanels.tsx` | CostConfirm | Flytende panel i CostConfirm | aktiv |
+| V-154 | panel | `src/app/library/ImageAiPanels.tsx` | UpscalePanel | Flytende panel «Resultatet blir svært stort. Velg 2×, eller frilegg og fjern luften ru» i UpscalePanel | aktiv |
+| V-155 | panel | `src/app/library/ImageAiPanels.tsx` | TurnaroundPanel | Flytende panel «Skjul beskrivelsen» i TurnaroundPanel | aktiv |
+| V-156 | panel | `src/app/library/TrashDialog.tsx` | TrashDialog | Flytende panel «Hent inn igjen» i TrashDialog | aktiv |
+| V-157 | panel | `src/app/library/VisualBriefEditor.tsx` | VisualBriefEditor | Flytende panel «engelsk, ett kjennetegn per linje» i VisualBriefEditor | aktiv |
+| V-158 | panel | `src/app/projects/MembersSection.tsx` | MembersSection | Flytende panel «Medlemmer» i MembersSection | aktiv |
+| V-159 | panel | `src/app/projects/StyleGuideSection.tsx` | StyleGuideDialog | Flytende panel i StyleGuideDialog | aktiv |
+| V-160 | panel | `src/app/scene-editor/DialogueVersions.tsx` | DialogueVersions | Flytende panel i DialogueVersions | aktiv |
+| V-161 | panel | `src/app/scene-editor/GenerateDialogue.tsx` | GenerateDialogue | Flytende panel «Koble karakter til replikken» i GenerateDialogue | aktiv |
+| V-162 | panel | `src/app/scene-editor/LayerImageDialog.tsx` | DeleteVersionConfirm | Flytende panel «Valgt» i DeleteVersionConfirm | aktiv |

@@ -43,7 +43,7 @@ describe("ID-merker i vinduene", () => {
   it("egne flytende vinduer (role=dialog) viser merket", () => {
     const missing = (sourceFiles() as string[]).filter((f) => {
       const src = readFileSync(join(ROOT, f), "utf8");
-      return /role="(dialog|alertdialog)"/.test(src) && !/<UiId\s+id="V-\d{3}"/.test(src) && !/uiId="V-\d{3}"/.test(src);
+      return /\srole="(dialog|alertdialog)"/.test(src) && !/<UiId\s+id="V-\d{3}"/.test(src) && !/uiId="V-\d{3}"/.test(src);
     });
     expect(missing).toEqual([]);
   });

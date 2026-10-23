@@ -4,6 +4,7 @@
  * skal unngås og forbildebilder. Brukes i alle bildebeskrivelser. Utkastet kan foreslås fra prosjektet, og
  * forhåndsvisningen viser hvordan en beskrivelse blir.
  */
+import { UiId } from "@/app/shared/UiId";
 import { ResizableDialogContent } from "@/app/shared/ResizableDialogContent";
 import { Thumbnail } from "@/app/shared/Thumbnail";
 import { useImagePromptPreview } from "@/app/library/image-prompt-preview";
@@ -470,8 +471,8 @@ export function StyleGuideDialog({
               <div
                 role="alertdialog"
                 aria-label={tk("app-projects-style-guide-section.style-guide-dialog.aria-label.a8d3fe27c570")}
-                className="flex flex-col gap-2 rounded-sm border border-accent-warm/50 bg-surface-1 p-2 text-xs text-text-secondary"
-              >
+                className="relative flex flex-col gap-2 rounded-sm border border-accent-warm/50 bg-surface-1 p-2 text-xs text-text-secondary"
+              ><UiId id="V-159" />
                 <p>
                   {Math.min(6, draft.referenceVersionIds.length)}{" "}
                   {tk("app-projects-style-guide-section.style-guide-dialog.p.54f579561ac4")}

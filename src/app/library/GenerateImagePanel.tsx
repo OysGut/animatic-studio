@@ -4,6 +4,7 @@
  * steg fordi den bruker kreditter i Lovable-arbeidsområdet. Selve kallet går via serverfunksjonen
  * generateImage (nøkkelen er aldri i nettleseren); resultatet lagres som ny versjon av ressursen.
  */
+import { UiId } from "@/app/shared/UiId";
 import { Loader2, RotateCcw } from "lucide-react";
 import { AiGlyph } from "@/app/design/icons/AiGlyph";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
@@ -971,8 +972,8 @@ export function GenerateImagePanel({
               role="alertdialog"
               aria-label={t("app-library-generate-image-panel.generate-image-panel.aria-label.5729ea679c31")}
               // Bekreftelsen står alltid synlig nederst i dialogen («Ja, generer» havnet under bretten)
-              className="sticky bottom-0 z-10 flex flex-col gap-2 rounded-sm border border-accent-warm/60 bg-surface-2 p-2 shadow-[0_-8px_16px_rgba(0,0,0,0.25)]"
-            >
+              className="relative sticky bottom-0 z-10 flex flex-col gap-2 rounded-sm border border-accent-warm/60 bg-surface-2 p-2 shadow-[0_-8px_16px_rgba(0,0,0,0.25)]"
+            ><UiId id="V-151" />
               <p className="text-xs text-text-primary">
                 {choice.provider === "lovable" ? (
                   <>

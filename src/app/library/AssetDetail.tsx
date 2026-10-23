@@ -3,6 +3,7 @@
  * visuelle varianter med bildeversjoner og godkjenning (REQ-0135, REQ-0136, REQ-0146, REQ-0149)
  * og scenene der ressursen er brukt (REQ-0131). Kontinuitet (DEC-0055) i ContinuityPanel.
  */
+import { UiId } from "@/app/shared/UiId";
 import { useRevealNew } from "@/app/shared/reveal";
 import { Thumbnail } from "@/app/shared/Thumbnail";
 import { NoteFlagControl } from "@/app/dialogue/NoteFlagControl";
@@ -1402,8 +1403,8 @@ function DeleteAssetConfirm({
     <div
       role="alertdialog"
       aria-label={tk("app-library-asset-detail.delete-asset-confirm.aria-label.56e2a7dbe5da", { name: String(a.name) })}
-      className="flex flex-col gap-2 rounded-sm border border-status-danger/60 bg-surface-1 p-2 text-xs"
-    >
+      className="relative flex flex-col gap-2 rounded-sm border border-status-danger/60 bg-surface-1 p-2 text-xs"
+    ><UiId id="V-149" />
       <p className="text-text-primary">
         {tk("app-library-asset-detail.delete-asset-confirm.p.06dfebdebf71", { name: String(a.name) })}
         {use.layers || use.audio

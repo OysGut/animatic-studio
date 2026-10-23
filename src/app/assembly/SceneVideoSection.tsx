@@ -5,6 +5,7 @@
  * mens dialogen er åpen (ellers fra AI-jobbene på prosjektoversikten). «Sett sammen scenen» lager scenen av
  * de ferdige segmentene etter hverandre – 2D-scenen endres aldri, og alt kan angres.
  */
+import { UiId } from "@/app/shared/UiId";
 import { CheckCircle2, Clapperboard, Loader2, TriangleAlert } from "lucide-react";
 import { AiGlyph } from "@/app/design/icons/AiGlyph";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -504,8 +505,8 @@ export function SceneVideoSection({
         <div
           role="alertdialog"
           aria-label={tk("app-assembly-scene-video-section.scene-video-section.aria-label.a385a74e532e")}
-          className="flex flex-col gap-2 rounded-sm border border-accent-warm/60 bg-surface-2 p-2"
-        >
+          className="relative flex flex-col gap-2 rounded-sm border border-accent-warm/60 bg-surface-2 p-2"
+        ><UiId id="V-147" />
           <p className="text-xs text-text-primary">
             {confirm.length === 1
               ? `Segment ${confirm[0]! + 1}`
