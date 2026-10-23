@@ -17492,6 +17492,33 @@
     },
     {
       "file": "src/core/commands/apply.ts",
+      "line": 1099,
+      "column": 7,
+      "start": 38723,
+      "end": 38847,
+      "scope": "translation-fields-of",
+      "context": "fail",
+      "kind": "L",
+      "semantic": "core-commands-apply.translation-fields-of.fail",
+      "nb": {
+        "kind": "literal",
+        "text": "Norsk er hovedmanuset og oversettes ikke",
+        "raw": "\"Norsk er hovedmanuset og oversettes ikke\"",
+        "parameters": []
+      },
+      "en": {
+        "kind": "literal",
+        "text": "Norwegian is the main script and is not translated",
+        "raw": "\"Norwegian is the main script and is not translated\"",
+        "parameters": []
+      },
+      "parameterConflict": false,
+      "signature": "b8697ac1dfc3",
+      "key": "core-commands-apply.translation-fields-of.fail.b8697ac1dfc3",
+      "migrated": true
+    },
+    {
+      "file": "src/core/commands/apply.ts",
       "line": 1105,
       "column": 21,
       "start": 38945,

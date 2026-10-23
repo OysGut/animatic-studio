@@ -55757,5 +55757,10 @@
     "text": "{label} – 脚本（元の言語）",
     "sourceHash": "85f7723bb55e1306399b5c8195ae51655f145e11ccddf07ec104b0276ce7ae7a",
     "review": "machine"
+  },
+  "core-commands-apply.translation-fields-of.fail.b8697ac1dfc3": {
+    "text": "ノルウェー語はメイン脚本のため翻訳されません",
+    "sourceHash": "cd74ef93f879d93e0a7527dddaf25f9f3385e3eb7fc084e149ca17a83a6ab660",
+    "review": "user"
   }
 }

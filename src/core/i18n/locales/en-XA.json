@@ -75668,5 +75668,11 @@
   },
   "ml3-language-versions.select.source": {
     "text": "[!! {label} – ssccrrïïpptt (ssôôüürrccëë) !!]"
+  },
+  "core-commands-apply.translation-fields-of.fail.b8697ac1dfc3": {
+    "text": "[!! NNôôrrwwëëggïïáánn ïïss tthhëë mmááïïnn ssccrrïïpptt áánndd ïïss nnôôtt ttrráánnssllááttëëdd !!]",
+    "source": "\"Norwegian is the main script and is not translated\"",
+    "parameters": [],
+    "executable": true
   }
 }

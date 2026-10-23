@@ -55757,5 +55757,10 @@
     "text": "{label} – 대본(원본)",
     "sourceHash": "85f7723bb55e1306399b5c8195ae51655f145e11ccddf07ec104b0276ce7ae7a",
     "review": "machine"
+  },
+  "core-commands-apply.translation-fields-of.fail.b8697ac1dfc3": {
+    "text": "노르웨이어는 메인 대본이므로 번역되지 않습니다",
+    "sourceHash": "cd74ef93f879d93e0a7527dddaf25f9f3385e3eb7fc084e149ca17a83a6ab660",
+    "review": "user"
   }
 }

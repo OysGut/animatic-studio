@@ -5,7 +5,7 @@ import { DEFAULT_CAPTURE, captureSettingsValid, projectCodeValid } from "../inte
 import { applyPrintJobCommand } from "../print/job/commands";
 import { lineLinkError, translationLineError, type TranslationLineLink, type TranslationLine } from "../translation/line-align-prompt";
 import { assetVoiceError } from "../dialogue/voice";
-import { languageTagError, isSourceLanguage } from "../dialogue/languages";
+import { languageTagError, isSourceLanguage, sourceLanguageOf } from "../dialogue/languages";
 import { clipDrift, type DialogueReview } from "../dialogue/drift";
 import { NOTE_FLAG_TARGETS, NOTE_FLAG_MAX_TEXT, type NoteFlag } from "../notes/flags";
 import { qualityProfileError, type QualityProfile } from "../generation/quality-profile";
@@ -1082,7 +1082,13 @@ function translationFieldsOf(
   if (!isScriptLanguageTag(f.language))
     fail("invalid", tk("core-commands-apply.translation-fields-of.fail.705cd5c07cc0"));
   if (f.language === "nb" || f.language === "no")
-    fail("invalid", tk("ml3-language-versions.error.norwegian"));
+    fail(
+      "invalid",
+      // Norsk manus: norsk er kilden. Annet manusspråk: databasen godtar ennå ikke nb/no som mål (KILDESPRAK_REPORT.md).
+      sourceLanguageOf(s) === "nb"
+        ? tk("core-commands-apply.translation-fields-of.fail.b8697ac1dfc3")
+        : tk("ml3-language-versions.error.norwegian"),
+    );
   if (isSourceLanguage(s, f.language))
     fail("invalid", tk("ml3-language-versions.error.source"));
   if (typeof f.text !== "string" || f.text.length > TRANSLATION_MAX)

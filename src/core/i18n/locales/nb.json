@@ -75686,5 +75686,11 @@
   },
   "ml3-language-versions.select.source": {
     "text": "{label} – manus (kilde)"
+  },
+  "core-commands-apply.translation-fields-of.fail.b8697ac1dfc3": {
+    "text": "Norsk er hovedmanuset og oversettes ikke",
+    "source": "\"Norsk er hovedmanuset og oversettes ikke\"",
+    "parameters": [],
+    "executable": true
   }
 }
