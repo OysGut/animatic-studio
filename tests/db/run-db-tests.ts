@@ -8299,7 +8299,7 @@ try {
 
   // ---------- 0099 G-7: apply_changes delt i liten kjerne + registrerte valideringsfunksjoner ----------
   await test("0099 G-7.1: registeret er komplett, signaturen og rettighetene til apply_changes er uendret", async () => {
-    const rows = (await sql`select table_name::text t, validator::text v, preparer::text p, sort_order s from private.apply_change_validators order by s, v`)
+    const rows = (await sql`select table_name::text t, validator::text v, preparer::text p, sort_order s from private.apply_change_validators order by s, v, t`)
       .map((r) => `${r["t"] ?? "ALLTID"}|${r["v"]}|${r["p"] ?? ""}|${r["s"]}`);
     assert(isDeepStrictEqual(rows, [
       "translation_line_links|private.validate_translation_line_links|private.prepare_translation_line_links|10",
@@ -8373,7 +8373,7 @@ try {
     const dup = newId();
     await g7Expect(async (tx) => {
       await tx`insert into public.translation_line_links (id, project_id, variant_id, language, source_block_ids, target_translation_ids, origin, confidence)
-        values (${dup},${g7p},${variant},'en',${sql.array([newId(), newId()])},${sql.array([newId()])},'rule',0.5)`;
+        values (${dup},${g7p},${variant},'en',${sql.array([newId(), newId()])}::uuid[],${sql.array([newId()])}::uuid[],'rule',0.5)`;
     }, `select private.validate_translation_line_links('${g7p}'::uuid, '{"inserts":{"translation_line_links":[]}}'::jsonb, '{${dup}}'::uuid[])`, /Invalid line link scope/);
     // Feil rad i et annet prosjekt blokkerer ikke dette prosjektet
     await sql`select private.validate_translation_line_links(${g7q}, '{}'::jsonb, ${sql.array([dup])}::uuid[])`;
@@ -8384,7 +8384,7 @@ try {
     const s0 = [newId()], t0 = [newId()];
     const link = newId();
     await sql`insert into public.translation_line_links (id, project_id, variant_id, language, source_block_ids, target_translation_ids, origin, confidence)
-      values (${link},${g7p},${variant},'en',${sql.array(s0)},${sql.array(t0)},'rule',0.5)`;
+      values (${link},${g7p},${variant},'en',${sql.array(s0)}::uuid[],${sql.array(t0)}::uuid[],'rule',0.5)`;
     const prep = (changes: unknown) => sql`select private.prepare_translation_line_links(${g7p}, ${sql.json(changes as never)}) ids`;
     const ids = (r: unknown) => (r as { ids: string[] }[])[0]!.ids;
     // Ny rad i kallet tas med
@@ -8399,13 +8399,13 @@ try {
 
   await test("0099 G-7.4: validate_style_harmonizations (0065)", async () => {
     // Versjonen hører til et annet prosjekt: FK-en godtar den, valideringen skal ikke
-    const qAsset = newId(), qVariant = newId(), version = newId(), harm = newId();
+    const qAsset = newId(), qVariant = newId(), version = newId(), source = newId(), harm = newId();
     await sql`insert into public.assets (id, project_id, kind, name) values (${qAsset},${g7q},'character','Q-karakter')`;
     await sql`insert into public.asset_variants (id, project_id, asset_id, name, style) values (${qVariant},${g7q},${qAsset},'Animatic','animatic')`;
-    await sql`insert into public.asset_versions (id, project_id, variant_id, number, media_path, mime_type, byte_size, sha256) values (${version},${g7q},${qVariant},1,${g7q + "/x/" + version + "/a.png"},'image/png',100,${"a".repeat(64)})`;
+    await sql`insert into public.asset_versions (id, project_id, variant_id, number, media_path, mime_type, byte_size, sha256) values (${version},${g7q},${qVariant},1,${g7q + "/x/" + version + "/a.png"},'image/png',100,${"a".repeat(64)}), (${source},${g7q},${qVariant},2,${g7q + "/x/" + source + "/a.png"},'image/png',100,${"b".repeat(64)})`;
     await g7Expect(async (tx) => {
       await tx`insert into public.style_harmonizations (id, project_id, version_id, source_version_id, model, use, reference_version_id)
-        values (${harm},${g7p},${version},${version},'test','variant',${version})`;
+        values (${harm},${g7p},${version},${source},'test','variant',${version})`;
     }, `select private.validate_style_harmonizations('${g7p}'::uuid, '{}'::jsonb, '{${harm}}'::uuid[])`, /Invalid harmonization/);
   });
 
