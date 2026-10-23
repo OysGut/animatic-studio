@@ -488,7 +488,7 @@ export function Gallery({
             if (r.kind === "scene") {
               const si = r.sceneIndex;
               return (
-                <div key={key} role="row" aria-rowindex={rows.indexOf(r) + 1} className="absolute inset-x-0 flex items-center gap-2 border-b border-border text-[13px]" style={{ top: r.top, height: r.height }}
+                <div key={key} role="row" draggable={editable} onDragStart={onDragStart("scene", scene.occurrence.id)} onDragEnd={() => { drag.current = null; }} aria-rowindex={rows.indexOf(r) + 1} className="absolute inset-x-0 flex items-center gap-2 border-b border-border text-[13px]" style={{ top: r.top, height: r.height }}
                   onDragOver={(e) => drag.current?.kind === "scene" && e.preventDefault()} onDrop={onDropScene(scene)} data-testid="sb-scene" data-occurrence-id={scene.occurrence.id}>
                   {editable ? (
                     <span draggable onDragStart={onDragStart("scene", scene.occurrence.id)} className="cursor-grab text-text-tertiary" title={tk("sb2.drag-scene")} aria-label={tk("sb2.drag-scene")} role="button" tabIndex={-1}>
