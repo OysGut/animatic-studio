@@ -833,6 +833,18 @@ export interface Composition extends Entity<CompositionId> {
   readonly camera: CompositionCamera;
   readonly removed: boolean;
   /**
+   * Komposisjonstype (SB-1, migrasjon 0102): «scene» er dagens 2D-scene, «storyboard» er et panel.
+   * Mangler = «scene» (rader fra før 0102).
+   */
+  readonly kind?: import("./storyboard").CompositionKind;
+  /** Sceneforekomsten panelet hører til (bare storyboard). Mangler = scene-komposisjon. */
+  readonly occurrenceId?: OccurrenceId | null;
+  /** Panelrekkefølgen innen scenen (bare storyboard). */
+  readonly orderKey?: string | null;
+  /** Aktiv/deaktivert og skjult (SB-1; mangler = aktiv og synlig). Brukes bare av storyboardpaneler. */
+  readonly active?: boolean;
+  readonly hidden?: boolean;
+  /**
    * Manusblokkenes revisjoner 2D-scenen er laget fra eller sist kontrollert mot (DEC-0054). Mangler eller
    * tomt = ukjent (laget før kontrollen fantes); da flagges ingen avvik.
    */
@@ -905,6 +917,12 @@ export interface CompositionLayer extends Entity<LayerId> {
   readonly template?: import("./typography/types").TemplateSlotRef | null;
   /** Overgangen inn i siden (bare sidelag, MTS MT6, migrasjon 0050). Mangler = kutt. */
   readonly pageTransition?: Transition | null;
+  /** Lapp (SB-1, migrasjon 0102). Bare lagtypen «note» i storyboardkomposisjoner. */
+  readonly note?: import("./storyboard").PanelNoteSpec | null;
+  /** Pil (SB-1). Bare lagtypen «arrow» i storyboardkomposisjoner. */
+  readonly arrow?: import("./storyboard").ArrowSpec | null;
+  /** Kameramerke (SB-1). Bare lagtypen «camera_mark» i storyboardkomposisjoner. */
+  readonly cameraMark?: import("./storyboard").CameraMarkSpec | null;
   readonly removed: boolean;
 }
 
