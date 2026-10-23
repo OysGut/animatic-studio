@@ -481,7 +481,13 @@ async function importFountain() {
     // Nodes File (jsdom sin mangler arrayBuffer)
     target: { files: [new NodeFile([bytes.slice()], "prove.fountain", { type: "text/plain" })] },
   });
-  fireEvent.click(await screen.findByRole("button", { name: /^Importer \d+ scener$/ }));
+  // G-1b: importen venter til brukeren har bekreftet filens språk
+  const importButton = await screen.findByRole("button", { name: /^Importer \d+ scener$/ });
+  expect(importButton).toBeDisabled();
+  expect((screen.getByTestId("import-language") as HTMLInputElement).value).toBe(sourceLanguageOf(state));
+  fireEvent.click(screen.getByTestId("import-language-confirm"));
+  expect(importButton).toBeEnabled();
+  fireEvent.click(importButton);
   await screen.findByText(/scener er importert/, undefined, { timeout: 5000 });
   return { state, ran, bytes };
 }
