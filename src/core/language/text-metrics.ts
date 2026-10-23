@@ -46,6 +46,20 @@ export function segmentWords(text: string, lang?: string): string[] {
   return out;
 }
 
+/** Alle segmenter (ord og tegnsetting) – brukes til linjebryting i språk uten mellomrom. */
+export function segmentAll(text: string, lang?: string): string[] {
+  const seg = segmenter(lang, "word");
+  if (!seg) return Array.from(text);
+  return Array.from(seg.segment(text), (s) => s.segment);
+}
+
+/** Teksten delt i grafemer (et emoji eller en bokstav med aksent er ett tegn). */
+export function graphemes(text: string): string[] {
+  const seg = segmenter(undefined, "grapheme");
+  if (!seg) return Array.from(text);
+  return Array.from(seg.segment(text), (s) => s.segment);
+}
+
 export function countWords(text: string, lang?: string): number {
   return segmentWords(text, lang).length;
 }

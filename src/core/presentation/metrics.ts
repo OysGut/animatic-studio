@@ -179,14 +179,17 @@ export function wrapPosterText(
   const max = widthMm * MM_TO_PT;
   const out: string[] = [];
   for (const para of text.split(/\r?\n/)) {
-    const words = para.split(/\s+/).filter(Boolean);
+    // G-3: språk uten mellomrom (ja, zh, th) brytes ved ordgrenser fra Intl.Segmenter.
+    const unspaced = para.trim().length > 0 && !/\s/.test(para.trim());
+    const joiner = unspaced ? "" : " ";
+    const words = unspaced ? segmentAll(para.trim()) : para.split(/\s+/).filter(Boolean);
     if (!words.length) {
       out.push("");
       continue;
     }
     let line = "";
     for (const word of words) {
-      const next = line ? `${line} ${word}` : word;
+      const next = line ? `${line}${joiner}${word}` : word;
       if (textWidthPt(next, font, sizePt, tracking) <= max) {
         line = next;
         continue;
@@ -196,7 +199,7 @@ export function wrapPosterText(
       let rest = word;
       while (textWidthPt(rest, font, sizePt, tracking) > max && rest.length > 1) {
         // Så mange tegn som får plass (minst ett), målt fortløpende
-        const chars = [...rest];
+        const chars = graphemes(rest);
         let cut = 1;
         let w = textWidthPt(chars[0]!, font, sizePt, 0);
         const step = (tracking / 1000) * sizePt;
