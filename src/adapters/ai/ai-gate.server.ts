@@ -9,7 +9,6 @@
  *   igjen etter (samtidige jobber).
  * - Prosjektets eget budsjett (antall genereringer per måned, DEC-0053) gjelder i tillegg.
  */
-import { monthStartUtc } from "@/core";
 import type { AnyClient } from "@/adapters/storage/project-rows";
 import { t as tk } from "@/core/i18n/keyed";
 

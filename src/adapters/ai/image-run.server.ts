@@ -299,13 +299,19 @@ export async function runImageGeneration(
     }
   }
   if (!batch && budgeted && pr.ai_month_limit !== null && pr.ai_month_limit !== undefined) {
+    // Månedsstarten i prosjektets budsjettidssone (G-3 del 2) – samme grense som databasetriggerne
+    const { data: monthSince, error: pe } = await admin.rpc("project_period_start", {
+      p_project: data.projectId,
+      p_unit: "month",
+    });
+    if (pe || typeof monthSince !== "string") throw new Error(String(pe?.message ?? "project_period_start"));
     const { count: used } = await admin
       .from("generation_jobs")
       .select("id", { count: "exact", head: true })
       .eq("project_id", data.projectId)
       .neq("status", "failed")
       .neq("kind", "prompt")
-      .gte("created_at", monthStartUtc(new Date()).toISOString());
+      .gte("created_at", monthSince);
     if ((used ?? 0) > Number(pr.ai_month_limit)) {
       // Denne jobben (og eventuelle samtidige) går over rammen: den fjernes igjen, ingenting sendes
       await admin.from("generation_jobs").delete().eq("id", jobId);
