@@ -61,10 +61,10 @@ export function languageVersionError(
   selfId?: string,
 ): LanguageVersionErrorCode | null {
   if (!f || !isScriptLanguageTag(f.language)) return "language";
-  // Manusets eget språk er kilden og kan aldri være et mål.
-  if (s.project && isSourceLanguage({ project: s.project }, f.language)) return "source";
   // Lagringsgrense uten migrasjon: databasen godtar ennå ikke nb/no som målspråk (se KILDESPRAK_REPORT.md).
   if (isNorwegianSourceTag(f.language)) return "norwegian";
+  // Manusets eget språk er kilden og kan aldri være et mål.
+  if (s.project && isSourceLanguage({ project: s.project }, f.language)) return "source";
   if (typeof f.name !== "string" || !f.name.trim() || f.name.length > LANGUAGE_VERSION_NAME_MAX) return "name";
   if (!LANGUAGE_VERSION_STATUSES.includes(f.status)) return "status";
   for (const v of Object.values(s.languageVersions ?? {}))
