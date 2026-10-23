@@ -2,9 +2,8 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { cleanup, fireEvent, render, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import manifest from '@/core/i18n/manifest.json';
 import { parseMyFeatures } from '@/core/community';
-import { CompactLanguageSwitch, chooseLanguage } from '@/app/i18n/language';
+import { CompactLanguageSwitch, availableLanguages, chooseLanguage, testLanguagesEnabled } from '@/app/i18n/language';
 
 vi.mock('@/adapters/browser/auth', () => ({
   getSessionUserId: () => null,
@@ -16,7 +15,6 @@ vi.mock('@/adapters/browser/features', () => ({
 }));
 
 afterEach(async () => { cleanup(); await chooseLanguage('nb'); window.localStorage.clear(); });
-const regular = manifest.languages.filter(l => !('testOnly' in l && l.testOnly)).map(l => l.tag);
 const mount = () => render(<QueryClientProvider client={new QueryClient()}><button data-testid="outside">x</button><CompactLanguageSwitch /></QueryClientProvider>);
 
 describe('kompakt språkvelger', () => {
@@ -30,9 +28,10 @@ describe('kompakt språkvelger', () => {
     fireEvent.click(toggle);
     expect(toggle.getAttribute('aria-expanded')).toBe('true');
     const radios = v.getAllByRole('radio');
-    expect(radios.map(r => r.getAttribute('lang'))).toEqual(regular);
+    // Samme liste som den vanlige velgeren: en-XA bare når testspråk er slått på.
+    expect(radios.map(r => r.getAttribute('lang'))).toEqual(availableLanguages(testLanguagesEnabled()).map(o => o.tag));
     expect(v.getByTestId('language-compact-nb').getAttribute('aria-checked')).toBe('true');
-    expect(v.queryByTestId('language-compact-en-XA')).toBeNull();
+    if (!testLanguagesEnabled()) expect(v.queryByTestId('language-compact-en-XA')).toBeNull();
     expect(v.getByTestId('language-compact-en').getAttribute('aria-label')).toBeTruthy();
   });
 
@@ -54,9 +53,10 @@ describe('kompakt språkvelger', () => {
     fireEvent.click(v.getByTestId('language-compact-toggle'));
     const nb = v.getByTestId('language-compact-nb');
     expect(document.activeElement).toBe(nb);
-    const i = regular.indexOf('nb');
+    const tags = availableLanguages(testLanguagesEnabled()).map(o => o.tag);
+    const i = tags.indexOf('nb');
     fireEvent.keyDown(nb, { key: 'ArrowRight' });
-    expect(document.activeElement?.getAttribute('lang')).toBe(regular[(i + 1) % regular.length]);
+    expect(document.activeElement?.getAttribute('lang')).toBe(tags[(i + 1) % tags.length]);
     fireEvent.keyDown(document.activeElement!, { key: 'ArrowLeft' });
     expect(document.activeElement).toBe(nb);
     fireEvent.click(v.getByTestId('language-compact-en'));
