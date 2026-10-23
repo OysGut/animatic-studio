@@ -48,7 +48,7 @@ for (const lang of ["nb", "en"]) {
     await page.getByTestId("sb-show-dialogue").click();
     await page.getByTestId("sb-text-view").click();
     await gallery(page);
-    h.check((await page.getByTestId("sb-show-dialogue").getAttribute("aria-pressed")) === "false", `${lang}: vis/skjul huskes etter ny lasting`);
+    h.check(!(await page.getByTestId("sb-show-dialogue").isChecked()), `${lang}: vis/skjul huskes etter ny lasting`);
     h.check(await page.getByTestId("sb-text-list").isVisible().catch(() => false), `${lang}: tekstvisningen huskes`);
     await page.screenshot({ path: `${h.out}/prefs-${lang}.png` });
   });
