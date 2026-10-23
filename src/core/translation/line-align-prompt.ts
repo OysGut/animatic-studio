@@ -1,6 +1,8 @@
 // i18n-ignore-file – English AI protocol; messages use L in callers.
 import type { ProjectState } from "../model";
 import { isUuid } from "../ids";
+import { isSourceLanguage } from "../dialogue/languages";
+import { isNorwegianSourceTag } from "./language-tags";
 import { parseJsonLoose } from "../storylab/prompts";
 export interface TranslationLineLink {
   readonly id: string; readonly revision: number; readonly variantId: string; readonly language: string;
@@ -19,7 +21,7 @@ export interface TranslationLine {
 }
 export type TranslationLineFields = Omit<TranslationLine, "id" | "revision" | "removed" | "languageVersionId">;
 export function translationLineError(s: ProjectState, f: TranslationLineFields): string | null {
-  if (!f || !isUuid(f.variantId) || !s.variants[f.variantId] || f.language === "nb" || f.language === "no") return "scope";
+  if (!f || !isUuid(f.variantId) || !s.variants[f.variantId] || isNorwegianSourceTag(f.language) || isSourceLanguage(s, f.language)) return "scope";
   try { if (Intl.getCanonicalLocales(f.language).length !== 1) return "language"; } catch { return "language"; }
   if (!Number.isInteger(f.ord) || f.ord < 0 || f.ord > 100000 || typeof f.kind !== "string" || f.kind.length > 30 || typeof f.text !== "string" || !f.text.trim() || f.text.length > 5000) return "fields";
   return null;
@@ -41,7 +43,7 @@ export function lineLinkStale(s: ProjectState, l: TranslationLineLink): boolean 
 }
 export type LineLinkFields = Omit<TranslationLineLink, "id" | "revision" | "removed" | "createdBy" | "createdAt" | "languageVersionId">;
 export function lineLinkError(s: ProjectState, f: LineLinkFields): string | null {
-  if (!isUuid(f.variantId) || !s.variants[f.variantId] || f.language === "nb" || f.language === "no") return "scope";
+  if (!isUuid(f.variantId) || !s.variants[f.variantId] || isNorwegianSourceTag(f.language) || isSourceLanguage(s, f.language)) return "scope";
   try { if (Intl.getCanonicalLocales(f.language).length !== 1) return "language"; } catch { return "language"; }
   if (!["rule","ai","approved","manual"].includes(f.origin) || !Number.isFinite(f.confidence) || f.confidence < 0 || f.confidence > 1 || typeof f.reason !== "string" || f.reason.length > 300) return "fields";
   const a=f.sourceBlockIds, b=f.targetTranslationIds;

@@ -1066,6 +1066,7 @@ function languageVersionMessage(code: LanguageVersionErrorCode, language: string
   switch (code) {
     case "duplicate": return tk("ml3-language-versions.error.duplicate", { language });
     case "language": return tk("ml3-language-versions.error.language");
+    case "source": return tk("ml3-language-versions.error.source");
     case "norwegian": return tk("ml3-language-versions.error.norwegian");
     case "name": return tk("ml3-language-versions.error.name");
     case "status": return tk("ml3-language-versions.error.status");
@@ -1080,6 +1081,8 @@ function translationFieldsOf(
     fail("invalid", tk("core-commands-apply.translation-fields-of.fail.eb653dd6de37"));
   if (!isScriptLanguageTag(f.language))
     fail("invalid", tk("core-commands-apply.translation-fields-of.fail.705cd5c07cc0"));
+  if (isSourceLanguage(s, f.language))
+    fail("invalid", tk("ml3-language-versions.error.source"));
   if (f.language === "nb" || f.language === "no")
     fail(
       "invalid",

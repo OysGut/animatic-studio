@@ -2,13 +2,14 @@ import type { ProjectState } from "../model";
 import { audioVersion } from "../audio";
 import { clipEditOf } from "../dialogue/versions";
 import { translationOf } from "../translation";
+import { isSourceLanguage } from "../dialogue/languages";
 import { framesToSeconds, secondsToFrames } from "../time";
 import type { InterchangeDoc, Shot } from "./types";
 import { exposureOf, shotExposures } from "./dragonframe";
 import type { MouthShape, MouthTrack } from "./mouth-types";
 
 export function mouthText(state: ProjectState, blockId: string, language: string): string {
-  return language === "nb" ? state.blocks[blockId]?.text ?? "" : translationOf(state,blockId,language)?.text ?? "";
+  return isSourceLanguage(state, language) ? state.blocks[blockId]?.text ?? "" : translationOf(state,blockId,language)?.text ?? "";
 }
 export function mouthAudioSignature(state: ProjectState, clipId: string): string {
   const clip=state.audioClips[clipId];
