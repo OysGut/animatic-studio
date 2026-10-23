@@ -1,5 +1,6 @@
 import { consumeLastCapturedError, initializeErrorCapture } from "./lib/error-capture";
 import { renderErrorPage } from "./lib/error-page";
+import { withNoStore } from "./lib/no-store";
 
 type ServerEntry = {
   fetch: (request: Request, env: unknown, ctx: unknown) => Promise<Response> | Response;
@@ -40,16 +41,6 @@ function isH3SwallowedErrorBody(body: string): boolean {
   } catch {
     return false;
   }
-}
-
-// G-8: svar fra serverfunksjoner og API-ruter kan inneholde personlige data og skal aldri bufres.
-export function withNoStore(request: Request, response: Response): Response {
-  const path = new URL(request.url).pathname;
-  const dynamic = path.startsWith("/_serverFn") || path.startsWith("/api/") || path.startsWith("/se/");
-  if (!dynamic) return response;
-  const headers = new Headers(response.headers);
-  headers.set("cache-control", "private, no-store");
-  return new Response(response.body, { status: response.status, statusText: response.statusText, headers });
 }
 
 export default {
