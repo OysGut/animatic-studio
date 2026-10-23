@@ -59,3 +59,31 @@ describe("PTG3 startfiler", () => {
     expect(en).toMatch(/text layers are not recreated/); expect(en).toMatch(/format is closed/);
   });
 });
+
+describe("PTG3 skriptnavn og rekkefølge (Øystein 23.10)", () => {
+  it("skriptet heter bygg-after-effects.jsx, og begge startfilene kjører det", async () => {
+    const { AE_JSX_FILE } = await import("@/core/interchange/ae-launchers");
+    expect(AE_JSX_FILE).toBe("bygg-after-effects.jsx");
+    expect(aeWindowsLauncher(notFound)).toContain('set "JSX=%~dp0bygg-after-effects.jsx"');
+    expect(aeMacLauncher(notFound)).toContain('JSX="$DIR/bygg-after-effects.jsx"');
+  });
+
+  it("startfilene skrives først i ZIP-en, før skriptet og LESMEG", async () => {
+    const { readFileSync } = await import("node:fs");
+    const src = readFileSync("src/engine/export/ae-export.ts", "utf8");
+    const mac = src.indexOf("path: AE_LAUNCHER_MAC"), win = src.indexOf("path: AE_LAUNCHER_WINDOWS"), jsx = src.indexOf("path: AE_JSX_FILE"), readme = src.indexOf('path: "LESMEG.txt"');
+    expect(mac).toBeGreaterThan(0);
+    expect(mac).toBeLessThan(jsx); expect(win).toBeLessThan(jsx); expect(jsx).toBeLessThan(readme);
+    expect(src).not.toMatch(/path: "bygg\.jsx"/);
+  });
+
+  it("LESMEG forklarer at .jsx kan åpne et annet Adobe-program, på nb og en", () => {
+    const nb = t("ptg3.readme-ae-other-app", {}, "nb"); const en = t("ptg3.readme-ae-other-app", {}, "en");
+    expect(nb).toContain("Audition"); expect(nb).toContain("Åpne med"); expect(nb).toContain("Vis info");
+    expect(en).toContain("Audition"); expect(en).toContain("Open With"); expect(en).toContain("Get Info");
+    for (const k of ["ptg3.readme-ae", "ptg3.readme-ae-open", "ptg3.ae-not-found"]) {
+      expect(t(k, { value1: "X.aep" }, "nb")).not.toMatch(/bygg\.jsx/);
+      expect(t(k, { value1: "X.aep" }, "en")).not.toMatch(/bygg\.jsx/);
+    }
+  });
+});

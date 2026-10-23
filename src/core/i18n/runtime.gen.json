@@ -32520,16 +32520,19 @@
       "text": "Send til Dragonframe"
     },
     "ptg3.ae-missing": {
-      "text": "Disse filene mangler ved siden av bygg.jsx, så byggingen stopper:"
+      "text": "Disse filene mangler ved siden av bygg-after-effects.jsx, så byggingen stopper:"
     },
     "ptg3.ae-not-found": {
-      "text": "Fant ikke Adobe After Effects. Åpne After Effects selv og velg File > Scripts > Run Script File, og velg bygg.jsx i denne mappen."
+      "text": "Fant ikke Adobe After Effects. Åpne After Effects selv og velg File > Scripts > Run Script File, og velg bygg-after-effects.jsx i denne mappen."
     },
     "ptg3.ae-package": {
       "text": "After Effects-pakke"
     },
     "ptg3.ae-save-failed": {
       "text": "Prosjektet er bygget, men kunne ikke lagres. Slå på Preferences > Scripting & Expressions > «Allow Scripts to Write Files and Access Network», og kjør skriptet på nytt."
+    },
+    "ptg3.ae-wrong-host": {
+      "text": "Dette skriptet må kjøres i After Effects. Bruk startfilen «Åpne i After Effects» i samme mappe."
     },
     "ptg3.camera-fbx": {
       "text": "Kamera (FBX)"
@@ -32553,10 +32556,13 @@
       "text": "2D-parallakse"
     },
     "ptg3.readme-ae": {
-      "text": "Åpne After Effects, velg File > Scripts > Run Script File og kjør bygg.jsx fra denne mappen. Scriptet bygger én komposisjon per skudd og en hovedkomposisjon med lag, nøkkelbilder, bildeskifter, masker og lyd. Overganger mellom scener er ikke med. Tekstlag gjenskapes ikke."
+      "text": "Åpne After Effects, velg File > Scripts > Run Script File og kjør bygg-after-effects.jsx fra denne mappen. Scriptet bygger én komposisjon per skudd og en hovedkomposisjon med lag, nøkkelbilder, bildeskifter, masker og lyd. Overganger mellom scener er ikke med. Tekstlag gjenskapes ikke."
     },
     "ptg3.readme-ae-open": {
-      "text": "Tre måter å åpne pakken på: 1) Pakk ut ZIP-filen og dobbeltklikk «Åpne i After Effects (Windows).bat» eller «Åpne i After Effects (Mac).command». 2) Eller åpne After Effects og velg File > Scripts > Run Script File og bygg.jsx. 3) Skriptet lagrer prosjektet som {value1} i samme mappe; etterpå kan du dobbeltklikke den filen direkte. For lagringen må «Allow Scripts to Write Files and Access Network» være slått på i Preferences > Scripting & Expressions. Overganger mellom scener og tekstlag gjenskapes ikke. Vi kan ikke lage .aep-filen direkte, fordi formatet er lukket; derfor bygger skriptet den inne i After Effects."
+      "text": "Tre måter å åpne pakken på: 1) Pakk ut ZIP-filen og dobbeltklikk «Åpne i After Effects (Windows).bat» eller «Åpne i After Effects (Mac).command». 2) Eller åpne After Effects og velg File > Scripts > Run Script File og bygg-after-effects.jsx. 3) Skriptet lagrer prosjektet som {value1} i samme mappe; etterpå kan du dobbeltklikke den filen direkte. For lagringen må «Allow Scripts to Write Files and Access Network» være slått på i Preferences > Scripting & Expressions. Overganger mellom scener og tekstlag gjenskapes ikke. Vi kan ikke lage .aep-filen direkte, fordi formatet er lukket; derfor bygger skriptet den inne i After Effects."
+    },
+    "ptg3.readme-ae-other-app": {
+      "text": "Merk: dobbeltklikk på bygg-after-effects.jsx kan åpne et annet Adobe-program, for eksempel Audition, fordi .jsx-filer er knyttet til alle Adobe-programmer med ExtendScript. Bruk da startfilen «Åpne i After Effects». Alternativt kan du høyreklikke filen og velge After Effects under «Åpne med», eller i Finder velge «Vis info» → «Åpne med»."
     },
     "ptg3.readme-camera": {
       "text": "Denne pakken inneholder én FBX-fil (ASCII 7.4) per skudd med kamerabevegelsen i fysiske mål: tid i KTime (46 186 158 000 per sekund), FilmWidth i tommer, FocalLength i mm og platene som null-objekter. FBX-eksporten er eksperimentell – prøv den på riggen din og rapporter avvik."
@@ -65811,16 +65817,19 @@
       "text": "Send to Dragonframe"
     },
     "ptg3.ae-missing": {
-      "text": "These files are missing next to bygg.jsx, so the build stops:"
+      "text": "These files are missing next to bygg-after-effects.jsx, so the build stops:"
     },
     "ptg3.ae-not-found": {
-      "text": "Could not find Adobe After Effects. Open After Effects yourself, choose File > Scripts > Run Script File and pick bygg.jsx in this folder."
+      "text": "Could not find Adobe After Effects. Open After Effects yourself, choose File > Scripts > Run Script File and pick bygg-after-effects.jsx in this folder."
     },
     "ptg3.ae-package": {
       "text": "After Effects package"
     },
     "ptg3.ae-save-failed": {
       "text": "The project was built but could not be saved. Turn on Preferences > Scripting & Expressions > “Allow Scripts to Write Files and Access Network” and run the script again."
+    },
+    "ptg3.ae-wrong-host": {
+      "text": "This script must be run in After Effects. Use the launcher “Åpne i After Effects” in the same folder."
     },
     "ptg3.camera-fbx": {
       "text": "Camera (FBX)"
@@ -65844,10 +65853,13 @@
       "text": "2D parallax"
     },
     "ptg3.readme-ae": {
-      "text": "Open After Effects, choose File > Scripts > Run Script File and run bygg.jsx from this folder. The script builds one composition per shot and a main composition with layers, keyframes, image swaps, masks and audio. Transitions between scenes are not included. Text layers are not recreated."
+      "text": "Open After Effects, choose File > Scripts > Run Script File and run bygg-after-effects.jsx from this folder. The script builds one composition per shot and a main composition with layers, keyframes, image swaps, masks and audio. Transitions between scenes are not included. Text layers are not recreated."
     },
     "ptg3.readme-ae-open": {
-      "text": "Three ways to open the package: 1) Unzip the file and double-click “Åpne i After Effects (Windows).bat” or “Åpne i After Effects (Mac).command”. 2) Or open After Effects and choose File > Scripts > Run Script File and bygg.jsx. 3) The script saves the project as {value1} in the same folder; afterwards you can double-click that file directly. Saving requires “Allow Scripts to Write Files and Access Network” in Preferences > Scripting & Expressions. Transitions between scenes and text layers are not recreated. We cannot create the .aep file directly because the format is closed; that is why the script builds it inside After Effects."
+      "text": "Three ways to open the package: 1) Unzip the file and double-click “Åpne i After Effects (Windows).bat” or “Åpne i After Effects (Mac).command”. 2) Or open After Effects and choose File > Scripts > Run Script File and bygg-after-effects.jsx. 3) The script saves the project as {value1} in the same folder; afterwards you can double-click that file directly. Saving requires “Allow Scripts to Write Files and Access Network” in Preferences > Scripting & Expressions. Transitions between scenes and text layers are not recreated. We cannot create the .aep file directly because the format is closed; that is why the script builds it inside After Effects."
+    },
+    "ptg3.readme-ae-other-app": {
+      "text": "Note: double-clicking bygg-after-effects.jsx may open another Adobe app, such as Audition, because .jsx files are linked to every Adobe app with ExtendScript. In that case, use the launcher “Åpne i After Effects”. Alternatively, right-click the file and choose After Effects under “Open With”, or in Finder choose “Get Info” → “Open with”."
     },
     "ptg3.readme-camera": {
       "text": "This package contains one FBX file (ASCII 7.4) per shot with the camera move in physical units: time in KTime (46,186,158,000 per second), FilmWidth in inches, FocalLength in mm, and the plates as null objects. The FBX export is experimental – try it on your rig and report any discrepancies."
