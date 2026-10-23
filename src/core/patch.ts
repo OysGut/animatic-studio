@@ -298,8 +298,8 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         removed: a.removed === true,
         // Migrasjon 0030 (DEC-0080)
         visual_brief: a.visualBrief ?? "",
-        // Migrasjon 0089: bare når faktaarket er laget automatisk (eldre databaser uten kolonnen)
-        ...(a.visualBriefAuto ? { visual_brief_auto_at: a.visualBriefAuto } : {}),
+        // Migrasjon 0089: null når faktaarket er skrevet eller rettet av brukeren (apply_changes tar bare kjente kolonner)
+        visual_brief_auto_at: a.visualBriefAuto ?? null,
         // Migrasjon 0089: tekstversjoner skrives bare når ressursen har dem (eldre databaser uten kolonnen)
         ...(a.briefVersions !== undefined
           ? { brief_versions: a.briefVersions, active_brief_id: a.activeBriefId ?? null }
