@@ -8,7 +8,7 @@ import { Loader2, RotateCcw } from "lucide-react";
 import { AiGlyph } from "@/app/design/icons/AiGlyph";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { aiUsage, type Asset, type AssetMedia, type AssetVariant, type AssetVersion, type AttachedImage, attachedImages, promptFamilyOf, costBreakdown, estimateCostUsd, formatCredits, formatUsd, hasStyleGuide, IMAGE_PURPOSE_FOR_KIND, IMAGE_SIZE_LABEL, fullSizeOriginal, type ImageSize, imageSizesOf, lastImagePrompt, LOVABLE_CUTOUT_MODEL, LOVABLE_IMAGE_MODEL, MAX_PROMPT_CHARS, type Project, type ProjectState, profileBudgetRemaining, qualityProfileUsage, providerInfo, providerModel, providersFor, qualityProfileSnapshot, stripAttachedSection, tm } from "@/core";
+import { planBriefSave, shownBriefVersion, type BriefVersion, aiUsage, type Asset, type AssetMedia, type AssetVariant, type AssetVersion, type AttachedImage, attachedImages, promptFamilyOf, costBreakdown, estimateCostUsd, formatCredits, formatUsd, hasStyleGuide, IMAGE_PURPOSE_FOR_KIND, IMAGE_SIZE_LABEL, fullSizeOriginal, type ImageSize, imageSizesOf, lastImagePrompt, LOVABLE_CUTOUT_MODEL, LOVABLE_IMAGE_MODEL, MAX_PROMPT_CHARS, type Project, type ProjectState, profileBudgetRemaining, qualityProfileUsage, providerInfo, providerModel, providersFor, qualityProfileSnapshot, stripAttachedSection, tm } from "@/core";
 import { QualityProfilePicker, chosenQualityProfile, type QualityProfileChoice } from "@/app/ai/QualityProfilePicker";
 import { aiJobsKey, useAiJobs } from "@/app/ai/use-ai-jobs";
 import { CUTOUT_MODEL, IMAGE_MODEL, generateImage } from "@/adapters/ai/generate-image.functions";
@@ -24,6 +24,8 @@ export interface GeneratedImage {
   readonly versionId: string;
   readonly media: AssetMedia;
   readonly model: string;
+  /** Tekstversjonen bildet ble laget fra (migrasjon 0089). */
+  readonly briefVersionId?: string;
 }
 
 export function GenerateImagePanel({
@@ -41,7 +43,16 @@ export function GenerateImagePanel({
   context,
   onOpenStyleGuide,
   visualBrief,
+  saveBriefVersions,
+  onBriefShown,
 }: {
+  /**
+   * Lagrer tekstversjonene av beskrivelsen på ressursen (Øystein 23.10): én angrebar kommando. Returnerer
+   * feilmelding eller null. Utelatt: teksten lagres ikke som versjon (som før).
+   */
+  saveBriefVersions?: (versions: readonly BriefVersion[], activeId: string) => string | null;
+  /** Tekstversjonen som står i feltet nå (for fremheving av bildene laget fra den), eller null. */
+  onBriefShown?: (briefId: string | null) => void;
   /** Det visuelle faktaarket for ressursen (vises i oppsummeringen, DEC-0080). */
   visualBrief?: ReactNode;
   /**
@@ -191,8 +202,9 @@ export function GenerateImagePanel({
   const serverPreview = useImagePromptPreview(projectId, promptRequest, context?.state ?? asset).data ?? null;
   const summary = serverPreview?.summary ?? null;
   const auto = serverPreview?.prompt ?? "";
-  const [prompt, setPrompt] = useState(initialPrompt ?? auto);
-  const [edited, setEdited] = useState(initialPrompt !== undefined && initialPrompt !== auto);
+  const openBrief = initialPrompt === undefined && saveBriefVersions ? shownBriefVersion(asset) : null;
+  const [prompt, setPrompt] = useState(initialPrompt ?? openBrief?.text ?? auto);
+  const [edited, setEdited] = useState((initialPrompt !== undefined && initialPrompt !== auto) || openBrief !== null);
   /** Hvor teksten i feltet kom fra, når den ikke er den automatiske. */
   const [origin, setOrigin] = useState<string | null>(null);
   const queryClient = useQueryClient();
@@ -203,8 +215,50 @@ export function GenerateImagePanel({
     [jobs.data, asset.id],
   );
   const lastUsed = useRef(false);
+  // Tekstversjoner (Øystein 23.10): feltet åpner med den sist brukte/redigerte, aldri standardteksten
+  const briefs = asset.briefVersions ?? [];
+  const [briefIdx, setBriefIdx] = useState<number | null>(() => {
+    if (initialPrompt !== undefined || !saveBriefVersions) return null;
+    const b = shownBriefVersion(asset);
+    return b ? briefs.indexOf(b) : null;
+  });
+  const briefInit = useRef(false);
+  if (!briefInit.current) {
+    briefInit.current = true;
+    if (briefIdx !== null && briefs[briefIdx]) {
+      lastUsed.current = true;
+    }
+  }
   /** Feltet følger den automatiske beskrivelsen (til siste beskrivelse er satt inn, eller etter «Tilbakestill»). */
-  const followAuto = useRef(true);
+  const followAuto = useRef(openBrief === null);
+  /** Den viste tekstversjonen, bare så lenge feltet har akkurat den teksten. */
+  const shownBrief = briefIdx !== null && briefs[briefIdx] && briefs[briefIdx].text === stripAttachedSection(prompt).replace(/\r\n?/g, "\n").trim() ? briefs[briefIdx] : null;
+  useEffect(() => onBriefShown?.(shownBrief?.id ?? null), [shownBrief?.id, onBriefShown]);
+  /** Lagrer teksten i feltet som tekstversjon (ny hvis den er endret); returnerer ID-en, eller undefined. */
+  const saveBrief = (): string | undefined => {
+    if (!saveBriefVersions || !editable) return undefined;
+    const text = stripAttachedSection(promptRef.current);
+    const plan = planBriefSave(assetRef.current, text, crypto.randomUUID(), new Date().toISOString());
+    if (!plan) return shownBriefVersion(assetRef.current)?.text === text.replace(/\r\n?/g, "\n").trim() ? shownBriefVersion(assetRef.current)?.id : undefined;
+    if (saveBriefVersions(plan.versions, plan.activeId)) return undefined;
+    assetRef.current = { ...assetRef.current, briefVersions: plan.versions, activeBriefId: plan.activeId };
+    setBriefIdx(plan.versions.findIndex((v) => v.id === plan.activeId));
+    return plan.activeId;
+  };
+  const promptRef = useRef(prompt);
+  promptRef.current = prompt;
+  const assetRef = useRef(asset);
+  useEffect(() => {
+    assetRef.current = asset;
+  }, [asset]);
+  const editedRef = useRef(edited);
+  editedRef.current = edited;
+  const saveRef = useRef(saveBrief);
+  saveRef.current = saveBrief;
+  // Teksten skal aldri gå tapt: en endret tekst lagres når dialogen lukkes
+  useEffect(() => () => {
+    if (editedRef.current) saveRef.current();
+  }, []);
   useEffect(() => {
     if (lastUsed.current || initialPrompt !== undefined || edited || !last) return;
     lastUsed.current = true;
@@ -296,7 +350,9 @@ export function GenerateImagePanel({
         return;
       }
       setPrompt(r.prompt);
+      promptRef.current = r.prompt;
       setEdited(true);
+      saveBrief();
       setWritten({ model: r.model, images: attachedKey });
     } catch (e) {
       setError(
@@ -315,6 +371,7 @@ export function GenerateImagePanel({
     setDone(null);
     setRunning(true);
     try {
+      const briefVersionId = saveBrief();
       let made = 0;
       for (let c = 0; c < candidates; c++) {
         const r = await generateImage({
@@ -346,7 +403,7 @@ export function GenerateImagePanel({
           );
           return;
         }
-        const err = await onGenerated({ versionId: r.versionId, media: r.media, model: r.model });
+        const err = await onGenerated({ versionId: r.versionId, media: r.media, model: r.model, ...(briefVersionId ? { briefVersionId } : {}) });
         if (err) {
           setError(err);
           return;
@@ -457,6 +514,27 @@ export function GenerateImagePanel({
           <label className="flex flex-1 flex-col gap-1 text-xs text-text-secondary">
             <span className="flex items-center justify-between">
               {t("app-library-generate-image-panel.generate-image-panel.span.f985152b1196")}
+              <span className="ml-auto flex items-center gap-1">
+              {saveBriefVersions && briefs.length > 0 ? (
+                <BriefNav
+                  index={briefIdx}
+                  total={briefs.length}
+                  disabled={!editable || running || writing}
+                  onGo={(i) => {
+                    if (edited && !shownBrief) saveBrief();
+                    const list = assetRef.current.briefVersions ?? briefs;
+                    const b = list[i];
+                    if (!b) return;
+                    followAuto.current = false;
+                    setPrompt(b.text);
+                    setEdited(true);
+                    setOrigin(null);
+                    setConfirm(false);
+                    setBriefIdx(i);
+                  }}
+                  count={(assetRef.current.briefVersions ?? briefs).length}
+                />
+              ) : null}
               {edited ? (
                 <button
                   type="button"
@@ -473,9 +551,13 @@ export function GenerateImagePanel({
                   <RotateCcw className="size-3" aria-hidden /> {t("app-library-generate-image-panel.generate-image-panel.button.6d3464efba3d")}
                 </button>
               ) : null}
+              </span>
             </span>
             <textarea
               value={prompt}
+              onBlur={() => {
+                if (edited) saveBrief();
+              }}
               onChange={(e) => {
                 setPrompt(e.target.value);
                 setEdited(true);
@@ -855,4 +937,21 @@ export function lostConnection(message: string | undefined): string {
   if (!m || /internal server error|failed to fetch|network|timeout|50[234]|load failed/i.test(m))
     return t("app-library-generate-image-panel.lost-connection.message.e72c8e457e28");
   return tm(m);
+}
+
+/** ‹ 3/5 › over tekstfeltet: bla mellom tekstversjonene (Øystein 23.10). */
+function BriefNav({ index, total, count, disabled, onGo }: { index: number | null; total: number; count: number; disabled: boolean; onGo: (i: number) => void }) {
+  const n = Math.max(total, count);
+  // En endret, ulagret tekst står «etter» den siste versjonen
+  const at = index ?? n;
+  const btn = "rounded-sm px-1 text-[13px] leading-none text-text-secondary hover:bg-surface-3 hover:text-text-primary disabled:opacity-50 disabled:hover:bg-transparent";
+  return (
+    <span className="flex items-center gap-0.5" data-testid="brief-nav">
+      <button type="button" className={btn} disabled={disabled || at <= 0} onClick={() => onGo(at - 1)} aria-label={t("brief.versions.previous")} title={t("brief.versions.previous")}>‹</button>
+      <span className="tabular-nums text-[11px] text-text-tertiary" data-testid="brief-counter" aria-label={t("brief.versions.counter", { current: String(index === null ? "–" : index + 1), total: String(n) })}>
+        {index === null ? "–" : index + 1}/{n}
+      </span>
+      <button type="button" className={btn} disabled={disabled || at >= n - 1} onClick={() => onGo(at + 1)} aria-label={t("brief.versions.next")} title={t("brief.versions.next")}>›</button>
+    </span>
+  );
 }

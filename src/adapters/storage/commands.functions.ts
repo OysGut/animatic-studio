@@ -136,6 +136,7 @@ const LIBRARY_COMMANDS = new Set<string>([
   "SetAssetVersionsRemoved",
   "SetVersionView",
   "SetAssetVisualBrief",
+  "SetAssetBriefVersions",
   "SetSoundLinks",
   "SetContextNames",
   "PlanAssetInScenes",
@@ -388,6 +389,11 @@ export function needsSchema32(command: { type: string }): boolean {
 
 export function needsSchema31(command: { type: string }): boolean {
   return command.type === "SetProductionNote";
+}
+
+/** Migrasjon 0089: tekstversjoner av bildebeskrivelsen og bildets referanse til dem. */
+export function needsSchema89(command: { type: string } & Record<string, unknown>): boolean {
+  return command.type === "SetAssetBriefVersions" || (command.type === "AddAssetVersion" && command["briefVersionId"] !== undefined);
 }
 
 export function needsSchema30(command: { type: string }): boolean {
@@ -879,6 +885,15 @@ export const runCommand = createServerFn({ method: "POST" })
           ok: false,
           code: "schema",
           message: tk("adapters-storage-commands-functions.message.message.e1f8960f3a98"),
+        };
+    }
+    if (needsSchema89(checked as never)) {
+      const schema = await checkSchema(admin);
+      if (schema.kind === "missing" || schema.version < 89)
+        return {
+          ok: false,
+          code: "schema",
+          message: tk("adapters-storage-commands-functions.message.message.28a62ad62dd5", { need: "89" }),
         };
     }
     if (needsSchema30(checked as never)) {

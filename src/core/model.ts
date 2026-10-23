@@ -478,11 +478,22 @@ export interface Asset extends Entity<AssetId> {
    * bildebeskrivelsene i stedet for rå manusutdrag. Mangler/tom = ikke laget.
    */
   readonly visualBrief?: string;
+  /** Tekstversjoner av brukerens bildebeskrivelse (migrasjon 0089), eldste først. */
+  readonly briefVersions?: readonly BriefVersion[];
+  /** Sist brukte/redigerte tekstversjon (vises når dialogen åpnes). */
+  readonly activeBriefId?: string;
   /**
    * Den globale ressursen prosjektressursen er hentet fra (GP2, migrasjon 0046). Bare en kobling (metadata):
    * filene er prosjektets egne kopier, så prosjektet virker uten tilgang til arbeidsgruppen.
    */
   readonly globalAssetId?: string;
+}
+
+/** Én tekstversjon av brukerens bildebeskrivelse (migrasjon 0089). Aldri serverprompten. */
+export interface BriefVersion {
+  readonly id: string;
+  readonly text: string;
+  readonly createdAt: string;
 }
 
 /** Hvilken global versjon en prosjektversjon er kopiert fra (GP2). Bare metadata. */
@@ -579,6 +590,8 @@ export interface AssetVersion extends Entity<AssetVersionId> {
    * versjonsnummeret i merknaden. Mangler for eldre versjoner (opphavet slås da opp fra merknaden ved lesing).
    */
   readonly derivedFromVersionId?: AssetVersionId;
+  /** Tekstversjonen (BriefVersion.id på ressursen) bildet ble generert fra (migrasjon 0089). */
+  readonly briefVersionId?: string;
   /**
    * Avledede filer (B-105a, migrasjon 0078): arbeidskopi, avspillingsproxy og miniatyr – og rå TIFF når
    * versjonen er en renderbar konvertering. Uforanderlig som resten av versjonen; eldre versjoner mangler den.

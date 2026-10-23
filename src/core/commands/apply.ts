@@ -1,3 +1,4 @@
+import { briefVersionsError } from "../assets/brief-versions";
 import { applyMeasureSetCommand } from "../print/measure/commands";
 import { applyMouthCommand } from "../interchange/mouth-commands";
 import { DEFAULT_CAPTURE, captureSettingsValid, projectCodeValid } from "../interchange/settings";
@@ -6414,6 +6415,28 @@ function run(
       };
     }
 
+    case "SetAssetBriefVersions": {
+      const a = need(s.assets[c.assetId], tk("core-commands-apply.a.need.f66a94bd1bc8.12"));
+      if (briefVersionsError(c.versions, c.activeId)) fail("invalid", tk("core-commands-apply.run.fail.32415a83fac8"));
+      const { briefVersions: _v, activeBriefId: _a, ...rest } = a;
+      return {
+        state: {
+          ...s,
+          assets: {
+            ...s.assets,
+            [a.id]: {
+              ...rest,
+              briefVersions: c.versions.map((v) => ({ id: v.id, text: v.text, createdAt: v.createdAt })),
+              ...(c.activeId ? { activeBriefId: c.activeId } : {}),
+              revision: rev(a),
+            },
+          },
+        },
+        inverse: { type: "SetAssetBriefVersions", assetId: a.id, versions: a.briefVersions ?? [], activeId: a.activeBriefId ?? null },
+        affected: [a.id],
+      };
+    }
+
     case "SetCompositionStep": {
       const comp = need(s.compositions[c.compositionId], tk("core-commands-apply.comp.need.118fc96033c3.2"));
       if (!Number.isInteger(c.step) || c.step < 1 || c.step > 4)
@@ -6606,6 +6629,8 @@ function run(
         if (!from || from.id === c.versionId || s.assetVariants[from.variantId]?.assetId !== va.assetId)
           fail("invalid", tk("id3.derived-from.invalid"));
       }
+      if (c.briefVersionId !== undefined && (typeof c.briefVersionId !== "string" || !s.assets[va.assetId]?.briefVersions?.some((b) => b.id === c.briefVersionId)))
+        fail("invalid", tk("core-commands-apply.run.fail.32415a83fac8"));
       if (m.derivedFiles !== undefined) {
         const derr = derivedFilesError(m.derivedFiles, `${s.project.id}/`);
         if (derr) fail("invalid", derr);
@@ -6644,6 +6669,7 @@ function run(
               ...(c.template !== undefined ? { template: c.template } : {}),
               ...(c.font !== undefined ? { font: c.font } : {}),
               ...(c.derivedFromVersionId !== undefined ? { derivedFromVersionId: c.derivedFromVersionId } : {}),
+              ...(c.briefVersionId !== undefined && m.mimeType.startsWith("image/") ? { briefVersionId: c.briefVersionId } : {}),
               // B-105a: avledede filer (arbeidskopi, proxy, miniatyr, rå TIFF) – bare for bilder
               ...(m.derivedFiles !== undefined && m.mimeType.startsWith("image/")
                 ? { derivedFiles: m.derivedFiles }
@@ -6754,6 +6780,7 @@ function run(
           ...(ver.template ? { template: ver.template } : {}),
           ...(ver.globalSource ? { globalSource: ver.globalSource } : {}),
           ...(ver.derivedFromVersionId ? { derivedFromVersionId: ver.derivedFromVersionId } : {}),
+          ...(ver.briefVersionId ? { briefVersionId: ver.briefVersionId } : {}),
         },
         affected: [ver.id],
       };
