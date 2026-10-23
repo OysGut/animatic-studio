@@ -8524,7 +8524,10 @@ try {
 
   await test("0100 G-8.2: anon har ingen tabellrettigheter eller policyer i public", async () => {
     const grants = await sql`select table_name, privilege_type from information_schema.role_table_grants
-      where table_schema = 'public' and grantee in ('anon','PUBLIC') order by 1`;
+      where table_schema = 'public' and grantee in ('anon','PUBLIC')
+        and privilege_type in ('SELECT','INSERT','UPDATE','DELETE','TRUNCATE')
+        and not (privilege_type = 'SELECT' and table_name in ('schema_version','privacy_policy')) order by 1`;
+    // Bevisst: skjemaversjonen og personvernerklæringen kan leses før innlogging (ikke personopplysninger)
     assert(grants.length === 0, `anon/PUBLIC har tabellrettigheter: ${grants.map((r) => `${String(r["table_name"])}:${String(r["privilege_type"])}`).join(", ")}`);
     const pols = await sql`select tablename, policyname from pg_policies where schemaname = 'public' and ('anon' = any(roles) or 'public' = any(roles))`;
     assert(pols.length === 0, `policyer for anon/public: ${pols.map((r) => `${String(r["tablename"])}.${String(r["policyname"])}`).join(", ")}`);

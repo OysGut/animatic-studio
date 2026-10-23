@@ -12,7 +12,7 @@
 -- sender serveren IP selv. Alle SECURITY DEFINER-funksjoner har search_path = ''.
 
 create table private.rate_limit_rules (
-  scope text primary key check (scope ~ '^[a-z_]{2,40}$'),
+  scope text primary key check (scope ~ '^[a-z0-9_]{2,40}$'),
   window_seconds integer not null check (window_seconds between 1 and 86400),
   per_key integer not null check (per_key >= 1),
   per_ip integer not null check (per_ip >= 1)
@@ -144,8 +144,13 @@ revoke all on function private.rate_limit_trigger() from public, anon, authentic
 create or replace function public.globe_points()
 returns table (lat double precision, lon double precision, active boolean)
 language plpgsql volatile security definer set search_path = '' as $$
+declare v_uid text;
 begin
-  perform private.rate_limit_hit('globe', array['u:' || coalesce(auth.uid()::text, ''), 'ip:' || coalesce(private.request_ip(), '')]);
+  begin
+    v_uid := auth.uid()::text;
+  exception when others then v_uid := null;
+  end;
+  perform private.rate_limit_hit('globe', array['u:' || coalesce(v_uid, ''), 'ip:' || coalesce(private.request_ip(), '')]);
   return query
   with users as (
     select p.user_id,
