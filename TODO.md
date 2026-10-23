@@ -289,6 +289,7 @@ B-087: REQ-0879–REQ-0895 (Rigg & 2D-utskrift, A1–A17) og REQ-0896–REQ-0915
 - Ekte programimport: Dragonframe (PTG2/PTG5), Resolve/Premiere/Avid (PTG6), Nuke/Fusion (PTG7), After Effects/FBX (PTG3), Moho/Papagayo (PTG4), fysisk riggutskrift.
 
 ### Teknisk gjeld
+- Plassholder → bilde (23.10): lag i Asset Studio-utkast tilpasses ikke automatisk (utkastet lagrer egne lagfelter); allerede forvrengte lag rettes bare med «Nullstill format». Se docs/development/PLASSHOLDER_FIX_REPORT.md.
 - N10 tilgjengelighet: bare mørkt tema finnes (DEC-0017), så lyst tema er ikke kontrollert utover det lyse manusarket. axe dekker sceneeditoren (scene- og animasjonsvisning) og manussiden; andre sider (montering, bibliotek, Asset Studio) er ikke gjennomgått.
 - REQ-0210 (N8 rettet): arbeidsflaten, tidslinjen, SpacingRow og knappene tegnes ikke lenger per bilde. Gjenstår: egenskapspanelet (LayerInspector) og animasjonsfanens spor følger fortsatt bildet, med vilje, fordi de viser verdier på avspillingshodet.
 - tests/visual/scene-panels-ui.mjs feiler 12/25 både før og etter N8 (venter på et klikk som aldri blir mulig); ikke undersøkt.
