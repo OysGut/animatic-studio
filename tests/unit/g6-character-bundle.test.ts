@@ -5,8 +5,10 @@
 import { describe, expect, it } from "vitest";
 import {
   characterBundleError,
+  characterBundleFromAsset,
   parseCharacterBundle,
   planCharacterPull,
+  planCharacterPullCommands,
   pullPlanHasChanges,
   type CharacterBundle,
 } from "@/core/global/character-bundle";
