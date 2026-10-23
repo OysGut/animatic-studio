@@ -8529,7 +8529,8 @@ try {
         and not (privilege_type = 'SELECT' and table_name in ('schema_version','privacy_policy')) order by 1`;
     // Bevisst: skjemaversjonen og personvernerklæringen kan leses før innlogging (ikke personopplysninger)
     assert(grants.length === 0, `anon/PUBLIC har tabellrettigheter: ${grants.map((r) => `${String(r["table_name"])}:${String(r["privilege_type"])}`).join(", ")}`);
-    const pols = await sql`select tablename, policyname from pg_policies where schemaname = 'public' and ('anon' = any(roles) or 'public' = any(roles))`;
+    const pols = await sql`select tablename, policyname from pg_policies where schemaname = 'public' and ('anon' = any(roles) or 'public' = any(roles))
+      and not (cmd = 'SELECT' and policyname in ('schema_version_read','privacy_policy_read'))`;
     assert(pols.length === 0, `policyer for anon/public: ${pols.map((r) => `${String(r["tablename"])}.${String(r["policyname"])}`).join(", ")}`);
   });
 
