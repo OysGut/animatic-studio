@@ -73,15 +73,16 @@
 - [ ] Claude: gjennomgå og kjør 0102 i Cloud
 
 ## SB-2 storyboardgalleri og navigasjon (23.10.2026) – kjøres etter SB-1
-- [ ] Fane «Storyboard» + rute prosjekt/$projectId/storyboard med vindu-ID
-- [ ] Galleri i fortellerrekkefølge per produksjon, gruppert per scene, felles Thumbnail
-- [ ] Kontroller: panelstørrelse/zoom, vis-skjul, tekstvisning, filter, «Hopp til manus», husket per bruker
-- [ ] Klikk/dobbeltklikk/Enter-navigasjon med panel-markering (URL-parameter)
-- [ ] Omorganisering: dra paneler/scener, legg til/dupliser/skjul/deaktiver/gjeninnfør, flytt til scene, alt med angre
-- [ ] Første åpning: forslag ett tomt panel per scene med bekreftelse
-- [ ] Statusmerker per fagområde + redigering
-- [ ] Tilgjengelighet (piltaster, aria, RTL), virtualisering for 2 000 paneler
-- [ ] Tester jsdom + visuelt nb/en; tsc 0, full vitest grønn, i18n grønn; rapport docs/development/SB2_REPORT.md
+- [x] 0103: tabellrekkefølgen i apply_changes flyttet til private.apply_change_tables (DB 226/0; ikke kjørt i Cloud)
+- [x] Fane «Storyboard» + rute prosjekt/$projectId/storyboard med vindu-ID
+- [x] Galleri i fortellerrekkefølge per produksjon, gruppert per scene, felles Thumbnail
+- [x] Kontroller: panelstørrelse/zoom, vis-skjul, tekstvisning, filter, «Hopp til manus», husket per bruker
+- [x] Klikk/dobbeltklikk/Enter-navigasjon med panel-markering (URL-parameter)
+- [x] Omorganisering: dra paneler/scener, legg til/dupliser/skjul/deaktiver/gjeninnfør, flytt til scene, alt med angre
+- [x] Første åpning: forslag ett tomt panel per scene med bekreftelse
+- [x] Statusmerker per fagområde + redigering
+- [x] Tilgjengelighet (piltaster, aria, RTL), virtualisering for 2 000 paneler
+- [x] Tester jsdom (12) + rapport; tsc 0, full vitest 2880 grønn, i18n grønn, DB 226/0. Visuell suite nb/en skrevet, ikke kjørt (Claude kjører). tsc 0, full vitest grønn, i18n grønn; rapport docs/development/SB2_REPORT.md
 
 ## SB-3 panelredigering (23.10.2026) – kjøres etter SB-2
 - [ ] Panelflate: dra inn ressurser (ID+versjon, proporsjoner), flytt/skaler/roter/ordne/lås/skjul
