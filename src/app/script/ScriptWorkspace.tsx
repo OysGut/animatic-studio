@@ -51,6 +51,7 @@ import { VersionsDialog } from "./VersionsDialog";
 import { Inspector } from "./Inspector";
 import { SceneNavigator, type CharacterOption } from "./SceneNavigator";
 import { ScriptPageView, type Selection } from "./ScriptPageView";
+import { useNavigate } from "@tanstack/react-router";
 import { PaneResizer, usePaneSize, useStoredFlag } from "@/app/shell/pane-size";
 import { onGotoScene, rememberScene } from "@/app/shell/current-scene";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";

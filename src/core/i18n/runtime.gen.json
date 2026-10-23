@@ -33109,6 +33109,9 @@
     "routes-se-token.title.title.daa9a7b91a74": {
       "text": "Film – Pen to Glass"
     },
+    "script.openScene.hint": {
+      "text": "Dobbeltklikk for å åpne scenen"
+    },
     "time.exact": {
       "text": "{weekday} {date} kl. {time}"
     },
@@ -66270,6 +66273,9 @@
     },
     "routes-se-token.title.title.daa9a7b91a74": {
       "text": "Film – Pen to Glass"
+    },
+    "script.openScene.hint": {
+      "text": "Double-click to open the scene"
     },
     "time.exact": {
       "text": "{weekday} {date} at {time}"

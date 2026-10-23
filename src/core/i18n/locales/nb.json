@@ -75542,5 +75542,8 @@
   },
   "factSheet.history": {
     "text": "Faktaark laget fra manuset ({name})"
+  },
+  "script.openScene.hint": {
+    "text": "Dobbeltklikk for å åpne scenen"
   }
 }
