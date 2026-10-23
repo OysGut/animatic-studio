@@ -1174,7 +1174,6 @@ export function Timeline({
         </IconButton>
         <span
           className="shrink-0 whitespace-nowrap px-1 font-mono text-[13px] tabular-nums text-text-primary"
-          role="timer"
           aria-live="off"
           data-testid="timecode"
           aria-label={tk("app-scene-editor-timeline.timeline.aria-label.3369220b3383")}
