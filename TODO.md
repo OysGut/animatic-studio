@@ -92,7 +92,7 @@ Spesifikasjon: `docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md`. Runde 0 (dokumenta
 
 ## Mindre ting
 - KI-167: serveruttak av siste videobilde krever en tilgjengelig, godkjent medietjeneste eller kompatibel decoder. Ingen slik tjeneste er konfigurert; nettleseruttak beholdes.
-- KI-243: MP3 ligger i createClientOnlyFn; produksjonsartefakt må kontrolleres av Claude før punktet lukkes.
+- [x] KI-243: produksjonsbygget kontrollert i N9; MP3-koderen ligger bare i klientdelen (tests/architecture/n9-mp3-client-only.test.ts).
 
 - KI-207: owner-bekreftet rydding er bygget/testet med falsk lagring; prøv mot ekte Cloud-lagring før produksjonsbruk. Ingen automatisk sletting.
 - Legge inn ferdige AI-videoer i scenen uten at prosjektet er åpent (KI-209; hentingen gjøres nå av bakgrunnsjobben), henger sammen med varsling. Videoer tapes ikke lenger: de hentes når prosjektet åpnes (inntil sju dager), og «Hent videoen igjen» finnes (DEC-0086).
@@ -291,7 +291,9 @@ B-087: REQ-0879–REQ-0895 (Rigg & 2D-utskrift, A1–A17) og REQ-0896–REQ-0915
 ### Teknisk gjeld
 - REQ-0210 (N8 rettet): arbeidsflaten, tidslinjen, SpacingRow og knappene tegnes ikke lenger per bilde. Gjenstår: egenskapspanelet (LayerInspector) og animasjonsfanens spor følger fortsatt bildet, med vilje, fordi de viser verdier på avspillingshodet.
 - tests/visual/scene-panels-ui.mjs feiler 12/25 både før og etter N8 (venter på et klikk som aldri blir mulig); ikke undersøkt.
-- DV5: resultater ferdige mens panelet er lukket kommer ikke på angrelisten; angring forsvinner ved omlasting (KI-22).
-- en-XA-overløp på 64 px i sceneeditorens verktøyrad (ML2_REPORT.md) – ikke bekreftet rettet.
+- [x] DV5 (N9): resultater ferdige mens panelet er lukket kommer på angrelisten neste gang arbeidsflaten åpnes i samme økt (tests/unit/n9-background-catchup.test.tsx). Angring forsvinner ved omlasting (dokumentert, KI-22).
+- [x] en-XA-overløp (N9): verktøyraden i sceneeditoren hadde 0 px; fanelinjen øverst ble kuttet og viser nå bare ikoner med verktøytips når etikettene ikke får plass. nb/en uendret (ml2-languages 323/0).
 - 33 krav uten målrettet test (liste i N6_REPORT.md) og 12 Story Lab-/prosesskrav uten samlet akseptansetest (N7_REPORT.md).
-- Rhubarb-finjustering av munnspor fra lyd (PTG4), ZIP64 (KI-66/KI-80), lydstrømming ved import (KI-67), KI-12, KI-30, KI-92, KI-243, KI-250.
+- [x] ZIP64 (KI-66/KI-80, N9): grensen på 3,8 GB fjernet; over 4 GB og over 65 535 filer testet (tests/unit/n9-zip64-large.test.ts). KI-250 lukket (screens.mjs avviklet i R5).
+- Rhubarb-finjustering av munnspor fra lyd (PTG4), lydstrømming ved import (KI-67), KI-12 (delvis lasting i runCommand), KI-92 (frilegging i Web Worker).
+- KI-30 krever Øystein: opprydding av alle ubrukte opplastinger, ikke bare AI-filer, betyr automatisk sletting av brukerens filer (se N9_REPORT.md).

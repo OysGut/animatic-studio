@@ -58,6 +58,22 @@ await h.scenario("ml2-bytte", clip.occurrence_id, "nb", async (page) => {
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     // ML2d: ingen vannrett rulling i sceneeditoren med åpen opptaksdialog, heller ikke på en-XA
     h.check(overflow <= 1, `${tag}: ingen vannrett rulling med åpen opptaksdialog (${overflow} px)`);
+    // N9: ingen knapp eller etikett i verktøyraden stikker ut av vinduet eller klippes skjult
+    const clipped = await page.evaluate(() => {
+      const w = window.innerWidth;
+      const out = [];
+      for (const el of document.querySelectorAll('[role="toolbar"] button, header button, [role="toolbar"] [role="tab"]')) {
+        const r = el.getBoundingClientRect();
+        if (r.width === 0) continue;
+        if (r.right > w + 1 || el.scrollWidth > el.clientWidth + 1) out.push(`${(el.getAttribute("aria-label") || el.textContent || "").slice(0, 30)}:${Math.round(r.right - w)}`);
+      }
+      for (const nav of document.querySelectorAll("nav")) {
+        if (nav.scrollWidth > nav.clientWidth + 1) out.push(`nav ${nav.getAttribute("aria-label")}:${nav.scrollWidth - nav.clientWidth}`);
+      }
+      return out;
+    });
+    if (tag !== "en-XA") h.check(!(await page.evaluate(() => document.querySelector("nav[data-compact]"))), `${tag}: fanelinjen viser etiketter (uendret)`);
+    h.check(clipped.length === 0, `${tag}: ingen knapper i verktøyraden utenfor vinduet eller avkuttet (${clipped.join(", ")})`);
     if (tag === "en-XA") await page.screenshot({ path: `${h.out}/en-XA.png` });
   }
   await field.blur();

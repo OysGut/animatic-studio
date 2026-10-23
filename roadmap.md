@@ -335,3 +335,10 @@
 - [x] n8-frame-store.test.tsx og N8-tak i verifisering4-ui (61/61 to ganger)
 - [x] REQ-0804/0807/0808/0814: ingen avvik (Verifisert i N6)
 - [ ] scene-panels-ui feiler 12/25 både før og etter (teknisk gjeld)
+
+## N9 – teknisk gjeld (23.10)
+- [x] en-XA: fanelinjen viser bare ikoner med verktøytips når etikettene ikke får plass; nb/en uendret.
+- [x] DV5/KI-22: resultater ferdige med lukket panel kommer på angrelisten ved neste åpning i økten.
+- [x] ZIP64 (KI-66/KI-80): grensen på 3,8 GB fjernet, store pakker testet uten 4 GB på disk.
+- [x] KI-243: MP3-koderen bare i klientbundlen, kontrollert i produksjonsbygget og vaktet av test.
+- [x] KI-250 lukket (avviklet skript). KI-12/KI-92 beskrevet, KI-30 krever Øystein.

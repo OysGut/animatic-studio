@@ -9,8 +9,22 @@ import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { PanelHeader } from "@/app/shell/workspace-chrome";
 import { listSpeechModels } from "@/adapters/ai/speech.functions";
 import { t } from "@/core/i18n/keyed";
-import { adoptServerHistory } from "@/app/project/use-commands";
-import { batchesStartedHere, batchesToAdopt, rowsToAdopt } from "./background-history";
+import { adoptServerHistory, registerServerHistoryCatchUp } from "@/app/project/use-commands";
+import { batchesStartedHere, batchesToAdopt, rowsToAdopt, watchBatches, catchUpProject } from "./background-history";
+
+/** N9 (KI-22): registreres første gang panelet ser jobber, så lukkede panel ikke mister ferdige resultater. */
+let catchUpRegistered = false;
+function ensureBackgroundCatchUp() {
+  if (catchUpRegistered) return;
+  catchUpRegistered = true;
+  registerServerHistoryCatchUp((projectId) => {
+    void catchUpProject(projectId, {
+      list: (id) => listDialogueBatches({ data: { projectId: id } }),
+      history: (id, batchId) => dialogueBatchHistory({ data: { projectId: id, batchId } }),
+      adopt: (id, rows) => adoptServerHistory(id, rows, t("dv5.background-result.undo-label")),
+    }).catch(() => undefined);
+  });
+}
 
 /**
  * DV5/DV6/DV7: massegenerering for én karakter i aktivt prosjekt. `drift` åpner samme dialog med bare de
@@ -51,11 +65,13 @@ export function DialogueBatchPanel({ state, asset, projectId, editable, drift = 
   // DV5-rest (N3): ferdige bakgrunnsresultater legges på angrelisten og kan angres som vanlige kommandoer
   useEffect(() => {
     if (!jobs.data || !editable) return;
+    ensureBackgroundCatchUp();
     for (const batchId of batchesToAdopt(jobs.data)) {
       void dialogueBatchHistory({ data: { projectId, batchId } })
         .then((rows) => adoptServerHistory(projectId, rowsToAdopt(batchId, rows).map((r) => ({ commandId: r.commandId, inverse: JSON.parse(r.inverseJson) as Command, affected: r.affected })), t("dv5.background-result.undo-label")))
         .catch(() => undefined);
     }
+    watchBatches(projectId, jobs.data);
   }, [jobs.data, editable, projectId]);
   const models = useQuery({ queryKey: ["speech-models", projectId], enabled: open, queryFn: () => listSpeechModels({ data: { projectId } }), staleTime: 300000 });
   const capabilityErrors = priced.flatMap(p => {

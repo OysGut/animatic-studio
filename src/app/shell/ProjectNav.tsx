@@ -1,4 +1,6 @@
 import { Link } from "@tanstack/react-router";
+import { useLayoutEffect, useRef, useState } from "react";
+import { useLanguage } from "@/app/i18n/language";
 import {
   Camera,
   Clapperboard,
@@ -81,9 +83,43 @@ const active =
 
 /** Fanerad med arbeidsflatene øverst (U4). Kan slås sammen til bare ikoner (DEC-0040); valget huskes. */
 export function ProjectNav({ projectId }: { projectId: string }) {
-  const [collapsed, setCollapsed] = useStoredFlag("project-nav-collapsed", false);
+  const [stored, setCollapsed] = useStoredFlag("project-nav-collapsed", false);
+  // N9: får ikke etikettene plass (f.eks. lange språk), vises bare ikoner med verktøytips.
+  // Bredden med etiketter huskes, så visningen går tilbake når det blir plass igjen.
+  const navRef = useRef<HTMLElement>(null);
+  const fullWidth = useRef(0);
+  const [tooNarrow, setTooNarrow] = useState(false);
+  const collapsed = stored || tooNarrow;
+  // Språkbytte endrer bare innholdet, ikke radens bredde: mål på nytt med etiketter.
+  const lang = useLanguage();
+  const [measuredLang, setMeasuredLang] = useState(lang);
+  if (measuredLang !== lang) {
+    setMeasuredLang(lang);
+    setTooNarrow(false);
+  }
+  useLayoutEffect(() => {
+    const el = navRef.current;
+    if (!el || stored) return;
+    const measure = () => {
+      if (!tooNarrow) {
+        if (el.scrollWidth > el.clientWidth + 1) {
+          fullWidth.current = el.scrollWidth;
+          setTooNarrow(true);
+        }
+      } else if (el.clientWidth >= fullWidth.current && fullWidth.current > 0) {
+        setTooNarrow(false);
+      }
+    };
+    measure();
+    if (typeof ResizeObserver === "undefined") return;
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [stored, tooNarrow, lang]);
   return (
     <nav
+      ref={navRef}
+      data-compact={tooNarrow && !stored ? "auto" : undefined}
       aria-label={t("id3.nav.workspaces")}
       className="flex h-9 shrink-0 items-stretch overflow-x-auto overflow-y-hidden border-b border-border bg-surface-1"
     >
@@ -131,17 +167,17 @@ export function ProjectNav({ projectId }: { projectId: string }) {
       ))}
       <button
         type="button"
-        onClick={() => setCollapsed(!collapsed)}
+        onClick={() => setCollapsed(!stored)}
         className={item + " ml-auto px-2.5"}
-        aria-label={collapsed ? t("app-shell-project-nav.project-nav.aria-label.426f16733981") : t("app-shell-project-nav.project-nav.aria-label.8e84932634d1")}
-        aria-expanded={!collapsed}
+        aria-label={stored ? t("app-shell-project-nav.project-nav.aria-label.426f16733981") : t("app-shell-project-nav.project-nav.aria-label.8e84932634d1")}
+        aria-expanded={!stored}
         title={
-          collapsed
+          stored
             ? t("app-shell-project-nav.project-nav.title.426f16733981")
             : t("app-shell-project-nav.project-nav.title.ec28e1bce3aa")
         }
       >
-        {collapsed ? <PanelLeftOpen aria-hidden /> : <PanelLeftClose aria-hidden />}
+        {stored ? <PanelLeftOpen aria-hidden /> : <PanelLeftClose aria-hidden />}
       </button>
     </nav>
   );
