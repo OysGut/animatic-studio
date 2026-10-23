@@ -8,6 +8,7 @@ import { mainProduction, paginate, scriptPaginationInput, setLanguage } from "@/
 import { ScriptPageView } from "@/app/script/ScriptPageView";
 import { SceneNavigator } from "@/app/script/SceneNavigator";
 import { fixture } from "../visual/fixture-state";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const s = fixture.state;
 const main = mainProduction(s)!;
@@ -49,13 +50,13 @@ describe("Manus: dobbeltklikk åpner scenen", () => {
       const onOpenScene = vi.fn();
       const occ = scriptPaginationInput(s, main.id)[1]!.occurrenceId;
       const { container } = render(
-        <SceneNavigator
+        <QueryClientProvider client={new QueryClient()}><SceneNavigator
           state={s} productionId={main.id} startPages={{}} selectedOcc={null} editable={false}
           onSelect={vi.fn()} onOpenScene={onOpenScene} onMove={vi.fn()} onToggleActive={vi.fn()}
           filter={{}} onFilterChange={vi.fn()} characters={[]} visible={null}
           structureEditing={false} onStructureEditingChange={vi.fn()} moved={null} movedBaseline={null}
           hits={null} noteCounts={null} inView={null}
-        />,
+        /></QueryClientProvider>,
       );
       const btn = container.querySelector<HTMLButtonElement>(`#nav-${occ}`)!;
       expect(btn.title).toBe(hint);
