@@ -8809,6 +8809,34 @@ try {
     await as("service_role", null, (tx) => tx`select public.purge_project_assets(${p}, ${ALICE})`);
   });
 
+  // ---------- 0103: tabellrekkefølgen i apply_changes ligger i et register ----------
+  await test("0103: apply_changes har ingen hardkodet tabelliste; registeret har alle 55 tabeller med foreldre før barn", async () => {
+    const src = String((await sql`select pg_get_functiondef('public.apply_changes(uuid,uuid,uuid,jsonb,jsonb,jsonb)'::regprocedure) d`)[0]!["d"]);
+    assert(!src.includes("'storyboard_panel_snapshots'") && !src.includes("'productions','rig_templates'"), "kjernen har fortsatt hardkodet tabelliste");
+    assert(src.includes("private.apply_change_tables"), "kjernen leser ikke registeret");
+    const rows = await sql`select table_name, insert_order, delete_order from private.apply_change_tables`;
+    assert(rows.length === 55, `forventet 55 registrerte tabeller, fikk ${rows.length}`);
+    const ord = new Map(rows.map((r) => [String(r["table_name"]), r]));
+    // Alle fremmednøkler mellom registrerte tabeller: forelder settes inn før barnet og slettes etter
+    const fks = await sql`select distinct c.conrelid::regclass::text child, c.confrelid::regclass::text parent
+      from pg_constraint c where c.contype='f' and c.conrelid <> c.confrelid`;
+    for (const fk of fks) {
+      const ch = ord.get(String(fk["child"]).replace(/^public\./, "")), pa = ord.get(String(fk["parent"]).replace(/^public\./, ""));
+      if (!ch || !pa) continue;
+      assert(Number(pa["insert_order"]) < Number(ch["insert_order"]), `${String(fk["parent"])} settes inn etter ${String(fk["child"])}`);
+      assert(Number(pa["delete_order"]) > Number(ch["delete_order"]), `${String(fk["parent"])} slettes før ${String(fk["child"])}`);
+    }
+  });
+  await test("0103: ukjent tabell avvises fortsatt med 22023; insert og angre-sletting virker via registeret", async () => {
+    let code = "";
+    try { await sbApply(g7p, { inserts: { not_a_table: [] } }); } catch (e) { code = String((e as { code?: string }).code); }
+    assert(code === "22023", `forventet 22023, fikk ${code}`);
+    const panel = newId();
+    await sbApply(g7p, { inserts: { compositions: [{ id: panel, project_id: g7p, variant_id: sbSetup.variant, kind: "storyboard", occurrence_id: sbSetup.occurrence, order_key: "z9", revision: 1 }] } });
+    await sbApply(g7p, { deletes: { compositions: [{ id: panel, expected_revision: 1 }] } });
+    assert((await sql`select 1 from public.compositions where id=${panel}`).length === 0, "angre-sletting virket ikke");
+  });
+
   // ---------- search_path: alle SECURITY DEFINER-funksjoner skal ha search_path='' ----------
   await test("alle SECURITY DEFINER-funksjoner i public/private har search_path=''", async () => {
     const rows = await sql`
