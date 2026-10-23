@@ -6,7 +6,8 @@
  * endrer størrelsen når grepet har fokus. På smal skjerm endres ingenting.
  */
 import * as React from "react";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
+import { QueryClientContext } from "@tanstack/react-query";
 import { RotateCcw } from "lucide-react";
 import { DialogContent } from "@/components/ui/dialog";
 import { useUiPref } from "@/app/account/ui-prefs";
@@ -43,9 +44,48 @@ function useViewport(): DialogSize | null {
   return vp;
 }
 
-export const ResizableDialogContent = React.forwardRef<HTMLDivElement, ResizableDialogContentProps>(
-  ({ sizeKey, minWidth, minHeight, className, style, children, ...props }, forwarded) => {
-    const [stored, setStored] = useUiPref<DialogSize | null>(dialogSizePrefKey(sizeKey), null, validStoredDialogSize);
+type Stored = [DialogSize | null, (next: DialogSize | null) => void];
+type InnerProps = ResizableDialogContentProps & { pref: Stored; fref: React.ForwardedRef<HTMLDivElement> };
+
+/** Med kontoen (vanlig app): nettleseren og profiles.ui_prefs. */
+function WithAccount(p: Omit<InnerProps, "pref">) {
+  const pref = useUiPref<DialogSize | null>(dialogSizePrefKey(p.sizeKey), null, validStoredDialogSize);
+  return <Inner {...p} pref={pref} />;
+}
+
+/** Uten spørringsklient (isolerte visninger og tester): bare nettleserens lager. */
+function LocalOnly(p: Omit<InnerProps, "pref">) {
+  const key = `animatic:ui:local:${dialogSizePrefKey(p.sizeKey)}`; // i18n-ignore: nøkkel i nettleserens lager
+  const [v, setV] = useState<DialogSize | null>(null);
+  useEffect(() => {
+    try {
+      const raw = window.localStorage.getItem(key);
+      const parsed: unknown = raw ? JSON.parse(raw) : null;
+      setV(validStoredDialogSize(parsed) ? parsed : null);
+    } catch {
+      setV(null);
+    }
+  }, [key]);
+  const set = (n: DialogSize | null) => {
+    setV(n);
+    try {
+      if (n) window.localStorage.setItem(key, JSON.stringify(n));
+      else window.localStorage.removeItem(key);
+    } catch {
+      /* privat vindu */
+    }
+  };
+  return <Inner {...p} pref={[v, set]} />;
+}
+
+export const ResizableDialogContent = React.forwardRef<HTMLDivElement, ResizableDialogContentProps>((props, fref) => {
+  const qc = useContext(QueryClientContext);
+  return qc ? <WithAccount {...props} fref={fref} /> : <LocalOnly {...props} fref={fref} />;
+});
+ResizableDialogContent.displayName = "ResizableDialogContent";
+
+function Inner({ sizeKey, minWidth, minHeight, className, style, children, pref, fref: forwarded, ...props }: InnerProps) {
+    const [stored, setStored] = pref;
     const vp = useViewport();
     const [live, setLive] = useState<DialogSize | null>(null);
     const ref = useRef<HTMLDivElement | null>(null);
@@ -179,6 +219,4 @@ export const ResizableDialogContent = React.forwardRef<HTMLDivElement, Resizable
         ) : null}
       </DialogContent>
     );
-  },
-);
-ResizableDialogContent.displayName = "ResizableDialogContent";
+}
