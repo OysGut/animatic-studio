@@ -8,6 +8,8 @@ export interface AnimWindow { from: number; span: number }
 export function TimeNavigator({ duration, window: view, onChange }: { duration: number; window: AnimWindow; onChange: (next: AnimWindow) => void }) {
   const ref = useRef<HTMLDivElement>(null);
   const drag = useRef<{ x: number; from: number; span: number; edge?: "from" | "to" } | null>(null);
+  const move = ();
+  const end = () => { drag.current = null; };
   // N10: kantene ligger ved siden av glideren, ikke inni den (ingen nestede kontroller)
   return <div ref={ref} className="relative m-2 h-6 shrink-0">
     <div data-testid="anim-navigator" role="slider" tabIndex={0}
@@ -15,14 +17,15 @@ export function TimeNavigator({ duration, window: view, onChange }: { duration: 
     className="absolute inset-0 cursor-grab rounded-sm border border-border-control bg-surface-0 focus-visible:ring-2 focus-visible:ring-focus-ring"
     onKeyDown={e => { if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return; e.preventDefault(); e.stopPropagation(); onChange(clampAnimationWindow(view.from + (e.key === "ArrowRight" ? 1 : -1), view.span, duration)); }}
     onPointerDown={e => { e.currentTarget.setPointerCapture(e.pointerId); drag.current = { x: e.clientX, from: view.from, span: view.span }; }}
-    onPointerMove={e => { const d = drag.current; const width = ref.current?.clientWidth; if (d && width) { const delta = (e.clientX - d.x) / width * duration; onChange(d.edge ? resizeAnimationWindow(d.from, d.span, delta, d.edge, duration) : clampAnimationWindow(d.from + delta, d.span, duration)); } }}
-    onPointerUp={() => { drag.current = null; }} onPointerCancel={() => { drag.current = null; }}>
+    onPointerMove={move}
+    onPointerUp={end} onPointerCancel={end}>
       <div data-testid="anim-navigator-window" className="absolute inset-y-0 min-w-3 border border-accent-brand bg-accent-selection" style={{ left: `${view.from / duration * 100}%`, width: `${view.span / duration * 100}%` }}  />
     </div>
     {(["from", "to"] as const).map(edge => <ToolbarButton key={edge} variant="icon" data-testid={`anim-navigator-${edge}`} role="slider" aria-label={edge === "from" ? t("app-scene-editor-animation-time-navigator.time-navigator.aria-label.874659257a28") : t("app-scene-editor-animation-time-navigator.time-navigator.aria-label.a9fecc231e9f")} aria-valuemin={0} aria-valuemax={duration} aria-valuenow={edge === "from" ? view.from : view.from + view.span}
         className={`absolute inset-y-0 h-full w-2 cursor-ew-resize rounded-none bg-accent-brand ${edge === "from" ? "" : "-translate-x-full"}`}
         style={{ left: `${(edge === "from" ? view.from : view.from + view.span) / duration * 100}%` }}
         onPointerDown={e => { e.stopPropagation(); e.currentTarget.setPointerCapture(e.pointerId); drag.current = { x: e.clientX, from: view.from, span: view.span, edge }; }}
+        onPointerMove={move} onPointerUp={end} onPointerCancel={end}
         onKeyDown={e => { if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return; e.preventDefault(); e.stopPropagation(); onChange(resizeAnimationWindow(view.from, view.span, e.key === "ArrowRight" ? 1 : -1, edge, duration)); }} />)}
   </div>;
 }
