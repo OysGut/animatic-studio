@@ -1,14 +1,14 @@
 
 import { clampAnimationWindow, resizeAnimationWindow } from "@/core/animation/time-format";
 import { ToolbarButton } from "@/app/shell/workspace-chrome";
-import { useRef } from "react";
+import { useRef, type PointerEvent as ReactPointerEvent } from "react";
 import { t } from "@/core/i18n/keyed";
 
 export interface AnimWindow { from: number; span: number }
 export function TimeNavigator({ duration, window: view, onChange }: { duration: number; window: AnimWindow; onChange: (next: AnimWindow) => void }) {
   const ref = useRef<HTMLDivElement>(null);
   const drag = useRef<{ x: number; from: number; span: number; edge?: "from" | "to" } | null>(null);
-  const move = ();
+  const move = (e: ReactPointerEvent<HTMLElement>) => { const d = drag.current; const width = ref.current?.clientWidth; if (d && width) { const delta = (e.clientX - d.x) / width * duration; onChange(d.edge ? resizeAnimationWindow(d.from, d.span, delta, d.edge, duration) : clampAnimationWindow(d.from + delta, d.span, duration)); } };
   const end = () => { drag.current = null; };
   // N10: kantene ligger ved siden av glideren, ikke inni den (ingen nestede kontroller)
   return <div ref={ref} className="relative m-2 h-6 shrink-0">
