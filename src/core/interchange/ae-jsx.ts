@@ -322,6 +322,7 @@ export interface AeJsxMessages {
 }
 export const AE_JSX_DEFAULT_MESSAGES: AeJsxMessages = {
   missing: "These files are missing next to bygg-after-effects.jsx, so the build stops:",
+  // i18n-ignore: standardtekst for tester; eksportøren setter inn nb og en via t()
   wrongHost: "This script must be run in After Effects. Use the launcher \"Åpne i After Effects\" in the same folder.",
   saveFailed: "The project was built but could not be saved. Turn on Preferences > Scripting & Expressions > \"Allow Scripts to Write Files and Access Network\" and run the script again.",
 };
