@@ -12,6 +12,7 @@ export interface FakeDb {
   readonly uploads: { bucket: string; path: string; size: number; type: string }[];
   readonly removed: string[];
   from(table: string): any; // eslint-disable-line @typescript-eslint/no-explicit-any
+  rpc(name: string, args?: Record<string, unknown>): Promise<{ data: unknown; error: { message: string } | null }>;
   storage: { from(bucket: string): any }; // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
@@ -25,6 +26,16 @@ export function fakeWriteDb(tables: Record<string, Row[]>, files: readonly strin
     files: fileSet,
     uploads,
     removed,
+    // Periodestartene svarer med UTC-månedsstarten, som databasen gjør uten egen tidssone (G-3 del 2)
+    rpc(name: string) {
+      const now = new Date();
+      const start = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1));
+      if (name === "project_period_start" || name === "user_period_start")
+        return Promise.resolve({ data: start.toISOString(), error: null });
+      if (name === "user_period_start_date")
+        return Promise.resolve({ data: start.toISOString().slice(0, 10), error: null });
+      return Promise.resolve({ data: null, error: { message: `Ukjent rpc i fakeWriteDb: ${name}` } });
+    },
     storage: {
       from(bucket: string) {
         return {

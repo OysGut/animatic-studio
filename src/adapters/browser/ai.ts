@@ -70,8 +70,8 @@ export interface AccountSpendRows {
   readonly kept: unknown;
 }
 
-/** Kostnadstaket og bruken med brukerens nøkler denne måneden (`month` = første dag i måneden, UTC). */
-export async function fetchAccountSpend(userId: string, month: Date): Promise<AccountSpendRows> {
+/** Kostnadstaket og bruken med brukerens nøkler denne måneden, i brukerens tidssone (G-3 del 2). */
+export async function fetchAccountSpend(userId: string, monthStart: string, monthDate: string): Promise<AccountSpendRows> {
   const [limit, jobs, kept] = await Promise.all([
     db.from("ai_account_limits").select("monthly_cap_usd").eq("user_id", userId).maybeSingle(),
     db
@@ -79,14 +79,32 @@ export async function fetchAccountSpend(userId: string, month: Date): Promise<Ac
       .select("cost_usd")
       .eq("key_owner", userId)
       .neq("status", "failed")
-      .gte("created_at", month.toISOString())
+      .gte("created_at", monthStart)
       .limit(5000),
     db
       .from("ai_spend")
       .select("usd")
       .eq("key_owner", userId)
-      .eq("month", month.toISOString().slice(0, 10))
+      .eq("month", monthDate)
       .maybeSingle(),
   ]);
   return { limit: limit.data, jobs: jobs.data, kept: kept.data };
+}
+
+/** Periodestarten for prosjektets budsjettmåned, i budsjettets tidssone (G-3 del 2). */
+export async function fetchProjectPeriodStart(projectId: string): Promise<BackendResult<string | null>> {
+  const r = await db.rpc("project_period_start", { p_project: projectId, p_unit: "month" });
+  return { data: (r.data as string | null) ?? null, error: plainError(r.error) };
+}
+
+/** Periodestarten for brukerens kontomåned, i brukerens tidssone (G-3 del 2). */
+export async function fetchUserPeriodStart(userId: string): Promise<BackendResult<{ start: string; date: string } | null>> {
+  const [start, date] = await Promise.all([
+    db.rpc("user_period_start", { p_user: userId, p_unit: "month" }),
+    db.rpc("user_period_start_date", { p_user: userId, p_unit: "month" }),
+  ]);
+  const err = plainError(start.error) ?? plainError(date.error);
+  if (err || typeof start.data !== "string" || typeof date.data !== "string")
+    return { data: null, error: err ?? { message: "user_period_start" } };
+  return { data: { start: start.data, date: date.data }, error: null };
 }

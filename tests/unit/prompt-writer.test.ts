@@ -6,6 +6,7 @@
 import { describe, expect, it } from "vitest";
 import {
   aiUsage,
+  monthStartUtc,
   attachedImages,
   buildContextImagePrompt,
   cleanWrittenPrompt,
@@ -249,7 +250,7 @@ describe("AI skriver beskrivelsen", () => {
     const jobs = [row("image"), row("prompt"), row("prompt")].map(jobFromRow);
     expect(jobs[1]!.kind).toBe("prompt");
     expect(jobs[1]!.resultText).toBe("skrevet");
-    const u = aiUsage({ aiMonthLimit: 5 }, jobs, now);
+    const u = aiUsage({ aiMonthLimit: 5 }, jobs, monthStartUtc(now));
     expect(u.used).toBe(1);
     expect(u.remaining).toBe(4);
   });

@@ -3,8 +3,7 @@
  * leses (kolonnetilgang i migrasjon 0024): leverandør, navn, de fire siste tegnene og status.
  */
 import { useQuery } from "@tanstack/react-query";
-import { monthStartUtc } from "@/core";
-import { fetchAccountSpend, fetchProviderKeys } from "@/adapters/browser/ai";
+import { fetchAccountSpend, fetchProviderKeys, fetchUserPeriodStart } from "@/adapters/browser/ai";
 
 export interface ProviderKeyRow {
   readonly id: string;
@@ -42,8 +41,10 @@ export function useAccountAi(userId: string, enabled = true) {
           return { keys: [], capUsd: null, usedUsd: 0, missing: true };
         throw new Error(keys.error.message);
       }
-      const month = monthStartUtc(new Date());
-      const { limit, jobs, kept } = await fetchAccountSpend(userId, month);
+      // Brukerens kontomåned regnes i brukerens tidssone (G-3 del 2), som i databasen
+      const period = await fetchUserPeriodStart(userId);
+      if (period.error || !period.data) throw new Error(period.error?.message ?? "user_period_start");
+      const { limit, jobs, kept } = await fetchAccountSpend(userId, period.data.start, period.data.date);
       const cap = (limit as { monthly_cap_usd?: number | string | null } | null)?.monthly_cap_usd;
       const used =
         ((jobs ?? []) as { cost_usd: number | string | null }[]).reduce(
