@@ -8,6 +8,7 @@ import { useMemo, useState } from "react";
 import {
   canonicalLanguageTag,
   languageLabel,
+  sourceLanguageOf,
   languageTagCollisions,
   newId,
   scriptLanguageOptions,

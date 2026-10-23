@@ -53136,9 +53136,9 @@
     "review": "user"
   },
   "ml3-language-versions.dialog.description": {
-    "text": "Il norvegese è sempre la lingua di origine. Ogni versione linguistica ha una lingua di destinazione. La rimozione di una versione linguistica non elimina alcuna traduzione.",
-    "sourceHash": "780616d7935ffdf2c9359b92f6002bffcaa8aa59c208be7b553a7c4efdba9f3d",
-    "review": "user"
+    "text": "La lingua della sceneggiatura ({language}) è sempre la fonte. Ogni versione linguistica ha una lingua di destinazione. Rimuovere una versione linguistica non elimina alcuna traduzione.",
+    "sourceHash": "29e229e4301e941f1b36c273bc5fd0b0796f7ffc18f677fbbc14c9c13320c7b3",
+    "review": "machine"
   },
   "ml3-language-versions.dialog.title": {
     "text": "Versioni linguistiche",
@@ -53176,9 +53176,9 @@
     "review": "user"
   },
   "ml3-language-versions.error.norwegian": {
-    "text": "Il norvegese è la lingua di origine e non può essere una versione linguistica.",
-    "sourceHash": "5f8cbf24ee694a42f592cb6d756c807956304e986b413186f970dc193f6fe7b2",
-    "review": "user"
+    "text": "Il norvegese non può ancora essere salvato come versione linguistica.",
+    "sourceHash": "2deb30d7d2aa11df620d8f0a57b26ea1c7f204edd362f5e30577bb3498a0e48f",
+    "review": "machine"
   },
   "ml3-language-versions.error.not-found": {
     "text": "Versione linguistica non trovata.",
@@ -55899,6 +55899,16 @@
   "pathSpacing.aria": {
     "text": "Quanto si sposta il livello per fotogramma lungo il percorso. Segni vicini sono lenti, segni distanti sono veloci.",
     "sourceHash": "de16a9e1d33b4f0d764b2f3a76fdda8fdf478f73acdb622f246135f45b6796ee",
+    "review": "machine"
+  },
+  "ml3-language-versions.error.source": {
+    "text": "La lingua della sceneggiatura è la fonte e non può essere una versione linguistica.",
+    "sourceHash": "0431f009bf24dd3310f0696af0192e26e0f745a09458992b37deee210b0f6dc2",
+    "review": "machine"
+  },
+  "ml3-language-versions.select.source": {
+    "text": "{label} – sceneggiatura (fonte)",
+    "sourceHash": "85f7723bb55e1306399b5c8195ae51655f145e11ccddf07ec104b0276ce7ae7a",
     "review": "machine"
   }
 }

@@ -73099,7 +73099,7 @@
     "text": "Språkkoden er ugyldig. Bruk en BCP-47-kode som de, pt-BR eller sr-Latn."
   },
   "ml3-language-versions.error.norwegian": {
-    "text": "Norsk er kildespråket og kan ikke være en språkversjon."
+    "text": "Norsk kan foreløpig ikke lagres som språkversjon."
   },
   "ml3-language-versions.error.name": {
     "text": "Navnet må ha mellom 1 og 120 tegn."
@@ -73129,7 +73129,7 @@
     "text": "Språkversjoner"
   },
   "ml3-language-versions.dialog.description": {
-    "text": "Norsk er alltid kilden. Hver språkversjon har ett målspråk. Å fjerne en språkversjon sletter ingen oversettelser."
+    "text": "Manusets språk ({language}) er alltid kilden. Hver språkversjon har ett målspråk. Å fjerne en språkversjon sletter ingen oversettelser."
   },
   "ml3-language-versions.field.language": {
     "text": "Målspråk (BCP-47)"
@@ -75686,5 +75686,11 @@
   },
   "pathSpacing.aria": {
     "text": "Avstanden laget flytter seg per bilde langs banen. Tette merker er sakte, spredte merker er fort."
+  },
+  "ml3-language-versions.error.source": {
+    "text": "Manusets språk er kilden og kan ikke være en språkversjon."
+  },
+  "ml3-language-versions.select.source": {
+    "text": "{label} – manus (kilde)"
   }
 }
