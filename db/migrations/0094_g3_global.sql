@@ -22,11 +22,11 @@ alter table public.workspaces add column if not exists settings jsonb not null d
   check (jsonb_typeof(settings) = 'object' and pg_column_size(settings) <= 16384);
 
 create or replace function private.is_iana_time_zone(p_tz text) returns boolean
-  language sql stable set search_path = pg_catalog
-as $$ select p_tz is not null and exists (select 1 from pg_timezone_names where name = p_tz) $$;
+  language sql stable set search_path = ''
+as $$ select p_tz is not null and exists (select 1 from pg_catalog.pg_timezone_names where name = p_tz) $$;
 
 create or replace function private.budget_time_zone(p_project uuid) returns text
-  language sql stable security definer set search_path = public, pg_catalog
+  language sql stable security definer set search_path = ''
 as $$
   select coalesce(
     (select w.time_zone from public.projects p join public.workspaces w on w.id = p.workspace_id
@@ -38,14 +38,14 @@ $$;
 
 -- Start på kalenderdagen eller -måneden som inneholder p_at, i budsjettets tidssone. Eksplisitt: tidspunktet
 -- gjøres om til lokal tid, avkortes, og tolkes tilbake som lokal tid i samme sone (riktig også ved sommertid).
-create or replace function private.budget_period_start(p_project uuid, p_unit text, p_at timestamptz default now())
+create or replace function private.budget_period_start(p_project uuid, p_unit text, p_at timestamptz default pg_catalog.now())
   returns timestamptz
-  language plpgsql stable security definer set search_path = public, pg_catalog
+  language plpgsql stable security definer set search_path = ''
 as $$
 declare v_tz text := private.budget_time_zone(p_project);
 begin
   if p_unit not in ('day', 'month') then raise exception 'budget_period_unit'; end if;
-  return date_trunc(p_unit, p_at at time zone v_tz) at time zone v_tz;
+  return pg_catalog.date_trunc(p_unit, p_at at time zone v_tz) at time zone v_tz;
 end $$;
 
 revoke all on function private.is_iana_time_zone(text) from public, anon;
@@ -56,15 +56,15 @@ grant execute on function private.budget_time_zone(uuid) to service_role;
 grant execute on function private.budget_period_start(uuid, text, timestamptz) to service_role;
 
 create or replace function public.set_my_time_zone(p_time_zone text) returns void
-  language plpgsql security definer set search_path = public, pg_catalog
+  language plpgsql security definer set search_path = ''
 as $$
 begin
   if auth.uid() is null then raise exception 'not_authenticated'; end if;
-  if p_time_zone is not null and not exists (select 1 from pg_timezone_names where name = p_time_zone) then
+  if p_time_zone is not null and not exists (select 1 from pg_catalog.pg_timezone_names where name = p_time_zone) then
     raise exception 'invalid_time_zone';
   end if;
   insert into public.profiles (user_id, time_zone) values (auth.uid(), p_time_zone)
-    on conflict (user_id) do update set time_zone = excluded.time_zone, updated_at = now();
+    on conflict (user_id) do update set time_zone = excluded.time_zone, updated_at = pg_catalog.now();
 end $$;
 revoke all on function public.set_my_time_zone(text) from public, anon;
 grant execute on function public.set_my_time_zone(text) to authenticated;
@@ -72,15 +72,15 @@ grant execute on function public.set_my_time_zone(text) to authenticated;
 create or replace function public.set_workspace_settings(
   p_workspace uuid, p_time_zone text, p_region text, p_settings jsonb
 ) returns void
-  language plpgsql security definer set search_path = public, pg_catalog
+  language plpgsql security definer set search_path = ''
 as $$
 begin
   if auth.uid() is null then raise exception 'not_authenticated'; end if;
   if not exists (select 1 from public.workspace_members m where m.workspace_id = p_workspace
-      and m.user_id = auth.uid() and m.role = 'owner' and m.removed_at is null) then
+       and m.user_id = auth.uid() and m.role = 'owner' and m.removed_at is null) then
     raise exception 'not_workspace_owner';
   end if;
-  if p_time_zone is not null and not exists (select 1 from pg_timezone_names where name = p_time_zone) then
+  if p_time_zone is not null and not exists (select 1 from pg_catalog.pg_timezone_names where name = p_time_zone) then
     raise exception 'invalid_time_zone';
   end if;
   update public.workspaces
