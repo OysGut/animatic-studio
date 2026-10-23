@@ -74,7 +74,7 @@ export function seedProject(sceneCount: number = NUMBER_PATTERN.length): Seed {
     fps: FPS_25,
     frameWidth: 1920,
     frameHeight: 1080,
-    primaryLanguage: "nb",
+    sourceLanguage: "nb",
   });
   const mainId = tid<"production">();
   const spinoffId = tid<"production">();

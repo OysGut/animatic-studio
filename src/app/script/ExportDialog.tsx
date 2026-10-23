@@ -1,3 +1,4 @@
+import { isSourceLanguage, sourceLanguageOf, SOURCE_TEXT_KEY } from "@/core/dialogue/languages";
 /**
  * Manuseksport (mandat 5.2–5.3, REQ-0080–REQ-0088): nummereringsmetode velges hver gang, med forhåndsvisning.
  * Eksporten endrer ingenting i prosjektet (REQ-0085).
@@ -58,7 +59,7 @@ export function ExportDialog({
   state,
   productionId,
   lockedPages,
-  language = "nb",
+  language = SOURCE_TEXT_KEY,
   onSaveTitlePage,
   sourceState,
   languageStatus = null,
@@ -67,7 +68,7 @@ export function ExportDialog({
   // ML3: ufullstendig oversettelse eksporteres bare etter et eksplisitt valg (norsk reserve eller stopp)
   const [fallbackChoice, setFallbackChoice] = useState<ExportFallbackChoice | undefined>(undefined);
   useEffect(() => setFallbackChoice(undefined), [language, open]);
-  const decision = language === "nb" || !languageStatus ? ({ kind: "complete" } as const) : exportLanguageDecision(languageStatus, fallbackChoice);
+  const decision = isSourceLanguage(sourceState ?? state, language) || !languageStatus ? ({ kind: "complete" } as const) : exportLanguageDecision(languageStatus, fallbackChoice);
   const languageBlocked = decision.kind === "needs-choice" || decision.kind === "stopped";
   const [format, setFormat] = useState<Format>("pdf");
   // Nummereringen huskes fra forrige eksport av prosjektet i denne nettleseren (KI-176, REQ-0482,
@@ -187,11 +188,11 @@ export function ExportDialog({
         onSaveTitlePage(titleFit.lines);
       const date = new Date().toISOString().slice(0, 10);
       const base = safeName(
-        `${state.project.name} – ${production?.name ?? "manus"}${language === "nb" ? "" : ` – ${language}`} – ${date}`,
+        `${state.project.name} – ${production?.name ?? "manus"}${isSourceLanguage(sourceState ?? state, language) ? "" : ` – ${language}`} – ${date}`,
       );
       // Notatene står i den norske teksten og passer ikke på en oversettelse
       const notes =
-        withNotes && language === "nb"
+        withNotes && isSourceLanguage(sourceState ?? state, language)
           ? exportNotes(
               state,
               input.map((x) => x.occurrenceId),
@@ -240,7 +241,7 @@ export function ExportDialog({
           includeInactive,
           fillOriginal,
           language,
-          ...(decision.kind === "fallback" ? { languageFallback: "nb" } : {}),
+          ...(decision.kind === "fallback" ? { languageFallback: sourceLanguageOf(sourceState ?? state) } : {}),
           withNotes: !!notes,
           lockedPages: format === "pdf" && lockedPages,
         },
@@ -413,9 +414,9 @@ export function ExportDialog({
           <label className="flex items-center gap-2">
             <input
               type="checkbox"
-              checked={withNotes && language === "nb"}
+              checked={withNotes && isSourceLanguage(sourceState ?? state, language)}
               onChange={(e) => setWithNotes(e.target.checked)}
-              disabled={noteCount === 0 || language !== "nb"}
+              disabled={noteCount === 0 || !isSourceLanguage(sourceState ?? state, language)}
             />
             {t("app-script-export-dialog.export-dialog.label.3913a86903d2")} ({noteCount}) –{" "}
             {format === "pdf"
@@ -456,7 +457,7 @@ export function ExportDialog({
                     chars: fontCheck.unsupported.join(" "),
                   })}
             </p>
-          ) : fontCheck?.font && language !== "nb" ? (
+          ) : fontCheck?.font && !isSourceLanguage(sourceState ?? state, language) ? (
             <p data-testid="export-font-ok" className="text-text-tertiary">
               {t("ml4-export-fonts.ok", { font: fontCheck.font })}
             </p>

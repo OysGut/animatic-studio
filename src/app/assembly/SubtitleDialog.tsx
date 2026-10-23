@@ -1,3 +1,4 @@
+import { isSourceLanguage, sourceLanguageOf, SOURCE_TEXT_KEY } from "@/core/dialogue/languages";
 /**
  * Undertekster for filmen (M7 del 2, DEC-0058, REQ-0351/0352): replikkene med tiden de har i filmen, på
  * norsk eller et oversatt språk, som SubRip (.srt) eller WebVTT (.vtt). Språket velges uavhengig av manusets
@@ -33,7 +34,7 @@ export function SubtitleDialog({
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }) {
-  const [lang, setLang] = useState("nb");
+  const [lang, setLang] = useState(SOURCE_TEXT_KEY);
   const [format, setFormat] = useState<"srt" | "vtt">("srt");
   const [ready, setReady] = useState<ReadyFile | null>(null);
   // Eksportloggen (REQ-0037, DEC-0078)

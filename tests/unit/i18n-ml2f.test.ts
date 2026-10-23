@@ -35,7 +35,7 @@ const at = (lang: "nb" | "en" | "en-XA", f: () => string) => {
 describe("ML2f – tom bro", () => {
   it("alle tekstpar i inventaret er flyttet til nøkler", () => {
     const entries = (mapping as { entries: { migrated?: boolean }[] }).entries;
-    expect(entries.length).toBe(9955); // B-100: 7 nøkler fra den slettede Animasjon-fanen; B-097: 2 språkkoder for gammel datovisning
+    expect(entries.length).toBe(9954); // B-100: 7 nøkler fra den slettede Animasjon-fanen; B-097: 2 språkkoder for gammel datovisning
     expect(entries.filter((e) => !e.migrated)).toHaveLength(0);
   });
 

@@ -20,12 +20,6 @@ export function canonicalLanguageTag(tag: string): string | null {
   }
 }
 
-/** Norsk kilde (nb, no og regionsvarianter av dem) kan aldri være et målspråk. */
-export function isNorwegianSourceTag(tag: string): boolean {
-  const primary = tag.toLowerCase().split("-")[0];
-  return primary === "nb" || primary === "no";
-}
-
 /** Samme språk uansett store og små bokstaver («en-us» og «en-US»). */
 export function sameLanguageTag(a: string, b: string): boolean {
   return a.toLowerCase() === b.toLowerCase();

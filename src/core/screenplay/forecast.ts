@@ -5,6 +5,7 @@
  * - ferdige scener (film eller satt lengde) gir forholdet mellom faktisk lengde og anslaget.
  * Prognosen er bare beregnet. Den lagres aldri og endrer aldri manus eller scenelengder.
  */
+import { sourceLanguageOf } from "../dialogue/languages";
 import type { ProjectState } from "../model";
 import { blocksOfVariant, isScriptOccurrence, orderedOccurrences, sceneNumberOf } from "../views";
 import { filmClips } from "../assembly/film";
@@ -80,7 +81,7 @@ export function speechSamples(s: ProjectState): SpeechSample[] {
     seen.add(key);
     out.push({
       characterId: clip.characterAssetId ?? null,
-      language: clip.speechLanguage || clip.language || s.project.primaryLanguage || "nb",
+      language: clip.speechLanguage || clip.language || sourceLanguageOf(s),
       words,
       seconds,
     });
@@ -188,7 +189,7 @@ export function durationForecast(
     .filter(([k]) => k.startsWith("*|"))
     .reduce((t, [, r]) => t + r.lines, 0);
   const speakers = speakerIndex(s);
-  const language = s.project.primaryLanguage || "nb";
+  const language = sourceLanguageOf(s);
   const clips = new Map(filmClips(s, productionId).map((c) => [c.occurrenceId as string, c]));
   const occs = orderedOccurrences(s, productionId).filter(isScriptOccurrence);
   const base = new Map<string, ReturnType<typeof sceneBase>>();

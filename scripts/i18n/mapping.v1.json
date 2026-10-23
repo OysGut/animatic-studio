@@ -17492,33 +17492,6 @@
     },
     {
       "file": "src/core/commands/apply.ts",
-      "line": 1099,
-      "column": 7,
-      "start": 38723,
-      "end": 38847,
-      "scope": "translation-fields-of",
-      "context": "fail",
-      "kind": "L",
-      "semantic": "core-commands-apply.translation-fields-of.fail",
-      "nb": {
-        "kind": "literal",
-        "text": "Norsk er hovedmanuset og oversettes ikke",
-        "raw": "\"Norsk er hovedmanuset og oversettes ikke\"",
-        "parameters": []
-      },
-      "en": {
-        "kind": "literal",
-        "text": "Norwegian is the main script and is not translated",
-        "raw": "\"Norwegian is the main script and is not translated\"",
-        "parameters": []
-      },
-      "parameterConflict": false,
-      "signature": "b8697ac1dfc3",
-      "key": "core-commands-apply.translation-fields-of.fail.b8697ac1dfc3",
-      "migrated": true
-    },
-    {
-      "file": "src/core/commands/apply.ts",
       "line": 1105,
       "column": 21,
       "start": 38945,
@@ -215911,33 +215884,6 @@
     },
     {
       "file": "src/core/composition/fields.ts",
-      "line": 738,
-      "column": 16,
-      "start": 25668,
-      "end": 25743,
-      "scope": "error",
-      "context": "error",
-      "kind": "L",
-      "semantic": "core-composition-fields.error.error",
-      "nb": {
-        "kind": "literal",
-        "text": "Norsk bruker lagets eget bilde",
-        "raw": "\"Norsk bruker lagets eget bilde\"",
-        "parameters": []
-      },
-      "en": {
-        "kind": "literal",
-        "text": "Norwegian uses the layer's own image",
-        "raw": "\"Norwegian uses the layer's own image\"",
-        "parameters": []
-      },
-      "parameterConflict": false,
-      "signature": "ead44afb7c76",
-      "key": "core-composition-fields.error.error.ead44afb7c76",
-      "migrated": true
-    },
-    {
-      "file": "src/core/composition/fields.ts",
       "line": 743,
       "column": 16,
       "start": 25834,
@@ -293541,6 +293487,33 @@
       "parameterConflict": false,
       "signature": "d8988ee64a25",
       "key": "engine-export-zip.zip.message.d8988ee64a25",
+      "migrated": true
+    },
+    {
+      "file": "src/core/composition/fields.ts",
+      "line": 738,
+      "column": 16,
+      "start": 25668,
+      "end": 25743,
+      "scope": "error",
+      "context": "error",
+      "kind": "L",
+      "semantic": "core-composition-fields.error.error",
+      "nb": {
+        "kind": "literal",
+        "text": "Norsk bruker lagets eget bilde",
+        "raw": "\"Norsk bruker lagets eget bilde\"",
+        "parameters": []
+      },
+      "en": {
+        "kind": "literal",
+        "text": "Norwegian uses the layer's own image",
+        "raw": "\"Norwegian uses the layer's own image\"",
+        "parameters": []
+      },
+      "parameterConflict": false,
+      "signature": "ead44afb7c76",
+      "key": "core-composition-fields.error.error.ead44afb7c76",
       "migrated": true
     }
   ],

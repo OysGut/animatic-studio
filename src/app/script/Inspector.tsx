@@ -1,3 +1,4 @@
+import { isSourceLanguage, sourceLanguageOf, SOURCE_TEXT_KEY } from "@/core/dialogue/languages";
 /**
  * Inspektør for manus: korriger tolkning (mandat 4.3), rediger tekst og overskrift, del og slå sammen scener (4.4).
  * Alle endringer er kommandoer som kan angres (ADR-0005).
@@ -150,7 +151,7 @@ export function Inspector(props: Props) {
             <LineStatusBadge status={lineAudioStatus(state, occ.id, block.id)} />
           </div>
         ) : null}
-        {props.language && props.language !== "nb" && occ ? (
+        {props.language && !isSourceLanguage(state, props.language) && occ ? (
           <TranslationPanel
             key={`${block?.id ?? occ.variantId}:${props.language}`}
             state={state}

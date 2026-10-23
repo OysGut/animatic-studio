@@ -1,3 +1,4 @@
+import { sourceLanguageOf } from "../dialogue/languages";
 /**
  * DV1 (DIALOGUE_VOICE_SPEC §3–§7, M1–M5): manuset som navigasjonsflate. Finner tidspunktet i scenen for et
  * klikk i manuset, i fast rekkefølge:
@@ -55,7 +56,7 @@ export function wordSceneMs(
   const block = s.blocks[blockId];
   if (!block || block.kind !== "dialogue") return null;
   const clips = Object.values(s.audioClips)
-    .filter((a) => !a.removed && a.occurrenceId === occurrenceId && a.blockId === blockId && playsIn(a, MAIN_LANGUAGE))
+    .filter((a) => !a.removed && a.occurrenceId === occurrenceId && a.blockId === blockId && playsIn(a, sourceLanguageOf(s), s))
     .sort((a, b) => a.offsetMs - b.offsetMs || a.id.localeCompare(b.id));
   for (const a of clips) {
     const al = audioVersion(s, a)?.alignment;

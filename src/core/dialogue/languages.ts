@@ -1,26 +1,27 @@
+import { isScriptLanguageTag } from "../translation/language-tags";
 /** DV6: language preferences are independent from UI locale and recorded audio. */
 import type { ProjectState } from "../model";
 import { locale } from "../i18n";
 import { t } from "@/core/i18n/keyed";
 
-/** Standard talespråk når ingenting er valgt: norsk bokmål. */
-export const DEFAULT_SPEECH_LANGUAGE = "nb";
+/** Neutral marker for callers without a project; project speech inherits its source. */
+export const DEFAULT_SPEECH_LANGUAGE = "und";
 /**
- * Konsekvente BCP-47-koder: makrospråket «no» (lagret i eldre data) vises og sammenlignes som «nb».
+ * BCP-47-koder uten særbehandling av norsk.
  * Andre koder kanoniseres (f.eks. «EN-us» → «en-US»). Ugyldige koder returneres uendret.
  */
 export function normalizeLanguageTag(value: string): string {
   try {
     const [tag] = Intl.getCanonicalLocales(value);
     if (!tag) return value;
-    return tag === "no" ? "nb" : tag.startsWith("no-") ? "nb" + tag.slice(2) : tag;
+    return tag;
   } catch { return value; }
 }
 /** Språkets navn på brukerens språk, med koden i parentes: «norsk bokmål (nb)». */
 export function languageLabel(tag: string, ui: string = locale()): string {
   const code = normalizeLanguageTag(tag);
   try {
-    const name = new Intl.DisplayNames([ui.toLowerCase().startsWith("en") ? "en" : "nb"], { type: "language" }).of(code);
+    const name = new Intl.DisplayNames([ui], { type: "language" }).of(code);
     return name && name !== code ? `${name} (${code})` : code;
   } catch { return code; }
 }
@@ -35,10 +36,10 @@ export function languageTagError(value: string): string | null {
  * Intern lagringsnøkkel for kildeteksten (manusblokkene). Nøkkelen betyr «kilden», ikke «norsk»: manuset kan
  * være skrevet på et hvilket som helst språk. Vis aldri denne verdien som språknavn – bruk sourceLanguageOf.
  */
-export const SOURCE_TEXT_KEY = "nb";
+export const SOURCE_TEXT_KEY = "source";
 /** Manusets språk, det vil si kildespråket for alle språkversjoner (aldri fast norsk). */
 export function sourceLanguageOf(s: Pick<ProjectState, "project">): string {
-  return normalizeLanguageTag(s.project?.scriptLanguage || s.project?.primaryLanguage || "nb");
+  return normalizeLanguageTag(s.project?.sourceLanguage || s.project?.scriptLanguage || s.project?.primaryLanguage || "und");
 }
 /** Er språket kilden? Den interne nøkkelen SOURCE_TEXT_KEY og manusets eget språk betyr begge kilden. */
 export function isSourceLanguage(s: Pick<ProjectState, "project">, tag: string): boolean {
@@ -47,11 +48,11 @@ export function isSourceLanguage(s: Pick<ProjectState, "project">, tag: string):
 }
 export function scriptLanguageOf(s: ProjectState, blockId: string): string {
   const b = s.blocks[blockId];
-  return normalizeLanguageTag(b?.scriptLanguage ?? s.variants[b?.variantId ?? ""]?.scriptLanguage ?? s.project.scriptLanguage ?? s.project.primaryLanguage);
+  return normalizeLanguageTag(b?.scriptLanguage ?? s.variants[b?.variantId ?? ""]?.scriptLanguage ?? sourceLanguageOf(s));
 }
 export function speechLanguageOf(s: ProjectState, occurrenceId: string, blockId: string, characterId: string | null, generation?: string): string {
   const clip = Object.values(s.audioClips).find(c => !c.removed && c.occurrenceId === occurrenceId && c.blockId === blockId);
-  return normalizeLanguageTag(generation ?? clip?.speechLanguage ?? s.blocks[blockId]?.speechLanguage ?? (characterId ? s.assets[characterId]?.voice?.language : undefined) ?? DEFAULT_SPEECH_LANGUAGE);
+  return normalizeLanguageTag(generation ?? clip?.speechLanguage ?? s.blocks[blockId]?.speechLanguage ?? (characterId ? s.assets[characterId]?.voice?.language : undefined) ?? scriptLanguageOf(s, blockId));
 }
 /** Canonical comparison retains scripts without whitespace and combining accents. */
 export function unicodeTextParts(text: string, language = "und"): string[] {

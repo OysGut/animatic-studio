@@ -1,3 +1,4 @@
+import { sourceLanguageOf, isSourceLanguage } from "../dialogue/languages";
 /**
  * Språkversjoner av filmen (M7 del 3, DEC-0059, mandat 23.3–23.8, REQ-0336–0352).
  *
@@ -26,9 +27,9 @@ import { t as tk, tLocalized } from "@/core/i18n/keyed";
  * Dialogen i lyden til en importert film: språkkode når dialog og øvrig lyd er blandet, «none» når lyden er
  * bare musikk og effekter, null når filmen ikke har lyd. Ikke angitt = blandet med norsk dialog.
  */
-export function takeAudioLanguage(t: Take): string | null {
+export function takeAudioLanguage(t: Take, s?: Pick<ProjectState, "project">): string | null {
   if (t.media?.hasAudio === false) return null;
-  return t.audioLanguage ?? MAIN_LANGUAGE;
+  return t.audioLanguage ?? (s ? sourceLanguageOf(s) : MAIN_LANGUAGE);
 }
 
 /** Laget slik det vises i språket: et språkavhengig bilde erstatter lagets eget. */
@@ -203,7 +204,7 @@ export function timingConflicts(
   productionId: string,
   lang: string,
 ): TimingConflict[] {
-  if (lang === MAIN_LANGUAGE) return [];
+  if (isSourceLanguage(s, lang)) return [];
   const main = s;
   const fps = s.project.fps;
   const ms = (frames: number) => Math.round(framesToSeconds(frames, fps) * 1000);
@@ -220,7 +221,7 @@ export function timingConflicts(
         !a.removed &&
         a.occurrenceId === clip.occurrenceId &&
         isVoiceKind(a.kind) &&
-        clipLanguage(a) === lang
+        clipLanguage(a, s) === lang
       ) {
         langVoices.push(a);
         if (!a.blockId) continue;
@@ -364,7 +365,7 @@ export function languageReport(
           a.occurrenceId === clip.occurrenceId &&
           a.blockId &&
           isVoiceKind(a.kind) &&
-          clipLanguage(a) === l
+          clipLanguage(a, s) === l
         )
           ids.add(a.blockId);
       return dialogue.filter((b) => ids.has(b.id)).length;
@@ -372,7 +373,7 @@ export function languageReport(
     let mixed: string | null = null;
     for (const p of clip.parts) {
       if (p.source !== "take" || !p.take || p.take.kind === "composition2d") continue;
-      const al = takeAudioLanguage(p.take);
+      const al = takeAudioLanguage(p.take, s);
       if (al && al !== "none" && al !== lang) mixed = al;
     }
     const material = clipMaterial(s, clip);
@@ -382,11 +383,11 @@ export function languageReport(
       advice: lipSyncAdvice(material),
       lines: dialogue.length,
       translated:
-        lang === MAIN_LANGUAGE
+        isSourceLanguage(s, lang)
           ? dialogue.length
           : dialogue.filter((b) => translationOf(s, b.id, lang)).length,
       withAudio: voiced(lang),
-      withMainAudio: voiced(MAIN_LANGUAGE),
+      withMainAudio: voiced(sourceLanguageOf(s)),
       mixedDialogue: mixed,
       conflicts: conflicts.filter((c) => c.occurrenceId === clip.occurrenceId),
     });
@@ -402,6 +403,6 @@ export function lineAudio(
 ): { readonly language: string; readonly clip: AudioClip }[] {
   return Object.values(s.audioClips)
     .filter((a) => !a.removed && a.occurrenceId === occurrenceId && a.blockId === blockId)
-    .map((clip) => ({ language: clipLanguage(clip), clip }))
+    .map((clip) => ({ language: clipLanguage(clip, s), clip }))
     .sort((a, b) => a.language.localeCompare(b.language) || a.clip.offsetMs - b.clip.offsetMs);
 }

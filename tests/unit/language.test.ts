@@ -79,7 +79,7 @@ describe("lyd per språk", () => {
   it("dialog hører til norsk, musikk og atmosfære er felles; en replikk har lyd per språk (REQ-0338–0340)", () => {
     const nb = nbDialogue();
     const en = enDialogue();
-    expect(clipLanguage(nb)).toBe("nb");
+    expect(clipLanguage(nb, s0)).toBe("nb");
     expect(clipLanguage(en)).toBe("en");
     expect(en.blockId).toBe(nb.blockId);
     const music = Object.values(s0.audioClips).find((a) => a.kind === "music")!;
@@ -280,7 +280,7 @@ describe("importert film med blandet lyd", () => {
     const film = report.find((r) => r.clip.parts.some((p) => p.take?.id === take().id))!;
     expect(film.mixedDialogue).toBe("nb");
     expect(filmTakeAudio(film ? [film.clip] : [], s0.project.fps)[0]!.film!.audioLanguage).toBe(
-      "nb",
+      "source",
     );
   });
 

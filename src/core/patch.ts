@@ -1,3 +1,4 @@
+import { sourceLanguageOf } from "./dialogue/languages";
 import { briefVersionsError } from "./assets/brief-versions";
 import type { BriefVersion } from "./model";
 import { DEFAULT_JOB_SETTINGS as DEFAULT_JOB_SETTINGS_FOR_ROWS } from "./print/job";
@@ -640,7 +641,7 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
     }
     case "languageVersions": {
       const v = e as unknown as LanguageVersion;
-      return { ...base, language: v.language, source_language: "nb", name: v.name, status: v.status, removed: v.removed };
+      return { ...base, language: v.language, name: v.name, status: v.status, removed: v.removed };
     }
     case "assetRelations": {
       const x = e as AssetRelation;
@@ -893,7 +894,7 @@ export function diffStates(before: ProjectState, after: ProjectState): ChangeSet
         name: after.project.name,
         ...(after.project.code !== before.project.code ? { code: after.project.code ?? null } : {}),
         ...(after.project.capture !== before.project.capture ? { capture_mode: after.project.capture?.mode ?? "ones", capture_fps_num: after.project.capture?.fps.num ?? 24, capture_fps_den: after.project.capture?.fps.den ?? 1 } : {}),
-        ...(after.project.scriptLanguage !== before.project.scriptLanguage ? { script_language: after.project.scriptLanguage ?? null } : {}),
+        ...(sourceLanguageOf(after) !== sourceLanguageOf(before) ? { source_language: sourceLanguageOf(after) } : {}),
         fps_num: after.project.fps.num,
         fps_den: after.project.fps.den,
         frame_width: after.project.frameWidth,
@@ -1203,8 +1204,7 @@ export function stateFromRows(r: ProjectRows): ProjectState {
       // Før migrasjon 0008 finnes ikke kolonnene: HD 16:9
       frameWidth: num(p["frame_width"] ?? 1920),
       frameHeight: num(p["frame_height"] ?? 1080),
-      primaryLanguage: "nb",
-      ...(p["script_language"] ? { scriptLanguage: str(p["script_language"]) } : {}),
+      sourceLanguage: str(p["source_language"] || p["script_language"] || p["primary_language"] || "und"),
       ...defaultTransitionFromRow(p),
       ...(p["ai_month_limit"] === null || p["ai_month_limit"] === undefined
         ? {}
@@ -1272,7 +1272,7 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         orderKey: str(x["order_key"]),
         currentRev: num(x["current_rev"]),
         text: str(x["text"]),
-        language: "nb" as const,
+        language: str(x["language"] || p["source_language"] || p["script_language"] || p["primary_language"] || "und"),
         ...(x["script_language"] ? { scriptLanguage: str(x["script_language"]) } : {}),
         sourceRef: (x["source_ref"] as { page: number; y: number } | null | undefined) ?? null,
         ...(x["speech_language"] ? { speechLanguage: str(x["speech_language"]) } : {}),

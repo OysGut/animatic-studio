@@ -5637,12 +5637,6 @@
     "parameters": [],
     "executable": true
   },
-  "core-commands-apply.translation-fields-of.fail.b8697ac1dfc3": {
-    "text": "[!! NNôôrrwwëëggïïáánn ïïss tthhëë mmááïïnn ssccrrïïpptt áánndd ïïss nnôôtt ttrráánnssllááttëëdd !!]",
-    "source": "\"Norwegian is the main script and is not translated\"",
-    "parameters": [],
-    "executable": true
-  },
   "core-commands-apply.translation-fields-of.fail.73a9adebd4ff": {
     "text": "[!! TThhëë ttrráánnssllááttïïôônn ïïss ttôôôô llôônngg !!]",
     "source": "\"The translation is too long\"",
@@ -53380,12 +53374,6 @@
     "parameters": [],
     "executable": true
   },
-  "core-composition-fields.error.error.ead44afb7c76": {
-    "text": "[!! NNôôrrwwëëggïïáánn üüssëëss tthhëë llááyyëërr'ss ôôwwnn ïïmmáággëë !!]",
-    "source": "\"Norwegian uses the layer's own image\"",
-    "parameters": [],
-    "executable": true
-  },
   "core-composition-fields.error.error.a62138f1e5f3": {
     "text": "[!! TTwwôô ïïmmáággëëss ffôôrr tthhëë ssáámmëë lláánnggüüáággëë !!]",
     "source": "\"Two images for the same language\"",
@@ -71756,6 +71744,12 @@
   "engine-export-zip.zip.message.d8988ee64a25": {
     "text": "[!! TThhëë zzïïpp ffïïllëë ggrrëëww lláárrggëërr tthháánn 4 GGBB. ÏÏnnccllüüddëë ffëëwwëërr ffïïllëëss áánndd ttrryy áággááïïnn. !!]",
     "source": "\"The zip file grew larger than 4 GB. Include fewer files and try again.\"",
+    "parameters": [],
+    "executable": true
+  },
+  "core-composition-fields.error.error.ead44afb7c76": {
+    "text": "[!! NNôôrrwwëëggïïáánn üüssëëss tthhëë llááyyëërr'ss ôôwwnn ïïmmáággëë !!]",
+    "source": "\"Norwegian uses the layer's own image\"",
     "parameters": [],
     "executable": true
   },

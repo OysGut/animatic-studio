@@ -67,9 +67,9 @@ describe("kildespråk = manusets språk", () => {
     expect(lineLinkError(s, { ...f, language: "de" })).not.toBe("scope");
   });
 
-  it("engelsk manus: norsk som mål stoppes foreløpig av lagringsgrensen, ikke som kilde", () => {
+  it("engelsk manus: norsk er et vanlig målspråk", () => {
     const s = englishScript();
-    expect(languageVersionError(s, { language: "nb", name: "x", status: "active" })).toBe("norwegian");
+    expect(languageVersionError(s, { language: "nb", name: "x", status: "active" })).toBeNull();
   });
 
   it("norsk manus oppfører seg som før", () => {
@@ -78,7 +78,7 @@ describe("kildespråk = manusets språk", () => {
     expect(sourceLanguageOf(s)).toBe("nb");
     expect(translatedState(s, "nb")).toBe(s);
     expect(applyCommand(s, envelope(tr(b.id, "nb", b.currentRev))).ok).toBe(false);
-    expect(languageVersionError(s, { language: "nb", name: "x", status: "active" })).toBe("norwegian");
+    expect(languageVersionError(s, { language: "nb", name: "x", status: "active" })).toBe("source");
     const t = apply(s, tr(b.id, "en", b.currentRev));
     expect(translatedState(t, "en").blocks[b.id]!.text).toBe("Oversatt");
   });

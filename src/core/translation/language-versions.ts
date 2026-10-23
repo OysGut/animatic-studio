@@ -1,6 +1,6 @@
 /**
  * ML3 (B-049, PLAN_B049_MULTILANG.md §3–4): N manusspråk per prosjekt.
- * Norsk (nb) er alltid kilden. En språkversjon er én logisk versjon per prosjekt og målspråk. Eldre
+ * Manusets språk er kilden. En språkversjon er én logisk versjon per prosjekt og målspråk. Eldre
  * oversettelsesrader uten versjon-ID avledes fra prosjekt + språk; ingenting slås sammen eller slettes.
  * Ren TypeScript uten nettleser-API-er (Intl er en del av språket).
  */
@@ -22,8 +22,8 @@ export type LanguageVersionStatus = "active" | "archived";
 export const LANGUAGE_VERSION_STATUSES: readonly LanguageVersionStatus[] = ["active", "archived"];
 export const LANGUAGE_VERSION_NAME_MAX = 120;
 
-export { SCRIPT_LANGUAGE_TAG, isScriptLanguageTag, canonicalLanguageTag, isNorwegianSourceTag, sameLanguageTag } from "./language-tags";
-import { isScriptLanguageTag, isNorwegianSourceTag, sameLanguageTag } from "./language-tags";
+export { SCRIPT_LANGUAGE_TAG, isScriptLanguageTag, canonicalLanguageTag, sameLanguageTag } from "./language-tags";
+import { isScriptLanguageTag, sameLanguageTag } from "./language-tags";
 import { isSourceLanguage } from "../dialogue/languages";
 
 export interface LanguageTagCollision {
@@ -48,7 +48,7 @@ export function languageTagCollisions(tags: Iterable<string>): LanguageTagCollis
     .sort((a, b) => a.key.localeCompare(b.key));
 }
 
-export type LanguageVersionErrorCode = "language" | "source" | "norwegian" | "name" | "status" | "duplicate";
+export type LanguageVersionErrorCode = "language" | "source" | "name" | "status" | "duplicate";
 export interface LanguageVersionFields {
   readonly language: string;
   readonly name: string;
@@ -61,8 +61,6 @@ export function languageVersionError(
   selfId?: string,
 ): LanguageVersionErrorCode | null {
   if (!f || !isScriptLanguageTag(f.language)) return "language";
-  // Lagringsgrense uten migrasjon: databasen godtar ennå ikke nb/no som målspråk (se KILDESPRAK_REPORT.md).
-  if (isNorwegianSourceTag(f.language)) return "norwegian";
   // Manusets eget språk er kilden og kan aldri være et mål.
   if (s.project && isSourceLanguage({ project: s.project }, f.language)) return "source";
   if (typeof f.name !== "string" || !f.name.trim() || f.name.length > LANGUAGE_VERSION_NAME_MAX) return "name";
