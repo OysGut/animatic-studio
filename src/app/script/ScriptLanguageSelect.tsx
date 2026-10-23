@@ -3,7 +3,7 @@
  * oversettelser. Brukes i manuset, manusutforskeren, linjekoblingene og eksporten.
  */
 import { useMemo } from "react";
-import { LANGUAGE_LABEL, languageLabel, scriptLanguageOptions, type ProjectState, type ScriptLanguageOption } from "@/core";
+import { LANGUAGE_LABEL, languageLabel, scriptLanguageOptions, isSourceLanguage, sourceLanguageOf, SOURCE_TEXT_KEY, type ProjectState, type ScriptLanguageOption } from "@/core";
 import { t } from "@/core/i18n/keyed";
 
 export interface ScriptLanguageChoice {
@@ -16,18 +16,20 @@ export function optionLabel(o: ScriptLanguageOption): string {
   return t("ml3-language-versions.option.derived", { label: languageLabel(o.language) });
 }
 
-/** Valgene i rekkefølge: norsk (valgfritt), registrerte versjoner, eldre språk og standardspråkene. */
+/** Valgene i rekkefølge: kilden – manusets språk (valgfritt), registrerte versjoner, eldre språk og standardspråkene. */
 export function scriptLanguageChoices(state: ProjectState, includeNorwegian: boolean): ScriptLanguageChoice[] {
-  const out: ScriptLanguageChoice[] = includeNorwegian ? [{ language: "nb", label: t("ml3-language-versions.select.norwegian") }] : [];
+  const out: ScriptLanguageChoice[] = includeNorwegian
+    ? [{ language: SOURCE_TEXT_KEY, label: t("ml3-language-versions.select.source", { label: languageLabel(sourceLanguageOf(state)) }) }]
+    : [];
   const seen = new Set(out.map((c) => c.language));
   for (const o of scriptLanguageOptions(state)) {
-    if (seen.has(o.language)) continue;
+    if (seen.has(o.language) || isSourceLanguage(state, o.language)) continue;
     seen.add(o.language);
     out.push({ language: o.language, label: optionLabel(o) });
   }
   // Standardspråkene fra før ML3, så en ny oversettelse kan startes uten registrering
   for (const [language, label] of Object.entries(LANGUAGE_LABEL))
-    if (!seen.has(language) && language !== "nb") {
+    if (!seen.has(language) && language !== "nb" && !isSourceLanguage(state, language)) {
       seen.add(language);
       out.push({ language, label });
     }

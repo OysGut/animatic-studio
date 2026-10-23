@@ -1082,10 +1082,7 @@ function translationFieldsOf(
   if (!isScriptLanguageTag(f.language))
     fail("invalid", tk("core-commands-apply.translation-fields-of.fail.705cd5c07cc0"));
   if (f.language === "nb" || f.language === "no")
-    fail(
-      "invalid",
-      tk("core-commands-apply.translation-fields-of.fail.b8697ac1dfc3"),
-    );
+    fail("invalid", tk("ml3-language-versions.error.norwegian"));
   if (isSourceLanguage(s, f.language))
     fail("invalid", tk("ml3-language-versions.error.source"));
   if (typeof f.text !== "string" || f.text.length > TRANSLATION_MAX)
