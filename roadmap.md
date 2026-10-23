@@ -359,3 +359,4 @@
 - [x] Faktaarket alltid (Øystein 23.10): «Skriv med AI» lager studien først når faktaarket mangler, og faktaarket er alltid med i tekst- og bildekallet (0089, KARAKTERTEKST_REPORT.md del C). Visuell sjekk venter på 0089 i Cloud.
 - [x] Resultater i synet: versjonsstriper bryter linjen, lenken ruller resultatet inn i synet.
 - [ ] Plassering av nye lag innenfor gjeldende lerretsvisning.
+- [x] Stilforbilder (Øystein 23.10): brukeren velger bort og legger til bilder, grense per modell (STILFORBILDER_REPORT.md). Visuell sjekk venter på 0089 i Cloud.

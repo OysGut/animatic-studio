@@ -75545,5 +75545,65 @@
   },
   "script.openScene.hint": {
     "text": "Dobbeltklikk for å åpne scenen"
+  },
+  "attach.hint": {
+    "text": "Anbefalt: 1–3 stilforbilder. Flere bilder gir ofte mer ujevne resultater og koster mer."
+  },
+  "attach.identityOff": {
+    "text": "Uten dagens bilde kan utseendet endre seg."
+  },
+  "attach.limit": {
+    "text": "Grensen for denne modellen er nådd: {max} bilder."
+  },
+  "attach.overLimit": {
+    "text": " (over grensen, sendes ikke)"
+  },
+  "attach.add": {
+    "text": "Legg til bilde …"
+  },
+  "attach.remove": {
+    "text": "Fjern"
+  },
+  "attach.role.same": {
+    "text": " – samme figur/gjenstand"
+  },
+  "attach.include": {
+    "text": "Send med: {label}"
+  },
+  "attach.cost.label": {
+    "text": "Bilder som sendes med"
+  },
+  "attach.cost.value": {
+    "text": "{count} av høyst {max} (flere bilder kan endre prisen)"
+  },
+  "attach.picker.title": {
+    "text": "Legg til bilde"
+  },
+  "attach.picker.search": {
+    "text": "Søk etter bilde"
+  },
+  "attach.picker.allKinds": {
+    "text": "Alle typer"
+  },
+  "attach.picker.kind": {
+    "text": "Type"
+  },
+  "attach.picker.role": {
+    "text": "Rolle"
+  },
+  "attach.picker.roleStyle": {
+    "text": "Bare stilen"
+  },
+  "attach.picker.roleSame": {
+    "text": "Samme figur/gjenstand"
+  },
+  "attach.picker.empty": {
+    "text": "Ingen godkjente bilder passer."
+  },
+  "attach.picker.close": {
+    "text": "Lukk"
+  },
+  "attach.picker.pick": {
+    "text": "Legg til {label}"
   }
 }

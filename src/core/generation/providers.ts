@@ -48,6 +48,11 @@ export interface ProviderModel {
   readonly durations?: readonly number[];
   /** Tar imot forbildebilder (bilde) eller startbilde (video). */
   readonly acceptsImage?: boolean;
+  /**
+   * Leverandørens dokumenterte grense for antall inndatabilder (bilde). Utelatt: ukjent, løsningen bruker
+   * `MAX_ATTACHED_IMAGES` (Øystein 23.10).
+   */
+  readonly maxInputImages?: number;
   /** Kan lage gjennomsiktig bakgrunn (frilagte figurer). */
   readonly transparent?: boolean;
   /** Innsatsnivået modellen passer best til (mandat 19.3, DEC-0070). */
@@ -223,6 +228,7 @@ export const PROVIDERS: readonly ProviderInfo[] = [
         priceUsd: 0.05,
         priceUnit: "image",
         acceptsImage: true,
+        maxInputImages: 16,
         tier: "fast",
         maxPromptChars: 32000,
         resolution: "1024–1536 px",
@@ -236,6 +242,7 @@ export const PROVIDERS: readonly ProviderInfo[] = [
         priceUsd: 0.08,
         priceUnit: "image",
         acceptsImage: true,
+        maxInputImages: 16,
         transparent: true,
         tier: "premium",
         get extras() {
@@ -300,6 +307,7 @@ export const PROVIDERS: readonly ProviderInfo[] = [
         priceUsd: 0.04,
         priceUnit: "image",
         acceptsImage: true,
+        maxInputImages: 14,
         tier: "fast",
         get extras() {
           return [t("core-generation-providers.models.models.ef3f6478e1f6")];
@@ -315,6 +323,7 @@ export const PROVIDERS: readonly ProviderInfo[] = [
         priceUsd: 0.14,
         priceUnit: "image",
         acceptsImage: true,
+        maxInputImages: 14,
         tier: "premium",
         get extras() {
           return [
@@ -384,6 +393,7 @@ export const PROVIDERS: readonly ProviderInfo[] = [
         priceUsd: 0.04,
         priceUnit: "image",
         acceptsImage: true,
+        maxInputImages: 1,
         tier: "balanced",
         maxPromptChars: 2000,
         get resolution() {
@@ -398,6 +408,7 @@ export const PROVIDERS: readonly ProviderInfo[] = [
         priceUsd: 0.04,
         priceUnit: "image",
         acceptsImage: true,
+        maxInputImages: 10,
         tier: "balanced",
         get extras() {
           return [
@@ -418,6 +429,7 @@ export const PROVIDERS: readonly ProviderInfo[] = [
         priceUsd: 0.03,
         priceUnit: "image",
         acceptsImage: true,
+        maxInputImages: 3,
         requiresImage: true,
         tier: "fast",
         get extras() {

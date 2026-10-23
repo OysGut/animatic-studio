@@ -306,3 +306,5 @@ B-087: REQ-0879–REQ-0895 (Rigg & 2D-utskrift, A1–A17) og REQ-0896–REQ-0915
 - [ ] Lerretet: nye lag plasseres i bildets midtpunkt; ved zoom eller flytting bort fra midten bør de plasseres innenfor gjeldende visning (visningen må gjøres tilgjengelig for dialogene).
 - [ ] Claude: kjør migrasjon 0089 i Cloud (tekstversjoner og `assets.visual_brief_auto_at` for faktaark laget automatisk).
 - [ ] Visuell sjekk på nb og en: faktaarket med «Laget automatisk fra manuset» vises på karakterkortet etter «Skriv med AI» (krever 0089 i Cloud).
+- [ ] Visuell sjekk på nb og en: listen «Sendes med til bildemodellen» med avkrysning, «Legg til bilde …», hint/advarsel og grense (krever 0089 i Cloud).
+- [ ] Bekreft grensen for antall inndatabilder for de innebygde bildemodellene (i dag ukjent, 6 brukes) og for Seedream 4.5 hos fal (satt til 10).

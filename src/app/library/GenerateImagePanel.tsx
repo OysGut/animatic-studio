@@ -8,13 +8,15 @@ import { Loader2, RotateCcw } from "lucide-react";
 import { AiGlyph } from "@/app/design/icons/AiGlyph";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { writeWithAiCalls, planBriefSave, shownBriefVersion, type BriefVersion, aiUsage, type Asset, type AssetMedia, type AssetVariant, type AssetVersion, type AttachedImage, attachedImages, promptFamilyOf, costBreakdown, estimateCostUsd, formatCredits, formatUsd, hasStyleGuide, IMAGE_PURPOSE_FOR_KIND, IMAGE_SIZE_LABEL, fullSizeOriginal, type ImageSize, imageSizesOf, lastImagePrompt, LOVABLE_CUTOUT_MODEL, LOVABLE_IMAGE_MODEL, MAX_PROMPT_CHARS, type Project, type ProjectState, profileBudgetRemaining, qualityProfileUsage, providerInfo, providerModel, providersFor, qualityProfileSnapshot, stripAttachedSection, tm } from "@/core";
+import { writeWithAiCalls, planBriefSave, shownBriefVersion, type BriefVersion, aiUsage, type Asset, type AssetMedia, type AssetVariant, type AssetVersion, type AttachedImage, type AttachedChoice, type AttachedImageRow, attachedImageRows, attachedImages, EMPTY_ATTACHED_CHOICE, maxAttachedImagesFor, RECOMMENDED_STYLE_IMAGES, promptFamilyOf, costBreakdown, estimateCostUsd, formatCredits, formatUsd, hasStyleGuide, IMAGE_PURPOSE_FOR_KIND, IMAGE_SIZE_LABEL, fullSizeOriginal, type ImageSize, imageSizesOf, lastImagePrompt, LOVABLE_CUTOUT_MODEL, LOVABLE_IMAGE_MODEL, MAX_PROMPT_CHARS, type Project, type ProjectState, profileBudgetRemaining, qualityProfileUsage, providerInfo, providerModel, providersFor, qualityProfileSnapshot, stripAttachedSection, tm } from "@/core";
 import { QualityProfilePicker, chosenQualityProfile, type QualityProfileChoice } from "@/app/ai/QualityProfilePicker";
 import { aiJobsKey, useAiJobs } from "@/app/ai/use-ai-jobs";
 import { CUTOUT_MODEL, IMAGE_MODEL, generateImage } from "@/adapters/ai/generate-image.functions";
 import { writeImagePrompt } from "@/adapters/ai/write-prompt.functions";
 import { adoptServerHistory } from "@/app/project/use-commands";
 import { useImagePromptPreview } from "./image-prompt-preview";
+import { readAttachedChoice, writeAttachedChoice } from "./attached-choice";
+import { AttachImagePicker } from "./AttachImagePicker";
 import { useProjectProviders } from "@/app/ai/use-project-providers";
 import { EffortPicker } from "@/app/ai/EffortPicker";
 import { Button } from "@/components/ui/button";
@@ -97,60 +99,6 @@ export function GenerateImagePanel({
   const [withStyle, setWithStyle] = useState(true);
   const identity =
     withRef && reference && reference.mimeType.startsWith("image/") ? reference : null;
-  /** Bildene som sendes med til bildemodellen, i rekkefølge. */
-  const attached = useMemo((): readonly AttachedImage[] => {
-    if (context)
-      return attachedImages(context.state, {
-        assetId: asset.id,
-        productionId: context.productionId,
-        occurrenceId: context.occurrenceId,
-        identityVersionId: identity?.id ?? null,
-        style: withStyle,
-      });
-    return identity
-      ? [
-          {
-            versionId: identity.id,
-            path: identity.mediaPath,
-            mimeType: identity.mimeType,
-            role: "identity",
-            label: `the current design of ${asset.name} (v${identity.number})`,
-          },
-        ]
-      : [];
-  }, [context, asset, identity, withStyle]);
-  // Forbildebilder sendes som standard i arbeidsstørrelse (tilpasset scenen); originalen i full størrelse
-  // kan velges, f.eks. for karakterkort (Mars 2026-10-13, DEC-0079)
-  const [fullSize, setFullSize] = useState(false);
-  const originals = useMemo(
-    () =>
-      context
-        ? new Map(
-            attached.flatMap((a) => {
-              const o = fullSizeOriginal(context.state, a.versionId);
-              return o ? [[a.versionId, o] as const] : [];
-            }),
-          )
-        : new Map<string, never>(),
-    [context, attached],
-  );
-  const sentPaths = attached.map((a) =>
-    fullSize ? (originals.get(a.versionId)?.mediaPath ?? a.path) : a.path,
-  );
-  /** Hvor mange stilforbilder som finnes (for valget), uansett om de sendes nå. */
-  const styleAvailable = useMemo(
-    () =>
-      context
-        ? attachedImages(context.state, {
-            assetId: asset.id,
-            productionId: context.productionId,
-            occurrenceId: context.occurrenceId,
-            identityVersionId: null,
-            style: true,
-          }).length
-        : 0,
-    [context, asset],
-  );
   // Leverandør og modell (DEC-0069): innebygd, eller en prosjektets eiere har koblet til
   const available = useProjectProviders(projectId, editable);
   const options = providersFor("image", new Set(available.data?.providers ?? []));
@@ -183,6 +131,103 @@ export function GenerateImagePanel({
   // presis med identiteten først for Seedream, Qwen og FLUX
   const family = promptFamilyOf(choice.provider, chosenModel?.id);
   const transparent = !!chosenModel?.transparent;
+  /** Bildene som sendes med til bildemodellen, i rekkefølge. */
+  // Brukerens eget valg av vedlegg (Øystein 23.10), husket per ressurs i økten
+  const [attachChoice, setChoiceState] = useState<AttachedChoice>(EMPTY_ATTACHED_CHOICE);
+  useEffect(() => setChoiceState(readAttachedChoice(asset.id)), [asset.id]);
+  const setChoice = (c: AttachedChoice) => {
+    setChoiceState(c);
+    writeAttachedChoice(asset.id, c);
+    setConfirm(false);
+  };
+  const maxImages = maxAttachedImagesFor(chosenModel);
+  const rows = useMemo(
+    () =>
+      context
+        ? attachedImageRows(context.state, {
+            assetId: asset.id,
+            productionId: context.productionId,
+            occurrenceId: context.occurrenceId,
+            identityVersionId: identity?.id ?? null,
+            style: withStyle,
+            choice: attachChoice,
+            max: maxImages,
+          })
+        : [],
+    [context, asset.id, identity?.id, withStyle, attachChoice, maxImages],
+  );
+  const attached = useMemo((): readonly AttachedImage[] => {
+    if (context) return rows.filter((r) => r.included).map((r) => r.image);
+    return identity
+      ? [
+          {
+            versionId: identity.id,
+            path: identity.mediaPath,
+            mimeType: identity.mimeType,
+            role: "identity",
+            label: `the current design of ${asset.name} (v${identity.number})`,
+          },
+        ]
+      : [];
+  }, [context, rows, asset, identity]);
+  // Forbildebilder sendes som standard i arbeidsstørrelse (tilpasset scenen); originalen i full størrelse
+  // kan velges, f.eks. for karakterkort (Mars 2026-10-13, DEC-0079)
+  const [fullSize, setFullSize] = useState(false);
+  const originals = useMemo(
+    () =>
+      context
+        ? new Map(
+            attached.flatMap((a) => {
+              const o = fullSizeOriginal(context.state, a.versionId);
+              return o ? [[a.versionId, o] as const] : [];
+            }),
+          )
+        : new Map<string, never>(),
+    [context, attached],
+  );
+  /** Stilforbilder som sendes (alt utenom identiteten). */
+  const styleCount = attached.filter((a) => a.role !== "identity").length;
+  const atLimit = context ? attached.length >= maxImages : false;
+  const [picking, setPicking] = useState(false);
+  const pickerSkip = useMemo(() => {
+    const own = new Set<string>(
+      context
+        ? Object.values(context.state.assetVersions)
+            .filter((v) => context.state.assetVariants[v.variantId]?.assetId === asset.id)
+            .map((v) => v.id)
+        : [],
+    );
+    for (const r of rows) own.add(r.image.versionId);
+    return own;
+  }, [context, asset.id, rows]);
+  function toggleRow(r: AttachedImageRow, on: boolean) {
+    const id = r.image.versionId;
+    const excluded = attachChoice.excluded.filter((x) => x !== id);
+    if (!on) return setChoice({ excluded: [...excluded, id], added: attachChoice.added });
+    // Et forslag utenfor standardutvalget legges til som eget valg, så det sendes
+    const added =
+      r.source === "auto" && !r.excluded && !attachChoice.added.some((x) => x.versionId === id)
+        ? [...attachChoice.added, { versionId: id, role: "style" as const }]
+        : attachChoice.added;
+    setChoice({ excluded, added });
+  }
+  const sentPaths = attached.map((a) =>
+    fullSize ? (originals.get(a.versionId)?.mediaPath ?? a.path) : a.path,
+  );
+  /** Hvor mange stilforbilder som finnes (for valget), uansett om de sendes nå. */
+  const styleAvailable = useMemo(
+    () =>
+      context
+        ? attachedImages(context.state, {
+            assetId: asset.id,
+            productionId: context.productionId,
+            occurrenceId: context.occurrenceId,
+            identityVersionId: null,
+            style: true,
+          }).length
+        : 0,
+    [context, asset],
+  );
   // B-105a: malene og stilreglene ligger på serveren. Her sendes bare innstillingene; svaret er den
   // automatiske beskrivelsen brukeren ser og kan redigere.
   const promptRequest = useMemo(
@@ -194,11 +239,14 @@ export function GenerateImagePanel({
       productionId: context?.productionId ?? null,
       occurrenceId: context?.occurrenceId ?? null,
       style: withStyle,
+      excluded: attachChoice.excluded,
+      added: attachChoice.added,
+      maxImages,
       fullSize,
       family,
       transparent,
     }),
-    [asset.id, variant?.id, identity?.id, context?.productionId, context?.occurrenceId, withStyle, fullSize, family, transparent],
+    [asset.id, variant?.id, identity?.id, context?.productionId, context?.occurrenceId, withStyle, attachChoice, maxImages, fullSize, family, transparent],
   );
   const serverPreview = useImagePromptPreview(projectId, promptRequest, context?.state ?? asset).data ?? null;
   const summary = serverPreview?.summary ?? null;
@@ -698,7 +746,7 @@ export function GenerateImagePanel({
               {t("app-library-generate-image-panel.generate-image-panel.p.d711cab7fc79")}
             </p>
           ) : null}
-          {reference ? (
+          {reference && !context ? (
             <label className="flex items-center gap-1.5 text-xs text-text-secondary">
               <input
                 type="checkbox"
@@ -740,7 +788,111 @@ export function GenerateImagePanel({
               {t("app-library-generate-image-panel.send-originals", { count: originals.size })}
             </label>
           ) : null}
-          {attached.length ? (
+          {context && (reference || rows.length) ? (
+            <div className="space-y-1 text-[11px] text-text-tertiary" data-testid="attached-list">
+              {withStyle && styleAvailable > 0 ? (
+                <p
+                  data-testid="attached-hint"
+                  data-warn={styleCount > RECOMMENDED_STYLE_IMAGES ? "true" : "false"}
+                  className={styleCount > RECOMMENDED_STYLE_IMAGES ? "text-status-uncertain" : undefined}
+                >
+                  {t("attach.hint")}
+                </p>
+              ) : null}
+              <p>{t("app-library-generate-image-panel.generate-image-panel.div.609dba5b72e9")}</p>
+              <ul className="space-y-0.5">
+                {reference && reference.mimeType.startsWith("image/") ? (
+                  <li>
+                    <label className="flex items-start gap-1.5">
+                      <input
+                        type="checkbox"
+                        checked={withRef}
+                        aria-label={t("attach.include", { label: `v${reference.number}` })}
+                        onChange={(e) => {
+                          setWithRef(e.target.checked);
+                          setConfirm(false);
+                        }}
+                        disabled={!editable || running || writing}
+                      />
+                      <span>
+                        {t("app-library-generate-image-panel.generate-image-panel.label.0e5e237256f6", { number: String(reference.number) })}
+                        {!withRef ? (
+                          <span className="block text-status-uncertain">{t("attach.identityOff")}</span>
+                        ) : null}
+                      </span>
+                    </label>
+                  </li>
+                ) : null}
+                {rows
+                  .filter((r) => r.image.role !== "identity")
+                  .map((r) => (
+                    <li key={r.image.versionId} className="flex items-start gap-1.5">
+                      <label className="flex flex-1 items-start gap-1.5">
+                        <input
+                          type="checkbox"
+                          checked={r.included}
+                          aria-label={t("attach.include", { label: r.image.label })}
+                          onChange={(e) => toggleRow(r, e.target.checked)}
+                          disabled={!editable || running || writing || (!r.included && atLimit)}
+                        />
+                        <span className={r.included ? undefined : "opacity-60"}>
+                          {r.image.label}
+                          {r.image.role === "view"
+                            ? t("attach.role.same")
+                            : t("app-library-generate-image-panel.generate-image-panel.li.6784aa0831bc")}
+                          {r.overLimit ? t("attach.overLimit") : null}
+                        </span>
+                      </label>
+                      {r.source === "added" ? (
+                        <button
+                          type="button"
+                          className="text-[11px] text-text-secondary underline"
+                          onClick={() =>
+                            setChoice({
+                              excluded: attachChoice.excluded.filter((x) => x !== r.image.versionId),
+                              added: attachChoice.added.filter((x) => x.versionId !== r.image.versionId),
+                            })
+                          }
+                          disabled={!editable || running || writing}
+                        >
+                          {t("attach.remove")}
+                        </button>
+                      ) : null}
+                    </li>
+                  ))}
+              </ul>
+              {atLimit ? (
+                <p data-testid="attached-limit" className="text-status-uncertain">
+                  {t("attach.limit", { max: String(maxImages) })}
+                </p>
+              ) : null}
+              {withStyle ? (
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  onClick={() => setPicking((v) => !v)}
+                  disabled={!editable || running || writing || atLimit}
+                >
+                  {t("attach.add")}
+                </Button>
+              ) : null}
+              {picking && withStyle ? (
+                <AttachImagePicker
+                  state={context.state}
+                  skip={pickerSkip}
+                  onPick={(versionId, role) => {
+                    setChoice({
+                      excluded: attachChoice.excluded.filter((x) => x !== versionId),
+                      added: [...attachChoice.added.filter((x) => x.versionId !== versionId), { versionId, role }],
+                    });
+                    setPicking(false);
+                  }}
+                  onClose={() => setPicking(false)}
+                />
+              ) : null}
+            </div>
+          ) : attached.length ? (
             <div className="text-[11px] text-text-tertiary">
               {t("app-library-generate-image-panel.generate-image-panel.div.609dba5b72e9")}
               <ol className="ml-4 list-decimal">
@@ -891,6 +1043,16 @@ export function GenerateImagePanel({
                       ]
                 }
               />
+              {context && attached.length ? (
+                <CostLines
+                  lines={[
+                    {
+                      label: t("attach.cost.label"),
+                      value: t("attach.cost.value", { count: String(attached.length), max: String(maxImages) }),
+                    },
+                  ]}
+                />
+              ) : null}
               <div className="flex gap-2">
                 <Button size="sm" onClick={() => void run()} disabled={!canRun}>
                   <AiGlyph /> {t("app-library-generate-image-panel.generate-image-panel.button.0758d8cca839")}

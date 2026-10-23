@@ -324,55 +324,160 @@ const isImage = (s: ProjectState, id: string) =>
  */
 export function attachedImages(
   s: ProjectState,
-  input: {
-    readonly assetId: string;
-    readonly productionId: string;
-    readonly occurrenceId?: string | null;
-    /** Dagens bilde som skal beholdes (eller null). */
-    readonly identityVersionId: string | null;
-    /** Send filmens godkjente bilder med som stilforbilder. */
-    readonly style: boolean;
-  },
+  input: AttachedImagesInput,
 ): AttachedImage[] {
+  return attachedImageRows(s, input)
+    .filter((r) => r.included)
+    .map((r) => r.image);
+}
+
+/**
+ * Brukerens eget valg av vedlegg (Øystein 23.10): bilder som er valgt bort, og bilder lagt til med rolle
+ * («style»: bare stilen, «view»: samme figur/gjenstand). Huskes lokalt i økten, aldri i databasen.
+ */
+export interface AttachedChoice {
+  readonly excluded: readonly string[];
+  readonly added: readonly { readonly versionId: string; readonly role: "style" | "view" }[];
+}
+
+export const EMPTY_ATTACHED_CHOICE: AttachedChoice = { excluded: [], added: [] };
+
+/** Anbefalt høyeste antall stilforbilder (hint, ingen blokkering). */
+export const RECOMMENDED_STYLE_IMAGES = 3;
+/** Høyeste antall en modell i katalogen dokumenterer (serverens ytre grense før modellens egen). */
+export const MAX_ATTACHED_IMAGES_ANY = 16;
+
+/** Modellens dokumenterte grense for antall inndatabilder; uten data `MAX_ATTACHED_IMAGES`. */
+export function maxAttachedImagesFor(model: { readonly maxInputImages?: number } | null | undefined): number {
+  const n = model?.maxInputImages;
+  return typeof n === "number" && n >= 1 ? Math.min(n, MAX_ATTACHED_IMAGES_ANY) : MAX_ATTACHED_IMAGES;
+}
+
+export interface AttachedImagesInput {
+  readonly assetId: string;
+  readonly productionId: string;
+  readonly occurrenceId?: string | null;
+  /** Dagens bilde som skal beholdes (eller null). */
+  readonly identityVersionId: string | null;
+  /** Send filmens godkjente bilder med som stilforbilder. */
+  readonly style: boolean;
+  /** Brukerens valg (bortvalg og tillegg). */
+  readonly choice?: AttachedChoice;
+  /** Modellens grense (standard `MAX_ATTACHED_IMAGES`). */
+  readonly max?: number;
+}
+
+export interface AttachedImageRow {
+  readonly image: AttachedImage;
+  /** «auto»: foreslått av løsningen; «added»: lagt til av brukeren. */
+  readonly source: "auto" | "added";
+  readonly included: boolean;
+  /** Valgt bort av brukeren (ellers: utenfor standardutvalget eller over grensen). */
+  readonly excluded: boolean;
+  /** Ikke med fordi grensen er nådd. */
+  readonly overLimit: boolean;
+}
+
+/** Versjonene i valget som ikke er bilder i dette prosjektet (serveren avviser dem). */
+export function foreignAttachedChoice(s: ProjectState, choice: AttachedChoice | undefined): string[] {
+  return (choice?.added ?? []).map((a) => a.versionId).filter((id) => !isImage(s, id) || !versionLabel(s, id));
+}
+
+/**
+ * Alle linjene i listen «Sendes med til bildemodellen»: identiteten, løsningens forslag (standard høyst
+ * `MAX_ATTACHED_IMAGES`, som før) og brukerens tillegg, med om de sendes. Til sammen aldri over `max`.
+ */
+export function attachedImageRows(s: ProjectState, input: AttachedImagesInput): AttachedImageRow[] {
   const asset = s.assets[input.assetId];
   if (!asset) return [];
-  const out: AttachedImage[] = [];
+  const max = Math.max(1, input.max ?? MAX_ATTACHED_IMAGES);
+  const excluded = new Set(input.choice?.excluded ?? []);
+  const rows: { image: AttachedImage; source: "auto" | "added"; want: boolean; excluded: boolean }[] = [];
   const seen = new Set<string>();
-  const add = (id: string, role: AttachedImage["role"]) => {
-    if (out.length >= MAX_ATTACHED_IMAGES || seen.has(id) || !isImage(s, id)) return;
-    const v = s.assetVersions[id]!;
+  const make = (id: string, role: AttachedImage["role"]): AttachedImage | null => {
+    if (seen.has(id) || !isImage(s, id)) return null;
     const label = versionLabel(s, id);
-    if (!label) return;
+    if (!label) return null;
     seen.add(id);
-    out.push({ versionId: id, path: v.mediaPath, mimeType: v.mimeType, role, label });
+    const v = s.assetVersions[id]!;
+    return { versionId: id, path: v.mediaPath, mimeType: v.mimeType, role, label };
   };
-  if (input.identityVersionId) add(input.identityVersionId, "identity");
-  if (!input.style) return out;
-  const purpose = IMAGE_PURPOSE_FOR_KIND[asset.kind];
-  const ownVariants = new Set<string>(
-    Object.values(s.assetVariants)
-      .filter((v) => v.assetId === asset.id)
-      .map((v) => v.id),
-  );
-  // Ressursens egne bilder sendes bare som «identity» (ellers kopierer modellen dem)
-  const notOwn = (id: string) => !ownVariants.has(s.assetVersions[id]?.variantId ?? "");
-  // Stilprofilen for ressurstypen (REQ-0148), ellers standardprofilen
-  const g = styleProfileFor(s, asset.kind)?.guide;
-  for (const id of g?.referenceVersionIds ?? []) if (notOwn(id)) add(id, "style");
-  const kinds: readonly Asset["kind"][] =
-    purpose === "background"
-      ? ["location", "environment"]
-      : ["character", "animal", "object", "other"];
-  const scenes = scenesFor(s, { ...input, variantId: null, withReference: false }, asset);
-  for (const o of scenes)
-    for (const x of assetsInScene(s, input.productionId, o)) {
-      if (x.asset.id === asset.id || !kinds.includes(x.asset.kind)) continue;
-      const va = Object.values(s.assetVariants)
-        .filter((v) => v.assetId === x.asset.id && v.approvedVersionId && !v.archived)
-        .sort((a, b) => a.id.localeCompare(b.id))[0];
-      if (va?.approvedVersionId) add(va.approvedVersionId, "style");
+  if (input.identityVersionId) {
+    const im = make(input.identityVersionId, "identity");
+    if (im) rows.push({ image: im, source: "auto", want: true, excluded: false });
+  }
+  if (input.style) {
+    const purpose = IMAGE_PURPOSE_FOR_KIND[asset.kind];
+    const ownVariants = new Set<string>(
+      Object.values(s.assetVariants)
+        .filter((v) => v.assetId === asset.id)
+        .map((v) => v.id),
+    );
+    // Ressursens egne bilder sendes bare som «identity» (ellers kopierer modellen dem)
+    const notOwn = (id: string) => !ownVariants.has(s.assetVersions[id]?.variantId ?? "");
+    const autoIds: string[] = [];
+    // Stilprofilen for ressurstypen (REQ-0148), ellers standardprofilen
+    const g = styleProfileFor(s, asset.kind)?.guide;
+    for (const id of g?.referenceVersionIds ?? []) if (notOwn(id)) autoIds.push(id);
+    const kinds: readonly Asset["kind"][] =
+      purpose === "background"
+        ? ["location", "environment"]
+        : ["character", "animal", "object", "other"];
+    const scenes = scenesFor(s, { ...input, variantId: null, withReference: false }, asset);
+    for (const o of scenes)
+      for (const x of assetsInScene(s, input.productionId, o)) {
+        if (x.asset.id === asset.id || !kinds.includes(x.asset.kind)) continue;
+        const va = Object.values(s.assetVariants)
+          .filter((v) => v.assetId === x.asset.id && v.approvedVersionId && !v.archived)
+          .sort((a, b) => a.id.localeCompare(b.id))[0];
+        if (va?.approvedVersionId) autoIds.push(va.approvedVersionId);
+      }
+    const added = new Map((input.choice?.added ?? []).map((a) => [a.versionId, a.role] as const));
+    // Standardutvalget er som før: høyst MAX_ATTACHED_IMAGES (uten bortvalgte, de erstattes av neste)
+    let standard = rows.length;
+    for (const id of autoIds) {
+      if (added.has(id)) continue;
+      const im = make(id, "style");
+      if (!im) continue;
+      const out = excluded.has(id);
+      const want = !out && standard < MAX_ATTACHED_IMAGES;
+      if (want) standard++;
+      rows.push({ image: im, source: "auto", want, excluded: out });
     }
-  return out;
+    for (const [id, role] of added) {
+      const im = make(id, role);
+      if (im) rows.push({ image: im, source: "added", want: !excluded.has(id), excluded: excluded.has(id) });
+    }
+  }
+  let count = 0;
+  return rows.map((r) => {
+    const included = r.want && count < max;
+    if (included) count++;
+    return { image: r.image, source: r.source, included, excluded: r.excluded, overLimit: r.want && !included };
+  });
+}
+
+/** Et bilde brukeren kan legge til («Legg til bilde …»): godkjente bilder i aktive varianter. */
+export interface AttachableVersion {
+  readonly versionId: string;
+  readonly assetId: string;
+  readonly assetName: string;
+  readonly kind: Asset["kind"];
+  readonly variantName: string;
+  readonly number: number;
+}
+
+/** Prosjektets godkjente bildeversjoner i aktive (ikke arkiverte) varianter, sortert på navn. */
+export function attachableVersions(s: ProjectState): AttachableVersion[] {
+  const out: AttachableVersion[] = [];
+  for (const va of Object.values(s.assetVariants)) {
+    if (va.archived || !va.approvedVersionId) continue;
+    const a = s.assets[va.assetId];
+    const v = s.assetVersions[va.approvedVersionId];
+    if (!a || a.removed || !v || !v.mimeType.startsWith("image/")) continue;
+    out.push({ versionId: v.id, assetId: a.id, assetName: a.name, kind: a.kind, variantName: va.name, number: v.number });
+  }
+  return out.sort((x, y) => x.assetName.localeCompare(y.assetName) || x.variantName.localeCompare(y.variantName));
 }
 
 /**

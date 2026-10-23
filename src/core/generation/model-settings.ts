@@ -379,6 +379,7 @@ export function customModelFrom(
     ...(template.durations ? { durations: template.durations } : {}),
     ...(template.acceptsImage !== undefined ? { acceptsImage: template.acceptsImage } : {}),
     ...(template.requiresImage !== undefined ? { requiresImage: template.requiresImage } : {}),
+    ...(template.maxInputImages !== undefined ? { maxInputImages: template.maxInputImages } : {}),
     ...(template.maxPromptChars !== undefined ? { maxPromptChars: template.maxPromptChars } : {}),
     ...(template.soundSeconds ? { soundSeconds: template.soundSeconds } : {}),
     ...(template.editSeconds ? { editSeconds: template.editSeconds } : {}),

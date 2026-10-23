@@ -75527,5 +75527,65 @@
   },
   "script.openScene.hint": {
     "text": "Double-click to open the scene"
+  },
+  "attach.hint": {
+    "text": "Recommended: 1–3 style references. More images often give less consistent results and cost more."
+  },
+  "attach.identityOff": {
+    "text": "Without the current image, the appearance may change."
+  },
+  "attach.limit": {
+    "text": "This model’s limit is reached: {max} images."
+  },
+  "attach.overLimit": {
+    "text": " (over the limit, not sent)"
+  },
+  "attach.add": {
+    "text": "Add image …"
+  },
+  "attach.remove": {
+    "text": "Remove"
+  },
+  "attach.role.same": {
+    "text": " – same figure/object"
+  },
+  "attach.include": {
+    "text": "Send along: {label}"
+  },
+  "attach.cost.label": {
+    "text": "Images sent along"
+  },
+  "attach.cost.value": {
+    "text": "{count} of at most {max} (more images can change the price)"
+  },
+  "attach.picker.title": {
+    "text": "Add image"
+  },
+  "attach.picker.search": {
+    "text": "Search images"
+  },
+  "attach.picker.allKinds": {
+    "text": "All types"
+  },
+  "attach.picker.kind": {
+    "text": "Type"
+  },
+  "attach.picker.role": {
+    "text": "Role"
+  },
+  "attach.picker.roleStyle": {
+    "text": "Style only"
+  },
+  "attach.picker.roleSame": {
+    "text": "Same figure/object"
+  },
+  "attach.picker.empty": {
+    "text": "No approved images match."
+  },
+  "attach.picker.close": {
+    "text": "Close"
+  },
+  "attach.picker.pick": {
+    "text": "Add {label}"
   }
 }
