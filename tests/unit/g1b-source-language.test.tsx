@@ -48,14 +48,14 @@ describe("bytte av kildespråk (G-1b)", () => {
 
   it("bekrefter et konfliktfritt bytte med SetDialogueLanguage-kommandoen", () => {
     setLanguage("nb");
-    const run = vi.fn(() => null);
+    const run = vi.fn((_cmd: Command, _label: string): string | null => null);
     renderDialog(englishProject(), run);
     fireEvent.click(screen.getByTestId("source-language-change-open"));
     fireEvent.change(screen.getByTestId("source-language-input"), { target: { value: "ja" } });
     expect((screen.getByTestId("source-language-change-confirm") as HTMLButtonElement).disabled).toBe(false);
     fireEvent.click(screen.getByTestId("source-language-change-confirm"));
     expect(run).toHaveBeenCalledTimes(1);
-    const cmd = run.mock.calls[0]![0] as Command & { language: string };
+    const cmd = run.mock.calls[0]![0] as { type: string; target: string; language: string };
     expect(cmd.type).toBe("SetDialogueLanguage");
     expect(cmd.target).toBe("project");
     expect(cmd.language).toBe("ja");
