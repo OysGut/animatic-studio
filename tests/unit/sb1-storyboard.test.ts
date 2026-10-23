@@ -181,7 +181,7 @@ describe("SB-1 bevarte revisjoner", () => {
     });
     st = mustApply(st, {
       type: "AddLayers", layers: [{
-        layerId: tid(), compositionId: panelId,
+        layerId: tid(), compositionId: panelId as never,
         fields: { ...defaultLayerFields(st, st.compositions[panelId]!, { fill: "#101114" }),
           kind: "note", fill: null, name: "Lapp",
           note: { noteType: "visual", text: "Husk skygge", color: "#ffcc00", handled: false, anchor: null },
@@ -207,7 +207,7 @@ describe("SB-1 storyboardlag", () => {
     const note = { noteType: "direction" as const, text: "x", color: "#ffcc00", handled: false, anchor: null };
     const mk = (compositionId: string): Command => ({
       type: "AddLayers",
-      layers: [{ layerId: tid(), compositionId, fields: { ...defaultLayerFields(st, st.compositions[compositionId]!, { fill: "#101114" }), kind: "note", fill: null, note } }],
+      layers: [{ layerId: tid(), compositionId as never, fields: { ...defaultLayerFields(st, st.compositions[compositionId]!, { fill: "#101114" }), kind: "note", fill: null, note } }],
     });
     if (sceneComp) expect(applyCommand(st, envelope(mk(sceneComp.id))).ok).toBe(false);
     const r = undoRedo(st, mk(panelId));
@@ -222,7 +222,7 @@ describe("SB-1 storyboardlag", () => {
     // note-felt på en vanlig lagtype avvises
     expect(applyCommand(st, envelope({
       type: "AddLayers",
-      layers: [{ layerId: tid(), compositionId: panelId, fields: { ...defaultLayerFields(st, st.compositions[panelId]!, { fill: "#101114" }), kind: "other", note } }],
+      layers: [{ layerId: tid(), compositionId: panelId as never, fields: { ...defaultLayerFields(st, st.compositions[panelId]!, { fill: "#101114" }), kind: "other", note } }],
     })).ok).toBe(false);
   });
 });
