@@ -8,6 +8,7 @@ import { sourceLanguageOf } from "../dialogue/languages";
  * tittelkort med beregnet lengde fra manuset, så monteringen fungerer også når produksjonen er
  * ufullstendig (REQ-0240). Tidskoder beregnes alltid på nytt og lagres aldri (ADR-0006).
  */
+import { countWords as segCount } from "../language/text-metrics";
 import type { CompositionId, OccurrenceId, SceneId, VariantId } from "../ids";
 import type { ClipPart, Composition, ProjectState, SceneHeading, Take, Transition } from "../model";
 import { compareKeys } from "../order-key";
@@ -726,7 +727,7 @@ const SPOKEN_WORDS_PER_SECOND = 150 / 60;
 function blockWeight(kind: string, text: string): number {
   if (kind === "dialogue")
     return (
-      Math.max(1, text.split(/\s+/).filter((w) => /[\p{L}\p{N}]/u.test(w)).length) /
+      Math.max(1, segCount(text)) /
       SPOKEN_WORDS_PER_SECOND
     );
   if (kind === "action" || kind === "shot")

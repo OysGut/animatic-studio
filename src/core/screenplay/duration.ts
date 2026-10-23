@@ -3,6 +3,7 @@
  * Estimatet bygger på dialogmengde og handlingsbeskrivelser med synlige, justerbare antakelser.
  * Det vises på prosjektoversikten, aldri i manusvisningen (REQ-0117).
  */
+import { countWords as segCount } from "../language/text-metrics";
 import type { BlockKind, ProjectState } from "../model";
 import type { ScriptSnapshot } from "./versions";
 import { blocksOfVariant, isScriptOccurrence, orderedOccurrences, sceneNumberOf } from "../views";
@@ -140,7 +141,7 @@ export interface ProductionEstimate {
 }
 
 function words(text: string): number {
-  return text.split(/\s+/).filter((w) => /[\p{L}\p{N}]/u.test(w)).length;
+  return segCount(text);
 }
 
 /** Estimatet for én scene ut fra blokkene (dialogord, handlingslinjer). */

@@ -7,6 +7,7 @@
  * Global ressurs, prosjektressurs og sceneforekomst er tre ulike objekter (§4). Prosjektressursen husker
  * koblingen (Asset.globalAssetId, AssetVersion.globalSource); filene er prosjektets egne kopier (§16).
  */
+import { segmentWords } from "../language/text-metrics";
 import { collation } from "../i18n";
 import type { Asset, AssetKind, AssetVersion, ProjectState, VisualStyle } from "../model";
 import type { AssetId, AssetVariantId, AssetVersionId } from "../ids";
@@ -153,7 +154,7 @@ export function filterGlobalAssets(
   list: readonly GlobalAsset[],
   f: GlobalFilter,
 ): GlobalAsset[] {
-  const words = fold(f.query).split(/\s+/).filter(Boolean);
+  const words = segmentWords(fold(f.query));
   return list
     .filter((a) => f.includeArchived || !a.archived)
     .filter((a) => f.kind === "all" || a.kind === f.kind)
