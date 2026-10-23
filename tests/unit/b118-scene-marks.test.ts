@@ -1,3 +1,4 @@
+// @vitest-environment node
 /** B-118: scenestatus og scenefarge per sceneforekomst – kommando, angring, lagring og filter. */
 import { describe, expect, it } from "vitest";
 import { applyCommand, matchingScenes, scriptView, stateFromRows, toRow, type Command, type ProjectState } from "@/core";

@@ -1,3 +1,4 @@
+// @vitest-environment node
 /** Manusdekning for film (REQ-0237, DEC-0071). */
 import { describe, expect, it } from "vitest";
 import {

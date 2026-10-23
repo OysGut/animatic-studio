@@ -7,7 +7,7 @@ import { alphaExportError, alphaSceneClip, alphaPixels, alphaRange, alphaFileBas
 import { drawFilmFrame, desaturate } from "@/engine/compositor/film";
 import { drawFrame } from "@/engine/compositor/canvas";
 import { encodePngStrips } from "@/engine/export/png-writer";
-import { supportsVp9Alpha, openAlphaSink } from "@/engine/export/alpha";
+import { supportsVp9Alpha, openAlphaSink, exportAlphaLayers } from "@/engine/export/alpha";
 import { writeZip, type ZipSink } from "@/engine/export/zip";
 import { unzipSync } from "fflate";
 import { mustApply, seedProject, tid } from "../helpers/fixtures";
@@ -150,6 +150,25 @@ describe("P4 choices and format gate", () => {
     expect(probe.mock.calls[0]?.[0]).toMatchObject({ alpha: "keep", codec: "vp09.00.10.08" });
     probe.mockResolvedValue({ supported: false, config: { alpha: "keep" } }); expect(await supportsVp9Alpha(16,16)).toBe(false);
     probe.mockResolvedValue({ supported: true, config: {} }); expect(await supportsVp9Alpha(16,16)).toBe(false);
+  });
+  it("REQ-0839: manglende encoder og avvist probe gir aldri positiv alfastøtte", async () => {
+    vi.stubGlobal("VideoEncoder", undefined);
+    expect(await supportsVp9Alpha(16, 16)).toBe(false);
+    vi.stubGlobal("VideoEncoder", { isConfigSupported: vi.fn().mockRejectedValue(new Error("Unsupported")) });
+    expect(await supportsVp9Alpha(16, 16)).toBe(false);
+  });
+  it("REQ-0839: WebM uten alfastøtte avbrytes uten svart reservefil", async () => {
+    const { s, c, solid } = setup();
+    const canvas = new SoftCanvas(16, 16);
+    vi.stubGlobal("document", { createElement: () => canvas });
+    vi.stubGlobal("VideoEncoder", undefined);
+    const sink = { write: vi.fn(async () => {}), close: vi.fn(async () => {}), abort: vi.fn(async () => {}) };
+    await expect(exportAlphaLayers({ state: s, composition: c, settings: { ...DEFAULT_ALPHA_SETTINGS, format: "webm-vp9", layerIds: [solid] },
+      images: new Map(), sink, fileBase: "Alpha", signal: new AbortController().signal })).rejects.toThrow();
+    expect(sink.write).not.toHaveBeenCalled();
+    expect(sink.close).not.toHaveBeenCalled();
+    expect(sink.abort).toHaveBeenCalledOnce();
+    expect(canvas.pixel(0, 0)).toEqual([0, 0, 0, 0]);
   });
 });
 describe("P4 streaming ZIP and cancellation", () => {

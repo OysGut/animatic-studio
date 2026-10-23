@@ -1,3 +1,4 @@
+// @vitest-environment node
 import { describe,it,expect } from "vitest";
 import { applyCommand,blocksOfVariant,makeBackup,stateFromRows,diffStates,emptyProjectState,lineLinkError,parseLineAlignment,lineAlignmentPrompt,linksAboveThreshold,uncertainLineScope,translatedState,backupIdMap,restoredState,alignLines,translationItems,unpairedTranslationLines,lineLinkStale,keyBetween,orderedOccurrences,type SceneLink,type ParsedScreenplay,type LineLinkFields,type ProjectState,type Command,type ProjectRows } from "@/core";
 import {seedProject,tid,envelope} from "../helpers/fixtures";

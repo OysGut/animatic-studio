@@ -1,3 +1,4 @@
+// @vitest-environment node
 /** Innsatsnivå og kvalitetsmekanismer (mandat 19.3–19.4, REQ-0275–0278, DEC-0070). */
 import { describe, expect, it } from "vitest";
 import {

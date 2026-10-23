@@ -1,3 +1,4 @@
+// @vitest-environment node
 /** DV2: lydversjoner per replikk – kommandoer, invers, angre/gjør om, speiling, overlapp, leppesynk og backup. */
 import { describe, expect, it } from "vitest";
 import {

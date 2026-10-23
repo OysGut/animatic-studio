@@ -1,3 +1,4 @@
+// @vitest-environment node
 /**
  * Fase 2, bolk E (DEC-0096, REQ-0707, P9, E4–E7): pauser og romlyd lagres i lydkomposisjonen. Manusteksten og
  * den eksporterte manusfilen er uendret etter pauseendringer, andre replikker og lydklipp beholder sine data og

@@ -1,3 +1,4 @@
+// @vitest-environment node
 /** REQ-0280 (DEC-0075): bekreftelsen viser alt anslaget bygger på. */
 import { describe, expect, it } from "vitest";
 import { costBreakdown, type ProviderModel } from "@/core";

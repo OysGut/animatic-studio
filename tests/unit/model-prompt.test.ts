@@ -1,3 +1,4 @@
+// @vitest-environment node
 /** Modellspesifikk beskrivelse (REQ-0246, REQ-0261, REQ-0274, REQ-0489, DEC-0070). */
 import { describe, expect, it } from "vitest";
 import {

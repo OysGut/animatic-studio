@@ -1,3 +1,4 @@
+// @vitest-environment node
 /** DEC-0092 / REQ-0714: ressurser som legges inn i en scene blir 50 % av lerretets høyde eller bredde. */
 import { describe, expect, it } from "vitest";
 import { applyCommand, defaultLayerFields, newId, type Command, type ProjectState } from "@/core";

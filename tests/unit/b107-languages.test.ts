@@ -1,3 +1,4 @@
+// @vitest-environment node
 import { afterEach, describe, expect, it } from 'vitest';
 import { getUiLanguage, isUiLang, setLanguage } from '@/core/i18n';
 import { acceptLanguagePreferences, matchUiLanguage } from '@/core/i18n/languages';

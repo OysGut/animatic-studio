@@ -36,6 +36,21 @@ const layers = [
   { ...familien, id: G2, name: "Rekvisitter", order_key: "yz", anchor: { x: 600, y: 600 } },
 ];
 const rows = { ...fx.rows, composition_layers: layers };
+const SUITE_LANG = process.env.UI_LANG === "en" ? "en" : "nb";
+const LABELS = {
+  "Vis panelene side om side for bedre oversikt": "Show the panels side by side for a better overview",
+  "I denne scenen": "In this scene",
+  "Vis panelene over hverandre": "Show the panels stacked",
+  "Flytt «Lag» til venstre": "Move “Layers” left",
+  "Plassering": "Placement",
+  "Lag og egenskaper": "Layers and properties",
+  "Lukk gruppen «Familien»": "Collapse the group “Familien”",
+  "Åpne gruppen «Rekvisitter»": "Expand the group “Rekvisitter”",
+  "Lukk gruppen «Rekvisitter»": "Collapse the group “Rekvisitter”",
+  "Flytt lag fram": "Move layer forward",
+  "Skjul lag": "Hide layer"
+};
+const label = (nb) => SUITE_LANG === "en" ? LABELS[nb] ?? nb : nb;
 const compId = fx.rows.compositions[0].id;
 
 /** Kontoens visningsvalg (profiles.ui_prefs) slik serveren ville lagret dem. */
@@ -49,7 +64,7 @@ function serverFnName(url) {
     return "?";
   }
 }
-async function mock(ctx) {
+async function mock(ctx, lang) {
   await ctx.route(`${supaUrl}/**`, async (route) => {
     const req = route.request();
     const url = new URL(req.url());
@@ -81,7 +96,7 @@ async function mock(ctx) {
         status: "active",
         is_admin: false,
         permanent_admin: false,
-        locale: null,
+        locale: lang,
         display_name: "Mars",
         privacy_version: 1,
         accepted_version: 1,
@@ -131,45 +146,32 @@ async function mock(ctx) {
   });
 }
 
-const browser = await chromium
-  .launch({ executablePath: "/opt/pw-browsers/chromium-1194/chrome-linux/chrome" })
-  .catch(() => chromium.launch());
+const browser = await chromium.launch({ headless: true });
 let pass = 0,
   fail = 0;
 const check = (ok, text) => {
-  console.log(`  ${ok ? "✓" : "✗"} ${text}`);
+  console.log(`  ${ok ? "ok" : "FEIL"} ${text}`);
   ok ? pass++ : fail++;
 };
 
 /** Ny nettleser (tomt lokalt lager) som åpner sceneeditoren. */
-async function run(name, act, { lang = "nb", width = 1600 } = {}) {
-  const ctx = await browser.newContext({ viewport: { width, height: 900 }, colorScheme: "dark" });
-  await mock(ctx);
+async function run(name, act, { lang = SUITE_LANG, width = 1600 } = {}) {
+  const ctx = await browser.newContext({ viewport: { width, height: 1800 }, colorScheme: "dark", locale: lang === "nb" ? "nb-NO" : "en-GB" });
+  await mock(ctx, lang);
   const page = await ctx.newPage();
   const errors = [];
   page.on("pageerror", (e) => errors.push(String(e)));
   const exp = Math.floor(Date.now() / 1000) + 86400;
-  await page.addInitScript(
-    ([k, v, l]) => {
-      if (!sessionStorage.getItem("init")) {
-        localStorage.setItem(k, v);
-        localStorage.setItem("animatic:lang", l);
-        sessionStorage.setItem("init", "1");
-      }
-    },
-    [
-      `sb-${ref}-auth-token`,
-      JSON.stringify({
-        access_token: "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ4In0.sig",
-        refresh_token: "r",
-        token_type: "bearer",
-        expires_in: 86400,
-        expires_at: exp,
-        user: USER,
-      }),
-      lang,
-    ],
-  );
+  await ctx.addCookies([{ name: "ptg-ui-language", value: lang, url: base }]);
+  await page.goto(base, { waitUntil: "networkidle" });
+  await page.evaluate(([key, value, language, userId]) => {
+    localStorage.setItem(key, value);
+    localStorage.setItem(`animatic:lang:${userId}`, language);
+    localStorage.setItem("animatic:lang", language);
+  }, [`sb-${ref}-auth-token`, JSON.stringify({
+    access_token: "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ4In0.sig",
+    refresh_token: "r", token_type: "bearer", expires_in: 86400, expires_at: exp, user: USER,
+  }), lang, USER.id]);
   await page.goto(base + P + "/scene", { waitUntil: "networkidle" });
   await page.waitForTimeout(4000);
   try {
@@ -178,7 +180,7 @@ async function run(name, act, { lang = "nb", width = 1600 } = {}) {
     errors.push("act: " + e.message.split("\n")[0]);
   }
   console.log(name, errors.length ? "FEIL: " + errors.join(" | ").slice(0, 800) : "ok");
-  if (errors.length) fail++;
+  if (errors.length) { fail++; await page.screenshot({ path: `${out}/${name}-feil.png` }); }
   await ctx.close();
 }
 
@@ -194,11 +196,11 @@ await run("p01-side-om-side", async (page) => {
   const btn = page.getByTestId("scene-panels-mode");
   check(await btn.isVisible(), "knappen for panelvisning står øverst i panelområdet til høyre");
   check(
-    (await btn.getAttribute("title")) === "Vis panelene side om side for bedre oversikt",
+    (await btn.getAttribute("title")) === label('Vis panelene side om side for bedre oversikt'),
     "verktøytipset forklarer knappen",
   );
   check(
-    await page.getByRole("region", { name: "I denne scenen" }).isVisible(),
+    await page.getByRole("region", { name: label('I denne scenen') }).isVisible(),
     "stablet: «I denne scenen» står til venstre som før",
   );
   await page.screenshot({ path: `${out}/p01a-stablet.png` });
@@ -223,25 +225,25 @@ await run("p01-side-om-side", async (page) => {
   check(mainW >= 470, `lerretet beholder en brukbar bredde (${Math.round(mainW)} px)`);
   check(
     (await btn.getAttribute("aria-pressed")) === "true" &&
-      (await btn.getAttribute("title")) === "Vis panelene over hverandre",
+      (await btn.getAttribute("title")) === label('Vis panelene over hverandre'),
     "knappen bytter tilbake til stablet",
   );
   await page.screenshot({ path: `${out}/p01b-side-om-side.png` });
 
   // ‹ ›: «Lag» to steg til venstre
   const layersHeading = page.locator("[data-panel-heading=layers]");
-  await layersHeading.getByRole("button", { name: "Flytt «Lag» til venstre" }).click();
+  await layersHeading.getByRole("button", { name: label('Flytt «Lag» til venstre') }).click();
   await page.waitForTimeout(200);
   let o2 = await panelOrder(page);
   while (o2[0] !== "layers") {
-    await layersHeading.getByRole("button", { name: "Flytt «Lag» til venstre" }).click();
+    await layersHeading.getByRole("button", { name: label('Flytt «Lag» til venstre') }).click();
     await page.waitForTimeout(200);
     o2 = await panelOrder(page);
     if (o2.indexOf("layers") < 0) break;
   }
   check(o2[0] === "layers", `‹ flytter panelet til venstre (${o2.join(", ")})`);
   check(
-    await layersHeading.getByRole("button", { name: "Flytt «Lag» til venstre" }).isDisabled(),
+    await layersHeading.getByRole("button", { name: label('Flytt «Lag» til venstre') }).isDisabled(),
     "‹ er av for panelet lengst til venstre",
   );
   // Dra overskriften «Lyd i scenene rundt» foran «Lag» (venstre halvdel av kolonnen)
@@ -268,7 +270,7 @@ await run("p01-side-om-side", async (page) => {
   await layerRow(page, "Maja").getByRole("button", { name: /Maja/ }).first().click();
   await page.waitForTimeout(300);
   check(
-    await page.locator("[data-panel=properties]").getByText("Plassering").first().isVisible(),
+    await page.locator("[data-panel=properties]").getByText(label('Plassering')).first().isVisible(),
     "side om side: valgt lag viser egenskapene i sin kolonne",
   );
   await page.waitForTimeout(1500);
@@ -314,11 +316,11 @@ await run(
 
 await run("p04-grupper", async (page) => {
   check(
-    await page.getByRole("complementary", { name: "Lag og egenskaper" }).isVisible(),
+    await page.getByRole("complementary", { name: label('Lag og egenskaper') }).isVisible(),
     "stablet igjen: lag og egenskaper til høyre",
   );
   const lp = layersPanel(page);
-  const toggleFam = lp.getByRole("button", { name: "Lukk gruppen «Familien»" });
+  const toggleFam = lp.getByRole("button", { name: label('Lukk gruppen «Familien»') });
   check(await toggleFam.isVisible(), "pil foran gruppenavnet");
   check(await layerRow(page, "Bestemor Anne").isVisible(), "åpen gruppe viser lagene");
   const indent = await layerRow(page, "Bestemor Anne").evaluate((li) => li.style.paddingLeft);
@@ -335,7 +337,7 @@ await run("p04-grupper", async (page) => {
   check(!(await layerRow(page, "Bestemor Anne").isVisible()), "lukket gruppe skjuler lagene");
   const famRow = layerRow(page, "Familien");
   check(
-    await famRow.getByText(/· 1 lag/).isVisible(),
+    await famRow.getByText(/· 1 (lag|layer)/).isVisible(),
     "lukket gruppe viser én linje med antall lag",
   );
   check(
@@ -355,7 +357,7 @@ await run("p04-grupper", async (page) => {
     "et lag som velges et annet sted, åpner gruppen det ligger i",
   );
   // Alt-klikk lukker alle
-  await lp.getByRole("button", { name: "Lukk gruppen «Familien»" }).click({ modifiers: ["Alt"] });
+  await lp.getByRole("button", { name: label('Lukk gruppen «Familien»') }).click({ modifiers: ["Alt"] });
   await page.waitForTimeout(300);
   const expanded = await lp
     .getByTestId("layer-group-toggle")
@@ -367,7 +369,7 @@ await run("p04-grupper", async (page) => {
   check(!(await layerRow(page, "vase").isVisible()), "også «Rekvisitter» er lukket");
   await page.screenshot({ path: `${out}/p04c-alle-lukket.png` });
   await lp
-    .getByRole("button", { name: "Åpne gruppen «Rekvisitter»" })
+    .getByRole("button", { name: label('Åpne gruppen «Rekvisitter»') })
     .click({ modifiers: ["Alt"] });
   await page.waitForTimeout(300);
   const expanded2 = await lp
@@ -378,7 +380,7 @@ await run("p04-grupper", async (page) => {
     "Alt-klikk på en lukket gruppe åpner alle",
   );
   // Lukk én og sjekk at det huskes på kontoen per scene
-  await lp.getByRole("button", { name: "Lukk gruppen «Rekvisitter»" }).click();
+  await lp.getByRole("button", { name: label('Lukk gruppen «Rekvisitter»') }).click();
   await page.waitForTimeout(1500);
   const saved = SERVER_PREFS["sceneEditor.collapsedGroups"];
   check(
@@ -388,7 +390,7 @@ await run("p04-grupper", async (page) => {
   // Eksisterende funksjoner: flytt lag fram og dra et lag inn i en gruppe
   const before = COMMANDS.length;
   await layerRow(page, "Maja").hover();
-  await layerRow(page, "Maja").getByRole("button", { name: "Flytt lag fram" }).click();
+  await layerRow(page, "Maja").getByRole("button", { name: label('Flytt lag fram') }).click();
   await page.waitForTimeout(400);
   check(COMMANDS.length > before && /MoveLayer/.test(COMMANDS.at(-1)), "«Flytt lag fram» virker");
   const n2 = COMMANDS.length;
@@ -397,7 +399,7 @@ await run("p04-grupper", async (page) => {
   check(COMMANDS.length > n2, "dra og slipp av lag i listen virker fortsatt");
   // Synlighet
   const n3 = COMMANDS.length;
-  await layerRow(page, "Maja").getByRole("button", { name: "Skjul lag" }).click();
+  await layerRow(page, "Maja").getByRole("button", { name: label('Skjul lag') }).click();
   await page.waitForTimeout(400);
   check(COMMANDS.length > n3 && /UpdateLayers/.test(COMMANDS.at(-1)), "«Skjul lag» virker");
 });
@@ -405,7 +407,7 @@ await run("p04-grupper", async (page) => {
 await run("p05-husket-gruppe", async (page) => {
   const lp = layersPanel(page);
   check(
-    await lp.getByRole("button", { name: "Åpne gruppen «Rekvisitter»" }).isVisible(),
+    await lp.getByRole("button", { name: label('Åpne gruppen «Rekvisitter»') }).isVisible(),
     "lukket gruppe huskes i en ny nettleser (kontoen)",
   );
   check(!(await layerRow(page, "vase").isVisible()), "lagene i den er fortsatt skjult");
@@ -439,3 +441,4 @@ await run(
 
 console.log(`RESULTAT: ${pass} bestått, ${fail} feilet`);
 await browser.close();
+if (fail) process.exitCode = 1;

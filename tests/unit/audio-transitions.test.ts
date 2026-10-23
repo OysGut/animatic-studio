@@ -1,3 +1,4 @@
+// @vitest-environment node
 /**
  * Fase 2, bolk E (DEC-0096, REQ-0709/0710): overganger mellom takes (toning og romlyd under skjøten, kan
  * justeres og forhåndshøres) og området som spilles automatisk etter en endring (E1–E3, P8).

@@ -1,3 +1,4 @@
+// @vitest-environment node
 /** Varsel om nøkkelbilder og kamerautsnitt etter scenens slutt (KI-44). */
 import { describe, expect, it } from "vitest";
 import { beyondEnd } from "@/app/scene-editor/beyond-end";

@@ -1,3 +1,4 @@
+// @vitest-environment node
 /** M8 kvalitetsprofiler (REQ-0854–0862): kommandoer, validering, modellvalg, budsjett og øyeblikksbilde. */
 import { describe, expect, it } from "vitest";
 import {

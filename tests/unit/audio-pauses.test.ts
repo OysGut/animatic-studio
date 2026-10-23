@@ -1,3 +1,4 @@
+// @vitest-environment node
 /**
  * Fase 2, bolk E (DEC-0096, REQ-0705–0707): pauser mellom ord. P1 pausen økes, P2 ordenes lyd er uendret,
  * P3/P4 flere ord trekkes fra hverandre og tiden fordeles likt, P5 hver pause justeres for seg, P9 endringen er

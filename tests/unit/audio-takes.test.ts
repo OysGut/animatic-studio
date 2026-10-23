@@ -1,3 +1,4 @@
+// @vitest-environment node
 /**
  * Fase 2, bolk B (DEC-0093, REQ-0684–0690): lydopptak som takes. Et nytt take blir alltid en ny versjon (et
  * tidligere overskrives aldri), første opptak av en replikk legges i scenen der replikken begynner, senere

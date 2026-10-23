@@ -1,3 +1,4 @@
+// @vitest-environment node
 /** DV1: klikk i manuset → avspillingshodet. Fast rekkefølge ord → time_links → klippstart → sceneanker (M1–M5). */
 import { describe, expect, it } from "vitest";
 import {

@@ -1,3 +1,4 @@
+// @vitest-environment node
 /** Eksport av vilkårlige scener (DEC-0072, REQ-0417, KI-169). */
 import { describe, expect, it } from "vitest";
 import {

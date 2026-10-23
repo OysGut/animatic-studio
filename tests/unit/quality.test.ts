@@ -1,3 +1,4 @@
+// @vitest-environment node
 /** Rådgivende kvalitetskontroll for AI-video (mandat 19.8, REQ-0287, REQ-0288, DEC-0071). */
 import { describe, expect, it } from "vitest";
 import {

@@ -1,3 +1,4 @@
+// @vitest-environment node
 /**
  * Fase 2, bolk C (DEC-0094, REQ-0691–0697): lydkomposisjoner. Nytt opptak før, etter, oppå, i stedet for alt
  * eller for et område; trim og toning; kontroll av komposisjonen i kjernen; andre replikker flyttes aldri

@@ -1,3 +1,4 @@
+// @vitest-environment node
 /**
  * DEC-0086: administrator, blokkering, sletting med 30 dager, ny eier, personvern og AI-forbruk på serveren.
  * Falsk database (som verifiseringen i DEC-0075) og falsk innloggingstjeneste (auth.admin).

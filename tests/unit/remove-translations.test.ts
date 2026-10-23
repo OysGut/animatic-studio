@@ -1,3 +1,4 @@
+// @vitest-environment node
 /** Fjern alle oversettelser til et språk (DEC-0073, KI-114). */
 import { describe, expect, it } from "vitest";
 import { applyCommand } from "@/core";

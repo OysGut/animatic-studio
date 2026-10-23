@@ -49,6 +49,12 @@ describe("DV5 permanent identity and lossless batch", () => {
     const layers=Object.fromEntries(Object.entries(s.layers).filter(([,l])=>!!compositions[l.compositionId]));
     const missing={...s,compositions,layers,audioClips,dialogueVersions:Object.fromEntries(Object.entries(s.dialogueVersions).filter(([,v])=>!!audioClips[v.clipId]))};
     const r=apply(missing,c);expect(Object.values(r.state.compositions).filter(comp=>!comp.removed&&comp.variantId===occurrence.variantId)).toHaveLength(1);
+    // N11 REQ-0790: plassering følger permanent scene- og replikkidentitet.
+    expect(r.state.audioClips[c.clipId]).toMatchObject({ occurrenceId: c.occurrenceId, blockId: c.blockId, versionId: c.versionId });
+    const activeId = r.state.audioClips[c.clipId]?.activeVersionId;
+    if (!activeId) throw new Error("Missing active version");
+    expect(r.state.dialogueVersions[activeId]).toMatchObject({ clipId: c.clipId, assetVersionId: c.versionId });
+    for (const [id, clip] of Object.entries(missing.audioClips)) expect(r.state.audioClips[id]).toEqual(clip);
     expect(r.state.audioClips[c.clipId]?.placementEstimated).toBe(true);expect(r.state.layers).toEqual(missing.layers);
     expect(apply(r.state,c).state).toBe(r.state);
   });

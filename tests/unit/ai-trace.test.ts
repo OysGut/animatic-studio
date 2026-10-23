@@ -1,3 +1,4 @@
+// @vitest-environment node
 /** Sporbarhet per generering (DEC-0072, REQ-0257). */
 import { describe, expect, it } from "vitest";
 import { fitTrace, traceLines, traceOf } from "@/core";
