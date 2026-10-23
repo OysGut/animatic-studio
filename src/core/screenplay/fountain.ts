@@ -314,7 +314,8 @@ export function parseFountain(
 }
 
 function parseFountainInner(source: string): FountainImport {
-  let text = source.replace(/^\uFEFF/, "").replace(/\r\n?/g, "\n");
+  // G-4: all tekst lagres som NFC (kanonisk sammensatt form)
+  let text = source.normalize("NFC").replace(/^\uFEFF/, "").replace(/\r\n?/g, "\n");
   // Boneyard /* … */ ignoreres helt (også over flere linjer)
   text = text.replace(/\/\*[\s\S]*?\*\//g, "");
 
