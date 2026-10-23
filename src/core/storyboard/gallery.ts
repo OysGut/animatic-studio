@@ -136,7 +136,7 @@ export function planDuplicatePanel(s: ProjectState, panelId: string): Command[] 
   const layers = Object.values(s.layers)
     .filter((l) => !l.removed && l.compositionId === panelId)
     .sort((a, b) => a.orderKey.localeCompare(b.orderKey));
-  const remap = new Map(layers.map(l => [l.id, newId<"composition_layer">()]));
+  const remap = new Map<string, import("../ids").LayerId>(layers.map(l => [l.id, newId<"composition_layer">()]));
   if (p.storyboard) cmds.push({type:"SetStoryboardDetails",panelId:id,details:{...p.storyboard,number:""}});
   if (layers.length > 0)
     cmds.push({
