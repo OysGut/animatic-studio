@@ -33889,8 +33889,62 @@
     "sb3.angle": {
       "text": "Vinkel"
     },
+    "sb3.angle.bird": {
+      "text": "Fugleperspektiv"
+    },
+    "sb3.angle.dutch": {
+      "text": "Nederlandsk"
+    },
+    "sb3.angle.eye": {
+      "text": "Øyehøyde"
+    },
+    "sb3.angle.high": {
+      "text": "Høy"
+    },
+    "sb3.angle.low": {
+      "text": "Lav"
+    },
+    "sb3.camera.frame-height": {
+      "text": "Rammehøyde"
+    },
+    "sb3.camera.frame-width": {
+      "text": "Rammebredde"
+    },
+    "sb3.camera.frame-x": {
+      "text": "Ramme X"
+    },
+    "sb3.camera.frame-y": {
+      "text": "Ramme Y"
+    },
+    "sb3.camera.pan-x": {
+      "text": "Panorering X"
+    },
+    "sb3.camera.pan-y": {
+      "text": "Panorering Y"
+    },
+    "sb3.camera.tilt": {
+      "text": "Tilt"
+    },
+    "sb3.camera.zoom": {
+      "text": "Zoom"
+    },
     "sb3.category": {
       "text": "Kategori"
+    },
+    "sb3.category.attention": {
+      "text": "Oppmerksomhet"
+    },
+    "sb3.category.camera": {
+      "text": "Kamera"
+    },
+    "sb3.category.character": {
+      "text": "Karakter"
+    },
+    "sb3.category.gaze": {
+      "text": "Blikk"
+    },
+    "sb3.category.object": {
+      "text": "Objekt"
     },
     "sb3.color": {
       "text": "Farge"
@@ -33924,6 +33978,21 @@
     },
     "sb3.edit-approved": {
       "text": "Rediger storyboard"
+    },
+    "sb3.field.action": {
+      "text": "Handling"
+    },
+    "sb3.field.camera": {
+      "text": "Kamera"
+    },
+    "sb3.field.dialogue": {
+      "text": "Dialog"
+    },
+    "sb3.field.notes": {
+      "text": "Notater"
+    },
+    "sb3.field.sound": {
+      "text": "Lyd"
     },
     "sb3.focal": {
       "text": "Brennvidde (mm)"
@@ -33975,6 +34044,15 @@
     },
     "sb3.note-type": {
       "text": "Lapptype"
+    },
+    "sb3.note-type.camera": {
+      "text": "Kamerainstruksjon"
+    },
+    "sb3.note-type.direction": {
+      "text": "Reginotat"
+    },
+    "sb3.note-type.visual": {
+      "text": "Visuell lapp"
     },
     "sb3.notes-visible": {
       "text": "Vis lapper"
@@ -34033,6 +34111,15 @@
     "sb3.shape": {
       "text": "Figur"
     },
+    "sb3.shape.ellipse": {
+      "text": "Ellipse"
+    },
+    "sb3.shape.line": {
+      "text": "Linje"
+    },
+    "sb3.shape.rect": {
+      "text": "Rektangel"
+    },
     "sb3.shortcuts": {
       "text": "Hurtigtaster"
     },
@@ -34057,11 +34144,44 @@
     "sb3.title": {
       "text": "Tittel"
     },
+    "sb3.tool.arrow": {
+      "text": "Pil"
+    },
+    "sb3.tool.camera": {
+      "text": "Kameramerke"
+    },
+    "sb3.tool.line": {
+      "text": "Linje"
+    },
+    "sb3.tool.note": {
+      "text": "Lapp"
+    },
+    "sb3.tool.select": {
+      "text": "Velg"
+    },
+    "sb3.tool.shape": {
+      "text": "Figur"
+    },
     "sb3.tool.text": {
       "text": "Tekst"
     },
     "sb3.tools": {
       "text": "Verktøy"
+    },
+    "sb3.transform.rotation": {
+      "text": "Rotasjon"
+    },
+    "sb3.transform.scaleX": {
+      "text": "Skala X"
+    },
+    "sb3.transform.scaleY": {
+      "text": "Skala Y"
+    },
+    "sb3.transform.x": {
+      "text": "X"
+    },
+    "sb3.transform.y": {
+      "text": "Y"
     },
     "sb3.undo": {
       "text": "Angre"
@@ -68107,8 +68227,62 @@
     "sb3.angle": {
       "text": "Angle"
     },
+    "sb3.angle.bird": {
+      "text": "Bird’s eye"
+    },
+    "sb3.angle.dutch": {
+      "text": "Dutch"
+    },
+    "sb3.angle.eye": {
+      "text": "Eye level"
+    },
+    "sb3.angle.high": {
+      "text": "High"
+    },
+    "sb3.angle.low": {
+      "text": "Low"
+    },
+    "sb3.camera.frame-height": {
+      "text": "Frame height"
+    },
+    "sb3.camera.frame-width": {
+      "text": "Frame width"
+    },
+    "sb3.camera.frame-x": {
+      "text": "Frame X"
+    },
+    "sb3.camera.frame-y": {
+      "text": "Frame Y"
+    },
+    "sb3.camera.pan-x": {
+      "text": "Pan X"
+    },
+    "sb3.camera.pan-y": {
+      "text": "Pan Y"
+    },
+    "sb3.camera.tilt": {
+      "text": "Tilt"
+    },
+    "sb3.camera.zoom": {
+      "text": "Zoom"
+    },
     "sb3.category": {
       "text": "Category"
+    },
+    "sb3.category.attention": {
+      "text": "Attention"
+    },
+    "sb3.category.camera": {
+      "text": "Camera"
+    },
+    "sb3.category.character": {
+      "text": "Character"
+    },
+    "sb3.category.gaze": {
+      "text": "Gaze"
+    },
+    "sb3.category.object": {
+      "text": "Object"
     },
     "sb3.color": {
       "text": "Color"
@@ -68142,6 +68316,21 @@
     },
     "sb3.edit-approved": {
       "text": "Edit storyboard"
+    },
+    "sb3.field.action": {
+      "text": "Action"
+    },
+    "sb3.field.camera": {
+      "text": "Camera"
+    },
+    "sb3.field.dialogue": {
+      "text": "Dialogue"
+    },
+    "sb3.field.notes": {
+      "text": "Notes"
+    },
+    "sb3.field.sound": {
+      "text": "Sound"
     },
     "sb3.focal": {
       "text": "Focal length (mm)"
@@ -68193,6 +68382,15 @@
     },
     "sb3.note-type": {
       "text": "Note type"
+    },
+    "sb3.note-type.camera": {
+      "text": "Camera instruction"
+    },
+    "sb3.note-type.direction": {
+      "text": "Direction"
+    },
+    "sb3.note-type.visual": {
+      "text": "Visual note"
     },
     "sb3.notes-visible": {
       "text": "Show notes"
@@ -68251,6 +68449,15 @@
     "sb3.shape": {
       "text": "Shape"
     },
+    "sb3.shape.ellipse": {
+      "text": "Ellipse"
+    },
+    "sb3.shape.line": {
+      "text": "Line"
+    },
+    "sb3.shape.rect": {
+      "text": "Rectangle"
+    },
     "sb3.shortcuts": {
       "text": "Keyboard shortcuts"
     },
@@ -68275,11 +68482,44 @@
     "sb3.title": {
       "text": "Title"
     },
+    "sb3.tool.arrow": {
+      "text": "Arrow"
+    },
+    "sb3.tool.camera": {
+      "text": "Camera mark"
+    },
+    "sb3.tool.line": {
+      "text": "Line"
+    },
+    "sb3.tool.note": {
+      "text": "Note"
+    },
+    "sb3.tool.select": {
+      "text": "Select"
+    },
+    "sb3.tool.shape": {
+      "text": "Shape"
+    },
     "sb3.tool.text": {
       "text": "Text"
     },
     "sb3.tools": {
       "text": "Tools"
+    },
+    "sb3.transform.rotation": {
+      "text": "Rotation"
+    },
+    "sb3.transform.scaleX": {
+      "text": "Scale X"
+    },
+    "sb3.transform.scaleY": {
+      "text": "Scale Y"
+    },
+    "sb3.transform.x": {
+      "text": "X"
+    },
+    "sb3.transform.y": {
+      "text": "Y"
     },
     "sb3.undo": {
       "text": "Undo"

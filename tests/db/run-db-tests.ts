@@ -8329,6 +8329,10 @@ try {
       "storyboard_panel_blocks|private.validate_storyboard_panel_blocks||92",
       "production_statuses|private.validate_production_statuses||93",
       "production_status_events|private.validate_production_statuses||94",
+      "compositions|private.validate_sb3_panel_details||100",
+      "projects|private.validate_sb3_fields||101",
+      "script_annotations|private.validate_sb3_annotations||102",
+      "composition_layers|private.validate_sb3_layer_links||103",
     ]), `registeret avviker: ${JSON.stringify(rows)}`);
     // Alle registrerte funksjoner finnes med riktig signatur
     for (const fn of ["validate_translation_line_links", "validate_style_harmonizations", "validate_style_preferred_references",
@@ -8828,8 +8832,8 @@ try {
     const ins0102 = ['productions', 'rig_templates', 'scenes', 'rig_setups', 'scene_variants', 'script_blocks', 'scene_occurrences', 'production_segments', 'takes', 'assets', 'asset_variants', 'asset_versions', 'animation_rigs', 'animation_rig_versions', 'script_annotations', 'compositions', 'template_instances', 'credit_participants', 'credit_sequences', 'composition_layers', 'measure_sets', 'print_jobs', 'print_job_elements', 'animation_uses', 'audio_clips', 'dialogue_versions', 'clip_parts', 'time_links', 'generation_prompts', 'continuity_events', 'language_versions', 'translations', 'asset_relations', 'posters', 'style_profiles', 'story_profiles', 'story_profile_stages', 'story_facts', 'story_canvas_nodes', 'story_canvas_edges', 'lipsync_results', 'animation_patterns', 'dialogue_reviews', 'note_flags', 'quality_profiles', 'translation_lines', 'translation_line_links', 'style_harmonizations', 'style_preferred_references', 'mouth_sets', 'mouth_tracks', 'storyboard_panel_blocks', 'production_statuses', 'production_status_events', 'storyboard_panel_snapshots'];
     const del0102 = ['storyboard_panel_snapshots', 'storyboard_panel_blocks', 'production_status_events', 'production_statuses', 'mouth_tracks', 'mouth_sets', 'style_preferred_references', 'style_harmonizations', 'translation_line_links', 'translation_lines', 'quality_profiles', 'note_flags', 'dialogue_reviews', 'animation_patterns', 'lipsync_results', 'dialogue_versions', 'story_canvas_edges', 'story_canvas_nodes', 'story_facts', 'story_profile_stages', 'story_profiles', 'style_profiles', 'posters', 'asset_relations', 'translations', 'language_versions', 'continuity_events', 'generation_prompts', 'time_links', 'clip_parts', 'audio_clips', 'animation_uses', 'print_job_elements', 'print_jobs', 'measure_sets', 'composition_layers', 'credit_sequences', 'credit_participants', 'template_instances', 'compositions', 'script_annotations', 'animation_rig_versions', 'animation_rigs', 'asset_versions', 'asset_variants', 'assets', 'takes', 'production_segments', 'scene_occurrences', 'script_blocks', 'scene_variants', 'rig_setups', 'scenes', 'rig_templates', 'productions'];
     const sorted = (k: string) => [...rows].sort((x, y) => Number(x[k]) - Number(y[k])).map((r) => String(r["table_name"]));
-    assert(JSON.stringify(sorted("insert_order")) === JSON.stringify(ins0102), "innsettingsrekkefølgen avviker fra 0102");
-    assert(JSON.stringify(sorted("delete_order")) === JSON.stringify(del0102), "sletterekkefølgen avviker fra 0102");
+    assert(JSON.stringify(sorted("insert_order")) === JSON.stringify([...ins0102.filter(x=>x!=="script_annotations").slice(0,19),"script_annotations",...ins0102.filter(x=>x!=="script_annotations").slice(19)]), "innsettingsrekkefølgen avviker fra 0104");
+    assert(JSON.stringify(sorted("delete_order")) === JSON.stringify([...del0102.filter(x=>x!=="script_annotations").slice(0,35),"script_annotations",...del0102.filter(x=>x!=="script_annotations").slice(35)]), "sletterekkefølgen avviker fra 0104");
   });
   await test("0103: ukjent tabell avvises fortsatt med 22023; insert og angre-sletting virker via registeret", async () => {
     let code = "";
@@ -8839,6 +8843,19 @@ try {
     await sbApply(g7p, { inserts: { compositions: [{ id: panel, project_id: g7p, variant_id: sbSetup.variant, kind: "storyboard", occurrence_id: sbSetup.occurrence, order_key: "z9", revision: 1 }] } });
     await sbApply(g7p, { deletes: { compositions: [{ id: panel, expected_revision: 1 }] } });
     assert((await sql`select 1 from public.compositions where id=${panel}`).length === 0, "angre-sletting virket ikke");
+  });
+
+  await test("0104 SB-3: panelopplysninger og egendefinerte felt lagres via apply_changes og valideres", async () => {
+    const panel = newId(); const details = {number:"12",sceneNumber:"7",fields:{action:"Move"},dialogueIds:[sbSetup.block],shot:"CU",angle:"eye",focalMm:50,movement:"Pan"};
+    // sbSetup.block er handlingsblokken; bare replikker kan kobles.
+    await expectError(sbApply(g7p,{inserts:{compositions:[{id:panel,project_id:g7p,variant_id:sbSetup.variant,kind:"storyboard",occurrence_id:sbSetup.occurrence,order_key:"zz8",revision:1,storyboard:details}]}}),"22023");
+    await sbApply(g7p,{inserts:{compositions:[{id:panel,project_id:g7p,variant_id:sbSetup.variant,kind:"storyboard",occurrence_id:sbSetup.occurrence,order_key:"zz8",revision:1,storyboard:{...details,dialogueIds:[]}}]}});
+    assert((await sql`select storyboard->>'number' n from public.compositions where id=${panel}`)[0]?.["n"]==="12","panelnummer gikk tapt");
+    const revision=Number((await sql`select revision from public.projects where id=${g7p}`)[0]?.["revision"]);
+    await sbApply(g7p,{updates:{projects:[{id:g7p,expected_revision:revision,revision:revision+1,storyboard_fields:[{id:"action",name:"Action",kind:"text"}]}]}});
+    assert((await sql`select storyboard_fields->0->>'id' n from public.projects where id=${g7p}`)[0]?.["n"]==="action","prosjektfeltene ble ikke lagret");
+    await expectError(sbApply(g7p,{updates:{compositions:[{id:panel,expected_revision:1,revision:2,storyboard:{...details,dialogueIds:[],focalMm:-1}}]}}),"22023");
+    assert((await as("authenticated",BOB,tx=>tx`select id from public.compositions where id=${panel}`)).length===0,"ikke-medlem kan lese panelet");
   });
 
   // ---------- search_path: alle SECURITY DEFINER-funksjoner skal ha search_path='' ----------
