@@ -198,9 +198,10 @@ export function wrapPosterText(
       if (line) out.push(line);
       // Ord som er lengre enn linjen, deles
       let rest = word;
-      while (textWidthPt(rest, font, sizePt, tracking) > max && rest.length > 1) {
+      // Grafemene hentes én gang per ord (ikke per linje), så lange ord brytes i lineær tid
+      let chars = graphemes(rest);
+      while (textWidthPt(rest, font, sizePt, tracking) > max && chars.length > 1) {
         // Så mange tegn som får plass (minst ett), målt fortløpende
-        const chars = graphemes(rest);
         let cut = 1;
         let w = textWidthPt(chars[0]!, font, sizePt, 0);
         const step = (tracking / 1000) * sizePt;
@@ -211,7 +212,8 @@ export function wrapPosterText(
           cut++;
         }
         out.push(chars.slice(0, cut).join(""));
-        rest = chars.slice(cut).join("");
+        chars = chars.slice(cut);
+        rest = chars.join("");
       }
       line = rest;
     }
