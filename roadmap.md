@@ -42,6 +42,14 @@
 - [x] Rapport: oppdater docs/development/G1_SPRAKNOYTRAL_REPORT.md
 - [ ] Full vitest + i18n + DB-tester grønne
 
+## G-7 robust lagring (23.10.2026)
+- [x] Migrasjon 0099: del apply_changes i liten kjerne + private.validate_<domene> registrert i register-tabell
+- [x] Oppførsel nøyaktig lik: DB-suite før (201/0) og etter (211/0), nye tester per validering (G-7.1–G-7.10)
+- [x] Ytelsesmål: 10 000 blokker før (902/860 ms) og etter (946/942 ms), ~5–9 % innenfor støy
+- [x] AGENTS-regel i docs/agents/APPLY_CHANGES.md (AGENTS.md-peker droppet pga. 12 288-bytebudsjettet)
+- [x] Rapport docs/development/G7_APPLY_CHANGES_REPORT.md; DB-tester og search_path='' grønne
+- [x] tsc 0, full vitest 2838/0, DB-tester 211/0, i18n grønn (i vitest-suiten); Claude: kjør 0099 i Cloud
+
 ## G-6 gjenbruk på tvers av prosjekter (23.10.2026)
 - [~] 1. Globale karakterknipper: migrasjon 0098, kjerne (plan/publisering/innhentingskommandoer) og adaptere ferdig og testet — UI-kobling (publiser/hent-knapper) gjenstår; rigg i knippe venter på produktvalg (rigg er scenebundet)
 - [~] 2. Arbeidsgruppeprofiler: tabell, RPC-er og kjerneoppløsning ferdig og testet — profil-UI og kobling til resolveSettings gjenstår
