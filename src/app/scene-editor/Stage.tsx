@@ -6,7 +6,7 @@
  */
 import { FrameFrozen } from "./frame-frozen";
 import { ZoomIn, ZoomOut } from "lucide-react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { textSpecsOf, useTextFonts } from "@/engine/typography/fonts";
 import { pathSpacingMarks, type PathSpacingMark } from "@/core/animation/path-spacing";
 import { motionDraftStore } from "./motion-draft";
@@ -873,6 +873,7 @@ export function Stage({
     composition,
     cameraMode,
     shownPath,
+    pathMarks,
     pathToScene,
     pathNow,
     stroke,
