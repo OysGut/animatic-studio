@@ -209,9 +209,10 @@ describe("G-2 A1: historikk lastes etter åpning", () => {
   it("tilstand med bare gjeldende revisjon passerer kontrollene, og full historikk flettes inn uten duplikater", () => {
     const { a, blockId } = scenario();
     const full = a.state;
-    const current = { ...full, blockRevisions: full.blockRevisions.filter((r) => r.rev === full.blocks[blockId]!.currentRev || r.blockId !== blockId), blockHistory: "current" as const };
+    const current = { ...full, blockRevisions: full.blockRevisions.filter((r) => r.rev === full.blocks[blockId]!.currentRev || String(r.blockId) !== String(blockId)), blockHistory: "current" as const };
     expect(checkInvariants(current)).toEqual([]);
-    expect(checkInvariants({ ...current, blockHistory: undefined })).not.toEqual([]);
+    const { blockHistory: _p, ...asFull } = current;
+    expect(checkInvariants(asFull)).not.toEqual([]);
     const merged = mergeBlockHistory(current, full.blockRevisions);
     expect(merged.blockHistory).toBeUndefined();
     expect(merged.blockRevisions).toEqual(full.blockRevisions);
