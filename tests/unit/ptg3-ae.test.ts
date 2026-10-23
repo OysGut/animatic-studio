@@ -170,7 +170,7 @@ describe("PTG3 After Effects bygg.jsx", () => {
 
   it("importerer bare brukte media og legger lyd til med volumnøkler i dB", () => {
     const { log } = runJsx(jsxAe);
-    expect(log.imports.sort()).toEqual(["media/f1.png", "media/f2.mp3"]);
+    expect(log.imports.sort()).toEqual(["./media/f1.png", "./media/f2.mp3"]);
     const levels = log.keys.filter(k => k.prop === "Audio Levels");
     expect(levels.length).toBeGreaterThan(0);
     expect(levels[0]!.values[0]).toEqual([-9, -9]); // volumnøkkel −6 dB + klippforsterkning −3 dB
@@ -218,7 +218,7 @@ describe("PTG3 After Effects bygg.jsx", () => {
       expect(inRender).toEqual([["TEST_SC001_SH001_v001", 1], ["TEST_SC001_SH001_v001_TITLE", 0]]);
       expect(comps.find(c => c.name === "TEST_hoved_RENDER")!.displayStartTime).toBe(-1);
       expect(log.texts).toEqual(expect.arrayContaining(["Jula på Dovre", "SC001 – Scene – TEST_SC001_SH001_v001", "Forklaring", "Eksportert fra From Pen to Glass"]));
-      expect(log.imports).toContain("tittelkort/TEST_SC001_SH001_v001_qr.png");
+      expect(log.imports).toContain("./tittelkort/TEST_SC001_SH001_v001_qr.png");
     });
 
     it("er fortsatt ES3", () => {
