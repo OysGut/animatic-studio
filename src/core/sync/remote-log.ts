@@ -89,3 +89,29 @@ export function mergeBlockHistory(state: ProjectState, history: readonly BlockRe
   const { blockHistory: _partial, ...rest } = state;
   return { ...rest, blockRevisions: all };
 }
+
+/** En rad fra script_block_revisions som domeneobjekt (samme mapping som stateFromRows). */
+export function blockRevisionFromRow(x: Readonly<Record<string, unknown>>): BlockRevision {
+  const at = x["created_at"];
+  return {
+    blockId: String(x["block_id"]) as never,
+    rev: Number(x["rev"]),
+    text: String(x["text"] ?? ""),
+    author: String(x["author"] ?? "") as never,
+    createdAt: at instanceof Date ? at.toISOString() : String(at),
+  };
+}
+
+/** En rad fra change_log (sanntid eller henting) som RemoteLogRow; null uten project_seq (før 0093). */
+export function remoteLogRow(x: Readonly<Record<string, unknown>>): RemoteLogRow | null {
+  const seq = x["project_seq"];
+  if (typeof seq !== "number" && typeof seq !== "string") return null;
+  const at = x["created_at"];
+  return {
+    projectSeq: Number(seq),
+    id: String(x["id"]),
+    actor: String(x["actor"] ?? ""),
+    createdAt: at instanceof Date ? at.toISOString() : String(at ?? new Date(0).toISOString()),
+    command: x["command"] ?? null,
+  };
+}
