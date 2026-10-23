@@ -33874,6 +33874,210 @@
     "sb2.zoom-out": {
       "text": "Zoom ut (oversikt)"
     },
+    "sb3.add-comment": {
+      "text": "Legg til kommentar"
+    },
+    "sb3.add-field": {
+      "text": "Legg til felt"
+    },
+    "sb3.add-point": {
+      "text": "Legg til punkt"
+    },
+    "sb3.anchor": {
+      "text": "Forankring"
+    },
+    "sb3.angle": {
+      "text": "Vinkel"
+    },
+    "sb3.category": {
+      "text": "Kategori"
+    },
+    "sb3.color": {
+      "text": "Farge"
+    },
+    "sb3.comment": {
+      "text": "Kommentar"
+    },
+    "sb3.comments": {
+      "text": "Kommentarer"
+    },
+    "sb3.confirm": {
+      "text": "Bekreft"
+    },
+    "sb3.current": {
+      "text": "Gjeldende revisjon"
+    },
+    "sb3.curved": {
+      "text": "Buet"
+    },
+    "sb3.custom-field": {
+      "text": "Egendefinert felt"
+    },
+    "sb3.dialogue-links": {
+      "text": "Koblede replikker"
+    },
+    "sb3.down": {
+      "text": "Flytt ned"
+    },
+    "sb3.edit": {
+      "text": "Rediger storyboard"
+    },
+    "sb3.edit-approved": {
+      "text": "Rediger storyboard"
+    },
+    "sb3.focal": {
+      "text": "Brennvidde (mm)"
+    },
+    "sb3.form": {
+      "text": "Form"
+    },
+    "sb3.handled": {
+      "text": "Behandlet"
+    },
+    "sb3.height": {
+      "text": "Høyde"
+    },
+    "sb3.help": {
+      "text": "Hjelp"
+    },
+    "sb3.layer": {
+      "text": "Lag"
+    },
+    "sb3.layers": {
+      "text": "Lag"
+    },
+    "sb3.library": {
+      "text": "Bibliotek"
+    },
+    "sb3.lock": {
+      "text": "Lås"
+    },
+    "sb3.lock-numbers": {
+      "text": "Lås nummer"
+    },
+    "sb3.mask": {
+      "text": "Formatmaske"
+    },
+    "sb3.movement": {
+      "text": "Kamerabevegelse"
+    },
+    "sb3.new": {
+      "text": "Nytt panel"
+    },
+    "sb3.next": {
+      "text": "Neste panel"
+    },
+    "sb3.no-anchor": {
+      "text": "Ingen forankring"
+    },
+    "sb3.note": {
+      "text": "Lapp"
+    },
+    "sb3.note-type": {
+      "text": "Lapptype"
+    },
+    "sb3.notes-visible": {
+      "text": "Vis lapper"
+    },
+    "sb3.panel": {
+      "text": "Panel"
+    },
+    "sb3.path-target": {
+      "text": "Lag i scenen"
+    },
+    "sb3.path-warning": {
+      "text": "Bruke pilen som bevegelsesbane i scenens utkast? Ferdig materiale beholdes uendret."
+    },
+    "sb3.previous": {
+      "text": "Forrige panel"
+    },
+    "sb3.project-format": {
+      "text": "Prosjektets format"
+    },
+    "sb3.properties": {
+      "text": "Egenskaper"
+    },
+    "sb3.readonly": {
+      "text": "Denne revisjonen kan bare leses."
+    },
+    "sb3.redo": {
+      "text": "Gjør om"
+    },
+    "sb3.region": {
+      "text": "Område"
+    },
+    "sb3.remove": {
+      "text": "Fjern lag"
+    },
+    "sb3.renumber": {
+      "text": "Nummerer på nytt"
+    },
+    "sb3.renumber-warning": {
+      "text": "Eksisterende låste nummer endres. Se gjennom endringene før du bekrefter."
+    },
+    "sb3.reopen": {
+      "text": "Åpne igjen"
+    },
+    "sb3.resolve": {
+      "text": "Behandle"
+    },
+    "sb3.revision": {
+      "text": "Revisjon {number}"
+    },
+    "sb3.revisions": {
+      "text": "Revisjoner"
+    },
+    "sb3.safe": {
+      "text": "Sikre soner"
+    },
+    "sb3.shape": {
+      "text": "Figur"
+    },
+    "sb3.shortcuts": {
+      "text": "Hurtigtaster"
+    },
+    "sb3.shot": {
+      "text": "Utsnittstype"
+    },
+    "sb3.size": {
+      "text": "Tekststørrelse"
+    },
+    "sb3.straight": {
+      "text": "Rett"
+    },
+    "sb3.text": {
+      "text": "Tekst"
+    },
+    "sb3.thickness": {
+      "text": "Tykkelse"
+    },
+    "sb3.thirds": {
+      "text": "Tredjedelsrutenett"
+    },
+    "sb3.title": {
+      "text": "Tittel"
+    },
+    "sb3.tool.text": {
+      "text": "Tekst"
+    },
+    "sb3.tools": {
+      "text": "Verktøy"
+    },
+    "sb3.undo": {
+      "text": "Angre"
+    },
+    "sb3.up": {
+      "text": "Flytt opp"
+    },
+    "sb3.use-path": {
+      "text": "Bruk som bevegelsesbane"
+    },
+    "sb3.visibility": {
+      "text": "Synlighet"
+    },
+    "sb3.width": {
+      "text": "Bredde"
+    },
     "script-explorer2.chip.menu": {
       "text": "Valg for {name}"
     },
@@ -67887,6 +68091,210 @@
     },
     "sb2.zoom-out": {
       "text": "Zoom out (overview)"
+    },
+    "sb3.add-comment": {
+      "text": "Add comment"
+    },
+    "sb3.add-field": {
+      "text": "Add field"
+    },
+    "sb3.add-point": {
+      "text": "Add point"
+    },
+    "sb3.anchor": {
+      "text": "Anchor"
+    },
+    "sb3.angle": {
+      "text": "Angle"
+    },
+    "sb3.category": {
+      "text": "Category"
+    },
+    "sb3.color": {
+      "text": "Color"
+    },
+    "sb3.comment": {
+      "text": "Comment"
+    },
+    "sb3.comments": {
+      "text": "Comments"
+    },
+    "sb3.confirm": {
+      "text": "Confirm"
+    },
+    "sb3.current": {
+      "text": "Current revision"
+    },
+    "sb3.curved": {
+      "text": "Curved"
+    },
+    "sb3.custom-field": {
+      "text": "Custom field"
+    },
+    "sb3.dialogue-links": {
+      "text": "Linked dialogue"
+    },
+    "sb3.down": {
+      "text": "Move down"
+    },
+    "sb3.edit": {
+      "text": "Edit storyboard"
+    },
+    "sb3.edit-approved": {
+      "text": "Edit storyboard"
+    },
+    "sb3.focal": {
+      "text": "Focal length (mm)"
+    },
+    "sb3.form": {
+      "text": "Form"
+    },
+    "sb3.handled": {
+      "text": "Handled"
+    },
+    "sb3.height": {
+      "text": "Height"
+    },
+    "sb3.help": {
+      "text": "Help"
+    },
+    "sb3.layer": {
+      "text": "Layer"
+    },
+    "sb3.layers": {
+      "text": "Layers"
+    },
+    "sb3.library": {
+      "text": "Library"
+    },
+    "sb3.lock": {
+      "text": "Lock"
+    },
+    "sb3.lock-numbers": {
+      "text": "Lock numbers"
+    },
+    "sb3.mask": {
+      "text": "Aspect mask"
+    },
+    "sb3.movement": {
+      "text": "Camera movement"
+    },
+    "sb3.new": {
+      "text": "New panel"
+    },
+    "sb3.next": {
+      "text": "Next panel"
+    },
+    "sb3.no-anchor": {
+      "text": "No anchor"
+    },
+    "sb3.note": {
+      "text": "Note"
+    },
+    "sb3.note-type": {
+      "text": "Note type"
+    },
+    "sb3.notes-visible": {
+      "text": "Show notes"
+    },
+    "sb3.panel": {
+      "text": "Panel"
+    },
+    "sb3.path-target": {
+      "text": "Scene layer"
+    },
+    "sb3.path-warning": {
+      "text": "Apply the arrow as a movement path in the scene draft? Finished material stays unchanged."
+    },
+    "sb3.previous": {
+      "text": "Previous panel"
+    },
+    "sb3.project-format": {
+      "text": "Project format"
+    },
+    "sb3.properties": {
+      "text": "Properties"
+    },
+    "sb3.readonly": {
+      "text": "This revision is read-only."
+    },
+    "sb3.redo": {
+      "text": "Redo"
+    },
+    "sb3.region": {
+      "text": "Region"
+    },
+    "sb3.remove": {
+      "text": "Remove layer"
+    },
+    "sb3.renumber": {
+      "text": "Renumber"
+    },
+    "sb3.renumber-warning": {
+      "text": "Existing locked numbers will change. Review the changes before confirming."
+    },
+    "sb3.reopen": {
+      "text": "Reopen"
+    },
+    "sb3.resolve": {
+      "text": "Resolve"
+    },
+    "sb3.revision": {
+      "text": "Revision {number}"
+    },
+    "sb3.revisions": {
+      "text": "Revisions"
+    },
+    "sb3.safe": {
+      "text": "Safe zones"
+    },
+    "sb3.shape": {
+      "text": "Shape"
+    },
+    "sb3.shortcuts": {
+      "text": "Keyboard shortcuts"
+    },
+    "sb3.shot": {
+      "text": "Shot size"
+    },
+    "sb3.size": {
+      "text": "Text size"
+    },
+    "sb3.straight": {
+      "text": "Straight"
+    },
+    "sb3.text": {
+      "text": "Text"
+    },
+    "sb3.thickness": {
+      "text": "Thickness"
+    },
+    "sb3.thirds": {
+      "text": "Rule of thirds"
+    },
+    "sb3.title": {
+      "text": "Title"
+    },
+    "sb3.tool.text": {
+      "text": "Text"
+    },
+    "sb3.tools": {
+      "text": "Tools"
+    },
+    "sb3.undo": {
+      "text": "Undo"
+    },
+    "sb3.up": {
+      "text": "Move up"
+    },
+    "sb3.use-path": {
+      "text": "Use as movement path"
+    },
+    "sb3.visibility": {
+      "text": "Visibility"
+    },
+    "sb3.width": {
+      "text": "Width"
     },
     "script-explorer2.chip.menu": {
       "text": "Options for {name}"
