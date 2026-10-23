@@ -201,7 +201,7 @@ export function MobileImportWatcher({
   const imports = useMobileImports(projectId, editable);
   const project = useQuery({
     queryKey: projectStateKey(projectId),
-    queryFn: () => fetchProjectState(projectId),
+    queryFn: projectStateQueryFn(qc, projectId),
     staleTime: Infinity,
     refetchOnWindowFocus: false,
     enabled: editable,

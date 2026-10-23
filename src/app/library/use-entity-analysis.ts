@@ -35,7 +35,7 @@ export function EntityAnalysisWatcher({ projectId, editable }: { projectId: stri
   const list = useServerFn(listEntityAnalysis);
   const state = useQuery({
     queryKey: projectStateKey(projectId),
-    queryFn: () => fetchProjectState(projectId),
+    queryFn: projectStateQueryFn(qc, projectId),
     staleTime: Infinity,
     refetchOnWindowFocus: false,
   });

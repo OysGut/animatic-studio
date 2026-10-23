@@ -202,7 +202,7 @@ export function AiJobsWatcher({
   // Prosjekttilstanden fra hurtigbufferen (samme spørring som sidene; ingen egen sanntidskanal)
   const project = useQuery({
     queryKey: projectStateKey(projectId),
-    queryFn: () => fetchProjectState(projectId),
+    queryFn: projectStateQueryFn(qc, projectId),
     staleTime: Infinity,
     refetchOnWindowFocus: false,
     enabled: editable,
