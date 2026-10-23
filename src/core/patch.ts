@@ -307,6 +307,8 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
           : {}),
         // Migrasjon 0046 (GP2): kobling til det globale biblioteket
         source_global_asset_id: a.globalAssetId ?? null,
+        // Migrasjon 0098 (G-6): sist innhentede karakterknippe (ukjent kolonne ignoreres før migrasjonen)
+        ...(a.globalBundleNumber !== undefined ? { global_bundle_number: a.globalBundleNumber } : {}),
       };
     }
     case "assetVariants": {
@@ -1422,6 +1424,9 @@ export function stateFromRows(r: ProjectRows): ProjectState {
           : {}),
         ...(typeof x["source_global_asset_id"] === "string"
           ? { globalAssetId: x["source_global_asset_id"] }
+          : {}),
+        ...(typeof x["global_bundle_number"] === "number"
+          ? { globalBundleNumber: x["global_bundle_number"] }
           : {}),
       })),
     ),

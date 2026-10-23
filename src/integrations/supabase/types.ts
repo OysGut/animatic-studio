@@ -7494,6 +7494,16 @@ export type Database = {
           scene_id: string
         }[]
       }
+      search_script_blocks: {
+        Args: { p_limit?: number; p_project: string; p_query: string }
+        Returns: {
+          block_id: string
+          kind: string
+          score: number
+          text: string
+          variant_id: string
+        }[]
+      }
       set_invitation_role: {
         Args: { p_invitation: string; p_role: string }
         Returns: undefined

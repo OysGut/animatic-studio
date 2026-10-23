@@ -410,6 +410,11 @@ function normalizeAssetFields(f: AssetFields): AssetFields {
     if (x.length > 50) fail("invalid", tk("core-commands-apply.normalize-asset-fields.fail.02299a8cfbdc"));
     if (!tags.some((y) => y.toLowerCase() === x.toLowerCase())) tags.push(x);
   }
+  if (
+    f.globalBundleNumber !== undefined &&
+    (!Number.isInteger(f.globalBundleNumber) || f.globalBundleNumber < 1)
+  )
+    fail("invalid", tk("core-commands-apply.normalize-asset-fields.fail.49a4f93a3497"));
   return {
     kind: f.kind,
     name,
@@ -417,6 +422,7 @@ function normalizeAssetFields(f: AssetFields): AssetFields {
     description: f.description.trim(),
     category: f.category.trim(),
     tags,
+    ...(f.globalBundleNumber !== undefined ? { globalBundleNumber: f.globalBundleNumber } : {}),
   };
 }
 
@@ -5866,6 +5872,7 @@ function run(
             description: a.description,
             category: a.category,
             tags: a.tags,
+            ...(a.globalBundleNumber !== undefined ? { globalBundleNumber: a.globalBundleNumber } : {}),
           },
         },
         affected: [a.id],

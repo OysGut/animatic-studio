@@ -85,6 +85,8 @@ export * from "./mobile";
 export * from "./storylab";
 export * from "./draft";
 export * from "./workspaces";
+export * from "./global/character-bundle";
+export * from "./global/workspace-profiles";
 export * from "./film-share";
 export * from "./typography";
 export * from "./script-assist";

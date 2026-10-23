@@ -8172,6 +8172,124 @@ try {
     assert(missing.length === 0,
       `jsonb-kolonner uten tak: ${missing.map((r) => `${String(r["table_name"])}.${String(r["column_name"])}`).join(", ")}`);
   });
+  // ---------- G-6 (0098): globale karakterknipper og arbeidsgruppeprofiler ----------
+  await test("0098 G-6.1: karakterknippe – redaktør publiserer versjonert, leser kan ikke; bare medlemmer ser", async () => {
+    const DAVE = "44444444-4444-7444-8444-444444444444";
+    await sql`insert into auth.users (id, email) values (${DAVE}, 'dave@example.no') on conflict do nothing`;
+    const ws = await as("authenticated", ALICE, async (tx) =>
+      (await tx`select public.create_workspace('G6-gruppe') as id`)[0]!["id"] as string,
+    );
+    const tEd = await as("authenticated", ALICE, async (tx) =>
+      (await tx`select public.create_workspace_invitation(${ws}, 'bob@example.no', 'editor') as t`)[0]!["t"] as string,
+    );
+    await as("authenticated", BOB, (tx) => tx`select public.accept_workspace_invitation(${tEd})`);
+    const tMem = await as("authenticated", ALICE, async (tx) =>
+      (await tx`select public.create_workspace_invitation(${ws}, 'carol@example.no', 'member') as t`)[0]!["t"] as string,
+    );
+    await as("authenticated", CAROL, (tx) => tx`select public.accept_workspace_invitation(${tMem})`);
+    const ga = await as("authenticated", BOB, async (tx) =>
+      (await tx`select public.global_create_asset(${ws}, 'character', 'Mor', 'Hovedkarakter', '{}', '{}') as id`)[0]!["id"] as string,
+    );
+    const gv = await as("authenticated", BOB, async (tx) =>
+      (await tx`select public.global_create_variant(${ga}, 'Referanse', 'reference', '') as id`)[0]!["id"] as string,
+    );
+    const sha = "c".repeat(64);
+    const v1 = await as("authenticated", BOB, async (tx) =>
+      (await tx`select public.global_add_version(${gv}, ${`global/${ws}/${ga}/${sha}.png`}, 'image/png', 10, 10, 100, ${sha}, null, '') as id`)[0]!["id"] as string,
+    );
+    const voice = { provider: "elevenlabs", voiceId: "stemme-1", label: "Mor" };
+    const briefs = [{ id: "b1", text: "En eldre kvinne med sjal", createdAt: "2026-10-01T10:00:00Z" }];
+    const mouths = [{ system: "rhubarb", variants: { A: "closed" } }];
+    // Leser (member) kan ikke publisere
+    await expectError(
+      as("authenticated", CAROL, (tx) => tx`select public.global_publish_character_bundle(${ga}, ${tx.json(voice as never)}, ${tx.json(briefs as never)}, 'b1', ${tx.json(mouths as never)}, null, '{}', '')`),
+      "42501",
+    );
+    // Godkjent versjon må tilhøre karakteren
+    await expectError(
+      as("authenticated", BOB, (tx) => tx`select public.global_publish_character_bundle(${ga}, null, '[]'::jsonb, null, '[]'::jsonb, null, ${`{${ALICE}}`}::uuid[], '')`),
+      "22023",
+    );
+    // Redaktør publiserer nummer 1 og 2 i rekkefølge
+    const n1 = await as("authenticated", BOB, async (tx) =>
+      (await tx`select public.global_publish_character_bundle(${ga}, ${tx.json(voice as never)}, ${tx.json(briefs as never)}, 'b1', ${tx.json(mouths as never)}, ${tx.json({ plates: [] } as never)}, ${`{${v1}}`}::uuid[], 'første') as n`)[0]!["n"],
+    );
+    assert(n1 === 1, "første knippe skal være nummer 1");
+    const n2 = await as("authenticated", BOB, async (tx) =>
+      (await tx`select public.global_publish_character_bundle(${ga}, null, '[]'::jsonb, null, '[]'::jsonb, null, '{}', 'tomt') as n`)[0]!["n"],
+    );
+    assert(n2 === 2, "andre knippe skal være nummer 2");
+    // Kniplene er uforanderlige
+    await expectError(sql`update public.global_character_bundles set note = 'x' where global_asset_id = ${ga}`, "42501");
+    await expectError(sql`delete from public.global_character_bundles where global_asset_id = ${ga}`, "42501");
+    // Medlem leser siste og et bestemt nummer; ikke-medlem og anon får avslag
+    const latest = await as("authenticated", CAROL, async (tx) =>
+      (await tx`select public.global_character_bundle(${ga}, null) as b`)[0]!["b"] as Record<string, unknown>);
+    assert(latest["number"] === 2, "siste knippe skal være nummer 2");
+    const first = await as("authenticated", CAROL, async (tx) =>
+      (await tx`select public.global_character_bundle(${ga}, 1) as b`)[0]!["b"] as Record<string, unknown>);
+    assert((first["voice"] as Record<string, unknown>)["voiceId"] === "stemme-1", "knippe 1 skal ha stemmen");
+    assert(JSON.stringify(first["approved_version_ids"]) === JSON.stringify([v1]), "knippe 1 skal ha den godkjente versjonen");
+    await expectError(as("authenticated", DAVE, (tx) => tx`select public.global_character_bundle(${ga}, null)`), "42501");
+    await expectError(as("anon", null, (tx) => tx`select public.global_character_bundle(${ga}, null)`), "42501");
+    // RLS: ikke-medlem ser ingen rader direkte
+    const seen = await as("authenticated", DAVE, (tx) => tx`select id from public.global_character_bundles where global_asset_id = ${ga}`);
+    assert(seen.length === 0, "ikke-medlem skal ikke se knipper");
+    await expectError(as("anon", null, (tx) => tx`select id from public.global_character_bundles`), /permission|42501/);
+    // Direkte skriving er stengt for vanlige brukere
+    await expectError(
+      as("authenticated", BOB, (tx) => tx`insert into public.global_character_bundles (workspace_id, global_asset_id, number, created_by) values (${ws}, ${ga}, 99, ${BOB})`),
+      /42501|permission/,
+    );
+  });
+
+  await test("0098 G-6.2: arbeidsgruppeprofiler – redaktør lagrer, én standard per type, revisjonssjekk, RLS", async () => {
+    const DAVE = "44444444-4444-7444-8444-444444444444";
+    const ws = (await sql`select id from public.workspaces where name = 'G6-gruppe'`)[0]!["id"] as string;
+    // Leser (member) kan ikke lagre
+    await expectError(
+      as("authenticated", CAROL, (tx) => tx`select public.workspace_save_profile(${ws}, null, 'style', 'Gruppestil', '{}'::jsonb, false, 0)`),
+      "42501",
+    );
+    const p1 = await as("authenticated", BOB, async (tx) =>
+      (await tx`select public.workspace_save_profile(${ws}, null, 'style', 'Gruppestil', ${tx.json({ guide: "akvarell" } as never)}, true, 0) as id`)[0]!["id"] as string,
+    );
+    const p2 = await as("authenticated", BOB, async (tx) =>
+      (await tx`select public.workspace_save_profile(${ws}, null, 'style', 'Alternativ', '{}'::jsonb, true, 0) as id`)[0]!["id"] as string,
+    );
+    // Ny standard erstatter den gamle (unik indeks tillater bare én)
+    const defaults = await sql`select id from public.workspace_profiles where workspace_id = ${ws} and kind = 'style' and is_default`;
+    assert(defaults.length === 1 && defaults[0]!["id"] === p2, "bare én standardprofil per type");
+    // Revisjonssjekk ved endring
+    await expectError(
+      as("authenticated", BOB, (tx) => tx`select public.workspace_save_profile(${ws}, ${p1}, 'style', 'Endret', '{}'::jsonb, false, 99)`),
+      "P0409",
+    );
+    await as("authenticated", BOB, (tx) => tx`select public.workspace_save_profile(${ws}, ${p1}, 'style', 'Endret', '{}'::jsonb, false, 1)`);
+    // Arkivering og gjenåpning
+    await as("authenticated", BOB, (tx) => tx`select public.workspace_archive_profile(${p2}, true)`);
+    const active = await sql`select id from public.workspace_profiles where workspace_id = ${ws} and archived_at is null`;
+    assert(active.length === 1 && active[0]!["id"] === p1, "arkivert profil skal skjules");
+    // RLS: medlem leser; ikke-medlem og anon ser ingenting
+    const seen = await as("authenticated", CAROL, (tx) => tx`select id from public.workspace_profiles where workspace_id = ${ws}`);
+    assert(seen.length === 2, "medlem skal se begge profilene");
+    const seenOut = await as("authenticated", DAVE, (tx) => tx`select id from public.workspace_profiles where workspace_id = ${ws}`);
+    assert(seenOut.length === 0, "ikke-medlem skal ikke se profiler");
+    await expectError(as("anon", null, (tx) => tx`select id from public.workspace_profiles`), /permission|42501/);
+  });
+
+  await test("0098 G-6.3: assets.global_bundle_number er metadata og flyter gjennom apply_changes", async () => {
+    const p = await as("authenticated", ALICE, async (tx) =>
+      (await tx`select public.create_project('G6-prosjekt', 25, 1) as id`)[0]!["id"] as string,
+    );
+    const assetId = crypto.randomUUID();
+    const change = { inserts: { assets: [{ id: assetId, project_id: p, revision: 1, kind: "character", name: "Mor", global_bundle_number: 2 }] } };
+    await as("service_role", null, (tx) =>
+      tx`select public.apply_changes(${p}, ${ALICE}, ${crypto.randomUUID()}, '{"type":"G6Test"}'::jsonb, '{}'::jsonb, ${tx.json(change as never)})`);
+    const [row] = await sql`select global_bundle_number from public.assets where id = ${assetId}`;
+    assert(row!["global_bundle_number"] === 2, "knippenummeret skal lagres som metadata");
+  });
+
   // ---------- search_path: alle SECURITY DEFINER-funksjoner skal ha search_path='' ----------
   await test("alle SECURITY DEFINER-funksjoner i public/private har search_path=''", async () => {
     const rows = await sql`

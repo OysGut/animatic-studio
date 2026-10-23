@@ -169,6 +169,8 @@ export interface AssetFields {
   readonly description: string;
   readonly category: string;
   readonly tags: readonly string[];
+  /** G-6 (0098): sist innhentede globale karakterknippe. Settes bare av innhentingen. */
+  readonly globalBundleNumber?: number;
 }
 
 export interface AssetVariantFields {

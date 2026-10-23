@@ -41,3 +41,10 @@
 - [x] 8. Kravoversikter: check_kb grønn (PyYAML eller JS-variant)
 - [x] Rapport: oppdater docs/development/G1_SPRAKNOYTRAL_REPORT.md
 - [ ] Full vitest + i18n + DB-tester grønne
+
+## G-6 gjenbruk på tvers av prosjekter (23.10.2026)
+- [~] 1. Globale karakterknipper: migrasjon 0098, kjerne (plan/publisering/innhentingskommandoer) og adaptere ferdig og testet — UI-kobling (publiser/hent-knapper) gjenstår; rigg i knippe venter på produktvalg (rigg er scenebundet)
+- [~] 2. Arbeidsgruppeprofiler: tabell, RPC-er og kjerneoppløsning ferdig og testet — profil-UI og kobling til resolveSettings gjenstår
+- [x] 3. Tilgang: RLS bare for arbeidsgruppemedlemmer; roller eier/redaktør/leser; RLS-tester grønne
+- [x] 4. Backup: innhentede knipper materialiseres som prosjektrader i BACKUP_STATE_TABLES; rundtur-testet
+- [~] Rapport docs/development/G6_GJENBRUK_REPORT.md skrevet; tsc 0, DB 201/0, fokuserte vitest 18/0 — full vitest og i18n gjenstår; 0098 ikke kjørt i Cloud

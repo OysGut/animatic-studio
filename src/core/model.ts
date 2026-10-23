@@ -491,6 +491,11 @@ export interface Asset extends Entity<AssetId> {
    * filene er prosjektets egne kopier, så prosjektet virker uten tilgang til arbeidsgruppen.
    */
   readonly globalAssetId?: string;
+  /**
+   * Siste globale karakterknippe (G-6, migrasjon 0098) prosjektressursen tok inn. Bare metadata:
+   * brukes til å se om gruppen har et nyere knippe. Lokale overstyringer bevares ved innhenting.
+   */
+  readonly globalBundleNumber?: number;
 }
 
 /** Én tekstversjon av brukerens bildebeskrivelse (migrasjon 0089). Aldri serverprompten. */
