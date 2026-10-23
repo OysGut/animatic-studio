@@ -157,7 +157,7 @@ revoke all on function private.quota_scope(uuid) from public, anon, authenticate
 grant execute on function private.quota_scope(uuid) to service_role;
 
 -- ---------- 2b. Håndheving: prosjektantall (create_project kopiert ordrett fra 0063 + kvotesjekk) ----------
-create or replace function public.create_project(p_name text, p_fps_num integer default 25, p_fps_den integer default 1)
+create or replace function public.create_project(p_name text, p_fps_num integer default 25, p_fps_den integer default 1, p_source_language text default 'und')
 returns uuid
 language plpgsql security definer set search_path = '' as $$
 declare
@@ -168,7 +168,8 @@ declare
   v_limit integer;
   v_count bigint;
 begin
-  if v_user is null then raise exception 'Ikke innlogget' using errcode = '28000'; end if;
+  if v_user is null then raise exception 'Not signed in' using errcode = '28000'; end if;
+  -- G-5: kvote for antall prosjekter (brukeromfang; nye prosjekter har ennå ingen arbeidsgruppe).
   select q.max_projects into v_limit from public.usage_quotas q where q.user_id = v_user;
   if v_limit is not null then
     select count(*) into v_count from public.projects p
@@ -177,21 +178,21 @@ begin
       raise exception 'Kvote for antall prosjekter er nådd' using errcode = 'PTG11';
     end if;
   end if;
-  insert into public.projects (id, name, fps_num, fps_den, created_by, active_quality_profile_id) values (v_project, btrim(p_name), p_fps_num, p_fps_den, v_user, v_draft);
+  insert into public.projects (id, name, fps_num, fps_den, created_by, active_quality_profile_id, source_language) values (v_project, btrim(p_name), p_fps_num, p_fps_den, v_user, v_draft, p_source_language);
   insert into public.project_members (project_id, user_id, role, can_approve_costs) values (v_project, v_user, 'owner', true);
   insert into public.productions (id, project_id, kind, name, fps_num, fps_den, created_by)
-    values (v_main, v_project, 'main', 'Hovedfilm', p_fps_num, p_fps_den, v_user);
+    values (v_main, v_project, 'main', 'Main film', p_fps_num, p_fps_den, v_user);
   insert into public.quality_profiles (id, project_id, name, spec, created_by) values
-    (v_draft, v_project, 'Utkast', '{"effort":"fast","variants":1,"resolution":"1K","export":{"format":"mp4","bitrateKbps":4000}}'::jsonb, v_user),
-    (gen_random_uuid(), v_project, 'Gjennomgang', '{"effort":"balanced","variants":2,"resolution":"2K","export":{"format":"mp4","bitrateKbps":8000}}'::jsonb, v_user),
-    (gen_random_uuid(), v_project, 'Endelig', '{"effort":"premium","variants":2,"resolution":"4K","export":{"format":"mp4","bitrateKbps":16000}}'::jsonb, v_user);
+    (v_draft, v_project, 'Draft', '{"effort":"fast","variants":1,"resolution":"1K","export":{"format":"mp4","bitrateKbps":4000}}'::jsonb, v_user),
+    (gen_random_uuid(), v_project, 'Review', '{"effort":"balanced","variants":2,"resolution":"2K","export":{"format":"mp4","bitrateKbps":8000}}'::jsonb, v_user),
+    (gen_random_uuid(), v_project, 'Final', '{"effort":"premium","variants":2,"resolution":"4K","export":{"format":"prores"}}'::jsonb, v_user);
   insert into public.change_log (id, project_id, actor, command_type, command, affected_ids)
     values (gen_random_uuid(), v_project, v_user, 'CreateProject',
-            jsonb_build_object('name', btrim(p_name), 'mainProductionId', v_main), array[v_project, v_main]);
+            jsonb_build_object('name', btrim(p_name), 'mainProductionId', v_main, 'sourceLanguage', p_source_language), array[v_project, v_main]);
   return v_project;
 end $$;
-revoke all on function public.create_project(text, integer, integer) from public, anon;
-grant execute on function public.create_project(text, integer, integer) to authenticated;
+revoke all on function public.create_project(text, integer, integer, text) from public, anon;
+grant execute on function public.create_project(text, integer, integer, text) to authenticated;
 
 -- ---------- 2c. Håndheving: rader i change_log ----------
 create or replace function private.check_quota_change_log() returns trigger
