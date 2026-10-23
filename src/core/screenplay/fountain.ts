@@ -754,7 +754,10 @@ export function screenplayFountain(
       // i18n-ignore: manusets formatord (Fountain-tekst i eksportfilen), oversettes ikke
       const base = escapeInline(headingText || "UTEN OVERSKRIFT");
       const natural =
-        classifyFountainLine(base, true) === "heading" && !base.trimStart().startsWith(".");
+        classifyFountainLine(base, true) === "heading" &&
+        !base.trimStart().startsWith(".") &&
+        // G-3: bare de internasjonale innledningene skrives uten tvang, så andre Fountain-lesere forstår filen
+        AUTO_HEADING_RE.test(base.trim());
       const line = (natural ? base : `.${base}`) + (sc.number !== null ? ` #${sc.number}#` : "");
       blankLine();
       out.push(line);
