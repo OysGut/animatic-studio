@@ -68,6 +68,7 @@ declare
   k text;
   v_start timestamptz;
   v_hits integer;
+  v_max integer;
 begin
   select * into r from private.rate_limit_rules where scope = p_scope;
   if not found then return; end if;
@@ -78,7 +79,8 @@ begin
       values (p_scope, left(k, 400), v_start, 1)
       on conflict (scope, key, window_start) do update set hits = h.hits + 1
       returning h.hits into v_hits;
-    if v_hits > case when k like 'ip:%' then r.per_ip else r.per_key end then
+    v_max := case when k like 'ip:%' then r.per_ip else r.per_key end;
+    if v_hits > v_max then
       raise exception 'For mange forespørsler (%), vent litt og prøv igjen', p_scope using errcode = 'PTG15';
     end if;
   end loop;
