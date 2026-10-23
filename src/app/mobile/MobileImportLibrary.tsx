@@ -3,6 +3,7 @@
  * med filter for type, dato, importøkt, kobling og bidragsyter. Bilder har miniatyr, video og lyd kan spilles.
  * Originalene bevares; ingenting godkjent overskrives. Lenkene kan tilbakekalles her.
  */
+import { Thumbnail } from "@/app/shared/Thumbnail";
 import { EyeOff, Eye, Link2Off } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -210,7 +211,7 @@ export function MobileImportLibrary({
               >
                 <div className="flex aspect-video items-center justify-center overflow-hidden bg-surface-3">
                   {!url ? null : r.kind === "image" ? (
-                    <img src={url} alt="" className="size-full object-contain" />
+                    <Thumbnail src={url} alt="" className="size-full" />
                   ) : r.kind === "video" ? (
                     <video
                       src={url}

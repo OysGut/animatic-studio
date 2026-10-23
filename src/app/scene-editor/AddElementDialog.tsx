@@ -4,6 +4,7 @@
  * (hurtigvalg som «Alle scener med Maja») og om manuset skal få en merknad i disse scenene. I de andre scenene
  * dras det inn for hånd («Dra det inn selv») – der vises det med gul ramme til det er gjort.
  */
+import { Thumbnail } from "@/app/shared/Thumbnail";
 import { useMemo, useState } from "react";
 import { Check, Search } from "lucide-react";
 import { ASSET_KIND_LABEL, coverVersion, formatHeading, newId, orderedOccurrences, planNoteText, sceneChoices, sceneNumberOf, sortedAssets, type AssetKind, type ProjectState } from "@/core";
@@ -257,7 +258,7 @@ export function AddElementDialog({
                         >
                           <span className="flex h-20 items-center justify-center bg-surface-3">
                             {url ? (
-                              <img src={url} alt="" className="h-full w-full object-contain p-1" />
+                              <Thumbnail src={url} alt="" className="h-full w-full p-1" />
                             ) : (
                               <AssetSymbolIcon state={state} assetId={id} className="size-10" />
                             )}

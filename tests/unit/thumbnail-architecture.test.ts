@@ -10,6 +10,7 @@ export const THUMBNAIL_EXCEPTIONS: Record<string, string> = {
   "src/app/scene-editor/animation/FaceMarkDialog.tsx": "markeringsflate der klikkoordinater må følge boksen; boksen har bildets proporsjoner",
   "src/app/library/ImageLightbox.tsx": "fullskjermvisning, ikke miniatyr",
   "src/app/library/ImageViewer.tsx": "zoombar bildeviser, ikke miniatyr",
+  "src/app/mobile/MouthShapeCapture.tsx": "munnformeditor med flytting, rotering og zoom av bildet (style-transform); viser hele bildet med contain",
   "src/app/library/HarmonizeCompare.tsx": "sammenligningsglider med clip-path; viser hele bildet med contain",
 };
 
