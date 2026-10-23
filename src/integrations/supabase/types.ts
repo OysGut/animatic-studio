@@ -2275,6 +2275,33 @@ export type Database = {
           },
         ]
       }
+      fx_rates: {
+        Row: {
+          base: string
+          fetched_at: string
+          quote: string
+          rate: number
+          rate_date: string
+          source: string
+        }
+        Insert: {
+          base: string
+          fetched_at?: string
+          quote: string
+          rate: number
+          rate_date: string
+          source: string
+        }
+        Update: {
+          base?: string
+          fetched_at?: string
+          quote?: string
+          rate?: number
+          rate_date?: string
+          source?: string
+        }
+        Relationships: []
+      }
       generation_jobs: {
         Row: {
           asset_id: string | null
@@ -4031,6 +4058,7 @@ export type Database = {
           is_public: boolean
           locale: string | null
           profile_fields: Json
+          time_zone: string | null
           ui_prefs: Json
           updated_at: string
           user_id: string
@@ -4045,6 +4073,7 @@ export type Database = {
           is_public?: boolean
           locale?: string | null
           profile_fields?: Json
+          time_zone?: string | null
           ui_prefs?: Json
           updated_at?: string
           user_id: string
@@ -4059,6 +4088,7 @@ export type Database = {
           is_public?: boolean
           locale?: string | null
           profile_fields?: Json
+          time_zone?: string | null
           ui_prefs?: Json
           updated_at?: string
           user_id?: string
@@ -6760,7 +6790,10 @@ export type Database = {
           created_by: string
           id: string
           name: string
+          region: string | null
           revision: number
+          settings: Json
+          time_zone: string | null
         }
         Insert: {
           archived_at?: string | null
@@ -6768,7 +6801,10 @@ export type Database = {
           created_by: string
           id?: string
           name: string
+          region?: string | null
           revision?: number
+          settings?: Json
+          time_zone?: string | null
         }
         Update: {
           archived_at?: string | null
@@ -6776,7 +6812,10 @@ export type Database = {
           created_by?: string
           id?: string
           name?: string
+          region?: string | null
           revision?: number
+          settings?: Json
+          time_zone?: string | null
         }
         Relationships: []
       }
@@ -7315,6 +7354,10 @@ export type Database = {
         }[]
       }
       project_lock_info: { Args: { p_project: string }; Returns: Json }
+      project_period_start: {
+        Args: { p_project: string; p_unit: string }
+        Returns: string
+      }
       project_snapshot: {
         Args: { p_full_history?: boolean; p_project: string }
         Returns: Json
@@ -7476,6 +7519,7 @@ export type Database = {
         }
         Returns: undefined
       }
+      set_my_time_zone: { Args: { p_time_zone: string }; Returns: undefined }
       set_my_ui_prefs: { Args: { p_prefs: Json }; Returns: undefined }
       set_project_workspace: {
         Args: { p_project: string; p_workspace: string }
@@ -7491,6 +7535,15 @@ export type Database = {
       }
       set_workspace_member_role: {
         Args: { p_role: string; p_user: string; p_workspace: string }
+        Returns: undefined
+      }
+      set_workspace_settings: {
+        Args: {
+          p_region: string
+          p_settings: Json
+          p_time_zone: string
+          p_workspace: string
+        }
         Returns: undefined
       }
       showcase_comments: { Args: { p_item: string }; Returns: Json }
@@ -7535,6 +7588,14 @@ export type Database = {
       upsert_my_profile: {
         Args: { p_display_name?: string }
         Returns: undefined
+      }
+      user_period_start: {
+        Args: { p_unit: string; p_user: string }
+        Returns: string
+      }
+      user_period_start_date: {
+        Args: { p_unit: string; p_user: string }
+        Returns: string
       }
     }
     Enums: {
