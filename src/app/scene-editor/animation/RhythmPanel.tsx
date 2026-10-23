@@ -62,7 +62,7 @@ export function RhythmPanel({ state, occurrenceId, editable, run }: {
         <Activity className="size-3.5" aria-hidden />{t("app-scene-editor-animation-rhythm-panel.rhythm-panel.button.3ce45bd0ae01")}
       </button>
     </PopoverTrigger>
-    <PopoverContent data-testid="ca8-rhythm-panel" className="w-96 space-y-2 border-accent-warm p-3" aria-label={t("app-scene-editor-animation-rhythm-panel.rhythm-panel.aria-label.f19d593893d0.2")}>
+    <PopoverContent uiId="V-111" data-testid="ca8-rhythm-panel" className="w-96 space-y-2 border-accent-warm p-3" aria-label={t("app-scene-editor-animation-rhythm-panel.rhythm-panel.aria-label.f19d593893d0.2")}>
       <div className="flex items-center justify-between">
         <span className="text-[11px] uppercase tracking-wider text-accent-warm">{t("app-scene-editor-animation-rhythm-panel.rhythm-panel.span.3ce45bd0ae01")}</span>
         <output data-testid="ca8-rhythm-new-duration" className="font-mono text-xs text-text-primary">

@@ -38,7 +38,7 @@ export function DriftBadge({ state, projectId, occurrenceId, blockId, run, edita
         <Icon className="size-3.5" aria-hidden />
       </button>
     </PopoverTrigger>
-    <PopoverContent data-testid="drift-popover" className="w-80 font-sans" onClick={e => e.stopPropagation()}>
+    <PopoverContent uiId="V-059" data-testid="drift-popover" className="w-80 font-sans" onClick={e => e.stopPropagation()}>
       <p role="status" className={"mb-2 text-xs font-medium " + tone}>{label}</p>
       {d.audioRevision !== null ? <p className="mb-2 text-[11px] text-text-tertiary">{t("app-dialogue-drift-badge.drift-badge.p.74e451770e4c", { audioRevision: String(d.audioRevision), currentRevision: String(d.currentRevision) })}</p> : null}
       {d.status !== "reviewed" ? <DriftDiffView state={state} occurrenceId={occurrenceId} blockId={blockId} /> : null}

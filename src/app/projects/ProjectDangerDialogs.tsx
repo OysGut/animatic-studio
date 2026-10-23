@@ -118,7 +118,7 @@ export function DeleteProjectDialog({
 
   return (
     <Dialog open onOpenChange={(o) => !o && !busy && onClose()}>
-      <DialogContent className="max-h-[88vh] max-w-[560px] overflow-y-auto border-status-danger/40 bg-surface-2">
+      <DialogContent uiId="V-080" className="max-h-[88vh] max-w-[560px] overflow-y-auto border-status-danger/40 bg-surface-2">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-status-danger">
             <Trash2 className="size-5" aria-hidden />{" "}
@@ -223,7 +223,7 @@ export function LeaveProjectDialog({
 
   return (
     <Dialog open onOpenChange={(o) => !o && !busy && onClose()}>
-      <DialogContent className="max-w-[480px] border-status-danger/40 bg-surface-2">
+      <DialogContent uiId="V-079" className="max-w-[480px] border-status-danger/40 bg-surface-2">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <LogOut className="size-5 text-status-danger" aria-hidden />{" "}
@@ -303,7 +303,7 @@ export function PurgeAssetsDialog({
 
   return (
     <Dialog open onOpenChange={(o) => !o && !busy && onClose()}>
-      <DialogContent className="max-w-[500px] border-status-danger/40 bg-surface-2">
+      <DialogContent uiId="V-078" className="max-w-[500px] border-status-danger/40 bg-surface-2">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-status-danger">
             <Trash2 className="size-5" aria-hidden />{" "}

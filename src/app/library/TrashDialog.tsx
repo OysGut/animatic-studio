@@ -117,7 +117,7 @@ export function TrashDialog({
 
   return (
     <Dialog open={open} onOpenChange={(o) => !busy && onOpenChange(o)}>
-      <ResizableDialogContent sizeKey="trash" className="max-w-2xl">
+      <ResizableDialogContent uiId="V-073" sizeKey="trash" className="max-w-2xl">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-1.5">
             <Trash2 className="size-4" aria-hidden /> {t("app-library-trash-dialog.trash-dialog.dialog-title.f2a8a27f41db")}

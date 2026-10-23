@@ -55,7 +55,7 @@ export function CountryPicker({
           <ChevronDown className="size-3.5 shrink-0 text-text-tertiary" aria-hidden />
         </button>
       </PopoverTrigger>
-      <PopoverContent align="start" className="w-[var(--radix-popover-trigger-width)] min-w-[260px] p-0">
+      <PopoverContent uiId="V-024" align="start" className="w-[var(--radix-popover-trigger-width)] min-w-[260px] p-0">
         <Command
           filter={(itemValue, search) =>
             itemValue.toLocaleLowerCase(collation()).includes(search.toLocaleLowerCase(collation())) ? 1 : 0

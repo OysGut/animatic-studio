@@ -68,7 +68,7 @@ export function LanguageVersionsDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <ResizableDialogContent sizeKey="language-versions" data-testid="language-versions-dialog" className="max-h-[90vh] max-w-[640px] overflow-y-auto border-border bg-surface-2">
+      <ResizableDialogContent uiId="V-117" sizeKey="language-versions" data-testid="language-versions-dialog" className="max-h-[90vh] max-w-[640px] overflow-y-auto border-border bg-surface-2">
         <DialogHeader>
           <DialogTitle>{t("ml3-language-versions.dialog.title")}</DialogTitle>
           <DialogDescription>{t("ml3-language-versions.dialog.description", { language: languageLabel(sourceLanguageOf(state)) })}</DialogDescription>

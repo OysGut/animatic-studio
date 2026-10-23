@@ -98,7 +98,7 @@ export function CarryOverDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-lg" data-testid="carry-over-dialog">
+      <DialogContent uiId="V-090" className="max-w-lg" data-testid="carry-over-dialog">
         <DialogHeader>
           <DialogTitle>{carryLabel(name)}</DialogTitle>
           <DialogDescription>

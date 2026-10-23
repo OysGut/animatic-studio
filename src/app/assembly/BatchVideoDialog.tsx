@@ -231,7 +231,7 @@ export function BatchVideoDialog({
 
   return (
     <Dialog open={open} onOpenChange={(o) => !busy && onOpenChange(o)}>
-      <ResizableDialogContent sizeKey="batch-video" className="max-h-[90vh] max-w-3xl grid-rows-[auto_minmax(0,1fr)_auto]">
+      <ResizableDialogContent uiId="V-038" sizeKey="batch-video" className="max-h-[90vh] max-w-3xl grid-rows-[auto_minmax(0,1fr)_auto]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-1.5">
             <ListOrdered className="size-4" aria-hidden />{" "}

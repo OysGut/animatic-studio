@@ -50,7 +50,7 @@ export function AudioTakesDialog({
         onOpenChange(next);
       }}
     >
-      <DialogContent
+      <DialogContent uiId="V-054"
         className="max-h-[90vh] max-w-[860px] overflow-y-auto border-border bg-surface-2"
         data-testid="audio-takes-dialog"
       >

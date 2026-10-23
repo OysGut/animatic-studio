@@ -236,7 +236,7 @@ function ProfileDialog({
       className="relative mt-3 flex flex-col gap-2 border border-border bg-surface-2 p-3 text-xs"
       data-testid="quality-profile-dialog"
     >
-      <UiId id="NEW" />
+      <UiId id="V-082" />
       <label className="flex items-center gap-2 text-text-secondary">
         {t("app-projects-quality-profiles-section.profile-dialog.label.87eb6b0f610e")}
         <Input

@@ -206,7 +206,7 @@ export function ImageViewer({
       className="fixed inset-0 z-[100] flex flex-col text-on-media"
       style={{ background: "var(--media-bg)" }}
     >
-      <UiId id="NEW" />
+      <UiId id="V-070" />
       <div className="flex h-11 shrink-0 items-center gap-2 border-b border-on-media/10 px-3">
         <span className="min-w-0 flex-1 truncate text-[13px]" title={name}>
           {name}

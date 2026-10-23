@@ -44,7 +44,7 @@ export function BlinkPanel({ state, use, frame, editable, run }: {
         <Eye className="size-3.5" aria-hidden />
       </button>
     </PopoverTrigger>
-    <PopoverContent className="w-72 space-y-2 p-3" aria-label={t("app-scene-editor-animation-blink-panel.blink-panel.aria-label.281c719242d1.2")}>
+    <PopoverContent uiId="V-104" className="w-72 space-y-2 p-3" aria-label={t("app-scene-editor-animation-blink-panel.blink-panel.aria-label.281c719242d1.2")}>
       <div className="flex items-center justify-between">
         <span className="text-[11px] uppercase tracking-wider text-text-tertiary">{t("app-scene-editor-animation-blink-panel.blink-panel.span.b67a7ff43bab")}</span>
         <IconButton data-testid="blink-enabled" aria-pressed={behavior.blinkEnabled !== false}

@@ -357,7 +357,7 @@ export function ImageLightbox({
 
   return (
     <Dialog open={open} onOpenChange={(o) => !busy && onOpenChange(o)}>
-      <ResizableDialogContent sizeKey="image-lightbox" className="flex h-[min(900px,calc(100vh-48px))] max-w-[min(1400px,calc(100vw-32px))] flex-col border-border bg-surface-2">
+      <ResizableDialogContent uiId="V-069" sizeKey="image-lightbox" className="flex h-[min(900px,calc(100vh-48px))] max-w-[min(1400px,calc(100vw-32px))] flex-col border-border bg-surface-2">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>

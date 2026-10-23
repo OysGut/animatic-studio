@@ -4,8 +4,9 @@
  * Nummeret slås alltid opp i registeret src/app/ui-ids.ts.
  */
 import { useEffect } from "react";
+import { useMatches } from "@tanstack/react-router";
 import { BUILD_SHA_SHORT } from "@/app/build-info";
-import { uiIdEntry } from "@/app/ui-ids";
+import { uiIdEntry, uiIdForRoute } from "@/app/ui-ids";
 
 export function uiIdLabel(id: string): string {
   return `${uiIdEntry(id) ? id : `${id}?`} · ${BUILD_SHA_SHORT}`;
@@ -30,4 +31,14 @@ export function useUiIdCopy(): void {
     document.addEventListener("click", onClick, true);
     return () => document.removeEventListener("click", onClick, true);
   }, []);
+}
+
+/** Sidens merke: den dypeste ruten som står i registeret (nede til venstre, påvirker ikke innloggingsboksen). */
+export function RouteUiId() {
+  const matches = useMatches();
+  for (let i = matches.length - 1; i >= 0; i--) {
+    const entry = uiIdForRoute(matches[i]!.routeId);
+    if (entry) return <UiId id={entry.id} page />;
+  }
+  return null;
 }

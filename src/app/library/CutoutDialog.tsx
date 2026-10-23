@@ -98,7 +98,7 @@ export function CutoutDialog({
 }) {
   return (
     <Dialog open={open && version !== null} onOpenChange={onOpenChange}>
-      <ResizableDialogContent sizeKey="cutout" className="max-h-[92vh] max-w-[980px] overflow-y-auto border-border bg-surface-2">
+      <ResizableDialogContent uiId="V-066" sizeKey="cutout" className="max-h-[92vh] max-w-[980px] overflow-y-auto border-border bg-surface-2">
         {version ? (
           <Editor
             key={version.id}

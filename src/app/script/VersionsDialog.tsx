@@ -144,7 +144,7 @@ export function VersionsDialog(props: Props) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <ResizableDialogContent sizeKey="script-versions" className="max-h-[90vh] max-w-[860px] overflow-y-auto border-border bg-surface-2">
+      <ResizableDialogContent uiId="V-125" sizeKey="script-versions" className="max-h-[90vh] max-w-[860px] overflow-y-auto border-border bg-surface-2">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <History className="size-4" aria-hidden />

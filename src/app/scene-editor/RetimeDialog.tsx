@@ -228,7 +228,7 @@ export function RetimeDialog({
 
   return (
     <Dialog open={open} onOpenChange={(o) => !o && !busy && onClose()}>
-      <DialogContent
+      <DialogContent uiId="V-095"
         data-testid="retime-dialog"
         className="max-h-[92vh] max-w-[760px] overflow-y-auto border-border bg-surface-2"
       >

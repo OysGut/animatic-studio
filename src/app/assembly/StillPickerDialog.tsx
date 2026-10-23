@@ -74,7 +74,7 @@ export function StillPickerDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <ResizableDialogContent sizeKey="still-picker" className="max-w-3xl">
+      <ResizableDialogContent uiId="V-047" sizeKey="still-picker" className="max-w-3xl">
         <DialogHeader>
           <DialogTitle>{t("app-assembly-still-picker-dialog.still-picker-dialog.dialog-title.28558823f25b")}</DialogTitle>
           <DialogDescription>

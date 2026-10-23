@@ -103,7 +103,7 @@ function CompareAiTakesDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <ResizableDialogContent sizeKey="compare-takes" className="max-w-5xl">
+      <ResizableDialogContent uiId="V-039" sizeKey="compare-takes" className="max-w-5xl">
         <DialogHeader>
           <DialogTitle>
             {attempts.length > 1

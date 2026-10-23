@@ -256,7 +256,7 @@ export function ExportDialog({
   const radio = "flex items-start gap-2 text-[13px] text-text-primary";
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <ResizableDialogContent sizeKey="script-export" className="max-w-[680px] border-border bg-surface-2">
+      <ResizableDialogContent uiId="V-115" sizeKey="script-export" className="max-w-[680px] border-border bg-surface-2">
         <DialogHeader>
           <DialogTitle>{t("app-script-export-dialog.export-dialog.dialog-title.4798ad21711e")}</DialogTitle>
           <DialogDescription>

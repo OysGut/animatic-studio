@@ -108,7 +108,7 @@ export function AssemblyViewMenu({
           <ChevronDown className="size-3" aria-hidden />
         </ToolbarButton>
       </PopoverTrigger>
-      <PopoverContent align="end" className="flex w-72 flex-col gap-1 p-2">
+      <PopoverContent uiId="V-036" align="end" className="flex w-72 flex-col gap-1 p-2">
         <ViewToggle
           checked={monochrome}
           onChange={onMonochrome}

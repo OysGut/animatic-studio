@@ -233,7 +233,7 @@ export function ImportDialog({
 
   return (
     <Dialog open={open} onOpenChange={reset}>
-      <ResizableDialogContent sizeKey="script-import" className="max-w-[640px] border-border bg-surface-2">
+      <ResizableDialogContent uiId="V-116" sizeKey="script-import" className="max-w-[640px] border-border bg-surface-2">
         <DialogHeader>
           <DialogTitle>{t("app-script-import-dialog.import-dialog.dialog-title.93cd6d89e3a4")}</DialogTitle>
           <DialogDescription>

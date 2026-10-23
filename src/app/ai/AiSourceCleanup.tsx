@@ -36,7 +36,7 @@ export function AiSourceCleanup({ projectId }: { projectId: string }) {
     <Button variant="ghost" size="sm" disabled={busy} onClick={() => void check()}><Trash2 className="size-3.5" aria-hidden />{t("app-ai-ai-source-cleanup.ai-source-cleanup.button.4cfe31fe5977")}</Button>
     {message ? <p role="status" className="text-xs text-text-secondary">{message}</p> : null}
     <AlertDialog open={files !== null} onOpenChange={(open) => { if (!open && !busy) setFiles(null); }}>
-      <AlertDialogContent>
+      <AlertDialogContent uiId="V-029">
         <AlertDialogHeader><AlertDialogTitle>{t("app-ai-ai-source-cleanup.ai-source-cleanup.alert-dialog-title.be771709a32f")}</AlertDialogTitle>
           <AlertDialogDescription>{t("app-ai-ai-source-cleanup.ai-source-cleanup.alert-dialog-description.56b2b4d2141c", { value1: String(files?.length ?? 0) })}</AlertDialogDescription></AlertDialogHeader>
         <ul className="max-h-48 overflow-y-auto text-xs text-text-secondary">{files?.map((f) => <li key={f.path}>{f.path.split("/").at(-1)}</li>)}</ul>

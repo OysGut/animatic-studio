@@ -190,7 +190,7 @@ export function PromotionDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <ResizableDialogContent sizeKey="promotion" className="max-h-[92vh] max-w-[1040px] overflow-y-auto border-border bg-surface-2">
+      <ResizableDialogContent uiId="V-081" sizeKey="promotion" className="max-h-[92vh] max-w-[1040px] overflow-y-auto border-border bg-surface-2">
         <DialogHeader>
           <DialogTitle>
             {t("app-projects-promotion-dialog.promotion-dialog.dialog-title.62677a2313dc", { name: String(name) })}

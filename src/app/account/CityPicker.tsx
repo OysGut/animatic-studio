@@ -52,7 +52,7 @@ export function CityPicker({
             <ChevronDown className="size-3.5 shrink-0 text-text-tertiary" aria-hidden />
           </button>
         </PopoverTrigger>
-        <PopoverContent align="start" className="w-[var(--radix-popover-trigger-width)] min-w-[240px] p-0">
+        <PopoverContent uiId="V-023" align="start" className="w-[var(--radix-popover-trigger-width)] min-w-[240px] p-0">
           <Command
             filter={(v, s) => (v.toLocaleLowerCase(collation()).includes(s.toLocaleLowerCase(collation())) ? 1 : 0)}
           >

@@ -119,7 +119,7 @@ export function RegistrationAdmin() {
         </>
       )}
       <AlertDialog open={confirm !== null} onOpenChange={(o) => !o && setConfirm(null)}>
-        <AlertDialogContent data-testid="registration-confirm">
+        <AlertDialogContent uiId="V-027" data-testid="registration-confirm">
           <AlertDialogHeader>
             <AlertDialogTitle>{confirm ? t("b109.admin.confirm-open-title") : t("b109.admin.confirm-close-title")}</AlertDialogTitle>
             <AlertDialogDescription>{confirm ? t("b109.admin.confirm-open") : t("b109.admin.confirm-close")}</AlertDialogDescription>

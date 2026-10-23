@@ -427,7 +427,7 @@ export function StyleGuideDialog({
     "w-full rounded-sm border border-border-control bg-surface-3 px-2 py-1.5 text-[13px] text-text-primary placeholder:text-text-tertiary disabled:opacity-70";
   return (
     <Dialog open onOpenChange={(o) => !o && onClose()}>
-      <ResizableDialogContent sizeKey="style-guide" className="max-h-[90vh] max-w-5xl overflow-y-auto">
+      <ResizableDialogContent uiId="V-083" sizeKey="style-guide" className="max-h-[90vh] max-w-5xl overflow-y-auto">
         <DialogHeader>
           <DialogTitle>
             {own

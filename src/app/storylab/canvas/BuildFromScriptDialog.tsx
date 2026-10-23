@@ -21,7 +21,7 @@ export function BuildFromScriptDialog({ state, cmds, originY, onClose, onDone }:
   };
   return (
     <Dialog open onOpenChange={(o) => { if (!o) onClose(); }}>
-      <DialogContent data-testid="canvas-build-preview">
+      <DialogContent uiId="V-139" data-testid="canvas-build-preview">
         <DialogHeader>
           <DialogTitle>{t("app-storylab-canvas-build-from-script-dialog.build-from-script-dialog.dialog-title.efa0788452c2")}</DialogTitle>
           <DialogDescription>{t("app-storylab-canvas-build-from-script-dialog.build-from-script-dialog.dialog-description.318ac92ee7cc")}</DialogDescription>

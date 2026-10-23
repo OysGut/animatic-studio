@@ -171,7 +171,7 @@ export function BackupDialog({
   const count = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
   return (
     <Dialog open={open} onOpenChange={(o) => !busy && onOpenChange(o)}>
-      <DialogContent className="max-w-[540px] border-border bg-surface-2">
+      <DialogContent uiId="V-076" className="max-w-[540px] border-border bg-surface-2">
         <DialogHeader>
           <DialogTitle>
             {t("app-projects-backup-dialogs.backup-dialog.dialog-title.09f8b9ff432c")}
@@ -391,7 +391,7 @@ export function RestoreBackupDialog({
   const started = state.current.projectId !== null;
   return (
     <Dialog open={open} onOpenChange={(o) => !running && onOpenChange(o)}>
-      <DialogContent className="max-w-[540px] border-border bg-surface-2">
+      <DialogContent uiId="V-075" className="max-w-[540px] border-border bg-surface-2">
         <DialogHeader>
           <DialogTitle>{t("app-projects-backup-dialogs.restore-backup-dialog.dialog-title.ee27fd229e81")}</DialogTitle>
           <DialogDescription>

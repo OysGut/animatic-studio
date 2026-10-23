@@ -858,7 +858,7 @@ function Workspace({
                 <ChevronDown className="size-3" aria-hidden />
               </ToolbarButton>
             </PopoverTrigger>
-            <PopoverContent align="end" className="flex w-60 flex-col gap-2 p-3">
+            <PopoverContent uiId="V-123" align="end" className="flex w-60 flex-col gap-2 p-3">
               <label
                 className="flex items-center gap-1.5 text-xs text-text-secondary"
                 title={tk("app-script-script-workspace.workspace.title.1319d610390c")}
@@ -1071,7 +1071,7 @@ function Workspace({
               }}
               onMouseUp={(e) => e.stopPropagation()}
             >
-              <UiId id="NEW" />
+              <UiId id="V-122" />
               {pendingNote.open ? (
                 <PendingNoteForm
                   quote={pendingNote.quote}

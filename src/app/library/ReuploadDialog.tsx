@@ -123,7 +123,7 @@ export function ReuploadDialog({
 
   return (
     <Dialog open onOpenChange={(o) => !o && !busy && onClose()}>
-      <ResizableDialogContent sizeKey="reupload" className="max-w-2xl">
+      <ResizableDialogContent uiId="V-071" sizeKey="reupload" className="max-w-2xl">
         <DialogHeader>
           <DialogTitle>
             {items.length === 1

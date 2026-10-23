@@ -81,7 +81,7 @@ export function LayerImageDialog({
 }) {
   return (
     <Dialog open={open && layer !== null} onOpenChange={onOpenChange}>
-      <ResizableDialogContent sizeKey="layer-image" onCloseAutoFocus={onCloseAutoFocus} className="max-h-[86vh] max-w-[min(1120px,calc(100vw-64px))] overflow-y-auto border-border bg-surface-2">
+      <ResizableDialogContent uiId="V-091" sizeKey="layer-image" onCloseAutoFocus={onCloseAutoFocus} className="max-h-[86vh] max-w-[min(1120px,calc(100vw-64px))] overflow-y-auto border-border bg-surface-2">
         {layer ? (
           <Body
             state={state}

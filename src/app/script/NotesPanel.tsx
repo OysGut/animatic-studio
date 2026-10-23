@@ -337,7 +337,7 @@ function NoteCard({
       ) : null}
       {trial && productionId && block ? (
         <AlertDialog open={applying} onOpenChange={setApplying}>
-          <AlertDialogContent className="border-border bg-surface-2">
+          <AlertDialogContent uiId="V-120" className="border-border bg-surface-2">
             <AlertDialogHeader>
               <AlertDialogTitle>
                 {t("app-script-notes-panel.note-card.alert-dialog-title.4e056f906029")}
@@ -382,7 +382,7 @@ function NoteCard({
         </AlertDialog>
       ) : null}
       <AlertDialog open={confirm} onOpenChange={setConfirm}>
-        <AlertDialogContent className="border-border bg-surface-2">
+        <AlertDialogContent uiId="V-119" className="border-border bg-surface-2">
           <AlertDialogHeader>
             <AlertDialogTitle>{t("app-script-notes-panel.note-card.alert-dialog-title.ebbb81ea0efe")}</AlertDialogTitle>
             <AlertDialogDescription>

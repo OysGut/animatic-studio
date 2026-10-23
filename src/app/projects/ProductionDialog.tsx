@@ -168,7 +168,7 @@ export function ProductionDialog({
         onOpenChange(o);
       }}
     >
-      <ResizableDialogContent sizeKey="production" className="max-h-[88vh] max-w-[620px] overflow-y-auto border-border bg-surface-2">
+      <ResizableDialogContent uiId="V-077" sizeKey="production" className="max-h-[88vh] max-w-[620px] overflow-y-auto border-border bg-surface-2">
         <DialogHeader>
           <DialogTitle>
             {target

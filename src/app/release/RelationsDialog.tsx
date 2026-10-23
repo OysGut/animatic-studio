@@ -161,7 +161,7 @@ export function RelationsDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <ResizableDialogContent sizeKey="relations" className="max-h-[85vh] max-w-3xl overflow-y-auto">
+      <ResizableDialogContent uiId="V-086" sizeKey="relations" className="max-h-[85vh] max-w-3xl overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{t("app-release-relations-dialog.relations-dialog.dialog-title.7981c29a676d")}</DialogTitle>
           <DialogDescription>

@@ -23,7 +23,7 @@ import { t, loadUiCatalog } from "@/core/i18n/keyed";
 function NotFoundComponent() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
-      <UiId id="NEW" page />
+      <UiId id="V-142" page />
       <div className="max-w-md text-center">
         <h1 className="text-7xl font-bold text-foreground">404</h1>
         <h2 className="mt-4 text-xl font-semibold text-foreground">
@@ -67,6 +67,7 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
 
   return (
     <div data-testid="root-error" lang={lang} className="flex min-h-screen items-center justify-center bg-background px-4">
+      <UiId id="V-141" page />
       <div className="max-w-md text-center">
         <h1 className="text-xl font-semibold tracking-tight text-foreground">
           {t("routes-root.error-component.h1.e30fba673653", {}, lang)}

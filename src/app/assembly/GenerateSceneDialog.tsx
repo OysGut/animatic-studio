@@ -42,7 +42,7 @@ export function GenerateSceneDialog({
 }) {
   return (
     <Dialog open={open && clip !== null} onOpenChange={onOpenChange}>
-      <ResizableDialogContent sizeKey="generate-scene" className="max-h-[90vh] max-w-[860px] overflow-y-auto border-border bg-surface-2">
+      <ResizableDialogContent uiId="V-044" sizeKey="generate-scene" className="max-h-[90vh] max-w-[860px] overflow-y-auto border-border bg-surface-2">
         {clip ? (
           <Body
             key={clip.occurrenceId}

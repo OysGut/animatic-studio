@@ -152,7 +152,7 @@ export function CharacterPanel({ state, use, editable, run, runGroup, onJump }: 
   return <>
     <IconButton data-testid="ca7-character-open" label={t("app-scene-editor-animation-character-panel.character-panel.label.eed8daa61f59")} onClick={() => setOpen(true)}><UserRound /></IconButton>
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="max-w-lg" data-testid="ca7-character-dialog">
+      <DialogContent uiId="V-108" className="max-w-lg" data-testid="ca7-character-dialog">
         <DialogHeader>
           <DialogTitle>{asset?.name ?? t("app-scene-editor-animation-character-panel.character-panel.dialog-title.d619c69eb483")}</DialogTitle>
           <DialogDescription>
@@ -235,7 +235,7 @@ export function CharacterPanel({ state, use, editable, run, runGroup, onJump }: 
     </Dialog>
 
     <Dialog open={!!adoptVersion} onOpenChange={(o) => { if (!o) setAdoptVersion(null); }}>
-      <DialogContent data-testid="ca7-adopt-dialog">
+      <DialogContent uiId="V-107" data-testid="ca7-adopt-dialog">
         <DialogHeader>
           <DialogTitle>{t("app-scene-editor-animation-character-panel.character-panel.dialog-title.f020d273f6b1")}</DialogTitle>
           <DialogDescription>
@@ -255,7 +255,7 @@ export function CharacterPanel({ state, use, editable, run, runGroup, onJump }: 
     </Dialog>
 
     <Dialog open={!!confirmUpdate} onOpenChange={(o) => { if (!o) setConfirmUpdate(null); }}>
-      <DialogContent data-testid="ca7-update-confirm">
+      <DialogContent uiId="V-106" data-testid="ca7-update-confirm">
         <DialogHeader>
           <DialogTitle>{t("app-scene-editor-animation-character-panel.character-panel.dialog-title.9fa1106cc41a")}</DialogTitle>
           <DialogDescription>{t("app-scene-editor-animation-character-panel.character-panel.dialog-description.0b9693e44150")}</DialogDescription>
@@ -268,7 +268,7 @@ export function CharacterPanel({ state, use, editable, run, runGroup, onJump }: 
     </Dialog>
 
     <Dialog open={historyOpen} onOpenChange={setHistoryOpen}>
-      <DialogContent data-testid="ca7-history-dialog">
+      <DialogContent uiId="V-105" data-testid="ca7-history-dialog">
         <DialogHeader>
           <DialogTitle>{t("app-scene-editor-animation-character-panel.character-panel.dialog-title.8b27d48fe667")}</DialogTitle>
           <DialogDescription>{t("app-scene-editor-animation-character-panel.character-panel.dialog-description.24a44448d966")}</DialogDescription>

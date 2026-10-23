@@ -296,7 +296,7 @@ export function PreviewWindow({
       style={{ left: x, top: y, width: w, visibility: area ? "visible" : "hidden" }}
       className="fixed z-40 flex flex-col rounded-md border border-border bg-surface-1 shadow-[var(--shadow-float)]"
     >
-      <UiId id="NEW" />
+      <UiId id="V-093" />
       <div
         className="flex shrink-0 cursor-move touch-none select-none items-center gap-1.5 border-b border-border px-2"
         style={{ height: HEADER }}

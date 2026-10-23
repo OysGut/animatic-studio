@@ -126,7 +126,7 @@ export function AssetWorklistDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <ResizableDialogContent sizeKey="asset-worklist" className="max-w-5xl">
+      <ResizableDialogContent uiId="V-064" sizeKey="asset-worklist" className="max-w-5xl">
         <DialogHeader>
           <DialogTitle>
             {t("app-library-asset-worklist-dialog.asset-worklist-dialog.dialog-title.74df3dde3e9c")}

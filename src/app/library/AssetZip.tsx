@@ -283,7 +283,7 @@ export function AssetZipDialog({
   const s = state ?? loaded.data;
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-[520px] border-border bg-surface-2">
+      <DialogContent uiId="V-065" className="max-w-[520px] border-border bg-surface-2">
         <DialogHeader>
           <DialogTitle>
             {tk("app-library-asset-zip.asset-zip-dialog.dialog-title.37082a1f4d35", { projectName: String(projectName) })}

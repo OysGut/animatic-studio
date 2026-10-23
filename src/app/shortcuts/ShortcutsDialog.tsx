@@ -32,7 +32,7 @@ export function ShortcutsDialog({
   ];
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <ResizableDialogContent sizeKey="shortcuts" className="flex max-h-[min(86vh,760px)] max-w-[min(920px,calc(100vw-48px))] flex-col gap-3 border-border bg-surface-2">
+      <ResizableDialogContent uiId="V-133" sizeKey="shortcuts" className="flex max-h-[min(86vh,760px)] max-w-[min(920px,calc(100vw-48px))] flex-col gap-3 border-border bg-surface-2">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Keyboard className="size-5" aria-hidden />

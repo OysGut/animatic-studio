@@ -174,7 +174,7 @@ export function GlobalLibraryDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <ResizableDialogContent sizeKey="global-library" className="max-w-5xl" data-testid="global-library-dialog">
+      <ResizableDialogContent uiId="V-062" sizeKey="global-library" className="max-w-5xl" data-testid="global-library-dialog">
         <DialogHeader>
           <DialogTitle>{t("app-global-global-library-dialog.global-library-dialog.dialog-title.5633ef0a1f18")}</DialogTitle>
           <DialogDescription>

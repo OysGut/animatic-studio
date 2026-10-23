@@ -298,7 +298,7 @@ export function AiDialogueDialog({
 
   return (
     <Dialog open={open} onOpenChange={(o) => !busy && onOpenChange(o)}>
-      <ResizableDialogContent sizeKey="ai-dialogue" className="max-w-3xl">
+      <ResizableDialogContent uiId="V-034" sizeKey="ai-dialogue" className="max-w-3xl">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-1.5">
             <Mic className="size-4" aria-hidden />{" "}

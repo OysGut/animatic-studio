@@ -256,7 +256,7 @@ export function SuggestionsDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <ResizableDialogContent sizeKey="library-suggestions" data-testid="library-suggestions" className="max-h-[90vh] max-w-[720px] overflow-y-auto border-border bg-surface-2">
+      <ResizableDialogContent uiId="V-072" sizeKey="library-suggestions" data-testid="library-suggestions" className="max-h-[90vh] max-w-[720px] overflow-y-auto border-border bg-surface-2">
         <DialogHeader>
           <DialogTitle>{t("app-library-suggestions-dialog.suggestions-dialog.dialog-title.21b282998039")}</DialogTitle>
           <DialogDescription>

@@ -46,7 +46,7 @@ export function NewGroupDialog({ state, projectId, initialSceneId, onClose, onCr
     } finally { setBusy(false); }
   };
   return <Dialog open onOpenChange={(open) => { if (!open && !busy) onClose(); }}>
-    <DialogContent className="max-w-lg max-h-[85dvh] overflow-y-auto" data-testid="storylab-group-dialog">
+    <DialogContent uiId="V-135" className="max-w-lg max-h-[85dvh] overflow-y-auto" data-testid="storylab-group-dialog">
       <DialogHeader><DialogTitle>{t("app-storylab-new-group-dialog.new-group-dialog.dialog-title.eb2b97496274")}</DialogTitle></DialogHeader>
       <PanelHeader title={t("app-storylab-new-group-dialog.new-group-dialog.title.00fea5de6318")} count={`${participants.length}/6`} />
       <div className="space-y-1">

@@ -116,6 +116,6 @@ export function ScriptExplorerPanel({ projectId, onClose }: { projectId: string;
     {WIN_EDGES.map((edge) => edge === "se"
       ? <div key={edge} role="separator" tabIndex={0} data-testid="script-explorer-grip-se" aria-label={t("app-script-explorer-script-explorer-panel.script-explorer-panel.aria-label.8b1abcb1e1eb")} className={`absolute z-10 ${GRIP_CLASS.se} border-b-[3px] border-r-[3px] border-border-strong hover:border-accent-brand focus-visible:border-accent-brand focus-visible:outline-none`} onPointerDown={begin(edge)} onPointerMove={move} onPointerUp={end} onPointerCancel={end} onKeyDown={(e) => { const next = keyResizeRect(rect, e.key, vp); if (next) { e.preventDefault(); setPref({ rect: next, layout: "free" }); } }} />
       : <div key={edge} aria-hidden data-testid={`script-explorer-grip-${edge}`} data-edge={edge} className={`absolute z-10 ${GRIP_CLASS[edge]} bg-accent-brand/50 opacity-0 transition-opacity hover:opacity-100`} onPointerDown={begin(edge)} onPointerMove={move} onPointerUp={end} onPointerCancel={end} />)}
-    <UiId id="NEW" />
+    <UiId id="V-129" />
   </div>;
 }

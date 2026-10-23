@@ -54,7 +54,7 @@ export function AudioClipEditor({
 }) {
   return (
     <Dialog open={open && clip !== null} onOpenChange={onOpenChange}>
-      <ResizableDialogContent sizeKey="audio-clip-editor" className="max-w-[min(1100px,calc(100vw-32px))] border-border bg-surface-2">
+      <ResizableDialogContent uiId="V-053" sizeKey="audio-clip-editor" className="max-w-[min(1100px,calc(100vw-32px))] border-border bg-surface-2">
         {clip ? (
           <Editor
             key={clip.id}

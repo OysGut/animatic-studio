@@ -71,7 +71,7 @@ export function SubtitleDialog({
         onOpenChange(o);
       }}
     >
-      <DialogContent className="max-w-[480px] border-border bg-surface-2">
+      <DialogContent uiId="V-048" className="max-w-[480px] border-border bg-surface-2">
         <DialogHeader>
           <DialogTitle>{t("app-assembly-subtitle-dialog.subtitle-dialog.dialog-title.2111515f7053")}</DialogTitle>
           <DialogDescription>

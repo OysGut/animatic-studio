@@ -39,7 +39,7 @@ export function NoteFlagControl({ state, kind, targetId, run, editable, names }:
         <StickyNote className="size-3.5" aria-hidden />
       </button>
     </PopoverTrigger>
-    <PopoverContent data-testid="note-flag-popover" className="w-80" onClick={e => e.stopPropagation()}>
+    <PopoverContent uiId="V-060" data-testid="note-flag-popover" className="w-80" onClick={e => e.stopPropagation()}>
       <p className="mb-2 text-xs font-medium text-text-primary">{t("app-dialogue-note-flag-control.note-flag-control.p.6f557e80c9fd")}</p>
       {flags.length === 0 ? <p className="mb-2 text-xs text-text-tertiary">{t("app-dialogue-note-flag-control.note-flag-control.p.be4f6f464ac9")}</p> : null}
       {flags.map(f => <div key={f.id} data-testid="note-flag-item" data-enabled={f.enabled} className="mb-2 flex flex-col gap-1 border-b border-border pb-2">

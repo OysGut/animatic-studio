@@ -116,7 +116,7 @@ export function AlphaExportDialog({ state, composition, initialLayerIds, open, o
     }, snapshot);
   }
   return <Dialog open={open} onOpenChange={onOpenChange}>
-    <DialogContent className="max-w-xl border-border bg-surface-2" data-testid="alpha-export-dialog">
+    <DialogContent uiId="V-035" className="max-w-xl border-border bg-surface-2" data-testid="alpha-export-dialog">
       <DialogHeader>
         <DialogTitle>{t("app-assembly-alpha-export-dialog.alpha-export-dialog.dialog-title.72cd53baff93")}</DialogTitle>
         <DialogDescription>{scene}</DialogDescription>

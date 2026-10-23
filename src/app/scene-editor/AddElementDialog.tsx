@@ -196,7 +196,7 @@ export function AddElementDialog({
 
   return (
     <Dialog open={open} onOpenChange={(o) => (o ? onOpenChange(o) : close())}>
-      <DialogContent
+      <DialogContent uiId="V-088"
         className="max-h-[86vh] max-w-[760px] overflow-y-auto border-border bg-surface-2"
         data-testid="add-element"
       >

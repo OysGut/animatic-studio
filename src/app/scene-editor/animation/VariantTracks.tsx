@@ -130,7 +130,7 @@ export function VariantTracks({ state, compositionId, occurrenceId, duration, vi
     {mouthVersion && current && state.assetVersions[mouthVersion] ? <MouthShapeEditor state={state} layerId={current.layer.id} occurrenceId={occurrenceId} versionId={mouthVersion} sourceUrl={urls[state.assetVersions[mouthVersion].mediaPath] ?? ""} run={run} onClose={() => setMouthVersion(null)} /> : null}
     {faceVersion && current && state.assetVersions[faceVersion] ? <FaceMarkDialog state={state} layerId={current.layer.id} occurrenceId={occurrenceId} versionId={faceVersion} url={urls[state.assetVersions[faceVersion].mediaPath] ?? ""} run={run} onClose={() => setFaceVersion(null)} /> : null}
     <Dialog open={!!picking} onOpenChange={open => { if (!open) setPicking(null); }}>
-      {picking ? <DialogContent data-testid="anim-variant-picker"><DialogHeader><DialogTitle>{tk("app-scene-editor-animation-variant-tracks.variant-tracks.dialog-title.c0a1248d9562")}</DialogTitle><DialogDescription>{tk("app-scene-editor-animation-variant-tracks.variant-tracks.dialog-description.2b027d029fae")}</DialogDescription></DialogHeader>
+      {picking ? <DialogContent uiId="V-114" data-testid="anim-variant-picker"><DialogHeader><DialogTitle>{tk("app-scene-editor-animation-variant-tracks.variant-tracks.dialog-title.c0a1248d9562")}</DialogTitle><DialogDescription>{tk("app-scene-editor-animation-variant-tracks.variant-tracks.dialog-description.2b027d029fae")}</DialogDescription></DialogHeader>
         <VariantStrip state={state} assetId={state.layers[picking.layerId]?.assetId ?? null} urls={urls} editable={editable} replacing={picking.index >= 0} onPick={pick} />
       </DialogContent> : null}
     </Dialog>

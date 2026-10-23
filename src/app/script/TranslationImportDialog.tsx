@@ -238,7 +238,7 @@ export function TranslationImportDialog({
         onOpenChange(o);
       }}
     >
-      <ResizableDialogContent sizeKey="translation-import" className="max-h-[90vh] max-w-[820px] overflow-y-auto border-border bg-surface-2">
+      <ResizableDialogContent uiId="V-124" sizeKey="translation-import" className="max-h-[90vh] max-w-[820px] overflow-y-auto border-border bg-surface-2">
         <DialogHeader>
           <DialogTitle>
             {t("app-script-translation-import-dialog.import-script", { language: languageWord(language) })}

@@ -47,7 +47,7 @@ export function OrphanCleanup({ projectId }: { projectId: string }) {
     </Button>
     {message ? <p role="status" data-testid="orphan-cleanup-status" className="text-xs text-text-secondary">{message}</p> : null}
     <AlertDialog open={found !== null} onOpenChange={(open) => { if (!open && !busy) setFound(null); }}>
-      <AlertDialogContent data-testid="orphan-cleanup-dialog">
+      <AlertDialogContent uiId="V-031" data-testid="orphan-cleanup-dialog">
         <AlertDialogHeader>
           <AlertDialogTitle>{t("r2-orphan-cleanup.title")}</AlertDialogTitle>
           <AlertDialogDescription data-testid="orphan-cleanup-summary">
