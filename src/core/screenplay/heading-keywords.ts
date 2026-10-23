@@ -14,7 +14,7 @@ export interface HeadingKeywordSet {
 
 /** Ord skrives slik de står i manus (store bokstaver der språket har dem), med punktum der det hører til. */
 export const HEADING_KEYWORDS: readonly HeadingKeywordSet[] = [
-  { language: "en", words: ["INT./EXT.", "EXT./INT.", "INT/EXT", "I/E.", "INT.", "EXT.", "EST."] },
+  { language: "en", words: ["INT./EXT.", "EXT./INT.", "INT/EXT", "I/E.", "I/E", "INT.", "EXT.", "EST."] },
   { language: "nb", words: ["INNE/UTE.", "INNE.", "UTE.", "INT.", "EXT."] },
   { language: "nn", words: ["INNE/UTE.", "INNE.", "UTE."] },
   { language: "sv", words: ["INT./EXT.", "INT.", "EXT.", "INTERIÖR.", "EXTERIÖR."] },

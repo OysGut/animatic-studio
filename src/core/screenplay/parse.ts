@@ -11,12 +11,14 @@ import type { BlockKind, SceneHeading } from "../model";
 
 import type { ParsedElement, ParsedScene, ParsedScreenplay, RawLine, SourceRef } from "./types";
 import { t } from "@/core/i18n/keyed";
+import { headingPrefixPattern } from "./heading-keywords";
 
 /**
  * Innledningen på en sceneoverskrift. G-1b: ikke bare engelsk og norsk – også tysk (INNEN/AUSSEN), russisk
  * (ИНТ./НАТ.) og japansk (○). Andre språk med INT./EXT. (fransk, spansk, portugisisk, italiensk) dekkes allerede.
  */
-const HEADING_PREFIX = String.raw`INT\.?\s*\/\s*EXT\.?|EXT\.?\s*\/\s*INT\.?|I\/E\.?|INT\.|EXT\.|INNE\.|UTE\.|INNEN\.|AUSSEN\.|AUẞEN\.|ИНТ\.|НАТ\.|○`;
+// G-3: ordene kommer fra språksettene i heading-keywords.ts (alle språk; kildespråket først der det er kjent).
+const HEADING_PREFIX = headingPrefixPattern();
 const HEADING_RE = new RegExp(String.raw`^(?:(\d+[A-Z]{0,2})\s+)?((?:${HEADING_PREFIX})\s*.+?)(?:\s+(\d+[A-Z]{0,2}))?$`);
 const PAGE_NUMBER_RE = /^\d+[A-Z]?\.?$/;
 const MORE_RE = /^\((MORE|MER|FORTS\.?)\)$/i;

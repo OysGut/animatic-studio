@@ -41,6 +41,7 @@ import type {
 import type { BlockKind, SceneHeading } from "../model";
 
 import { t as tk } from "@/core/i18n/keyed";
+import { headingPrefixPattern } from "./heading-keywords";
 
 /** Linjehøyde i den virtuelle kildereferansen (samme målestokk som RawLine.y: 12 pt per linje). */
 const LINE = 12;
@@ -50,6 +51,15 @@ const LINE = 12;
 /** Sceneoverskrift uten tvang: INT, EXT, EST, INT./EXT, INT/EXT, I/E fulgt av punktum eller mellomrom. */
 const AUTO_HEADING_RE = /^(?:INT\.?\/EXT|INT\/EXT|INT|EXT|EST|I\/E)[.\s]/i;
 /** Tvungen sceneoverskrift: ett punktum fulgt av bokstav eller tall (ikke «...»). */
+/** G-3: språksettenes ord med punktum (store bokstaver), i tillegg til de internasjonale over. */
+let langHeadingRe = new RegExp(String.raw`^(?:${headingPrefixPattern()})(?=\s|$)`, "u");
+/** Kildespråket og prosjektets egne ord prioriteres; settes av parseFountain for én tolkning. */
+export function setFountainHeadingLanguage(sourceLanguage?: string, projectWords?: readonly string[]): void {
+  langHeadingRe = new RegExp(
+    String.raw`^(?:${headingPrefixPattern(sourceLanguage, projectWords)})(?=\s|$)`,
+    "u",
+  );
+}
 const FORCED_HEADING_RE = /^\.(?=[\p{L}\p{N}])/u;
 /** Scenenummer på slutten av overskriften: #42A#, #I-1-A#, #1.2# */
 const SCENE_NUMBER_RE = /\s*#([\p{L}\p{N}.-]+)#\s*$/u;
@@ -103,7 +113,7 @@ export function classifyFountainLine(line: string, nextBlank: boolean): LineClas
     if (t.startsWith("@")) return "character";
     return "special";
   }
-  if (FORCED_HEADING_RE.test(t) || AUTO_HEADING_RE.test(t)) return "heading";
+  if (FORCED_HEADING_RE.test(t) || AUTO_HEADING_RE.test(t) || langHeadingRe.test(t)) return "heading";
   if (t.startsWith(">")) return t.endsWith("<") ? "centered" : "transition";
   if (nextBlank && isUpperName(t) && t.endsWith("TO:")) return "transition";
   if (!nextBlank && isUpperName(t.replace(/\^\s*$/, ""))) return "character";
