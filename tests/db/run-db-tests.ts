@@ -8087,10 +8087,10 @@ try {
       select gen_random_uuid(), ${pid}, ${ALICE}, 'TestCmd', '{}'::jsonb, array[]::uuid[]
       from generate_series(1, 110)`);
     // Dater radene med seq <= 110 tilbake (beskyttelsen slås midlertidig av – kun i test)
-    await sql`alter table public.change_log disable trigger protect_change_log`;
+    await sql`alter table public.change_log disable trigger change_log_immutable`;
     await sql`update public.change_log set created_at = pg_catalog.now() - interval '100 days'
               where project_id = ${pid} and project_seq <= 110`;
-    await sql`alter table public.change_log enable trigger protect_change_log`;
+    await sql`alter table public.change_log enable trigger change_log_immutable`;
     await sql`update public.service_settings set change_log_retention_days = 90, change_log_max_rows = 10 where id`;
     // Vanlig bruker får ikke rydde
     await expectError(as("authenticated", ALICE, (tx) => tx`select public.prune_change_logs()`), /42501|administrator/i);
@@ -8107,41 +8107,43 @@ try {
   });
   // ---------- G-5 (0097): kvoter ----------
   await test("0097 G-5.2: kvoter for prosjekter, endringslogg og lagring håndheves; vanlige brukere ser ikke tabellen", async () => {
+    const G5USER = "66666666-6666-7666-8666-666666666666";
+    await sql`insert into auth.users (id, email) values (${G5USER}, 'g5@example.no') on conflict do nothing`;
     await sql`insert into public.app_admins (user_id) values (${CAROL}) on conflict do nothing`;
     // Klienter har ingen tilgang til kvotetabellen
     await expectError(as("authenticated", ALICE, (tx) => tx`select count(*) from public.usage_quotas`), /permission denied|42501/i);
     // Ikke-admin kan ikke sette kvoter
     await expectError(
-      as("authenticated", ALICE, (tx) => tx`select public.admin_set_usage_quota(null, ${ALICE}, null, 1, null, null)`),
+      as("authenticated", ALICE, (tx) => tx`select public.admin_set_usage_quota(null, ${G5USER}, null, 1, null, null)`),
       /42501|administrator/i,
     );
-    await as("authenticated", CAROL, (tx) => tx`select public.admin_set_usage_quota(null, ${ALICE}, null, 1, 100, null)`);
+    await as("authenticated", CAROL, (tx) => tx`select public.admin_set_usage_quota(null, ${G5USER}, null, 1, 100, null)`);
     // Prosjektkvote: første går, andre stoppes
-    const pid = String((await as("authenticated", ALICE, (tx) => tx`select public.create_project('G5 kvote', 25, 1, 'nb') id`))[0]!["id"]);
-    await expectError(as("authenticated", ALICE, (tx) => tx`select public.create_project('G5 kvote 2', 25, 1, 'nb')`), /PTG11/);
+    const pid = String((await as("authenticated", G5USER, (tx) => tx`select public.create_project('G5 kvote', 25, 1, 'nb') id`))[0]!["id"]);
+    await expectError(as("authenticated", G5USER, (tx) => tx`select public.create_project('G5 kvote 2', 25, 1, 'nb')`), /PTG11/);
     // Endringsloggkvote: 100 rader er taket
     await expectError(
       as("service_role", null, (tx) => tx`
         insert into public.change_log (id, project_id, actor, command_type, command, affected_ids)
-        select gen_random_uuid(), ${pid}, ${ALICE}, 'TestCmd', '{}'::jsonb, array[]::uuid[]
+        select gen_random_uuid(), ${pid}, ${G5USER}, 'TestCmd', '{}'::jsonb, array[]::uuid[]
         from generate_series(1, 200)`),
       /PTG12/,
     );
     const n = Number((await sql`select count(*) n from public.change_log where project_id = ${pid}`)[0]!["n"]);
     assert(n === 1, `radantallet skulle være 1 (transaksjonen rulles tilbake), var ${n}`);
     // Lagringskvote
-    await as("authenticated", CAROL, (tx) => tx`select public.admin_set_usage_quota(null, ${ALICE}, 1000::bigint, null, null, null)`);
+    await as("authenticated", CAROL, (tx) => tx`select public.admin_set_usage_quota(null, ${G5USER}, 1000::bigint, null, null, null)`);
     await expectError(as("service_role", null, (tx) => tx`select private.check_quota_upload(${pid}, 2000)`), /PTG13/);
     await as("service_role", null, (tx) => tx`select private.check_quota_upload(${pid}, 500)`);
     // Admin ser kvoten med brukstall
     const rows = await as("authenticated", CAROL, (tx) => tx`select * from public.admin_usage_quotas()`);
-    const mine = rows.find((r) => String(r["user_id"]) === ALICE);
+    const mine = rows.find((r) => String(r["user_id"]) === G5USER);
     assert(mine && Number(mine["max_projects"]) === 1 && Number(mine["used_projects"]) === 1, `admin_usage_quotas: ${JSON.stringify(mine)}`);
     // Triggerne finnes
     const trg = await sql`select tgname from pg_trigger where tgname in ('change_log_quota', 'asset_versions_quota', 'mobile_imports_quota')`;
     assert(trg.length === 3, `mangler kvotetriggere: ${trg.length} av 3`);
-    await sql`delete from public.usage_quotas where user_id = ${ALICE}`;
-    await as("service_role", null, (tx) => tx`select public.delete_project(${pid}, ${ALICE})`);
+    await sql`delete from public.usage_quotas where user_id = ${G5USER}`;
+    await as("service_role", null, (tx) => tx`select public.delete_project(${pid}, ${G5USER})`);
     await sql`delete from public.app_admins where user_id = ${CAROL}`;
   });
   // ---------- G-5 (0097): delingslenker uten klartekst ----------
