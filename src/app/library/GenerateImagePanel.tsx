@@ -1043,6 +1043,16 @@ export function GenerateImagePanel({
                       ]
                 }
               />
+              {context && attached.length ? (
+                <CostLines
+                  lines={[
+                    {
+                      label: t("attach.cost.label"),
+                      value: t("attach.cost.value", { count: String(attached.length), max: String(maxImages) }),
+                    },
+                  ]}
+                />
+              ) : null}
               <div className="flex gap-2">
                 <Button size="sm" onClick={() => void run()} disabled={!canRun}>
                   <AiGlyph /> {t("app-library-generate-image-panel.generate-image-panel.button.0758d8cca839")}
