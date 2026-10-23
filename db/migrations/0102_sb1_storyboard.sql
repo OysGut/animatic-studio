@@ -43,13 +43,13 @@ alter table public.composition_layers add constraint composition_layers_kind_che
   check (kind in ('background','midground','foreground','character','object','effect','other','group','text','page','note','arrow','camera_mark'));
 -- note: visuell lapp / reginotat / kamerainstruksjon (fri farge, valgfri forankring, «behandlet»)
 alter table public.composition_layers add column if not exists note jsonb
-  check (note is null or (jsonb_typeof(note) = 'object' and octet_length(note::text) <= 16384));
+  check (note is null or (jsonb_typeof(note) = 'object' and pg_column_size(note) <= 16384));
 -- arrow: punkter eller bane med form, tykkelse, farge og kategori
 alter table public.composition_layers add column if not exists arrow jsonb
-  check (arrow is null or (jsonb_typeof(arrow) = 'object' and octet_length(arrow::text) <= 65536));
+  check (arrow is null or (jsonb_typeof(arrow) = 'object' and pg_column_size(arrow) <= 65536));
 -- camera_mark: ramme, zoom, pan og tilt som instruksjon
 alter table public.composition_layers add column if not exists camera_mark jsonb
-  check (camera_mark is null or (jsonb_typeof(camera_mark) = 'object' and octet_length(camera_mark::text) <= 4096));
+  check (camera_mark is null or (jsonb_typeof(camera_mark) = 'object' and pg_column_size(camera_mark) <= 4096));
 alter table public.composition_layers drop constraint if exists composition_layers_shows_something;
 alter table public.composition_layers add constraint composition_layers_shows_something
   check (kind in ('group','page','note','arrow','camera_mark') or (kind = 'text' and text_spec is not null) or asset_id is not null or fill is not null);
@@ -121,7 +121,7 @@ create table public.storyboard_panel_snapshots (
   panel_id uuid not null references public.compositions (id) on delete restrict,
   panel_revision integer not null check (panel_revision > 0),
   snapshot jsonb not null
-    check (jsonb_typeof(snapshot) = 'object' and octet_length(snapshot::text) <= 8388608),
+    check (jsonb_typeof(snapshot) = 'object' and pg_column_size(snapshot) <= 8388608),
   removed boolean not null default false,
   revision integer not null default 1 check (revision > 0),
   created_at timestamptz not null default now(),
