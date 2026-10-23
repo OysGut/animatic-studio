@@ -3,8 +3,8 @@
  * Skrivehjelp i manuset (T2): promptbyggere, kunnskapsgrenser, forslag, «Bruk», konflikter, forsøksvise
  * redigeringer, oversettelsesutkast og formatsjekk. Ingen ekte AI-kall.
  */
-import { defaultTranslateTarget, sourceLanguageOf, describe, expect, it } from "vitest";
-import {
+import { describe, expect, it } from "vitest";
+import { defaultTranslateTarget, sourceLanguageOf,
   assistRequestError,
   buildAssistPrompt,
   formatCheck,
