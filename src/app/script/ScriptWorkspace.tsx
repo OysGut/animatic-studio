@@ -505,13 +505,23 @@ function Workspace({
   // Stabile funksjoner til manussidene, så sider som ikke er endret, ikke tegnes på nytt (memo)
   const stateRef = useRef(state);
   stateRef.current = state;
+  // Dobbeltklikk/Enter på en scene: forekomsten i den aktive produksjonen åpnes i sceneeditoren (Øystein 23.10)
+  const navigateTo = useNavigate();
+  const openScene = useCallback(
+    (occurrenceId: string) => {
+      window.getSelection()?.removeAllRanges();
+      void navigateTo({ to: "/prosjekt/$projectId/scene", params: { projectId }, search: { scene: occurrenceId } });
+    },
+    [navigateTo, projectId],
+  );
   const onPageSelect = useCallback((s: Selection) => select(s), [select]);
   const onPageActivate = useCallback(
-    (s: Selection) => {
+    (s: Selection, heading?: boolean) => {
+      if (heading) return openScene(s.occurrenceId);
       select(s);
       setTimeout(() => textRef.current?.focus(), 30);
     },
-    [select],
+    [select, openScene],
   );
   const onPageNoteClick = useCallback(
     (ids: readonly string[], s: Selection) => {
@@ -958,6 +968,7 @@ function Workspace({
               label={tk("app-script-script-workspace.workspace.label.ba59ddc1d352")}
             />
             <SceneNavigator
+              onOpenScene={openScene}
               state={state}
               productionId={productionId}
               startPages={pagination.sceneStartPage}

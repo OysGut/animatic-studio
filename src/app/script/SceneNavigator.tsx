@@ -32,6 +32,8 @@ interface Props {
   readonly selectedOcc: string | null;
   readonly editable: boolean;
   readonly onSelect: (occurrenceId: string) => void;
+  /** Dobbeltklikk eller Enter: åpne scenen i sceneeditoren (Øystein 23.10). */
+  readonly onOpenScene?: (occurrenceId: string) => void;
   readonly onMove: (occurrenceId: string, orderKey: string, label: string) => void;
   readonly onToggleActive: (occurrenceId: string, active: boolean) => void;
   readonly filter: SceneFilter;
@@ -65,6 +67,7 @@ export function SceneNavigator({
   selectedOcc,
   editable,
   onSelect,
+  onOpenScene,
   onMove,
   onToggleActive,
   filter,
@@ -142,6 +145,12 @@ export function SceneNavigator({
   }
 
   function onKey(e: KeyboardEvent, o: SceneOccurrence, i: number) {
+    if (e.key === "Enter" && onOpenScene && !e.altKey && !e.ctrlKey && !e.metaKey && !e.shiftKey) {
+      e.preventDefault();
+      onSelect(o.id);
+      onOpenScene(o.id);
+      return;
+    }
     if (e.altKey && canReorder && (e.key === "ArrowUp" || e.key === "ArrowDown")) {
       e.preventDefault();
       moveTo(o.id, e.key === "ArrowUp" ? i - 1 : i + 2);
@@ -428,6 +437,8 @@ export function SceneNavigator({
                   tabIndex={selected || (!selectedVisible && i === 0) ? 0 : -1}
                   aria-current={selected ? "true" : undefined}
                   onClick={() => onSelect(o.id)}
+                  onDoubleClick={onOpenScene ? () => onOpenScene(o.id) : undefined}
+                  title={onOpenScene ? t("script.openScene.hint") : undefined}
                   onKeyDown={(e) => onKey(e, o, i)}
                   className="grid min-w-0 cursor-pointer grid-cols-[34px_1fr] items-center gap-1.5 text-left outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring"
                 >
