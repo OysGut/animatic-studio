@@ -4,12 +4,13 @@
  * med punkter som kan dras (som midtpunktet i nivåer i Photoshop).
  */
 import { Pencil, Spline, Trash2, Minus } from "lucide-react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   layerFieldsOf,
   smoothPathPoints,
   straightPathPoints,
   tempoAt,
+  pathProgress,
   L,
   type Command,
   type CompositionLayer,
@@ -19,6 +20,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Hint, NumberField, Section } from "./inspector-fields";
 import { t as tk } from "@/core/i18n/keyed";
+import { motionDraftStore, useShownPath } from "./motion-draft";
 
 type Run = (command: Command, label: string) => string | null;
 
@@ -43,8 +45,14 @@ export function LayerMotion({
   const fps = state.project.fps.num / state.project.fps.den;
   const off = !editable;
   const path = layer.path;
+  // Utkastet (glidebrytere, tempokurve, spacing-drag) vises fortløpende; lagret bane brukes ved slipp
+  const shown = useShownPath(layer.id, path) ?? path;
+  const draft = (next: MotionPath | null) =>
+    next ? motionDraftStore.set({ layerId: layer.id, path: next }) : motionDraftStore.clear(layer.id);
+  useEffect(() => () => motionDraftStore.clear(layer.id), [layer.id]);
 
   function setPath(label: string, next: MotionPath | null) {
+    motionDraftStore.clear(layer.id);
     setError(
       run(
         {
@@ -164,21 +172,27 @@ export function LayerMotion({
           ) : null}
           <EaseSlider
             label={tk("app-scene-editor-layer-motion.layer-motion.label.eeb8dbbda81a")}
-            value={path.easeOut}
+            value={shown!.easeOut}
             disabled={off}
+            testId="ease-out"
+            onDraft={(v) => draft(v === null ? null : { ...path, easeOut: v })}
             onCommit={(v) =>
               setPath(tk("app-scene-editor-layer-motion.layer-motion.set-path.c4bde6952272"), { ...path, easeOut: v })
             }
           />
           <EaseSlider
             label={tk("app-scene-editor-layer-motion.layer-motion.label.3c4785e843f8")}
-            value={path.easeIn}
+            value={shown!.easeIn}
             disabled={off}
+            testId="ease-in"
+            onDraft={(v) => draft(v === null ? null : { ...path, easeIn: v })}
             onCommit={(v) => setPath(tk("app-scene-editor-layer-motion.layer-motion.set-path.786ec16053ee"), { ...path, easeIn: v })}
           />
           <TempoCurve
-            tempo={path.tempo}
+            tempo={shown!.tempo}
+            path={shown!}
             disabled={off}
+            onDraft={(tempo) => draft(tempo === null ? null : { ...path, tempo })}
             onCommit={(tempo, label) => setPath(label, { ...path, tempo })}
           />
           <Hint>
@@ -201,11 +215,16 @@ export function EaseSlider({
   value,
   disabled,
   onCommit,
+  onDraft,
+  testId,
 }: {
   label: string;
   value: number;
   disabled: boolean;
   onCommit: (v: number) => void;
+  /** Hver endring under dra (forhåndsvisning); null når draget er ferdig uten endring. */
+  onDraft?: (v: number | null) => void;
+  testId?: string;
 }) {
   const [draft, setDraft] = useState<number | null>(null);
   const shown = draft ?? Math.round(value * 100);
@@ -213,6 +232,7 @@ export function EaseSlider({
     if (draft === null) return;
     setDraft(null);
     if (draft !== Math.round(value * 100)) onCommit(draft / 100);
+    else onDraft?.(null);
   }
   return (
     <label className="flex items-center gap-2 text-xs text-text-secondary">
@@ -224,7 +244,8 @@ export function EaseSlider({
         step={1}
         value={shown}
         disabled={disabled}
-        onChange={(e) => setDraft(Number(e.target.value))}
+        data-testid={testId}
+        onChange={(e) => { const v = Number(e.target.value); setDraft(v); onDraft?.(v / 100); }}
         onPointerUp={commit}
         onKeyUp={commit}
         onBlur={commit}
@@ -245,12 +266,17 @@ const PAD = 8;
  */
 function TempoCurve({
   tempo,
+  path,
   disabled,
   onCommit,
+  onDraft,
 }: {
   tempo: MotionPath["tempo"];
+  /** Banen som vises (med ease), for den faktiske fremdriften. */
+  path: MotionPath;
   disabled: boolean;
   onCommit: (tempo: MotionPath["tempo"], label: string) => void;
+  onDraft: (tempo: MotionPath["tempo"] | null) => void;
 }) {
   const [draft, setDraft] = useState<MotionPath["tempo"] | null>(null);
   const drag = useRef<{
@@ -287,6 +313,12 @@ function TempoCurve({
     const t = k / 40;
     return `${k === 0 ? "M" : "L"}${sx(t).toFixed(1)},${sy(tempoAt(pts, t)).toFixed(1)}`;
   }).join(" ");
+  // Den faktiske fremdriften med ease ut/inn og tempokurven (samme funksjon som scenen)
+  const shownPath = { ...path, tempo: pts, startFrame: 0, endFrame: 1 };
+  const effective = Array.from({ length: 41 }, (_, k) => {
+    const t = k / 40;
+    return `${k === 0 ? "M" : "L"}${sx(t).toFixed(1)},${sy(pathProgress(shownPath, t)).toFixed(1)}`;
+  }).join(" ");
 
   function onDown(e: React.PointerEvent<SVGSVGElement>) {
     if (disabled || e.button !== 0) return;
@@ -307,6 +339,7 @@ function TempoCurve({
     } else
       drag.current = { index: i, pointerId: e.pointerId, moved: false, x: e.clientX, y: e.clientY };
     setDraft(list);
+    onDraft(list);
     e.currentTarget.setPointerCapture(e.pointerId);
   }
   function onMove(e: React.PointerEvent<SVGSVGElement>) {
@@ -315,7 +348,9 @@ function TempoCurve({
     // Små skjelvinger er ikke en endring (ett angresteg for mye)
     if (!d.moved && Math.hypot(e.clientX - d.x, e.clientY - d.y) < 3) return;
     d.moved = true;
-    setDraft(draft.map((x, k) => (k === d.index ? place(draft, k, at(e)) : x)));
+    const next = draft.map((x, k) => (k === d.index ? place(draft, k, at(e)) : x));
+    setDraft(next);
+    onDraft(next);
   }
   function onUp(e: React.PointerEvent<SVGSVGElement>) {
     const d = drag.current;
@@ -323,6 +358,7 @@ function TempoCurve({
     drag.current = null;
     const list = draft;
     setDraft(null);
+    if (!(list && d.moved)) onDraft(null);
     if (list && d.moved)
       onCommit(
         list,
@@ -371,6 +407,7 @@ function TempoCurve({
         onPointerCancel={() => {
           drag.current = null;
           setDraft(null);
+          onDraft(null);
         }}
         onDoubleClick={onDouble}
       >
@@ -383,7 +420,8 @@ function TempoCurve({
           strokeOpacity={0.25}
           strokeDasharray="3 3"
         />
-        <path d={curve} fill="none" stroke="var(--accent-brand)" strokeWidth={1.5} />
+        <path data-testid="tempo-effective" d={effective} fill="none" stroke="var(--accent-warm)" strokeWidth={1.25} />
+        <path data-testid="tempo-curve" d={curve} fill="none" stroke="var(--accent-brand)" strokeWidth={1.5} />
         {pts.map((q, i) => (
           <circle
             key={i}
