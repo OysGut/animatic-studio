@@ -218,7 +218,7 @@ describe("characterBundleFromAsset / planCharacterPullCommands", () => {
     const s = stateWith();
     const local = {
       voice: VOICE, briefVersions: [B1], activeBriefId: "b1",
-      mouthSets: [{ system: "rhubarb", variants: { A: "Åpen", B: null } }], globalBundleNumber: 1,
+      mouthSets: [{ system: "rhubarb", variants: { A: "closed", B: "open" } }], globalBundleNumber: 1,
     } as const;
     const latest = bundle(2, { voice: VOICE_LOCAL, briefVersions: [B1, B2], activeBriefId: "b2",
       mouthSets: [{ system: "rhubarb", variants: { A: "Åpen", B: "Åpen" } }] });
