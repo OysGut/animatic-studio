@@ -16,6 +16,7 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { applyCommand, forkPlan, newId, revisionsOf, type Command, type ProjectState } from "@/core";
+import { nfcDeep } from "@/core/nfc";
 import { runCommand } from "@/adapters/storage/commands.functions";
 import {
   commandQueue,
