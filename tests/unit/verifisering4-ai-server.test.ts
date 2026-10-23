@@ -203,7 +203,7 @@ describe("REQ-0565 – AI-bilder gjennom Lovable AI Gateway (simulert)", () => {
       kind: "image",
       provider: "lovable",
       model: "openai/gpt-image-2.5-sunburst",
-      prompt: input().prompt,
+      prompt: String(sent[0]!.form!.get("prompt")),
       asset_id: ASSET,
       reference_path: REF1,
       status: "done",
