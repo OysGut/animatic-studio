@@ -48,12 +48,12 @@ begin
   return date_trunc(p_unit, p_at at time zone v_tz) at time zone v_tz;
 end $$;
 
-revoke all on function private.is_iana_time_zone(text) from public;
-revoke all on function private.budget_time_zone(uuid) from public;
-revoke all on function private.budget_period_start(uuid, text, timestamptz) from public;
-grant execute on function private.is_iana_time_zone(text) to authenticated, service_role;
-grant execute on function private.budget_time_zone(uuid) to authenticated, service_role;
-grant execute on function private.budget_period_start(uuid, text, timestamptz) to authenticated, service_role;
+revoke all on function private.is_iana_time_zone(text) from public, anon;
+revoke all on function private.budget_time_zone(uuid) from public, anon;
+revoke all on function private.budget_period_start(uuid, text, timestamptz) from public, anon;
+grant execute on function private.is_iana_time_zone(text) to service_role;
+grant execute on function private.budget_time_zone(uuid) to service_role;
+grant execute on function private.budget_period_start(uuid, text, timestamptz) to service_role;
 
 create or replace function public.set_my_time_zone(p_time_zone text) returns void
   language plpgsql security definer set search_path = public, pg_catalog
@@ -66,7 +66,7 @@ begin
   insert into public.profiles (user_id, time_zone) values (auth.uid(), p_time_zone)
     on conflict (user_id) do update set time_zone = excluded.time_zone, updated_at = now();
 end $$;
-revoke all on function public.set_my_time_zone(text) from public;
+revoke all on function public.set_my_time_zone(text) from public, anon;
 grant execute on function public.set_my_time_zone(text) to authenticated;
 
 create or replace function public.set_workspace_settings(
@@ -88,7 +88,7 @@ begin
          revision = revision + 1
    where id = p_workspace;
 end $$;
-revoke all on function public.set_workspace_settings(uuid, text, text, jsonb) from public;
+revoke all on function public.set_workspace_settings(uuid, text, text, jsonb) from public, anon;
 grant execute on function public.set_workspace_settings(uuid, text, text, jsonb) to authenticated;
 
 create table public.fx_rates (
