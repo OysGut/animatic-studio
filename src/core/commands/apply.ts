@@ -14,6 +14,18 @@ import { isScriptLanguageTag } from "../translation/language-tags";
 import { languageVersionError, versionIdFor, type LanguageVersion, type LanguageVersionErrorCode } from "../translation/language-versions";
 import { lineInfo } from "../audio/takes";
 import { DEFAULT_COMPOSITION } from "../composition/fields";
+import {
+  layerKindInCompositionError,
+  panelBlockIds,
+  panelSnapshotContentOf,
+  productionStatusError,
+  productionStatusOf,
+  type PanelBlockLink,
+  type PanelSnapshot,
+  type ProductionStatus,
+  type ProductionStatusEvent,
+} from "../storyboard";
+import type { StoryboardBlockRef } from "./types";
 import { applyRigCommand } from "../animation/rig-commands";
 import { applyMultiplaneRigCommand } from "../rig/multiplane-commands";
 import { applyBehaviorCommand } from "../animation/behavior-commands";
@@ -241,6 +253,7 @@ function assertNewId(s: ProjectState, id: string) {
     s.dialogueVersions,
     s.dialogueReviews ?? {}, s.noteFlags ?? {},
     s.templateInstances ?? {},
+    s.panelBlocks ?? {}, s.productionStatuses ?? {}, s.productionStatusEvents ?? {}, s.panelSnapshots ?? {},
   ];
   if (all.some((c) => c[id] !== undefined))
     fail("duplicate_id", tk("core-commands-apply.assert-new-id.fail.a6e7d3cb494b", { id: String(id) }));
@@ -601,11 +614,72 @@ export function revisionOf(s: ProjectState, id: string): number | undefined {
     s.lipsyncResults, s.animationPatterns, s.mouthSets, s.mouthTracks,
     s.dialogueVersions,
     s.dialogueReviews ?? {}, s.noteFlags ?? {},
+    s.panelBlocks ?? {}, s.productionStatuses ?? {}, s.productionStatusEvents ?? {}, s.panelSnapshots ?? {},
   ]) {
     const e = c[id];
     if (e) return e.revision;
   }
   return undefined;
+}
+
+/** SB-1: gjeldende blokkoblinger på et panel som kommandoreferanser (til inverser). */
+function panelBlockRefs(s: ProjectState, panelId: string): StoryboardBlockRef[] {
+  return Object.values(s.panelBlocks)
+    .filter((l) => !l.removed && l.panelId === panelId)
+    .sort((a, b) => a.orderKey.localeCompare(b.orderKey) || a.id.localeCompare(b.id))
+    .map((l) => ({ linkId: l.id, blockId: l.blockId, orderKey: l.orderKey }));
+}
+
+/**
+ * SB-1: nye koblingsrader fra kommandoreferanser. Blokkene må finnes og høre til panelets variant.
+ * Finnes linkId fra før (angre/gjør om), vekkes raden i stedet for å lages på nytt.
+ */
+function sbBlockLinks(s: ProjectState, panel: Composition, refs: readonly StoryboardBlockRef[]): PanelBlockLink[] {
+  const seen = new Set<string>();
+  const out: PanelBlockLink[] = [];
+  for (const r of refs) {
+    if (seen.has(r.blockId) || seen.has(r.linkId)) fail("invalid", tk("sb1.error.blocks-variant"));
+    seen.add(r.blockId);
+    seen.add(r.linkId);
+    const old = s.panelBlocks[r.linkId];
+    if (old && old.panelId !== panel.id) fail("duplicate_id", tk("core-commands-apply.assert-new-id.fail.a6e7d3cb494b", { id: String(r.linkId) }));
+    if (!old) assertNewId(s, r.linkId);
+    const b = need(s.blocks[r.blockId], tk("core-commands-apply.b.need.e4b7085bbc3f"));
+    if (b.variantId !== panel.variantId) fail("invalid", tk("sb1.error.blocks-variant"));
+    out.push(old
+      ? { ...old, blockId: b.id, orderKey: r.orderKey, removed: false, revision: rev(old) }
+      : { id: r.linkId, revision: 1, panelId: panel.id, blockId: b.id, orderKey: r.orderKey, removed: false });
+  }
+  return out;
+}
+
+/**
+ * SB-1: erstatter panelets blokkoblinger med referansene. Aktive koblinger som ikke er med, deaktiveres
+ * (aldri hard sletting); manglende koblinger lages eller vekkes. Returnerer det nye kartet og berørte id-er.
+ */
+function applyPanelBlocks(s: ProjectState, panel: Composition, refs: readonly StoryboardBlockRef[]): { panelBlocks: ProjectState["panelBlocks"]; affected: string[] } {
+  const panelBlocks = { ...s.panelBlocks };
+  const affected: string[] = [];
+  const target = new Map(refs.map((r) => [r.blockId, r]));
+  for (const l of Object.values(s.panelBlocks)) {
+    if (l.panelId !== panel.id || l.removed) continue;
+    const r = target.get(l.blockId);
+    if (!r) {
+      panelBlocks[l.id] = { ...l, removed: true, revision: rev(l) };
+      affected.push(l.id);
+    } else {
+      if (r.orderKey !== l.orderKey) {
+        panelBlocks[l.id] = { ...l, orderKey: r.orderKey, revision: rev(l) };
+        affected.push(l.id);
+      }
+      target.delete(l.blockId);
+    }
+  }
+  for (const l of sbBlockLinks({ ...s, panelBlocks }, panel, [...target.values()])) {
+    panelBlocks[l.id] = l;
+    affected.push(l.id);
+  }
+  return { panelBlocks, affected };
 }
 
 function currentBlockRevisions(s: ProjectState, variantId: VariantId): Record<string, number> {
