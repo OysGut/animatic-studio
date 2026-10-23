@@ -34919,3 +34919,35 @@ requirements:
     decision: B-111
     change: "KR-1: registrert etter B-111."
   notes: ''
+
+- id: REQ-0925
+  title: "Språknøytral grunnmur"
+  text: "Ingen datamodell, logikk eller standardverdi skal anta norsk eller Norge. Manusets valgte språk er kilden, og andre språk kan brukes som mål, tale og grensesnitt uavhengig. Kildetekst endres aldri automatisk av språkversjoner."
+  origin: brukerbeslutning
+  source:
+    decision: G-1
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - UI
+  invariants:
+  - INV-05
+  dependencies: []
+  acceptance:
+  - "Japansk og engelsk manus støtter norsk målspråk; norsk manus fungerer som før."
+  - "Brukeren velger og bekrefter kilde ved oppretting, endring og import."
+  - "Oversettelse, linjekobling, avvik, tale, eksport og sikkerhetskopi bevarer kildeteksten."
+  tests:
+  - "tests/unit/g1-source-foundation.test.ts"
+  - "tests/db/run-db-tests.ts: 0090 G-1"
+  status: Delvis implementert
+  implementation:
+  - "db/migrations/0090_language_neutral_foundation.sql"
+  - "src/core/dialogue/languages.ts"
+  verification: []
+  history:
+  - date: '2026-10-23'
+    decision: G-1
+    change: "Registrert; G-1a delvis levert lokalt, G-1b og full eksportdekning gjenstår. Ikke Verifisert."
+  notes: "Ingen Cloud-kjøring eller publisering."

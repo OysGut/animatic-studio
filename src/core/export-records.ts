@@ -1,3 +1,4 @@
+import { SOURCE_TEXT_KEY } from "./dialogue/languages";
 /**
  * Eksportlogg (REQ-0037 «eksportversjon», mandat 3.2 og 5.2; migrasjon 0028): hver fullførte eksport får en
  * permanent ID med produksjon, type, innstillinger, filnavn, scenene som var med, hvem og når. Raden lagres
@@ -103,7 +104,7 @@ export function describeExportSettings(
   if (s["monochrome"] === true) parts.push(t("core-export-records.describe-export-settings.parts-push.afd863bfe823"));
   if (typeof s["numbering"] === "string")
     parts.push(t("core-export-records.describe-export-settings.parts-push.3832d2ecc9eb", { value1: String(s["numbering"]) }));
-  if (typeof s["language"] === "string" && s["language"] !== "nb")
+  if (typeof s["language"] === "string" && s["language"] !== SOURCE_TEXT_KEY)
     parts.push(t("core-export-records.describe-export-settings.parts-push.197857d64b78", { value1: String(s["language"]) }));
   if (s["subtitles"] === true) parts.push(t("core-export-records.describe-export-settings.parts-push.97c3415c7fc1"));
   if (s["withNotes"] === true) parts.push(t("core-export-records.describe-export-settings.parts-push.16fe725d1217"));

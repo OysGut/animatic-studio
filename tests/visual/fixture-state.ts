@@ -50,7 +50,7 @@ let s: ProjectState = emptyProjectState({
   fps: FPS_25,
   frameWidth: 1920,
   frameHeight: 1080,
-  primaryLanguage: "nb",
+  sourceLanguage: "nb",
 });
 const mainId = tid<"production">();
 s = mustApply(s, {
@@ -990,7 +990,7 @@ const project = {
   frame_width: s.project.frameWidth,
   frame_height: s.project.frameHeight,
   fps_den: 1,
-  primary_language: "nb",
+  source_language: "nb",
   revision: 1,
   created_at: "2026-10-08T10:00:00Z",
   ai_month_limit: 50,

@@ -1,13 +1,13 @@
 /** B-050: fixed server-built scene-local prompts. Service-paid translation-align; never an open proxy. */
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { isUuid, languageTagError, lineAlignmentPrompt, parseLineAlignment, uncertainLineScope } from "@/core";
+import { isUuid, isSourceLanguage, languageTagError, lineAlignmentPrompt, parseLineAlignment, uncertainLineScope } from "@/core";
 import type { AnyClient } from "@/adapters/storage/project-rows";
 import { t } from "@/core/i18n/keyed";
-import { isScriptLanguageTag, isNorwegianSourceTag } from "@/core/translation/language-tags";
+import { isScriptLanguageTag } from "@/core/translation/language-tags";
 interface Input { projectId: string; variantId: string; language: string; confirmed?: boolean; fingerprint?: string | undefined }
 function validate(x: Input): Input {
-  if (!x || !isUuid(x.projectId) || !isUuid(x.variantId) || languageTagError(x.language) || !isScriptLanguageTag(x.language) || isNorwegianSourceTag(x.language)) throw new Error(t("adapters-ai-line-align-functions.validate.message.85e7b2f5e863"));
+  if (!x || !isUuid(x.projectId) || !isUuid(x.variantId) || languageTagError(x.language) || !isScriptLanguageTag(x.language)) throw new Error(t("adapters-ai-line-align-functions.validate.message.85e7b2f5e863"));
   return {projectId:x.projectId,variantId:x.variantId,language:x.language,confirmed:x.confirmed === true,fingerprint: typeof x.fingerprint === "string" ? x.fingerprint.slice(0,100) : undefined};
 }
 export const alignTranslationLines = createServerFn({method:"POST"})
@@ -19,7 +19,7 @@ export const alignTranslationLines = createServerFn({method:"POST"})
     const {loadProjectState}=await import("@/adapters/storage/project-rows");
     const state=await loadProjectState(context.supabase as unknown as AnyClient,data.projectId);
     const scope=uncertainLineScope(state,data.variantId,data.language);
-    if (!state.variants[data.variantId] || scope.targets.length > 40 || scope.sources.length > 40) return {ok:false as const,message:t("adapters-ai-line-align-functions.message.message.98be4b09b91d")};
+    if (isSourceLanguage(state, data.language) || !state.variants[data.variantId] || scope.targets.length > 40 || scope.sources.length > 40) return {ok:false as const,message:t("adapters-ai-line-align-functions.message.message.98be4b09b91d")};
     const prompt=lineAlignmentPrompt(state,data.variantId,data.language);
     const bytes=new TextEncoder().encode(prompt.user);
     const hash=await crypto.subtle.digest("SHA-256",bytes);

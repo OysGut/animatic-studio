@@ -120,7 +120,7 @@ describe('ML1 AST/exact preservation', () => {
     const baseline = JSON.parse(readFileSync('scripts/i18n/baseline.v1.json', 'utf8'));
     const mapping = JSON.parse(readFileSync('scripts/i18n/mapping.v1.json', 'utf8'));
     const byKey = new Map<string, { nb: { raw: string }; en: { raw: string } }>(mapping.entries.map((e: { key: string; nb: { raw: string }; en: { raw: string } }) => [e.key, e]));
-    expect(baseline.entries).toHaveLength(9954); // B-100: 7 nøkler fra den slettede Animasjon-fanen; B-097: 2 språkkoder for gammel datovisning (merknader)
+    expect(baseline.entries).toHaveLength(9953); // B-100: 7 nøkler fra den slettede Animasjon-fanen; B-097: 2 språkkoder for gammel datovisning (merknader)
     for (const entry of baseline.entries) {
       const current = byKey.get(entry.key);
       expect(current).toBeDefined();

@@ -119,7 +119,8 @@ describe("B-050 med tre språkversjoner", () => {
     const align = await lineAlign();
     const variant = variantOf(sceneA);
     expect(await align({ data: { projectId: base.project.id, variantId: variant, language: "de", confirmed: true, fingerprint: "feil" }, context: ctx })).toMatchObject({ ok: false });
-    for (const language of ["nb", "no", "sr-latn", "en-us"])
+    expect(await align({ data: { projectId: base.project.id, variantId: variant, language: "nb" }, context: ctx })).toMatchObject({ ok: false });
+    for (const language of ["sr-latn", "en-us"])
       await expect(align({ data: { projectId: base.project.id, variantId: variant, language }, context: ctx })).rejects.toThrow();
     h.role = "viewer";
     expect(await align({ data: { projectId: base.project.id, variantId: variant, language: "de" }, context: ctx })).toMatchObject({ ok: false });
@@ -146,7 +147,8 @@ describe("B-048 med tre språkversjoner", () => {
   it("norsk eller ugyldig målspråk avvises før noe sendes", async () => {
     const align = await sceneAlign();
     const items = [{ index: 0, heading: "X", lines: ["y"], candidateOccurrenceIds: [sceneA.occurrenceId] }];
-    for (const language of ["nb", "no", "zz-zz-zz-zz"])
+    expect(await align({ data: { projectId: base.project.id, language: "nb", items }, context: ctx })).toMatchObject({ ok: false });
+    for (const language of ["zz-zz-zz-zz"])
       await expect(align({ data: { projectId: base.project.id, language, items }, context: ctx })).rejects.toThrow();
     expect(h.calls).toHaveLength(0);
   });

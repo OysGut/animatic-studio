@@ -1,3 +1,4 @@
+import { isSourceLanguage, sourceLanguageOf, SOURCE_TEXT_KEY } from "@/core/dialogue/languages";
 /**
  * Arbeidsflaten «Manus» (M2): import, sidevisning, scenenavigator, korrigering og redigering med angre.
  * Manus og film bygger på samme aktive struktur (INV-01); alt her er kommandoer mot domenekjernen.
@@ -183,10 +184,10 @@ function Workspace({
   // Manusspråk i visningen (DEC-0058): norsk hovedmanus eller en oversettelse. Huskes per prosjekt.
   const [lang, setLangState] = useState<string>(() => {
     try {
-      const l = window.localStorage.getItem(`animatic:script-lang:${projectId}`) ?? "nb";
-      return LANGUAGE_LABEL[l] || isScriptLanguageTag(l) ? l : "nb";
+      const l = window.localStorage.getItem(`animatic:script-lang:${projectId}`) ?? SOURCE_TEXT_KEY;
+      return l === SOURCE_TEXT_KEY || LANGUAGE_LABEL[l] || isScriptLanguageTag(l) ? l : SOURCE_TEXT_KEY;
     } catch {
-      return "nb";
+      return SOURCE_TEXT_KEY;
     }
   });
   const setLang = (l: string) => {
@@ -202,7 +203,7 @@ function Workspace({
   const [langVersionsOpen, setLangVersionsOpen] = useState(false);
   const viewState = useMemo(() => translatedState(state, lang), [state, lang]);
   const langStatus = useMemo(
-    () => (lang === "nb" ? null : translationStatus(state, productionId, lang)),
+    () => (isSourceLanguage(state, lang) ? null : translationStatus(state, productionId, lang)),
     [state, productionId, lang],
   );
   const langMarks = useMemo(
@@ -250,7 +251,7 @@ function Workspace({
   const [rightTab, setRightTab] = useState<"inspector" | "assist">("inspector");
   const [assistTrigger, setAssistTrigger] = useState<AssistTrigger | null>(null);
   const [assistMenu, setAssistMenu] = useState<{ x: number; y: number; blockIds: string[] } | null>(null);
-  const assistAvailable = editable && lang === "nb";
+  const assistAvailable = editable && isSourceLanguage(state, lang);
   const selectedBlockIds = useCallback(() => selectedBlockIdsIn(scrollRef.current), []);
   const triggerAssist = useCallback((t: Omit<AssistTrigger, "nonce">) => {
     setRightTab("assist");
@@ -371,7 +372,7 @@ function Workspace({
     () =>
       pageDecorations(shownPages, viewState, {
         query,
-        notes: showNotes && lang === "nb",
+        notes: showNotes && isSourceLanguage(state, lang),
       }),
     [shownPages, viewState, query, showNotes, lang],
   );
@@ -560,7 +561,7 @@ function Workspace({
   /** Markert tekst i manuset → mulig notat på akkurat de ordene (REQ-0535). */
   function onPagesMouseUp() {
     // Notater festes til den norske teksten; i en annen språkvisning kan ikke markeringen brukes
-    if (lang !== "nb") {
+    if (!isSourceLanguage(state, lang)) {
       setPendingNote(null);
       return;
     }
@@ -1267,7 +1268,7 @@ function Workspace({
           editable={editable}
         />
       ) : null}
-      {removeLangOpen && lang !== "nb" ? (
+      {removeLangOpen && !isSourceLanguage(state, lang) ? (
         <RemoveTranslationsDialog
           open={removeLangOpen}
           onOpenChange={setRemoveLangOpen}
@@ -1280,7 +1281,7 @@ function Workspace({
         state={state}
         cmds={cmds}
         productionId={productionId}
-        language={lang === "nb" ? "en" : lang}
+        language={isSourceLanguage(state, lang) ? "en" : lang}
         open={importLangOpen}
         onOpenChange={setImportLangOpen}
       />

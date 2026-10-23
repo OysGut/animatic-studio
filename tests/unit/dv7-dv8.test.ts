@@ -105,7 +105,7 @@ describe("DV7 drift", () => {
 
 describe("DV5/DV6 rests", () => {
   it("languages use consistent BCP-47 tags and readable names", () => {
-    expect(normalizeLanguageTag("no")).toBe("nb");
+    expect(normalizeLanguageTag("no")).toBe("no");
     expect(normalizeLanguageTag("EN-us")).toBe("en-US");
     expect(languageLabel("nb", "nb")).toMatch(/bokmål.*\(nb\)/);
     // ML2c: engelsk flate (en-GB, også testspråket) viser engelske språknavn

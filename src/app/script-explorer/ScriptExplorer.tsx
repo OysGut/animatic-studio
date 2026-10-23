@@ -1,3 +1,4 @@
+import { isSourceLanguage, sourceLanguageOf, SOURCE_TEXT_KEY } from "@/core/dialogue/languages";
 import { useRouter } from "@tanstack/react-router";
 import { ArrowLeft, ArrowRight, MessageSquare, Undo2, Redo2 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState, type MouseEvent } from "react";
@@ -45,7 +46,7 @@ export function ScriptExplorer(props: Props) {
 }
 
 function Highlight({ text, query }: { text: string; query: string }) {
-  const at = query ? text.toLocaleLowerCase("nb").indexOf(query.toLocaleLowerCase("nb")) : -1;
+  const at = query ? text.toLowerCase().indexOf(query.toLowerCase()) : -1;
   const start = at < 0 ? 0 : Math.max(0, at - 65);
   const excerpt = text.slice(start, Math.max(start + 180, at + query.length));
   if (at < 0) return <>{excerpt}</>;
@@ -64,7 +65,7 @@ function ExplorerContent({ state, editable, cmds, ...props }: Props & { state: P
   const [assetId, setAssetId] = useState("");
   const [kind, setKind] = useState<"all" | "dialogue" | "heading">("all");
   // ML3: språkversjonen som vises (bare lesing; norsk kilde er standard og endres aldri herfra)
-  const [scriptLang, setScriptLang] = useState("nb");
+  const [scriptLang, setScriptLang] = useState(SOURCE_TEXT_KEY);
   const view = useMemo(() => translatedState(state, scriptLang), [state, scriptLang]);
   const [noteTarget, setNoteTarget] = useState<Omit<NewAnnotation, "annotationId" | "text" | "authorName"> | null>(null);
   const [noteId, setNoteId] = useState<string | null>(null);

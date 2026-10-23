@@ -1,13 +1,13 @@
 {
   "version": 1,
-  "entries": 9955,
-  "migrated": 9955,
+  "entries": 9954,
+  "migrated": 9954,
   "files": 447,
-  "literalPairs": 8665,
+  "literalPairs": 8664,
   "templatePairs": 1272,
   "dynamicPairs": 18,
-  "references": 11352,
-  "candidates": 35876,
+  "references": 11351,
+  "candidates": 35825,
   "conflicts": [
     {
       "kind": "parameter-contract",

@@ -5655,12 +5655,6 @@
     "parameters": [],
     "executable": true
   },
-  "core-commands-apply.translation-fields-of.fail.b8697ac1dfc3": {
-    "text": "Norsk er hovedmanuset og oversettes ikke",
-    "source": "\"Norsk er hovedmanuset og oversettes ikke\"",
-    "parameters": [],
-    "executable": true
-  },
   "core-commands-apply.translation-fields-of.fail.73a9adebd4ff": {
     "text": "Oversettelsen er for lang",
     "source": "\"Oversettelsen er for lang\"",
@@ -53398,12 +53392,6 @@
     "parameters": [],
     "executable": true
   },
-  "core-composition-fields.error.error.ead44afb7c76": {
-    "text": "Norsk bruker lagets eget bilde",
-    "source": "\"Norsk bruker lagets eget bilde\"",
-    "parameters": [],
-    "executable": true
-  },
   "core-composition-fields.error.error.a62138f1e5f3": {
     "text": "To bilder for samme språk",
     "source": "\"To bilder for samme språk\"",
@@ -71774,6 +71762,12 @@
   "engine-export-zip.zip.message.d8988ee64a25": {
     "text": "Zip-filen ble større enn 4 GB. Ta med færre filer og prøv igjen.",
     "source": "\"Zip-filen ble større enn 4 GB. Ta med færre filer og prøv igjen.\"",
+    "parameters": [],
+    "executable": true
+  },
+  "core-composition-fields.error.error.ead44afb7c76": {
+    "text": "Norsk bruker lagets eget bilde",
+    "source": "\"Norsk bruker lagets eget bilde\"",
     "parameters": [],
     "executable": true
   },

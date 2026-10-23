@@ -19,7 +19,7 @@ export function animationImageTracks(state: ProjectState, compositionId: string,
 
 export function animationDialogueTracks(state: ProjectState, occurrenceId: string, language: string) {
   return Object.values(state.audioClips)
-    .filter(clip => !clip.removed && clip.occurrenceId === occurrenceId && clip.kind === "dialogue" && (clipLanguage(clip) === language || clipLanguage(clip) === "*"))
+    .filter(clip => !clip.removed && clip.occurrenceId === occurrenceId && clip.kind === "dialogue" && (clipLanguage(clip, state) === language || clipLanguage(clip, state) === "*"))
     .sort((a, b) => a.offsetMs - b.offsetMs || a.id.localeCompare(b.id))
     .map(clip => ({
       clip, version: audioVersion(state, clip), block: clip.blockId ? state.blocks[clip.blockId] : undefined,
@@ -31,7 +31,7 @@ export function animationDialogueTracks(state: ProjectState, occurrenceId: strin
 /** Other selected sound clips follow dialogue directly in the same scrolling timeline. */
 export function animationSoundTracks(state: ProjectState, occurrenceId: string, language: string) {
   return Object.values(state.audioClips)
-    .filter(clip => !clip.removed && clip.occurrenceId === occurrenceId && clip.kind !== "dialogue" && (clipLanguage(clip) === language || clipLanguage(clip) === "*"))
+    .filter(clip => !clip.removed && clip.occurrenceId === occurrenceId && clip.kind !== "dialogue" && (clipLanguage(clip, state) === language || clipLanguage(clip, state) === "*"))
     .sort((a, b) => a.offsetMs - b.offsetMs || a.id.localeCompare(b.id))
     .map(clip => ({ clip, version: audioVersion(state, clip), block: undefined,
       start: secondsToFrames(clip.offsetMs / 1000, state.project.fps),

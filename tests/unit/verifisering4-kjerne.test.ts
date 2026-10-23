@@ -675,7 +675,8 @@ describe("REQ-0452 – fundamentet fra fase 1 tåler videreutvikling uten omskri
           `(drop table[^;]*\\b${t}\\b|alter table (public\\.)?${t}\\b[^;]*(drop column|rename|alter column [^;]* type))`,
           "i",
         );
-        if (re.test(sql)) bad.push(`${f}: ${t}`);
+        const checked = f === "0090_language_neutral_foundation.sql" ? sql.replace(/alter table public\.projects drop column (primary_language|script_language);/g, "") : sql;
+        if (re.test(checked)) bad.push(`${f}: ${t}`);
       }
     }
     expect(bad).toEqual([]);

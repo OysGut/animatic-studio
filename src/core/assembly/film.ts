@@ -1,3 +1,4 @@
+import { sourceLanguageOf } from "../dialogue/languages";
 /**
  * Filmmontering (M4 del 1, mandat kap. 15, DEC-0043): den samlede filmen bygges fra den SAMME ordnede
  * listen av aktive sceneforekomster som manuset (INV-01). Det finnes ingen egen lagret filmrekkefølge –
@@ -753,7 +754,7 @@ export function blockSpans(s: ProjectState, clip: FilmClip): BlockSpan[] {
       a.removed ||
       a.occurrenceId !== clip.occurrenceId ||
       !a.blockId ||
-      !playsIn(a, MAIN_LANGUAGE)
+      !playsIn(a, sourceLanguageOf(s), s)
     )
       continue;
     const st = clip.startFrame + msToFramesCeil(a.offsetMs, fps);

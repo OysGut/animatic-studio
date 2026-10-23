@@ -27924,9 +27924,6 @@
     "core-commands-apply.translation-fields-of.fail.90cb0f0670c0": {
       "text": "Ugyldig status"
     },
-    "core-commands-apply.translation-fields-of.fail.b8697ac1dfc3": {
-      "text": "Norsk er hovedmanuset og oversettes ikke"
-    },
     "core-commands-apply.translation-fields-of.fail.eb653dd6de37": {
       "text": "Ugyldig oversettelse"
     },
@@ -32026,9 +32023,6 @@
     },
     "ml3-language-versions.error.name": {
       "text": "Navnet må ha mellom 1 og 120 tegn."
-    },
-    "ml3-language-versions.error.norwegian": {
-      "text": "Norsk kan foreløpig ikke lagres som språkversjon."
     },
     "ml3-language-versions.error.not-found": {
       "text": "Fant ikke språkversjonen."
@@ -61320,9 +61314,6 @@
     "core-commands-apply.translation-fields-of.fail.90cb0f0670c0": {
       "text": "Invalid status"
     },
-    "core-commands-apply.translation-fields-of.fail.b8697ac1dfc3": {
-      "text": "Norwegian is the main script and is not translated"
-    },
     "core-commands-apply.translation-fields-of.fail.eb653dd6de37": {
       "text": "Invalid translation"
     },
@@ -65422,9 +65413,6 @@
     },
     "ml3-language-versions.error.name": {
       "text": "The name must be between 1 and 120 characters."
-    },
-    "ml3-language-versions.error.norwegian": {
-      "text": "Norwegian cannot be saved as a language version yet."
     },
     "ml3-language-versions.error.not-found": {
       "text": "The language version was not found."

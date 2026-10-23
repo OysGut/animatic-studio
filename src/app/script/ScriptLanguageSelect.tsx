@@ -29,7 +29,7 @@ export function scriptLanguageChoices(state: ProjectState, includeNorwegian: boo
   }
   // Standardspråkene fra før ML3, så en ny oversettelse kan startes uten registrering
   for (const [language, label] of Object.entries(LANGUAGE_LABEL))
-    if (!seen.has(language) && language !== "nb" && !isSourceLanguage(state, language)) {
+    if (!seen.has(language) && !isSourceLanguage(state, language)) {
       seen.add(language);
       out.push({ language, label });
     }

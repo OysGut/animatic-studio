@@ -569,6 +569,7 @@ export function restoredState(
       id: pid,
       revision: base.project.revision,
       name: base.project.name,
+      source_language: p["source_language"] ?? p["script_language"] ?? p["primary_language"] ?? base.project.sourceLanguage ?? "und",
       code: p["code"] ?? null,
       capture_mode: p["capture_mode"] ?? "ones",
       capture_fps_num: p["capture_fps_num"] ?? 24,
@@ -740,7 +741,7 @@ export function restoredExtras(
       format: r["format"],
       page_count: r["page_count"] ?? null,
       byte_size: r["byte_size"],
-      language: r["language"] ?? "nb",
+      language: r["language"] ?? b.project["source_language"] ?? b.project["script_language"] ?? b.project["primary_language"] ?? "und",
       change_id: null,
       created_at: r["created_at"],
       created_by: actorId,
@@ -804,7 +805,7 @@ export async function validateBackup(b: BackupData): Promise<void> {
       fps,
       frameWidth: 1920,
       frameHeight: 1080,
-      primaryLanguage: "nb",
+      sourceLanguage: String(b.project["source_language"] ?? b.project["script_language"] ?? b.project["primary_language"] ?? "und"),
     }),
     productions: {
       [main]: {

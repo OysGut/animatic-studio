@@ -103,6 +103,6 @@ describe.each(["nb", "en"] as const)("N11 batch – %s", lang => {
     const requests = h.create.mock.calls.map(([arg]) => arg.data);
     expect(requests[0].lines.map((l: {key:string}) => l.key)).toEqual([lines[0]?.key]);
     expect(requests[1].lines.map((l: {key:string}) => l.key)).toEqual(lines.slice(1,-1).map(l=>l.key));
-    expect(requests.map(r => r.voice.language)).toEqual(["es", "nb"]);
+    expect(requests.map(r => r.voice.language)).toEqual(["es", "no"]);
   });
 });

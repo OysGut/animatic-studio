@@ -7,7 +7,7 @@ import {
   diffStates,
   emptyProjectState,
   exportLanguageDecision,
-  isNorwegianSourceTag,
+  sourceLanguageOf,
   isScriptLanguageTag,
   languageTagCollisions,
   languageVersionError,
@@ -77,9 +77,12 @@ describe("ML3 – BCP-47 koder", () => {
     expect(canonicalLanguageTag("ikke en kode!")).toBeNull();
     expect(languageTagCollisions(["en-us", "en-US", "de", "de"])).toEqual([{ key: "en-us", tags: ["en-US", "en-us"] }]);
   });
-  it("norsk er alltid kilde, aldri målspråk", () => {
-    for (const tag of ["nb", "no", "nb-NO", "NO"]) expect(isNorwegianSourceTag(tag)).toBe(true);
-    expect(isNorwegianSourceTag("nn")).toBe(false);
+  it("norsk er et målspråk når manusets kilde er japansk", () => {
+    const s = seedProject(1).state;
+    const japanese = { ...s, project: { ...s.project, sourceLanguage: "ja" } };
+    expect(sourceLanguageOf(japanese)).toBe("ja");
+    for (const language of ["nb", "no", "nb-NO", "nn", "en"]) expect(languageVersionError(japanese, { language, name: language, status: "active" })).toBeNull();
+    expect(languageVersionError(japanese, { language: "ja", name: "source", status: "active" })).toBe("source");
   });
 });
 

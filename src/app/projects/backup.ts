@@ -183,7 +183,7 @@ export async function restoreFromBackup(
   if (!state.projectId) {
     const fps_num = Number(backup.project["fps_num"] ?? 25);
     const fps_den = Number(backup.project["fps_den"] ?? 1);
-    const { data, error } = await createProjectWithFps(name, fps_num, fps_den);
+    const { data, error } = await createProjectWithFps(name, fps_num, fps_den, String(backup.project["source_language"] ?? backup.project["script_language"] ?? backup.project["primary_language"] ?? "und"));
     if (error)
       throw new Error(
         t("app-projects-backup.restore-from-backup.message.ca82853739e0", { message: String(error.message) }),

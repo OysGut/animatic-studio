@@ -1,3 +1,4 @@
+import { isSourceLanguage, sourceLanguageOf, SOURCE_TEXT_KEY } from "@/core/dialogue/languages";
 import { LineLinkReview } from "./LineLinkReview";
 /**
  * Oversettelse av valgt linje eller scenehode i inspektøren (M7 del 2, DEC-0058, REQ-0329–0331, REQ-0335).
@@ -156,7 +157,7 @@ export function TranslationPanel({
           {tk("ml3-language-versions.review.languages", { languages: reviewLanguagesForBlock(state, block.id).map((l) => languageLabel(l)).join(", ") })}
         </p>
       ) : null}
-      {(block?.variantId ?? variant?.id) && language !== "nb" ? <LineLinkReview state={state} variantId={block?.variantId ?? variant?.id ?? ""} language={language} editable={editable} run={run} /> : null}
+      {(block?.variantId ?? variant?.id) && !isSourceLanguage(state, language) ? <LineLinkReview state={state} variantId={block?.variantId ?? variant?.id ?? ""} language={language} editable={editable} run={run} /> : null}
       {err ? (
         <p role="alert" className="text-xs text-status-danger">
           {err}

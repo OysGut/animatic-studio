@@ -1,3 +1,4 @@
+import { isSourceLanguage, sourceLanguageOf, SOURCE_TEXT_KEY } from "@/core/dialogue/languages";
 /**
  * Lagring av lydopptak som takes (fase 2, bolk B, DEC-0093): fra PC-opptaket og fra mobilen. Et take blir
  * alltid en ny versjon av lydressursen, så ingenting tidligere overskrives (REQ-0686/0688).
@@ -335,7 +336,7 @@ export async function saveSceneSound(
             muted: false,
             continues: false,
             volumeKeys: [],
-            ...(target.language && target.language !== "nb" && (target.kind === "dialogue" || target.kind === "narration") ? { language: target.language } : {}),
+            ...(target.language && target.language !== SOURCE_TEXT_KEY && (target.kind === "dialogue" || target.kind === "narration") ? { language: target.language } : {}),
           },
         },
       ],

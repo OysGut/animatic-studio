@@ -1,3 +1,4 @@
+import { sourceLanguageOf } from "../dialogue/languages";
 import { convertFrames, fpsToNumber, secondsToFrames, type Rational } from "../time";
 import type { InterchangeDoc, Shot } from "./types";
 import type { ProjectState } from "../model";
@@ -7,7 +8,7 @@ import { buildInterchange } from "./index";
 export function dragonframeImportDocument(state: ProjectState, productionId: string): InterchangeDoc {
   return buildInterchange({ ...state,
     occurrences: Object.fromEntries(Object.entries(state.occurrences).map(([id,o]) => [id, { ...o, activeTakeId: null }])), clipParts: {},
-  }, { productionId, language: "nb" });
+  }, { productionId, language: sourceLanguageOf(state) });
 }
 
 export interface DragonframeEntry { readonly vframe: number; readonly file: number }

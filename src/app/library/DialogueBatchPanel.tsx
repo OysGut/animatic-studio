@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { ResizableDialogContent } from "@/app/shared/ResizableDialogContent";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { qualityProfileSnapshot, characterDialogueCoverage, selectedDialogueCounts, estimateCostUsd, formatUsd, newId, existingSpeechWarning, multilingualSpeechWarning, batchTimeEstimate, speechLanguageError, languageTagError, languageLabel, normalizeLanguageTag, DEFAULT_SPEECH_LANGUAGE, type ProjectState, type Asset, type AssetVoice, type Command } from "@/core";
+import { qualityProfileSnapshot, characterDialogueCoverage, selectedDialogueCounts, estimateCostUsd, formatUsd, newId, existingSpeechWarning, multilingualSpeechWarning, batchTimeEstimate, speechLanguageError, languageTagError, languageLabel, normalizeLanguageTag, sourceLanguageOf, type ProjectState, type Asset, type AssetVoice, type Command } from "@/core";
 import { createDialogueBatch, advanceDialogueBatch, resumeDialogueBatch, listDialogueBatches, undoDialogueBatchJob, reconfirmDialogueBatch, dialogueBatchHistory } from "@/adapters/storage/dialogue-batch.functions";
 import { QualityProfilePicker, QualityProfileBudget, useQualityProfile } from "@/app/ai/QualityProfilePicker";
 import { VoiceControls } from "@/app/audio/VoiceControls";
@@ -56,7 +56,7 @@ export function DialogueBatchPanel({ state, asset, projectId, editable, drift = 
   const languageOf = (key: string, fallback: string) => normalizeLanguageTag(languages[key] ?? fallback);
   const groups = [...new Set(chosen.map(l => languageOf(l.key, l.speechLanguage)))];
   const detected = new Set(all.map(l => l.detection.language));
-  const togetherLanguage = normalizeLanguageTag(voice?.language ?? DEFAULT_SPEECH_LANGUAGE);
+  const togetherLanguage = normalizeLanguageTag(voice?.language ?? sourceLanguageOf(state));
   const quality = useQualityProfile(state, chosen.length);
   const profileVoice = (v: AssetVoice | null) => v ? { ...v, modelId: v.modelId ?? quality.profile?.spec.models?.speech ?? "eleven_v3" } : null;
   const plans = mode === "split" ? groups.map(language => ({ language, voice: profileVoice(languageVoices[language] ?? (voice ? { ...voice, language } : null)), lines: chosen.filter(l => languageOf(l.key, l.speechLanguage) === language) })) : [{ language: togetherLanguage, voice: profileVoice(voice), lines: chosen }];

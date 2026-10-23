@@ -5637,12 +5637,6 @@
     "parameters": [],
     "executable": true
   },
-  "core-commands-apply.translation-fields-of.fail.b8697ac1dfc3": {
-    "text": "Norwegian is the main script and is not translated",
-    "source": "\"Norwegian is the main script and is not translated\"",
-    "parameters": [],
-    "executable": true
-  },
   "core-commands-apply.translation-fields-of.fail.73a9adebd4ff": {
     "text": "The translation is too long",
     "source": "\"The translation is too long\"",
@@ -53380,12 +53374,6 @@
     "parameters": [],
     "executable": true
   },
-  "core-composition-fields.error.error.ead44afb7c76": {
-    "text": "Norwegian uses the layer's own image",
-    "source": "\"Norwegian uses the layer's own image\"",
-    "parameters": [],
-    "executable": true
-  },
   "core-composition-fields.error.error.a62138f1e5f3": {
     "text": "Two images for the same language",
     "source": "\"Two images for the same language\"",
@@ -71756,6 +71744,12 @@
   "engine-export-zip.zip.message.d8988ee64a25": {
     "text": "The zip file grew larger than 4 GB. Include fewer files and try again.",
     "source": "\"The zip file grew larger than 4 GB. Include fewer files and try again.\"",
+    "parameters": [],
+    "executable": true
+  },
+  "core-composition-fields.error.error.ead44afb7c76": {
+    "text": "Norwegian uses the layer's own image",
+    "source": "\"Norwegian uses the layer's own image\"",
     "parameters": [],
     "executable": true
   },

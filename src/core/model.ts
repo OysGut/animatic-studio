@@ -41,7 +41,7 @@ import type { Rational } from "./time";
 import type { DurationAssumptions } from "./screenplay/duration";
 import type { StoryProfile, StoryProfilePatch } from "./storylab/profile";
 
-export const PRIMARY_LANGUAGE = "nb" as const; // INV-05
+export const PRIMARY_LANGUAGE = "und"; // Legacy compatibility marker, not a source language
 
 export type ProductionKind =
   "main" | "spinoff" | "short" | "trailer" | "teaser" | "pitch" | "pilot" | "alternative" | "other";
@@ -78,7 +78,9 @@ export interface Project extends Entity<ProjectId> {
   /** Bildeformat for hele prosjektet i piksler (DEC-0039); alle 2D-scener følger det. */
   readonly frameWidth: number;
   readonly frameHeight: number;
-  readonly primaryLanguage: typeof PRIMARY_LANGUAGE;
+  /** G-1: the single source language; legacy fields are read only during conversion. */
+  readonly sourceLanguage?: string;
+  readonly primaryLanguage?: string;
   readonly scriptLanguage?: string | null;
   /** Overgangen scener får når de ikke har en egen (DEC-0051, REQ-0577). Mangler = kutt. */
   readonly defaultTransition?: Transition;
@@ -240,7 +242,7 @@ export interface ScriptBlock extends Entity<BlockId> {
   readonly orderKey: string;
   readonly currentRev: number;
   readonly text: string; // tekst i gjeldende revisjon (current_rev)
-  readonly language: typeof PRIMARY_LANGUAGE;
+  readonly language: string;
   /** Hvor blokken kom fra i originaldokumentet (side og høyde), for sammenligning med originalen (mandat 4.2). */
   readonly sourceRef: { readonly page: number; readonly y: number; readonly documentId?: string } | null;
   /** Usikker tolkning ved import (mandat 4.3 punkt 9). null = avklart. */

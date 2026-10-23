@@ -5,7 +5,7 @@ import { DEFAULT_CAPTURE, captureSettingsValid, projectCodeValid } from "../inte
 import { applyPrintJobCommand } from "../print/job/commands";
 import { lineLinkError, translationLineError, type TranslationLineLink, type TranslationLine } from "../translation/line-align-prompt";
 import { assetVoiceError } from "../dialogue/voice";
-import { languageTagError, isSourceLanguage, sourceLanguageOf } from "../dialogue/languages";
+import { languageTagError, normalizeLanguageTag, isSourceLanguage, sourceLanguageOf } from "../dialogue/languages";
 import { clipDrift, type DialogueReview } from "../dialogue/drift";
 import { NOTE_FLAG_TARGETS, NOTE_FLAG_MAX_TEXT, type NoteFlag } from "../notes/flags";
 import { qualityProfileError, type QualityProfile } from "../generation/quality-profile";
@@ -109,7 +109,6 @@ import {
   CONTINUITY_KINDS,
   type ContinuityEvent,
   type Translation,
-  PRIMARY_LANGUAGE,
   type Annotation,
   type SoundLink,
   type ContextName,
@@ -386,7 +385,7 @@ function normalizeAssetFields(f: AssetFields): AssetFields {
   if (f.names.length > 50)
     fail("invalid", tk("core-commands-apply.normalize-asset-fields.fail.39b0f5b53990"));
   if (f.tags.length > 30) fail("invalid", tk("core-commands-apply.normalize-asset-fields.fail.22ef6084fba3"));
-  const seenNames = new Set([name.toLocaleLowerCase("nb")]);
+  const seenNames = new Set([name.toLowerCase()]);
   const names = [];
   for (const n of f.names) {
     const t = n.name.trim();
@@ -395,7 +394,7 @@ function normalizeAssetFields(f: AssetFields): AssetFields {
       fail("invalid", tk("core-commands-apply.normalize-asset-fields.fail.0ff2e46ed709"));
     if (!(ASSET_NAME_KINDS as readonly string[]).includes(n.kind))
       fail("invalid", tk("core-commands-apply.normalize-asset-fields.fail.d6524e95066b"));
-    const key = t.toLocaleLowerCase("nb");
+    const key = t.toLowerCase();
     if (seenNames.has(key)) continue;
     seenNames.add(key);
     const language = n.language?.trim() || null;
@@ -408,7 +407,7 @@ function normalizeAssetFields(f: AssetFields): AssetFields {
     const x = t.trim();
     if (!x) continue;
     if (x.length > 50) fail("invalid", tk("core-commands-apply.normalize-asset-fields.fail.02299a8cfbdc"));
-    if (!tags.some((y) => y.toLocaleLowerCase("nb") === x.toLocaleLowerCase("nb"))) tags.push(x);
+    if (!tags.some((y) => y.toLowerCase() === x.toLowerCase())) tags.push(x);
   }
   return {
     kind: f.kind,
@@ -768,6 +767,7 @@ function layerFields(s: ProjectState, f: LayerFields, prev?: CompositionLayer): 
   // ikke på nytt, som bildeskifter)
   const oldLang = new Set((prev?.languageImages ?? []).map((x) => JSON.stringify(x)));
   for (const li of v.languageImages ?? []) {
+    if (isSourceLanguage(s, li.language)) fail("invalid", tk("core-composition-fields.error.error.ead44afb7c76"));
     if (prev && prev.assetId === v.assetId && oldLang.has(JSON.stringify(li))) continue;
     const va = need(
       s.assetVariants[li.assetVariantId],
@@ -1067,7 +1067,6 @@ function languageVersionMessage(code: LanguageVersionErrorCode, language: string
     case "duplicate": return tk("ml3-language-versions.error.duplicate", { language });
     case "language": return tk("ml3-language-versions.error.language");
     case "source": return tk("ml3-language-versions.error.source");
-    case "norwegian": return tk("ml3-language-versions.error.norwegian");
     case "name": return tk("ml3-language-versions.error.name");
     case "status": return tk("ml3-language-versions.error.status");
   }
@@ -1081,14 +1080,6 @@ function translationFieldsOf(
     fail("invalid", tk("core-commands-apply.translation-fields-of.fail.eb653dd6de37"));
   if (!isScriptLanguageTag(f.language))
     fail("invalid", tk("core-commands-apply.translation-fields-of.fail.705cd5c07cc0"));
-  if (f.language === "nb" || f.language === "no")
-    fail(
-      "invalid",
-      // Norsk manus: norsk er kilden. Annet manusspråk: databasen godtar ennå ikke nb/no som mål (KILDESPRAK_REPORT.md).
-      sourceLanguageOf(s) === "nb"
-        ? tk("core-commands-apply.translation-fields-of.fail.b8697ac1dfc3")
-        : tk("ml3-language-versions.error.norwegian"),
-    );
   if (isSourceLanguage(s, f.language))
     fail("invalid", tk("ml3-language-versions.error.source"));
   if (typeof f.text !== "string" || f.text.length > TRANSLATION_MAX)
@@ -1886,9 +1877,13 @@ function run(
       if (c.language !== null && languageTagError(c.language)) fail("invalid", languageTagError(c.language) ?? "");
       if (c.target === "project") {
         if (c.targetId !== s.project.id) fail("invalid", tk("core-commands-apply.run.fail.e1a4759e48db"));
-        const { scriptLanguage: _language, ...base } = s.project;
-        const project: ProjectState["project"] = { ...base, ...(c.language ? { scriptLanguage: c.language } : {}), revision: rev(s.project) };
-        return { state: { ...s, project }, inverse: { ...c, language: s.project.scriptLanguage ?? null }, affected: [s.project.id] };
+        const language = c.language ?? sourceLanguageOf(s);
+        const targetRows = [...Object.values(s.languageVersions), ...Object.values(s.translations), ...Object.values(s.translationLines), ...Object.values(s.translationLineLinks)];
+        if (targetRows.some(v => normalizeLanguageTag(v.language).toLowerCase() === normalizeLanguageTag(language).toLowerCase())) fail("invalid", tk("ml3-language-versions.error.source"));
+        const { scriptLanguage: _language, primaryLanguage: _primary, ...base } = s.project;
+        const project: ProjectState["project"] = { ...base, sourceLanguage: normalizeLanguageTag(language), revision: rev(s.project) };
+        const blocks = Object.fromEntries(Object.entries(s.blocks).map(([id, b]) => [id, { ...b, language: project.sourceLanguage ?? language, revision: rev(b) }]));
+        return { state: { ...s, project, blocks }, inverse: { ...c, language: sourceLanguageOf(s) }, affected: [s.project.id] };
       }
       const collection = c.target === "variant" ? "variants" : c.target === "block" || c.target === "blockSpeech" ? "blocks" : c.target === "clip" ? "audioClips" : null;
       if (!collection) fail("invalid", tk("core-commands-apply.run.fail.17428c3d8e68"));
@@ -2061,7 +2056,7 @@ function run(
           orderKey: b.orderKey,
           currentRev: 1,
           text: b.text,
-          language: PRIMARY_LANGUAGE,
+          language: sourceLanguageOf(s),
           sourceRef: b.sourceRef ?? null,
           uncertainty: b.uncertainty ?? null,
           removed: b.removed ?? false,
@@ -2312,7 +2307,7 @@ function run(
               orderKey: c.block.orderKey,
               currentRev: 1,
               text: c.block.text,
-              language: PRIMARY_LANGUAGE,
+              language: sourceLanguageOf(s),
               sourceRef: c.block.sourceRef ?? null,
               uncertainty: c.block.uncertainty ?? null,
               removed: c.block.removed ?? false,
@@ -5965,7 +5960,7 @@ function run(
             "invalid",
             tk("core-commands-apply.run.fail.26e35ec964d5"),
           );
-        const key = name.toLocaleLowerCase("nb");
+        const key = name.toLowerCase();
         if (names.has(key))
           fail("invalid", tk("core-commands-apply.run.fail.7b9b5db3437a"));
         names.add(key);

@@ -5,7 +5,8 @@
  * kontrolleres i testene med før/etter-sammenligning.
  */
 import { isValidOrderKey } from "./order-key";
-import { PRIMARY_LANGUAGE, type ProjectState } from "./model";
+import type { ProjectState } from "./model";
+import { languageTagError } from "./dialogue/languages";
 
 import { t as tk } from "@/core/i18n/keyed";
 
@@ -91,7 +92,7 @@ export function checkInvariants(s: ProjectState): Violation[] {
     blockKeys.add(k);
     if (!s.variants[b.variantId])
       add("MODEL", tk("core-invariants.check-invariants.add.30dfcd9a399d", { id: String(b.id) }));
-    if (b.language !== PRIMARY_LANGUAGE)
+    if (languageTagError(b.language))
       add(
         "INV-05",
         tk("core-invariants.check-invariants.add.0888a95b7064", { id: String(b.id) }),

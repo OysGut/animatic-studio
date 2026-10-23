@@ -200,7 +200,7 @@ try {
     projectId = await as(
       "authenticated",
       ALICE,
-      async (tx) => (await tx`select public.create_project('Jula på Dovre') as id`)[0]!["id"],
+      async (tx) => (await tx`select public.create_project('Jula på Dovre',25,1,'nb') as id`)[0]!["id"],
     );
     const members = await as(
       "authenticated",
@@ -1931,7 +1931,7 @@ try {
     );
     await expectError(
       sql`update public.translations set language = 'nb' where id = ${t1}`,
-      /check/,
+      /source language/,
     );
     await expectError(
       sql`update public.translations set variant_id = ${variant.id} where id = ${t1}`,
@@ -6034,7 +6034,7 @@ try {
     assert(missing[0]?.["item"] === null, "manglende jobb ble startet");
   });
   await test("0061: uavhengige språkfelt og tom lydprompt finnes uten endring av gamle lydfiler", async () => {
-    for (const [table,column] of [["projects","script_language"],["scene_variants","script_language"],["script_blocks","script_language"],["script_blocks","speech_language"],["audio_clips","speech_language"],["audio_clips","placement_estimated"]]) {
+    for (const [table,column] of [["projects","source_language"],["scene_variants","script_language"],["script_blocks","script_language"],["script_blocks","speech_language"],["audio_clips","speech_language"],["audio_clips","placement_estimated"]]) {
       if (!table || !column) throw new Error("Invalid language column fixture");
       const found = await sql`select 1 from information_schema.columns where table_schema='public' and table_name=${table} and column_name=${column}`;
       assert(found.length === 1, `${table}.${column} mangler`);
@@ -6109,8 +6109,8 @@ try {
       const b = String((await sql`select pg_get_functiondef(${`public.${fn}`}::regprocedure) as b`)[0]?.["b"]);
       assert(b.indexOf("quality_profiles") < b.indexOf("delete from public.dialogue_versions"), `${fn}: rydder ikke profilene`);
     }
-    const cp = String((await sql`select pg_get_functiondef('public.create_project(text,integer,integer)'::regprocedure) as b`)[0]?.["b"]);
-    assert(cp.includes("'Utkast'") && cp.includes("'Gjennomgang'") && cp.includes("'Endelig'"), "create_project lager ikke standardprofilene");
+    const cp = String((await sql`select pg_get_functiondef('public.create_project(text,integer,integer,text)'::regprocedure) as b`)[0]?.["b"]);
+    assert(cp.includes("'Draft'") && cp.includes("'Review'") && cp.includes("'Final'"), "create_project lager ikke standardprofilene");
   });
 
   await test("0063: nye prosjekter får standardprofilene; eksisterende endres ikke; skriving via apply_changes", async () => {
@@ -6118,7 +6118,7 @@ try {
     const profiles = await as("authenticated", ALICE, (tx) => tx`select name, spec from public.quality_profiles where project_id = ${bp} order by name`);
     assert(profiles.length === 3, "nytt prosjekt mangler de tre standardprofilene");
     const active = await sql`select p.name as name from public.projects pr join public.quality_profiles p on p.id = pr.active_quality_profile_id where pr.id = ${bp}`;
-    assert(active[0]?.["name"] === "Utkast", "Utkast er ikke aktiv i nye prosjekter");
+    assert(active[0]?.["name"] === "Draft", "Utkast er ikke aktiv i nye prosjekter");
     // Skriving via apply_changes med revisjonskontroll; medlem leser, ikke-medlem ser ingenting
     const pid = "00000000-0000-7000-8000-000000006301";
     const row = { id: pid, project_id: bp, revision: 1, name: "Kino", spec: { effort: "premium", variants: 2 }, edited_by: null, edited_at: null, removed: false };
@@ -6134,7 +6134,7 @@ try {
 
   await test("0063: profilbudsjett er atomisk, prosjektavgrenset og metadata uforanderlige", async () => {
     const bp = String((await as("authenticated", ALICE, tx => tx`select public.create_project('Profile capacity',25,1) id`))[0]?.["id"]);
-    const profile = (await sql`select * from public.quality_profiles where project_id=${bp} and name='Utkast'`)[0];
+    const profile = (await sql`select * from public.quality_profiles where project_id=${bp} and name='Draft'`)[0];
     assert(profile, "Missing profile");
     await as("service_role",null,tx => tx`update public.quality_profiles set spec=spec || '{"budgetLimit":1}'::jsonb where id=${profile["id"]}`);
     const q = (await sql`select * from public.quality_profiles where id=${profile["id"]}`)[0];
@@ -6312,8 +6312,8 @@ try {
     assert(defs["audio_clips_language_check"]?.includes("'*'") && defs["takes_audio_language_check"]?.includes("'none'"),"special audio values lost");
     const probe=async(v:string)=>{ try { await sql.begin(async tx=>{ await tx`insert into public.translations(id,project_id,block_id,language,text) values(gen_random_uuid(),gen_random_uuid(),gen_random_uuid(),${v},'x')`; }); return "inserted"; } catch(e){ return String((e as {code?:string}).code); } };
     // Foreign keys fail after the check passes (23503); the check fails first for invalid tags (23514).
-    for (const v of ["en","en-GB","de","pt-BR","sr-Latn","zh-Hant-TW","es-419"]) { const r=await probe(v); assert(r==="23503",`valid tag ${v} rejected by check (${r})`); }
-    for (const v of ["EN","en-us","en_US","x","nb","no"]) { const r=await probe(v); assert(r==="23514",`invalid tag ${v} accepted (${r})`); }
+    for (const v of ["en","en-GB","de","pt-BR","sr-Latn","zh-Hant-TW","es-419","nb","no"]) { const r=await probe(v); assert(r==="23503",`valid tag ${v} rejected by check (${r})`); }
+    for (const v of ["EN","en-us","en_US","x"]) { const r=await probe(v); assert(r==="23514",`invalid tag ${v} accepted (${r})`); }
     for (const name of ["delete_project","purge_project_assets"]) {
       const body=String((await sql`select pg_get_functiondef(${`public.${name}(uuid,uuid)`}::regprocedure) b`)[0]?.["b"]);
       assert(body.indexOf("delete from public.translations")>0 && body.indexOf("delete from public.translations")<body.indexOf("delete from public.language_versions") && (name==="delete_project" || body.indexOf("delete from public.language_versions")<body.indexOf("delete from public.projects")),`${name}: language versions must delete after translations (and before the project row)`);
@@ -6398,7 +6398,7 @@ try {
     assert(isDeepStrictEqual([...deBefore],[...deAfter]),"other language changed");
     assert(isDeepStrictEqual(before,await norsk()),"Norwegian source changed");
     // Kollisjoner fra historiske data blir liggende urørt
-    await sql`insert into public.translation_lines(id,project_id,variant_id,language,ord,text) values(${newId()},${bp},${v2},'en-us',0,'a'),(${newId()},${bp},${v2},'en-US',1,'b')`;
+    await sql`insert into public.translation_lines(id,project_id,variant_id,language,ord,text) values(${newId()},${bp},${v2},'en-US',0,'a'),(${newId()},${bp},${v2},'en-US',1,'b')`;
     st=await loadState(bp);
     st=await runCommand(st,ALICE,{type:"EditBlockText",productionId:prod.id,blockId:blocks2[1]!.blockId as never,text:"Senere endring"});
     assert((await sql`select count(*)::int n from public.translation_lines where project_id=${bp} and lower(language)='en-us'`)[0]?.["n"]===2,"collision rows changed");
@@ -6440,7 +6440,7 @@ try {
     const np=String((await as("authenticated",ALICE,async tx=>(await tx`select public.create_project('R1 fixture') id`)[0]))?.["id"]);
     const qp=await sql`select name, spec from public.quality_profiles where project_id=${np} order by name`;
     const spec=(n:string)=>qp.find(r=>r["name"]===n)?.["spec"] as {export?:{format?:string}}|undefined;
-    assert(spec("Endelig")?.export?.format==="prores" && spec("Utkast")?.export?.format==="mp4" && spec("Gjennomgang")?.export?.format==="mp4","create_project: Endelig must default to ProRes");
+    assert(spec("Final")?.export?.format==="prores" && spec("Draft")?.export?.format==="mp4" && spec("Review")?.export?.format==="mp4","create_project: Endelig must default to ProRes");
     // R2: loggtabellen – bare serveren skriver, medlemmer leser, ikke-medlemmer ser ingenting
     const g=await sql`select has_table_privilege('anon','public.storage_cleanups','SELECT') a, has_table_privilege('authenticated','public.storage_cleanups','SELECT') r, has_table_privilege('authenticated','public.storage_cleanups','INSERT') w, has_table_privilege('authenticated','public.storage_cleanups','DELETE') d, has_table_privilege('service_role','public.storage_cleanups','INSERT') s, (select relrowsecurity from pg_class where oid='public.storage_cleanups'::regclass) rls`;
     assert(g[0]?.["a"]===false && g[0]?.["r"]===true && g[0]?.["w"]===false && g[0]?.["d"]===false && g[0]?.["s"]===true && g[0]?.["rls"]===true,"storage_cleanups grants/RLS");
@@ -7198,7 +7198,7 @@ try {
   });
   await test("PTG1: prosjektkode/opptak og irreversible skuddreservasjoner", async () => {
     const bp = crypto.randomUUID(), prod = crypto.randomUUID(), scene = crypto.randomUUID(), variant = crypto.randomUUID(), occ = crypto.randomUUID();
-    await sql`insert into public.projects(id,name,created_by) values (${bp},'PTG test',${ALICE})`;
+    await sql`insert into public.projects(id,name,created_by,source_language) values (${bp},'PTG test',${ALICE},'en')`;
     await sql`insert into public.project_members(project_id,user_id,role) values (${bp},${ALICE},'owner')`;
     await sql`insert into public.productions(id,project_id,kind,name,fps_num,fps_den) values (${prod},${bp},'main','Main',24,1)`;
     await sql`insert into public.scenes(id,project_id,origin_production_id) values (${scene},${bp},${prod})`;
@@ -7230,7 +7230,7 @@ try {
   });
   await test("0083 (B-118): scenestatus og scenefarge – check-verdier, skriving via apply_changes og bare redaktør", async () => {
     const bp = crypto.randomUUID(), prod = crypto.randomUUID(), scene = crypto.randomUUID(), variant = crypto.randomUUID(), occ = crypto.randomUUID();
-    await sql`insert into public.projects(id,name,created_by) values (${bp},'B118 test',${ALICE})`;
+    await sql`insert into public.projects(id,name,created_by,source_language) values (${bp},'B118 test',${ALICE},'en')`;
     await sql`insert into public.project_members(project_id,user_id,role) values (${bp},${ALICE},'owner'),(${bp},${BOB},'viewer'),(${bp},${CAROL},'editor')`;
     await sql`insert into public.productions(id,project_id,kind,name,fps_num,fps_den) values (${prod},${bp},'main','Main',24,1)`;
     await sql`insert into public.scenes(id,project_id,origin_production_id) values (${scene},${bp},${prod})`;
@@ -7771,6 +7771,33 @@ try {
     ]) await expectError(as("authenticated", BOB, q as never), "42501");
   });
 
+  await test("0090 G-1: japansk/engelsk/norsk kilde, mål, kildebytte og versjonsintegritet", async () => {
+    for (const source of ["ja", "en", "nb"]) {
+      const bp = String((await as("authenticated", ALICE, tx => tx`select public.create_project('G1',25,1,${source}) id`))[0]?.["id"]);
+      let st = await loadState(bp);
+      assert(st.project.sourceLanguage === source, "source not loaded");
+      const prod = Object.values(st.productions).find(p => p.kind === "main"); assert(prod, "main missing");
+      const blockId = newId(), variantId = newId();
+      st = await runCommand(st, ALICE, { type: "CreateScene", productionId: prod.id, sceneId: newId() as never, variantId: variantId as never, occurrenceId: newId() as never, orderKey: keyBetween(null,null), heading: { intExt: "INT.", location: "ROOM", time: "DAY" }, blocks: [{ blockId: blockId as never, kind: "dialogue", text: source === "ja" ? "こんにちは。" : "Hello.", orderKey: keyBetween(null,null) }] });
+      const original = st.blocks[blockId]?.text;
+      for (const target of source === "ja" ? ["nb", "en"] : source === "en" ? ["nb", "ja"] : ["en", "ja"]) {
+        const versionId = newId(), lineId = newId();
+        st = await runCommand(st, ALICE, { type: "AddLanguageVersion", versionId, language: target, name: target });
+        st = await runCommand(st, ALICE, { type: "AddTranslationLines", items: [{ lineId, fields: { variantId, language: target, ord: 0, kind: "dialogue", text: "Target" } }] });
+        st = await runCommand(st, ALICE, { type: "SetLineLink", linkId: newId(), fields: { variantId, language: target, sourceBlockIds: [blockId], targetTranslationIds: [lineId], origin: "manual", confidence: 1, reason: "" } });
+        await expectError(sql`update public.language_versions set language=${source} where id=${versionId}`, /source language/);
+        await expectError(sql`update public.language_versions set language='de' where id=${versionId}`, /version scope/);
+        await expectError(sql`update public.projects set source_language=${target} where id=${bp}`, /conflicts/);
+      }
+      assert((await sql`select source_language from public.language_versions where project_id=${bp}`).every(v => v["source_language"] === source), "version source mismatch");
+      const changed = await runCommand(st, ALICE, { type: "SetDialogueLanguage", target: "project", targetId: bp, language: "fr" });
+      assert(Object.values(changed.blocks).every(b => b.language === "fr"), "local source blocks mismatch");
+      const loaded = await loadState(bp); assert(Object.values(loaded.blocks).every(b => b.language === "fr"), "persisted source blocks mismatch");
+      assert(loaded.blocks[blockId]?.text === original, "source text changed");
+      await as("service_role", null, tx => tx`select public.delete_project(${bp},${ALICE})`);
+      await as("service_role", null, tx => tx`select public.purge_project_assets(${bp},${ALICE})`);
+    }
+  });
 } finally {
   await sql.end();
   await admin.unsafe(`drop database if exists ${DB} with (force)`);

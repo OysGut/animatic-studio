@@ -654,11 +654,6 @@ export function normalizeLanguageImages(
   for (const li of list) {
     if (!li || typeof li.language !== "string" || !isScriptLanguageTag(li.language))
       return { ok: false, error: tk("core-composition-fields.error.error.09a2b9a18fb7") };
-    if (li.language === "nb")
-      return {
-        ok: false,
-        error: tk("core-composition-fields.error.error.ead44afb7c76"),
-      };
     if (seen.has(li.language))
       return {
         ok: false,
