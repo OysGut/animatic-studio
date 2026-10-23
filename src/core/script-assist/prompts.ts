@@ -44,6 +44,8 @@ export interface AssistRequest {
   readonly description?: string;
   readonly mode?: RewriteMode;
   readonly instruction?: string;
+  /** G-1b: målspråket for «translate» (BCP-47, aldri kildespråket). */
+  readonly targetLanguage?: string;
 }
 
 export interface AssistPrompt {
@@ -74,16 +76,24 @@ export function assistRequestError(r: unknown): string | null {
     return tk("core-script-assist-prompts.assist-request-error.message.f921f59f465c", { MAX_ASSIST_DESCRIPTION: String(MAX_ASSIST_DESCRIPTION) });
   if (!optStr(x["instruction"], MAX_ASSIST_INSTRUCTION))
     return tk("core-script-assist-prompts.assist-request-error.message.15588c449032", { MAX_ASSIST_INSTRUCTION: String(MAX_ASSIST_INSTRUCTION) });
+  if (x["targetLanguage"] !== undefined && !canonicalLanguageTag(x["targetLanguage"]))
+    return tk("g1b-assist.target.invalid");
+  if (x["kind"] === "translate" && x["targetLanguage"] === undefined) return tk("g1b-assist.target.invalid");
   if (x["mode"] !== undefined && !(REWRITE_MODES as readonly unknown[]).includes(x["mode"])) return tk("core-script-assist-prompts.assist-request-error.message.dbf58a7daef0");
   return null;
 }
 
-/**
- * G-1: nyskriving skjer på manusets eget språk. Oversettelsesutkastet går foreløpig alltid til engelsk
- * (målspråket er ikke parameterisert ennå – se G1_SPRAKNOYTRAL_REPORT.md).
- */
-export function replyLanguage(kind: AssistKind, manuscriptLanguage: string): string {
-  return kind === "translate" ? "English" : englishLanguageName(manuscriptLanguage); // i18n-ignore: promptspråk
+/** G-1b: nyskriving skjer på manusets eget språk; oversettelse på det valgte målspråket. */
+export function replyLanguage(kind: AssistKind, manuscriptLanguage: string, targetLanguage?: string): string {
+  return englishLanguageName(kind === "translate" && targetLanguage ? targetLanguage : manuscriptLanguage);
+}
+
+/** Forhåndsvalgt mål: grensesnittspråket når det ikke er kildespråket, ellers første språkversjon. */
+export function defaultTranslateTarget(s: ProjectState, uiLanguage: string): string | null {
+  const ui = canonicalLanguageTag(uiLanguage);
+  if (ui && !isSourceLanguage(s, ui)) return ui;
+  const v = Object.values(s.languageVersions ?? {}).find((x) => !x.removed && !isSourceLanguage(s, x.language));
+  return v ? v.language : null;
 }
 
 const KIND_LABEL: Record<BlockKind, string> = {
@@ -302,12 +312,12 @@ function scenePrompt(s: ProjectState, r: AssistRequest): AssistPrompt | string {
   };
 }
 
-/** Linjene som mangler engelsk oversettelse (valgte, eller hele scenen). */
-export function untranslatedBlocks(s: ProjectState, occurrenceId: string, blockIds: readonly string[]): ScriptBlock[] {
+/** Linjene som mangler oversettelse til målspråket (valgte, eller hele scenen). */
+export function untranslatedBlocks(s: ProjectState, occurrenceId: string, blockIds: readonly string[], language: string): ScriptBlock[] {
   const want = new Set(blockIds);
   const has = new Set(
     Object.values(s.translations)
-      .filter((t) => !t.removed && t.language === "en" && t.blockId)
+      .filter((t) => !t.removed && t.language.toLowerCase() === language.toLowerCase() && t.blockId)
       .map((t) => t.blockId!),
   );
   return sceneBlocks(s, occurrenceId).filter(
@@ -337,14 +347,16 @@ export function buildAssistPrompt(
     );
   } else if (r.kind === "translate") {
     if (!r.occurrenceId || !s.occurrences[r.occurrenceId]) return { ok: false, message: tk("core-script-assist-prompts.message.message.49241b66fcc9") };
-    const picked = untranslatedBlocks(s, r.occurrenceId, r.blockIds).slice(0, MAX_ASSIST_BLOCKS);
+    const target = r.targetLanguage!;
+    if (isSourceLanguage(s, target)) return { ok: false, message: tk("g1b-assist.target.invalid") };
+    const picked = untranslatedBlocks(s, r.occurrenceId, r.blockIds, target).slice(0, MAX_ASSIST_BLOCKS);
     if (picked.length === 0)
       return { ok: false, message: tk("core-script-assist-prompts.message.message.975880aef759") };
     p = editPrompt(
       s,
       { ...r, blockIds: picked.map((b) => b.id) },
       picked,
-      `Translate the marked lines from ${englishLanguageName(sourceLanguageOf(s))} to English for the English version of the film. Keep CHARACTER names unchanged.`,
+      `Translate the marked lines from ${englishLanguageName(sourceLanguageOf(s))} to ${englishLanguageName(target)} for that language version of the film. Keep CHARACTER names unchanged.`,
     );
   } else if (r.kind === "next_line") p = nextLinePrompt(s, r);
   else p = scenePrompt(s, r);
