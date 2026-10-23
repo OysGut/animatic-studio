@@ -575,7 +575,7 @@ export function Gallery({
       </div>
 
       <Dialog open={seedOpen} onOpenChange={(o) => !o && setSeedDismissed(true)}>
-        <DialogContent>
+        <DialogContent uiId="V-166">
           <DialogHeader>
             <DialogTitle>{tk("sb2.seed-title")}</DialogTitle>
             <DialogDescription>{tk("sb2.seed-body", { count: String(seedPlan.length) })}</DialogDescription>
@@ -661,7 +661,7 @@ function MovePanelDialog({
   const candidates = occ ? blocksOfVariant(state, occ.variantId).filter((b) => b.kind === "dialogue" || b.kind === "action") : [];
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent uiId="V-165">
         <DialogHeader>
           <DialogTitle>{tk("sb2.move-title")}</DialogTitle>
           <DialogDescription>{tk("sb2.move-body", { number: String(panel.index + 1) })}</DialogDescription>
