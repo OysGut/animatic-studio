@@ -948,6 +948,8 @@ export interface ProjectRows {
   readonly scene_variants: readonly Row[];
   readonly script_blocks: readonly Row[];
   readonly script_block_revisions: readonly Row[];
+  /** G-2: bare gjeldende revisjon per blokk er med (se ProjectState.blockHistory). */
+  readonly history_partial?: boolean;
   readonly scene_occurrences: readonly Row[];
   readonly production_segments: readonly Row[];
   readonly takes: readonly Row[];

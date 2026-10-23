@@ -107,7 +107,8 @@ export function checkInvariants(s: ProjectState): Violation[] {
         tk("core-invariants.check-invariants.add.cecf273318eb", { id: String(b.id) }),
       );
     }
-    revs.forEach((r, i) => {
+    // G-2: med bare gjeldende revisjon lastet kan ikke rekken sjekkes her (serveren har full historikk)
+    if (s.blockHistory !== "current") revs.forEach((r, i) => {
       if (r.rev !== i + 1)
         add(
           "INV-13",
