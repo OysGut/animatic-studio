@@ -5,6 +5,7 @@ import { useCallback, useEffect, useMemo, useRef, useState, type MouseEvent } fr
 import { DriftBadge } from "@/app/dialogue/DriftBadge";
 import { lineDrift, blocksOfVariant, annotationsOfVariant, charactersInProduction, filterPages, formatHeading, mainProduction, orderedOccurrences, pageDecorations, scriptPages, sceneNumberOf, translatedState, assetUsage, assetNames, nameKey, HIT_LABEL, type Asset, type AssetUsage, type NewAnnotation, type ProjectState } from "@/core";
 import { explorerContext, explorerGroups, type ExplorerHit } from "@/core/screenplay/explorer";
+import { foldMatch } from "@/core/search-fold";
 import { ScriptPageView, type Selection } from "@/app/script/ScriptPageView";
 import { NotesPanel } from "@/app/script/NotesPanel";
 import { ScriptLanguageSelect } from "@/app/script/ScriptLanguageSelect";
