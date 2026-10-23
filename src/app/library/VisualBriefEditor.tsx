@@ -6,7 +6,7 @@
 import { Loader2, NotebookPen } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { tm, ASSET_KIND_LABEL, coverVersion, mainProduction, scriptMentions, visualBriefUserText, type Asset, type ProjectState } from "@/core";
+import { tm, factSheetStudy, type Asset, type ProjectState } from "@/core";
 import { writeImagePrompt } from "@/adapters/ai/write-prompt.functions";
 import { aiJobsKey } from "@/app/ai/use-ai-jobs";
 import type { Commands } from "@/app/project/use-commands";
@@ -49,32 +49,16 @@ export function VisualBriefEditor({
     setBusy(true);
     setMsg(null);
     try {
-      const main = mainProduction(state);
-      const mentions = main
-        ? scriptMentions(state, main.id, asset, 10, 2500).map((m) =>
-            m.dialogue ? `${m.speaker}: "${m.text}"` : m.text,
-          )
-        : [];
-      const cover = coverVersion(state, asset.id);
-      const img = cover && cover.mimeType.startsWith("image/") ? cover : null;
-      const variant = img ? state.assetVariants[img.variantId] : undefined;
+      // Samme studie som serveren lager når «Skriv med AI» mangler faktaark (Øystein 23.10)
+      const study = factSheetStudy(state, asset);
       const r = await writeImagePrompt({
         data: {
           projectId: state.project.id,
           assetId: asset.id,
           task: "visual",
-          brief: visualBriefUserText({
-            name: asset.name,
-            kind: ASSET_KIND_LABEL[asset.kind],
-            description: asset.description,
-            appearance: variant?.appearance ?? "",
-            mentions,
-            imageLabels: img ? [`the current design of ${asset.name} (v${img.number})`] : [],
-          }),
+          brief: study.text,
           purpose: "cutout",
-          images: img
-            ? [{ path: img.mediaPath, label: `the current design of ${asset.name}` }]
-            : [],
+          images: [...study.images],
           approved: true,
         },
       });
