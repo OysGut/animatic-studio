@@ -8398,11 +8398,11 @@ try {
   });
 
   await test("0099 G-7.4: validate_style_harmonizations (0065)", async () => {
-    const { variant } = await g7mkAsset("G7-harm");
-    const version = newId();
-    await sql`insert into public.asset_versions (id, project_id, variant_id, number, media_path, mime_type, byte_size, sha256) values (${version},${g7q},${(await sql`insert into public.assets (id, project_id, kind, name) values (${newId()},${g7q},'character','Q') returning id`).length > 0 ? version : version,1,${g7q + "/x/" + version + "/a.png"},'image/png',100,${"a".repeat(64)})`;
-    const harm = newId();
     // Versjonen hører til et annet prosjekt: FK-en godtar den, valideringen skal ikke
+    const qAsset = newId(), qVariant = newId(), version = newId(), harm = newId();
+    await sql`insert into public.assets (id, project_id, kind, name) values (${qAsset},${g7q},'character','Q-karakter')`;
+    await sql`insert into public.asset_variants (id, project_id, asset_id, name, style) values (${qVariant},${g7q},${qAsset},'Animatic','animatic')`;
+    await sql`insert into public.asset_versions (id, project_id, variant_id, number, media_path, mime_type, byte_size, sha256) values (${version},${g7q},${qVariant},1,${g7q + "/x/" + version + "/a.png"},'image/png',100,${"a".repeat(64)})`;
     await g7Expect(async (tx) => {
       await tx`insert into public.style_harmonizations (id, project_id, version_id, source_version_id, model, use, reference_version_id)
         values (${harm},${g7p},${version},${version},'test','variant',${version})`;
