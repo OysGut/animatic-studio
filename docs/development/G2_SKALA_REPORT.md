@@ -7,7 +7,7 @@ Dato: 2026-10-23. Grunnlag: Claudes arkitekturrevisjon A1–A4. Ikke publisert. 
 | Kontroll | Resultat |
 |---|---|
 | Typekontroll (tsc) | 0 feil |
-| Full vitest | grønn (se siste kjøring nederst) |
+| Full vitest | 2 780 bestått, 0 feilet, 10 hoppet over (som før) |
 | DB-tester (lokal Postgres, alle migrasjoner til og med 0093) | 189 bestått, 0 feilet (6 nye for G-2) |
 | i18n-sjekk | grønn (ingen nye tekster i grensesnittet) |
 | Betalte kall | ingen |
