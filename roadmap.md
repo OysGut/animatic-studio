@@ -1,5 +1,9 @@
 # Veikart
 
+## G-2 skala (23.10.2026)
+- [x] A3 indekser, A4 RLS, A1 innlasting/øyeblikksbilde, A2 synk via project_seq, g1-triggere (0093)
+- [ ] Claude: kjør 0093 i Cloud og mål åpning av et stort prosjekt der
+
 ## G-1b (pågår)
 - [x] 1. Kildevelger ved oppretting + advarsel ved bytte (LanguageVersionsDialog)
 - [x] 2. Import (Fountain/FDX/Word/PDF): språkforslag + bekreftelse
