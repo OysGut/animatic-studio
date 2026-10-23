@@ -226,7 +226,7 @@ describe("characterBundleFromAsset / planCharacterPullCommands", () => {
     const cmds = planCharacterPullCommands(s, "a1" as never, plan);
     const types = cmds.map((c) => c.type);
     expect(types).toEqual(["SetAssetVoice", "SetAssetBriefVersions", "SaveMouthSet", "UpdateAsset"]);
-    const briefs = cmds[1] as { versions: BriefVersion[]; activeId: string | null };
+    const briefs = cmds[1] as unknown as { versions: BriefVersion[]; activeId: string | null };
     expect(briefs.versions.map((v) => v.id)).toEqual(["b1", "b2"]);
     expect(briefs.activeId).toBe("b2");
     const mouth = (cmds[2] as { set: { id: string; variants: Record<string, string | null> } }).set;
