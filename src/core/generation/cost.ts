@@ -153,11 +153,12 @@ export interface AiUsage {
 export function aiUsage(
   project: Pick<Project, "aiMonthLimit" | "aiPricePerImage">,
   jobs: readonly GenerationJob[],
-  now: Date,
+  /** Første øyeblikk i budsjettmåneden, i prosjektets budsjettidssone (G-3.6). */
+  periodStart: Date,
   /** Nøyaktig antall denne måneden fra databasen (listen kan være avkortet). */
   monthCount?: number,
 ): AiUsage {
-  const from = monthStartUtc(now).getTime();
+  const from = periodStart.getTime();
   // Beskrivelser skrevet av AI (DEC-0066) koster lite og teller ikke som generering
   const month = jobs.filter(
     (j) => j.kind !== "prompt" && j.status !== "failed" && Date.parse(j.createdAt) >= from,
@@ -270,8 +271,8 @@ export function jobEffort(
 }
 
 /** Profile usage is independent of project usage; queued jobs reserve capacity. */
-export function qualityProfileUsage(profileId: string, jobs: readonly GenerationJob[], now: Date): number {
-  const from = monthStartUtc(now).getTime();
+export function qualityProfileUsage(profileId: string, jobs: readonly GenerationJob[], periodStart: Date): number {
+  const from = periodStart.getTime();
   return jobs.filter(j => j.kind !== "prompt" && j.status !== "failed" && Date.parse(j.createdAt) >= from &&
     (j.params?.["qualityProfile"] as { id?: unknown } | undefined)?.id === profileId).length;
 }
