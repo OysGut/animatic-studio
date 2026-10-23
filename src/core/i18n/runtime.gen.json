@@ -32366,6 +32366,54 @@
     "print-pdf.tile": {
       "text": "rad {row} / kolonne {column}"
     },
+    "ptg.card.ae.desc": {
+      "text": "Lag, kamera og lyd som prosjekt for After Effects."
+    },
+    "ptg.card.ae.title": {
+      "text": "After Effects"
+    },
+    "ptg.card.compositing.desc": {
+      "text": "Skript og medier for Nuke og Fusion."
+    },
+    "ptg.card.compositing.title": {
+      "text": "Compositing"
+    },
+    "ptg.card.dragonframe.desc": {
+      "text": "Referanse og eksponeringsark til opptak i Dragonframe."
+    },
+    "ptg.card.dragonframe.title": {
+      "text": "Dragonframe"
+    },
+    "ptg.card.editorial.desc": {
+      "text": "OTIO, FCP7-XML og EDL til klipperen."
+    },
+    "ptg.card.editorial.title": {
+      "text": "Klippeprogram"
+    },
+    "ptg.card.fbx.desc": {
+      "text": "Kamerabevegelsen til 3D-programmer (eksperimentell)."
+    },
+    "ptg.card.fbx.title": {
+      "text": "Kamera FBX"
+    },
+    "ptg.card.mouth.desc": {
+      "text": "Munnformer per bilde for animatører og riggverksted."
+    },
+    "ptg.card.mouth.title": {
+      "text": "Munnliste og leppesynk"
+    },
+    "ptg.card.shotlist.desc": {
+      "text": "Skudd med tider og bilder for produksjonsstyring."
+    },
+    "ptg.card.shotlist.title": {
+      "text": "Skuddliste"
+    },
+    "ptg.layout.history": {
+      "text": "Eksporthistorikk"
+    },
+    "ptg.layout.shared": {
+      "text": "Felles for alle pakker"
+    },
     "ptg1.cancel": {
       "text": "Avbryt"
     },
@@ -65596,6 +65644,54 @@
     },
     "print-pdf.tile": {
       "text": "row {row} / column {column}"
+    },
+    "ptg.card.ae.desc": {
+      "text": "Layers, camera and audio as an After Effects project."
+    },
+    "ptg.card.ae.title": {
+      "text": "After Effects"
+    },
+    "ptg.card.compositing.desc": {
+      "text": "Scripts and media for Nuke and Fusion."
+    },
+    "ptg.card.compositing.title": {
+      "text": "Compositing"
+    },
+    "ptg.card.dragonframe.desc": {
+      "text": "Reference and exposure sheets for shooting in Dragonframe."
+    },
+    "ptg.card.dragonframe.title": {
+      "text": "Dragonframe"
+    },
+    "ptg.card.editorial.desc": {
+      "text": "OTIO, FCP7 XML and EDL for the editor."
+    },
+    "ptg.card.editorial.title": {
+      "text": "Editing software"
+    },
+    "ptg.card.fbx.desc": {
+      "text": "Camera motion for 3D software (experimental)."
+    },
+    "ptg.card.fbx.title": {
+      "text": "Camera FBX"
+    },
+    "ptg.card.mouth.desc": {
+      "text": "Mouth shapes per frame for animators and the rig workshop."
+    },
+    "ptg.card.mouth.title": {
+      "text": "Mouth list and lip sync"
+    },
+    "ptg.card.shotlist.desc": {
+      "text": "Shots with timings and images for production tracking."
+    },
+    "ptg.card.shotlist.title": {
+      "text": "Shotlist"
+    },
+    "ptg.layout.history": {
+      "text": "Export history"
+    },
+    "ptg.layout.shared": {
+      "text": "Shared by all packages"
     },
     "ptg1.cancel": {
       "text": "Cancel"

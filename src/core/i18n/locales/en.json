@@ -75593,5 +75593,53 @@
   },
   "dialog.resize.reset": {
     "text": "Default size"
+  },
+  "ptg.layout.shared": {
+    "text": "Shared by all packages"
+  },
+  "ptg.layout.history": {
+    "text": "Export history"
+  },
+  "ptg.card.shotlist.title": {
+    "text": "Shotlist"
+  },
+  "ptg.card.shotlist.desc": {
+    "text": "Shots with timings and images for production tracking."
+  },
+  "ptg.card.dragonframe.title": {
+    "text": "Dragonframe"
+  },
+  "ptg.card.dragonframe.desc": {
+    "text": "Reference and exposure sheets for shooting in Dragonframe."
+  },
+  "ptg.card.ae.title": {
+    "text": "After Effects"
+  },
+  "ptg.card.ae.desc": {
+    "text": "Layers, camera and audio as an After Effects project."
+  },
+  "ptg.card.fbx.title": {
+    "text": "Camera FBX"
+  },
+  "ptg.card.fbx.desc": {
+    "text": "Camera motion for 3D software (experimental)."
+  },
+  "ptg.card.editorial.title": {
+    "text": "Editing software"
+  },
+  "ptg.card.editorial.desc": {
+    "text": "OTIO, FCP7 XML and EDL for the editor."
+  },
+  "ptg.card.compositing.title": {
+    "text": "Compositing"
+  },
+  "ptg.card.compositing.desc": {
+    "text": "Scripts and media for Nuke and Fusion."
+  },
+  "ptg.card.mouth.title": {
+    "text": "Mouth list and lip sync"
+  },
+  "ptg.card.mouth.desc": {
+    "text": "Mouth shapes per frame for animators and the rig workshop."
   }
 }

@@ -75593,5 +75593,53 @@
   },
   "dialog.resize.reset": {
     "text": "[!! DDëëffááüülltt ssïïzzëë !!]"
+  },
+  "ptg.layout.shared": {
+    "text": "[!! SShháárrëëdd bbyy áállll ppáácckkáággëëss !!]"
+  },
+  "ptg.layout.history": {
+    "text": "[!! ËËxxppôôrrtt hhïïssttôôrryy !!]"
+  },
+  "ptg.card.shotlist.title": {
+    "text": "[!! SShhôôttllïïsstt !!]"
+  },
+  "ptg.card.shotlist.desc": {
+    "text": "[!! SShhôôttss wwïïtthh ttïïmmïïnnggss áánndd ïïmmáággëëss ffôôrr pprrôôddüüccttïïôônn ttrráácckkïïnngg. !!]"
+  },
+  "ptg.card.dragonframe.title": {
+    "text": "[!! DDrráággôônnffrráámmëë !!]"
+  },
+  "ptg.card.dragonframe.desc": {
+    "text": "[!! RRëëffëërrëënnccëë áánndd ëëxxppôôssüürrëë sshhëëëëttss ffôôrr sshhôôôôttïïnngg ïïnn DDrráággôônnffrráámmëë. !!]"
+  },
+  "ptg.card.ae.title": {
+    "text": "[!! ÁÁffttëërr ËËffffëëccttss !!]"
+  },
+  "ptg.card.ae.desc": {
+    "text": "[!! LLááyyëërrss, ccáámmëërráá áánndd ááüüddïïôô ááss áánn ÁÁffttëërr ËËffffëëccttss pprrôôjjëëcctt. !!]"
+  },
+  "ptg.card.fbx.title": {
+    "text": "[!! CCáámmëërráá FFBBXX !!]"
+  },
+  "ptg.card.fbx.desc": {
+    "text": "[!! CCáámmëërráá mmôôttïïôônn ffôôrr 3DD ssôôffttwwáárrëë (ëëxxppëërrïïmmëënnttááll). !!]"
+  },
+  "ptg.card.editorial.title": {
+    "text": "[!! ËËddïïttïïnngg ssôôffttwwáárrëë !!]"
+  },
+  "ptg.card.editorial.desc": {
+    "text": "[!! ÔÔTTÏÏÔÔ, FFCCPP7 XXMMLL áánndd ËËDDLL ffôôrr tthhëë ëëddïïttôôrr. !!]"
+  },
+  "ptg.card.compositing.title": {
+    "text": "[!! CCôômmppôôssïïttïïnngg !!]"
+  },
+  "ptg.card.compositing.desc": {
+    "text": "[!! SSccrrïïppttss áánndd mmëëddïïáá ffôôrr NNüükkëë áánndd FFüüssïïôônn. !!]"
+  },
+  "ptg.card.mouth.title": {
+    "text": "[!! MMôôüütthh llïïsstt áánndd llïïpp ssyynncc !!]"
+  },
+  "ptg.card.mouth.desc": {
+    "text": "[!! MMôôüütthh sshhááppëëss ppëërr ffrráámmëë ffôôrr áánnïïmmááttôôrrss áánndd tthhëë rrïïgg wwôôrrkksshhôôpp. !!]"
   }
 }

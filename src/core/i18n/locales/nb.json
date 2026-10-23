@@ -75611,5 +75611,53 @@
   },
   "dialog.resize.reset": {
     "text": "Standardstørrelse"
+  },
+  "ptg.layout.shared": {
+    "text": "Felles for alle pakker"
+  },
+  "ptg.layout.history": {
+    "text": "Eksporthistorikk"
+  },
+  "ptg.card.shotlist.title": {
+    "text": "Skuddliste"
+  },
+  "ptg.card.shotlist.desc": {
+    "text": "Skudd med tider og bilder for produksjonsstyring."
+  },
+  "ptg.card.dragonframe.title": {
+    "text": "Dragonframe"
+  },
+  "ptg.card.dragonframe.desc": {
+    "text": "Referanse og eksponeringsark til opptak i Dragonframe."
+  },
+  "ptg.card.ae.title": {
+    "text": "After Effects"
+  },
+  "ptg.card.ae.desc": {
+    "text": "Lag, kamera og lyd som prosjekt for After Effects."
+  },
+  "ptg.card.fbx.title": {
+    "text": "Kamera FBX"
+  },
+  "ptg.card.fbx.desc": {
+    "text": "Kamerabevegelsen til 3D-programmer (eksperimentell)."
+  },
+  "ptg.card.editorial.title": {
+    "text": "Klippeprogram"
+  },
+  "ptg.card.editorial.desc": {
+    "text": "OTIO, FCP7-XML og EDL til klipperen."
+  },
+  "ptg.card.compositing.title": {
+    "text": "Compositing"
+  },
+  "ptg.card.compositing.desc": {
+    "text": "Skript og medier for Nuke og Fusion."
+  },
+  "ptg.card.mouth.title": {
+    "text": "Munnliste og leppesynk"
+  },
+  "ptg.card.mouth.desc": {
+    "text": "Munnformer per bilde for animatører og riggverksted."
   }
 }

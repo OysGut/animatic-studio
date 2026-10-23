@@ -641,7 +641,7 @@ export function ExportAnimaticDialog({
     <>
     {alphaComposition && alphaOpen ? <AlphaExportDialog state={state} composition={alphaComposition} open={alphaOpen} onOpenChange={setAlphaOpen} /> : null}
     <Dialog open={open && !alphaOpen} onOpenChange={onOpenChange}>
-      <ResizableDialogContent sizeKey="export-animatic" className="max-h-[90dvh] max-w-[640px] overflow-y-auto border-border bg-surface-2">
+      <ResizableDialogContent sizeKey="export-animatic" minWidth={560} className="@container max-h-[90dvh] w-[calc(100vw-48px)] max-w-[1280px] overflow-y-auto border-border bg-surface-2">
         <DialogHeader>
           <DialogTitle>{t("app-assembly-export-animatic-dialog.export-animatic-dialog.dialog-title.f19f9faf7736")}</DialogTitle>
           <DialogDescription>
@@ -651,6 +651,8 @@ export function ExportAnimaticDialog({
             {t("app-assembly-export-animatic-dialog.export-animatic-dialog.dialog-description.44d85f195f4d")}
           </DialogDescription>
         </DialogHeader>
+        <div className="grid min-w-0 grid-cols-1 gap-6 @[1000px]:grid-cols-2">
+        <div data-testid="export-animatic-column" className="flex min-w-0 flex-col gap-4">
         <QualityProfilePicker state={state} value={quality.choice} disabled={busy} onChange={quality.setChoice} />
         <div className="flex flex-wrap gap-3 text-xs text-text-secondary">
           <label>{t("app-assembly-export-animatic-dialog.export-animatic-dialog.label.5d34e7666129")} <select data-testid="export-profile-resolution" value={profileResolution ?? ""} disabled={busy} onChange={e => setProfileResolution(e.target.value || null)} className="h-7 border border-border-control bg-surface-3"><option value="">{t("app-assembly-export-animatic-dialog.export-animatic-dialog.option.ba073253e1c7")}</option>{["1K","2K","4K"].map(r => <option key={r}>{r}</option>)}</select></label>
@@ -1081,11 +1083,20 @@ export function ExportAnimaticDialog({
           </p>
         ) : null}
 
-        <ExportHistory productionId={productionId} kinds={["film", "audio"]} />
-        <ShotlistExport state={state} productionId={productionId} clips={sel.clips} language={language} disabled={busy} />
         <Button variant="outline" size="sm" data-testid="export-alpha-open" disabled={busy || !alphaComposition} onClick={() => setAlphaOpen(true)} title={t("app-assembly-export-animatic-dialog.export-animatic-dialog.title.d2997bee334d")}>
           <Download />{t("app-assembly-export-animatic-dialog.export-animatic-dialog.button.4ca3b34859ad")}
         </Button>
+
+        </div>
+        <ShotlistExport state={state} productionId={productionId} clips={sel.clips} language={language} disabled={busy} />
+        </div>
+        <details data-testid="export-history-section" className="rounded-sm border border-border bg-surface-1 px-3 py-2">
+          <summary className="cursor-pointer text-xs font-medium text-text-secondary">{t("ptg.layout.history")}</summary>
+          <div className="mt-2 flex flex-col gap-2">
+            <ExportHistory productionId={productionId} kinds={["film", "audio"]} />
+            <ExportHistory productionId={productionId} kinds={["script"]} />
+          </div>
+        </details>
 
         <DialogFooter className="border-t border-border bg-surface-2 py-2">
           {busy ? (
