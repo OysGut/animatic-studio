@@ -8054,6 +8054,17 @@ try {
     await as("service_role", null, (tx) => tx`select public.delete_project(${pid}, ${ALICE})`);
     await as("authenticated", ALICE, (tx) => tx`select public.set_my_time_zone(null)`);
   });
+  // ---------- search_path: alle SECURITY DEFINER-funksjoner skal ha search_path='' ----------
+  await test("alle SECURITY DEFINER-funksjoner i public/private har search_path=''", async () => {
+    const rows = await sql`
+      select n.nspname as ns, p.proname as name
+      from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+      where n.nspname in ('public', 'private') and p.prosecdef
+        and not exists (select 1 from unnest(coalesce(p.proconfig, array[]::text[])) c where c = 'search_path=""')
+      order by 1, 2`;
+    assert(rows.length === 0,
+      `SECURITY DEFINER uten search_path='': ${rows.map((r) => `${String(r["ns"])}.${String(r["name"])}`).join(", ")}`);
+  });
 } finally {
   await sql.end();
   await admin.unsafe(`drop database if exists ${DB} with (force)`);
