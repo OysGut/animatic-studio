@@ -171,7 +171,7 @@ describe("G-6 pkt 4: sikkerhetskopi tar med globale ressurser som snapshot", () 
     expect(row["global_bundle_number"]).toBe(2);
     expect(row["voice"]).toEqual(VOICE);
     expect(row["brief_versions"]).toEqual([B1]);
-    const state = stateFromRows({ ...fixture.rows, assets: [row] } as never);
+    const state = stateFromRows({ ...fixture.rows, project: fixture.project, assets: [row] } as never);
     const back = state.assets["a1" as never]!;
     expect(back.globalAssetId).toBe(asset.globalAssetId);
     expect(back.globalBundleNumber).toBe(2);
