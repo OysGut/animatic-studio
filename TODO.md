@@ -299,3 +299,5 @@ B-087: REQ-0879–REQ-0895 (Rigg & 2D-utskrift, A1–A17) og REQ-0896–REQ-0915
 - [x] ZIP64 (KI-66/KI-80, N9): grensen på 3,8 GB fjernet; over 4 GB og over 65 535 filer testet (tests/unit/n9-zip64-large.test.ts). KI-250 lukket (screens.mjs avviklet i R5).
 - Rhubarb-finjustering av munnspor fra lyd (PTG4), lydstrømming ved import (KI-67), KI-12 (delvis lasting i runCommand), KI-92 (frilegging i Web Worker).
 - KI-30 krever Øystein: opprydding av alle ubrukte opplastinger, ikke bare AI-filer, betyr automatisk sletting av brukerens filer (se N9_REPORT.md).
+
+- [ ] Visuell sjekk av miniatyrer (plassholderretting del 2) på nb og en i sceneeditoren og biblioteket — ikke kjørt i denne økten.
