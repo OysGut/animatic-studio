@@ -61,6 +61,11 @@ export const Route = createFileRoute("/api/public/cron/ai-jobs")({
             const { purgeDueAccounts } = await import("@/adapters/account/admin.functions");
             run.purged = await purgeDueAccounts(db);
           }
+          // G-5 (0097): rydd endringsloggen høyst én gang i døgnet (retensjon N dager / N endringer)
+          if (schema.version >= 97) {
+            const { pruneChangeLogsIfDue } = await import("@/adapters/storage/change-log-prune.server");
+            await pruneChangeLogsIfDue(db);
+          }
           const { stopped, sent, purged } = run;
           return Response.json({ ok: true, stopped, sent, purged, ...summary });
         } catch (e) {
