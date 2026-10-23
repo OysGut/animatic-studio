@@ -75755,5 +75755,44 @@
   },
   "build.version": {
     "text": "Version {sha} · built {time}"
+  },
+  "g1-source-language.field.label": {
+    "text": "Script language"
+  },
+  "g1-source-language.current": {
+    "text": "Source language: {language}"
+  },
+  "g1-source-language.change.button": {
+    "text": "Change …"
+  },
+  "g1-source-language.change.new-label": {
+    "text": "New source language (BCP-47 tag)"
+  },
+  "g1-source-language.change.warning": {
+    "text": "The text is not translated. Results created from the language – speech, translations and exports – may become outdated and have to be recreated."
+  },
+  "g1-source-language.change.conflict": {
+    "text": "{language} is in use as a target language ({count} rows). Change or remove these before making it the source language."
+  },
+  "g1-source-language.change.confirm": {
+    "text": "Change source language"
+  },
+  "g1-source-language.change.cancel": {
+    "text": "Cancel"
+  },
+  "g1-source-language.change.undo": {
+    "text": "Change source language to {language}"
+  },
+  "g1-source-language.import.label": {
+    "text": "Language of the file"
+  },
+  "g1-source-language.import.suggestion": {
+    "text": "Suggested: {language}"
+  },
+  "g1-source-language.import.mismatch": {
+    "text": "Note: the scenes are stored with the project's source language ({language}). If the whole script is in another language, change the source language first."
+  },
+  "g1-source-language.import.confirm-hint": {
+    "text": "The language is correct – confirm before importing. The source text is stored unchanged."
   }
 }

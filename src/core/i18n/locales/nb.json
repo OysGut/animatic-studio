@@ -75773,5 +75773,44 @@
   },
   "build.version": {
     "text": "Versjon {sha} · bygget {time}"
+  },
+  "g1-source-language.field.label": {
+    "text": "Manusets språk"
+  },
+  "g1-source-language.current": {
+    "text": "Kildespråk: {language}"
+  },
+  "g1-source-language.change.button": {
+    "text": "Endre …"
+  },
+  "g1-source-language.change.new-label": {
+    "text": "Nytt kildespråk (BCP-47-kode)"
+  },
+  "g1-source-language.change.warning": {
+    "text": "Teksten oversettes ikke. Resultater som er laget ut fra språket – tale, oversettelser og eksporter – kan bli utdaterte og må lages på nytt."
+  },
+  "g1-source-language.change.conflict": {
+    "text": "{language} er i bruk som målspråk ({count} rader). Endre eller fjern disse før språket gjøres til kildespråk."
+  },
+  "g1-source-language.change.confirm": {
+    "text": "Endre kildespråk"
+  },
+  "g1-source-language.change.cancel": {
+    "text": "Avbryt"
+  },
+  "g1-source-language.change.undo": {
+    "text": "Endre kildespråk til {language}"
+  },
+  "g1-source-language.import.label": {
+    "text": "Språket i filen"
+  },
+  "g1-source-language.import.suggestion": {
+    "text": "Foreslått: {language}"
+  },
+  "g1-source-language.import.mismatch": {
+    "text": "Merk: scenene lagres med prosjektets kildespråk ({language}). Er hele manuset på et annet språk, bør du endre kildespråket først."
+  },
+  "g1-source-language.import.confirm-hint": {
+    "text": "Språket stemmer – bekreft før import. Kildeteksten lagres uendret."
   }
 }

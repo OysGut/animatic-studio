@@ -24,6 +24,34 @@ function decodeXml(s: string): string {
     .replace(/&amp;/g, "&");
 }
 
+/**
+ * G-1b: språket dokumentet selv oppgir (w:lang i standardstilene, ellers første w:lang i dokumentet).
+ * Brukes som forslag ved import – aldri som en sikker påstand. Returnerer null uten treff.
+ */
+export function docxLanguage(data: Uint8Array): string | null {
+  let total = 0;
+  const files = unzipSync(data, {
+    filter: (f) => {
+      total += f.originalSize;
+      if (total > MAX_UNZIPPED)
+        throw new Error(tk("engine-import-docx-lines.filter.filter.f2692ff5617e"));
+      return f.name === "word/document.xml" || f.name === "word/styles.xml";
+    },
+  });
+  const styles = files["word/styles.xml"];
+  if (styles) {
+    const defaults = /<w:docDefaults\b[\s\S]*?<\/w:docDefaults>/.exec(strFromU8(styles))?.[0];
+    const val = defaults && /<w:lang\b[^>]*\bw:val="([^"]+)"/.exec(defaults)?.[1];
+    if (val) return val;
+  }
+  const doc = files["word/document.xml"];
+  if (doc) {
+    const val = /<w:lang\b[^>]*\bw:val="([^"]+)"/.exec(strFromU8(doc))?.[1];
+    if (val) return val;
+  }
+  return null;
+}
+
 export function docxToLines(data: Uint8Array): RawLine[] {
   return docxToLinesAndNotes(data).lines;
 }

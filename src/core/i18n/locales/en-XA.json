@@ -75755,5 +75755,44 @@
   },
   "build.version": {
     "text": "[!! VVëërrssïïôônn {sha} · bbüüïïlltt {time} !!]"
+  },
+  "g1-source-language.field.label": {
+    "text": "[!! SSccrrïïpptt lláánnggüüáággëë !!]"
+  },
+  "g1-source-language.current": {
+    "text": "[!! SSôôüürrccëë lláánnggüüáággëë: {language} !!]"
+  },
+  "g1-source-language.change.button": {
+    "text": "[!! CChháánnggëë … !!]"
+  },
+  "g1-source-language.change.new-label": {
+    "text": "[!! NNëëww ssôôüürrccëë lláánnggüüáággëë (BBCCPP-47 ttáágg) !!]"
+  },
+  "g1-source-language.change.warning": {
+    "text": "[!! TThhëë ttëëxxtt ïïss nnôôtt ttrráánnssllááttëëdd. RRëëssüüllttss ccrrëëááttëëdd ffrrôômm tthhëë lláánnggüüáággëë – ssppëëëëcchh, ttrráánnssllááttïïôônnss áánndd ëëxxppôôrrttss – mmááyy bbëëccôômmëë ôôüüttddááttëëdd áánndd hháávvëë ttôô bbëë rrëëccrrëëááttëëdd. !!]"
+  },
+  "g1-source-language.change.conflict": {
+    "text": "[!! {language} ïïss ïïnn üüssëë ááss áá ttáárrggëëtt lláánnggüüáággëë ({count} rrôôwwss). CChháánnggëë ôôrr rrëëmmôôvvëë tthhëëssëë bbëëffôôrrëë mmáákkïïnngg ïïtt tthhëë ssôôüürrccëë lláánnggüüáággëë. !!]"
+  },
+  "g1-source-language.change.confirm": {
+    "text": "[!! CChháánnggëë ssôôüürrccëë lláánnggüüáággëë !!]"
+  },
+  "g1-source-language.change.cancel": {
+    "text": "[!! CCáánnccëëll !!]"
+  },
+  "g1-source-language.change.undo": {
+    "text": "[!! CChháánnggëë ssôôüürrccëë lláánnggüüáággëë ttôô {language} !!]"
+  },
+  "g1-source-language.import.label": {
+    "text": "[!! LLáánnggüüáággëë ôôff tthhëë ffïïllëë !!]"
+  },
+  "g1-source-language.import.suggestion": {
+    "text": "[!! SSüüggggëëssttëëdd: {language} !!]"
+  },
+  "g1-source-language.import.mismatch": {
+    "text": "[!! NNôôttëë: tthhëë ssccëënnëëss áárrëë ssttôôrrëëdd wwïïtthh tthhëë pprrôôjjëëcctt'ss ssôôüürrccëë lláánnggüüáággëë ({language}). ÏÏff tthhëë wwhhôôllëë ssccrrïïpptt ïïss ïïnn áánnôôtthhëërr lláánnggüüáággëë, cchháánnggëë tthhëë ssôôüürrccëë lláánnggüüáággëë ffïïrrsstt. !!]"
+  },
+  "g1-source-language.import.confirm-hint": {
+    "text": "[!! TThhëë lláánnggüüáággëë ïïss ccôôrrrrëëcctt – ccôônnffïïrrmm bbëëffôôrrëë ïïmmppôôrrttïïnngg. TThhëë ssôôüürrccëë ttëëxxtt ïïss ssttôôrrëëdd üünncchháánnggëëdd. !!]"
   }
 }

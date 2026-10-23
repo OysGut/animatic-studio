@@ -11292,6 +11292,123 @@
       "en": {
         "text": "Version {sha} · built {time}"
       }
+    },
+    "g1-source-language.field.label": {
+      "replaces": [],
+      "nb": {
+        "text": "Manusets språk"
+      },
+      "en": {
+        "text": "Script language"
+      }
+    },
+    "g1-source-language.current": {
+      "replaces": [],
+      "nb": {
+        "text": "Kildespråk: {language}"
+      },
+      "en": {
+        "text": "Source language: {language}"
+      }
+    },
+    "g1-source-language.change.button": {
+      "replaces": [],
+      "nb": {
+        "text": "Endre …"
+      },
+      "en": {
+        "text": "Change …"
+      }
+    },
+    "g1-source-language.change.new-label": {
+      "replaces": [],
+      "nb": {
+        "text": "Nytt kildespråk (BCP-47-kode)"
+      },
+      "en": {
+        "text": "New source language (BCP-47 tag)"
+      }
+    },
+    "g1-source-language.change.warning": {
+      "replaces": [],
+      "nb": {
+        "text": "Teksten oversettes ikke. Resultater som er laget ut fra språket – tale, oversettelser og eksporter – kan bli utdaterte og må lages på nytt."
+      },
+      "en": {
+        "text": "The text is not translated. Results created from the language – speech, translations and exports – may become outdated and have to be recreated."
+      }
+    },
+    "g1-source-language.change.conflict": {
+      "replaces": [],
+      "nb": {
+        "text": "{language} er i bruk som målspråk ({count} rader). Endre eller fjern disse før språket gjøres til kildespråk."
+      },
+      "en": {
+        "text": "{language} is in use as a target language ({count} rows). Change or remove these before making it the source language."
+      }
+    },
+    "g1-source-language.change.confirm": {
+      "replaces": [],
+      "nb": {
+        "text": "Endre kildespråk"
+      },
+      "en": {
+        "text": "Change source language"
+      }
+    },
+    "g1-source-language.change.cancel": {
+      "replaces": [],
+      "nb": {
+        "text": "Avbryt"
+      },
+      "en": {
+        "text": "Cancel"
+      }
+    },
+    "g1-source-language.change.undo": {
+      "replaces": [],
+      "nb": {
+        "text": "Endre kildespråk til {language}"
+      },
+      "en": {
+        "text": "Change source language to {language}"
+      }
+    },
+    "g1-source-language.import.label": {
+      "replaces": [],
+      "nb": {
+        "text": "Språket i filen"
+      },
+      "en": {
+        "text": "Language of the file"
+      }
+    },
+    "g1-source-language.import.suggestion": {
+      "replaces": [],
+      "nb": {
+        "text": "Foreslått: {language}"
+      },
+      "en": {
+        "text": "Suggested: {language}"
+      }
+    },
+    "g1-source-language.import.mismatch": {
+      "replaces": [],
+      "nb": {
+        "text": "Merk: scenene lagres med prosjektets kildespråk ({language}). Er hele manuset på et annet språk, bør du endre kildespråket først."
+      },
+      "en": {
+        "text": "Note: the scenes are stored with the project's source language ({language}). If the whole script is in another language, change the source language first."
+      }
+    },
+    "g1-source-language.import.confirm-hint": {
+      "replaces": [],
+      "nb": {
+        "text": "Språket stemmer – bekreft før import. Kildeteksten lagres uendret."
+      },
+      "en": {
+        "text": "The language is correct – confirm before importing. The source text is stored unchanged."
+      }
     }
   }
 }

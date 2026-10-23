@@ -25,7 +25,8 @@ import {
   listProjects,
   type ProductionSummary,
 } from "@/adapters/browser/projects";
-import { PRODUCTION_KIND_LABEL, collation, tm, type ProductionKind } from "@/core";
+import { PRODUCTION_KIND_LABEL, collation, languageTagError, locale, tm, type ProductionKind } from "@/core";
+import { LanguageTagInput } from "@/app/shared/LanguageTagInput";
 import { useProfiles } from "@/app/project/use-project";
 import { rememberProduction } from "@/app/project/use-production";
 import { LanguageSwitch } from "@/app/i18n/language";
@@ -110,6 +111,8 @@ export function ProjectsScreen({ userId }: { userId: string }) {
   const qc = useQueryClient();
   const navigate = useNavigate();
   const [name, setName] = useState("");
+  // G-1b: kildespråket velges ved oppretting, forhåndsvalgt fra grensesnittspråket
+  const [sourceLanguage, setSourceLanguage] = useState(() => locale().split("-")[0] ?? "en");
   const [creating, setCreating] = useState(false);
   const [dialog, setDialog] = useState<{
     kind: "delete" | "leave" | "purge" | "zip" | "backup";
@@ -167,7 +170,7 @@ export function ProjectsScreen({ userId }: { userId: string }) {
   /** GP4: kort idé til skriveassistenten (valgfri). */
   const [idea, setIdea] = useState("");
   const create = useMutation({
-    mutationFn: async (v: { name: string; assistant: boolean }) => ({ id: await createProject(v.name), assistant: v.assistant }),
+    mutationFn: async (v: { name: string; assistant: boolean }) => ({ id: await createProject(v.name, sourceLanguage.trim()), assistant: v.assistant }),
     onSuccess: async ({ id, assistant }) => {
       setName("");
       setCreating(false);
@@ -183,9 +186,12 @@ export function ProjectsScreen({ userId }: { userId: string }) {
 
   const [providers, setProviders] = useState(false);
 
+  const languageProblem = languageTagError(sourceLanguage.trim());
+  const canCreate = Boolean(name.trim()) && !languageProblem;
+
   function submit(e: FormEvent) {
     e.preventDefault();
-    if (name.trim()) create.mutate({ name: name.trim(), assistant: false });
+    if (canCreate) create.mutate({ name: name.trim(), assistant: false });
   }
 
   const openProduction = (projectId: string, productionId: string) => {
@@ -247,7 +253,16 @@ export function ProjectsScreen({ userId }: { userId: string }) {
             className="h-8 flex-1 bg-surface-3"
             maxLength={200}
           />
-          <Button type="submit" disabled={!name.trim() || create.isPending} data-testid="new-project-create">
+          <label className="flex items-center gap-2 text-xs text-text-secondary">
+            {t("g1-source-language.field.label")}
+            <LanguageTagInput
+              value={sourceLanguage}
+              onChange={setSourceLanguage}
+              label={t("g1-source-language.field.label")}
+              testId="new-project-language"
+            />
+          </label>
+          <Button type="submit" disabled={!canCreate || create.isPending} data-testid="new-project-create">
             {t("app-projects-projects-screen.projects-screen.button.d47cbc393746")}
           </Button>
           <Button
@@ -256,7 +271,7 @@ export function ProjectsScreen({ userId }: { userId: string }) {
             disabled={!name.trim() || create.isPending}
             data-testid="new-project-assistant"
             title={t("app-projects-projects-screen.projects-screen.title.622d83c45445")}
-            onClick={() => name.trim() && create.mutate({ name: name.trim(), assistant: true })}
+            onClick={() => canCreate && create.mutate({ name: name.trim(), assistant: true })}
           >
             <AiGlyph />
             {t("app-projects-projects-screen.projects-screen.button.52e0ec6bee64")}

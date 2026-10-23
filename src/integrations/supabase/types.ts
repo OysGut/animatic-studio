@@ -3100,7 +3100,7 @@ export type Database = {
           project_id: string
           removed?: boolean
           revision?: number
-          source_language?: string
+          source_language: string
           status?: string
         }
         Update: {
@@ -4173,9 +4173,8 @@ export type Database = {
           frame_width: number
           id: string
           name: string
-          primary_language: string
           revision: number
-          script_language: string | null
+          source_language: string
           workspace_id: string | null
         }
         Insert: {
@@ -4200,9 +4199,8 @@ export type Database = {
           frame_width?: number
           id: string
           name: string
-          primary_language?: string
           revision?: number
-          script_language?: string | null
+          source_language: string
           workspace_id?: string | null
         }
         Update: {
@@ -4227,9 +4225,8 @@ export type Database = {
           frame_width?: number
           id?: string
           name?: string
-          primary_language?: string
           revision?: number
-          script_language?: string | null
+          source_language?: string
           workspace_id?: string | null
         }
         Relationships: [
@@ -5078,7 +5075,7 @@ export type Database = {
           current_rev?: number
           id: string
           kind: string
-          language?: string
+          language: string
           order_key: string
           project_id: string
           removed?: boolean
@@ -6966,7 +6963,12 @@ export type Database = {
         Returns: string
       }
       create_project: {
-        Args: { p_fps_den?: number; p_fps_num?: number; p_name: string }
+        Args: {
+          p_fps_den?: number
+          p_fps_num?: number
+          p_name: string
+          p_source_language?: string
+        }
         Returns: string
       }
       create_publication: {

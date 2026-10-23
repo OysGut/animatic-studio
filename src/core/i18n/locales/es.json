@@ -40304,6 +40304,106 @@
     "sourceHash": "36bd494cfdd0816f988fa1e55fa457db9a6c465595200479975200596a1f2f60",
     "review": "user"
   },
+  "attach.add": {
+    "text": "Añadir imagen …",
+    "sourceHash": "819862c7328436fb9df96581ead5846612fcab03c30117186b4966fc9dc06fc0",
+    "review": "machine"
+  },
+  "attach.cost.label": {
+    "text": "Imágenes enviadas",
+    "sourceHash": "235202e102f36eb7b385b79b7ec615dc95964558ca93dbb2efb3626708e213a2",
+    "review": "machine"
+  },
+  "attach.cost.value": {
+    "text": "{count} de un máximo de {max} (más imágenes pueden cambiar el precio)",
+    "sourceHash": "d6b5adbc2df20c5e25d193910e113641ccd4f87a8b1acc110c056a09732d78d7",
+    "review": "machine"
+  },
+  "attach.hint": {
+    "text": "Recomendado: 1–3 referencias de estilo. Más imágenes suelen dar resultados menos uniformes y cuestan más.",
+    "sourceHash": "86b00ad82d0a3e4e872a43465790c4ce53a8ff8f41dd9a51a88226acc732a9b2",
+    "review": "machine"
+  },
+  "attach.identityOff": {
+    "text": "Sin la imagen actual, el aspecto puede cambiar.",
+    "sourceHash": "54b9ab1f52d1bac394b115436f3d1b7960b07a51e7f9f16a533ed194a43f351f",
+    "review": "machine"
+  },
+  "attach.include": {
+    "text": "Enviar: {label}",
+    "sourceHash": "835be4ff4510c0eb771129cfa550320319cea61f0e8db9dde5701c678ee6d9af",
+    "review": "machine"
+  },
+  "attach.limit": {
+    "text": "Se alcanzó el límite de este modelo: {max} imágenes.",
+    "sourceHash": "37618a4c92c730caac91dcc4c9d595c64ab0b069884ae076c1de11fe329c0f72",
+    "review": "machine"
+  },
+  "attach.overLimit": {
+    "text": " (por encima del límite, no se envía)",
+    "sourceHash": "8a4e60f321b47929f7d4d2c802e5b29d4bf078f6e08c31361078591572da7a21",
+    "review": "machine"
+  },
+  "attach.picker.allKinds": {
+    "text": "Todos los tipos",
+    "sourceHash": "51a0f5606f5c37f91d6811c7e297f87e3a5a05fd81223c61403a54809cc24340",
+    "review": "machine"
+  },
+  "attach.picker.close": {
+    "text": "Cerrar",
+    "sourceHash": "e8b18396064c1a5f49e211a1cfca295a50ace87cebb16890ebb2c2fae97a4b95",
+    "review": "machine"
+  },
+  "attach.picker.empty": {
+    "text": "Ninguna imagen aprobada coincide.",
+    "sourceHash": "9e97d961b7cf648d7f6dda2322ed86adefcd3243e279ca42af3102aad41ef3d0",
+    "review": "machine"
+  },
+  "attach.picker.kind": {
+    "text": "Tipo",
+    "sourceHash": "47c06a19df0b0752b30441b7a7df57fe481f3483acd093e630275adc2f4558a3",
+    "review": "machine"
+  },
+  "attach.picker.pick": {
+    "text": "Añadir {label}",
+    "sourceHash": "649651269dee5d4efa39eb2bfa080e39c0f08d26d90198bf21d6abe533f5f56c",
+    "review": "machine"
+  },
+  "attach.picker.role": {
+    "text": "Función",
+    "sourceHash": "aef958ce00f5d364a329f5d47a7f58d67aa3e994b3d40c840de8bf3fe3c20cfe",
+    "review": "machine"
+  },
+  "attach.picker.roleSame": {
+    "text": "Misma figura/objeto",
+    "sourceHash": "9dc964ae28701bc1771e0515a9cf192191263984a2caf8d73e62a6dc91db7471",
+    "review": "machine"
+  },
+  "attach.picker.roleStyle": {
+    "text": "Solo el estilo",
+    "sourceHash": "4623343f9f29d606197982433e55219ce12a2421d41eef8911c51828721b39c5",
+    "review": "machine"
+  },
+  "attach.picker.search": {
+    "text": "Buscar imágenes",
+    "sourceHash": "aa8d1ef67305cb1eb40d7cb674a460b1a8b3cbdfba4749975e09a6b3f55c510a",
+    "review": "machine"
+  },
+  "attach.picker.title": {
+    "text": "Añadir imagen",
+    "sourceHash": "011fa939806b381ad8557664aadcbd842be5ffea960dc86c9a36838e213a3027",
+    "review": "machine"
+  },
+  "attach.remove": {
+    "text": "Quitar",
+    "sourceHash": "efa41f7dcba0d2f5b5c7ee29c270d50f2ecd3e8f65636f8336ca5ba934612a15",
+    "review": "machine"
+  },
+  "attach.role.same": {
+    "text": " – misma figura/objeto",
+    "sourceHash": "b15ea5137ea908352de77df3a0bd01024d5e822adf9f028a1b50cfa5edf8b6e3",
+    "review": "machine"
+  },
   "auth.password-reset.checking": {
     "text": "Comprobando el enlace de restablecimiento…",
     "sourceHash": "d6d20c800d888ab36766b96eb09e0de9a32cd1e2eba2ba9543c6d53291e168d7",
@@ -41249,6 +41349,376 @@
     "sourceHash": "da1928e529438e2f72252eb3ad6ceb274aa56d4678373c5619ff5920367b1192",
     "review": "machine"
   },
+  "b116.admin.approval": {
+    "text": "Exigir aprobación antes de mostrar las contribuciones",
+    "sourceHash": "022505f2b2f15136b92d7712a1982bc153ed776be8dce8e6d1acd02aaa202155",
+    "review": "machine"
+  },
+  "b116.admin.approve": {
+    "text": "Aprobar",
+    "sourceHash": "a990bf3b84b44c4921a6748e26d38a46e4e3cb0b4454eff99640887ef9c4b1e8",
+    "review": "machine"
+  },
+  "b116.admin.empty": {
+    "text": "No hay contribuciones pendientes.",
+    "sourceHash": "aefffbae5d32b9d8f9a971e917a6a545041edf7bd7557e281e523783dcc00b1a",
+    "review": "machine"
+  },
+  "b116.admin.failed": {
+    "text": "La acción falló.",
+    "sourceHash": "58a63283bde1edc33f97f272261e5374703c3fb686fb17b0e797469a25fd0505",
+    "review": "machine"
+  },
+  "b116.admin.reject": {
+    "text": "Rechazar",
+    "sourceHash": "d3a48b52dbff252243bf3b1ee4cce1a85c466f1f84948cae80235c43cf3ccb78",
+    "review": "machine"
+  },
+  "b116.admin.title": {
+    "text": "Escaparate",
+    "sourceHash": "bb7de261e267abd43c847d938406ab8c9c4eb430f85e8b30da956eb1b23e527e",
+    "review": "machine"
+  },
+  "b116.box.hint": {
+    "text": "Elige una cosa de uno de tus proyectos: un personaje, un recurso, una escena corta, un fragmento del guion o un fragmento de audio.",
+    "sourceHash": "77b5cc341f20526af82e7beed6fc083b29948a369c5ccf929d54ca6039d14a7f",
+    "review": "machine"
+  },
+  "b116.box.mine": {
+    "text": "Mis publicaciones",
+    "sourceHash": "13839135f0ffcaa09554f0861e9c5626086466de75e6fa9c4c34e5698a542034",
+    "review": "machine"
+  },
+  "b116.box.profile": {
+    "text": "Editar perfil",
+    "sourceHash": "15267ea15ea723d30a2a79c57ecf1c000203f57f44d10e476ef3e33adf9abd89",
+    "review": "machine"
+  },
+  "b116.box.share": {
+    "text": "Compartir algo",
+    "sourceHash": "ac97eab6540cfe4c1a72ccc75437a0e5e15b3a7a42301be8fd1d7ca2f169b2dc",
+    "review": "machine"
+  },
+  "b116.box.title": {
+    "text": "¿Quieres mostrar un poco de lo que estás haciendo?",
+    "sourceHash": "581a703f3d9b707334863e63e7479a0f11e3af40f83208b291d5d4ba1a7ff298",
+    "review": "machine"
+  },
+  "b116.cancel": {
+    "text": "Cancelar",
+    "sourceHash": "a69ea29ae854ab93e4967572b360e5a50e1c854ae20c4ae9b47ee3b1368bab86",
+    "review": "machine"
+  },
+  "b116.card.by": {
+    "text": "por {name}",
+    "sourceHash": "67d7a4022bc80298f5670ee7a95365505e71985f036008f45cc80eec99a4aabd",
+    "review": "machine"
+  },
+  "b116.carousel.aria": {
+    "text": "Escaparate",
+    "sourceHash": "bb7de261e267abd43c847d938406ab8c9c4eb430f85e8b30da956eb1b23e527e",
+    "review": "machine"
+  },
+  "b116.carousel.next": {
+    "text": "Siguiente",
+    "sourceHash": "f205f6b1abd1f7e080db38e927655e9ee6e902a8b8067c9607abdc98a1481df0",
+    "review": "machine"
+  },
+  "b116.carousel.prev": {
+    "text": "Anterior",
+    "sourceHash": "d273af62315d1d24b1303b340e851dff5c31112199a57c414092a08d8fc46567",
+    "review": "machine"
+  },
+  "b116.close": {
+    "text": "Cerrar",
+    "sourceHash": "e8b18396064c1a5f49e211a1cfca295a50ace87cebb16890ebb2c2fae97a4b95",
+    "review": "machine"
+  },
+  "b116.comments.empty": {
+    "text": "Aún no hay comentarios.",
+    "sourceHash": "f1fe4f2ec31f3a329d92c34b2b8428b15acc85b51bd10cca833635dab8d131fc",
+    "review": "machine"
+  },
+  "b116.comments.failed": {
+    "text": "Algo salió mal. Inténtalo de nuevo.",
+    "sourceHash": "3d739fa3b7d9c39b4ca225ed4f5c15dc9c343517420aa17b19f4ad679dfbad3e",
+    "review": "machine"
+  },
+  "b116.comments.login": {
+    "text": "Inicia sesión para comentar.",
+    "sourceHash": "8b27962a6568dac5578b14824038bd08095442928da1e0153ee403d95ac1f281",
+    "review": "machine"
+  },
+  "b116.comments.placeholder": {
+    "text": "Escribe un comentario …",
+    "sourceHash": "d0e22923974ccefd2c67c45a6fede351a7f7baf1c6637e3526e1d184f3012d1c",
+    "review": "machine"
+  },
+  "b116.comments.remove": {
+    "text": "Eliminar",
+    "sourceHash": "efa41f7dcba0d2f5b5c7ee29c270d50f2ecd3e8f65636f8336ca5ba934612a15",
+    "review": "machine"
+  },
+  "b116.comments.submit": {
+    "text": "Comentar",
+    "sourceHash": "6feb3d78e6c88501f8065ccad48127c35b149d1a1493ca5ee8452a243114edeb",
+    "review": "machine"
+  },
+  "b116.comments.title": {
+    "text": "Comentarios",
+    "sourceHash": "80e1a5ead2da65bd3b75a346c04869e0641ff610783d11306b6ce0fe2e1be0d3",
+    "review": "machine"
+  },
+  "b116.create.back": {
+    "text": "Atrás",
+    "sourceHash": "44834c439ce8cfc73579af35af8d22d2fb2c2637fa19880f91caae0af2485a98",
+    "review": "machine"
+  },
+  "b116.create.empty": {
+    "text": "Nada que elegir aquí todavía.",
+    "sourceHash": "7ea28d82b30afefb817cc7cad56f086d7085991fa7902bd0e3434d7b08749a16",
+    "review": "machine"
+  },
+  "b116.create.excerptLabel": {
+    "text": "Selecciona las réplicas (máximo 12)",
+    "sourceHash": "993fa4c562e7702433655edd9b537303d6954a717e9888dad659ab91fb22716f",
+    "review": "machine"
+  },
+  "b116.create.excerptWarning": {
+    "text": "El texto se hace público. Comparte solo lo que quieras que todos puedan leer.",
+    "sourceHash": "7867d1abdfbd80a21558f351f8dc8a65d9b409cc0e12d13206c8711d8d1ccfb9",
+    "review": "machine"
+  },
+  "b116.create.expires": {
+    "text": "Visible durante",
+    "sourceHash": "7f62424a5912e2b9820c4e0aaf0255b6805fbe24480d4babdd884d3b410221e7",
+    "review": "machine"
+  },
+  "b116.create.failed": {
+    "text": "No se pudo compartir. Inténtalo de nuevo.",
+    "sourceHash": "f2704d958a051a728234349dd84943da6e6d70d54c01f1ac96ec50d6362fc23e",
+    "review": "machine"
+  },
+  "b116.create.kind": {
+    "text": "¿Qué quieres compartir?",
+    "sourceHash": "0063dbcc137422d90d5a8f95c842513c47ac245efbcd1763e994c4cefc64bdf5",
+    "review": "machine"
+  },
+  "b116.create.liveNotice": {
+    "text": "¡Gracias! Tu contribución ya se muestra en el carrusel.",
+    "sourceHash": "3b3f2678944b24c3e05d03e8418f5000d873d9766c7275a3c3f6e1a381b056d1",
+    "review": "machine"
+  },
+  "b116.create.pendingNotice": {
+    "text": "¡Gracias! Tu contribución espera aprobación antes de mostrarse.",
+    "sourceHash": "76007d726b26d5fe1bf5faace79560efb4acfc914609800ad92f31ac0a2f1ae3",
+    "review": "machine"
+  },
+  "b116.create.preview": {
+    "text": "Vista previa",
+    "sourceHash": "6b2153b9371eb726341a755d22cf795eb941d48e73942ca609f78ad2f7656500",
+    "review": "machine"
+  },
+  "b116.create.previewHint": {
+    "text": "Así se verá exactamente tu contribución en el carrusel.",
+    "sourceHash": "71147bf32fa76143557bc07c4bc8507ba00e42636baf2737815ef91901b6cff8",
+    "review": "machine"
+  },
+  "b116.create.project": {
+    "text": "Proyecto",
+    "sourceHash": "30a6bf7d10a859379d1cdfbc84ffe8c4a5a7e5333aa51b9fcdf05f4febd04e7c",
+    "review": "machine"
+  },
+  "b116.create.submit": {
+    "text": "Compartir",
+    "sourceHash": "09772187ba0a65f4606b7b2cb66c6eef6e3e508eaedafc8d8240e6db4664c439",
+    "review": "machine"
+  },
+  "b116.create.textLabel": {
+    "text": "Sobre el proyecto de película y sobre ti (opcional, máximo 280 caracteres)",
+    "sourceHash": "139b6792641d6433cc3fbf7fde3b07b62f4d5c024f3342775f72c88c31ee3359",
+    "review": "machine"
+  },
+  "b116.create.title": {
+    "text": "Compartir en el escaparate",
+    "sourceHash": "34f45b37756eaefbd541168d62a1bfc0c35ee6833bf92fc025730d1c5338c4d6",
+    "review": "machine"
+  },
+  "b116.create.titleLabel": {
+    "text": "Título",
+    "sourceHash": "f8014454bf11e149d7db8af825fb9d11538afb69168e473103ba98be4f8e19bd",
+    "review": "machine"
+  },
+  "b116.expires.14": {
+    "text": "2 semanas",
+    "sourceHash": "c8a894ae6ce7e7206a0172108b397cd4ee2772045a22000c643c6dfb8e604860",
+    "review": "machine"
+  },
+  "b116.expires.30": {
+    "text": "1 mes",
+    "sourceHash": "56b9f65beb79983f4d809db469eef294443b06c8db550fb6167c06df82b5729e",
+    "review": "machine"
+  },
+  "b116.expires.7": {
+    "text": "1 semana",
+    "sourceHash": "6f908bc33596fec50667c089000fbae1ad296579b0d177dba0df13d7569c5645",
+    "review": "machine"
+  },
+  "b116.expires.90": {
+    "text": "3 meses",
+    "sourceHash": "5585aceaae6c1a2788d73e9df91699b727315f9ec2b9654fb8d0617eb688464b",
+    "review": "machine"
+  },
+  "b116.kind.asset": {
+    "text": "Recurso",
+    "sourceHash": "d6f032ca0f7726990892f6a28d9b2617b1351202577385c28993ebac3cf61485",
+    "review": "machine"
+  },
+  "b116.kind.audio": {
+    "text": "Fragmento de audio",
+    "sourceHash": "840d2692e48b2e9d3db0ecfccb9fb75b1712c9f2e1f72faddcb347bc50db80b8",
+    "review": "machine"
+  },
+  "b116.kind.character": {
+    "text": "Personaje",
+    "sourceHash": "4f4a650cdc41931d714685042197b87c9411b38002e220232a5f1eb512514500",
+    "review": "machine"
+  },
+  "b116.kind.scene": {
+    "text": "Imagen de escena",
+    "sourceHash": "cc4f4dd83170540e4f2a354a0b0fb0fc8d0d570ee3d3ec45c7500d5282e8e915",
+    "review": "machine"
+  },
+  "b116.kind.script": {
+    "text": "Fragmento del guion",
+    "sourceHash": "8f8095159e4c4df04fde57bdfa126bbf789caf7f7130dc7e0225a2e3e6e1804a",
+    "review": "machine"
+  },
+  "b116.loading": {
+    "text": "Cargando …",
+    "sourceHash": "9afa6b4550a416f8b1bf9a4d708a82a427e1f6ff70e25ef9d52769b406cf65ef",
+    "review": "machine"
+  },
+  "b116.mine.edit": {
+    "text": "Editar",
+    "sourceHash": "cfd2b696026ff850dd747fda326e20f2877a1bb2262a1b2c8b87a5e6e7f4a83f",
+    "review": "machine"
+  },
+  "b116.mine.empty": {
+    "text": "Aún no has compartido nada.",
+    "sourceHash": "705cd770718a79a0a5d764bd377505996982b400c888f9c9ed2b79d8a3a6300f",
+    "review": "machine"
+  },
+  "b116.mine.expiresAt": {
+    "text": "Visible hasta el {date}",
+    "sourceHash": "1a2eb16bcde39b22dbca6b49152d1337dfc03a2437baf45df079da629937572d",
+    "review": "machine"
+  },
+  "b116.mine.revoke": {
+    "text": "Retirar",
+    "sourceHash": "d79ae0be2868150f1712d5c50f47eb2f7ab74bd58c8ea9cfc359a909ee73b115",
+    "review": "machine"
+  },
+  "b116.mine.revokeConfirm": {
+    "text": "¿Retirar esta contribución? Desaparecerá del carrusel.",
+    "sourceHash": "150664edcabf073886367162fbdea21e426c78b9600a673212fb485278048222",
+    "review": "machine"
+  },
+  "b116.mine.save": {
+    "text": "Guardar",
+    "sourceHash": "17313c395ac9f722f10ded2a46d31ffa3f63252c66b890b61a904160c55f034b",
+    "review": "machine"
+  },
+  "b116.mine.title": {
+    "text": "Mis publicaciones",
+    "sourceHash": "13839135f0ffcaa09554f0861e9c5626086466de75e6fa9c4c34e5698a542034",
+    "review": "machine"
+  },
+  "b116.profile.avatar": {
+    "text": "Avatar",
+    "sourceHash": "7e35d6b90e976ffaacc3f835c2d62f0114c0b50859586712461d20d89c6bb73b",
+    "review": "machine"
+  },
+  "b116.profile.avatarChoose": {
+    "text": "Elegir imagen",
+    "sourceHash": "69204a7df7e7588df4e22044fe5d81f03d7e856023277f9187b704d1d4b059a1",
+    "review": "machine"
+  },
+  "b116.profile.bio": {
+    "text": "Sobre ti",
+    "sourceHash": "6f96f49f40d4887f9788612ea6e2ba4f2e2aec843cc33cffb236e65bea68012a",
+    "review": "machine"
+  },
+  "b116.profile.handle": {
+    "text": "Nombre corto (handle)",
+    "sourceHash": "6f6f2259432cf4b0bdb4ca48b1a47abc826bc4becafd26dbfc1d3b07bf0c7044",
+    "review": "machine"
+  },
+  "b116.profile.public": {
+    "text": "Mostrar el perfil públicamente",
+    "sourceHash": "e34810bbce089d278936dd7b4b1bb498aa60d8ad3b2b98e39f711cfca57c5f76",
+    "review": "machine"
+  },
+  "b116.profile.save": {
+    "text": "Guardar perfil",
+    "sourceHash": "ef0850e4c0c28ee923d363c23d174c3c8e70fb0ce5bdd6a9df484d913bb62c44",
+    "review": "machine"
+  },
+  "b116.profile.saved": {
+    "text": "Tu perfil se ha guardado.",
+    "sourceHash": "3785cecdbbe2601b5a45a09de58645bbb85fb08a336a8ad511a86b5b45fc91e7",
+    "review": "machine"
+  },
+  "b116.profile.title": {
+    "text": "Tu perfil",
+    "sourceHash": "40881535789b064e092ba6367c1b5a4a145b555a83e1893808874cdea661011d",
+    "review": "machine"
+  },
+  "b116.report": {
+    "text": "Denunciar",
+    "sourceHash": "24ecd190b99786075adfdccc4b25007e8aa3676949eac70c680e4d3b95c08349",
+    "review": "machine"
+  },
+  "b116.report.sent": {
+    "text": "Gracias por avisarnos.",
+    "sourceHash": "b40b745097dc40a3f6207e81d50df799d1b994494e490af7c8ec6ca160fc82e4",
+    "review": "machine"
+  },
+  "b116.route.description": {
+    "text": "Todo lo que has compartido en el escaparate, con su estado.",
+    "sourceHash": "4a22ff8440fa388050502107d2707327ae9f2a04e4947f2c6c4040d0e1211f20",
+    "review": "machine"
+  },
+  "b116.route.title": {
+    "text": "Mis publicaciones – From Pen to Glass",
+    "sourceHash": "d2ca9fcca162ddae166b15ee902959b9c331b9b708a3a1e0f0316159f8dd296f",
+    "review": "machine"
+  },
+  "b116.status.expired": {
+    "text": "Caducado",
+    "sourceHash": "5cb78ac096b06f9d9924ba8f4c99b6fdbeefe577ca09b8da8fbd02dc42fa36b5",
+    "review": "machine"
+  },
+  "b116.status.live": {
+    "text": "Visible",
+    "sourceHash": "675582aa5dd0b412117eadc5bf24642dfe2702b9bae1f39b7a913361ad2da079",
+    "review": "machine"
+  },
+  "b116.status.pending": {
+    "text": "Pendiente de aprobación",
+    "sourceHash": "a947012742a94999757c50b670df74d9024bdc6a8f685f525a1ad68158f3ee27",
+    "review": "machine"
+  },
+  "b116.status.rejected": {
+    "text": "Rechazado",
+    "sourceHash": "fd84276dcd23f45264a47d0ca1ea46b63567a1c28729fcddb7d732ad15798dcb",
+    "review": "machine"
+  },
+  "b116.status.revoked": {
+    "text": "Retirado",
+    "sourceHash": "d972666fc9c1d730a6fc82c5ae8a5cedc794c988f872f37cd8aaeadb14fe6818",
+    "review": "machine"
+  },
   "b117.city.choose": {
     "text": "Elegir ciudad (opcional)…",
     "sourceHash": "752f0469085b7a85c2f8fff09ba0888ee4f7dc3ee4cdd195c6f01fafab66cddd",
@@ -41472,6 +41942,36 @@
   "b118.undo-status": {
     "text": "Cambiar el estado de la escena",
     "sourceHash": "141a0a64bd816d8e3ec20ced636af260e83a12495bb499c3a066074b5b782d4f",
+    "review": "machine"
+  },
+  "brief.versions.counter": {
+    "text": "Versión de texto {current} de {total}",
+    "sourceHash": "901933c5f2a527aee7f8f5857267d3ed42c0d07997a14daaf4ecdc32042937c0",
+    "review": "machine"
+  },
+  "brief.versions.fromText": {
+    "text": "Creado a partir del texto de abajo",
+    "sourceHash": "d787cb32abcbd828b73103417c1b1752ef796a23781bd5e5192a56397178ba4f",
+    "review": "machine"
+  },
+  "brief.versions.next": {
+    "text": "Siguiente versión de texto",
+    "sourceHash": "200c8e5ff7239eac1d1b13879a18fcf21be303c620d86c049033e81e03519a19",
+    "review": "machine"
+  },
+  "brief.versions.previous": {
+    "text": "Versión de texto anterior",
+    "sourceHash": "89bdd326345ef4640d63a924feb2c1e78784828bf5b6ee442d8cec101de99933",
+    "review": "machine"
+  },
+  "brief.versions.save": {
+    "text": "Guardar la descripción de {name}",
+    "sourceHash": "e3c7df023a58f9d22fc9f74b348235a5646b2a29594100eed234ef91a0f07ea8",
+    "review": "machine"
+  },
+  "build.version": {
+    "text": "Versión {sha} · compilada {time}",
+    "sourceHash": "298b1683ec91394e4f4aa8711203368938595c405b4a4cb3c38be4d682b90b33",
     "review": "machine"
   },
   "components-ui-dialog.dialog-content.span.4e9257a0bdea": {
@@ -52792,6 +53292,21 @@
     "sourceHash": "3a53ed8c864acb93fe8efcb5069560f8322c816b7bb55ea2d861f1b0aa3baa40",
     "review": "user"
   },
+  "dialog.resize.grip": {
+    "text": "Cambiar el tamaño de la ventana (arrastrar, o Mayús + flechas; doble clic para el tamaño predeterminado)",
+    "sourceHash": "fab24824a9b6bac686d07dfc4ba5973be46bc4d278bcd64916d63f53baf66abd",
+    "review": "machine"
+  },
+  "dialog.resize.reset": {
+    "text": "Tamaño predeterminado",
+    "sourceHash": "152b779c74f6d3c8bc5480eb96baf67f3548c89d40cc79a7e3935b71b8c692f9",
+    "review": "machine"
+  },
+  "dv5.background-result.undo-label": {
+    "text": "Añadir resultado en segundo plano",
+    "sourceHash": "cc9d0f8aac5f7bd2996299a8c27fe27694c08472b6f6bd7d298a28e40e1b99a7",
+    "review": "machine"
+  },
   "engine-compositor-canvas.draw-placeholder.ctx-fill-text.15b1faeec76c": {
     "text": " (sin imagen)",
     "sourceHash": "9a1a1faeafcdb1fde247f68aa964793ab10bbfb2caa737d2471f0350f8503181",
@@ -53062,6 +53577,106 @@
     "sourceHash": "630a08ff115d377cc9048c2e2ebde10cb0e9a082faee847e1ba91ae8902de03e",
     "review": "user"
   },
+  "factSheet.auto.label": {
+    "text": "Creado automáticamente a partir del guion {date}",
+    "sourceHash": "50dab74b2e7368e778dec500eb56bbb73421dac67f91bd5bfa30bb6c0503e814",
+    "review": "machine"
+  },
+  "factSheet.cost.ready": {
+    "text": "La ficha visual del guion se usa siempre, además del texto del campo.",
+    "sourceHash": "c6119bb61a3db1e0f71a945a999205c869829c98cc81d3a89eeccf3bbd5f6776",
+    "review": "machine"
+  },
+  "factSheet.cost.study": {
+    "text": "Aún no hay ficha visual: primero se hace un estudio del guion (una llamada de texto adicional, también mucho más barata que una imagen) y luego se escribe el texto. Un clic aprueba ambas llamadas.",
+    "sourceHash": "dc1ebf1109ec05d4e1c15d825e8ebbff763554316a7bf5b58004809a90e3ed6c",
+    "review": "machine"
+  },
+  "factSheet.error.save": {
+    "text": "No se pudo guardar la ficha visual en el recurso.",
+    "sourceHash": "fc6b40dd0b5013f101584156c84f4c2b137538b06a5e8163a207779e70c358bd",
+    "review": "machine"
+  },
+  "factSheet.error.study": {
+    "text": "No se pudo crear la ficha visual a partir del guion, así que no se escribió el texto. {message}",
+    "sourceHash": "e787f2a90e9b3f360300aa340f4d506bba548578fc48bd7d27a25ec35e330c4f",
+    "review": "machine"
+  },
+  "factSheet.history": {
+    "text": "Ficha visual creada a partir del guion ({name})",
+    "sourceHash": "c4840be19e58aadc64429d2043adb7aa9806b851453722dddce9763ec476fdc2",
+    "review": "machine"
+  },
+  "factSheet.retry": {
+    "text": "Reintentar",
+    "sourceHash": "d9e949c5c342cf66a13e8b0c74f61da560c11f6357a5a910ff650880c0e98647",
+    "review": "machine"
+  },
+  "g1-source-language.change.button": {
+    "text": "Cambiar …",
+    "sourceHash": "1a7670441257473a849a4295a5bd7125b31aaff0a9a8a746dfcd7cb108d76895",
+    "review": "machine"
+  },
+  "g1-source-language.change.cancel": {
+    "text": "Cancelar",
+    "sourceHash": "a69ea29ae854ab93e4967572b360e5a50e1c854ae20c4ae9b47ee3b1368bab86",
+    "review": "machine"
+  },
+  "g1-source-language.change.confirm": {
+    "text": "Cambiar idioma de origen",
+    "sourceHash": "28680668193ee87d81ded8395c8c8b6b967b6f11a2a038e3a38b62ff2269e20a",
+    "review": "machine"
+  },
+  "g1-source-language.change.conflict": {
+    "text": "{language} se usa como idioma de destino ({count} filas). Cámbialas o elimínalas antes de convertirlo en idioma de origen.",
+    "sourceHash": "3cb6488606c31e78f92a0dded1a74fbb535eb1981c82a328779301638bc9c440",
+    "review": "machine"
+  },
+  "g1-source-language.change.new-label": {
+    "text": "Nuevo idioma de origen (código BCP-47)",
+    "sourceHash": "d28b9061a4056716d13dca79557cc9fc6d76b1b8b42bc88ea1762fda3da041e7",
+    "review": "machine"
+  },
+  "g1-source-language.change.undo": {
+    "text": "Cambiar el idioma de origen a {language}",
+    "sourceHash": "d2bf76d28ba99b79ca5b8b6d0ce382497cd1facb810e62a9a68bcc75a6d7508b",
+    "review": "machine"
+  },
+  "g1-source-language.change.warning": {
+    "text": "El texto no se traduce. Los resultados creados a partir del idioma (voz, traducciones y exportaciones) pueden quedar obsoletos y tendrán que crearse de nuevo.",
+    "sourceHash": "bae1fb7311bb070c7e96d9722ae437e5a65bb64b2f8973c44df564780d116b58",
+    "review": "machine"
+  },
+  "g1-source-language.current": {
+    "text": "Idioma de origen: {language}",
+    "sourceHash": "d696a84bbe980d700f207f9820937cd9418555766ee65b1ba79e2ab222766d7c",
+    "review": "machine"
+  },
+  "g1-source-language.field.label": {
+    "text": "Idioma del guion",
+    "sourceHash": "a58bcf402aa7712d335f60bfb2d570c0288e4d14149cd1cbda6f64bac944ff49",
+    "review": "machine"
+  },
+  "g1-source-language.import.confirm-hint": {
+    "text": "El idioma es correcto: confírmalo antes de importar. El texto de origen se guarda sin cambios.",
+    "sourceHash": "5488d5f090e4b4cc2d9456e6141380aa2176c81d1c9770424b20f13aa5e35cc8",
+    "review": "machine"
+  },
+  "g1-source-language.import.label": {
+    "text": "Idioma del archivo",
+    "sourceHash": "3164af9fa07ba463c9a89f65e74a34041c13c07c86e872038c8976e589a39a50",
+    "review": "machine"
+  },
+  "g1-source-language.import.mismatch": {
+    "text": "Nota: las escenas se guardan con el idioma de origen del proyecto ({language}). Si todo el guion está en otro idioma, cambia primero el idioma de origen.",
+    "sourceHash": "35282c9469208d9ce3fabda2d6759d78f744e6ed7333bc8742f0d63f58eaffba",
+    "review": "machine"
+  },
+  "g1-source-language.import.suggestion": {
+    "text": "Sugerido: {language}",
+    "sourceHash": "935a8b83fd98c937cfd2ca7319c14ab8f6a66fad5bf10bb1dcd89e0630bce063",
+    "review": "machine"
+  },
   "id3.derived-from.invalid": {
     "text": "La versión de origen no existe en este recurso.",
     "sourceHash": "e1546317349827ff0e6aa2b518dfb9750b69eee101811d7de5d5c9b42ce78523",
@@ -53094,6 +53709,51 @@
     "text": "no se puede determinar la versión de origen con certeza",
     "sourceHash": "ec0d3e12f31327d8141fb59364110bf31b4288607ddf920a2dff7354e3f223ad",
     "review": "user"
+  },
+  "k1.conflict.aria": {
+    "text": "Conflicto al guardar",
+    "sourceHash": "196a0c5b09ad9412e0aedd0ea0f5733b44de5daad883c2ebf4985c26a32fc4a6",
+    "review": "machine"
+  },
+  "k1.conflict.by": {
+    "text": "Último cambio por {name}, {time}.",
+    "sourceHash": "7f4cc39b20b3e74e2c04e42364d41edb3fe90da314f4f1b07957aa4761297198",
+    "review": "machine"
+  },
+  "k1.conflict.by-unknown": {
+    "text": "Último cambio: {time}.",
+    "sourceHash": "d9101e86a2b91d29cdb5ca675fe24c7d7725a692253712db952a6c55ec58419d",
+    "review": "machine"
+  },
+  "k1.conflict.discard": {
+    "text": "Descartar mi cambio",
+    "sourceHash": "f7e2c71634e2d0d104e7eaaa57f3766e4b4e6db7d2a618d6a670780fd6721877",
+    "review": "machine"
+  },
+  "k1.conflict.rebase": {
+    "text": "Aplicar mi cambio encima",
+    "sourceHash": "c7c866cdb5f3c041b564b7d559e1477435eb8c2de8a4e145aafd697684ef55f7",
+    "review": "machine"
+  },
+  "k1.conflict.title": {
+    "text": "Otra persona cambió lo mismo al mismo tiempo, así que tu cambio no se guardó. Elige qué hacer.",
+    "sourceHash": "06f2c382bf5bfd4585864660f61f5a12f6abf5b9dc118c14cbbee1372db9db51",
+    "review": "machine"
+  },
+  "k1.presence.dot": {
+    "text": "Otras personas en esta escena ahora: {names}",
+    "sourceHash": "1717037ba7fd0f2f1f487eda4eb8e04225f2ef9025b63b10a0b9b21f75ea567b",
+    "review": "machine"
+  },
+  "k1.presence.many": {
+    "text": "{names} también están editando esta escena",
+    "sourceHash": "e84f548d6cb13304be8740ffb9b0c46914d8ed5975e4b3fd6f4e4b9aa6083f3c",
+    "review": "machine"
+  },
+  "k1.presence.one": {
+    "text": "{name} también está editando esta escena",
+    "sourceHash": "a2bc60c8c31f357908fdc17b824d3cf08611dd52076dbe07608e8f2feb30f2c4",
+    "review": "machine"
   },
   "ml3-language-versions.button.add": {
     "text": "Añadir versión de idioma",
@@ -53179,6 +53839,11 @@
     "text": "No se encontró la versión de idioma.",
     "sourceHash": "697176148eb01db87144671ee66e70b1375050d356d5829ab612fd4f45b82927",
     "review": "user"
+  },
+  "ml3-language-versions.error.source": {
+    "text": "El idioma del guion es la fuente y no puede ser una versión de idioma.",
+    "sourceHash": "0431f009bf24dd3310f0696af0192e26e0f745a09458992b37deee210b0f6dc2",
+    "review": "machine"
   },
   "ml3-language-versions.error.status": {
     "text": "Estado desconocido para la versión de idioma.",
@@ -53285,6 +53950,11 @@
     "sourceHash": "7dd2569e49aa7e30c7c05b9db9bdc5d8a4af6e0a5054f69cde041e60a80ae55a",
     "review": "user"
   },
+  "ml3-language-versions.select.source": {
+    "text": "{label} – guion (fuente)",
+    "sourceHash": "85f7723bb55e1306399b5c8195ae51655f145e11ccddf07ec104b0276ce7ae7a",
+    "review": "machine"
+  },
   "ml3-language-versions.undo.add": {
     "text": "Añadir versión de idioma {name}",
     "sourceHash": "716b089c036ecb89cf4d944043db5eb91c8aed6080a14f7d9813b41586b5ff3e",
@@ -53319,6 +53989,26 @@
     "text": "La fuente de PDF ({font}) no puede mostrar {count} caracteres en esta versión de idioma: {chars}. Aparecerían como «?» en el archivo, por lo que se ha detenido la exportación a PDF. Elija Word o Fountain, que conservan todos los caracteres.",
     "sourceHash": "d2a02dc3627f550be17f675598fc2e60eecb103018d321f0d5bc5c8e0d963bd9",
     "review": "user"
+  },
+  "n10.playback.playing": {
+    "text": "Reproduciendo",
+    "sourceHash": "2746bac47887a263d5099060a00e3dae804ebd217aa8137ec2331d8e9b892b8a",
+    "review": "machine"
+  },
+  "n10.playback.stopped": {
+    "text": "Detenido en {timecode}",
+    "sourceHash": "0df9933516d2cfcf6e63ef2c9c5f6d4beb5c7bc768d1abd0c06a3d048084f1ee",
+    "review": "machine"
+  },
+  "pathSpacing.aria": {
+    "text": "Cuánto se mueve la capa por fotograma a lo largo de la trayectoria. Marcas juntas son lentas, marcas separadas son rápidas.",
+    "sourceHash": "de16a9e1d33b4f0d764b2f3a76fdda8fdf478f73acdb622f246135f45b6796ee",
+    "review": "machine"
+  },
+  "pathSpacing.track": {
+    "text": "Espaciado",
+    "sourceHash": "4485bba46008c27e0e3dc71b3e26c80d79e793d59b2e9183398c791c0e5ed05c",
+    "review": "machine"
   },
   "print-job.add-frame": {
     "text": "Este fotograma ({frame}) × {count}",
@@ -53730,6 +54420,86 @@
     "sourceHash": "9a13c7d2efe4265c4a358dc185489c8e835165ffd15897a8fdfa918ff50c202b",
     "review": "user"
   },
+  "ptg.card.ae.desc": {
+    "text": "Capas, cámara y audio como proyecto de After Effects.",
+    "sourceHash": "d719206317e3f4fd69839a9d87e3f70935c1ce1c83660eaa4b8f95890d00a3d8",
+    "review": "machine"
+  },
+  "ptg.card.ae.title": {
+    "text": "After Effects",
+    "sourceHash": "74f5e8a2db83844f1a4ef6814c891d7111cfdea71a6b68a4ea4fcbfc883b1e74",
+    "review": "machine"
+  },
+  "ptg.card.compositing.desc": {
+    "text": "Scripts y medios para Nuke y Fusion.",
+    "sourceHash": "28c82ddf7f68b44619caea07304000850fc7034c835f8317f4522e35bf0b3cb5",
+    "review": "machine"
+  },
+  "ptg.card.compositing.title": {
+    "text": "Composición",
+    "sourceHash": "de655c1e3dcf4451bde1c0b8bbd02ae958ab13c5a84a27e572a886a09155d99a",
+    "review": "machine"
+  },
+  "ptg.card.dragonframe.desc": {
+    "text": "Referencia y hojas de exposición para rodar en Dragonframe.",
+    "sourceHash": "67a8ae8d2b403c41a93ad77e41c71487cde115219019e19700a5352e8c5e01dc",
+    "review": "machine"
+  },
+  "ptg.card.dragonframe.title": {
+    "text": "Dragonframe",
+    "sourceHash": "0c83ec1b1d6a4a1ee63485e4a547467b288e4b62e0d013da864ddc2a5638804f",
+    "review": "machine"
+  },
+  "ptg.card.editorial.desc": {
+    "text": "OTIO, FCP7 XML y EDL para el montador.",
+    "sourceHash": "bf8e9682a5e962497af603709dc89a28a5cbcadbc390fd33c778516ccd20d177",
+    "review": "machine"
+  },
+  "ptg.card.editorial.title": {
+    "text": "Programa de edición",
+    "sourceHash": "c8b39c1690349b47662bebf71660ef7b937cb8929e674613b3c3e1755af99bcc",
+    "review": "machine"
+  },
+  "ptg.card.fbx.desc": {
+    "text": "Movimiento de cámara para programas 3D (experimental).",
+    "sourceHash": "94dce6bf56b7dbc0b4e766685008f37841443d6ce5afb20a24aafca705ffe056",
+    "review": "machine"
+  },
+  "ptg.card.fbx.title": {
+    "text": "Cámara FBX",
+    "sourceHash": "0c033ff4c015e45a6a3f4319b34ca2dbb45cc051d75a236ace77cc59812124f2",
+    "review": "machine"
+  },
+  "ptg.card.mouth.desc": {
+    "text": "Formas de boca por fotograma para animadores y el taller de rigs.",
+    "sourceHash": "5171a7213230676184f6461d6d6b712fed2f0771e520925a6438caf527fca5fd",
+    "review": "machine"
+  },
+  "ptg.card.mouth.title": {
+    "text": "Lista de bocas y sincronía labial",
+    "sourceHash": "45e5aa9e9ecbe3b91cd7d0b75461ad982443e83b480d40dc4dbcfd3df1ed7d7a",
+    "review": "machine"
+  },
+  "ptg.card.shotlist.desc": {
+    "text": "Planos con tiempos e imágenes para el seguimiento de producción.",
+    "sourceHash": "73eb25b307b311571c6c8759712af7e0b288549a5e557700fc2a5ee9c003563c",
+    "review": "machine"
+  },
+  "ptg.card.shotlist.title": {
+    "text": "Lista de planos",
+    "sourceHash": "ee06e88c461dcecb1b796e97b36bdd6f24c047d2589cbcee3d2b63791f4b4f5f",
+    "review": "machine"
+  },
+  "ptg.layout.history": {
+    "text": "Historial de exportación",
+    "sourceHash": "3aba9b85343c617adab01c1aef659dce3c3b3e55f4597ccbed1ba232c44e54f8",
+    "review": "machine"
+  },
+  "ptg.layout.shared": {
+    "text": "Común a todos los paquetes",
+    "sourceHash": "311f32fc3bb8a022b6d2e268b31035e0f45a00ff77da526f7a2a8d39f7954c09",
+    "review": "machine"
+  },
   "ptg1.cancel": {
     "text": "Cancelar",
     "sourceHash": "a69ea29ae854ab93e4967572b360e5a50e1c854ae20c4ae9b47ee3b1368bab86",
@@ -53910,9 +54680,34 @@
     "sourceHash": "3d894b39a6a4c9ee8004092a2c7d821fef2d25a83f5444fd26c082061d37a992",
     "review": "machine"
   },
+  "ptg3.ae-import-failed": {
+    "text": "After Effects no pudo importar estos archivos. Las capas recibieron marcadores grises con el mismo nombre, así que la estructura y los fotogramas clave se han creado:",
+    "sourceHash": "c6dbe1f6aae8804939a8d276aa445612dc9f8945d41146d7ae7992b270f775a9",
+    "review": "machine"
+  },
+  "ptg3.ae-missing": {
+    "text": "Faltan estos archivos junto a bygg-after-effects.jsx, así que la construcción se detiene:",
+    "sourceHash": "da34c06c6bf3b3bc9c2fc0baaae04d792d87a337831d25dd4648ae1d3aa33524",
+    "review": "machine"
+  },
+  "ptg3.ae-not-found": {
+    "text": "No se encontró Adobe After Effects. Abre After Effects, elige File > Scripts > Run Script File y selecciona bygg-after-effects.jsx en esta carpeta.",
+    "sourceHash": "2e4a0557224bd6026312550e43d2ce73a860ca621c33a98ca869dbdb7b6a137e",
+    "review": "machine"
+  },
   "ptg3.ae-package": {
     "text": "Paquete de After Effects",
     "sourceHash": "0557114dec7da306f83a2d19fc6fbe921b59cacc01f754d1cbb37039387cb6b8",
+    "review": "machine"
+  },
+  "ptg3.ae-save-failed": {
+    "text": "El proyecto se ha construido, pero no se pudo guardar. Activa Preferences > Scripting & Expressions > «Allow Scripts to Write Files and Access Network» y vuelve a ejecutar el script.",
+    "sourceHash": "dc7a6ad39901dae5d1459ad03cfe91ea423b826b576e2076de329175d0ca5342",
+    "review": "machine"
+  },
+  "ptg3.ae-wrong-host": {
+    "text": "Este script debe ejecutarse en After Effects. Usa el archivo de inicio «Åpne i After Effects» de la misma carpeta.",
+    "sourceHash": "99a1892fa712173988d0f298ddb453653430afe7d4ff2661c6b5edc312c962de",
     "review": "machine"
   },
   "ptg3.camera-fbx": {
@@ -53953,6 +54748,16 @@
   "ptg3.readme-ae": {
     "text": "Abra After Effects, elija File > Scripts > Run Script File y ejecute bygg-after-effects.jsx desde esta carpeta. El script crea una composición por plano y una composición principal con capas, fotogramas clave, cambios de imagen, máscaras y audio. Las transiciones entre escenas no están incluidas. Las capas de texto no se recrean.",
     "sourceHash": "83945bae974af3ce9b4b9357daef3811823b595345d5abcb9002675bbf8532a8",
+    "review": "machine"
+  },
+  "ptg3.readme-ae-open": {
+    "text": "Tres formas de abrir el paquete: 1) Descomprime el ZIP y haz doble clic en «Åpne i After Effects (Windows).bat» o «Åpne i After Effects (Mac).command». 2) O abre After Effects y elige File > Scripts > Run Script File y bygg-after-effects.jsx. 3) El script guarda el proyecto como {value1} en la misma carpeta; después puedes abrir ese archivo con doble clic. Para guardar, «Allow Scripts to Write Files and Access Network» debe estar activado en Preferences > Scripting & Expressions. Las transiciones entre escenas y las capas de texto no se recrean. No podemos crear el archivo .aep directamente porque el formato es cerrado; por eso el script lo construye dentro de After Effects.",
+    "sourceHash": "d13925d644fdf152d5266ee188be1a4de3709e96b806e2b49af90e7ddfb049d2",
+    "review": "machine"
+  },
+  "ptg3.readme-ae-other-app": {
+    "text": "Nota: hacer doble clic en bygg-after-effects.jsx puede abrir otro programa de Adobe, como Audition, porque los archivos .jsx están asociados a todos los programas de Adobe con ExtendScript. En ese caso usa el archivo de inicio «Åpne i After Effects». También puedes hacer clic derecho y elegir After Effects en «Abrir con», o en Finder elegir «Obtener información» → «Abrir con».",
+    "sourceHash": "9b460fe08f45bd18a5eb3e5fbac17d7bac30413d288b1bef41ea89a9174e425b",
     "review": "machine"
   },
   "ptg3.readme-camera": {
@@ -55081,6 +55886,151 @@
     "sourceHash": "658e6084bab6c50dc247bd5cb1e0d7725fb46f3bb7a83ef31e68dace9802a753",
     "review": "machine"
   },
+  "script-explorer2.chip.menu": {
+    "text": "Opciones para {name}",
+    "sourceHash": "0d75d2108380932daf2f711d4cc56562685dbd5fcc459853c6e0bb9d9fe1c5f5",
+    "review": "machine"
+  },
+  "script-explorer2.chips.label": {
+    "text": "Personajes, objetos y lugares de la escena",
+    "sourceHash": "9684c4a6eb9dc8fcf0c2c9891f4f781ebf236b8f3be626777a234859b280603a",
+    "review": "machine"
+  },
+  "script-explorer2.menu.all": {
+    "text": "Todas las escenas con {name}",
+    "sourceHash": "c5a697872182160390b760d220e4f2b09db03ca3fd1839d6fdf20430127bea2b",
+    "review": "machine"
+  },
+  "script-explorer2.menu.filter": {
+    "text": "Filtrar el explorador por esto",
+    "sourceHash": "6d6603ce7acc03f0b2df0edc0199535ed3fb9ce59d0b04acfe3d08b45fb8bf4e",
+    "review": "machine"
+  },
+  "script-explorer2.menu.first": {
+    "text": "Primera aparición",
+    "sourceHash": "3075c72d76ef5510ecb50db37bbfb3d4ac28e98de8bc86b86939c98c7de6acec",
+    "review": "machine"
+  },
+  "script-explorer2.menu.library": {
+    "text": "Abrir en la biblioteca",
+    "sourceHash": "db7a462543202f798d595a04ec43999a440cc1def231ad92e840ad365580c291",
+    "review": "machine"
+  },
+  "script-explorer2.menu.next": {
+    "text": "Siguiente aparición",
+    "sourceHash": "e13c2188498944fd5fad1938c5eefc4a37c1b501c888f164b89b66183408b67f",
+    "review": "machine"
+  },
+  "script-explorer2.menu.prev": {
+    "text": "Aparición anterior",
+    "sourceHash": "d228a4d5ffe8f92e272d72b74bfba3fcf6341f56a4c1819513cf133907939331",
+    "review": "machine"
+  },
+  "script-explorer2.menu.scene": {
+    "text": "Escena {number}",
+    "sourceHash": "98446133fa354fe6ebbb6691fdbb6a9ec78f6cca20b4a3093500976b6622a815",
+    "review": "machine"
+  },
+  "script-explorer2.notes.marks": {
+    "text": "Marcas de notas en el texto",
+    "sourceHash": "17728c50ca3917c3cfd28115d4550573695b095a343d090ec09716578e847a09",
+    "review": "machine"
+  },
+  "script-explorer2.notes.toggle": {
+    "text": "Notas ({count})",
+    "sourceHash": "adc96831908a1767634aaa5e4b743dbf4185349bc660bf91803aa4f53d203c2a",
+    "review": "machine"
+  },
+  "script-explorer2.open.assembly": {
+    "text": "Montaje",
+    "sourceHash": "0a2d37cb3b5b81d5568bf2094ae56d8840d933e7330851dfcd4d30b9602a4fd0",
+    "review": "machine"
+  },
+  "script-explorer2.open.assembly-aria": {
+    "text": "Abrir en el montaje con el cabezal en la escena",
+    "sourceHash": "dd49d461dcce95a6a2b6c53e24b9ca739c9139ca7a9477b7a006b4fb13440103",
+    "review": "machine"
+  },
+  "script-explorer2.open.dialogue": {
+    "text": "Réplica y audio",
+    "sourceHash": "ffebc86fefe5ac132c390d942d09585987c86a00f268b69c2f70c497578bb001",
+    "review": "machine"
+  },
+  "script-explorer2.open.dialogue-aria": {
+    "text": "Abrir la réplica seleccionada en la ventana de diálogo y audio",
+    "sourceHash": "d19ca5b8d69d2487635c4409795b5d9eb0bafd01d3b698338d722d2988e7866a",
+    "review": "machine"
+  },
+  "script-explorer2.open.dialogue-none": {
+    "text": "Selecciona primero una réplica en el guion",
+    "sourceHash": "91a9abc168da428c7fee76c2b1141517c1db0a711638d9b7408fc4f354a8fb41",
+    "review": "machine"
+  },
+  "script-explorer2.open.group": {
+    "text": "Abrir en",
+    "sourceHash": "341372f6fe78cce3954000ed10a67c9c40732d102ea1c3d4aec227bbdf989638",
+    "review": "machine"
+  },
+  "script-explorer2.open.scene": {
+    "text": "Editor de escena",
+    "sourceHash": "03077a29db29ea03fa5e6415f26f05e0eeda24aec398fc1ccffc3e907cd24fe0",
+    "review": "machine"
+  },
+  "script-explorer2.open.scene-aria": {
+    "text": "Abrir la escena en el editor de escena",
+    "sourceHash": "a9d4642b47bc19e7200019c3026d6073d07d4f82a79a89de054b9edd89e2c0ef",
+    "review": "machine"
+  },
+  "script-explorer2.open.script": {
+    "text": "Guion",
+    "sourceHash": "b66ef7e1052a98fa58235776665284ae3510d514598b707f7908277d30330ea4",
+    "review": "machine"
+  },
+  "script-explorer2.open.storylab": {
+    "text": "Story Lab",
+    "sourceHash": "cb7a56cd612f799ea95b81d85a7d4012a15b8ba06d70a43aa2059d0345ba8129",
+    "review": "machine"
+  },
+  "script-explorer2.open.storylab-aria": {
+    "text": "Abrir Story Lab en esta escena",
+    "sourceHash": "a324e84b0cf1861a08e6eef99202af7e8926e755b0f5fcd49cbe3d40c6880dd1",
+    "review": "machine"
+  },
+  "script-explorer2.panes.hits": {
+    "text": "Cambiar el ancho de los resultados",
+    "sourceHash": "2f7838af0b2c171b893705a2b8b3b37c23cf026182ab793737f965cce1e66138",
+    "review": "machine"
+  },
+  "script-explorer2.panes.side": {
+    "text": "Cambiar el ancho del panel lateral",
+    "sourceHash": "233acf6d578376478a4d51ecd2212c85f619e069e39b36cac3dddbff44f3969a",
+    "review": "machine"
+  },
+  "script-explorer2.window.maximize": {
+    "text": "Maximizar",
+    "sourceHash": "dbe0f8aabee19fa83a77ec3809e82cb27f61a08713461d8a3447c5a31c0f9ee4",
+    "review": "machine"
+  },
+  "script-explorer2.window.restore": {
+    "text": "Restaurar tamaño",
+    "sourceHash": "0a5a8eadae06bcd223aa44e94f188773e81b6bfb21e30517d7ff48d9667da5ce",
+    "review": "machine"
+  },
+  "script-explorer2.window.snap-left": {
+    "text": "Fijar en la mitad izquierda",
+    "sourceHash": "191566ce8c0faf5d55ac5ade9b320ac1062e71afe7094ba29a2b121391ad10b4",
+    "review": "machine"
+  },
+  "script-explorer2.window.snap-right": {
+    "text": "Fijar en la mitad derecha",
+    "sourceHash": "82909df04d1286289f82cf48fd16469054c2f07bc041e61cb1592ebf93d449f8",
+    "review": "machine"
+  },
+  "script.openScene.hint": {
+    "text": "Haz doble clic para abrir la escena",
+    "sourceHash": "7c522c850b23b70d940373da2d4a67fc45bd982ab02a3d8cae37416a86042d3f",
+    "review": "machine"
+  },
   "server.error.asset_missing": {
     "text": "El recurso no existe",
     "sourceHash": "cc7b6a9b4701d905ff8c715c27247c8e432561bbdea1466a6d922cb8bc3f7721",
@@ -55164,891 +56114,6 @@
   "time.weekday-at": {
     "text": "{weekday} a las {time}",
     "sourceHash": "d677d9712719c3de3544d2cc9a624a20950aea5a9a8017bc4c126f1de2c11fb0",
-    "review": "machine"
-  },
-  "k1.presence.one": {
-    "text": "{name} también está editando esta escena",
-    "sourceHash": "a2bc60c8c31f357908fdc17b824d3cf08611dd52076dbe07608e8f2feb30f2c4",
-    "review": "machine"
-  },
-  "k1.presence.many": {
-    "text": "{names} también están editando esta escena",
-    "sourceHash": "e84f548d6cb13304be8740ffb9b0c46914d8ed5975e4b3fd6f4e4b9aa6083f3c",
-    "review": "machine"
-  },
-  "k1.presence.dot": {
-    "text": "Otras personas en esta escena ahora: {names}",
-    "sourceHash": "1717037ba7fd0f2f1f487eda4eb8e04225f2ef9025b63b10a0b9b21f75ea567b",
-    "review": "machine"
-  },
-  "k1.conflict.aria": {
-    "text": "Conflicto al guardar",
-    "sourceHash": "196a0c5b09ad9412e0aedd0ea0f5733b44de5daad883c2ebf4985c26a32fc4a6",
-    "review": "machine"
-  },
-  "k1.conflict.title": {
-    "text": "Otra persona cambió lo mismo al mismo tiempo, así que tu cambio no se guardó. Elige qué hacer.",
-    "sourceHash": "06f2c382bf5bfd4585864660f61f5a12f6abf5b9dc118c14cbbee1372db9db51",
-    "review": "machine"
-  },
-  "k1.conflict.by": {
-    "text": "Último cambio por {name}, {time}.",
-    "sourceHash": "7f4cc39b20b3e74e2c04e42364d41edb3fe90da314f4f1b07957aa4761297198",
-    "review": "machine"
-  },
-  "k1.conflict.by-unknown": {
-    "text": "Último cambio: {time}.",
-    "sourceHash": "d9101e86a2b91d29cdb5ca675fe24c7d7725a692253712db952a6c55ec58419d",
-    "review": "machine"
-  },
-  "k1.conflict.rebase": {
-    "text": "Aplicar mi cambio encima",
-    "sourceHash": "c7c866cdb5f3c041b564b7d559e1477435eb8c2de8a4e145aafd697684ef55f7",
-    "review": "machine"
-  },
-  "k1.conflict.discard": {
-    "text": "Descartar mi cambio",
-    "sourceHash": "f7e2c71634e2d0d104e7eaaa57f3766e4b4e6db7d2a618d6a670780fd6721877",
-    "review": "machine"
-  },
-  "b116.box.title": {
-    "text": "¿Quieres mostrar un poco de lo que estás haciendo?",
-    "sourceHash": "581a703f3d9b707334863e63e7479a0f11e3af40f83208b291d5d4ba1a7ff298",
-    "review": "machine"
-  },
-  "b116.box.hint": {
-    "text": "Elige una cosa de uno de tus proyectos: un personaje, un recurso, una escena corta, un fragmento del guion o un fragmento de audio.",
-    "sourceHash": "77b5cc341f20526af82e7beed6fc083b29948a369c5ccf929d54ca6039d14a7f",
-    "review": "machine"
-  },
-  "b116.box.share": {
-    "text": "Compartir algo",
-    "sourceHash": "ac97eab6540cfe4c1a72ccc75437a0e5e15b3a7a42301be8fd1d7ca2f169b2dc",
-    "review": "machine"
-  },
-  "b116.box.mine": {
-    "text": "Mis publicaciones",
-    "sourceHash": "13839135f0ffcaa09554f0861e9c5626086466de75e6fa9c4c34e5698a542034",
-    "review": "machine"
-  },
-  "b116.box.profile": {
-    "text": "Editar perfil",
-    "sourceHash": "15267ea15ea723d30a2a79c57ecf1c000203f57f44d10e476ef3e33adf9abd89",
-    "review": "machine"
-  },
-  "b116.create.title": {
-    "text": "Compartir en el escaparate",
-    "sourceHash": "34f45b37756eaefbd541168d62a1bfc0c35ee6833bf92fc025730d1c5338c4d6",
-    "review": "machine"
-  },
-  "b116.create.preview": {
-    "text": "Vista previa",
-    "sourceHash": "6b2153b9371eb726341a755d22cf795eb941d48e73942ca609f78ad2f7656500",
-    "review": "machine"
-  },
-  "b116.create.previewHint": {
-    "text": "Así se verá exactamente tu contribución en el carrusel.",
-    "sourceHash": "71147bf32fa76143557bc07c4bc8507ba00e42636baf2737815ef91901b6cff8",
-    "review": "machine"
-  },
-  "b116.create.project": {
-    "text": "Proyecto",
-    "sourceHash": "30a6bf7d10a859379d1cdfbc84ffe8c4a5a7e5333aa51b9fcdf05f4febd04e7c",
-    "review": "machine"
-  },
-  "b116.create.kind": {
-    "text": "¿Qué quieres compartir?",
-    "sourceHash": "0063dbcc137422d90d5a8f95c842513c47ac245efbcd1763e994c4cefc64bdf5",
-    "review": "machine"
-  },
-  "b116.kind.character": {
-    "text": "Personaje",
-    "sourceHash": "4f4a650cdc41931d714685042197b87c9411b38002e220232a5f1eb512514500",
-    "review": "machine"
-  },
-  "b116.kind.asset": {
-    "text": "Recurso",
-    "sourceHash": "d6f032ca0f7726990892f6a28d9b2617b1351202577385c28993ebac3cf61485",
-    "review": "machine"
-  },
-  "b116.kind.scene": {
-    "text": "Imagen de escena",
-    "sourceHash": "cc4f4dd83170540e4f2a354a0b0fb0fc8d0d570ee3d3ec45c7500d5282e8e915",
-    "review": "machine"
-  },
-  "b116.kind.script": {
-    "text": "Fragmento del guion",
-    "sourceHash": "8f8095159e4c4df04fde57bdfa126bbf789caf7f7130dc7e0225a2e3e6e1804a",
-    "review": "machine"
-  },
-  "b116.kind.audio": {
-    "text": "Fragmento de audio",
-    "sourceHash": "840d2692e48b2e9d3db0ecfccb9fb75b1712c9f2e1f72faddcb347bc50db80b8",
-    "review": "machine"
-  },
-  "b116.create.excerptLabel": {
-    "text": "Selecciona las réplicas (máximo 12)",
-    "sourceHash": "993fa4c562e7702433655edd9b537303d6954a717e9888dad659ab91fb22716f",
-    "review": "machine"
-  },
-  "b116.create.excerptWarning": {
-    "text": "El texto se hace público. Comparte solo lo que quieras que todos puedan leer.",
-    "sourceHash": "7867d1abdfbd80a21558f351f8dc8a65d9b409cc0e12d13206c8711d8d1ccfb9",
-    "review": "machine"
-  },
-  "b116.create.titleLabel": {
-    "text": "Título",
-    "sourceHash": "f8014454bf11e149d7db8af825fb9d11538afb69168e473103ba98be4f8e19bd",
-    "review": "machine"
-  },
-  "b116.create.textLabel": {
-    "text": "Sobre el proyecto de película y sobre ti (opcional, máximo 280 caracteres)",
-    "sourceHash": "139b6792641d6433cc3fbf7fde3b07b62f4d5c024f3342775f72c88c31ee3359",
-    "review": "machine"
-  },
-  "b116.create.expires": {
-    "text": "Visible durante",
-    "sourceHash": "7f62424a5912e2b9820c4e0aaf0255b6805fbe24480d4babdd884d3b410221e7",
-    "review": "machine"
-  },
-  "b116.expires.7": {
-    "text": "1 semana",
-    "sourceHash": "6f908bc33596fec50667c089000fbae1ad296579b0d177dba0df13d7569c5645",
-    "review": "machine"
-  },
-  "b116.expires.14": {
-    "text": "2 semanas",
-    "sourceHash": "c8a894ae6ce7e7206a0172108b397cd4ee2772045a22000c643c6dfb8e604860",
-    "review": "machine"
-  },
-  "b116.expires.30": {
-    "text": "1 mes",
-    "sourceHash": "56b9f65beb79983f4d809db469eef294443b06c8db550fb6167c06df82b5729e",
-    "review": "machine"
-  },
-  "b116.expires.90": {
-    "text": "3 meses",
-    "sourceHash": "5585aceaae6c1a2788d73e9df91699b727315f9ec2b9654fb8d0617eb688464b",
-    "review": "machine"
-  },
-  "b116.create.empty": {
-    "text": "Nada que elegir aquí todavía.",
-    "sourceHash": "7ea28d82b30afefb817cc7cad56f086d7085991fa7902bd0e3434d7b08749a16",
-    "review": "machine"
-  },
-  "b116.create.back": {
-    "text": "Atrás",
-    "sourceHash": "44834c439ce8cfc73579af35af8d22d2fb2c2637fa19880f91caae0af2485a98",
-    "review": "machine"
-  },
-  "b116.create.submit": {
-    "text": "Compartir",
-    "sourceHash": "09772187ba0a65f4606b7b2cb66c6eef6e3e508eaedafc8d8240e6db4664c439",
-    "review": "machine"
-  },
-  "b116.create.pendingNotice": {
-    "text": "¡Gracias! Tu contribución espera aprobación antes de mostrarse.",
-    "sourceHash": "76007d726b26d5fe1bf5faace79560efb4acfc914609800ad92f31ac0a2f1ae3",
-    "review": "machine"
-  },
-  "b116.create.liveNotice": {
-    "text": "¡Gracias! Tu contribución ya se muestra en el carrusel.",
-    "sourceHash": "3b3f2678944b24c3e05d03e8418f5000d873d9766c7275a3c3f6e1a381b056d1",
-    "review": "machine"
-  },
-  "b116.create.failed": {
-    "text": "No se pudo compartir. Inténtalo de nuevo.",
-    "sourceHash": "f2704d958a051a728234349dd84943da6e6d70d54c01f1ac96ec50d6362fc23e",
-    "review": "machine"
-  },
-  "b116.cancel": {
-    "text": "Cancelar",
-    "sourceHash": "a69ea29ae854ab93e4967572b360e5a50e1c854ae20c4ae9b47ee3b1368bab86",
-    "review": "machine"
-  },
-  "b116.close": {
-    "text": "Cerrar",
-    "sourceHash": "e8b18396064c1a5f49e211a1cfca295a50ace87cebb16890ebb2c2fae97a4b95",
-    "review": "machine"
-  },
-  "b116.loading": {
-    "text": "Cargando …",
-    "sourceHash": "9afa6b4550a416f8b1bf9a4d708a82a427e1f6ff70e25ef9d52769b406cf65ef",
-    "review": "machine"
-  },
-  "b116.mine.title": {
-    "text": "Mis publicaciones",
-    "sourceHash": "13839135f0ffcaa09554f0861e9c5626086466de75e6fa9c4c34e5698a542034",
-    "review": "machine"
-  },
-  "b116.mine.empty": {
-    "text": "Aún no has compartido nada.",
-    "sourceHash": "705cd770718a79a0a5d764bd377505996982b400c888f9c9ed2b79d8a3a6300f",
-    "review": "machine"
-  },
-  "b116.mine.edit": {
-    "text": "Editar",
-    "sourceHash": "cfd2b696026ff850dd747fda326e20f2877a1bb2262a1b2c8b87a5e6e7f4a83f",
-    "review": "machine"
-  },
-  "b116.mine.save": {
-    "text": "Guardar",
-    "sourceHash": "17313c395ac9f722f10ded2a46d31ffa3f63252c66b890b61a904160c55f034b",
-    "review": "machine"
-  },
-  "b116.mine.revoke": {
-    "text": "Retirar",
-    "sourceHash": "d79ae0be2868150f1712d5c50f47eb2f7ab74bd58c8ea9cfc359a909ee73b115",
-    "review": "machine"
-  },
-  "b116.mine.revokeConfirm": {
-    "text": "¿Retirar esta contribución? Desaparecerá del carrusel.",
-    "sourceHash": "150664edcabf073886367162fbdea21e426c78b9600a673212fb485278048222",
-    "review": "machine"
-  },
-  "b116.mine.expiresAt": {
-    "text": "Visible hasta el {date}",
-    "sourceHash": "1a2eb16bcde39b22dbca6b49152d1337dfc03a2437baf45df079da629937572d",
-    "review": "machine"
-  },
-  "b116.status.pending": {
-    "text": "Pendiente de aprobación",
-    "sourceHash": "a947012742a94999757c50b670df74d9024bdc6a8f685f525a1ad68158f3ee27",
-    "review": "machine"
-  },
-  "b116.status.live": {
-    "text": "Visible",
-    "sourceHash": "675582aa5dd0b412117eadc5bf24642dfe2702b9bae1f39b7a913361ad2da079",
-    "review": "machine"
-  },
-  "b116.status.expired": {
-    "text": "Caducado",
-    "sourceHash": "5cb78ac096b06f9d9924ba8f4c99b6fdbeefe577ca09b8da8fbd02dc42fa36b5",
-    "review": "machine"
-  },
-  "b116.status.revoked": {
-    "text": "Retirado",
-    "sourceHash": "d972666fc9c1d730a6fc82c5ae8a5cedc794c988f872f37cd8aaeadb14fe6818",
-    "review": "machine"
-  },
-  "b116.status.rejected": {
-    "text": "Rechazado",
-    "sourceHash": "fd84276dcd23f45264a47d0ca1ea46b63567a1c28729fcddb7d732ad15798dcb",
-    "review": "machine"
-  },
-  "b116.card.by": {
-    "text": "por {name}",
-    "sourceHash": "67d7a4022bc80298f5670ee7a95365505e71985f036008f45cc80eec99a4aabd",
-    "review": "machine"
-  },
-  "b116.carousel.aria": {
-    "text": "Escaparate",
-    "sourceHash": "bb7de261e267abd43c847d938406ab8c9c4eb430f85e8b30da956eb1b23e527e",
-    "review": "machine"
-  },
-  "b116.carousel.prev": {
-    "text": "Anterior",
-    "sourceHash": "d273af62315d1d24b1303b340e851dff5c31112199a57c414092a08d8fc46567",
-    "review": "machine"
-  },
-  "b116.carousel.next": {
-    "text": "Siguiente",
-    "sourceHash": "f205f6b1abd1f7e080db38e927655e9ee6e902a8b8067c9607abdc98a1481df0",
-    "review": "machine"
-  },
-  "b116.comments.title": {
-    "text": "Comentarios",
-    "sourceHash": "80e1a5ead2da65bd3b75a346c04869e0641ff610783d11306b6ce0fe2e1be0d3",
-    "review": "machine"
-  },
-  "b116.comments.empty": {
-    "text": "Aún no hay comentarios.",
-    "sourceHash": "f1fe4f2ec31f3a329d92c34b2b8428b15acc85b51bd10cca833635dab8d131fc",
-    "review": "machine"
-  },
-  "b116.comments.placeholder": {
-    "text": "Escribe un comentario …",
-    "sourceHash": "d0e22923974ccefd2c67c45a6fede351a7f7baf1c6637e3526e1d184f3012d1c",
-    "review": "machine"
-  },
-  "b116.comments.submit": {
-    "text": "Comentar",
-    "sourceHash": "6feb3d78e6c88501f8065ccad48127c35b149d1a1493ca5ee8452a243114edeb",
-    "review": "machine"
-  },
-  "b116.comments.login": {
-    "text": "Inicia sesión para comentar.",
-    "sourceHash": "8b27962a6568dac5578b14824038bd08095442928da1e0153ee403d95ac1f281",
-    "review": "machine"
-  },
-  "b116.comments.remove": {
-    "text": "Eliminar",
-    "sourceHash": "efa41f7dcba0d2f5b5c7ee29c270d50f2ecd3e8f65636f8336ca5ba934612a15",
-    "review": "machine"
-  },
-  "b116.comments.failed": {
-    "text": "Algo salió mal. Inténtalo de nuevo.",
-    "sourceHash": "3d739fa3b7d9c39b4ca225ed4f5c15dc9c343517420aa17b19f4ad679dfbad3e",
-    "review": "machine"
-  },
-  "b116.report": {
-    "text": "Denunciar",
-    "sourceHash": "24ecd190b99786075adfdccc4b25007e8aa3676949eac70c680e4d3b95c08349",
-    "review": "machine"
-  },
-  "b116.report.sent": {
-    "text": "Gracias por avisarnos.",
-    "sourceHash": "b40b745097dc40a3f6207e81d50df799d1b994494e490af7c8ec6ca160fc82e4",
-    "review": "machine"
-  },
-  "b116.profile.title": {
-    "text": "Tu perfil",
-    "sourceHash": "40881535789b064e092ba6367c1b5a4a145b555a83e1893808874cdea661011d",
-    "review": "machine"
-  },
-  "b116.profile.bio": {
-    "text": "Sobre ti",
-    "sourceHash": "6f96f49f40d4887f9788612ea6e2ba4f2e2aec843cc33cffb236e65bea68012a",
-    "review": "machine"
-  },
-  "b116.profile.handle": {
-    "text": "Nombre corto (handle)",
-    "sourceHash": "6f6f2259432cf4b0bdb4ca48b1a47abc826bc4becafd26dbfc1d3b07bf0c7044",
-    "review": "machine"
-  },
-  "b116.profile.avatar": {
-    "text": "Avatar",
-    "sourceHash": "7e35d6b90e976ffaacc3f835c2d62f0114c0b50859586712461d20d89c6bb73b",
-    "review": "machine"
-  },
-  "b116.profile.avatarChoose": {
-    "text": "Elegir imagen",
-    "sourceHash": "69204a7df7e7588df4e22044fe5d81f03d7e856023277f9187b704d1d4b059a1",
-    "review": "machine"
-  },
-  "b116.profile.public": {
-    "text": "Mostrar el perfil públicamente",
-    "sourceHash": "e34810bbce089d278936dd7b4b1bb498aa60d8ad3b2b98e39f711cfca57c5f76",
-    "review": "machine"
-  },
-  "b116.profile.save": {
-    "text": "Guardar perfil",
-    "sourceHash": "ef0850e4c0c28ee923d363c23d174c3c8e70fb0ce5bdd6a9df484d913bb62c44",
-    "review": "machine"
-  },
-  "b116.profile.saved": {
-    "text": "Tu perfil se ha guardado.",
-    "sourceHash": "3785cecdbbe2601b5a45a09de58645bbb85fb08a336a8ad511a86b5b45fc91e7",
-    "review": "machine"
-  },
-  "b116.admin.title": {
-    "text": "Escaparate",
-    "sourceHash": "bb7de261e267abd43c847d938406ab8c9c4eb430f85e8b30da956eb1b23e527e",
-    "review": "machine"
-  },
-  "b116.admin.approval": {
-    "text": "Exigir aprobación antes de mostrar las contribuciones",
-    "sourceHash": "022505f2b2f15136b92d7712a1982bc153ed776be8dce8e6d1acd02aaa202155",
-    "review": "machine"
-  },
-  "b116.admin.empty": {
-    "text": "No hay contribuciones pendientes.",
-    "sourceHash": "aefffbae5d32b9d8f9a971e917a6a545041edf7bd7557e281e523783dcc00b1a",
-    "review": "machine"
-  },
-  "b116.admin.approve": {
-    "text": "Aprobar",
-    "sourceHash": "a990bf3b84b44c4921a6748e26d38a46e4e3cb0b4454eff99640887ef9c4b1e8",
-    "review": "machine"
-  },
-  "b116.admin.reject": {
-    "text": "Rechazar",
-    "sourceHash": "d3a48b52dbff252243bf3b1ee4cce1a85c466f1f84948cae80235c43cf3ccb78",
-    "review": "machine"
-  },
-  "b116.admin.failed": {
-    "text": "La acción falló.",
-    "sourceHash": "58a63283bde1edc33f97f272261e5374703c3fb686fb17b0e797469a25fd0505",
-    "review": "machine"
-  },
-  "b116.route.title": {
-    "text": "Mis publicaciones – From Pen to Glass",
-    "sourceHash": "d2ca9fcca162ddae166b15ee902959b9c331b9b708a3a1e0f0316159f8dd296f",
-    "review": "machine"
-  },
-  "b116.route.description": {
-    "text": "Todo lo que has compartido en el escaparate, con su estado.",
-    "sourceHash": "4a22ff8440fa388050502107d2707327ae9f2a04e4947f2c6c4040d0e1211f20",
-    "review": "machine"
-  },
-  "dv5.background-result.undo-label": {
-    "text": "Añadir resultado en segundo plano",
-    "sourceHash": "cc9d0f8aac5f7bd2996299a8c27fe27694c08472b6f6bd7d298a28e40e1b99a7",
-    "review": "machine"
-  },
-  "n10.playback.playing": {
-    "text": "Reproduciendo",
-    "sourceHash": "2746bac47887a263d5099060a00e3dae804ebd217aa8137ec2331d8e9b892b8a",
-    "review": "machine"
-  },
-  "n10.playback.stopped": {
-    "text": "Detenido en {timecode}",
-    "sourceHash": "0df9933516d2cfcf6e63ef2c9c5f6d4beb5c7bc768d1abd0c06a3d048084f1ee",
-    "review": "machine"
-  },
-  "brief.versions.previous": {
-    "text": "Versión de texto anterior",
-    "sourceHash": "89bdd326345ef4640d63a924feb2c1e78784828bf5b6ee442d8cec101de99933",
-    "review": "machine"
-  },
-  "brief.versions.next": {
-    "text": "Siguiente versión de texto",
-    "sourceHash": "200c8e5ff7239eac1d1b13879a18fcf21be303c620d86c049033e81e03519a19",
-    "review": "machine"
-  },
-  "brief.versions.counter": {
-    "text": "Versión de texto {current} de {total}",
-    "sourceHash": "901933c5f2a527aee7f8f5857267d3ed42c0d07997a14daaf4ecdc32042937c0",
-    "review": "machine"
-  },
-  "brief.versions.save": {
-    "text": "Guardar la descripción de {name}",
-    "sourceHash": "e3c7df023a58f9d22fc9f74b348235a5646b2a29594100eed234ef91a0f07ea8",
-    "review": "machine"
-  },
-  "brief.versions.fromText": {
-    "text": "Creado a partir del texto de abajo",
-    "sourceHash": "d787cb32abcbd828b73103417c1b1752ef796a23781bd5e5192a56397178ba4f",
-    "review": "machine"
-  },
-  "factSheet.auto.label": {
-    "text": "Creado automáticamente a partir del guion {date}",
-    "sourceHash": "50dab74b2e7368e778dec500eb56bbb73421dac67f91bd5bfa30bb6c0503e814",
-    "review": "machine"
-  },
-  "factSheet.cost.study": {
-    "text": "Aún no hay ficha visual: primero se hace un estudio del guion (una llamada de texto adicional, también mucho más barata que una imagen) y luego se escribe el texto. Un clic aprueba ambas llamadas.",
-    "sourceHash": "dc1ebf1109ec05d4e1c15d825e8ebbff763554316a7bf5b58004809a90e3ed6c",
-    "review": "machine"
-  },
-  "factSheet.cost.ready": {
-    "text": "La ficha visual del guion se usa siempre, además del texto del campo.",
-    "sourceHash": "c6119bb61a3db1e0f71a945a999205c869829c98cc81d3a89eeccf3bbd5f6776",
-    "review": "machine"
-  },
-  "factSheet.error.study": {
-    "text": "No se pudo crear la ficha visual a partir del guion, así que no se escribió el texto. {message}",
-    "sourceHash": "e787f2a90e9b3f360300aa340f4d506bba548578fc48bd7d27a25ec35e330c4f",
-    "review": "machine"
-  },
-  "factSheet.error.save": {
-    "text": "No se pudo guardar la ficha visual en el recurso.",
-    "sourceHash": "fc6b40dd0b5013f101584156c84f4c2b137538b06a5e8163a207779e70c358bd",
-    "review": "machine"
-  },
-  "factSheet.retry": {
-    "text": "Reintentar",
-    "sourceHash": "d9e949c5c342cf66a13e8b0c74f61da560c11f6357a5a910ff650880c0e98647",
-    "review": "machine"
-  },
-  "factSheet.history": {
-    "text": "Ficha visual creada a partir del guion ({name})",
-    "sourceHash": "c4840be19e58aadc64429d2043adb7aa9806b851453722dddce9763ec476fdc2",
-    "review": "machine"
-  },
-  "script.openScene.hint": {
-    "text": "Haz doble clic para abrir la escena",
-    "sourceHash": "7c522c850b23b70d940373da2d4a67fc45bd982ab02a3d8cae37416a86042d3f",
-    "review": "machine"
-  },
-  "attach.hint": {
-    "text": "Recomendado: 1–3 referencias de estilo. Más imágenes suelen dar resultados menos uniformes y cuestan más.",
-    "sourceHash": "86b00ad82d0a3e4e872a43465790c4ce53a8ff8f41dd9a51a88226acc732a9b2",
-    "review": "machine"
-  },
-  "attach.identityOff": {
-    "text": "Sin la imagen actual, el aspecto puede cambiar.",
-    "sourceHash": "54b9ab1f52d1bac394b115436f3d1b7960b07a51e7f9f16a533ed194a43f351f",
-    "review": "machine"
-  },
-  "attach.limit": {
-    "text": "Se alcanzó el límite de este modelo: {max} imágenes.",
-    "sourceHash": "37618a4c92c730caac91dcc4c9d595c64ab0b069884ae076c1de11fe329c0f72",
-    "review": "machine"
-  },
-  "attach.overLimit": {
-    "text": " (por encima del límite, no se envía)",
-    "sourceHash": "8a4e60f321b47929f7d4d2c802e5b29d4bf078f6e08c31361078591572da7a21",
-    "review": "machine"
-  },
-  "attach.add": {
-    "text": "Añadir imagen …",
-    "sourceHash": "819862c7328436fb9df96581ead5846612fcab03c30117186b4966fc9dc06fc0",
-    "review": "machine"
-  },
-  "attach.remove": {
-    "text": "Quitar",
-    "sourceHash": "efa41f7dcba0d2f5b5c7ee29c270d50f2ecd3e8f65636f8336ca5ba934612a15",
-    "review": "machine"
-  },
-  "attach.role.same": {
-    "text": " – misma figura/objeto",
-    "sourceHash": "b15ea5137ea908352de77df3a0bd01024d5e822adf9f028a1b50cfa5edf8b6e3",
-    "review": "machine"
-  },
-  "attach.include": {
-    "text": "Enviar: {label}",
-    "sourceHash": "835be4ff4510c0eb771129cfa550320319cea61f0e8db9dde5701c678ee6d9af",
-    "review": "machine"
-  },
-  "attach.cost.label": {
-    "text": "Imágenes enviadas",
-    "sourceHash": "235202e102f36eb7b385b79b7ec615dc95964558ca93dbb2efb3626708e213a2",
-    "review": "machine"
-  },
-  "attach.cost.value": {
-    "text": "{count} de un máximo de {max} (más imágenes pueden cambiar el precio)",
-    "sourceHash": "d6b5adbc2df20c5e25d193910e113641ccd4f87a8b1acc110c056a09732d78d7",
-    "review": "machine"
-  },
-  "attach.picker.title": {
-    "text": "Añadir imagen",
-    "sourceHash": "011fa939806b381ad8557664aadcbd842be5ffea960dc86c9a36838e213a3027",
-    "review": "machine"
-  },
-  "attach.picker.search": {
-    "text": "Buscar imágenes",
-    "sourceHash": "aa8d1ef67305cb1eb40d7cb674a460b1a8b3cbdfba4749975e09a6b3f55c510a",
-    "review": "machine"
-  },
-  "attach.picker.allKinds": {
-    "text": "Todos los tipos",
-    "sourceHash": "51a0f5606f5c37f91d6811c7e297f87e3a5a05fd81223c61403a54809cc24340",
-    "review": "machine"
-  },
-  "attach.picker.kind": {
-    "text": "Tipo",
-    "sourceHash": "47c06a19df0b0752b30441b7a7df57fe481f3483acd093e630275adc2f4558a3",
-    "review": "machine"
-  },
-  "attach.picker.role": {
-    "text": "Función",
-    "sourceHash": "aef958ce00f5d364a329f5d47a7f58d67aa3e994b3d40c840de8bf3fe3c20cfe",
-    "review": "machine"
-  },
-  "attach.picker.roleStyle": {
-    "text": "Solo el estilo",
-    "sourceHash": "4623343f9f29d606197982433e55219ce12a2421d41eef8911c51828721b39c5",
-    "review": "machine"
-  },
-  "attach.picker.roleSame": {
-    "text": "Misma figura/objeto",
-    "sourceHash": "9dc964ae28701bc1771e0515a9cf192191263984a2caf8d73e62a6dc91db7471",
-    "review": "machine"
-  },
-  "attach.picker.empty": {
-    "text": "Ninguna imagen aprobada coincide.",
-    "sourceHash": "9e97d961b7cf648d7f6dda2322ed86adefcd3243e279ca42af3102aad41ef3d0",
-    "review": "machine"
-  },
-  "attach.picker.close": {
-    "text": "Cerrar",
-    "sourceHash": "e8b18396064c1a5f49e211a1cfca295a50ace87cebb16890ebb2c2fae97a4b95",
-    "review": "machine"
-  },
-  "attach.picker.pick": {
-    "text": "Añadir {label}",
-    "sourceHash": "649651269dee5d4efa39eb2bfa080e39c0f08d26d90198bf21d6abe533f5f56c",
-    "review": "machine"
-  },
-  "dialog.resize.grip": {
-    "text": "Cambiar el tamaño de la ventana (arrastrar, o Mayús + flechas; doble clic para el tamaño predeterminado)",
-    "sourceHash": "fab24824a9b6bac686d07dfc4ba5973be46bc4d278bcd64916d63f53baf66abd",
-    "review": "machine"
-  },
-  "dialog.resize.reset": {
-    "text": "Tamaño predeterminado",
-    "sourceHash": "152b779c74f6d3c8bc5480eb96baf67f3548c89d40cc79a7e3935b71b8c692f9",
-    "review": "machine"
-  },
-  "ptg.layout.shared": {
-    "text": "Común a todos los paquetes",
-    "sourceHash": "311f32fc3bb8a022b6d2e268b31035e0f45a00ff77da526f7a2a8d39f7954c09",
-    "review": "machine"
-  },
-  "ptg.layout.history": {
-    "text": "Historial de exportación",
-    "sourceHash": "3aba9b85343c617adab01c1aef659dce3c3b3e55f4597ccbed1ba232c44e54f8",
-    "review": "machine"
-  },
-  "ptg.card.shotlist.title": {
-    "text": "Lista de planos",
-    "sourceHash": "ee06e88c461dcecb1b796e97b36bdd6f24c047d2589cbcee3d2b63791f4b4f5f",
-    "review": "machine"
-  },
-  "ptg.card.shotlist.desc": {
-    "text": "Planos con tiempos e imágenes para el seguimiento de producción.",
-    "sourceHash": "73eb25b307b311571c6c8759712af7e0b288549a5e557700fc2a5ee9c003563c",
-    "review": "machine"
-  },
-  "ptg.card.dragonframe.title": {
-    "text": "Dragonframe",
-    "sourceHash": "0c83ec1b1d6a4a1ee63485e4a547467b288e4b62e0d013da864ddc2a5638804f",
-    "review": "machine"
-  },
-  "ptg.card.dragonframe.desc": {
-    "text": "Referencia y hojas de exposición para rodar en Dragonframe.",
-    "sourceHash": "67a8ae8d2b403c41a93ad77e41c71487cde115219019e19700a5352e8c5e01dc",
-    "review": "machine"
-  },
-  "ptg.card.ae.title": {
-    "text": "After Effects",
-    "sourceHash": "74f5e8a2db83844f1a4ef6814c891d7111cfdea71a6b68a4ea4fcbfc883b1e74",
-    "review": "machine"
-  },
-  "ptg.card.ae.desc": {
-    "text": "Capas, cámara y audio como proyecto de After Effects.",
-    "sourceHash": "d719206317e3f4fd69839a9d87e3f70935c1ce1c83660eaa4b8f95890d00a3d8",
-    "review": "machine"
-  },
-  "ptg.card.fbx.title": {
-    "text": "Cámara FBX",
-    "sourceHash": "0c033ff4c015e45a6a3f4319b34ca2dbb45cc051d75a236ace77cc59812124f2",
-    "review": "machine"
-  },
-  "ptg.card.fbx.desc": {
-    "text": "Movimiento de cámara para programas 3D (experimental).",
-    "sourceHash": "94dce6bf56b7dbc0b4e766685008f37841443d6ce5afb20a24aafca705ffe056",
-    "review": "machine"
-  },
-  "ptg.card.editorial.title": {
-    "text": "Programa de edición",
-    "sourceHash": "c8b39c1690349b47662bebf71660ef7b937cb8929e674613b3c3e1755af99bcc",
-    "review": "machine"
-  },
-  "ptg.card.editorial.desc": {
-    "text": "OTIO, FCP7 XML y EDL para el montador.",
-    "sourceHash": "bf8e9682a5e962497af603709dc89a28a5cbcadbc390fd33c778516ccd20d177",
-    "review": "machine"
-  },
-  "ptg.card.compositing.title": {
-    "text": "Composición",
-    "sourceHash": "de655c1e3dcf4451bde1c0b8bbd02ae958ab13c5a84a27e572a886a09155d99a",
-    "review": "machine"
-  },
-  "ptg.card.compositing.desc": {
-    "text": "Scripts y medios para Nuke y Fusion.",
-    "sourceHash": "28c82ddf7f68b44619caea07304000850fc7034c835f8317f4522e35bf0b3cb5",
-    "review": "machine"
-  },
-  "ptg.card.mouth.title": {
-    "text": "Lista de bocas y sincronía labial",
-    "sourceHash": "45e5aa9e9ecbe3b91cd7d0b75461ad982443e83b480d40dc4dbcfd3df1ed7d7a",
-    "review": "machine"
-  },
-  "ptg.card.mouth.desc": {
-    "text": "Formas de boca por fotograma para animadores y el taller de rigs.",
-    "sourceHash": "5171a7213230676184f6461d6d6b712fed2f0771e520925a6438caf527fca5fd",
-    "review": "machine"
-  },
-  "ptg3.ae-missing": {
-    "text": "Faltan estos archivos junto a bygg-after-effects.jsx, así que la construcción se detiene:",
-    "sourceHash": "da34c06c6bf3b3bc9c2fc0baaae04d792d87a337831d25dd4648ae1d3aa33524",
-    "review": "machine"
-  },
-  "ptg3.ae-save-failed": {
-    "text": "El proyecto se ha construido, pero no se pudo guardar. Activa Preferences > Scripting & Expressions > «Allow Scripts to Write Files and Access Network» y vuelve a ejecutar el script.",
-    "sourceHash": "dc7a6ad39901dae5d1459ad03cfe91ea423b826b576e2076de329175d0ca5342",
-    "review": "machine"
-  },
-  "ptg3.ae-import-failed": {
-    "text": "After Effects no pudo importar estos archivos. Las capas recibieron marcadores grises con el mismo nombre, así que la estructura y los fotogramas clave se han creado:",
-    "sourceHash": "c6dbe1f6aae8804939a8d276aa445612dc9f8945d41146d7ae7992b270f775a9",
-    "review": "machine"
-  },
-  "ptg3.ae-not-found": {
-    "text": "No se encontró Adobe After Effects. Abre After Effects, elige File > Scripts > Run Script File y selecciona bygg-after-effects.jsx en esta carpeta.",
-    "sourceHash": "2e4a0557224bd6026312550e43d2ce73a860ca621c33a98ca869dbdb7b6a137e",
-    "review": "machine"
-  },
-  "ptg3.readme-ae-open": {
-    "text": "Tres formas de abrir el paquete: 1) Descomprime el ZIP y haz doble clic en «Åpne i After Effects (Windows).bat» o «Åpne i After Effects (Mac).command». 2) O abre After Effects y elige File > Scripts > Run Script File y bygg-after-effects.jsx. 3) El script guarda el proyecto como {value1} en la misma carpeta; después puedes abrir ese archivo con doble clic. Para guardar, «Allow Scripts to Write Files and Access Network» debe estar activado en Preferences > Scripting & Expressions. Las transiciones entre escenas y las capas de texto no se recrean. No podemos crear el archivo .aep directamente porque el formato es cerrado; por eso el script lo construye dentro de After Effects.",
-    "sourceHash": "d13925d644fdf152d5266ee188be1a4de3709e96b806e2b49af90e7ddfb049d2",
-    "review": "machine"
-  },
-  "ptg3.ae-wrong-host": {
-    "text": "Este script debe ejecutarse en After Effects. Usa el archivo de inicio «Åpne i After Effects» de la misma carpeta.",
-    "sourceHash": "99a1892fa712173988d0f298ddb453653430afe7d4ff2661c6b5edc312c962de",
-    "review": "machine"
-  },
-  "ptg3.readme-ae-other-app": {
-    "text": "Nota: hacer doble clic en bygg-after-effects.jsx puede abrir otro programa de Adobe, como Audition, porque los archivos .jsx están asociados a todos los programas de Adobe con ExtendScript. En ese caso usa el archivo de inicio «Åpne i After Effects». También puedes hacer clic derecho y elegir After Effects en «Abrir con», o en Finder elegir «Obtener información» → «Abrir con».",
-    "sourceHash": "9b460fe08f45bd18a5eb3e5fbac17d7bac30413d288b1bef41ea89a9174e425b",
-    "review": "machine"
-  },
-  "pathSpacing.track": {
-    "text": "Espaciado",
-    "sourceHash": "4485bba46008c27e0e3dc71b3e26c80d79e793d59b2e9183398c791c0e5ed05c",
-    "review": "machine"
-  },
-  "pathSpacing.aria": {
-    "text": "Cuánto se mueve la capa por fotograma a lo largo de la trayectoria. Marcas juntas son lentas, marcas separadas son rápidas.",
-    "sourceHash": "de16a9e1d33b4f0d764b2f3a76fdda8fdf478f73acdb622f246135f45b6796ee",
-    "review": "machine"
-  },
-  "ml3-language-versions.error.source": {
-    "text": "El idioma del guion es la fuente y no puede ser una versión de idioma.",
-    "sourceHash": "0431f009bf24dd3310f0696af0192e26e0f745a09458992b37deee210b0f6dc2",
-    "review": "machine"
-  },
-  "ml3-language-versions.select.source": {
-    "text": "{label} – guion (fuente)",
-    "sourceHash": "85f7723bb55e1306399b5c8195ae51655f145e11ccddf07ec104b0276ce7ae7a",
-    "review": "machine"
-  },
-  "script-explorer2.window.snap-left": {
-    "text": "Fijar en la mitad izquierda",
-    "sourceHash": "191566ce8c0faf5d55ac5ade9b320ac1062e71afe7094ba29a2b121391ad10b4",
-    "review": "machine"
-  },
-  "script-explorer2.window.snap-right": {
-    "text": "Fijar en la mitad derecha",
-    "sourceHash": "82909df04d1286289f82cf48fd16469054c2f07bc041e61cb1592ebf93d449f8",
-    "review": "machine"
-  },
-  "script-explorer2.window.maximize": {
-    "text": "Maximizar",
-    "sourceHash": "dbe0f8aabee19fa83a77ec3809e82cb27f61a08713461d8a3447c5a31c0f9ee4",
-    "review": "machine"
-  },
-  "script-explorer2.window.restore": {
-    "text": "Restaurar tamaño",
-    "sourceHash": "0a5a8eadae06bcd223aa44e94f188773e81b6bfb21e30517d7ff48d9667da5ce",
-    "review": "machine"
-  },
-  "script-explorer2.open.group": {
-    "text": "Abrir en",
-    "sourceHash": "341372f6fe78cce3954000ed10a67c9c40732d102ea1c3d4aec227bbdf989638",
-    "review": "machine"
-  },
-  "script-explorer2.open.script": {
-    "text": "Guion",
-    "sourceHash": "b66ef7e1052a98fa58235776665284ae3510d514598b707f7908277d30330ea4",
-    "review": "machine"
-  },
-  "script-explorer2.open.assembly": {
-    "text": "Montaje",
-    "sourceHash": "0a2d37cb3b5b81d5568bf2094ae56d8840d933e7330851dfcd4d30b9602a4fd0",
-    "review": "machine"
-  },
-  "script-explorer2.open.assembly-aria": {
-    "text": "Abrir en el montaje con el cabezal en la escena",
-    "sourceHash": "dd49d461dcce95a6a2b6c53e24b9ca739c9139ca7a9477b7a006b4fb13440103",
-    "review": "machine"
-  },
-  "script-explorer2.open.scene": {
-    "text": "Editor de escena",
-    "sourceHash": "03077a29db29ea03fa5e6415f26f05e0eeda24aec398fc1ccffc3e907cd24fe0",
-    "review": "machine"
-  },
-  "script-explorer2.open.scene-aria": {
-    "text": "Abrir la escena en el editor de escena",
-    "sourceHash": "a9d4642b47bc19e7200019c3026d6073d07d4f82a79a89de054b9edd89e2c0ef",
-    "review": "machine"
-  },
-  "script-explorer2.open.dialogue": {
-    "text": "Réplica y audio",
-    "sourceHash": "ffebc86fefe5ac132c390d942d09585987c86a00f268b69c2f70c497578bb001",
-    "review": "machine"
-  },
-  "script-explorer2.open.dialogue-aria": {
-    "text": "Abrir la réplica seleccionada en la ventana de diálogo y audio",
-    "sourceHash": "d19ca5b8d69d2487635c4409795b5d9eb0bafd01d3b698338d722d2988e7866a",
-    "review": "machine"
-  },
-  "script-explorer2.open.dialogue-none": {
-    "text": "Selecciona primero una réplica en el guion",
-    "sourceHash": "91a9abc168da428c7fee76c2b1141517c1db0a711638d9b7408fc4f354a8fb41",
-    "review": "machine"
-  },
-  "script-explorer2.open.storylab": {
-    "text": "Story Lab",
-    "sourceHash": "cb7a56cd612f799ea95b81d85a7d4012a15b8ba06d70a43aa2059d0345ba8129",
-    "review": "machine"
-  },
-  "script-explorer2.open.storylab-aria": {
-    "text": "Abrir Story Lab en esta escena",
-    "sourceHash": "a324e84b0cf1861a08e6eef99202af7e8926e755b0f5fcd49cbe3d40c6880dd1",
-    "review": "machine"
-  },
-  "script-explorer2.chips.label": {
-    "text": "Personajes, objetos y lugares de la escena",
-    "sourceHash": "9684c4a6eb9dc8fcf0c2c9891f4f781ebf236b8f3be626777a234859b280603a",
-    "review": "machine"
-  },
-  "script-explorer2.chip.menu": {
-    "text": "Opciones para {name}",
-    "sourceHash": "0d75d2108380932daf2f711d4cc56562685dbd5fcc459853c6e0bb9d9fe1c5f5",
-    "review": "machine"
-  },
-  "script-explorer2.menu.library": {
-    "text": "Abrir en la biblioteca",
-    "sourceHash": "db7a462543202f798d595a04ec43999a440cc1def231ad92e840ad365580c291",
-    "review": "machine"
-  },
-  "script-explorer2.menu.filter": {
-    "text": "Filtrar el explorador por esto",
-    "sourceHash": "6d6603ce7acc03f0b2df0edc0199535ed3fb9ce59d0b04acfe3d08b45fb8bf4e",
-    "review": "machine"
-  },
-  "script-explorer2.menu.next": {
-    "text": "Siguiente aparición",
-    "sourceHash": "e13c2188498944fd5fad1938c5eefc4a37c1b501c888f164b89b66183408b67f",
-    "review": "machine"
-  },
-  "script-explorer2.menu.prev": {
-    "text": "Aparición anterior",
-    "sourceHash": "d228a4d5ffe8f92e272d72b74bfba3fcf6341f56a4c1819513cf133907939331",
-    "review": "machine"
-  },
-  "script-explorer2.menu.first": {
-    "text": "Primera aparición",
-    "sourceHash": "3075c72d76ef5510ecb50db37bbfb3d4ac28e98de8bc86b86939c98c7de6acec",
-    "review": "machine"
-  },
-  "script-explorer2.menu.all": {
-    "text": "Todas las escenas con {name}",
-    "sourceHash": "c5a697872182160390b760d220e4f2b09db03ca3fd1839d6fdf20430127bea2b",
-    "review": "machine"
-  },
-  "script-explorer2.menu.scene": {
-    "text": "Escena {number}",
-    "sourceHash": "98446133fa354fe6ebbb6691fdbb6a9ec78f6cca20b4a3093500976b6622a815",
-    "review": "machine"
-  },
-  "script-explorer2.notes.toggle": {
-    "text": "Notas ({count})",
-    "sourceHash": "adc96831908a1767634aaa5e4b743dbf4185349bc660bf91803aa4f53d203c2a",
-    "review": "machine"
-  },
-  "script-explorer2.notes.marks": {
-    "text": "Marcas de notas en el texto",
-    "sourceHash": "17728c50ca3917c3cfd28115d4550573695b095a343d090ec09716578e847a09",
-    "review": "machine"
-  },
-  "script-explorer2.panes.hits": {
-    "text": "Cambiar el ancho de los resultados",
-    "sourceHash": "2f7838af0b2c171b893705a2b8b3b37c23cf026182ab793737f965cce1e66138",
-    "review": "machine"
-  },
-  "script-explorer2.panes.side": {
-    "text": "Cambiar el ancho del panel lateral",
-    "sourceHash": "233acf6d578376478a4d51ecd2212c85f619e069e39b36cac3dddbff44f3969a",
-    "review": "machine"
-  },
-  "build.version": {
-    "text": "Versión {sha} · compilada {time}",
-    "sourceHash": "298b1683ec91394e4f4aa8711203368938595c405b4a4cb3c38be4d682b90b33",
     "review": "machine"
   }
 }
