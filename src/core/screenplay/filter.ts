@@ -7,6 +7,7 @@ import { blocksOfVariant, isScriptOccurrence, orderedOccurrences } from "../view
 import { formatHeading, type Page } from "./paginate";
 import { annotationsByVariant } from "../notes";
 import { collation } from "../i18n";
+import { foldSearch } from "../search-fold";
 
 /** Karakternavn uten tillegg som (O.S.), (V.O.), (CONT'D), (FORTS.). */
 export function characterName(text: string): string {
@@ -220,9 +221,9 @@ export function matchingOccurrences(
         // Notater gir også treff (REQ-0539)
         ...(annotationsByVariant(s).get(o.variantId) ?? []).map((a) => a.text),
       ]
-        .join("\n")
-        .toLocaleLowerCase("und");
-      if (!hay.includes(text)) continue;
+        .join("\n");
+      // G-4: foldet søk – aksent- og skriftolerant, samme regel som databasens private.fold_text
+      if (!foldSearch(hay).includes(text)) continue;
     }
     out.add(o.id);
   }
