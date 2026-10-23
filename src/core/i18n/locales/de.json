@@ -55816,5 +55816,15 @@
     "text": "Hinweis: Ein Doppelklick auf bygg-after-effects.jsx kann ein anderes Adobe-Programm wie Audition öffnen, weil .jsx-Dateien mit allen Adobe-Programmen mit ExtendScript verknüpft sind. Verwenden Sie dann die Startdatei „Åpne i After Effects“. Alternativ mit Rechtsklick unter „Öffnen mit“ After Effects wählen oder im Finder „Informationen“ → „Öffnen mit“.",
     "sourceHash": "9b460fe08f45bd18a5eb3e5fbac17d7bac30413d288b1bef41ea89a9174e425b",
     "review": "machine"
+  },
+  "pathSpacing.track": {
+    "text": "Abstand",
+    "sourceHash": "4485bba46008c27e0e3dc71b3e26c80d79e793d59b2e9183398c791c0e5ed05c",
+    "review": "machine"
+  },
+  "pathSpacing.aria": {
+    "text": "Wie weit sich die Ebene pro Bild entlang der Bahn bewegt. Enge Markierungen sind langsam, weite schnell.",
+    "sourceHash": "de16a9e1d33b4f0d764b2f3a76fdda8fdf478f73acdb622f246135f45b6796ee",
+    "review": "machine"
   }
 }

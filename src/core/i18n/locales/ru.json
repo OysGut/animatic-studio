@@ -55964,5 +55964,15 @@
     "text": "Примечание: двойной щелчок по bygg-after-effects.jsx может открыть другую программу Adobe, например Audition, потому что файлы .jsx связаны со всеми программами Adobe с ExtendScript. В этом случае используйте файл запуска «Åpne i After Effects». Либо щёлкните файл правой кнопкой и выберите After Effects в «Открыть с помощью», либо в Finder выберите «Свойства» → «Открыть с помощью».",
     "sourceHash": "9b460fe08f45bd18a5eb3e5fbac17d7bac30413d288b1bef41ea89a9174e425b",
     "review": "machine"
+  },
+  "pathSpacing.track": {
+    "text": "Интервалы",
+    "sourceHash": "4485bba46008c27e0e3dc71b3e26c80d79e793d59b2e9183398c791c0e5ed05c",
+    "review": "machine"
+  },
+  "pathSpacing.aria": {
+    "text": "Насколько слой смещается за кадр вдоль траектории. Частые отметки — медленно, редкие — быстро.",
+    "sourceHash": "de16a9e1d33b4f0d764b2f3a76fdda8fdf478f73acdb622f246135f45b6796ee",
+    "review": "machine"
   }
 }

@@ -75680,5 +75680,11 @@
   },
   "ptg3.readme-ae-other-app": {
     "text": "Merk: dobbeltklikk på bygg-after-effects.jsx kan åpne et annet Adobe-program, for eksempel Audition, fordi .jsx-filer er knyttet til alle Adobe-programmer med ExtendScript. Bruk da startfilen «Åpne i After Effects». Alternativt kan du høyreklikke filen og velge After Effects under «Åpne med», eller i Finder velge «Vis info» → «Åpne med»."
+  },
+  "pathSpacing.track": {
+    "text": "Avstand"
+  },
+  "pathSpacing.aria": {
+    "text": "Avstanden laget flytter seg per bilde langs banen. Tette merker er sakte, spredte merker er fort."
   }
 }

@@ -75662,5 +75662,11 @@
   },
   "ptg3.readme-ae-other-app": {
     "text": "[!! NNôôttëë: ddôôüübbllëë-ccllïïcckkïïnngg bbyygggg-ááffttëërr-ëëffffëëccttss.jjssxx mmááyy ôôppëënn áánnôôtthhëërr ÁÁddôôbbëë áápppp, ssüücchh ááss ÁÁüüddïïttïïôônn, bbëëccááüüssëë .jjssxx ffïïllëëss áárrëë llïïnnkkëëdd ttôô ëëvvëërryy ÁÁddôôbbëë áápppp wwïïtthh ËËxxttëënnddSSccrrïïpptt. ÏÏnn tthháátt ccáássëë, üüssëë tthhëë llááüünncchhëërr “Åppnnëë ïï ÁÁffttëërr ËËffffëëccttss”. ÁÁllttëërrnnááttïïvvëëllyy, rrïïgghhtt-ccllïïcckk tthhëë ffïïllëë áánndd cchhôôôôssëë ÁÁffttëërr ËËffffëëccttss üünnddëërr “ÔÔppëënn WWïïtthh”, ôôrr ïïnn FFïïnnddëërr cchhôôôôssëë “GGëëtt ÏÏnnffôô” → “ÔÔppëënn wwïïtthh”. !!]"
+  },
+  "pathSpacing.track": {
+    "text": "[!! SSppááccïïnngg !!]"
+  },
+  "pathSpacing.aria": {
+    "text": "[!! HHôôww ffáárr tthhëë llááyyëërr mmôôvvëëss ppëërr ffrráámmëë áállôônngg tthhëë ppáátthh. CCllôôssëë mmáárrkkss áárrëë ssllôôww, sspprrëëáádd mmáárrkkss áárrëë ffáásstt. !!]"
   }
 }

@@ -55742,5 +55742,15 @@
     "text": "참고: .jsx 파일은 ExtendScript가 있는 모든 Adobe 앱에 연결되어 있어 bygg-after-effects.jsx를 더블클릭하면 Audition 같은 다른 Adobe 앱이 열릴 수 있습니다. 그때는 실행 파일 “Åpne i After Effects”를 사용하세요. 또는 파일을 오른쪽 클릭해 “다음으로 열기”에서 After Effects를 선택하거나, Finder에서 “정보 가져오기” → “다음으로 열기”를 선택하세요.",
     "sourceHash": "9b460fe08f45bd18a5eb3e5fbac17d7bac30413d288b1bef41ea89a9174e425b",
     "review": "machine"
+  },
+  "pathSpacing.track": {
+    "text": "간격",
+    "sourceHash": "4485bba46008c27e0e3dc71b3e26c80d79e793d59b2e9183398c791c0e5ed05c",
+    "review": "machine"
+  },
+  "pathSpacing.aria": {
+    "text": "경로를 따라 레이어가 프레임마다 이동하는 거리입니다. 촘촘한 표시는 느리고, 넓은 표시는 빠릅니다.",
+    "sourceHash": "de16a9e1d33b4f0d764b2f3a76fdda8fdf478f73acdb622f246135f45b6796ee",
+    "review": "machine"
   }
 }

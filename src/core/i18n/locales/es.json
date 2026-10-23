@@ -55890,5 +55890,15 @@
     "text": "Nota: hacer doble clic en bygg-after-effects.jsx puede abrir otro programa de Adobe, como Audition, porque los archivos .jsx están asociados a todos los programas de Adobe con ExtendScript. En ese caso usa el archivo de inicio «Åpne i After Effects». También puedes hacer clic derecho y elegir After Effects en «Abrir con», o en Finder elegir «Obtener información» → «Abrir con».",
     "sourceHash": "9b460fe08f45bd18a5eb3e5fbac17d7bac30413d288b1bef41ea89a9174e425b",
     "review": "machine"
+  },
+  "pathSpacing.track": {
+    "text": "Espaciado",
+    "sourceHash": "4485bba46008c27e0e3dc71b3e26c80d79e793d59b2e9183398c791c0e5ed05c",
+    "review": "machine"
+  },
+  "pathSpacing.aria": {
+    "text": "Cuánto se mueve la capa por fotograma a lo largo de la trayectoria. Marcas juntas son lentas, marcas separadas son rápidas.",
+    "sourceHash": "de16a9e1d33b4f0d764b2f3a76fdda8fdf478f73acdb622f246135f45b6796ee",
+    "review": "machine"
   }
 }
