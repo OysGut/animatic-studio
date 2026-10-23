@@ -1,5 +1,12 @@
 # Veikart
 
+## N11 – teknisk gjeld (23.10.2026)
+- [ ] Rett scene-panels-ui og kontroller nb/en
+- [ ] Målrettede tester for N6-restkrav; oppdater bare dokumentert verifikasjon
+- [ ] Mål full Vitest før/etter og reduser unødvendig importarbeid uten svakere tester
+- [ ] Bruk plassholderrefit i UpdateSceneDraft med tester for angring og feltkonflikter
+- [ ] Full Vitest og norsk N11_REPORT.md; ingen migrasjon, betalte kall eller publisering
+
 ## Dokumentasjon og kontrolltest: låste migrasjoner (23.10.2026)
 - [x] Låseregel i AGENTS.md og MD5-liste for migrasjoner til og med 0089; ingen migrasjoner eller Cloud-data endret
 - [x] Kontrolltesten bestått: 90 tester (89 filhasher og komplett filliste)
