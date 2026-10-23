@@ -4,8 +4,8 @@
  * nytt hvert femte sekund mens noe pågår, ellers hvert minutt.
  */
 import { useQuery } from "@tanstack/react-query";
-import { jobFromRow, jobState, monthStartUtc, type GenerationJob } from "@/core";
-import { fetchProjectJobs } from "@/adapters/browser/ai";
+import { jobFromRow, jobState, type GenerationJob } from "@/core";
+import { fetchProjectJobs, fetchProjectPeriodStart } from "@/adapters/browser/ai";
 
 export function aiJobsKey(projectId: string) {
   return ["ai-jobs", projectId] as const;
