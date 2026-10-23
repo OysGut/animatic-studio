@@ -8128,6 +8128,11 @@ function run(
           removed: false,
         };
       }
+      for (const item of Object.values(layers)) {
+        if (item.removed) continue;
+        const linked = item.note?.anchor && "layerId" in item.note.anchor ? item.note.anchor.layerId : item.arrow?.layerId;
+        if (linked && layers[linked]?.compositionId !== item.compositionId) fail("invalid", tk("sb1.error.invalid-panel"));
+      }
       checkGroups(
         s,
         { ...s, layers },
@@ -8212,6 +8217,9 @@ function run(
             shape: l.shape ?? null,
             effects: l.effects ?? null,
             template: l.template ?? null,
+            note: l.note ?? null,
+            arrow: l.arrow ?? null,
+            cameraMark: l.cameraMark ?? null,
           },
         });
         const {
@@ -8230,6 +8238,11 @@ function run(
         if (layerKindInCompositionError(upFields.kind, s.compositions[l.compositionId]?.kind ?? "scene"))
           fail("invalid", tk("sb1.error.layer-kind"));
         layers[l.id] = { ...rest, ...upFields, revision: rev(l) };
+      }
+      for (const item of Object.values(layers)) {
+        if (item.removed) continue;
+        const linked = item.note?.anchor && "layerId" in item.note.anchor ? item.note.anchor.layerId : item.arrow?.layerId;
+        if (linked && layers[linked]?.compositionId !== item.compositionId) fail("invalid", tk("sb1.error.invalid-panel"));
       }
       checkGroups(
         s,

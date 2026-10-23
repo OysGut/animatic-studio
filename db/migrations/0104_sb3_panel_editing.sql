@@ -70,7 +70,7 @@ insert into private.apply_change_validators(table_name,validator,preparer,sort_o
   ('projects','private.validate_sb3_fields'::regproc,null,101),
   ('script_annotations','private.validate_sb3_annotations'::regproc,null,102),
   ('composition_layers','private.validate_sb3_layer_links'::regproc,null,103);
-insert into public.schema_version(version) values (104);
+insert into public.schema_version(version,description) values (104,'SB-3 panel editing');
 -- SB-3: annotasjoner før lag og paneler; ellers ordrett fra 0102.
 create or replace function public.delete_project(p_project uuid, p_actor uuid)
 returns jsonb

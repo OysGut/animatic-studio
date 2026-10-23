@@ -190,6 +190,20 @@ describe("SB-2 galleriflaten", () => {
     expect(orderedOccurrences(harness.state!, seed.mainId).map((o) => o.id)).toEqual(before);
   });
 
+  it("hele scener kan dras med MoveOccurrence og angres", () => {
+    const seed = seedProject(3); const s = withPanels(seed.state, 1);
+    const before = orderedOccurrences(s, seed.mainId).map(o => o.id);
+    render(<Harness initial={s}/>);
+    const rows = screen.getAllByTestId("sb-scene");
+    const transfer = {setData: vi.fn(), effectAllowed: "move"};
+    fireEvent.dragStart(rows[0] as HTMLElement,{dataTransfer:transfer});
+    fireEvent.dragOver(rows[1] as HTMLElement,{dataTransfer:transfer});
+    fireEvent.drop(rows[1] as HTMLElement,{dataTransfer:transfer});
+    expect(orderedOccurrences(harness.state as ProjectState,seed.mainId).map(o=>o.id)).toEqual([before[1],before[0],before[2]]);
+    fireEvent.click(screen.getByRole("button",{name:/undo|angre/i}));
+    expect(orderedOccurrences(harness.state as ProjectState,seed.mainId).map(o=>o.id)).toEqual(before);
+  });
+
   it("vis/skjul og filter huskes i brukervalget", () => {
     const seed = seedProject(1);
     render(<Harness initial={withPanels(seed.state, 1)} />);
