@@ -32519,6 +32519,9 @@
     "ptg2.send": {
       "text": "Send til Dragonframe"
     },
+    "ptg3.ae-import-failed": {
+      "text": "After Effects kunne ikke importere disse filene. Lagene fikk grå plassholdere med samme navn, så strukturen og nøkkelbildene er bygget:"
+    },
     "ptg3.ae-missing": {
       "text": "Disse filene mangler ved siden av bygg-after-effects.jsx, så byggingen stopper:"
     },
@@ -65815,6 +65818,9 @@
     },
     "ptg2.send": {
       "text": "Send to Dragonframe"
+    },
+    "ptg3.ae-import-failed": {
+      "text": "After Effects could not import these files. The layers got grey placeholders with the same name, so structure and keyframes are built:"
     },
     "ptg3.ae-missing": {
       "text": "These files are missing next to bygg-after-effects.jsx, so the build stops:"
