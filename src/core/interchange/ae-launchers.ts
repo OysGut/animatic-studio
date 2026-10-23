@@ -19,7 +19,7 @@ const OLDEST = 2018;
 /** Tegn som har egen betydning i cmd-`echo` fjernes, så meldingen alltid kan vises. */
 const batSafe = (s: string) => s.replace(/[&<>|^()%!"]/g, "");
 /** Doble anførselstegn og omvendte skråstreker fjernes for AppleScript/bash-strenger. */
-const shSafe = (s: string) => s.replace(/["\\$`]/g, "");
+const shSafe = (s: string) => s.replace(/["'\\$`]/g, "");
 
 /** Innholdet i Windows-startfilen. `notFound`: meldingslinjer (f.eks. nb og en) når AE ikke finnes. */
 export function aeWindowsLauncher(notFound: readonly string[]): string {

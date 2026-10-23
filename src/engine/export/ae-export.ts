@@ -4,7 +4,8 @@
  * tid, kamera eller navn selv; alt leses fra InterchangeDoc. Virker uten AI.
  */
 import type { InterchangeDoc } from "@/core/interchange";
-import { buildAeJsx, type AeCameraMode, type AeTitleCards } from "@/core/interchange/ae-jsx";
+import { aeProjectFileName, buildAeJsx, type AeCameraMode, type AeJsxMessages, type AeTitleCards } from "@/core/interchange/ae-jsx";
+import { AE_LAUNCHER_MAC, AE_LAUNCHER_MAC_MODE, AE_LAUNCHER_WINDOWS, aeMacLauncher, aeWindowsLauncher } from "@/core/interchange/ae-launchers";
 import { ptgImportUrl, qrMatrixToPng } from "@/core/interchange/titlecard";
 import type { Shot } from "@/core/interchange/types";
 import { cameraReadmeLines, interchangeReadme } from "@/core/interchange/readme";
@@ -34,6 +35,14 @@ export function aeTitleCards(doc: InterchangeDoc): AeTitleCards {
   };
 }
 
+/** Varslene i bygg.jsx på norsk og engelsk (skriptet kjøres utenfor appen). */
+export function aeJsxMessages(): AeJsxMessages {
+  return {
+    missing: `${t("ptg3.ae-missing", {}, "nb")}\n${t("ptg3.ae-missing", {}, "en")}`,
+    saveFailed: `${t("ptg3.ae-save-failed", {}, "nb")}\n\n${t("ptg3.ae-save-failed", {}, "en")}`,
+  };
+}
+
 export async function exportAePackage(o: {
   doc: InterchangeDoc; cameraMode: AeCameraMode; sink: ZipSink;
   /** PTG3b: tittelkort med QR (standard på). `origin` er appens adresse for importlenken. */
@@ -49,10 +58,14 @@ export async function exportAePackage(o: {
   }
   const entries = doc.references.filter(r => used.has(r.id)).map(r => ({ path: r.path, mediaPath: r.mediaPath, byteSize: r.byteSize }));
   const tc = o.titleCard ? aeTitleCards(doc) : null;
-  const jsx = buildAeJsx(doc, { cameraMode: o.cameraMode, titleCards: tc });
+  const jsx = buildAeJsx(doc, { cameraMode: o.cameraMode, titleCards: tc, messages: aeJsxMessages() });
+  const notFound = [t("ptg3.ae-not-found", {}, "nb"), t("ptg3.ae-not-found", {}, "en")];
+  const enc = new TextEncoder();
   const origin = o.titleCard?.origin ?? "";
   async function* files() {
-    yield { path: "bygg.jsx", data: new TextEncoder().encode(jsx) };
+    yield { path: "bygg.jsx", data: enc.encode(jsx) };
+    yield { path: AE_LAUNCHER_WINDOWS, data: enc.encode(aeWindowsLauncher(notFound)) };
+    yield { path: AE_LAUNCHER_MAC, data: enc.encode(aeMacLauncher(notFound)), unixMode: AE_LAUNCHER_MAC_MODE };
     if (tc) for (const s of doc.shots) {
       yield { path: qrPathOf(s), data: await qrPng(ptgImportUrl(origin, { projectId: doc.project.id, occurrenceId: s.id, name: s.name, lengthFrames: s.lengthFrames })) };
     }
@@ -62,7 +75,11 @@ export async function exportAePackage(o: {
         "",
         t("ptg3.readme-ae", {}, "nb"),
         "",
+        t("ptg3.readme-ae-open", { value1: aeProjectFileName(doc) }, "nb"),
+        "",
         t("ptg3.readme-ae", {}, "en"),
+        "",
+        t("ptg3.readme-ae-open", { value1: aeProjectFileName(doc) }, "en"),
         ...(tc ? ["", t("ptg3b.readme-titlecard", {}, "nb"), "", t("ptg3b.readme-titlecard", {}, "en")] : []),
         ...cameraReadmeLines(doc),
       ].join("\n")),
