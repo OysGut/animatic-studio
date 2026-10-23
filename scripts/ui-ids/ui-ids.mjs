@@ -88,7 +88,8 @@ const fmt = (n) => `V-${String(n).padStart(3, "0")}`;
 
 export function renderRegistry(entries) {
   const lines = entries.map((e) => `  ${JSON.stringify(e)},`);
-  return `/**
+  return `// i18n-ignore-file: intern feilsøkingsinformasjon som aldri vises som tekst
+/**
  * Register over ID-merkene i vinduene (Øystein 23.10). Generert og vedlikeholdt av
  * \`node scripts/ui-ids/ui-ids.mjs --assign\`. Nummer gjenbrukes aldri; fjernede vinduer beholder raden med
  * status «fjernet». Oversikt: docs/development/UI_IDS.md.
@@ -103,11 +104,9 @@ export interface UiIdEntry {
   readonly status: "aktiv" | "fjernet";
 }
 
-// i18n-ignore-start: registeret er intern feilsøkingsinformasjon og vises ikke som tekst
 export const UI_IDS: readonly UiIdEntry[] = [
 ${lines.join("\n")}
 ];
-// i18n-ignore-end
 
 const BY_ID = new Map(UI_IDS.map((e) => [e.id, e]));
 const BY_ROUTE = new Map(UI_IDS.filter((e) => e.route && e.status === "aktiv").map((e) => [e.route!, e]));
