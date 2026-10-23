@@ -7081,7 +7081,7 @@ function run(
         durationFrames: c.durationFrames ?? 0,
         background: DEFAULT_COMPOSITION.background,
       });
-      const comp: Composition = {
+      let comp: Composition = {
         id: c.panelId as never,
         revision: 1,
         variantId: c.variantId as never,
@@ -7098,8 +7098,8 @@ function run(
       const siblings=Object.values(s.compositions).filter(p=>p.kind==="storyboard"&&!p.removed&&p.occurrenceId===occ.id).sort((a,b)=>(a.orderKey??"").localeCompare(b.orderKey??""));
       const previous=siblings.filter(p=>(p.orderKey??"")<c.orderKey).at(-1);
       const locked=siblings.find(p=>p.storyboard?.number);
-      if(c.details){if(!panelDetailsValid(s,comp,c.details))fail("invalid",tk("sb1.error.invalid-panel"));comp.storyboard=c.details;}
-      else if(locked)comp.storyboard={...EMPTY_PANEL_DETAILS,number:insertedPanelNumber(previous?.storyboard?.number??null,siblings.map(p=>p.storyboard?.number??"")),sceneNumber:locked.storyboard?.sceneNumber??""};
+      if(c.details){if(!panelDetailsValid(s,comp,c.details))fail("invalid",tk("sb1.error.invalid-panel"));comp={...comp,storyboard:c.details};}
+      else if(locked)comp={...comp,storyboard:{...EMPTY_PANEL_DETAILS,number:insertedPanelNumber(previous?.storyboard?.number??null,siblings.map(p=>p.storyboard?.number??"")),sceneNumber:locked.storyboard?.sceneNumber??""}};
       const links = sbBlockLinks(s, comp, c.blocks ?? []);
       const panelBlocks = { ...s.panelBlocks };
       for (const l of links) panelBlocks[l.id] = l;
