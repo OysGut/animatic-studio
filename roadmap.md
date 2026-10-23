@@ -82,3 +82,14 @@
 - [ ] Statusmerker per fagområde + redigering
 - [ ] Tilgjengelighet (piltaster, aria, RTL), virtualisering for 2 000 paneler
 - [ ] Tester jsdom + visuelt nb/en; tsc 0, full vitest grønn, i18n grønn; rapport docs/development/SB2_REPORT.md
+
+## SB-3 panelredigering (23.10.2026) – kjøres etter SB-2
+- [ ] Panelflate: dra inn ressurser (ID+versjon, proporsjoner), flytt/skaler/roter/ordne/lås/skjul
+- [ ] Verktøy: pil/linje, figur, tekst, kameramerke, lapp (type, forankring, behandlet), vis/skjul notater; tråder via notatsystemet
+- [ ] «Bruk som bevegelsesbane» (eksplisitt, utkast)
+- [ ] Revisjoner: «Rediger storyboard» på godkjent panel lager ny revisjon; vis tidligere
+- [ ] Låst nummerering (12, 12A) + angrebar «Nummerer på nytt» med forhåndsvisning
+- [ ] Egendefinerte felt per prosjekt; dialog koblet til replikker
+- [ ] Kamera/utsnitt per panel, formatmasker, sikre soner, tredjedeler
+- [ ] Hurtigtaster i «?»-hjelpen
+- [ ] Tester + rapport docs/development/SB3_REPORT.md; ny migrasjon ved behov (0103+)
