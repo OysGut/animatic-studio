@@ -3,6 +3,7 @@
  * f.eks. en kaffekopp som blir tom eller en bakgrunn som skifter. Hvilket som helst bilde i biblioteket
  * kan brukes. Skiftet kan flyttes ved å dra markøren i tidslinjen.
  */
+import { ResizableDialogContent } from "@/app/shared/ResizableDialogContent";
 import { ArrowRightLeft, X } from "lucide-react";
 import { useMemo, useState } from "react";
 import { coverVersion, layerFieldsOf, locale, sortedAssets, variantsOf, type Command, type CompositionLayer, type ImageSwap, type ProjectState } from "@/core";
@@ -230,7 +231,7 @@ function SwapPicker({
   const urls = useImageUrls(paths).data ?? {};
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[86vh] max-w-[760px] overflow-y-auto border-border bg-surface-2">
+      <ResizableDialogContent sizeKey="layer-swaps" className="max-h-[86vh] max-w-[760px] overflow-y-auto border-border bg-surface-2">
         <DialogHeader>
           <DialogTitle>
             {t("app-scene-editor-layer-swaps.swap-picker.dialog-title.8e6db16c2d82", { name: String(layer.name) })}
@@ -245,7 +246,7 @@ function SwapPicker({
             {t("app-scene-editor-layer-swaps.swap-picker.button.0b3fb7353ea5")}
           </Button>
         </DialogFooter>
-      </DialogContent>
+      </ResizableDialogContent>
     </Dialog>
   );
 }

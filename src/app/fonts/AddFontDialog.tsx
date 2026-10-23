@@ -3,6 +3,7 @@
  * forhåndsvisning med egen prøvetekst, valg av vekter og stiler, og lisensen. Alt går via serveren;
  * nettleseren henter aldri noe fra Google. Lenken åpner fonts.google.com i en ny fane.
  */
+import { ResizableDialogContent } from "@/app/shared/ResizableDialogContent";
 import { useEffect, useMemo, useState } from "react";
 import { AlertTriangle, ExternalLink } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
@@ -155,7 +156,7 @@ export function AddFontDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl" data-testid="font-add-dialog">
+      <ResizableDialogContent sizeKey="add-font" className="max-w-2xl" data-testid="font-add-dialog">
         <DialogHeader>
           <DialogTitle>{t("b098.dialog.title")}</DialogTitle>
           <DialogDescription>{t("b098.dialog.description")}</DialogDescription>
@@ -300,7 +301,7 @@ export function AddFontDialog({
             {busy ? t("b098.adding") : t("b098.add")}
           </Button>
         </DialogFooter>
-      </DialogContent>
+      </ResizableDialogContent>
     </Dialog>
   );
 }

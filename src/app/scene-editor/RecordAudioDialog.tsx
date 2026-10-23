@@ -3,6 +3,7 @@
  * spilles av fra avspillingshodet. Opptaket lagres som en ny lydressurs i biblioteket og legges i scenen der
  * opptaket startet. Det kan trimmes etterpå uten at opptaket endres (klippets inn- og utpunkt).
  */
+import { ResizableDialogContent } from "@/app/shared/ResizableDialogContent";
 import { Circle, Loader2, Mic, Smartphone, Square } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AUDIO_KIND_LABEL, AUDIO_TRACK_ORDER, lineInfo, lineLabel, microphoneConstraints, sceneNumberOf, type UploadContext, blocksOfVariant, locale, newId, type AudioKind, dialogueSpeaker, suggestedDialogueCharacter, type ProjectState, lineDrift } from "@/core";
@@ -342,7 +343,7 @@ export function RecordAudioDialog({
   if (open && initialBlockId) returnTo.current = initialBlockId;
   return (
     <Dialog open={open} onOpenChange={(o) => !busy && onOpenChange(o)}>
-      <DialogContent className="max-h-[90vh] max-w-[860px] overflow-y-auto border-border bg-surface-2" data-testid="record-audio-dialog"
+      <ResizableDialogContent sizeKey="record-audio" className="max-h-[90vh] max-w-[860px] overflow-y-auto border-border bg-surface-2" data-testid="record-audio-dialog"
         onCloseAutoFocus={(e) => {
           // N10: fokus tilbake til replikken i manuspanelet når dialogen ble åpnet derfra
           const id = returnTo.current;
@@ -512,7 +513,7 @@ export function RecordAudioDialog({
             {tk("app-scene-editor-record-audio-dialog.record-audio-dialog.button.a95f00f8e593")}
           </Button>
         </DialogFooter>
-      </DialogContent>
+      </ResizableDialogContent>
     </Dialog>
   );
 }

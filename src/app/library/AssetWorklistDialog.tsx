@@ -4,6 +4,7 @@
  * «Behold» (posten forsvinner til neste versjon godkjennes) og «Åpne …». AI-video lages aldri på nytt
  * automatisk: «Lag ny video …» åpner scenen i monteringen, der brukeren starter genereringen selv.
  */
+import { ResizableDialogContent } from "@/app/shared/ResizableDialogContent";
 import { Thumbnail } from "@/app/shared/Thumbnail";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight, Check, Clapperboard, Layers } from "lucide-react";
@@ -125,7 +126,7 @@ export function AssetWorklistDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-5xl">
+      <ResizableDialogContent sizeKey="asset-worklist" className="max-w-5xl">
         <DialogHeader>
           <DialogTitle>
             {t("app-library-asset-worklist-dialog.asset-worklist-dialog.dialog-title.74df3dde3e9c")}
@@ -280,7 +281,7 @@ export function AssetWorklistDialog({
             ) : null}
           </div>
         )}
-      </DialogContent>
+      </ResizableDialogContent>
     </Dialog>
   );
 }

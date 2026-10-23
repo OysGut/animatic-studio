@@ -5,6 +5,7 @@
  * hvis bakgrunnskøen er satt opp. Inndelinger som ikke er lagret, lagres først (kan angres som ett steg).
  * Ferdige videoer legges inn som nye versjoner; 2D-scenene endres aldri.
  */
+import { ResizableDialogContent } from "@/app/shared/ResizableDialogContent";
 import { ListOrdered, Loader2 } from "lucide-react";
 import { AiGlyph } from "@/app/design/icons/AiGlyph";
 import { useMemo, useState } from "react";
@@ -230,7 +231,7 @@ export function BatchVideoDialog({
 
   return (
     <Dialog open={open} onOpenChange={(o) => !busy && onOpenChange(o)}>
-      <DialogContent className="max-h-[90vh] max-w-3xl grid-rows-[auto_minmax(0,1fr)_auto]">
+      <ResizableDialogContent sizeKey="batch-video" className="max-h-[90vh] max-w-3xl grid-rows-[auto_minmax(0,1fr)_auto]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-1.5">
             <ListOrdered className="size-4" aria-hidden />{" "}
@@ -475,7 +476,7 @@ export function BatchVideoDialog({
             </Button>
           ) : null}
         </DialogFooter>
-      </DialogContent>
+      </ResizableDialogContent>
     </Dialog>
   );
 }

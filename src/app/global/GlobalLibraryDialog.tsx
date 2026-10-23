@@ -4,6 +4,7 @@
  * «Ny versjon finnes – oppdater?». Redaktører kan legge til ressurser, varianter og versjoner; eieren kan
  * arkivere. Ingenting i prosjektet endres automatisk (§9).
  */
+import { ResizableDialogContent } from "@/app/shared/ResizableDialogContent";
 import { Thumbnail } from "@/app/shared/Thumbnail";
 import { Link } from "@tanstack/react-router";
 import { useMemo, useRef, useState } from "react";
@@ -173,7 +174,7 @@ export function GlobalLibraryDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-5xl" data-testid="global-library-dialog">
+      <ResizableDialogContent sizeKey="global-library" className="max-w-5xl" data-testid="global-library-dialog">
         <DialogHeader>
           <DialogTitle>{t("app-global-global-library-dialog.global-library-dialog.dialog-title.5633ef0a1f18")}</DialogTitle>
           <DialogDescription>
@@ -526,7 +527,7 @@ export function GlobalLibraryDialog({
             {msg.text}
           </p>
         ) : null}
-      </DialogContent>
+      </ResizableDialogContent>
     </Dialog>
   );
 }

@@ -1,4 +1,5 @@
 /** SL6: production/variant placement and field-by-field explicit transfer preview. */
+import { ResizableDialogContent } from "@/app/shared/ResizableDialogContent";
 import { SceneSelect, mainOccurrenceOfScene } from "@/app/shell/SceneSelect";
 import { useEffect, useState } from "react";
 import { activeProfileOf, blocksOfVariant, emptyStoryProfile, formatHeading, mainProduction, mergeProfile, orderedOccurrences, suggestionProfilePatch, suggestionText, suggestionToCommands, wordDiff, type ProjectState, type StoryProfile, type SuggestionTarget, type TransferSuggestion } from "@/core";
@@ -37,7 +38,7 @@ export function SuggestionPreview({ state, suggestion, onClose, onConfirm, busy,
   const occurrence = scenes.find((o) => o.variantId === variantId);
   const insertion = suggestion.kind === "scene_draft" || (suggestion.kind === "line" && !suggestion.payload["blockId"]);
   const control = "w-full rounded-sm border border-border-control bg-surface-3 p-2 text-sm";
-  return <Dialog open onOpenChange={(open) => { if (!open && !busy) onClose(); }}><DialogContent className="max-h-[85vh] max-w-2xl overflow-y-auto" data-testid="storylab-suggestion-preview"><DialogHeader><DialogTitle>{t("app-storylab-suggestion-preview.suggestion-preview.dialog-title.f1fa3956460e")}</DialogTitle></DialogHeader>
+  return <Dialog open onOpenChange={(open) => { if (!open && !busy) onClose(); }}><ResizableDialogContent sizeKey="storylab-suggestion" className="max-h-[85vh] max-w-2xl overflow-y-auto" data-testid="storylab-suggestion-preview"><DialogHeader><DialogTitle>{t("app-storylab-suggestion-preview.suggestion-preview.dialog-title.f1fa3956460e")}</DialogTitle></DialogHeader>
     <p className="break-all text-xs text-text-secondary">{t("app-storylab-suggestion-preview.suggestion-preview.p.7100f83a43f1", { value1: String(main?.name ?? "–"), value2: String(profileMode ? "–" : variantId) })}</p>
     {!profileMode && main && occurrence ? <ForkNotice state={state} productionId={main.id} occurrenceId={occurrence.id} run={cmds.run} /> : null}
     {profileMode ? <><label className="text-sm">{t("app-storylab-suggestion-preview.suggestion-preview.label.8eb0fa06d48b")}<select aria-label={t("app-storylab-suggestion-preview.suggestion-preview.aria-label.8eb0fa06d48b")} className={control} value={assetId} onChange={(e) => setAsset(e.target.value)}><option value="">{t("app-storylab-suggestion-preview.suggestion-preview.option.04d6a973f0e5")}</option>{assets.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}</select></label>
@@ -50,5 +51,5 @@ export function SuggestionPreview({ state, suggestion, onClose, onConfirm, busy,
     </>}
     {!plan.ok ? <p role="alert" className="text-sm text-status-danger">{plan.message}</p> : null}
     <div className="flex justify-end gap-2"><ToolbarButton disabled={busy} onClick={onClose}>{t("app-storylab-suggestion-preview.suggestion-preview.toolbar-button.cd4ce3ae256b")}</ToolbarButton><ToolbarButton variant="primary" data-testid="storylab-suggestion-confirm" disabled={busy || !plan.ok || (profileMode && (!patch || selected.length === 0))} onClick={() => void onConfirm(picked, target)}>{t("app-storylab-suggestion-preview.suggestion-preview.toolbar-button.3029bcbec23f")}</ToolbarButton></div>
-  </DialogContent></Dialog>;
+  </ResizableDialogContent></Dialog>;
 }

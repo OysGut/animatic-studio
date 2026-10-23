@@ -4,6 +4,7 @@
  * med forslag. Bare råd: ingenting lages på nytt automatisk, og hovedfilmen endres ikke. Forslaget «start
  * tidligere» flytter bare språkets eget lydklipp.
  */
+import { ResizableDialogContent } from "@/app/shared/ResizableDialogContent";
 import { AlertTriangle, CheckCircle2, Info, Play } from "lucide-react";
 import { useMemo } from "react";
 import { LANGUAGE_LABEL, MATERIAL_LABEL, audioClipFieldsOf, formatHeading, languageReport, locale, type Command, type ProjectState, type TimingConflict, languageWord } from "@/core";
@@ -71,7 +72,7 @@ export function LanguageVersionDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[90vh] max-w-[860px] overflow-y-auto border-border bg-surface-2">
+      <ResizableDialogContent sizeKey="language-version" className="max-h-[90vh] max-w-[860px] overflow-y-auto border-border bg-surface-2">
         <DialogHeader>
           <DialogTitle>
             {t("app-assembly-language-version-dialog.language-version-dialog.dialog-title.4e5be35f5554")}: {name}
@@ -179,7 +180,7 @@ export function LanguageVersionDialog({
             ))}
           </ul>
         )}
-      </DialogContent>
+      </ResizableDialogContent>
     </Dialog>
   );
 }

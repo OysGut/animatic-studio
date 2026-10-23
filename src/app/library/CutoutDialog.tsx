@@ -3,6 +3,7 @@
  * ut fra fargen langs kanten; penselen legger til eller fjerner (med angre). Resultatet lagres som en ny
  * versjon i samme variant – originalen beholdes. Bildet sendes ingen steder for å friegges.
  */
+import { ResizableDialogContent } from "@/app/shared/ResizableDialogContent";
 import {
   Brush,
   Eraser,
@@ -97,7 +98,7 @@ export function CutoutDialog({
 }) {
   return (
     <Dialog open={open && version !== null} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[92vh] max-w-[980px] overflow-y-auto border-border bg-surface-2">
+      <ResizableDialogContent sizeKey="cutout" className="max-h-[92vh] max-w-[980px] overflow-y-auto border-border bg-surface-2">
         {version ? (
           <Editor
             key={version.id}
@@ -109,7 +110,7 @@ export function CutoutDialog({
             {...(onSaved ? { onSaved } : {})}
           />
         ) : null}
-      </DialogContent>
+      </ResizableDialogContent>
     </Dialog>
   );
 }

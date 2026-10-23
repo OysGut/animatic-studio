@@ -3,6 +3,7 @@
  * igjen; prosjektets eier kan slette for godt (kan ikke angres). Det som fortsatt brukes i filmen, kan ikke
  * slettes for godt før bruken er fjernet.
  */
+import { ResizableDialogContent } from "@/app/shared/ResizableDialogContent";
 import { ArchiveRestore, Loader2, Trash2 } from "lucide-react";
 import { Thumbnail } from "@/app/shared/Thumbnail";
 import { useMemo, useState } from "react";
@@ -116,7 +117,7 @@ export function TrashDialog({
 
   return (
     <Dialog open={open} onOpenChange={(o) => !busy && onOpenChange(o)}>
-      <DialogContent className="max-w-2xl">
+      <ResizableDialogContent sizeKey="trash" className="max-w-2xl">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-1.5">
             <Trash2 className="size-4" aria-hidden /> {t("app-library-trash-dialog.trash-dialog.dialog-title.f2a8a27f41db")}
@@ -280,7 +281,7 @@ export function TrashDialog({
             {t("app-library-trash-dialog.trash-dialog.button.72f631a62c75")}
           </Button>
         </DialogFooter>
-      </DialogContent>
+      </ResizableDialogContent>
     </Dialog>
   );
 }

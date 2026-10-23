@@ -4,6 +4,7 @@
  * prøves, krypteres og vises aldri igjen (bare de fire siste tegnene). Øverst: overordnet kostnadstak per
  * måned for alle prosjekter som bruker nøklene.
  */
+import { ResizableDialogContent } from "@/app/shared/ResizableDialogContent";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import {
@@ -531,7 +532,7 @@ export function ProvidersDialog({
         if (!o) setSelected(null);
       }}
     >
-      <DialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto border-border bg-surface-2">
+      <ResizableDialogContent sizeKey="providers" className="max-h-[90vh] max-w-2xl overflow-y-auto border-border bg-surface-2">
         <DialogHeader>
           <DialogTitle>{t("app-ai-providers-dialog.providers-dialog.dialog-title.a684c382a7a6")}</DialogTitle>
           <DialogDescription>
@@ -593,7 +594,7 @@ export function ProvidersDialog({
             ) : null}
           </div>
         )}
-      </DialogContent>
+      </ResizableDialogContent>
     </Dialog>
   );
 }

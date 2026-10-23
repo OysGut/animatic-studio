@@ -4,6 +4,7 @@
  * andel av lengden), med navn, type, lengde og når versjonen ble laget. Tegnes med den samme filmvisningen
  * som monteringen. Bare visning: aktiv versjon endres ikke.
  */
+import { ResizableDialogContent } from "@/app/shared/ResizableDialogContent";
 import { Pause, Play } from "lucide-react";
 import { useMemo, useState } from "react";
 import { VERSION_KIND_LABEL, comparableVersions, compareLength, filmMediaPaths, formatTimecode, locale, stillMediaPaths, versionFrameAt, versionSeconds, type ComparableVersion, type CompareSync, type ProjectState } from "@/core";
@@ -60,7 +61,7 @@ export function CompareVersionsDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-5xl">
+      <ResizableDialogContent sizeKey="compare-versions" className="max-w-5xl">
         <DialogHeader>
           <DialogTitle>
             {t("app-assembly-compare-versions-dialog.compare-versions-dialog.dialog-title.763b38e1cfcb", { title: String(title) })}
@@ -128,7 +129,7 @@ export function CompareVersionsDialog({
             </p>
           </>
         )}
-      </DialogContent>
+      </ResizableDialogContent>
     </Dialog>
   );
 }

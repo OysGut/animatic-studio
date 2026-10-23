@@ -2,6 +2,7 @@
  * Importer manus (mandat 4.1–4.3): velg PDF/DOCX/Fountain → forhåndsvisning med usikkerheter → lagre original + scener.
  * Ingen scener opprettes før brukeren har sett forhåndsvisningen. Originalen lagres uendret (mandat 4.2).
  */
+import { ResizableDialogContent } from "@/app/shared/ResizableDialogContent";
 import { AlertTriangle, CheckCircle2, FileUp, Loader2 } from "lucide-react";
 import { useRef, useState } from "react";
 import { locale, newId, orderedOccurrences, planImport, planImportNotes, tm, type Command, type ProductionId, type ProjectState } from "@/core";
@@ -232,7 +233,7 @@ export function ImportDialog({
 
   return (
     <Dialog open={open} onOpenChange={reset}>
-      <DialogContent className="max-w-[640px] border-border bg-surface-2">
+      <ResizableDialogContent sizeKey="script-import" className="max-w-[640px] border-border bg-surface-2">
         <DialogHeader>
           <DialogTitle>{t("app-script-import-dialog.import-dialog.dialog-title.93cd6d89e3a4")}</DialogTitle>
           <DialogDescription>
@@ -382,7 +383,7 @@ export function ImportDialog({
             <Button onClick={() => reset(false)}>{t("app-script-import-dialog.import-dialog.button.e00e46e21cdd")}</Button>
           ) : null}
         </DialogFooter>
-      </DialogContent>
+      </ResizableDialogContent>
     </Dialog>
   );
 }

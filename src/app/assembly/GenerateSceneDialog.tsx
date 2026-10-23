@@ -5,6 +5,7 @@
  * grunnlaget har endret seg. Videoen lages med en leverandør prosjektets eiere har koblet til (DEC-0069,
  * `SceneVideoSection`).
  */
+import { ResizableDialogContent } from "@/app/shared/ResizableDialogContent";
 import { AlertTriangle, Copy, Info, Loader2, RotateCcw, Save } from "lucide-react";
 import { AiGlyph } from "@/app/design/icons/AiGlyph";
 import { useEffect, useMemo, useState } from "react";
@@ -41,7 +42,7 @@ export function GenerateSceneDialog({
 }) {
   return (
     <Dialog open={open && clip !== null} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[90vh] max-w-[860px] overflow-y-auto border-border bg-surface-2">
+      <ResizableDialogContent sizeKey="generate-scene" className="max-h-[90vh] max-w-[860px] overflow-y-auto border-border bg-surface-2">
         {clip ? (
           <Body
             key={clip.occurrenceId}
@@ -53,7 +54,7 @@ export function GenerateSceneDialog({
             onClose={() => onOpenChange(false)}
           />
         ) : null}
-      </DialogContent>
+      </ResizableDialogContent>
     </Dialog>
   );
 }

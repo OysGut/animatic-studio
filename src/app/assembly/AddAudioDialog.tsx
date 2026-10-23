@@ -2,6 +2,7 @@
  * Legg til lyd i filmen (M4 del 2, DEC-0044): velg en lydfil fra biblioteket eller last opp en ny, velg
  * lydtype og eventuelt replikken den hører til. Lyden legges ved avspillingshodet og festes til scenen der.
  */
+import { ResizableDialogContent } from "@/app/shared/ResizableDialogContent";
 import { Loader2, Upload } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AUDIO_KIND_LABEL, FILM_LANGUAGES, LANGUAGE_LABEL, MAIN_LANGUAGE, isVoiceKind, AUDIO_TRACK_ORDER, blocksOfVariant, coverVersion, formatHeading, newId, sortedAssets, collation, type AudioKind, type FilmClip, type ProjectState, languageWord } from "@/core";
@@ -167,7 +168,7 @@ export function AddAudioDialog({
 
   return (
     <Dialog open={open} onOpenChange={(o) => !busy && onOpenChange(o)}>
-      <DialogContent className="max-h-[86vh] max-w-[640px] overflow-y-auto border-border bg-surface-2">
+      <ResizableDialogContent sizeKey="add-audio" className="max-h-[86vh] max-w-[640px] overflow-y-auto border-border bg-surface-2">
         <DialogHeader>
           <DialogTitle>{t("app-assembly-add-audio-dialog.add-audio-dialog.dialog-title.f0fb31ee65ae")}</DialogTitle>
           <DialogDescription>
@@ -351,7 +352,7 @@ export function AddAudioDialog({
             {t("app-assembly-add-audio-dialog.add-audio-dialog.button.28106a7a4511")}
           </Button>
         </DialogFooter>
-      </DialogContent>
+      </ResizableDialogContent>
     </Dialog>
   );
 }

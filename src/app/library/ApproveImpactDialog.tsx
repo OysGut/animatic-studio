@@ -3,6 +3,7 @@
  * scenene som berøres og lar brukeren velge scene for scene om det nye bildet skal brukes. Ferdig film der
  * ressursen er med, vises som «kan være påvirket» (usikkert) – den endres ikke.
  */
+import { ResizableDialogContent } from "@/app/shared/ResizableDialogContent";
 import { CircleHelp, Film, Layers } from "lucide-react";
 import { useMemo, useState } from "react";
 import { applyCommand, approveWithImpactCommands, assetVersionImpact, formatHeading, newId, type AssetVariant, type AssetVersion, type ProjectState, type SceneImpact } from "@/core";
@@ -113,7 +114,7 @@ export function ApproveImpactDialog({
 
   return (
     <Dialog open={version !== null} onOpenChange={(o) => (o ? null : close())}>
-      <DialogContent className="max-h-[88vh] max-w-[640px] overflow-y-auto border-border bg-surface-2">
+      <ResizableDialogContent sizeKey="approve-impact" className="max-h-[88vh] max-w-[640px] overflow-y-auto border-border bg-surface-2">
         <DialogHeader>
           <DialogTitle>
             {t("app-library-approve-impact-dialog.approve-impact-dialog.dialog-title.dad6f23eb142")} v{version?.number} {t("app-library-approve-impact-dialog.approve-impact-dialog.dialog-title.e5640f20eb11")}
@@ -212,7 +213,7 @@ export function ApproveImpactDialog({
           </Button>
           <Button onClick={confirm}>{t("app-library-approve-impact-dialog.approve-impact-dialog.button.dad6f23eb142")}</Button>
         </DialogFooter>
-      </DialogContent>
+      </ResizableDialogContent>
     </Dialog>
   );
 }

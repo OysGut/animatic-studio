@@ -1,4 +1,5 @@
 /** Manual marking never changes the original image. Save is one ordinary scene-draft transaction. */
+import { ResizableDialogContent } from "@/app/shared/ResizableDialogContent";
 import { useRef, useState } from "react";
 import { Crosshair, Hand, RotateCcw } from "lucide-react";
 import { newId, type Command, type ProjectState } from "@/core";
@@ -36,7 +37,7 @@ export function FaceMarkDialog({ state, layerId, occurrenceId, versionId, url, r
     const failure = run({ type: "UpdateSceneDraft", compositionId: layer.compositionId, occurrenceId: occurrenceId as never, steps }, t("app-scene-editor-animation-face-mark-dialog.failure.run.6187a03941e1"));
     if (failure) setError(failure); else onClose();
   };
-  return <Dialog open onOpenChange={open => { if (!open) onClose(); }}><DialogContent data-testid="ca3-face-dialog" className="flex h-[min(85vh,48rem)] max-w-4xl flex-col">
+  return <Dialog open onOpenChange={open => { if (!open) onClose(); }}><ResizableDialogContent sizeKey="face-mark" data-testid="ca3-face-dialog" className="flex h-[min(85vh,48rem)] max-w-4xl flex-col">
     <DialogHeader><DialogTitle>{t("app-scene-editor-animation-face-mark-dialog.face-mark-dialog.dialog-title.f057f080a791")}</DialogTitle><DialogDescription>{source ? state.assetVariants[source.variantId]?.name : ""}</DialogDescription></DialogHeader>
     <Toolbar><ToolbarGroup>{FACE_ANCHORS.map(key => <ToolbarButton key={key} data-testid={`ca3-anchor-${key}`} active={anchor === key && !panning} onClick={() => { setAnchor(key); setPanning(false); }}>{labels()[key]}</ToolbarButton>)}</ToolbarGroup><ToolbarGroup>
       <IconButton label={t("app-scene-editor-animation-face-mark-dialog.face-mark-dialog.label.81c12cab89b8")} active={panning} onClick={() => setPanning(v => !v)}><Hand /></IconButton>
@@ -60,5 +61,5 @@ export function FaceMarkDialog({ state, layerId, occurrenceId, versionId, url, r
     <div className="grid grid-cols-2 gap-2 text-xs sm:grid-cols-5">{FACE_ANCHORS.map(key => <label key={key} className="text-text-secondary">{labels()[key]}<span className="flex gap-1">{(["x", "y"] as const).map(axis => <input key={axis} data-testid={`ca3-coordinate-${key}-${axis}`} aria-label={`${labels()[key]} ${axis}`} className="min-w-0 w-full border border-border-control bg-surface-3 px-1 text-text-primary" type="number" min={0} max={1} step={0.01} value={anchors[key]?.[axis] ?? ""} onChange={e => { const value = Number(e.target.value); if (Number.isFinite(value) && value >= 0 && value <= 1) setAnchors(a => ({ ...a, [key]: { x: a[key]?.x ?? 0.5, y: a[key]?.y ?? 0.5, [axis]: value } })); }} />)}</span></label>)}</div>
     {error ? <p role="alert" className="text-xs text-status-danger">{error}</p> : null}
     <div className="flex justify-end gap-2"><ToolbarButton onClick={onClose}>{t("app-scene-editor-animation-face-mark-dialog.face-mark-dialog.toolbar-button.16e8dc6a1b7f")}</ToolbarButton><ToolbarButton data-testid="ca3-face-save" variant="primary" disabled={!source || !FACE_ANCHORS.every(key => anchors[key])} onClick={save}>{t("app-scene-editor-animation-face-mark-dialog.face-mark-dialog.toolbar-button.3209a49e7862")}</ToolbarButton></div>
-  </DialogContent></Dialog>;
+  </ResizableDialogContent></Dialog>;
 }
