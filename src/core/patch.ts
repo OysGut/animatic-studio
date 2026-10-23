@@ -1291,6 +1291,7 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         createdAt: iso(x["created_at"]),
       }))
       .sort((a, b) => (a.blockId === b.blockId ? a.rev - b.rev : a.blockId < b.blockId ? -1 : 1)),
+    ...(r.history_partial ? { blockHistory: "current" as const } : {}),
     occurrences: byId(
       r.scene_occurrences.map((x) => ({
         id: str(x["id"]) as never,
