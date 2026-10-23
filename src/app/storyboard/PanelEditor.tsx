@@ -76,9 +76,9 @@ export function PanelEditor({ state, panel, editable, cmds, projectId }: { state
     f = {...f,width:Math.round(panel.width*.35),height:Math.round(panel.height*.25),fill:c.ink};
     if (kind === "text") f = {...textLayerFields(panel,t("sb3.text"),t("sb3.tool.text")),text:{...textLayerFields(panel,t("sb3.text"),t("sb3.tool.text")).text,color:c.ink} as NonNullable<LayerFields["text"]>};
     if (kind === "shape") f = {...f,kind:"other",fill:c.accent,shape:{type:"rect",radius:0,stroke:null}};
-    if (kind === "note") f = {...f,kind:"note",note:{text:t("sb3.note"),color:c.paper,noteType:"visual",handled:false,anchor:null}};
+    if (kind === "note") f = {...f,kind:"note",fill:null,note:{text:t("sb3.note"),color:c.paper,noteType:"visual",handled:false,anchor:null}};
     if (kind === "arrow" || kind === "line") f = {...f,kind:"arrow",fill:null,arrow:{points:[{x:-panel.width*.14,y:0,smooth:false},{x:panel.width*.14,y:0,smooth:false}],form:"straight",thickness:6,color:c.accent,category:"character",layerId:null},...(kind === "line" ? {shape:{type:"line",radius:0,stroke:null}} : {})};
-    if (kind === "camera") f = {...f,kind:"camera_mark",width:Math.round(panel.width*.6),height:Math.round(panel.height*.6),fill:c.accent,cameraMark:{frame:{x:-panel.width*.3,y:-panel.height*.3,width:panel.width*.6,height:panel.height*.6},zoom:1,pan:{x:0,y:0},tilt:0}};
+    if (kind === "camera") f = {...f,kind:"camera_mark",width:Math.round(panel.width*.6),height:Math.round(panel.height*.6),fill:null,cameraMark:{frame:{x:-panel.width*.3,y:-panel.height*.3,width:panel.width*.6,height:panel.height*.6},zoom:1,pan:{x:0,y:0},tilt:0}};
     if (!run({type:"AddLayers",layers:[{layerId:id,compositionId:panel.id,orderKey:keyBetween(layers.at(-1)?.orderKey ?? null,null),fields:f}]})) select(id);
   };
   const addResource = (versionId: string) => {

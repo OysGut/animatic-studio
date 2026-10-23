@@ -9,7 +9,7 @@ create index sb3_annotation_panel on public.script_annotations(panel_id) where p
 create index sb3_annotation_layer on public.script_annotations(layer_id) where layer_id is not null;
 
 create or replace function private.validate_sb3_panel_details(p_project uuid, p_changes jsonb, p_ids uuid[]) returns void
-language plpgsql stable security definer set search_path = '' as $$
+language plpgsql volatile security definer set search_path = '' as $$
 declare c record; d jsonb; item jsonb;
 begin
   for c in select * from public.compositions where project_id = p_project  and storyboard is not null loop
@@ -34,7 +34,7 @@ end $$;
 revoke all on function private.validate_sb3_panel_details(uuid,jsonb,uuid[]) from public;
 
 create or replace function private.validate_sb3_fields(p_project uuid, p_changes jsonb, p_ids uuid[]) returns void
-language plpgsql stable security definer set search_path = '' as $$
+language plpgsql volatile security definer set search_path = '' as $$
 declare fs jsonb;
 begin
   select storyboard_fields into fs from public.projects where id = p_project;
@@ -46,7 +46,7 @@ end $$;
 revoke all on function private.validate_sb3_fields(uuid,jsonb,uuid[]) from public;
 
 create or replace function private.validate_sb3_annotations(p_project uuid, p_changes jsonb, p_ids uuid[]) returns void
-language plpgsql stable security definer set search_path = '' as $$
+language plpgsql volatile security definer set search_path = '' as $$
 begin
   if exists (select 1 from public.script_annotations a where a.project_id = p_project  and a.panel_id is not null
     and (not exists (select 1 from public.compositions c where c.id = a.panel_id and c.project_id = p_project and c.kind = 'storyboard' and c.variant_id = a.variant_id)
@@ -56,7 +56,7 @@ end $$;
 revoke all on function private.validate_sb3_annotations(uuid,jsonb,uuid[]) from public;
 
 create or replace function private.validate_sb3_layer_links(p_project uuid, p_changes jsonb, p_ids uuid[]) returns void
-language plpgsql stable security definer set search_path = '' as $$
+language plpgsql volatile security definer set search_path = '' as $$
 begin
   if exists (select 1 from public.composition_layers l where l.project_id = p_project 
     and ((l.note->'anchor'->>'layerId' is not null and not exists (select 1 from public.composition_layers target where target.id::text = l.note->'anchor'->>'layerId' and target.project_id = p_project and target.composition_id = l.composition_id))

@@ -126,7 +126,7 @@ function paintItem(ctx: Ctx2D, it: DrawItem, v: Matrix, opts: DrawOptions, place
   if (it.note) {
     ctx.fillStyle = it.note.color;
     ctx.fillRect(x, y, it.width, it.height);
-    ctx.fillStyle = it.fill ?? it.note.color;
+    ctx.fillStyle = it.note.color.toLowerCase() === "#ffffff" ? "#000000" : "#ffffff";
     ctx.font = `${Math.max(14, Math.min(36, it.height / 6))}px sans-serif`;
     ctx.textBaseline = "top";
     it.note.text.split("\n").forEach((line, i) => ctx.fillText(line, x + 12, y + 12 + i * Math.max(18, it.height / 5), Math.max(1, it.width - 24)));
@@ -146,7 +146,7 @@ function paintItem(ctx: Ctx2D, it: DrawItem, v: Matrix, opts: DrawOptions, place
     }
   } else if (it.cameraMark) {
     const f = it.cameraMark.frame;
-    ctx.strokeStyle = it.fill ?? ctx.strokeStyle; ctx.lineWidth = 4;
+    ctx.strokeStyle = it.fill ?? "#ffffff"; ctx.lineWidth = 4;
     ctx.strokeRect(f.x, f.y, f.width, f.height);
     ctx.font = "24px sans-serif"; ctx.fillStyle = ctx.strokeStyle; ctx.fillText(`${it.cameraMark.zoom}×`, f.x + 12, f.y + 30);
   } else if (it.kind === "text") {
