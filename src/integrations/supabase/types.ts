@@ -787,6 +787,7 @@ export type Database = {
           source_global_asset_id: string | null
           tags: Json
           visual_brief: string
+          visual_brief_auto_at: string | null
           voice: Json | null
         }
         Insert: {
@@ -810,6 +811,7 @@ export type Database = {
           source_global_asset_id?: string | null
           tags?: Json
           visual_brief?: string
+          visual_brief_auto_at?: string | null
           voice?: Json | null
         }
         Update: {
@@ -833,6 +835,7 @@ export type Database = {
           source_global_asset_id?: string | null
           tags?: Json
           visual_brief?: string
+          visual_brief_auto_at?: string | null
           voice?: Json | null
         }
         Relationships: [
