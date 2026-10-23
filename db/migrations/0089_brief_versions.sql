@@ -4,6 +4,8 @@
 --      brukerens egne beskrivelser i karakterdialogen, så teksten aldri går tapt. Aldri serverprompten.
 --   2. asset_versions.brief_version_id: tekstversjonen bildet ble generert fra (settes bare ved innsetting;
 --      protect_asset_version er uendret, så bildeversjoner forblir uforanderlige).
+--   3. assets.visual_brief_auto_at (Øystein 23.10): faktaarket ble laget automatisk fra manuset av «Skriv med AI»
+--      (vises «Laget automatisk fra manuset» med dato). Null = skrevet eller rettet av brukeren.
 -- Ingen eksisterende data endres (standardverdiene betyr «som før»). Ingen funksjoner erstattes:
 -- apply_changes tar nye kolonner i kjente tabeller med automatisk (private.table_columns).
 -- Skrevet for gjennomgang; kjøres ikke i Cloud av Lovable. Ingen SQL mot storage.
@@ -16,6 +18,7 @@ alter table public.assets add column if not exists active_brief_id text
   check (active_brief_id is null or length(active_brief_id) between 1 and 64);
 alter table public.asset_versions add column if not exists brief_version_id text
   check (brief_version_id is null or length(brief_version_id) between 1 and 64);
+alter table public.assets add column if not exists visual_brief_auto_at timestamptz;
 
 insert into public.schema_version (version, description)
 values (89, 'Tekstversjoner av bildebeskrivelsen og bildets referanse til teksten');

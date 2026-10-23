@@ -591,6 +591,8 @@ export type Command = import("../animation/rig-commands").RigCommand
       readonly type: "SetAssetVisualBrief";
       readonly assetId: AssetId;
       readonly text: string;
+      /** Laget automatisk fra manuset (Øystein 23.10, migrasjon 0089): tidspunktet som vises på kortet. */
+      readonly autoAt?: string;
     }
   /** Tekstversjoner av bildebeskrivelsen (migrasjon 0089): hele listen og den aktive; inversen er forrige. */
   | {

@@ -6400,17 +6400,18 @@ function run(
           "invalid",
           tk("core-commands-apply.run.fail.a68c9d7db744"),
         );
-      if ((a.visualBrief ?? "") === text) fail("invalid", tk("core-commands-apply.run.fail.42404ff62cbc.4"));
-      const { visualBrief: _b, ...rest } = a;
+      const autoAt = typeof c.autoAt === "string" && text && !Number.isNaN(Date.parse(c.autoAt)) ? c.autoAt : undefined;
+      if ((a.visualBrief ?? "") === text && a.visualBriefAuto === autoAt) fail("invalid", tk("core-commands-apply.run.fail.42404ff62cbc.4"));
+      const { visualBrief: _b, visualBriefAuto: _ba, ...rest } = a;
       return {
         state: {
           ...s,
           assets: {
             ...s.assets,
-            [a.id]: { ...rest, ...(text ? { visualBrief: text } : {}), revision: rev(a) },
+            [a.id]: { ...rest, ...(text ? { visualBrief: text } : {}), ...(autoAt ? { visualBriefAuto: autoAt } : {}), revision: rev(a) },
           },
         },
-        inverse: { type: "SetAssetVisualBrief", assetId: a.id, text: a.visualBrief ?? "" },
+        inverse: { type: "SetAssetVisualBrief", assetId: a.id, text: a.visualBrief ?? "", ...(a.visualBriefAuto ? { autoAt: a.visualBriefAuto } : {}) },
         affected: [a.id],
       };
     }

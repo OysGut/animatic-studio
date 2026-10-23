@@ -393,7 +393,7 @@ export function needsSchema31(command: { type: string }): boolean {
 
 /** Migrasjon 0089: tekstversjoner av bildebeskrivelsen og bildets referanse til dem. */
 export function needsSchema89(command: { type: string } & Record<string, unknown>): boolean {
-  return command.type === "SetAssetBriefVersions" || (command.type === "AddAssetVersion" && command["briefVersionId"] !== undefined);
+  return command.type === "SetAssetBriefVersions" || (command.type === "SetAssetVisualBrief" && command["autoAt"] !== undefined) || (command.type === "AddAssetVersion" && command["briefVersionId"] !== undefined);
 }
 
 export function needsSchema30(command: { type: string }): boolean {
