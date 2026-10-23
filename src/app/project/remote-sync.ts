@@ -167,6 +167,11 @@ export function createRemoteSync(deps: RemoteSyncDeps): RemoteSync {
         deps.onForeign(ids);
       }
       const row = remoteLogRow(raw);
+      if (row && !known) {
+        // Før første innlasting er ferdig: ta vare på raden; reset() kaster det som allerede er med
+        buffer.set(row.projectSeq, row);
+        return;
+      }
       if (!row || lastSeq === null) {
         if (!own) {
           legacyPending = true;
