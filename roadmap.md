@@ -342,3 +342,9 @@
 - [x] ZIP64 (KI-66/KI-80): grensen på 3,8 GB fjernet, store pakker testet uten 4 GB på disk.
 - [x] KI-243: MP3-koderen bare i klientbundlen, kontrollert i produksjonsbygget og vaktet av test.
 - [x] KI-250 lukket (avviklet skript). KI-12/KI-92 beskrevet, KI-30 krever Øystein.
+
+## N10 – tilgjengelighet i sceneeditoren og manuset (23.10)
+- [x] axe-core (WCAG 2.1 AA) på sceneeditor, animasjonsvisning og manus, nb og en: 0 avvik (tests/visual/n10-a11y.mjs).
+- [x] Tastatur: synlig fokus på dra-håndtak, replikker kan åpnes med Enter, dialogen gir fokus tilbake, mellomrom spiller av/stopper.
+- [x] Live-region for avspilling (bare start/stopp), tidskoden annonseres ikke per bilde.
+- [x] Kontrast: tertiær tekst og «flyttet»-farge litt lysere; dempede rader mindre dempet.
