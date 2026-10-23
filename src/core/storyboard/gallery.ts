@@ -8,7 +8,9 @@ import { layerFieldsOf } from "../composition";
 import { newId } from "../ids";
 import type { Composition, ProjectState, SceneOccurrence } from "../model";
 import { keyBetween, keysEvenly } from "../order-key";
-import { blocksOfVariant, orderedOccurrences, sceneNumberOf } from "../views";
+import { orderedOccurrences, sceneNumberOf } from "../views";
+import { formatHeading } from "../screenplay/paginate";
+import { blocksOfVariant } from "../views";
 import {
   PRODUCTION_AREAS,
   panelBlockIds,
@@ -68,8 +70,8 @@ export function buildGallery(s: ProjectState, productionId: string, o: GalleryOp
       panels.push({ panel: p, index: i++, frames: panelTimingFrames(s, p), blockIds: panelBlockIds(s, p.id), statuses });
     }
     if (o.filter && panels.length === 0 && sceneStatuses[o.filter.area] !== o.filter.status) continue;
-    const blocks = blocksOfVariant(s, occ.variantId);
-    const heading = blocks.find((b) => b.kind === "heading")?.text ?? "";
+    const h = s.variants[occ.variantId]?.heading;
+    const heading = h ? formatHeading(h) : "";
     out.push({
       occurrence: occ,
       number: sceneNumberOf(s, occ) ?? "",
