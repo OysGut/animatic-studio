@@ -7743,7 +7743,7 @@ function run(
     case "CreateComposition": {
       assertNewId(s, c.compositionId);
       need(s.variants[c.variantId], tk("core-commands-apply.run.need.594b13c00857.6"));
-      if (Object.values(s.compositions).some((x) => x.variantId === c.variantId && !x.removed))
+      if (Object.values(s.compositions).some((x) => x.variantId === c.variantId && !x.removed && (x.kind ?? "scene") === "scene"))
         fail("invalid", tk("core-commands-apply.run.fail.5f34b746afab"));
       // Formatet følger alltid prosjektet (DEC-0039)
       const fields = compositionFields({
