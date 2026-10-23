@@ -114,3 +114,7 @@ Under e-posten står nå «Innlogging» med «Google», «E-post og passord» el
 
 `google.sign-in.button`, `google.sign-in.or`, `google.sign-in.failed`, `google.account.methods`,
 `google.account.method-google`, `google.account.method-email`.
+
+## Resultat
+
+tsc 0. Full Vitest: 2770 bestått, 0 feilet, 10 hoppet over som før. DB-tester: 183 bestått, 0 feilet, med 0092. Språksjekken (i18n) er grønn. Ingen betalte kall, ingen publisering og ingen kjøring av migrasjoner i Cloud.
