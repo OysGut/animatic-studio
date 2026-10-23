@@ -976,6 +976,14 @@ export type Command = import("../animation/rig-commands").RigCommand
     }
   | { readonly type: "UndoAddLayers"; readonly layerIds: readonly LayerId[] }
   | {
+      /**
+       * Plassholder → bilde (23.10): en endring og tilpasningen av lagene som viser et nytt bilde, som ett
+       * angretrinn. Finnes bare som invers (angre/gjør om); trinnene er en vanlig kommando og en UpdateLayers.
+       */
+      readonly type: "WithLayerRefit";
+      readonly steps: readonly [Command, Command];
+    }
+  | {
       /** Endre ett eller flere lag samtidig (f.eks. flytte en gruppe). Én angring. */
       readonly type: "UpdateLayers";
       readonly layers: readonly { readonly layerId: LayerId; readonly fields: LayerFields }[];
