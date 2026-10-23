@@ -8,6 +8,8 @@
 import { z } from "zod";
 import {
   attachedImages,
+  foreignAttachedChoice,
+  MAX_ATTACHED_IMAGES_ANY,
   buildContextImagePrompt,
   stripAttachedSection,
   styleGuideError,
@@ -48,6 +50,14 @@ export const imagePromptRequest = z.discriminatedUnion("kind", [
     productionId: uuid.nullable(),
     occurrenceId: uuid.nullable(),
     style: z.boolean(),
+    /** Brukerens valg av vedlegg (Øystein 23.10): bortvalg og tillegg med rolle. */
+    excluded: z.array(uuid).max(64).optional(),
+    added: z
+      .array(z.object({ versionId: uuid, role: z.enum(["style", "view"]) }))
+      .max(MAX_ATTACHED_IMAGES_ANY)
+      .optional(),
+    /** Grensen for den valgte modellen (serveren bruker den minste av denne og modellens egen). */
+    maxImages: z.number().int().min(1).max(MAX_ATTACHED_IMAGES_ANY).optional(),
     fullSize: z.boolean(),
     family,
     transparent: z.boolean(),
@@ -114,7 +124,11 @@ export interface ComposedImagePrompt {
 }
 
 /** Bygger beskrivelsen og vedleggene. Returnerer null når ressursen/versjonen ikke finnes. */
-export function composeImagePrompt(s: ProjectState, r: ImagePromptRequest): ComposedImagePrompt | null {
+export function composeImagePrompt(
+  s: ProjectState,
+  r: ImagePromptRequest,
+  opts: { readonly maxImages?: number } = {},
+): ComposedImagePrompt | null {
   const asset = s.assets[r.assetId];
   if (!asset || asset.removed) return null;
   const out = (
@@ -211,13 +225,19 @@ export function composeImagePrompt(s: ProjectState, r: ImagePromptRequest): Comp
   const ref = r.referenceVersionId ? s.assetVersions[r.referenceVersionId] : undefined;
   const identity = ref && ref.mimeType.startsWith("image/") ? ref : null;
   const variant = r.variantId ? (s.assetVariants[r.variantId] ?? null) : null;
+  // Bare bildeversjoner fra dette prosjektet kan legges til (som referenceImages)
+  const choice = { excluded: r.excluded ?? [], added: r.added ?? [] };
+  if (foreignAttachedChoice(s, choice).length) return null;
   if (r.productionId && s.productions[r.productionId]) {
+    const max = Math.min(r.maxImages ?? MAX_ATTACHED_IMAGES_ANY, opts.maxImages ?? MAX_ATTACHED_IMAGES_ANY);
     const attached = attachedImages(s, {
       assetId: asset.id,
       productionId: r.productionId,
       occurrenceId: r.occurrenceId,
       identityVersionId: identity?.id ?? null,
       style: r.style,
+      choice,
+      ...(r.maxImages !== undefined || opts.maxImages !== undefined ? { max } : {}),
     });
     const input = {
       assetId: asset.id,

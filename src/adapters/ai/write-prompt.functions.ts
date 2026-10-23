@@ -20,7 +20,7 @@ import {
   isUuid,
   newId,
   promptWriterUserText,
-  MAX_ATTACHED_IMAGES,
+  MAX_ATTACHED_IMAGES_ANY,
   MAX_PROMPT_CHARS,
   PROMPT_WRITER_SYSTEM,
   SCENE_DESCRIPTION_SYSTEM,
@@ -120,7 +120,7 @@ function validate(d: unknown): WritePromptInput {
     throw new Error(t("adapters-ai-write-prompt-functions.validate.message.01be383379b4"));
   if (
     !Array.isArray(images) ||
-    images.length > MAX_ATTACHED_IMAGES ||
+    images.length > MAX_ATTACHED_IMAGES_ANY ||
     !images.every(
       (i) =>
         i &&

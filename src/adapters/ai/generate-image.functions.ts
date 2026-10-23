@@ -10,7 +10,7 @@
  */
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { type AssetMedia, type ImageSize, isProviderId, isUuid, MAX_ATTACHED_IMAGES, MAX_PROMPT_CHARS, parseQualityProfileMeta, type QualityProfileSnapshot } from "@/core";
+import { type AssetMedia, type ImageSize, isProviderId, isUuid, MAX_ATTACHED_IMAGES_ANY, maxAttachedImagesFor, providerModel, LOVABLE_CUTOUT_MODEL, LOVABLE_IMAGE_MODEL, MAX_PROMPT_CHARS, parseQualityProfileMeta, type QualityProfileSnapshot } from "@/core";
 import type { AnyClient } from "@/adapters/storage/project-rows";
 import { ROLE_RANK, validReferencePath } from "./gateway";
 import type { ImageAspect } from "./providers.server";
@@ -69,6 +69,17 @@ export type GenerateImageResult =
     }
   | { readonly ok: false; readonly message: string };
 
+/** Grensen for antall inndatabilder for modellen som faktisk brukes (innebygd: etter formålet). */
+export function attachedLimit(d: Pick<GenerateImageInput, "provider" | "model" | "purpose">): number {
+  const id =
+    d.provider === "lovable"
+      ? d.purpose === "cutout"
+        ? LOVABLE_CUTOUT_MODEL
+        : LOVABLE_IMAGE_MODEL
+      : (d.model ?? "");
+  return maxAttachedImagesFor(providerModel(d.provider, id) ?? null);
+}
+
 function validate(d: unknown): GenerateImageInput {
   if (!d || typeof d !== "object") throw new Error(t("adapters-ai-generate-image-functions.validate.message.24c08eed08ff"));
   const x = d as Record<string, unknown>;
@@ -87,7 +98,7 @@ function validate(d: unknown): GenerateImageInput {
     );
   if (
     !Array.isArray(refs) ||
-    refs.length > MAX_ATTACHED_IMAGES ||
+    refs.length > MAX_ATTACHED_IMAGES_ANY ||
     new Set(refs).size !== refs.length ||
     !refs.every((r) => validReferencePath(projectId, r))
   )
@@ -168,10 +179,17 @@ export const generateImage = createServerFn({ method: "POST" })
         return { ok: false, message: t("adapters-ai-generate-image-functions.validate.message.24c08eed08ff") };
       const { loadProjectState } = await import("@/adapters/storage/project-rows");
       const state = await loadProjectState(userDb as never, data.projectId);
-      const c = composeImagePrompt(state, req.data);
+      // Modellens dokumenterte grense for inndatabilder (Øystein 23.10); uten data som før
+      const limit = attachedLimit(data);
+      if (req.data.kind === "asset") {
+        const { foreignAttachedChoice } = await import("@/core");
+        if (foreignAttachedChoice(state, { excluded: [], added: req.data.added ?? [] }).length)
+          return { ok: false, message: t("adapters-ai-generate-image-functions.validate.message.5536a8eb7feb") };
+      }
+      const c = composeImagePrompt(state, req.data, { maxImages: limit });
       if (!c) return { ok: false, message: t("adapters-ai-generate-image-functions.validate.message.cfa60d63843d") };
       const prompt = finalImagePrompt(c, data.prompt);
-      if (!prompt.trim() || prompt.length > MAX_PROMPT_CHARS || c.referencePaths.length > MAX_ATTACHED_IMAGES ||
+      if (!prompt.trim() || prompt.length > MAX_PROMPT_CHARS || c.referencePaths.length > limit ||
         !c.referencePaths.every((r) => validReferencePath(data.projectId, r)))
         return { ok: false, message: t("adapters-ai-generate-image-functions.validate.message.5536a8eb7feb") };
       const { promptRequest: _r, ...rest } = data;
