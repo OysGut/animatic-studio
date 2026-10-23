@@ -190,3 +190,35 @@ Eksakt liste for G-1 frem til denne delrapporten, gruppert med kort formål:
 - `verifisering4-redaksjon-ui.test.ts` (REQ-0053): importknappen er sperret til språket er bekreftet; testen sjekker forslaget, bekrefter og kontrollerer deretter byte-identisk original og kontrollsum som før. Ingen getContext-feil i denne filen.
 - `fountain.test.ts`: `.fdx` gjenkjennes nå som format (G-1b).
 - Resultat: tsc 0; full vitest 2729 bestått, 0 feilet (10 hoppet over som før); DB-tester 182 bestått, 0 feilet (med 0091); i18n-sjekk grønn.
+
+## G-1b – siste arbeidsbolk (2026-10-23)
+
+Øystein svarte ja: sperren mot andre plakatspråk enn norsk og engelsk er fjernet i 0091. Valgene under er tatt i tråd med G-1 og er begrunnet.
+
+**Punkt 5 – Noto i PDF (manus, plakat, karakterkart):**
+- Ny ren kjerne `src/core/typography/pdf-scripts.ts`: skriftsystem per tegn (latin/gresk/kyrillisk, japansk, koreansk, forenklet kinesisk, arabisk, hebraisk, devanagari, thai), løp per skriftsystem og hvilke fonter en eksport trenger. Han-tegn følger språket (zh → SC, ko → KR, ellers JP).
+- `src/engine/export/pdf-fonts.ts` laster bare fontene teksten bruker, én gang per økt (CJK-filene er store). Lisens: SIL OFL 1.1 (`public/fonts/pdf/OFL.txt`); Noto Sans SC ligger i fillageret.
+- Manus-PDF: Courier når WinAnsi dekker teksten (byte-identisk som før), ellers `screenplayPdfUnicode` med samme sider og posisjoner og innebygde Noto-fonter. Eksporten stoppes bare for tegn ingen font har (for eksempel emoji). Begrunnelse: latinske manus endres ikke, og ingen tegn blir «?».
+- Plakat-PDF: tekst utenfor WinAnsi tegnes av nettleseren med Noto og legges inn som bilde i trykkoppløsning (`posterTextImage`). Begrunnelse: nettleseren former arabisk, hebraisk, devanagari og thai riktig; jsPDF gjør ikke det. Latinsk tekst er fortsatt ekte PDF-tekst. CJK-tegn måles som fulle firkanter, så ombrekkingen stemmer.
+- Kjent begrensning: i manus-PDF former jsPDF ikke devanagari- og thai-sammensetninger fullt ut, og arabisk går gjennom jsPDFs bidi-motor. Plakatene har ikke denne begrensningen.
+
+**Plakat og karakterkart på alle språk:**
+- `LocalizedText` er et språkkart (BCP-47 → tekst). Eldre plakater med «nb»/«en» virker uendret, fordi det bare er vanlige språkmerker.
+- `Poster.language` er et BCP-47-merke. Valget (`PosterLanguageSelect`) viser kildespråket først, så språkversjonene og grensesnittspråkene. Programmets tekster (sjanger, prosjektdata, navn, relasjonstyper) lages på plakatens språk og kildespråket via språkkatalogen. Tittel, beskrivelser og relasjonstekster står på kildespråket.
+- Mangler en tekst på visningsspråket, brukes kildespråket. Det meldes som manglende oversettelse, med språkets navn.
+- `patch.ts` tvang tidligere alle plakatspråk til nb/en ved lasting; det er rettet.
+
+**0091 – endringer i denne bolken:** `posters_language_check` erstattes av BCP-47-mønsteret fra 0066/0090, og standardverdien 'nb' fjernes. **0091 oppretter eller erstatter ingen funksjoner.** Den endrer bare to sjekkregler (`imported_documents_format_check`, `posters_language_check`) og standardverdien for `posters.language`, og skriver `schema_version` 91. Ingen data slettes.
+
+**Punkt 3-rest – standarder og arkitekturtest:**
+- `tests/architecture/g1b-no-hardcoded-norwegian.test.ts` feiler på «nb», «no», «nn» og «-NO» som strengverdi i `src/` utenfor i18n-katalogen. Unntak (4): testoppsettet, engelsk svarverdi «no» i replikksjekken, Word-regionen «nb-NO» og eldre svarform i stilanalysen.
+- Rettet: Story Lab-replikker skrives på manusets språk (ikke fast «nb»); analyse av ressurser godtar alle grensesnittspråk; lydvalg og opptak sammenligner med kildespråket; standardverdier bruker kildemarkøren; LESMEG og meldinger i pakkene (PTG, AE, FBX, klipp, compositing, munnliste) skrives på grensesnittspråket og engelsk (fellesspråket i bransjen); stilanalysen oversettes til grensesnittspråket; Word-filer uten språk får «und».
+- Sceneoverskrifter gjenkjennes også på tysk (INNEN./AUSSEN.), russisk (ИНТ./НАТ.) og japansk (○).
+
+**Punkt 6–8:**
+- `tests/unit/g1b-roundtrip.test.ts`: japansk, engelsk og norsk manus med to mål hver: sikkerhetskopi → gjenoppretting, avvik etter endret kildetekst, PTG-modellen og en faktisk manus-PDF (japansk med innebygd Noto JP).
+- `tests/unit/g1b-user-flow.test.tsx`: japansk manus får norsk og engelsk som språkversjoner i dialogen, japansk avvises som mål, og plakatens språkvalg viser kildespråket først.
+- Nye tester også i `g1b-poster-languages`, `g1b-pdf-scripts` og `g1b-heading-prefixes`. DB-testen for plakater sjekker ja/pt-BR og avvisning av ugyldige merker.
+- PyYAML er installert i sandkassen; `build_docs.py` og `check_kb.py` er grønne. REQ-0925 er satt til Verifisert.
+
+**Endrede testforventninger:** I `ml4-export-languages.test.ts` er forventningen om at serbisk stopper PDF erstattet. Nå bygges Noto inn, og bare emoji stopper. `presentation.test.ts` og `run-db-tests.ts` bruker `["nb"]` i stedet for `.nb`, fordi typen nå er et språkkart. Verdiene er de samme.
