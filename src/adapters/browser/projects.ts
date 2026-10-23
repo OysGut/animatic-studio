@@ -1,4 +1,5 @@
 import { locale } from "@/core/i18n";
+import { t } from "@/core/i18n/keyed";
 /** Prosjektlisten og prosjekter som opprettes eller forlates, for nettleseren (KI-181). */
 import { db, plainError, type BackendError, type BackendResult } from "./client";
 
@@ -15,7 +16,7 @@ export async function listProjects(): Promise<unknown[]> {
 /** Nytt prosjekt. Gir ID-en. Kaster med feilmeldingen. */
 export async function createProject(name: string, sourceLanguage = locale()): Promise<string> {
   const { data, error } = await db.rpc("create_project", { p_name: name, p_source_language: sourceLanguage });
-  if (error) throw new Error(error.message);
+  if (error) throw new Error(error.code === "PTG11" ? t("adapters-storage-commands-functions.quota-projects") : error.message);
   return data as string;
 }
 
