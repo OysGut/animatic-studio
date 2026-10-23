@@ -3,6 +3,7 @@
  * skrives via kommandoer (apply_changes) med angring. Standardprofilene «Utkast», «Gjennomgang» og «Endelig»
  * opprettes for nye prosjekter; eksisterende prosjekter tilbys dem her – ingenting endres i stillhet.
  */
+import { UiId } from "@/app/shared/UiId";
 import { useEffect, useState } from "react";
 import { isProresOfferDismissed, setProresOfferDismissed } from "./prores-offer-memory";
 import { Plus, Star, Trash2 } from "lucide-react";
@@ -232,9 +233,10 @@ function ProfileDialog({
     <div
       role="dialog"
       aria-label={profile ? t("app-projects-quality-profiles-section.profile-dialog.aria-label.e563530ada2f") : t("app-projects-quality-profiles-section.profile-dialog.aria-label.c99e03632a03")}
-      className="mt-3 flex flex-col gap-2 border border-border bg-surface-2 p-3 text-xs"
+      className="relative mt-3 flex flex-col gap-2 border border-border bg-surface-2 p-3 text-xs"
       data-testid="quality-profile-dialog"
     >
+      <UiId id="NEW" />
       <label className="flex items-center gap-2 text-text-secondary">
         {t("app-projects-quality-profiles-section.profile-dialog.label.87eb6b0f610e")}
         <Input

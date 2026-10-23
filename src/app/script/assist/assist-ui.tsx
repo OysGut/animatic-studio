@@ -1,4 +1,5 @@
 /** Skrivehjelpen (T2): hurtigtaster, markerte linjer og kontekstmenyen på manussidene. */
+import { UiId } from "@/app/shared/UiId";
 import { useEffect, useRef } from "react";
 import { REWRITE_MODES, type RewriteMode } from "@/core";
 import type { AssistAction } from "./WritingPanel";
@@ -92,6 +93,7 @@ export function AssistContextMenu({
       className="fixed z-50 min-w-[200px] rounded-md border border-border bg-surface-2 p-1 shadow-lg"
       style={{ left: x, top: y }}
     >
+      <UiId id="NEW" />
       <p className="px-2 py-1 text-chrome-label uppercase tracking-label text-text-tertiary">{tk("app-script-assist-assist-ui.assist-context-menu.p.43505f55c8da")}</p>
       {REWRITE_MODES.map((m) => item(MODE_LABEL[m](), "rewrite", m, `assist-menu-rewrite-${m}`))}
       <div className="my-1 h-px bg-border" />

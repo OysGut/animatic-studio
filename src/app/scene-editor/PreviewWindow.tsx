@@ -9,6 +9,7 @@
  * per skjermpunkt. Størrelse, plassering og zoom huskes for begge former, også når vinduet lukkes og åpnes
  * igjen (automatisk ved avspilling) og mellom økter.
  */
+import { UiId } from "@/app/shared/UiId";
 import { textSpecsOf, useTextFonts } from "@/engine/typography/fonts";
 import { ExternalLink, PanelBottomClose, X } from "lucide-react";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
@@ -295,6 +296,7 @@ export function PreviewWindow({
       style={{ left: x, top: y, width: w, visibility: area ? "visible" : "hidden" }}
       className="fixed z-40 flex flex-col rounded-md border border-border bg-surface-1 shadow-[var(--shadow-float)]"
     >
+      <UiId id="NEW" />
       <div
         className="flex shrink-0 cursor-move touch-none select-none items-center gap-1.5 border-b border-border px-2"
         style={{ height: HEADER }}
