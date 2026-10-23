@@ -337,12 +337,15 @@ export function RecordAudioDialog({
   const legend = "text-[11px] font-medium uppercase tracking-[0.04em] text-text-tertiary";
   const at = (ms: number) => `${(Math.round(ms / 100) / 10).toLocaleString(locale())} s`;
 
+  if (open && initialBlockId) returnTo.current = initialBlockId;
   return (
     <Dialog open={open} onOpenChange={(o) => !busy && onOpenChange(o)}>
       <DialogContent className="max-h-[90vh] max-w-[860px] overflow-y-auto border-border bg-surface-2" data-testid="record-audio-dialog"
         onCloseAutoFocus={(e) => {
           // N10: fokus tilbake til replikken i manuspanelet når dialogen ble åpnet derfra
-          const el = initialBlockId ? document.querySelector<HTMLElement>(`[data-testid="scene-script"] [data-script-block="${CSS.escape(initialBlockId)}"]`) : null;
+          const id = returnTo.current;
+          returnTo.current = null;
+          const el = id ? document.querySelector<HTMLElement>(`[data-testid="scene-script"] [data-script-block="${CSS.escape(id)}"]`) : null;
           if (el) { e.preventDefault(); el.focus(); }
         }}>
         <DialogHeader>
