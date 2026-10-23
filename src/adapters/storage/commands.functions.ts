@@ -120,6 +120,7 @@ const INVERSE_ONLY = new Set<string>([
   "UndoCreateStoryProfile",
   "UndoAddStoryProfileStage",
   "UndoAddStoryFact",
+  "WithLayerRefit",
 ]);
 
 /** Kommandoer som skriver til tabellene fra migrasjon 0004 (ressursbibliotek og notater). */
@@ -554,6 +555,12 @@ export const runCommand = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .validator(validateInput)
   .handler(async ({ data, context }): Promise<RunCommandResult> => {
+    // Plassholder → bilde (23.10): angre/gjør om av en endring med tilpasning kontrolleres som endringen selv
+    // (selve trinnet godtas bare som en lagret invers, se INVERSE_ONLY)
+    const checked: Command =
+      data.command.type === "WithLayerRefit"
+        ? (data.command.steps.find((x) => x?.type !== "UpdateLayers") ?? data.command.steps[0])
+        : data.command;
     const userDb = context.supabase as unknown as AnyClient;
     const { data: member } = await userDb
       .from("project_members")
@@ -572,7 +579,7 @@ export const runCommand = createServerFn({ method: "POST" })
     }
 
     // AI-budsjettet bestemmes av eieren (DEC-0053, REQ-0528)
-    if (data.command.type === "SetAiBudget" && rank < ROLE_RANK["owner"]!) {
+    if (checked.type === "SetAiBudget" && rank < ROLE_RANK["owner"]!) {
       return {
         ok: false,
         code: "forbidden",
@@ -620,13 +627,13 @@ export const runCommand = createServerFn({ method: "POST" })
       }
     }
     // En bildeversjon som noen gang har vært godkjent, er tatt i bruk og kan ikke angres bort (REQ-0136)
-    if (data.command.type === "UndoAddAssetVersion") {
+    if (checked.type === "UndoAddAssetVersion") {
       const { data: approvals } = await admin
         .from("change_log")
         .select("id")
         .eq("project_id", data.projectId)
         .eq("command_type", "ApproveAssetVersion")
-        .eq("command->>versionId", data.command.versionId)
+        .eq("command->>versionId", checked.versionId)
         .limit(1);
       if ((approvals ?? []).length > 0)
         return {
@@ -635,8 +642,8 @@ export const runCommand = createServerFn({ method: "POST" })
           message: tk("adapters-storage-commands-functions.message.message.3c251d61dcc2"),
         };
     }
-    const animationSteps = data.command.type === "UpdateSceneDraft" ? data.command.steps : [data.command];
-    if (["SaveMouthSet", "SaveMouthTrack", "UndoMouthChange"].includes(data.command.type)) {
+    const animationSteps = checked.type === "UpdateSceneDraft" ? checked.steps : [checked];
+    if (["SaveMouthSet", "SaveMouthTrack", "UndoMouthChange"].includes(checked.type)) {
       const schema = await checkSchema(admin);
       if (schema.kind === "missing" || schema.version < 84) return { ok: false, code: "schema", message: tk("ptg4.schema") };
     }
@@ -650,7 +657,7 @@ export const runCommand = createServerFn({ method: "POST" })
       if (schema.kind === "missing" || schema.version < 56) return { ok: false, code: "schema", message: tk("adapters-storage-commands-functions.message.message.7fde6dc68084") };
     }
     // DV7/DV8: avviksgjennomganger og huskelapper krever migrasjon 0062
-    if (["ReviewDialogueDrift", "UndoReviewDialogueDrift", "AddNoteFlag", "UndoAddNoteFlag", "UpdateNoteFlag", "SetNoteFlagRemoved"].includes(data.command.type)) {
+    if (["ReviewDialogueDrift", "UndoReviewDialogueDrift", "AddNoteFlag", "UndoAddNoteFlag", "UpdateNoteFlag", "SetNoteFlagRemoved"].includes(checked.type)) {
       const schema = await checkSchema(admin);
       if (schema.kind === "missing" || schema.version < 62) return { ok: false, code: "schema", message: tk("adapters-storage-commands-functions.message.message.b87bdd379b23") };
     }
@@ -689,7 +696,7 @@ export const runCommand = createServerFn({ method: "POST" })
       if (name) data = { ...data, command: { ...data.command, editedByName: name } };
     }
     // Ressursbiblioteket krever migrasjon 0004 (ellers ville endringen bare blitt logget, ikke lagret)
-    if (LIBRARY_COMMANDS.has(data.command.type)) {
+    if (LIBRARY_COMMANDS.has(checked.type)) {
       const schema = await checkSchema(admin);
       if (schema.kind === "missing" || schema.version < 4)
         return {
@@ -699,13 +706,13 @@ export const runCommand = createServerFn({ method: "POST" })
         };
     }
     // Scenestatus og scenefarge (B-118) krever migrasjon 0083
-    if (data.command.type === "SetOccurrenceWorkStatus" || data.command.type === "SetOccurrenceColor") {
+    if (checked.type === "SetOccurrenceWorkStatus" || checked.type === "SetOccurrenceColor") {
       const schema = await checkSchema(admin);
       if (schema.kind === "missing" || schema.version < 83)
         return { ok: false, code: "schema", message: tk("b118.err-schema") };
     }
     // Prosjektets format krever migrasjon 0008
-    if (data.command.type === "SetProjectFormat" || data.command.type === "UndoSetProjectFormat") {
+    if (checked.type === "SetProjectFormat" || checked.type === "UndoSetProjectFormat") {
       const schema = await checkSchema(admin);
       if (schema.kind === "missing" || schema.version < 8)
         return {
@@ -715,7 +722,7 @@ export const runCommand = createServerFn({ method: "POST" })
         };
     }
     // Lyd krever migrasjon 0009
-    if (needsAudioSchema(data.command as never)) {
+    if (needsAudioSchema(checked as never)) {
       const schema = await checkSchema(admin);
       if (schema.kind === "missing" || schema.version < 9)
         return {
@@ -724,7 +731,7 @@ export const runCommand = createServerFn({ method: "POST" })
           message: tk("adapters-storage-commands-functions.message.message.115702403951"),
         };
     }
-    if (EDIT_COMMANDS.has(data.command.type)) {
+    if (EDIT_COMMANDS.has(checked.type)) {
       const schema = await checkSchema(admin);
       if (schema.kind === "missing" || schema.version < 12)
         return {
@@ -733,7 +740,7 @@ export const runCommand = createServerFn({ method: "POST" })
           message: tk("adapters-storage-commands-functions.message.message.3d6e65936633"),
         };
     }
-    if (needsSchema13(data.command as never)) {
+    if (needsSchema13(checked as never)) {
       const schema = await checkSchema(admin);
       if (schema.kind === "missing" || schema.version < 13)
         return {
@@ -743,7 +750,7 @@ export const runCommand = createServerFn({ method: "POST" })
         };
     }
     // AI-budsjett, egne beskrivelser og inndeling for generering krever migrasjon 0014 (DEC-0053)
-    if (SCHEMA14_COMMANDS.has(data.command.type)) {
+    if (SCHEMA14_COMMANDS.has(checked.type)) {
       const schema = await checkSchema(admin);
       if (schema.kind === "missing" || schema.version < 14)
         return {
@@ -752,7 +759,7 @@ export const runCommand = createServerFn({ method: "POST" })
           message: tk("adapters-storage-commands-functions.message.message.736fdd526c7e"),
         };
     }
-    if (SCHEMA15_COMMANDS.has(data.command.type)) {
+    if (SCHEMA15_COMMANDS.has(checked.type)) {
       const schema = await checkSchema(admin);
       if (schema.kind === "missing" || schema.version < 15)
         return {
@@ -761,11 +768,11 @@ export const runCommand = createServerFn({ method: "POST" })
           message: tk("adapters-storage-commands-functions.message.message.3cd9842f48f3"),
         };
     }
-    if (["SetLineLink","UndoAddLineLink","ApproveLineLinks","RejectLineLinks","RestoreLineLinks","AddTranslationLines","UndoAddTranslationLines"].includes(data.command.type)) {
+    if (["SetLineLink","UndoAddLineLink","ApproveLineLinks","RejectLineLinks","RestoreLineLinks","AddTranslationLines","UndoAddTranslationLines"].includes(checked.type)) {
       const schema=await checkSchema(admin);
       if (schema.kind === "missing" || schema.version < 64) return {ok:false,code:"schema",message:tk("adapters-storage-commands-functions.message.message.1b1c45bc8516")};
     }
-    if (SCHEMA16_COMMANDS.has(data.command.type)) {
+    if (SCHEMA16_COMMANDS.has(checked.type)) {
       const schema = await checkSchema(admin);
       if (schema.kind === "missing" || schema.version < 16)
         return {
@@ -774,7 +781,7 @@ export const runCommand = createServerFn({ method: "POST" })
           message: tk("adapters-storage-commands-functions.message.message.b305cd2f5e74"),
         };
     }
-    if (needsSchema17(data.command as never)) {
+    if (needsSchema17(checked as never)) {
       const schema = await checkSchema(admin);
       if (schema.kind === "missing" || schema.version < 17)
         return {
@@ -783,7 +790,7 @@ export const runCommand = createServerFn({ method: "POST" })
           message: tk("adapters-storage-commands-functions.message.message.fda297080af9"),
         };
     }
-    if (needsSchema18(data.command as never)) {
+    if (needsSchema18(checked as never)) {
       const schema = await checkSchema(admin);
       if (schema.kind === "missing" || schema.version < 18)
         return {
@@ -792,9 +799,9 @@ export const runCommand = createServerFn({ method: "POST" })
           message: tk("adapters-storage-commands-functions.message.message.f3d36f381f8f"),
         };
     }
-    if (needsSchema48(data.command as never) || needsSchema49(data.command as never)) {
+    if (needsSchema48(checked as never) || needsSchema49(checked as never)) {
       const schema = await checkSchema(admin);
-      const need = needsSchema49(data.command as never) ? 49 : 48;
+      const need = needsSchema49(checked as never) ? 49 : 48;
       if (schema.kind === "missing" || schema.version < need)
         return {
           ok: false,
@@ -802,7 +809,7 @@ export const runCommand = createServerFn({ method: "POST" })
           message: tk("adapters-storage-commands-functions.message.message.28a62ad62dd5", { need: String(need) }),
         };
     }
-    if (needsSchema74(data.command as never)) {
+    if (needsSchema74(checked as never)) {
       const schema = await checkSchema(admin);
       if (schema.kind === "missing" || schema.version < 74)
         return {
@@ -811,7 +818,7 @@ export const runCommand = createServerFn({ method: "POST" })
           message: tk("adapters-storage-commands-functions.message.message.28a62ad62dd5", { need: "74" }),
         };
     }
-    if (needsSchema40(data.command as never)) {
+    if (needsSchema40(checked as never)) {
       const schema = await checkSchema(admin);
       if (schema.kind === "missing" || schema.version < 40)
         return {
@@ -820,7 +827,7 @@ export const runCommand = createServerFn({ method: "POST" })
           message: tk("adapters-storage-commands-functions.message.message.2341b10b6eaf"),
         };
     }
-    if (needsSchema39(data.command as never)) {
+    if (needsSchema39(checked as never)) {
       const schema = await checkSchema(admin);
       if (schema.kind === "missing" || schema.version < 39)
         return {
@@ -829,7 +836,7 @@ export const runCommand = createServerFn({ method: "POST" })
           message: tk("adapters-storage-commands-functions.message.message.a5075b930191"),
         };
     }
-    if (needsSchema37(data.command as never)) {
+    if (needsSchema37(checked as never)) {
       const schema = await checkSchema(admin);
       if (schema.kind === "missing" || schema.version < 37)
         return {
@@ -838,7 +845,7 @@ export const runCommand = createServerFn({ method: "POST" })
           message: tk("adapters-storage-commands-functions.message.message.51efa6f76610"),
         };
     }
-    if (needsSchema36(data.command as never)) {
+    if (needsSchema36(checked as never)) {
       const schema = await checkSchema(admin);
       if (schema.kind === "missing" || schema.version < 36)
         return {
@@ -847,7 +854,7 @@ export const runCommand = createServerFn({ method: "POST" })
           message: tk("adapters-storage-commands-functions.message.message.f958e3a6e218"),
         };
     }
-    if (needsSchema34(data.command as never)) {
+    if (needsSchema34(checked as never)) {
       const schema = await checkSchema(admin);
       if (schema.kind === "missing" || schema.version < 34)
         return {
@@ -856,7 +863,7 @@ export const runCommand = createServerFn({ method: "POST" })
           message: tk("adapters-storage-commands-functions.message.message.c52e168dcd76"),
         };
     }
-    if (needsSchema32(data.command as never)) {
+    if (needsSchema32(checked as never)) {
       const schema = await checkSchema(admin);
       if (schema.kind === "missing" || schema.version < 32)
         return {
@@ -865,7 +872,7 @@ export const runCommand = createServerFn({ method: "POST" })
           message: tk("adapters-storage-commands-functions.message.message.c77162f93c47"),
         };
     }
-    if (needsSchema31(data.command as never)) {
+    if (needsSchema31(checked as never)) {
       const schema = await checkSchema(admin);
       if (schema.kind === "missing" || schema.version < 31)
         return {
@@ -874,7 +881,7 @@ export const runCommand = createServerFn({ method: "POST" })
           message: tk("adapters-storage-commands-functions.message.message.e1f8960f3a98"),
         };
     }
-    if (needsSchema30(data.command as never)) {
+    if (needsSchema30(checked as never)) {
       const schema = await checkSchema(admin);
       if (schema.kind === "missing" || schema.version < 30)
         return {
@@ -883,7 +890,7 @@ export const runCommand = createServerFn({ method: "POST" })
           message: tk("adapters-storage-commands-functions.message.message.fe59c3be6214"),
         };
     }
-    if (needsSchema29(data.command as never)) {
+    if (needsSchema29(checked as never)) {
       const schema = await checkSchema(admin);
       if (schema.kind === "missing" || schema.version < 29)
         return {
@@ -892,7 +899,7 @@ export const runCommand = createServerFn({ method: "POST" })
           message: tk("adapters-storage-commands-functions.message.message.bd0f5f4a9cf4"),
         };
     }
-    if (needsSchema28(data.command as never)) {
+    if (needsSchema28(checked as never)) {
       const schema = await checkSchema(admin);
       if (schema.kind === "missing" || schema.version < 28)
         return {
@@ -901,7 +908,7 @@ export const runCommand = createServerFn({ method: "POST" })
           message: tk("adapters-storage-commands-functions.message.message.94cbfeb1a92d"),
         };
     }
-    if (needsSchema27(data.command as never)) {
+    if (needsSchema27(checked as never)) {
       const schema = await checkSchema(admin);
       if (schema.kind === "missing" || schema.version < 27)
         return {
@@ -910,7 +917,7 @@ export const runCommand = createServerFn({ method: "POST" })
           message: tk("adapters-storage-commands-functions.message.message.a351f6c20569"),
         };
     }
-    if (needsSchema26(data.command as never)) {
+    if (needsSchema26(checked as never)) {
       const schema = await checkSchema(admin);
       if (schema.kind === "missing" || schema.version < 26)
         return {
@@ -919,7 +926,7 @@ export const runCommand = createServerFn({ method: "POST" })
           message: tk("adapters-storage-commands-functions.message.message.f770da01452c"),
         };
     }
-    if (needsSchema25(data.command as never)) {
+    if (needsSchema25(checked as never)) {
       const schema = await checkSchema(admin);
       if (schema.kind === "missing" || schema.version < 25)
         return {
@@ -928,7 +935,7 @@ export const runCommand = createServerFn({ method: "POST" })
           message: tk("adapters-storage-commands-functions.message.message.16525acc1633"),
         };
     }
-    if (needsSchema23(data.command as never)) {
+    if (needsSchema23(checked as never)) {
       const schema = await checkSchema(admin);
       if (schema.kind === "missing" || schema.version < 23)
         return {
@@ -937,7 +944,7 @@ export const runCommand = createServerFn({ method: "POST" })
           message: tk("adapters-storage-commands-functions.message.message.bb458d81609f"),
         };
     }
-    if (needsSchema21(data.command as never)) {
+    if (needsSchema21(checked as never)) {
       const schema = await checkSchema(admin);
       if (schema.kind === "missing" || schema.version < 21)
         return {
@@ -946,7 +953,7 @@ export const runCommand = createServerFn({ method: "POST" })
           message: tk("adapters-storage-commands-functions.message.message.855135ab45cb"),
         };
     }
-    if (needsSchema19(data.command as never)) {
+    if (needsSchema19(checked as never)) {
       const schema = await checkSchema(admin);
       if (schema.kind === "missing" || schema.version < 19)
         return {
@@ -955,7 +962,7 @@ export const runCommand = createServerFn({ method: "POST" })
           message: tk("adapters-storage-commands-functions.message.message.a70968a5bbb7"),
         };
     }
-    if (needsFilmSchema(data.command as never)) {
+    if (needsFilmSchema(checked as never)) {
       const schema = await checkSchema(admin);
       if (schema.kind === "missing" || schema.version < 11)
         return {
@@ -964,7 +971,7 @@ export const runCommand = createServerFn({ method: "POST" })
           message: tk("adapters-storage-commands-functions.message.message.9678261bea35"),
         };
     }
-    if (needsAudioFlowSchema(data.command as never)) {
+    if (needsAudioFlowSchema(checked as never)) {
       const schema = await checkSchema(admin);
       if (schema.kind === "missing" || schema.version < 10)
         return {
@@ -974,7 +981,7 @@ export const runCommand = createServerFn({ method: "POST" })
         };
     }
     // 2D-sceneeditoren krever migrasjon 0007
-    if (COMPOSITION_COMMANDS.has(data.command.type)) {
+    if (COMPOSITION_COMMANDS.has(checked.type)) {
       const schema = await checkSchema(admin);
       if (schema.kind === "missing" || schema.version < 7)
         return {

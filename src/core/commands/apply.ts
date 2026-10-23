@@ -99,6 +99,7 @@ import {
 } from "../composition/timing";
 import { compareKeys, isValidOrderKey, keyBetween, keysEvenly } from "../order-key";
 import { compositionOfVariant } from "../composition/render";
+import { planLayerRefits } from "../composition/refit";
 import { isVersionView } from "../library/view";
 import { compositionAssetVersions, takeAssetVersions } from "../library/content-sync";
 import {
@@ -1662,6 +1663,21 @@ const LANGUAGE_CODE = { test: (v: string) => isScriptLanguageTag(v) };
  * transaksjon, så revisjonen blir opprinnelig revisjon + 1 (1 for nye rader) uansett hvor mange trinn som rører
  * raden. Det samme gjelder inversen. Slik stemmer patchen og baseRevisions med apply_changes.
  */
+/** Alle feltene til et lag, slik UpdateLayers lagrer dem (samme som inversen til UpdateLayers). */
+function fullLayerFields(l: CompositionLayer): LayerFields {
+  return {
+    ...fieldsOfLayer(l),
+    languageImages: l.languageImages ?? [],
+    mask: l.mask ?? null,
+    blend: l.blend ?? "normal",
+    activeRange: l.activeRange ?? null,
+    text: l.text ?? null,
+    shape: l.shape ?? null,
+    effects: l.effects ?? null,
+    template: l.template ?? null,
+  };
+}
+
 function oneRevisionPerRow(before: ProjectState, after: ProjectState): ProjectState {
   let out: ProjectState | null = null;
   for (const key of Object.keys(after) as (keyof ProjectState)[]) {
@@ -7710,6 +7726,31 @@ function run(
       };
     }
 
+    case "WithLayerRefit": {
+      const steps = c.steps;
+      if (
+        !Array.isArray(steps) ||
+        steps.length !== 2 ||
+        !steps.some((x) => x?.type === "UpdateLayers") ||
+        steps.some((x) => !x || x.type === "WithLayerRefit")
+      )
+        fail("invalid", tk("core-commands-apply.run.fail.cb5e3723481e"));
+      let cur = s;
+      const inverses: Command[] = [];
+      const affected = new Set<string>();
+      for (const step of steps) {
+        const r = run(cur, { ...env, command: step });
+        cur = r.state;
+        inverses.unshift(r.inverse);
+        for (const id of r.affected) affected.add(id);
+      }
+      return {
+        state: oneRevisionPerRow(s, cur),
+        inverse: { type: "WithLayerRefit", steps: inverses as unknown as [Command, Command] },
+        affected: [...affected],
+      };
+    }
+
     case "UpdateLayers": {
       if (c.layers.length === 0) fail("invalid", tk("core-commands-apply.run.fail.31060cbe5b55"));
       if (new Set(c.layers.map((x) => x.layerId)).size !== c.layers.length)
@@ -8166,9 +8207,29 @@ export function applyCommand(state: ProjectState, env: CommandEnvelope): ApplyRe
       }
     }
     const ran = run(state, env);
-    const { inverse } = ran;
+    let { inverse } = ran;
     let affected = ran.affected;
     let next = ran.state;
+    // Plassholder → bilde (23.10): lag som nå viser et annet bilde, får bildets egne proporsjoner rundt
+    // samme senter, i samme endring og samme angretrinn
+    // (ikke for Asset Studio-utkast, som lagrer sine egne lagfelter i utkastet)
+    if (env.command.type !== "WithLayerRefit" && env.command.type !== "UpdateSceneDraft") {
+      const refits = planLayerRefits(state, next, fullLayerFields);
+      if (refits.length) {
+        // Kan tilpasningen ikke gjøres (ugyldige lagfelter), gjennomføres endringen som før uten den
+        let r: ReturnType<typeof run> | null = null;
+        try {
+          r = run(next, { ...env, command: { type: "UpdateLayers", layers: refits } });
+        } catch {
+          r = null;
+        }
+        if (r) {
+          next = oneRevisionPerRow(state, r.state);
+          inverse = { type: "WithLayerRefit", steps: [r.inverse, inverse] };
+          affected = [...new Set([...affected, ...r.affected])];
+        }
+      }
+    }
     // Notater på tekst eller scener som forsvinner (angre av import, ny scene, innsetting …):
     // slettede notater fjernes med, synlige notater stopper endringen med en tydelig melding (DEC-0031)
     const orphans = Object.values(next.annotations).filter(

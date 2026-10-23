@@ -185,18 +185,22 @@ function Body({
   /** «Filmens visuelle stil» oppå denne dialogen; lukkes den, er brukeren tilbake her. */
   const [styleOpen, setStyleOpen] = useState(false);
 
-  function setLayer(label: string, patch: Partial<LayerFields>) {
+  function setLayer(label: string, patch: Partial<LayerFields>, group?: string) {
     if (sceneWrite) {
       const e = sceneWrite(patch, label);
       setError(e);
       return e === null;
     }
+    // Plassholder → bilde (23.10): feltene leses fra gjeldende tilstand, så tilpasningen et nytt bilde
+    // nettopp fikk (egne proporsjoner rundt samme senter), ikke overskrives av lagets gamle størrelse
+    const fresh = cmds.current()?.layers[layer.id] ?? layer;
     const err = cmds.run(
       {
         type: "UpdateLayers",
-        layers: [{ layerId: layer.id, fields: { ...layerFieldsOf(layer), ...patch } }],
+        layers: [{ layerId: layer.id, fields: { ...layerFieldsOf(fresh), ...patch } }],
       },
       label,
+      group,
     );
     setError(err);
     return err === null;
@@ -243,7 +247,7 @@ function Body({
     const ok = setLayer(t("app-scene-editor-layer-image-dialog.ok.set-layer.0e6e799ff30c"), {
       assetVariantId: variantId as LayerFields["assetVariantId"],
       versionId: versionId as LayerFields["versionId"],
-    });
+    }, group);
     return ok
       ? null
       : t("app-scene-editor-layer-image-dialog.save-version.message.7a4f87dfc982");

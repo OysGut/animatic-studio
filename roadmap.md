@@ -348,3 +348,6 @@
 - [x] Tastatur: synlig fokus på dra-håndtak, replikker kan åpnes med Enter, dialogen gir fokus tilbake, mellomrom spiller av/stopper.
 - [x] Live-region for avspilling (bare start/stopp), tidskoden annonseres ikke per bilde.
 - [x] Kontrast: tertiær tekst og «flyttet»-farge litt lysere; dempede rader mindre dempet.
+
+## Feil fra Øystein: plassholder → bilde (23.10)
+- [x] Nytt bilde på en plassholder får egne proporsjoner og vanlig innsettingsstørrelse rundt samme senter; ett angretrinn (tests/unit/placeholder-refit.test.ts, tests/visual/placeholder-refit.mjs).
