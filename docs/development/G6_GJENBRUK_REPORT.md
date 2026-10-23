@@ -37,3 +37,25 @@
 
 ### Sikkerhetskopi (pkt 4)
 Innhenting materialiserer alt til vanlige prosjektrader (ressurs, versjoner, munnsett, tekstversjoner, knippenummer), og disse tabellene er allerede i `BACKUP_STATE_TABLES` — et prosjekt kan gjenopprettes alene. Dekket av rundtur-testen ovenfor.
+
+## Del 2 – brukerflate (23.10.2026)
+
+- **«Publiser karakterknippe»** i ressursdetaljen for en karakter som er koblet til arbeidsgruppens bibliotek
+  (krever redaktør i gruppen). Knippet bygges med `characterBundleFromAsset` og publiseres som neste nummer.
+  Karakterer som ikke er i biblioteket ennå, løftes først med den eksisterende «Lagre i globalt bibliotek».
+- **«Hent oppdatering (nr. N)»** vises når gruppen har et nyere knippe. Vinduet (V-163) viser planen felt for felt
+  fra `planCharacterPull` (stemme, tekstversjoner, aktiv versjon, munnsett, rigg: «Oppdateres» / «Beholdes»).
+  Ingenting tas i bruk før «Ta inn»; kommandoene fra `planCharacterPullCommands` kjøres i én angregruppe.
+  Ny kjernehjelper `localCharacterState` gir den lokale tilstanden i samme form som knippet.
+- **Profiler på arbeidsgruppesiden** (stil, kvalitet, fonter, maler): legg til, gjør til standard, arkiver.
+  Redaktører og eiere kan endre; databasen håndhever rolle og revisjon. Profilene har foreløpig bare navn og
+  standardvalg (tom `spec`) – innholdsredigering per type krever et eget produktvalg.
+- **Arv i prosjektoversikten:** «Arvet fra arbeidsgruppen» viser hvilken profil av hver type som gjelder
+  (`resolveWorkspaceProfile`: prosjektets egne vinner) og papir, valuta, tidssone og enheter med kilde
+  (`resolveSettings` med gruppens `settings`/`time_zone`, tolket av ny `settingLevelFrom`).
+- **Sikkerhetskopi (pkt 4):** filen har nå `globalSnapshot` med navn, type, beskrivelse og siste karakterknippe
+  for hver global ressurs prosjektet bruker (`globalAssetIdsOf`). Det er bare til orientering: prosjektradene og
+  filene er allerede egne kopier, og gjenopprettingen skriver aldri til arbeidsgruppen. Mangler brukeren tilgang
+  til gruppen, utelates oppføringen.
+- Rigg i knippet venter fortsatt på produktvalget om kobling mellom rigg og karakter.
+- Tester: `tests/unit/g56-rest.test.ts` (lokal tilstand og plan, innstillingsnivå, snapshot i sikkerhetskopi).

@@ -66,3 +66,4 @@
 - [~] Rapport docs/development/G6_GJENBRUK_REPORT.md skrevet; tsc 0, DB 201/0, fokuserte vitest 18/0 — full vitest og i18n gjenstår; 0098 ikke kjørt i Cloud
 
 - [x] G-9 Eksempelprosjekt på flere språk (rapport: docs/development/G9_DEMO_REPORT.md; ende-til-ende mot Cloud ikke kjørt)
+- [x] Rest G-5/G-6 (0101, adminpaneler, knippe-UI, profiler, arv, snapshot i sikkerhetskopi)

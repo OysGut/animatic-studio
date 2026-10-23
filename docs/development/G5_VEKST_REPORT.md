@@ -54,3 +54,19 @@ Alle SECURITY DEFINER-funksjoner har `set search_path = ''`; den eksisterende ar
 
 - Tilkobling av `prune_change_logs` til cron-adressen `/api/public/cron/ai-jobs` og admin-knappen i grensesnittet gjenstår (funksjonen er klar og testet).
 - Målinger før/etter: ryddingen er en indeksstyrt sletting på `project_seq`; formell ytelsesmåling med produksjonslignende datamengder gjenstår.
+
+## Oppfølging (rest G-5, 23.10.2026)
+
+- **Cron:** `/api/public/cron/ai-jobs` kaller nå `prune_change_logs` (fra skjema 97), høyst én gang per 20 timer.
+  Siste kjøring lagres i `app_status` (`change_log_prune`: tidspunkt og antall slettede), så hyppige cron-kall
+  ikke skanner `change_log` hver gang (`src/adapters/storage/change-log-prune.server.ts`, regelen `pruneDue` er testet).
+- **Adminsiden** har tre nye paneler (`src/app/admin/GrowthAdmin.tsx`), alle med oversatte tekster på alle språk:
+  - *Endringslogg:* statistikk fra `admin_change_log_stats` (totalt og de ti største prosjektene), endring av
+    retensjon (`admin_set_change_log_retention`) og knappen «Rydd nå» med antall slettede endringer.
+  - *Kvoter:* liste fra `admin_usage_quotas` med brukt mot tak, endring, fjerning og nye kvoter for en bruker
+    (søk) eller en arbeidsgruppe (ID). Tomt felt betyr ingen grense; lagring skrives i GB.
+  - *Hastighetsgrenser (G-8):* alle omfang med vindu, tak per bruker/e-post og per IP, via de nye
+    `admin_rate_limit_rules` / `admin_set_rate_limit_rule` (0101). Bare eksisterende omfang kan endres.
+- **0101** retter også escaping av `%`, `_` og `\` i `admin_find_users` og `search_script_blocks` (som i 0080).
+- Kontroller: DB-tester 218/0 (nye: 0101-escaping, 0101-hastighetsgrenser); enhetstester `tests/unit/g56-rest.test.ts`.
+- Åpent: arbeidsgrupper velges med ID i kvotepanelet fordi det ikke finnes en adminliste over arbeidsgrupper.
