@@ -657,6 +657,7 @@ export type Database = {
       asset_versions: {
         Row: {
           alignment: Json | null
+          brief_version_id: string | null
           byte_size: number | null
           byte_size_big: number
           composition: Json | null
@@ -687,6 +688,7 @@ export type Database = {
         }
         Insert: {
           alignment?: Json | null
+          brief_version_id?: string | null
           byte_size?: number | null
           byte_size_big: number
           composition?: Json | null
@@ -717,6 +719,7 @@ export type Database = {
         }
         Update: {
           alignment?: Json | null
+          brief_version_id?: string | null
           byte_size?: number | null
           byte_size_big?: number
           composition?: Json | null
@@ -764,7 +767,9 @@ export type Database = {
       }
       assets: {
         Row: {
+          active_brief_id: string | null
           archived: boolean
+          brief_versions: Json
           category: string
           context_names: Json
           created_at: string
@@ -785,7 +790,9 @@ export type Database = {
           voice: Json | null
         }
         Insert: {
+          active_brief_id?: string | null
           archived?: boolean
+          brief_versions?: Json
           category?: string
           context_names?: Json
           created_at?: string
@@ -806,7 +813,9 @@ export type Database = {
           voice?: Json | null
         }
         Update: {
+          active_brief_id?: string | null
           archived?: boolean
+          brief_versions?: Json
           category?: string
           context_names?: Json
           created_at?: string
