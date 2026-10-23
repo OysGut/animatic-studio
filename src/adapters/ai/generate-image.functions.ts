@@ -10,7 +10,7 @@
  */
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { type AssetMedia, type ImageSize, isProviderId, isUuid, MAX_ATTACHED_IMAGES_ANY, maxAttachedImagesFor, providerModel, LOVABLE_CUTOUT_MODEL, LOVABLE_IMAGE_MODEL, MAX_PROMPT_CHARS, parseQualityProfileMeta, type QualityProfileSnapshot } from "@/core";
+import { type AssetMedia, type ImageSize, isProviderId, isUuid, MAX_ATTACHED_IMAGES_ANY, maxAttachedImagesFor, foreignAttachedChoice, providerModel, LOVABLE_CUTOUT_MODEL, LOVABLE_IMAGE_MODEL, MAX_PROMPT_CHARS, parseQualityProfileMeta, type QualityProfileSnapshot } from "@/core";
 import type { AnyClient } from "@/adapters/storage/project-rows";
 import { ROLE_RANK, validReferencePath } from "./gateway";
 import type { ImageAspect } from "./providers.server";
@@ -182,7 +182,6 @@ export const generateImage = createServerFn({ method: "POST" })
       // Modellens dokumenterte grense for inndatabilder (Øystein 23.10); uten data som før
       const limit = attachedLimit(data);
       if (req.data.kind === "asset") {
-        const { foreignAttachedChoice } = await import("@/core");
         if (foreignAttachedChoice(state, { excluded: [], added: req.data.added ?? [] }).length)
           return { ok: false, message: t("adapters-ai-generate-image-functions.validate.message.5536a8eb7feb") };
       }
