@@ -55512,5 +55512,10 @@
     "text": "대본에서 비주얼 시트 만듦({name})",
     "sourceHash": "c4840be19e58aadc64429d2043adb7aa9806b851453722dddce9763ec476fdc2",
     "review": "machine"
+  },
+  "script.openScene.hint": {
+    "text": "두 번 클릭하여 장면 열기",
+    "sourceHash": "7c522c850b23b70d940373da2d4a67fc45bd982ab02a3d8cae37416a86042d3f",
+    "review": "machine"
   }
 }

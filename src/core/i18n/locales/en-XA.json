@@ -75524,5 +75524,8 @@
   },
   "factSheet.history": {
     "text": "[!! FFáácctt sshhëëëëtt ccrrëëááttëëdd ffrrôômm tthhëë ssccrrïïpptt ({name}) !!]"
+  },
+  "script.openScene.hint": {
+    "text": "[!! DDôôüübbllëë-ccllïïcckk ttôô ôôppëënn tthhëë ssccëënnëë !!]"
   }
 }

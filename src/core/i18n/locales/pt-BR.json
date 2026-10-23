@@ -55660,5 +55660,10 @@
     "text": "Ficha visual criada a partir do roteiro ({name})",
     "sourceHash": "c4840be19e58aadc64429d2043adb7aa9806b851453722dddce9763ec476fdc2",
     "review": "machine"
+  },
+  "script.openScene.hint": {
+    "text": "Clique duas vezes para abrir a cena",
+    "sourceHash": "7c522c850b23b70d940373da2d4a67fc45bd982ab02a3d8cae37416a86042d3f",
+    "review": "machine"
   }
 }

@@ -75524,5 +75524,8 @@
   },
   "factSheet.history": {
     "text": "Fact sheet created from the script ({name})"
+  },
+  "script.openScene.hint": {
+    "text": "Double-click to open the scene"
   }
 }

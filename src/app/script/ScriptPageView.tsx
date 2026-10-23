@@ -20,7 +20,7 @@ interface Props {
   readonly selection: Selection;
   readonly zoom: number;
   readonly onSelect: (sel: Selection) => void;
-  readonly onActivate: (sel: Selection) => void;
+  readonly onActivate: (sel: Selection, heading?: boolean) => void;
   /** Søketreff og notater per linje (nøkkel «side:indeks»), REQ-0538/REQ-0541. */
   readonly decor?: ReadonlyMap<string, LineDecor> | undefined;
   /** Klikk på et notatsymbol i margen. */
@@ -105,7 +105,7 @@ interface SheetProps {
   readonly selectedBlock: string | null;
   readonly selectedOcc: string | null;
   readonly onSelect: (sel: Selection) => void;
-  readonly onActivate: (sel: Selection) => void;
+  readonly onActivate: (sel: Selection, heading?: boolean) => void;
   readonly decor?: ReadonlyMap<string, LineDecor> | undefined;
   readonly onNoteClick?: ((annotationIds: readonly string[], sel: Selection) => void) | undefined;
   readonly changed?: ReadonlySet<string> | undefined;
@@ -245,7 +245,7 @@ function Line({
   state?: ProjectState | undefined;
   selected: boolean;
   onSelect: (sel: Selection) => void;
-  onActivate: (sel: Selection) => void;
+  onActivate: (sel: Selection, heading?: boolean) => void;
 }) {
   const top = `${topEm + line.row}em`;
   const sel: Selection = { occurrenceId: line.occurrenceId, blockId: line.blockId };
@@ -355,7 +355,9 @@ function Line({
         title={
           lang === "missing"
             ? t("app-script-script-page-view.line.title.528ac11afc9d")
-            : undefined
+            : line.kind === "heading" && interactive
+              ? t("script.openScene.hint")
+              : undefined
         }
         style={{
           top,
@@ -374,7 +376,8 @@ function Line({
               }
             : undefined
         }
-        onDoubleClick={interactive ? () => onActivate(sel) : undefined}
+        // Sceneoverskriften åpner scenen i sceneeditoren (Øystein 23.10); annen tekst redigeres som før
+        onDoubleClick={interactive ? () => onActivate(sel, line.kind === "heading") : undefined}
       >
         {markedText(line.text, decor)}
       </span>

@@ -10629,6 +10629,14 @@
       "en": {
         "text": "Fact sheet created from the script ({name})"
       }
+    },
+    "script.openScene.hint": {
+      "nb": {
+        "text": "Dobbeltklikk for å åpne scenen"
+      },
+      "en": {
+        "text": "Double-click to open the scene"
+      }
     }
   }
 }
