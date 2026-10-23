@@ -12125,10 +12125,10 @@
     },
     "g6-bundle.field.mouth": {
       "nb": {
-        "text": "Munnsett ({system})"
+        "text": "Munnsett ({set})"
       },
       "en": {
-        "text": "Mouth set ({system})"
+        "text": "Mouth set ({set})"
       }
     },
     "g6-bundle.field.rig": {

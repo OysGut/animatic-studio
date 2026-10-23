@@ -156,7 +156,7 @@ function PlanList({ plan }: { plan: CharacterPullPlan }) {
         <span className="text-text-secondary">{t("g6-bundle.briefs-added", { count: plan.briefVersionsToAppend.length })}</span>
       </li>
       {row(t("g6-bundle.field.active-brief"), plan.activeBriefId.action)}
-      {plan.mouthSets.map((m) => row(t("g6-bundle.field.mouth", { system: m.system }), m.set.action))}
+      {plan.mouthSets.map((m) => row(t("g6-bundle.field.mouth", { set: m.system }), m.set.action))}
       {row(t("g6-bundle.field.rig"), plan.rigSetup.action)}
       {!pullPlanHasChanges(plan) ? <li className="text-xs text-text-tertiary">{t("g6-bundle.nothing")}</li> : null}
     </ul>

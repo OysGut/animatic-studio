@@ -56472,8 +56472,8 @@
     "review": "machine"
   },
   "g6-bundle.field.mouth": {
-    "text": "Set di bocche ({system})",
-    "sourceHash": "cac2e3b8ab9bbded1cbe2818025e3ce2791bdbdbba8535bfa3f73e25b7eb3a9e",
+    "text": "Set di bocche ({set})",
+    "sourceHash": "c9edd053e26be4c67de2e5334723117a0327f426a8cba372320ae1029b56ab61",
     "review": "machine"
   },
   "g6-bundle.field.rig": {

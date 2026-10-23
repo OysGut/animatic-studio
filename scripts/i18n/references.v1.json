@@ -39960,22 +39960,22 @@
     "line": 159,
     "column": 38,
     "start": 6434,
-    "end": 6482,
+    "end": 6479,
     "scope": "plan-list",
     "context": "row",
     "kind": "t",
-    "raw": "t(\"g6-bundle.field.mouth\", { system: m.system })",
+    "raw": "t(\"g6-bundle.field.mouth\", { set: m.system })",
     "key": "g6-bundle.field.mouth",
     "parameterNames": [
-      "system"
+      "set"
     ]
   },
   {
     "file": "src/app/global/CharacterBundleControls.tsx",
     "line": 160,
     "column": 12,
-    "start": 6511,
-    "end": 6535,
+    "start": 6508,
+    "end": 6532,
     "scope": "plan-list",
     "context": "row",
     "kind": "t",
@@ -39987,8 +39987,8 @@
     "file": "src/app/global/CharacterBundleControls.tsx",
     "line": 161,
     "column": 80,
-    "start": 6639,
-    "end": 6661,
+    "start": 6636,
+    "end": 6658,
     "scope": "plan-list",
     "context": "li",
     "kind": "t",
