@@ -10813,6 +10813,134 @@
       "en": {
         "text": "Default size"
       }
+    },
+    "ptg.layout.shared": {
+      "nb": {
+        "text": "Felles for alle pakker"
+      },
+      "en": {
+        "text": "Shared by all packages"
+      }
+    },
+    "ptg.layout.history": {
+      "nb": {
+        "text": "Eksporthistorikk"
+      },
+      "en": {
+        "text": "Export history"
+      }
+    },
+    "ptg.card.shotlist.title": {
+      "nb": {
+        "text": "Skuddliste"
+      },
+      "en": {
+        "text": "Shotlist"
+      }
+    },
+    "ptg.card.shotlist.desc": {
+      "nb": {
+        "text": "Skudd med tider og bilder for produksjonsstyring."
+      },
+      "en": {
+        "text": "Shots with timings and images for production tracking."
+      }
+    },
+    "ptg.card.dragonframe.title": {
+      "nb": {
+        "text": "Dragonframe"
+      },
+      "en": {
+        "text": "Dragonframe"
+      }
+    },
+    "ptg.card.dragonframe.desc": {
+      "nb": {
+        "text": "Referanse og eksponeringsark til opptak i Dragonframe."
+      },
+      "en": {
+        "text": "Reference and exposure sheets for shooting in Dragonframe."
+      }
+    },
+    "ptg.card.ae.title": {
+      "nb": {
+        "text": "After Effects"
+      },
+      "en": {
+        "text": "After Effects"
+      }
+    },
+    "ptg.card.ae.desc": {
+      "nb": {
+        "text": "Lag, kamera og lyd som prosjekt for After Effects."
+      },
+      "en": {
+        "text": "Layers, camera and audio as an After Effects project."
+      }
+    },
+    "ptg.card.fbx.title": {
+      "nb": {
+        "text": "Kamera FBX"
+      },
+      "en": {
+        "text": "Camera FBX"
+      }
+    },
+    "ptg.card.fbx.desc": {
+      "nb": {
+        "text": "Kamerabevegelsen til 3D-programmer (eksperimentell)."
+      },
+      "en": {
+        "text": "Camera motion for 3D software (experimental)."
+      }
+    },
+    "ptg.card.editorial.title": {
+      "nb": {
+        "text": "Klippeprogram"
+      },
+      "en": {
+        "text": "Editing software"
+      }
+    },
+    "ptg.card.editorial.desc": {
+      "nb": {
+        "text": "OTIO, FCP7-XML og EDL til klipperen."
+      },
+      "en": {
+        "text": "OTIO, FCP7 XML and EDL for the editor."
+      }
+    },
+    "ptg.card.compositing.title": {
+      "nb": {
+        "text": "Compositing"
+      },
+      "en": {
+        "text": "Compositing"
+      }
+    },
+    "ptg.card.compositing.desc": {
+      "nb": {
+        "text": "Skript og medier for Nuke og Fusion."
+      },
+      "en": {
+        "text": "Scripts and media for Nuke and Fusion."
+      }
+    },
+    "ptg.card.mouth.title": {
+      "nb": {
+        "text": "Munnliste og leppesynk"
+      },
+      "en": {
+        "text": "Mouth list and lip sync"
+      }
+    },
+    "ptg.card.mouth.desc": {
+      "nb": {
+        "text": "Munnformer per bilde for animatører og riggverksted."
+      },
+      "en": {
+        "text": "Mouth shapes per frame for animators and the rig workshop."
+      }
     }
   }
 }

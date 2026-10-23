@@ -55775,5 +55775,85 @@
     "text": "Tamanho padrão",
     "sourceHash": "152b779c74f6d3c8bc5480eb96baf67f3548c89d40cc79a7e3935b71b8c692f9",
     "review": "machine"
+  },
+  "ptg.layout.shared": {
+    "text": "Comum a todos os pacotes",
+    "sourceHash": "311f32fc3bb8a022b6d2e268b31035e0f45a00ff77da526f7a2a8d39f7954c09",
+    "review": "machine"
+  },
+  "ptg.layout.history": {
+    "text": "Histórico de exportação",
+    "sourceHash": "3aba9b85343c617adab01c1aef659dce3c3b3e55f4597ccbed1ba232c44e54f8",
+    "review": "machine"
+  },
+  "ptg.card.shotlist.title": {
+    "text": "Lista de planos",
+    "sourceHash": "ee06e88c461dcecb1b796e97b36bdd6f24c047d2589cbcee3d2b63791f4b4f5f",
+    "review": "machine"
+  },
+  "ptg.card.shotlist.desc": {
+    "text": "Planos com tempos e imagens para o acompanhamento da produção.",
+    "sourceHash": "73eb25b307b311571c6c8759712af7e0b288549a5e557700fc2a5ee9c003563c",
+    "review": "machine"
+  },
+  "ptg.card.dragonframe.title": {
+    "text": "Dragonframe",
+    "sourceHash": "0c83ec1b1d6a4a1ee63485e4a547467b288e4b62e0d013da864ddc2a5638804f",
+    "review": "machine"
+  },
+  "ptg.card.dragonframe.desc": {
+    "text": "Referência e folhas de exposição para filmar no Dragonframe.",
+    "sourceHash": "67a8ae8d2b403c41a93ad77e41c71487cde115219019e19700a5352e8c5e01dc",
+    "review": "machine"
+  },
+  "ptg.card.ae.title": {
+    "text": "After Effects",
+    "sourceHash": "74f5e8a2db83844f1a4ef6814c891d7111cfdea71a6b68a4ea4fcbfc883b1e74",
+    "review": "machine"
+  },
+  "ptg.card.ae.desc": {
+    "text": "Camadas, câmera e áudio como projeto do After Effects.",
+    "sourceHash": "d719206317e3f4fd69839a9d87e3f70935c1ce1c83660eaa4b8f95890d00a3d8",
+    "review": "machine"
+  },
+  "ptg.card.fbx.title": {
+    "text": "Câmera FBX",
+    "sourceHash": "0c033ff4c015e45a6a3f4319b34ca2dbb45cc051d75a236ace77cc59812124f2",
+    "review": "machine"
+  },
+  "ptg.card.fbx.desc": {
+    "text": "Movimento de câmera para programas 3D (experimental).",
+    "sourceHash": "94dce6bf56b7dbc0b4e766685008f37841443d6ce5afb20a24aafca705ffe056",
+    "review": "machine"
+  },
+  "ptg.card.editorial.title": {
+    "text": "Programa de edição",
+    "sourceHash": "c8b39c1690349b47662bebf71660ef7b937cb8929e674613b3c3e1755af99bcc",
+    "review": "machine"
+  },
+  "ptg.card.editorial.desc": {
+    "text": "OTIO, FCP7 XML e EDL para o editor.",
+    "sourceHash": "bf8e9682a5e962497af603709dc89a28a5cbcadbc390fd33c778516ccd20d177",
+    "review": "machine"
+  },
+  "ptg.card.compositing.title": {
+    "text": "Composição",
+    "sourceHash": "de655c1e3dcf4451bde1c0b8bbd02ae958ab13c5a84a27e572a886a09155d99a",
+    "review": "machine"
+  },
+  "ptg.card.compositing.desc": {
+    "text": "Scripts e mídia para Nuke e Fusion.",
+    "sourceHash": "28c82ddf7f68b44619caea07304000850fc7034c835f8317f4522e35bf0b3cb5",
+    "review": "machine"
+  },
+  "ptg.card.mouth.title": {
+    "text": "Lista de bocas e sincronia labial",
+    "sourceHash": "45e5aa9e9ecbe3b91cd7d0b75461ad982443e83b480d40dc4dbcfd3df1ed7d7a",
+    "review": "machine"
+  },
+  "ptg.card.mouth.desc": {
+    "text": "Formas de boca por quadro para animadores e a oficina de rigs.",
+    "sourceHash": "5171a7213230676184f6461d6d6b712fed2f0771e520925a6438caf527fca5fd",
+    "review": "machine"
   }
 }

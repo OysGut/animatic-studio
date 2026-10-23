@@ -75593,5 +75593,53 @@
   },
   "dialog.resize.reset": {
     "text": "[!! DDëëffááüülltt ssïïzzëë !!]"
+  },
+  "ptg.layout.shared": {
+    "text": "[!! Sháárëëd by ááll pááckáágëës !!]"
+  },
+  "ptg.layout.history": {
+    "text": "[!! ËËxpöört hïïstööry !!]"
+  },
+  "ptg.card.shotlist.title": {
+    "text": "[!! Shöötlïïst !!]"
+  },
+  "ptg.card.shotlist.desc": {
+    "text": "[!! Shööts wïïth tïïmïïngs áánd ïïmáágëës föör pröödüüctïïöön trááckïïng. !!]"
+  },
+  "ptg.card.dragonframe.title": {
+    "text": "[!! DDráágöönfráámëë !!]"
+  },
+  "ptg.card.dragonframe.desc": {
+    "text": "[!! Rëëfëërëëncëë áánd ëëxpöösüürëë shëëëëts föör shöööötïïng ïïn DDráágöönfráámëë. !!]"
+  },
+  "ptg.card.ae.title": {
+    "text": "[!! ÁÁftëër ËËffëëcts !!]"
+  },
+  "ptg.card.ae.desc": {
+    "text": "[!! Lááyëërs, cáámëëráá áánd ááüüdïïöö áás áán ÁÁftëër ËËffëëcts prööjëëct. !!]"
+  },
+  "ptg.card.fbx.title": {
+    "text": "[!! Cáámëëráá FBX !!]"
+  },
+  "ptg.card.fbx.desc": {
+    "text": "[!! Cáámëëráá möötïïöön föör 3DD sööftwáárëë (ëëxpëërïïmëëntáál). !!]"
+  },
+  "ptg.card.editorial.title": {
+    "text": "[!! ËËdïïtïïng sööftwáárëë !!]"
+  },
+  "ptg.card.editorial.desc": {
+    "text": "[!! OTIO, FCP7 XML áánd ËËDDL föör thëë ëëdïïtöör. !!]"
+  },
+  "ptg.card.compositing.title": {
+    "text": "[!! Cöömpöösïïtïïng !!]"
+  },
+  "ptg.card.compositing.desc": {
+    "text": "[!! Scrïïpts áánd mëëdïïáá föör Nüükëë áánd Füüsïïöön. !!]"
+  },
+  "ptg.card.mouth.title": {
+    "text": "[!! Mööüüth lïïst áánd lïïp sync !!]"
+  },
+  "ptg.card.mouth.desc": {
+    "text": "[!! Mööüüth sháápëës pëër fráámëë föör áánïïmáátöörs áánd thëë rïïg wöörkshööp. !!]"
   }
 }
