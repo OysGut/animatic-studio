@@ -9,6 +9,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import type { CaptchaAction } from "./turnstile.server";
+import { t as tk } from "@/core/i18n/keyed";
 
 const srv = async () => ({ ...(await import("./turnstile.server")), ...(await import("./request.server")) });
 
@@ -32,6 +33,23 @@ async function check(t: string | null | undefined, action: CaptchaAction): Promi
     ok: false,
     code: r.code === "unavailable" ? "captcha-unavailable" : r.code === "missing-token" ? "captcha-missing" : "captcha-invalid",
   };
+}
+
+/**
+ * G-8: felles hastighetsgrense (migrasjon 0100) per e-post og per IP før innloggingstjenesten kalles.
+ * Før 0100 finnes ikke funksjonen; da slipper kallet gjennom som før (CAPTCHA gjelder uansett).
+ */
+async function limited(scope: "auth" | "signup_pass", address: string | null): Promise<AuthCallResult | null> {
+  const { clientIp, requestHeader } = await srv();
+  const ip = clientIp((n) => requestHeader(n)) ?? "";
+  const keys = [address ? `e:${address.trim().toLowerCase()}` : "", `ip:${ip}`];
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { error } = await supabaseAdmin.rpc("rate_limit_hit" as never, { p_scope: scope, p_keys: keys } as never);
+  if (!error) return null;
+  const code = (error as { code?: string }).code;
+  if (code === "PTG15") return { ok: false, code: "auth", message: tk("adapters-storage-commands-functions.rate-limited") };
+  if (code !== "PGRST202" && code !== "42883") console.warn("[captcha] grense: feil", code ?? "?");
+  return null;
 }
 
 async function issuePass(address: string): Promise<boolean> {
@@ -76,7 +94,7 @@ export const captchaConfig = createServerFn({ method: "GET" }).handler(async () 
 export const requestSignupPass = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => z.object({ email, token }).parse(d))
   .handler(async ({ data }): Promise<AuthCallResult> => {
-    const fail = await check(data.token, "signup");
+    const fail = (await limited("signup_pass", null)) ?? (await check(data.token, "signup"));
     if (fail) return fail;
     return (await issuePass(data.email)) ? { ok: true } : { ok: false, code: "auth", message: "pass" };
   });
@@ -87,7 +105,7 @@ export const sendSignInLinkCaptcha = createServerFn({ method: "POST" })
     z.object({ email, token, redirect: z.string().max(2048).nullable().optional(), createUser: z.boolean() }).parse(d),
   )
   .handler(async ({ data }): Promise<AuthCallResult> => {
-    const fail = await check(data.token, "link");
+    const fail = (await limited("auth", data.email)) ?? (await check(data.token, "link"));
     if (fail) return fail;
     if (data.createUser && !(await issuePass(data.email))) return { ok: false, code: "auth", message: "pass" };
     const { safeRedirect, requestHeader } = await srv();
@@ -103,7 +121,7 @@ export const sendSignInLinkCaptcha = createServerFn({ method: "POST" })
 export const sendPasswordResetCaptcha = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => z.object({ email, token }).parse(d))
   .handler(async ({ data }): Promise<AuthCallResult> => {
-    const fail = await check(data.token, "reset");
+    const fail = (await limited("auth", data.email)) ?? (await check(data.token, "reset"));
     if (fail) return fail;
     const { safeRedirect, requestHeader } = await srv();
     const origin = requestHeader("origin");
@@ -119,7 +137,7 @@ export const sendPasswordResetCaptcha = createServerFn({ method: "POST" })
 export const signInWithPasswordCaptcha = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => z.object({ email, password: z.string().min(1).max(512), token }).parse(d))
   .handler(async ({ data }): Promise<AuthCallResult> => {
-    const fail = await check(data.token, "login");
+    const fail = (await limited("auth", data.email)) ?? (await check(data.token, "login"));
     if (fail) return fail;
     const r = await auth("token?grant_type=password", { email: data.email, password: data.password });
     const at = r.json["access_token"], rt = r.json["refresh_token"];
