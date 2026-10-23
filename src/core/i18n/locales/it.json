@@ -53956,8 +53956,8 @@
     "review": "machine"
   },
   "ptg3.readme-ae": {
-    "text": "Apri After Effects, scegli File > Scripts > Run Script File ed esegui bygg.jsx da questa cartella. Lo script crea una composizione per inquadratura e una composizione principale con livelli, fotogrammi chiave, cambi di immagine, maschere e audio. Le transizioni tra scene non sono incluse. I livelli di testo non vengono ricreati.",
-    "sourceHash": "a59acf40a6874c00ae5fa771104398edc097bea8db3e884a2c5bb6c9a06df334",
+    "text": "Apri After Effects, scegli File > Scripts > Run Script File ed esegui bygg-after-effects.jsx da questa cartella. Lo script crea una composizione per inquadratura e una composizione principale con livelli, fotogrammi chiave, cambi di immagine, maschere e audio. Le transizioni tra scene non sono incluse. I livelli di testo non vengono ricreati.",
+    "sourceHash": "83945bae974af3ce9b4b9357daef3811823b595345d5abcb9002675bbf8532a8",
     "review": "machine"
   },
   "ptg3.readme-camera": {
@@ -55857,8 +55857,8 @@
     "review": "machine"
   },
   "ptg3.ae-missing": {
-    "text": "Questi file mancano accanto a bygg.jsx, quindi la costruzione si interrompe:",
-    "sourceHash": "28b6792a4adc701e98a312ae2111d7440319b66dd3bb16846001f53fcc6959a4",
+    "text": "Questi file mancano accanto a bygg-after-effects.jsx, quindi la costruzione si interrompe:",
+    "sourceHash": "da34c06c6bf3b3bc9c2fc0baaae04d792d87a337831d25dd4648ae1d3aa33524",
     "review": "machine"
   },
   "ptg3.ae-save-failed": {
@@ -55867,13 +55867,23 @@
     "review": "machine"
   },
   "ptg3.ae-not-found": {
-    "text": "Adobe After Effects non trovato. Apri After Effects, scegli File > Scripts > Run Script File e seleziona bygg.jsx in questa cartella.",
-    "sourceHash": "02abe0dbac8a2f294779195c01bda4a1ecab3b0344f81856db87a16e8d11262b",
+    "text": "Adobe After Effects non trovato. Apri After Effects, scegli File > Scripts > Run Script File e seleziona bygg-after-effects.jsx in questa cartella.",
+    "sourceHash": "2e4a0557224bd6026312550e43d2ce73a860ca621c33a98ca869dbdb7b6a137e",
     "review": "machine"
   },
   "ptg3.readme-ae-open": {
-    "text": "Tre modi per aprire il pacchetto: 1) Decomprimi lo ZIP e fai doppio clic su «Åpne i After Effects (Windows).bat» o «Åpne i After Effects (Mac).command». 2) Oppure apri After Effects e scegli File > Scripts > Run Script File e bygg.jsx. 3) Lo script salva il progetto come {value1} nella stessa cartella; in seguito puoi aprire quel file con un doppio clic. Per salvare deve essere attivo «Allow Scripts to Write Files and Access Network» in Preferences > Scripting & Expressions. Le transizioni tra scene e i livelli di testo non vengono ricreati. Non possiamo creare direttamente il file .aep perché il formato è chiuso; per questo lo script lo costruisce dentro After Effects.",
-    "sourceHash": "68a7b29c58647ce9f0b9a077b1c1c66a17311760af1162937d2337d6df84069b",
+    "text": "Tre modi per aprire il pacchetto: 1) Decomprimi lo ZIP e fai doppio clic su «Åpne i After Effects (Windows).bat» o «Åpne i After Effects (Mac).command». 2) Oppure apri After Effects e scegli File > Scripts > Run Script File e bygg-after-effects.jsx. 3) Lo script salva il progetto come {value1} nella stessa cartella; in seguito puoi aprire quel file con un doppio clic. Per salvare deve essere attivo «Allow Scripts to Write Files and Access Network» in Preferences > Scripting & Expressions. Le transizioni tra scene e i livelli di testo non vengono ricreati. Non possiamo creare direttamente il file .aep perché il formato è chiuso; per questo lo script lo costruisce dentro After Effects.",
+    "sourceHash": "d13925d644fdf152d5266ee188be1a4de3709e96b806e2b49af90e7ddfb049d2",
+    "review": "machine"
+  },
+  "ptg3.ae-wrong-host": {
+    "text": "Questo script deve essere eseguito in After Effects. Usa il file di avvio «Åpne i After Effects» nella stessa cartella.",
+    "sourceHash": "99a1892fa712173988d0f298ddb453653430afe7d4ff2661c6b5edc312c962de",
+    "review": "machine"
+  },
+  "ptg3.readme-ae-other-app": {
+    "text": "Nota: il doppio clic su bygg-after-effects.jsx può aprire un altro programma Adobe, come Audition, perché i file .jsx sono associati a tutti i programmi Adobe con ExtendScript. In tal caso usa il file di avvio «Åpne i After Effects». In alternativa fai clic destro e scegli After Effects in «Apri con», oppure nel Finder «Ottieni informazioni» → «Apri con».",
+    "sourceHash": "9b460fe08f45bd18a5eb3e5fbac17d7bac30413d288b1bef41ea89a9174e425b",
     "review": "machine"
   }
 }

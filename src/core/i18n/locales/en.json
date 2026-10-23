@@ -74794,7 +74794,7 @@
     "text": "This package contains one FBX file (ASCII 7.4) per shot with the camera move in physical units: time in KTime (46,186,158,000 per second), FilmWidth in inches, FocalLength in mm, and the plates as null objects. The FBX export is experimental – try it on your rig and report any discrepancies."
   },
   "ptg3.readme-ae": {
-    "text": "Open After Effects, choose File > Scripts > Run Script File and run bygg.jsx from this folder. The script builds one composition per shot and a main composition with layers, keyframes, image swaps, masks and audio. Transitions between scenes are not included. Text layers are not recreated."
+    "text": "Open After Effects, choose File > Scripts > Run Script File and run bygg-after-effects.jsx from this folder. The script builds one composition per shot and a main composition with layers, keyframes, image swaps, masks and audio. Transitions between scenes are not included. Text layers are not recreated."
   },
   "ptg3.readme-modes": {
     "text": "Camera modes: \"AE camera (3D)\" creates a 3D camera in After Effects with the focal length and sensor from the rig. \"2D parallax\" creates no camera; instead each plate gets a null object (PAR_) that moves and scales its layers according to the plate's parallax. The FBX files always contain the 3D camera. The camera has one key per exposure at the capture frame rate (every other frame on twos)."
@@ -75643,15 +75643,21 @@
     "text": "Mouth shapes per frame for animators and the rig workshop."
   },
   "ptg3.ae-missing": {
-    "text": "These files are missing next to bygg.jsx, so the build stops:"
+    "text": "These files are missing next to bygg-after-effects.jsx, so the build stops:"
   },
   "ptg3.ae-save-failed": {
     "text": "The project was built but could not be saved. Turn on Preferences > Scripting & Expressions > “Allow Scripts to Write Files and Access Network” and run the script again."
   },
   "ptg3.ae-not-found": {
-    "text": "Could not find Adobe After Effects. Open After Effects yourself, choose File > Scripts > Run Script File and pick bygg.jsx in this folder."
+    "text": "Could not find Adobe After Effects. Open After Effects yourself, choose File > Scripts > Run Script File and pick bygg-after-effects.jsx in this folder."
   },
   "ptg3.readme-ae-open": {
-    "text": "Three ways to open the package: 1) Unzip the file and double-click “Åpne i After Effects (Windows).bat” or “Åpne i After Effects (Mac).command”. 2) Or open After Effects and choose File > Scripts > Run Script File and bygg.jsx. 3) The script saves the project as {value1} in the same folder; afterwards you can double-click that file directly. Saving requires “Allow Scripts to Write Files and Access Network” in Preferences > Scripting & Expressions. Transitions between scenes and text layers are not recreated. We cannot create the .aep file directly because the format is closed; that is why the script builds it inside After Effects."
+    "text": "Three ways to open the package: 1) Unzip the file and double-click “Åpne i After Effects (Windows).bat” or “Åpne i After Effects (Mac).command”. 2) Or open After Effects and choose File > Scripts > Run Script File and bygg-after-effects.jsx. 3) The script saves the project as {value1} in the same folder; afterwards you can double-click that file directly. Saving requires “Allow Scripts to Write Files and Access Network” in Preferences > Scripting & Expressions. Transitions between scenes and text layers are not recreated. We cannot create the .aep file directly because the format is closed; that is why the script builds it inside After Effects."
+  },
+  "ptg3.ae-wrong-host": {
+    "text": "This script must be run in After Effects. Use the launcher “Åpne i After Effects” in the same folder."
+  },
+  "ptg3.readme-ae-other-app": {
+    "text": "Note: double-clicking bygg-after-effects.jsx may open another Adobe app, such as Audition, because .jsx files are linked to every Adobe app with ExtendScript. In that case, use the launcher “Åpne i After Effects”. Alternatively, right-click the file and choose After Effects under “Open With”, or in Finder choose “Get Info” → “Open with”."
   }
 }

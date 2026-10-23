@@ -1,11 +1,11 @@
 /**
- * PTG3 (B-102 §4, PTG-F1): After Effects-pakke – `bygg.jsx` (ES3) pluss mediene skuddene bruker.
+ * PTG3 (B-102 §4, PTG-F1): After Effects-pakke – `bygg-after-effects.jsx` (ES3) pluss mediene skuddene bruker.
  * Scriptet bygger én komp per skudd og en hovedkomp i After Effects. Eksportøren regner ikke ut
  * tid, kamera eller navn selv; alt leses fra InterchangeDoc. Virker uten AI.
  */
 import type { InterchangeDoc } from "@/core/interchange";
 import { aeProjectFileName, buildAeJsx, type AeCameraMode, type AeJsxMessages, type AeTitleCards } from "@/core/interchange/ae-jsx";
-import { AE_LAUNCHER_MAC, AE_LAUNCHER_MAC_MODE, AE_LAUNCHER_WINDOWS, aeMacLauncher, aeWindowsLauncher } from "@/core/interchange/ae-launchers";
+import { AE_JSX_FILE, AE_LAUNCHER_MAC, AE_LAUNCHER_MAC_MODE, AE_LAUNCHER_WINDOWS, aeMacLauncher, aeWindowsLauncher } from "@/core/interchange/ae-launchers";
 import { ptgImportUrl, qrMatrixToPng } from "@/core/interchange/titlecard";
 import type { Shot } from "@/core/interchange/types";
 import { cameraReadmeLines, interchangeReadme } from "@/core/interchange/readme";
@@ -35,10 +35,11 @@ export function aeTitleCards(doc: InterchangeDoc): AeTitleCards {
   };
 }
 
-/** Varslene i bygg.jsx på norsk og engelsk (skriptet kjøres utenfor appen). */
+/** Varslene i bygg-after-effects.jsx på norsk og engelsk (skriptet kjøres utenfor appen). */
 export function aeJsxMessages(): AeJsxMessages {
   return {
     missing: `${t("ptg3.ae-missing", {}, "nb")}\n${t("ptg3.ae-missing", {}, "en")}`,
+    wrongHost: `${t("ptg3.ae-wrong-host", {}, "nb")}\n\n${t("ptg3.ae-wrong-host", {}, "en")}`,
     saveFailed: `${t("ptg3.ae-save-failed", {}, "nb")}\n\n${t("ptg3.ae-save-failed", {}, "en")}`,
   };
 }
@@ -63,9 +64,10 @@ export async function exportAePackage(o: {
   const enc = new TextEncoder();
   const origin = o.titleCard?.origin ?? "";
   async function* files() {
-    yield { path: "bygg.jsx", data: enc.encode(jsx) };
-    yield { path: AE_LAUNCHER_WINDOWS, data: enc.encode(aeWindowsLauncher(notFound)) };
+    // Startfilene er hovedveien og ligger først i ZIP-en
     yield { path: AE_LAUNCHER_MAC, data: enc.encode(aeMacLauncher(notFound)), unixMode: AE_LAUNCHER_MAC_MODE };
+    yield { path: AE_LAUNCHER_WINDOWS, data: enc.encode(aeWindowsLauncher(notFound)) };
+    yield { path: AE_JSX_FILE, data: enc.encode(jsx) };
     if (tc) for (const s of doc.shots) {
       yield { path: qrPathOf(s), data: await qrPng(ptgImportUrl(origin, { projectId: doc.project.id, occurrenceId: s.id, name: s.name, lengthFrames: s.lengthFrames })) };
     }
@@ -77,9 +79,13 @@ export async function exportAePackage(o: {
         "",
         t("ptg3.readme-ae-open", { value1: aeProjectFileName(doc) }, "nb"),
         "",
+        t("ptg3.readme-ae-other-app", {}, "nb"),
+        "",
         t("ptg3.readme-ae", {}, "en"),
         "",
         t("ptg3.readme-ae-open", { value1: aeProjectFileName(doc) }, "en"),
+        "",
+        t("ptg3.readme-ae-other-app", {}, "en"),
         ...(tc ? ["", t("ptg3b.readme-titlecard", {}, "nb"), "", t("ptg3b.readme-titlecard", {}, "en")] : []),
         ...cameraReadmeLines(doc),
       ].join("\n")),

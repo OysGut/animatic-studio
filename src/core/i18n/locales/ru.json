@@ -54028,8 +54028,8 @@
     "review": "machine"
   },
   "ptg3.readme-ae": {
-    "text": "Откройте After Effects, выберите File > Scripts > Run Script File и запустите bygg.jsx из этой папки. Скрипт создаёт по композиции на кадр и главную композицию со слоями, ключевыми кадрами, сменой изображений, масками и звуком. Переходы между сценами не включены. Текстовые слои не воссоздаются.",
-    "sourceHash": "a59acf40a6874c00ae5fa771104398edc097bea8db3e884a2c5bb6c9a06df334",
+    "text": "Откройте After Effects, выберите File > Scripts > Run Script File и запустите bygg-after-effects.jsx из этой папки. Скрипт создаёт по композиции на кадр и главную композицию со слоями, ключевыми кадрами, сменой изображений, масками и звуком. Переходы между сценами не включены. Текстовые слои не воссоздаются.",
+    "sourceHash": "83945bae974af3ce9b4b9357daef3811823b595345d5abcb9002675bbf8532a8",
     "review": "machine"
   },
   "ptg3.readme-camera": {
@@ -55931,8 +55931,8 @@
     "review": "machine"
   },
   "ptg3.ae-missing": {
-    "text": "Рядом с bygg.jsx нет этих файлов, поэтому сборка остановлена:",
-    "sourceHash": "28b6792a4adc701e98a312ae2111d7440319b66dd3bb16846001f53fcc6959a4",
+    "text": "Рядом с bygg-after-effects.jsx нет этих файлов, поэтому сборка остановлена:",
+    "sourceHash": "da34c06c6bf3b3bc9c2fc0baaae04d792d87a337831d25dd4648ae1d3aa33524",
     "review": "machine"
   },
   "ptg3.ae-save-failed": {
@@ -55941,13 +55941,23 @@
     "review": "machine"
   },
   "ptg3.ae-not-found": {
-    "text": "Adobe After Effects не найден. Откройте After Effects, выберите File > Scripts > Run Script File и укажите bygg.jsx в этой папке.",
-    "sourceHash": "02abe0dbac8a2f294779195c01bda4a1ecab3b0344f81856db87a16e8d11262b",
+    "text": "Adobe After Effects не найден. Откройте After Effects, выберите File > Scripts > Run Script File и укажите bygg-after-effects.jsx в этой папке.",
+    "sourceHash": "2e4a0557224bd6026312550e43d2ce73a860ca621c33a98ca869dbdb7b6a137e",
     "review": "machine"
   },
   "ptg3.readme-ae-open": {
-    "text": "Три способа открыть пакет: 1) Распакуйте ZIP и дважды щёлкните «Åpne i After Effects (Windows).bat» или «Åpne i After Effects (Mac).command». 2) Или откройте After Effects и выберите File > Scripts > Run Script File и bygg.jsx. 3) Скрипт сохраняет проект как {value1} в той же папке; затем этот файл можно открыть двойным щелчком. Для сохранения должно быть включено «Allow Scripts to Write Files and Access Network» в Preferences > Scripting & Expressions. Переходы между сценами и текстовые слои не воссоздаются. Файл .aep нельзя создать напрямую, потому что формат закрыт; поэтому скрипт собирает его внутри After Effects.",
-    "sourceHash": "68a7b29c58647ce9f0b9a077b1c1c66a17311760af1162937d2337d6df84069b",
+    "text": "Три способа открыть пакет: 1) Распакуйте ZIP и дважды щёлкните «Åpne i After Effects (Windows).bat» или «Åpne i After Effects (Mac).command». 2) Или откройте After Effects и выберите File > Scripts > Run Script File и bygg-after-effects.jsx. 3) Скрипт сохраняет проект как {value1} в той же папке; затем этот файл можно открыть двойным щелчком. Для сохранения должно быть включено «Allow Scripts to Write Files and Access Network» в Preferences > Scripting & Expressions. Переходы между сценами и текстовые слои не воссоздаются. Файл .aep нельзя создать напрямую, потому что формат закрыт; поэтому скрипт собирает его внутри After Effects.",
+    "sourceHash": "d13925d644fdf152d5266ee188be1a4de3709e96b806e2b49af90e7ddfb049d2",
+    "review": "machine"
+  },
+  "ptg3.ae-wrong-host": {
+    "text": "Этот скрипт нужно запускать в After Effects. Используйте файл запуска «Åpne i After Effects» в той же папке.",
+    "sourceHash": "99a1892fa712173988d0f298ddb453653430afe7d4ff2661c6b5edc312c962de",
+    "review": "machine"
+  },
+  "ptg3.readme-ae-other-app": {
+    "text": "Примечание: двойной щелчок по bygg-after-effects.jsx может открыть другую программу Adobe, например Audition, потому что файлы .jsx связаны со всеми программами Adobe с ExtendScript. В этом случае используйте файл запуска «Åpne i After Effects». Либо щёлкните файл правой кнопкой и выберите After Effects в «Открыть с помощью», либо в Finder выберите «Свойства» → «Открыть с помощью».",
+    "sourceHash": "9b460fe08f45bd18a5eb3e5fbac17d7bac30413d288b1bef41ea89a9174e425b",
     "review": "machine"
   }
 }
