@@ -8,7 +8,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useBlocker } from "@tanstack/react-router";
 import { Loader2 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { REWRITE_MODES, buildAssistPrompt, canSaveAsTrial, formatCheck, newId, orderedOccurrences, planApplyProposal, planTrialNotes, proposalConflicts, proposalFromReply, sceneNumberOf, type AssistKind, type AssistPrompt, type AssistRequest, type ProjectState, type Proposal, type RewriteMode } from "@/core";
+import { REWRITE_MODES, buildAssistPrompt, defaultTranslateTarget, languageLabel, canSaveAsTrial, formatCheck, newId, orderedOccurrences, planApplyProposal, planTrialNotes, proposalConflicts, proposalFromReply, sceneNumberOf, type AssistKind, type AssistPrompt, type AssistRequest, type ProjectState, type Proposal, type RewriteMode } from "@/core";
 import { scriptAssist } from "@/adapters/ai/script-assist.functions";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
@@ -18,6 +18,8 @@ import type { Commands } from "@/app/project/use-commands";
 import type { Selection } from "../ScriptPageView";
 import { ProposalDiff } from "./ProposalDiff";
 import { t as tk } from "@/core/i18n/keyed";
+import { getLanguage } from "@/core/i18n";
+import { LanguageTagInput } from "@/app/shared/LanguageTagInput";
 
 export type AssistAction = AssistKind | "format";
 export interface AssistTrigger {
@@ -71,6 +73,7 @@ export function WritingPanel({
   const [instruction, setInstruction] = useState("");
   const [characterId, setCharacterId] = useState<string>("");
   const [description, setDescription] = useState("");
+  const [targetLanguage, setTargetLanguage] = useState(() => defaultTranslateTarget(state, getLanguage()) ?? "");
   const [nodeId, setNodeId] = useState<string>("");
   const [nodeConfirmed, setNodeConfirmed] = useState(false);
   const [targets, setTargets] = useState<readonly string[]>([]);
@@ -139,7 +142,8 @@ export function WritingPanel({
     const base = { kind, productionId, occurrenceId: occ?.id ?? null, blockIds: [] as string[] };
     if (kind === "rewrite")
       return { ...base, blockIds: [...blockIds], mode: m, ...(instruction.trim() ? { instruction: instruction.trim() } : {}) };
-    if (kind === "polish" || kind === "translate") return { ...base, blockIds: [...blockIds] };
+    if (kind === "translate") return { ...base, blockIds: [...blockIds], targetLanguage: targetLanguage.trim() };
+    if (kind === "polish") return { ...base, blockIds: [...blockIds] };
     if (kind === "next_line") {
       const after = blockIds[blockIds.length - 1] ?? selection.blockId ?? null;
       return {
@@ -291,7 +295,7 @@ export function WritingPanel({
           ) : null}
           {proposal.kind === "translate" ? (
             <p className="text-[12px] text-text-secondary">
-              {tk("app-script-assist-writing-panel.writing-panel.p.44cd5e7686d9")}
+              {tk("g1b-assist.translate.note", { language: languageLabel(proposal.targetLanguage ?? "") })}
             </p>
           ) : null}
           <ProposalDiff
@@ -436,8 +440,15 @@ export function WritingPanel({
           <ToolbarButton disabled={disabled || !occ} onClick={runFormat} data-testid="assist-format" title={tk("app-script-assist-writing-panel.writing-panel.title.75814a344cfa")}>
             {tk("app-script-assist-writing-panel.writing-panel.toolbar-button.590e2bab5227")}
           </ToolbarButton>
-          <ToolbarButton disabled={disabled || !occ} onClick={() => start("translate")} data-testid="assist-translate">
-            {tk("app-script-assist-writing-panel.writing-panel.toolbar-button.51ceafe95950")}
+          <LanguageTagInput
+            value={targetLanguage}
+            onChange={setTargetLanguage}
+            label={tk("g1b-assist.target.label")}
+            testId="assist-target-language"
+            disabled={disabled}
+          />
+          <ToolbarButton disabled={disabled || !occ || !targetLanguage.trim()} onClick={() => start("translate")} data-testid="assist-translate">
+            {tk("g1b-assist.translate.button", { language: languageLabel(targetLanguage.trim()) })}
           </ToolbarButton>
         </div>
       </section>

@@ -351,7 +351,7 @@ export function buildAssistPrompt(
     if (isSourceLanguage(s, target)) return { ok: false, message: tk("g1b-assist.target.invalid") };
     const picked = untranslatedBlocks(s, r.occurrenceId, r.blockIds, target).slice(0, MAX_ASSIST_BLOCKS);
     if (picked.length === 0)
-      return { ok: false, message: tk("core-script-assist-prompts.message.message.975880aef759") };
+      return { ok: false, message: tk("g1b-assist.translate.all-done", { language: englishLanguageName(target) }) };
     p = editPrompt(
       s,
       { ...r, blockIds: picked.map((b) => b.id) },
