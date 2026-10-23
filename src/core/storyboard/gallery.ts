@@ -21,7 +21,7 @@ import {
   type ProductionStatusValue,
 } from "./index";
 
-export type StatusFilter = { readonly area: ProductionArea; readonly status: ProductionStatusValue } | null;
+export type GalleryStatusFilter = { readonly area: ProductionArea; readonly status: ProductionStatusValue } | null;
 
 export interface GalleryPanel {
   readonly panel: Composition;
@@ -42,7 +42,7 @@ export interface GalleryScene {
 export interface GalleryOptions {
   /** Vis også skjulte/deaktiverte paneler (for å gjeninnføre dem). */
   readonly showHidden: boolean;
-  readonly filter: StatusFilter;
+  readonly filter: GalleryStatusFilter;
 }
 
 function statusesFor(
@@ -120,7 +120,7 @@ export function planDuplicatePanel(s: ProjectState, panelId: string): Command[] 
   const p = s.compositions[panelId];
   if (!p || p.kind !== "storyboard" || !p.occurrenceId) return [];
   const id = newId<"composition">();
-  const blocks = anchorRefs(panelBlockIds(s, panelId));
+  const blocks = anchorRefs(panelBlockIds(s, panelId as never));
   const cmds: Command[] = [
     {
       type: "AddStoryboardPanel",

@@ -608,7 +608,7 @@ export function Gallery({
             const occ = state.occurrences[occurrenceId];
             if (!occ) return;
             const e = run(
-              { type: "MoveStoryboardPanelToScene", panelId: sel.panel.id, occurrenceId, variantId: occ.variantId, orderKey: panelKeyAfter(state, occurrenceId, storyboardPanelsOf(state, occurrenceId).at(-1)?.id ?? null), blocks: anchorRefs(blockIds) },
+              { type: "MoveStoryboardPanelToScene", panelId: sel.panel.id, occurrenceId, variantId: occ.variantId, orderKey: panelKeyAfter(state, occurrenceId, storyboardPanelsOf(state, occurrenceId as never).at(-1)?.id ?? null), blocks: anchorRefs(blockIds) },
               tk("sb2.undo.move-to-scene"),
             );
             if (!e) setMoveOpen(false);
