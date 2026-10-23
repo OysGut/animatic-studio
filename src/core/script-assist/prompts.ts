@@ -76,7 +76,7 @@ export function assistRequestError(r: unknown): string | null {
     return tk("core-script-assist-prompts.assist-request-error.message.f921f59f465c", { MAX_ASSIST_DESCRIPTION: String(MAX_ASSIST_DESCRIPTION) });
   if (!optStr(x["instruction"], MAX_ASSIST_INSTRUCTION))
     return tk("core-script-assist-prompts.assist-request-error.message.15588c449032", { MAX_ASSIST_INSTRUCTION: String(MAX_ASSIST_INSTRUCTION) });
-  if (x["targetLanguage"] !== undefined && !canonicalLanguageTag(x["targetLanguage"]))
+  if (x["targetLanguage"] !== undefined && (typeof x["targetLanguage"] !== "string" || !canonicalLanguageTag(x["targetLanguage"])))
     return tk("g1b-assist.target.invalid");
   if (x["kind"] === "translate" && x["targetLanguage"] === undefined) return tk("g1b-assist.target.invalid");
   if (x["mode"] !== undefined && !(REWRITE_MODES as readonly unknown[]).includes(x["mode"])) return tk("core-script-assist-prompts.assist-request-error.message.dbf58a7daef0");
