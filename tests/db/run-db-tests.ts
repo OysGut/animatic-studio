@@ -8606,7 +8606,8 @@ try {
     await expectError(as("authenticated", BOB, (tx) => tx`insert into public.g8_rl_probe (created_by) values (${BOB})`), "PTG15");
     await sql`drop table public.g8_rl_probe`;
     await sql`update private.rate_limit_rules set per_key = 400 where scope = 'ai'`;
-    await sql`update private.rate_limit_rules set per_key = (select per_key from private.rate_limit_rules where scope='export') where false`;
+    await sql`update private.rate_limit_rules set per_key = 300 where scope = 'export'`;
+    await sql`delete from private.rate_limit_hits`;
     await as("service_role", null, (tx) => tx`select public.delete_project(${pid}, ${ALICE})`);
   });
 
