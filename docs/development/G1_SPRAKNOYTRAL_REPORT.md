@@ -222,3 +222,5 @@ Eksakt liste for G-1 frem til denne delrapporten, gruppert med kort formål:
 - PyYAML er installert i sandkassen; `build_docs.py` og `check_kb.py` er grønne. REQ-0925 er satt til Verifisert.
 
 **Endrede testforventninger:** I `ml4-export-languages.test.ts` er forventningen om at serbisk stopper PDF erstattet. Nå bygges Noto inn, og bare emoji stopper. `presentation.test.ts` og `run-db-tests.ts` bruker `["nb"]` i stedet for `.nb`, fordi typen nå er et språkkart. Verdiene er de samme.
+
+**Sluttresultat (2026-10-23):** tsc 0. Full Vitest: 2757 bestått, 0 feilet, 10 hoppet over som før. DB-tester: 182 bestått, 0 feilet, med 0090 og 0091. Språksjekken (i18n) er grønn, og `check_kb` er OK. Ingen betalte kall, ingen publisering og ingen Cloud-kjøring. Ti gamle plakattekster (nb/en-valg) er bevart i språkhistorikken som avløst av `g1b.poster.fallback-placeholder`, slik ML1-grunnlinjen krever. Maskinoversatte nye nøkler (fr, es, ru, ja, pt-BR, de, it, ko): `g1b.poster.*`.
