@@ -207,7 +207,7 @@ describe("SB-1 storyboardlag", () => {
     const note = { noteType: "direction" as const, text: "x", color: "#ffcc00", handled: false, anchor: null };
     const mk = (compositionId: string): Command => ({
       type: "AddLayers",
-      layers: [{ layerId: tid(), compositionId as never, fields: { ...defaultLayerFields(st, st.compositions[compositionId]!, { fill: "#101114" }), kind: "note", fill: null, note } }],
+      layers: [{ layerId: tid(), compositionId: compositionId as never, fields: { ...defaultLayerFields(st, st.compositions[compositionId]!, { fill: "#101114" }), kind: "note", fill: null, note } }],
     });
     if (sceneComp) expect(applyCommand(st, envelope(mk(sceneComp.id))).ok).toBe(false);
     const r = undoRedo(st, mk(panelId));
