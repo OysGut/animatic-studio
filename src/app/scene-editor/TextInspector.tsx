@@ -851,7 +851,7 @@ function SaveTemplateDialog({
   }
   return (
     <Dialog open onOpenChange={(o) => (!o && !busy ? onClose() : undefined)}>
-      <DialogContent data-testid="mts-save-template-dialog">
+      <DialogContent uiId="V-103" data-testid="mts-save-template-dialog">
         <DialogHeader>
           <DialogTitle>{t("app-scene-editor-text-inspector.save-template-dialog.dialog-title.49ac0da87e9a")}</DialogTitle>
           <DialogDescription>

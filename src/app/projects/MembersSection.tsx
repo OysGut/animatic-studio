@@ -4,6 +4,7 @@
  * tilbake en invitasjon som ikke er tatt imot ennå. Prosjektet har alltid minst én eier (kontrolleres
  * i databasen). Endringene skjer i databasefunksjoner (migrasjon 0020), ikke som kommandoer.
  */
+import { UiId } from "@/app/shared/UiId";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { UserMinus } from "lucide-react";
@@ -134,8 +135,8 @@ export function MembersSection({
                 <span
                   role="alertdialog"
                   aria-label={t("app-projects-members-section.members-section.aria-label.3d6366f03169", { value1: String(name(m.user_id)) })}
-                  className="flex items-center gap-2 text-xs text-text-secondary"
-                >
+                  className="relative flex items-center gap-2 text-xs text-text-secondary"
+                ><UiId id="V-158" />
                   {t("app-projects-members-section.members-section.span.e12b865c8de1", { value1: String(name(m.user_id)) })}
                   <Button
                     size="sm"

@@ -83,7 +83,7 @@ export function MyShowcasePage() {
       )}
       <EditDialog item={editing} onClose={() => setEditing(null)} onSaved={refresh} />
       <Dialog open={revoking !== null} onOpenChange={(o) => !o && setRevoking(null)}>
-        <DialogContent className="max-w-[400px]" data-testid="showcase-revoke-dialog">
+        <DialogContent uiId="V-056" className="max-w-[400px]" data-testid="showcase-revoke-dialog">
           <DialogHeader><DialogTitle>{t("b116.mine.revoke")}</DialogTitle></DialogHeader>
           <p className="text-xs text-text-secondary">{t("b116.mine.revokeConfirm")}</p>
           {failed ? <p role="alert" className="text-xs text-status-danger">{t("b116.create.failed")}</p> : null}
@@ -130,7 +130,7 @@ function EditDialog({ item, onClose, onSaved }: { item: MyShowcaseItem | null; o
 
   return (
     <Dialog open={item !== null} onOpenChange={(o) => !o && onClose()}>
-      <DialogContent className="max-w-[440px]" data-testid="showcase-edit-dialog">
+      <DialogContent uiId="V-055" className="max-w-[440px]" data-testid="showcase-edit-dialog">
         <DialogHeader><DialogTitle>{t("b116.mine.edit")}</DialogTitle></DialogHeader>
         <div className="flex flex-col gap-3">
           <div className="flex flex-col gap-1.5">

@@ -6,6 +6,7 @@
  * DEC-0088 (Mars 15.10.2026): AI-tilkoblinger (slå leverandører og modeller av og på, legge til modeller, be om
  * nye leverandører) og når bakgrunnsjobben sist kjørte – se AiConnectionsAdmin.tsx.
  */
+import { BuildVersion } from "@/app/shared/BuildVersion";
 import { useMemo, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
@@ -243,6 +244,7 @@ export function AdminPage({ myId }: { myId: string }) {
           </tbody>
         </table>
       </details>
+      <BuildVersion />
     </main>
   );
 }

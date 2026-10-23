@@ -156,7 +156,7 @@ export function AddFontDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <ResizableDialogContent sizeKey="add-font" className="max-w-2xl" data-testid="font-add-dialog">
+      <ResizableDialogContent uiId="V-061" sizeKey="add-font" className="max-w-2xl" data-testid="font-add-dialog">
         <DialogHeader>
           <DialogTitle>{t("b098.dialog.title")}</DialogTitle>
           <DialogDescription>{t("b098.dialog.description")}</DialogDescription>

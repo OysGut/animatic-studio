@@ -37,7 +37,7 @@ export function FaceMarkDialog({ state, layerId, occurrenceId, versionId, url, r
     const failure = run({ type: "UpdateSceneDraft", compositionId: layer.compositionId, occurrenceId: occurrenceId as never, steps }, t("app-scene-editor-animation-face-mark-dialog.failure.run.6187a03941e1"));
     if (failure) setError(failure); else onClose();
   };
-  return <Dialog open onOpenChange={open => { if (!open) onClose(); }}><ResizableDialogContent sizeKey="face-mark" data-testid="ca3-face-dialog" className="flex h-[min(85vh,48rem)] max-w-4xl flex-col">
+  return <Dialog open onOpenChange={open => { if (!open) onClose(); }}><ResizableDialogContent uiId="V-109" sizeKey="face-mark" data-testid="ca3-face-dialog" className="flex h-[min(85vh,48rem)] max-w-4xl flex-col">
     <DialogHeader><DialogTitle>{t("app-scene-editor-animation-face-mark-dialog.face-mark-dialog.dialog-title.f057f080a791")}</DialogTitle><DialogDescription>{source ? state.assetVariants[source.variantId]?.name : ""}</DialogDescription></DialogHeader>
     <Toolbar><ToolbarGroup>{FACE_ANCHORS.map(key => <ToolbarButton key={key} data-testid={`ca3-anchor-${key}`} active={anchor === key && !panning} onClick={() => { setAnchor(key); setPanning(false); }}>{labels()[key]}</ToolbarButton>)}</ToolbarGroup><ToolbarGroup>
       <IconButton label={t("app-scene-editor-animation-face-mark-dialog.face-mark-dialog.label.81c12cab89b8")} active={panning} onClick={() => setPanning(v => !v)}><Hand /></IconButton>

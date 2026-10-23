@@ -44,7 +44,7 @@ export function SceneScriptDialog({
 }) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent
+      <DialogContent uiId="V-101"
         className="flex h-[88vh] max-h-[88vh] w-[min(1240px,calc(100vw-48px))] max-w-[min(1240px,calc(100vw-48px))] flex-col gap-0 overflow-hidden border-border bg-surface-2 p-0"
         data-testid="scene-script-dialog"
       >

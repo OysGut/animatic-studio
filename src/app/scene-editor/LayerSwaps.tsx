@@ -231,7 +231,7 @@ function SwapPicker({
   const urls = useImageUrls(paths).data ?? {};
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <ResizableDialogContent sizeKey="layer-swaps" className="max-h-[86vh] max-w-[760px] overflow-y-auto border-border bg-surface-2">
+      <ResizableDialogContent uiId="V-092" sizeKey="layer-swaps" className="max-h-[86vh] max-w-[760px] overflow-y-auto border-border bg-surface-2">
         <DialogHeader>
           <DialogTitle>
             {t("app-scene-editor-layer-swaps.swap-picker.dialog-title.8e6db16c2d82", { name: String(layer.name) })}

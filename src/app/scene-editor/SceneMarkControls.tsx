@@ -86,7 +86,7 @@ export function SceneMarkControls({
             <ChevronDown className="size-3 text-text-tertiary" aria-hidden />
           </button>
         </PopoverTrigger>
-        <PopoverContent align="center" className="w-56 border-border bg-surface-2 p-1">
+        <PopoverContent uiId="V-099" align="center" className="w-56 border-border bg-surface-2 p-1">
           <div role="menu" aria-label={t("b118.status-menu")}>
             {[null, ...WORK_STATUSES].map((s) => (
               <button
@@ -122,7 +122,7 @@ export function SceneMarkControls({
             <ChevronDown className="size-3 text-text-tertiary" aria-hidden />
           </button>
         </PopoverTrigger>
-        <PopoverContent align="center" className="w-auto border-border bg-surface-2 p-2">
+        <PopoverContent uiId="V-098" align="center" className="w-auto border-border bg-surface-2 p-2">
           <div role="menu" aria-label={t("b118.color-menu")} className="grid grid-cols-5 gap-1.5">
             {SCENE_COLORS.map((c) => (
               <button

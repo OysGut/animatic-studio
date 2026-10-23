@@ -133,7 +133,7 @@ export function FilmShareDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md" data-testid="film-share-dialog">
+      <DialogContent uiId="V-130" className="max-w-md" data-testid="film-share-dialog">
         <DialogHeader>
           <DialogTitle>{t("app-share-film-share-dialog.film-share-dialog.dialog-title.6399849814e9")}</DialogTitle>
           <DialogDescription>

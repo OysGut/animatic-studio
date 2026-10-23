@@ -51,7 +51,7 @@ export function InterviewNodesPreview({ proposal, cmds, selection, origin, onClo
   const title = (tempId: string) => proposal.nodes.find((n) => n.tempId === tempId)?.title ?? tempId;
   return (
     <Dialog open onOpenChange={(o) => { if (!o) onClose(); }}>
-      <DialogContent data-testid="interview-preview" className="max-w-xl">
+      <DialogContent uiId="V-134" data-testid="interview-preview" className="max-w-xl">
         <DialogHeader>
           <DialogTitle>{t("app-storylab-interview-nodes-preview.interview-nodes-preview.dialog-title.2af5e73b0f14")}</DialogTitle>
           <DialogDescription>{t("app-storylab-interview-nodes-preview.interview-nodes-preview.dialog-description.fe503670b8f4")}</DialogDescription>

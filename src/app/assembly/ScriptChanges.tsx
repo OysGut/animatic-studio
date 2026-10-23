@@ -3,6 +3,7 @@
  * (gammel og ny tekst) for en scene og de tre valgene: godkjenn, oppdater materialet eller angre
  * manusendringen. Ingenting skjer automatisk. Brukes i monteringen, i manuset og i sceneeditoren.
  */
+import { UiId } from "@/app/shared/UiId";
 import { Link } from "@tanstack/react-router";
 import { AlertTriangle, Check, Layers, Undo2 } from "lucide-react";
 import { useMemo, useState } from "react";
@@ -194,8 +195,8 @@ export function ScriptChanges({
           <div
             role="alertdialog"
             aria-label={t("app-assembly-script-changes.script-changes.aria-label.934b8ec4ecf3")}
-            className="flex flex-col gap-2 rounded-sm border border-border bg-surface-2 p-2"
-          >
+            className="relative flex flex-col gap-2 rounded-sm border border-border bg-surface-2 p-2"
+          ><UiId id="V-148" />
             <p className="text-xs text-text-primary">
               {reversible === 1 ? t("app-assembly-script-changes.restore-line") : t("app-assembly-script-changes.restore-lines", { count: reversible })}
             </p>

@@ -24974,6 +24974,9 @@
     "brief.versions.save": {
       "text": "Lagre beskrivelsen av {name}"
     },
+    "build.version": {
+      "text": "Versjon {sha} · bygget {time}"
+    },
     "components-ui-dialog.dialog-content.span.4e9257a0bdea": {
       "text": "Lukk"
     },
@@ -58366,6 +58369,9 @@
     },
     "brief.versions.save": {
       "text": "Save the description of {name}"
+    },
+    "build.version": {
+      "text": "Version {sha} · built {time}"
     },
     "components-ui-dialog.dialog-content.span.4e9257a0bdea": {
       "text": "Close"

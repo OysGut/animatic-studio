@@ -572,7 +572,7 @@ function RetryDialog({
   const variant = asset ? (variantsOf(state, asset.id).find((v) => !v.archived) ?? null) : null;
   return (
     <Dialog open={!!job && !!asset} onOpenChange={(o) => !o && onClose()}>
-      <ResizableDialogContent sizeKey="ai-panel" className="max-w-[640px] border-border bg-surface-2">
+      <ResizableDialogContent uiId="V-028" sizeKey="ai-panel" className="max-w-[640px] border-border bg-surface-2">
         <DialogHeader>
           <DialogTitle>
             <AiGlyph className="mr-1 inline size-4" aria-hidden />

@@ -1329,7 +1329,7 @@ function Assembly({
         }}
       />
       <Dialog open={standardOpen} onOpenChange={setStandardOpen}>
-        <DialogContent className="max-w-[440px] border-border bg-surface-2">
+        <DialogContent uiId="V-037" className="max-w-[440px] border-border bg-surface-2">
           <DialogHeader>
             <DialogTitle>{tk("app-assembly-assembly-workspace.assembly.dialog-title.1ef99e056ac7")}</DialogTitle>
             <DialogDescription>

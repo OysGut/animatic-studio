@@ -61,7 +61,7 @@ export function CompareVersionsDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <ResizableDialogContent sizeKey="compare-versions" className="max-w-5xl">
+      <ResizableDialogContent uiId="V-040" sizeKey="compare-versions" className="max-w-5xl">
         <DialogHeader>
           <DialogTitle>
             {t("app-assembly-compare-versions-dialog.compare-versions-dialog.dialog-title.763b38e1cfcb", { title: String(title) })}

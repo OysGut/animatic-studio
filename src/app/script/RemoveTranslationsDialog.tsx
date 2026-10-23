@@ -44,7 +44,7 @@ export function RemoveTranslationsDialog({
   const name = LANGUAGE_WORD[language] ?? languageWord(language);
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md">
+      <DialogContent uiId="V-121" className="max-w-md">
         <DialogHeader>
           <DialogTitle>
             {tk("app-script-remove-translations-dialog.remove-translations-dialog.dialog-title.59acc8f2b352", { name: String(name) })}

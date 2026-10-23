@@ -5,6 +5,7 @@
  * siden av de gamle, som kan sammenlignes og velges etterpå. Samme leverandør og modell som sist når den
  * fortsatt er koblet til.
  */
+import { UiId } from "@/app/shared/UiId";
 import { Loader2 } from "lucide-react";
 import { AiGlyph } from "@/app/design/icons/AiGlyph";
 import { useMemo, useState } from "react";
@@ -145,8 +146,8 @@ export function AiUpdateSection({
         <div
           role="alertdialog"
           aria-label={tk("app-assembly-ai-update-section.ai-update-section.aria-label.cff5fd241cb5")}
-          className="flex flex-col gap-1.5"
-        >
+          className="relative flex flex-col gap-1.5"
+        ><UiId id="V-144" />
           <p className="text-text-primary">
             {plan.segments.length}{" "}
             {plan.segments.length === 1

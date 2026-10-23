@@ -143,7 +143,7 @@ export function ScenePicker({
             <ChevronDown className="size-3.5 shrink-0 text-text-tertiary" aria-hidden />
           </button>
         </PopoverTrigger>
-        <PopoverContent
+        <PopoverContent uiId="V-100"
           align="start"
           className={(lastChanged ? "w-[540px]" : "w-[440px]") + " border-border bg-surface-2 p-0"}
           onOpenAutoFocus={(e) => {

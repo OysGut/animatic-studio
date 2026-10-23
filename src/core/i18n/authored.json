@@ -11283,6 +11283,15 @@
       "en": {
         "text": "Resize the side panel"
       }
+    },
+    "build.version": {
+      "replaces": [],
+      "nb": {
+        "text": "Versjon {sha} · bygget {time}"
+      },
+      "en": {
+        "text": "Version {sha} · built {time}"
+      }
     }
   }
 }

@@ -91,7 +91,7 @@ export function InspectionWindow({state,layer,spec,frame=0,onClose,onSave,editab
   const markers=history.markers.map(m=>draft?.id===m.id?draft:m);
   const plate=spec.plates.find(p=>p.id===layer.rigPlateId);
   const dpi=pixels?Math.min(pixels.width/w,pixels.height/h)*25.4:null;
-  return <Dialog open onOpenChange={open=>{if(!open)onClose();}}><DialogContent data-testid="inspect-window" className="flex max-h-[95vh] w-[95vw] max-w-none flex-col overflow-auto bg-surface-2 text-text-primary" onKeyDown={e=>{
+  return <Dialog open onOpenChange={open=>{if(!open)onClose();}}><DialogContent uiId="V-087" data-testid="inspect-window" className="flex max-h-[95vh] w-[95vw] max-w-none flex-col overflow-auto bg-surface-2 text-text-primary" onKeyDown={e=>{
     if(e.target instanceof HTMLInputElement||e.target instanceof HTMLSelectElement)return;
     if(e.code==='Space'){space.current=true;e.preventDefault();}
     if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'){e.preventDefault();e.stopPropagation();setHistory(s=>e.shiftKey?redoMarkers(s):undoMarkers(s));}

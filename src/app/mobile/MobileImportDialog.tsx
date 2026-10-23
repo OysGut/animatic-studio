@@ -72,7 +72,7 @@ export function MobileImportDialog({
 }) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent
+      <DialogContent uiId="V-074"
         className="max-h-[88vh] max-w-[720px] overflow-y-auto border-border bg-surface-2"
         data-testid="mobile-import-dialog"
       >

@@ -3,6 +3,7 @@
  * prosjektets eiere har koblet til (ElevenLabs). Kostnaden vises og må bekreftes (REQ-0279). Resultatet
  * legges inn som ny versjon av varianten (AddAssetVersion) og kan angres; ingenting godkjennes automatisk.
  */
+import { UiId } from "@/app/shared/UiId";
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
@@ -220,8 +221,8 @@ export function GenerateSoundPanel({
             <div
               role="alertdialog"
               aria-label={t("app-library-generate-sound-panel.generate-sound-panel.aria-label.3823ab83a6ad")}
-              className="flex flex-col gap-2 rounded-sm border border-accent-warm/60 bg-surface-1 p-2"
-            >
+              className="relative flex flex-col gap-2 rounded-sm border border-accent-warm/60 bg-surface-1 p-2"
+            ><UiId id="V-152" />
               <p className="text-xs text-text-primary">
                 {t("app-library-generate-sound-panel.confirm-sound", {
   provider: providerInfo(chosen.provider.id)?.name ?? "",

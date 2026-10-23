@@ -75776,5 +75776,8 @@
   },
   "script-explorer2.panes.side": {
     "text": "Endre bredden på sidepanelet"
+  },
+  "build.version": {
+    "text": "Versjon {sha} · bygget {time}"
   }
 }

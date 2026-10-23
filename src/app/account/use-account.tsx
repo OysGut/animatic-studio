@@ -114,7 +114,7 @@ export function AccountWatcher() {
   }
   return (
     <Dialog open>
-      <DialogContent
+      <DialogContent uiId="V-026"
         className="max-h-[90vh] max-w-[720px] overflow-hidden p-0 [&>button]:hidden"
         data-testid="privacy-accept"
         onEscapeKeyDown={(e) => e.preventDefault()}
@@ -214,7 +214,7 @@ function CountryGate() {
   }
   return (
     <Dialog open>
-      <DialogContent
+      <DialogContent uiId="V-025"
         className="max-w-[420px] [&>button]:hidden"
         data-testid="country-gate"
         onEscapeKeyDown={(e) => e.preventDefault()}

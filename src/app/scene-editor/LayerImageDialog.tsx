@@ -6,6 +6,7 @@
  *
  * Lag uten ressurs (fargeflater) kan kobles til en ressurs fra biblioteket her.
  */
+import { UiId } from "@/app/shared/UiId";
 import { ResizableDialogContent } from "@/app/shared/ResizableDialogContent";
 import { Thumbnail } from "@/app/shared/Thumbnail";
 import { Link } from "@tanstack/react-router";
@@ -81,7 +82,7 @@ export function LayerImageDialog({
 }) {
   return (
     <Dialog open={open && layer !== null} onOpenChange={onOpenChange}>
-      <ResizableDialogContent sizeKey="layer-image" onCloseAutoFocus={onCloseAutoFocus} className="max-h-[86vh] max-w-[min(1120px,calc(100vw-64px))] overflow-y-auto border-border bg-surface-2">
+      <ResizableDialogContent uiId="V-091" sizeKey="layer-image" onCloseAutoFocus={onCloseAutoFocus} className="max-h-[86vh] max-w-[min(1120px,calc(100vw-64px))] overflow-y-auto border-border bg-surface-2">
         {layer ? (
           <Body
             state={state}
@@ -895,8 +896,8 @@ function DeleteVersionConfirm({
     <div
       role="alertdialog"
       aria-label={t("app-scene-editor-layer-image-dialog.delete-version-confirm.aria-label.cf8fc3213c1e", { number: String(v.number) })}
-      className="flex flex-col gap-2 rounded-sm border border-status-danger/50 bg-surface-1 p-2 text-xs"
-    >
+      className="relative flex flex-col gap-2 rounded-sm border border-status-danger/50 bg-surface-1 p-2 text-xs"
+    ><UiId id="V-162" />
       {approved ? (
         <p className="text-text-primary">
           {t("app-scene-editor-layer-image-dialog.delete-version-confirm.p.6380696bd3dc", { number: String(v.number) })}

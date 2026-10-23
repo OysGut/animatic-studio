@@ -2,6 +2,7 @@
  * Arbeidsflaten «Manus» (M2): import, sidevisning, scenenavigator, korrigering og redigering med angre.
  * Manus og film bygger på samme aktive struktur (INV-01); alt her er kommandoer mot domenekjernen.
  */
+import { UiId } from "@/app/shared/UiId";
 import { useSceneLastChanges } from "@/app/scene-editor/use-scene-last-changes";
 import { ProductionPicker, useActiveProduction } from "@/app/project/use-production";
 import { ProductionDialog } from "@/app/projects/ProductionDialog";
@@ -857,7 +858,7 @@ function Workspace({
                 <ChevronDown className="size-3" aria-hidden />
               </ToolbarButton>
             </PopoverTrigger>
-            <PopoverContent align="end" className="flex w-60 flex-col gap-2 p-3">
+            <PopoverContent uiId="V-123" align="end" className="flex w-60 flex-col gap-2 p-3">
               <label
                 className="flex items-center gap-1.5 text-xs text-text-secondary"
                 title={tk("app-script-script-workspace.workspace.title.1319d610390c")}
@@ -1070,6 +1071,7 @@ function Workspace({
               }}
               onMouseUp={(e) => e.stopPropagation()}
             >
+              <UiId id="V-122" />
               {pendingNote.open ? (
                 <PendingNoteForm
                   quote={pendingNote.quote}

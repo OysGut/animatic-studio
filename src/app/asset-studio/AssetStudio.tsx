@@ -10,6 +10,7 @@
  * og notater (forsøksvise manusredigeringer) lagres direkte med `cmds` og overlever «Avbryt».
  * Ved revisjonskonflikt (F3) vises hva som er endret av andre; aldri stille overskriving.
  */
+import { UiId } from "@/app/shared/UiId";
 import { Pause, Play, Redo2, Undo2, Unlock, X } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { applyCommand, assetAudioGroups, assetLineIds, compositionDuration, draftCommand, draftConflicts, filmClips, framesToSeconds, imageSegmentsOf, layerFieldsOf, layerVersions, rebaseDraft, removeImageSegment, replaceImageSegment, insertImageSegment, secondsToFrames, setImageSegmentTransition, variantsOf, versionsOf, versionImagePath, type Composition, type FilmAudioItem, type LayerFields, type ProjectState } from "@/core";
@@ -338,6 +339,7 @@ export function AssetStudio({
         className="fixed inset-2 z-40 flex flex-col items-center justify-center gap-2 border border-border bg-surface-1"
         data-testid="asset-studio"
       >
+        <UiId id="V-052" />
         <p className="text-sm text-text-secondary">
           {tk("app-asset-studio-asset-studio.asset-studio.p.e5c62d866af9")}
         </p>
@@ -361,6 +363,7 @@ export function AssetStudio({
       data-testid="asset-studio"
       data-draft-steps={d.draft.steps.length}
     >
+      <UiId id="V-051" />
       {alphaOpen ? <AlphaExportDialog state={view} composition={comp} initialLayerIds={[layerId]} open={alphaOpen} onOpenChange={setAlphaOpen} /> : null}
       <Toolbar
         title={tk("app-asset-studio-asset-studio.asset-studio.title.f1e77f22dd48", { name: String(layer.name) })}
@@ -751,7 +754,7 @@ export function AssetStudio({
         />
       ) : null}
       <AlertDialog open={confirmCancel} onOpenChange={setConfirmCancel}>
-        <AlertDialogContent className="border-border bg-surface-2" data-testid="asset-studio-cancel-confirm">
+        <AlertDialogContent uiId="V-050" className="border-border bg-surface-2" data-testid="asset-studio-cancel-confirm">
           <AlertDialogHeader>
             <AlertDialogTitle>{tk("app-asset-studio-asset-studio.asset-studio.alert-dialog-title.8c6aa4c5295a")}</AlertDialogTitle>
             <AlertDialogDescription>
@@ -768,7 +771,7 @@ export function AssetStudio({
       </AlertDialog>
 
       <AlertDialog open={conflict} onOpenChange={setConflict}>
-        <AlertDialogContent className="border-border bg-surface-2" data-testid="asset-studio-conflict">
+        <AlertDialogContent uiId="V-049" className="border-border bg-surface-2" data-testid="asset-studio-conflict">
           <AlertDialogHeader>
             <AlertDialogTitle>{tk("app-asset-studio-asset-studio.asset-studio.alert-dialog-title.b91c599cd1d0")}</AlertDialogTitle>
             <AlertDialogDescription asChild>

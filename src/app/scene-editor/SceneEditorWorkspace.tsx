@@ -986,7 +986,7 @@ function Editor({
                       <ChevronDown className="size-3" aria-hidden />
                     </ToolbarButton>
                   </PopoverTrigger>
-                  <PopoverContent align="end" className="flex w-64 flex-col gap-1 p-3">
+                  <PopoverContent uiId="V-097" align="end" className="flex w-64 flex-col gap-1 p-3">
                     <label
                       className="flex items-start gap-2 text-xs text-text-secondary"
                       title={tk("app-scene-editor-scene-editor-workspace.editor.title.5a93217ad16a")}
@@ -1402,7 +1402,7 @@ function Editor({
       </FrameFrozen>
       <FrameFrozen frozen={frozen && !(changesOpen && found.length > 0)} deps={[changesOpen, found.length]}>
 <Dialog open={changesOpen && found.length > 0} onOpenChange={setChangesOpen}>
-        <DialogContent className="max-h-[86vh] max-w-[620px] overflow-y-auto border-border bg-surface-2">
+        <DialogContent uiId="V-096" className="max-h-[86vh] max-w-[620px] overflow-y-auto border-border bg-surface-2">
           <DialogHeader>
             <DialogTitle>{tk("app-scene-editor-scene-editor-workspace.editor.dialog-title.71d5a70577f4")}</DialogTitle>
             <DialogDescription>

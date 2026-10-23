@@ -75758,5 +75758,8 @@
   },
   "script-explorer2.panes.side": {
     "text": "[!! RRëëssïïzzëë tthhëë ssïïddëë ppáánnëëll !!]"
+  },
+  "build.version": {
+    "text": "[!! VVëërrssïïôônn {sha} · bbüüïïlltt {time} !!]"
   }
 }

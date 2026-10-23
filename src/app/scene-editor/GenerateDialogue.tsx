@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { UiId } from "@/app/shared/UiId";
 import { qualityProfileSnapshot, estimateCostUsd, formatUsd, SPEECH_MODEL, speechLanguageOf, type AssetVoice, type ProjectState } from "@/core";
 import { QualityProfilePicker, QualityProfileBudget, useQualityProfile } from "@/app/ai/QualityProfilePicker";
 import { VoiceControls } from "@/app/audio/VoiceControls";
@@ -50,7 +51,7 @@ export function GenerateDialogue({ state, projectId, occurrenceId, blockId, char
   return <section data-testid="dialogue-generation" className="border-t border-border pt-2">
     <Button data-testid="dialogue-generate-open" size="sm" variant="secondary" disabled={busy} onClick={() => setOpen(!open)}>{t("app-scene-editor-generate-dialogue.generate-dialogue.button.daa0584f5037")}</Button>
     {open ? <div className="mt-3 flex flex-col gap-3"><QualityProfilePicker state={state} value={quality.choice} disabled={busy} onChange={v => { quality.setChoice(v); setVoice(old => { if (!old) return old; const { modelId: _modelId, ...rest } = old; return rest; }); setConfirm(false); }} /><QualityProfileBudget error={quality.budgetError} /><VoiceControls projectId={projectId} value={voice ? { ...voice, modelId: model } : null} onChange={v => { setVoice(v); setConfirm(false); }} disabled={busy} />
-      {confirm ? <div role="alertdialog" data-testid="dialogue-generation-confirm" aria-label={t("app-scene-editor-generate-dialogue.generate-dialogue.aria-label.5aad2202408b")} className="flex flex-col gap-2 border border-border p-2 text-xs text-text-primary">
+      {confirm ? <div role="alertdialog" data-testid="dialogue-generation-confirm" aria-label={t("app-scene-editor-generate-dialogue.generate-dialogue.aria-label.5aad2202408b")} className="relative flex flex-col gap-2 border border-border p-2 text-xs text-text-primary"><UiId id="V-161" />
         {t("app-scene-editor-generate-dialogue.generate-summary", { model, language: voice?.language ?? "no", cost: cost === null ? t("app-scene-editor-generate-dialogue.generate-summary-unknown-price") : formatUsd(cost) })}
         <Button data-testid="dialogue-generation-approve" size="sm" disabled={busy || !!quality.budgetError} onClick={() => void run()}>{t("app-scene-editor-generate-dialogue.generate-dialogue.button.686a55a7ebf5")}</Button>
         <Button size="sm" variant="ghost" onClick={() => setConfirm(false)}>{t("app-scene-editor-generate-dialogue.generate-dialogue.button.18b2f897b3d7")}</Button>

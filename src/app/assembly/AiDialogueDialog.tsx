@@ -4,6 +4,7 @@
  * karakteren), velger replikker, ser anslått pris og bekrefter. Hver replikk blir en lydressurs koblet til
  * replikken og karakteren; alt kan angres. Opptak og importert dialog røres ikke.
  */
+import { UiId } from "@/app/shared/UiId";
 import { ResizableDialogContent } from "@/app/shared/ResizableDialogContent";
 import { CircleCheck, CircleDashed, Loader2, Mic, Pause, Play } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -298,7 +299,7 @@ export function AiDialogueDialog({
 
   return (
     <Dialog open={open} onOpenChange={(o) => !busy && onOpenChange(o)}>
-      <ResizableDialogContent sizeKey="ai-dialogue" className="max-w-3xl">
+      <ResizableDialogContent uiId="V-034" sizeKey="ai-dialogue" className="max-w-3xl">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-1.5">
             <Mic className="size-4" aria-hidden />{" "}
@@ -500,8 +501,8 @@ export function AiDialogueDialog({
               <div
                 role="alertdialog"
                 aria-label={tk("app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.aria-label.c43c89ca0d32")}
-                className="flex flex-col gap-2 rounded-sm border border-accent-warm/60 bg-surface-2 p-2"
-              >
+                className="relative flex flex-col gap-2 rounded-sm border border-accent-warm/60 bg-surface-2 p-2"
+              ><UiId id="V-143" />
                 <p className="text-xs text-text-primary">
                   {runnable.length}{" "}
                   {runnable.length === 1 ? tk("app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.p.eb8657322dc9") : tk("app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.p.f338fd22453a.2")} (

@@ -165,7 +165,7 @@ function CreateDialog({ projects, open, onOpenChange }: { projects: readonly Sho
   const list = candidates.data ?? [];
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-[520px]" data-testid="showcase-create">
+      <DialogContent uiId="V-058" className="max-w-[520px]" data-testid="showcase-create">
         <DialogHeader>
           <DialogTitle>{preview ? t("b116.create.preview") : t("b116.create.title")}</DialogTitle>
         </DialogHeader>
@@ -324,7 +324,7 @@ function ProfileDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (o
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-[440px]" data-testid="showcase-profile">
+      <DialogContent uiId="V-057" className="max-w-[440px]" data-testid="showcase-profile">
         <DialogHeader>
           <DialogTitle>{t("b116.profile.title")}</DialogTitle>
         </DialogHeader>

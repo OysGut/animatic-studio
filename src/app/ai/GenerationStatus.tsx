@@ -101,7 +101,7 @@ export function GenerationStatus({ projectId }: { projectId: string }) {
           <span>{summary}</span>
         </button>
       </PopoverTrigger>
-      <PopoverContent align="end" className="w-[380px] p-0">
+      <PopoverContent uiId="V-030" align="end" className="w-[380px] p-0">
         <div className="flex items-center justify-between gap-2 border-b border-border px-3 py-2 text-xs font-medium text-text-primary">
           {t("app-ai-generation-status.generation-status.div.df5170190148")}
           {hasUnread ? (

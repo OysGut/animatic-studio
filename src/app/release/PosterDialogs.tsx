@@ -97,7 +97,7 @@ export function NewPosterDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-lg">
+      <DialogContent uiId="V-085" className="max-w-lg">
         <DialogHeader>
           <DialogTitle>{t("app-release-poster-dialogs.new-poster-dialog.dialog-title.9d53a39ea2a0")}</DialogTitle>
           <DialogDescription>
@@ -346,7 +346,7 @@ export function ExportPosterDialog({
         }
       }}
     >
-      <DialogContent className="max-w-md">
+      <DialogContent uiId="V-084" className="max-w-md">
         <DialogHeader>
           <DialogTitle>{t("app-release-poster-dialogs.export-poster-dialog.dialog-title.968827f73267", { name: String(poster.name) })}</DialogTitle>
           <DialogDescription>

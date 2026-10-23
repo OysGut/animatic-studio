@@ -48,7 +48,7 @@ export function CanvasTransferDialog({ state, projectId, cmds, node, onClose }: 
 
   return (
     <Dialog open onOpenChange={(o) => { if (!o) onClose(); }}>
-      <DialogContent data-testid="canvas-transfer">
+      <DialogContent uiId="V-140" data-testid="canvas-transfer">
         <DialogHeader>
           <DialogTitle>{node.kind === "scene" ? t("app-storylab-canvas-canvas-transfer-dialog.canvas-transfer-dialog.dialog-title.4ec92e80b723") : t("app-storylab-canvas-canvas-transfer-dialog.canvas-transfer-dialog.dialog-title.37f63e7a4f1d")}</DialogTitle>
           <DialogDescription>{t("app-storylab-canvas-canvas-transfer-dialog.canvas-transfer-dialog.dialog-description.ef8a99fd7fcb")}</DialogDescription>

@@ -75758,5 +75758,8 @@
   },
   "script-explorer2.panes.side": {
     "text": "Resize the side panel"
+  },
+  "build.version": {
+    "text": "Version {sha} · built {time}"
   }
 }

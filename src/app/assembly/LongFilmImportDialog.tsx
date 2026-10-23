@@ -230,7 +230,7 @@ export function LongFilmImportDialog({
 
   return (
     <Dialog open={open} onOpenChange={(o) => !busy && onOpenChange(o)}>
-      <ResizableDialogContent sizeKey="long-film-import" className="max-h-[90vh] max-w-[860px] overflow-y-auto border-border bg-surface-2">
+      <ResizableDialogContent uiId="V-046" sizeKey="long-film-import" className="max-h-[90vh] max-w-[860px] overflow-y-auto border-border bg-surface-2">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Film className="size-5 text-accent-warm" aria-hidden />{" "}

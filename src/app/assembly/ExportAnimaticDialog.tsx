@@ -641,7 +641,7 @@ export function ExportAnimaticDialog({
     <>
     {alphaComposition && alphaOpen ? <AlphaExportDialog state={state} composition={alphaComposition} open={alphaOpen} onOpenChange={setAlphaOpen} /> : null}
     <Dialog open={open && !alphaOpen} onOpenChange={onOpenChange}>
-      <ResizableDialogContent sizeKey="export-animatic" minWidth={560} className="@container max-h-[90dvh] w-[calc(100vw-48px)] max-w-[1280px] overflow-y-auto border-border bg-surface-2">
+      <ResizableDialogContent uiId="V-042" sizeKey="export-animatic" minWidth={560} className="@container max-h-[90dvh] w-[calc(100vw-48px)] max-w-[1280px] overflow-y-auto border-border bg-surface-2">
         <DialogHeader>
           <DialogTitle>{t("app-assembly-export-animatic-dialog.export-animatic-dialog.dialog-title.f19f9faf7736")}</DialogTitle>
           <DialogDescription>

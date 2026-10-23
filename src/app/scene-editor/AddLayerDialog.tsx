@@ -167,7 +167,7 @@ export function AddLayerDialog({
 
   return (
     <Dialog open={open} onOpenChange={close}>
-      <ResizableDialogContent sizeKey="add-layer" className="max-h-[90vh] max-w-[720px] overflow-y-auto border-border bg-surface-2">
+      <ResizableDialogContent uiId="V-089" sizeKey="add-layer" className="max-h-[90vh] max-w-[720px] overflow-y-auto border-border bg-surface-2">
         <DialogHeader>
           <DialogTitle>{t("app-scene-editor-add-layer-dialog.add-layer-dialog.dialog-title.0b3ef204d70a")}</DialogTitle>
           <DialogDescription>

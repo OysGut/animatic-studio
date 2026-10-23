@@ -343,7 +343,7 @@ export function RecordAudioDialog({
   if (open && initialBlockId) returnTo.current = initialBlockId;
   return (
     <Dialog open={open} onOpenChange={(o) => !busy && onOpenChange(o)}>
-      <ResizableDialogContent sizeKey="record-audio" className="max-h-[90vh] max-w-[860px] overflow-y-auto border-border bg-surface-2" data-testid="record-audio-dialog"
+      <ResizableDialogContent uiId="V-094" sizeKey="record-audio" className="max-h-[90vh] max-w-[860px] overflow-y-auto border-border bg-surface-2" data-testid="record-audio-dialog"
         onCloseAutoFocus={(e) => {
           // N10: fokus tilbake til replikken i manuspanelet når dialogen ble åpnet derfra
           const id = returnTo.current;

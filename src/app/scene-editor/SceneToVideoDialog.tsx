@@ -689,7 +689,7 @@ export function SceneToVideoDialog({
 
   return (
     <Dialog open={open} onOpenChange={(o) => (!working ? onOpenChange(o) : null)}>
-      <ResizableDialogContent sizeKey="scene-to-video" className="max-h-[92vh] max-w-[800px] overflow-y-auto border-border bg-surface-2">
+      <ResizableDialogContent uiId="V-102" sizeKey="scene-to-video" className="max-h-[92vh] max-w-[800px] overflow-y-auto border-border bg-surface-2">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <AiGlyph className="size-4" aria-hidden />

@@ -3,6 +3,7 @@
  * kjente kontekstnavn, sist nevnte karakter); de usikre kan vurderes av AI etter anslag og bekreftelse.
  * Ingenting kobles før brukeren godkjenner; valgte forslag lagres som kontekstnavn i én angregruppe.
  */
+import { UiId } from "@/app/shared/UiId";
 import { useServerFn } from "@tanstack/react-start";
 import { Check, Loader2 } from "lucide-react";
 import { useMemo, useState } from "react";
@@ -165,7 +166,7 @@ export function ContextLinkSuggestions({
       ) : null}
       {editable && uncertain.length ? (
         confirm ? (
-          <div role="alertdialog" aria-label={t("app-library-context-link-suggestions.context-link-suggestions.aria-label.2d8a1675ffb2")} className="flex flex-col gap-1.5 rounded-sm border border-border bg-surface-2 p-2 text-xs">
+          <div role="alertdialog" aria-label={t("app-library-context-link-suggestions.context-link-suggestions.aria-label.2d8a1675ffb2")} className="relative flex flex-col gap-1.5 rounded-sm border border-border bg-surface-2 p-2 text-xs"><UiId id="V-150" />
             <p data-testid="context-link-cost" className="text-text-primary">
               {t("app-library-context-link-suggestions.confirm-uncertain", { count: uncertain.length, model: est.label, cost: usd(est.usd) })}
             </p>

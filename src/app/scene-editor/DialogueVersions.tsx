@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { UiId } from "@/app/shared/UiId";
 import { versionsOfClip, mirroredClip, audioVersion, dialogueOverlaps, editOf, type AudioClip, type ProjectState, type FilmAudioItem } from "@/core";
 import { Button } from "@/components/ui/button";
 import { PanelHeader } from "@/app/shell/workspace-chrome";
@@ -51,7 +52,7 @@ export function DialogueVersions({ state, clip, cmds, onStopScene }: { state: Pr
           <Button data-testid="dialogue-version-edit" size="sm" variant="ghost" onClick={() => { stop(); setEditing(v.id); }}>{tk("app-scene-editor-dialogue-versions.dialogue-versions.button.d6a3d8d2a910")}</Button>
           <Button data-testid="dialogue-version-delete" size="sm" variant="ghost" disabled={active} onClick={() => setDeleting(v.id)}>{tk("app-scene-editor-dialogue-versions.dialogue-versions.button.182f40d4c23d")}</Button>
         </div>
-        {deleting === v.id ? <div role="alertdialog" aria-label={tk("app-scene-editor-dialogue-versions.dialogue-versions.aria-label.37f534dc7784")} className="mt-2 flex flex-wrap items-center gap-2 text-xs text-text-primary">
+        {deleting === v.id ? <div role="alertdialog" aria-label={tk("app-scene-editor-dialogue-versions.dialogue-versions.aria-label.37f534dc7784")} className="relative mt-2 flex flex-wrap items-center gap-2 text-xs text-text-primary"><UiId id="V-160" />
           {tk("app-scene-editor-dialogue-versions.dialogue-versions.div.bf299468ad78")}
           <Button data-testid="dialogue-version-delete-confirm" size="sm" variant="destructive" onClick={() => { setError(cmds.run({ type: "SetDialogueVersionRemoved", dialogueVersionId: v.id, removed: true }, tk("app-scene-editor-dialogue-versions.dialogue-versions.cmds-run.85c1d80c587a"))); setDeleting(null); }}>{tk("app-scene-editor-dialogue-versions.dialogue-versions.button.d237a25f5b92")}</Button>
           <Button size="sm" variant="ghost" onClick={() => setDeleting(null)}>{tk("app-scene-editor-dialogue-versions.dialogue-versions.button.8c7233ea2327")}</Button>

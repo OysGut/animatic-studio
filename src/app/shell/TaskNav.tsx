@@ -84,7 +84,7 @@ function TaskNavInner({ projectId, state }: { projectId: string; state: ProjectS
             ) : null}
           </button>
         </PopoverTrigger>
-        <PopoverContent align="end" className="w-[360px] p-0">
+        <PopoverContent uiId="V-132" align="end" className="w-[360px] p-0">
           <div className="border-b border-border px-3 py-2 text-xs font-medium text-text-primary">
             {tk("app-shell-task-nav.task-nav-inner.div.23deaaaf519f")}
           </div>

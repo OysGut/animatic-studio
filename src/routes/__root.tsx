@@ -16,12 +16,14 @@ import { LanguageRoot, LANGUAGE_BOOT_SCRIPT, LANGUAGE_PENDING_CLASS, bootUiLangu
 import { getUiLanguage, onLanguageChange } from "@/core";
 
 import { ErrorDetails } from "@/app/shell/ErrorDetails";
+import { RouteUiId, UiId, useUiIdCopy } from "@/app/shared/UiId";
 import { ExportQueueStatus } from "@/app/assembly/ExportQueueStatus";
 import { t, loadUiCatalog } from "@/core/i18n/keyed";
 
 function NotFoundComponent() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
+      <UiId id="V-142" page />
       <div className="max-w-md text-center">
         <h1 className="text-7xl font-bold text-foreground">404</h1>
         <h2 className="mt-4 text-xl font-semibold text-foreground">
@@ -65,6 +67,7 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
 
   return (
     <div data-testid="root-error" lang={lang} className="flex min-h-screen items-center justify-center bg-background px-4">
+      <UiId id="V-141" page />
       <div className="max-w-md text-center">
         <h1 className="text-xl font-semibold tracking-tight text-foreground">
           {t("routes-root.error-component.h1.e30fba673653", {}, lang)}
@@ -145,12 +148,14 @@ function RootComponent() {
   // «Tilbake til …» i toppstripen husker flatene brukeren har vært på (DEC-0063)
   useTrackNavigation();
   useLanguage(); // ML2a: tegnes på nytt ved språkbytte uten remontering
+  useUiIdCopy();
 
   return (
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <LanguageRoot>
         <Outlet />
+        <RouteUiId />
         <ExportQueueStatus />
       </LanguageRoot>
     </QueryClientProvider>

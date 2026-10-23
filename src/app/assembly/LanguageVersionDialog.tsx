@@ -72,7 +72,7 @@ export function LanguageVersionDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <ResizableDialogContent sizeKey="language-version" className="max-h-[90vh] max-w-[860px] overflow-y-auto border-border bg-surface-2">
+      <ResizableDialogContent uiId="V-045" sizeKey="language-version" className="max-h-[90vh] max-w-[860px] overflow-y-auto border-border bg-surface-2">
         <DialogHeader>
           <DialogTitle>
             {t("app-assembly-language-version-dialog.language-version-dialog.dialog-title.4e5be35f5554")}: {name}

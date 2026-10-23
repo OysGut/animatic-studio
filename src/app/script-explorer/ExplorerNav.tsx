@@ -2,6 +2,7 @@
  * «Åpne i …»-raden, ressursbrikkene og brikkemenyen i manusutforskeren (Øystein 23.10). Bare navigasjon:
  * ingen skriving. Fra popup-vinduet åpnes målene i hovedvinduet (window.opener).
  */
+import { UiId } from "@/app/shared/UiId";
 import { BookOpen, ChevronDown, Clapperboard, Film, FlaskConical, Mic, Box, MapPin, User } from "lucide-react";
 import { useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 import type { Asset, AssetUsage } from "@/core";
@@ -98,6 +99,7 @@ export function AssetMenu(p: AssetMenuProps) {
     {item("asset-menu-prev", t("script-explorer2.menu.prev"), targets.prev ? () => p.onGo(targets.prev!) : null)}
     {item("asset-menu-first", t("script-explorer2.menu.first"), targets.first ? () => p.onGo(targets.first!) : null)}
     {item("asset-menu-all", t("script-explorer2.menu.all", { name }), p.usages.length ? () => setAll((v) => !v) : null)}
+    <UiId id="V-128" />
     {all ? <div role="group" aria-label={t("script-explorer2.menu.all", { name })} className="max-h-48 overflow-y-auto border-t border-border pt-1">
       {p.usages.map((u) => <button key={u.occurrenceId} type="button" role="menuitem" tabIndex={-1} data-testid="asset-menu-scene" data-occurrence-id={u.occurrenceId} aria-current={u.occurrenceId === p.currentOccurrenceId ? "true" : undefined} className="block w-full rounded-sm px-2 py-0.5 text-left text-xs text-text-secondary hover:bg-surface-3 focus-visible:bg-surface-3 focus-visible:outline-none" onClick={() => { p.onGo(u.occurrenceId); p.onClose(); }}>{t("script-explorer2.menu.scene", { number: u.number ?? "–" })}</button>)}
     </div> : null}

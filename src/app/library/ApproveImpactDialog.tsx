@@ -114,7 +114,7 @@ export function ApproveImpactDialog({
 
   return (
     <Dialog open={version !== null} onOpenChange={(o) => (o ? null : close())}>
-      <ResizableDialogContent sizeKey="approve-impact" className="max-h-[88vh] max-w-[640px] overflow-y-auto border-border bg-surface-2">
+      <ResizableDialogContent uiId="V-063" sizeKey="approve-impact" className="max-h-[88vh] max-w-[640px] overflow-y-auto border-border bg-surface-2">
         <DialogHeader>
           <DialogTitle>
             {t("app-library-approve-impact-dialog.approve-impact-dialog.dialog-title.dad6f23eb142")} v{version?.number} {t("app-library-approve-impact-dialog.approve-impact-dialog.dialog-title.e5640f20eb11")}

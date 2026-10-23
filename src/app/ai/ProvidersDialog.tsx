@@ -532,7 +532,7 @@ export function ProvidersDialog({
         if (!o) setSelected(null);
       }}
     >
-      <ResizableDialogContent sizeKey="providers" className="max-h-[90vh] max-w-2xl overflow-y-auto border-border bg-surface-2">
+      <ResizableDialogContent uiId="V-032" sizeKey="providers" className="max-h-[90vh] max-w-2xl overflow-y-auto border-border bg-surface-2">
         <DialogHeader>
           <DialogTitle>{t("app-ai-providers-dialog.providers-dialog.dialog-title.a684c382a7a6")}</DialogTitle>
           <DialogDescription>

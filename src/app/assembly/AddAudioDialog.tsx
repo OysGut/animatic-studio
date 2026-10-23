@@ -168,7 +168,7 @@ export function AddAudioDialog({
 
   return (
     <Dialog open={open} onOpenChange={(o) => !busy && onOpenChange(o)}>
-      <ResizableDialogContent sizeKey="add-audio" className="max-h-[86vh] max-w-[640px] overflow-y-auto border-border bg-surface-2">
+      <ResizableDialogContent uiId="V-033" sizeKey="add-audio" className="max-h-[86vh] max-w-[640px] overflow-y-auto border-border bg-surface-2">
         <DialogHeader>
           <DialogTitle>{t("app-assembly-add-audio-dialog.add-audio-dialog.dialog-title.f0fb31ee65ae")}</DialogTitle>
           <DialogDescription>

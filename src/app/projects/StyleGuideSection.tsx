@@ -4,6 +4,7 @@
  * skal unngås og forbildebilder. Brukes i alle bildebeskrivelser. Utkastet kan foreslås fra prosjektet, og
  * forhåndsvisningen viser hvordan en beskrivelse blir.
  */
+import { UiId } from "@/app/shared/UiId";
 import { ResizableDialogContent } from "@/app/shared/ResizableDialogContent";
 import { Thumbnail } from "@/app/shared/Thumbnail";
 import { useImagePromptPreview } from "@/app/library/image-prompt-preview";
@@ -427,7 +428,7 @@ export function StyleGuideDialog({
     "w-full rounded-sm border border-border-control bg-surface-3 px-2 py-1.5 text-[13px] text-text-primary placeholder:text-text-tertiary disabled:opacity-70";
   return (
     <Dialog open onOpenChange={(o) => !o && onClose()}>
-      <ResizableDialogContent sizeKey="style-guide" className="max-h-[90vh] max-w-5xl overflow-y-auto">
+      <ResizableDialogContent uiId="V-083" sizeKey="style-guide" className="max-h-[90vh] max-w-5xl overflow-y-auto">
         <DialogHeader>
           <DialogTitle>
             {own
@@ -470,8 +471,8 @@ export function StyleGuideDialog({
               <div
                 role="alertdialog"
                 aria-label={tk("app-projects-style-guide-section.style-guide-dialog.aria-label.a8d3fe27c570")}
-                className="flex flex-col gap-2 rounded-sm border border-accent-warm/50 bg-surface-1 p-2 text-xs text-text-secondary"
-              >
+                className="relative flex flex-col gap-2 rounded-sm border border-accent-warm/50 bg-surface-1 p-2 text-xs text-text-secondary"
+              ><UiId id="V-159" />
                 <p>
                   {Math.min(6, draft.referenceVersionIds.length)}{" "}
                   {tk("app-projects-style-guide-section.style-guide-dialog.p.54f579561ac4")}

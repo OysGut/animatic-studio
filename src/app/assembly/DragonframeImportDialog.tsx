@@ -77,7 +77,7 @@ export function DragonframeImportDialog({ open, onOpenChange, state, productionI
   }
   return <>
     <Dialog open={open} onOpenChange={o => { if (!busy) onOpenChange(o); }}>
-      <DialogContent className="max-w-xl" data-testid="ptg5-dialog">
+      <DialogContent uiId="V-041" className="max-w-xl" data-testid="ptg5-dialog">
         <DialogHeader><DialogTitle>{t("ptg5.heading")}</DialogTitle><DialogDescription>{t("ptg5.description")}</DialogDescription></DialogHeader>
         <div className="flex flex-wrap gap-2">
           <input ref={directory} type="file" multiple className="sr-only" data-testid="ptg5-folder" aria-label={t("ptg5.folder")}

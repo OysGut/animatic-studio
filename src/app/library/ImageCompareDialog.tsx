@@ -37,7 +37,7 @@ export function ImageCompareDialog({
 }) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <ResizableDialogContent sizeKey="image-compare" className="max-w-6xl">
+      <ResizableDialogContent uiId="V-068" sizeKey="image-compare" className="max-w-6xl">
         <DialogHeader>
           <DialogTitle>
             {t("app-library-image-compare-dialog.image-compare-dialog.dialog-title.f9e7d3b2bee4")} – {title}

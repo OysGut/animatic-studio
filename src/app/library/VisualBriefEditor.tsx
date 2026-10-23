@@ -3,6 +3,7 @@
  * klær, farger, kjennetegn. Lages én gang fra manuset med AI (koster litt, bekreftes), rettes av brukeren og
  * brukes i alle bildebeskrivelser i stedet for rå manusutdrag med replikker og handling.
  */
+import { UiId } from "@/app/shared/UiId";
 import { Loader2, NotebookPen } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
@@ -147,8 +148,8 @@ export function VisualBriefEditor({
         <div
           role="alertdialog"
           aria-label={t("app-library-visual-brief-editor.visual-brief-editor.aria-label.346a0c7c9ee9")}
-          className="flex flex-col gap-1.5 rounded-sm border border-accent-warm/50 bg-surface-1 p-2"
-        >
+          className="relative flex flex-col gap-1.5 rounded-sm border border-accent-warm/50 bg-surface-1 p-2"
+        ><UiId id="V-157" />
           <p>
             {t("app-library-visual-brief-editor.visual-brief-editor.p.426532648c23", { name: String(asset.name) })}
             {text.trim()

@@ -8,6 +8,7 @@
  * 4. Røde replikker går til DV7 «Generer røde replikker» (egen kostnadsport).
  * Alt går via kommandoer og kan angres.
  */
+import { UiId } from "@/app/shared/UiId";
 import { useServerFn } from "@tanstack/react-start";
 import { Loader2 } from "lucide-react";
 import { useMemo, useState } from "react";
@@ -90,7 +91,7 @@ export function MaterialUpdateSection({
       ) : null}
       {textTargets > 0 && !result ? (
         confirm ? (
-          <div role="alertdialog" aria-label={tk("app-assembly-material-update-section.material-update-section.aria-label.a252f79e8c42")} className="flex flex-col gap-1.5">
+          <div role="alertdialog" aria-label={tk("app-assembly-material-update-section.material-update-section.aria-label.a252f79e8c42")} className="relative flex flex-col gap-1.5"><UiId id="V-146" />
             <p data-testid="material-update-cost" className="text-text-primary">
               {tk("app-assembly-material-update-section.confirm-update", { images: tk("app-assembly-material-update-section.confirm-update-images", { count: targets.images.length }), lines: tk("app-assembly-material-update-section.confirm-update-lines", { count: targets.shots.length }), model: est.label, cost: usd(est.usd) })}
             </p>

@@ -443,7 +443,7 @@ export function WritingPanel({
       </section>
 
       <Dialog open={leaving !== null} onOpenChange={(o) => (o ? null : resolveLeave("cancel"))}>
-        <DialogContent data-testid="assist-leave-dialog">
+        <DialogContent uiId="V-126" data-testid="assist-leave-dialog">
           <DialogHeader>
             <DialogTitle>{tk("app-script-assist-writing-panel.writing-panel.dialog-title.ae97a7441a9d")}</DialogTitle>
             <DialogDescription>

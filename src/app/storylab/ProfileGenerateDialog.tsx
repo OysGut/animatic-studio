@@ -85,7 +85,7 @@ export function ProfileGenerateDialog({
 
   return (
     <Dialog open onOpenChange={(o) => (o ? null : onClose())}>
-      <ResizableDialogContent sizeKey="storylab-profile" className="max-h-[85vh] max-w-2xl overflow-y-auto" data-testid="storylab-generate-dialog">
+      <ResizableDialogContent uiId="V-136" sizeKey="storylab-profile" className="max-h-[85vh] max-w-2xl overflow-y-auto" data-testid="storylab-generate-dialog">
         <DialogHeader>
           <DialogTitle>{t("app-storylab-profile-generate-dialog.profile-generate-dialog.dialog-title.e1b083b1e142", { name: String(asset.name) })}</DialogTitle>
         </DialogHeader>
