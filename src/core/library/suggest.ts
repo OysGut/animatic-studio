@@ -471,7 +471,7 @@ class Tally {
   sourcesOf(name: string): SuggestionSource[] {
     return [...(this.sources.get(name) ?? [])]
       .map(([n, src]) => ({ name: n, scenes: src.scenes.size, note: src.note }))
-      .sort((a, b) => b.scenes - a.scenes || a.name.localeCompare(b.name, "nb"));
+      .sort((a, b) => b.scenes - a.scenes || a.name.localeCompare(b.name, collation()));
   }
 }
 
@@ -500,7 +500,7 @@ function findSimilar(
 /** Slår sammen sjeldne navn som nesten staves likt som et hyppigere navn («LAURIT» → «LAURITS»). */
 function mergeTypos(t: Tally, known: ReadonlySet<string>, minLength = 4): void {
   const names = [...t.scenes.keys()].sort(
-    (a, b) => t.scenes.get(b)!.size - t.scenes.get(a)!.size || a.localeCompare(b, "nb"),
+    (a, b) => t.scenes.get(b)!.size - t.scenes.get(a)!.size || a.localeCompare(b, collation()),
   );
   for (let i = names.length - 1; i >= 0; i--) {
     const n = names[i]!;
@@ -608,7 +608,7 @@ function namedSuggestions(
       sceneNumbers: numbersOf(scenes, idx),
     });
   }
-  return out.sort((a, b) => b.scenes - a.scenes || a.name.localeCompare(b.name, "nb"));
+  return out.sort((a, b) => b.scenes - a.scenes || a.name.localeCompare(b.name, collation()));
 }
 
 function locationSuggestions(scenes: readonly Scene[], all: readonly Asset[]): LibrarySuggestion[] {
@@ -661,7 +661,7 @@ function locationSuggestions(scenes: readonly Scene[], all: readonly Asset[]): L
       sceneNumbers: numbersOf(scenes, idx),
     });
   }
-  return out.sort((a, b) => b.scenes - a.scenes || a.name.localeCompare(b.name, "nb"));
+  return out.sort((a, b) => b.scenes - a.scenes || a.name.localeCompare(b.name, collation()));
 }
 
 /** Minste antall scener et objekt må finnes i for å bli foreslått. */
@@ -725,7 +725,7 @@ function objectSuggestions(
     });
   }
   return out
-    .sort((a, b) => b.scenes - a.scenes || a.name.localeCompare(b.name, "nb"))
+    .sort((a, b) => b.scenes - a.scenes || a.name.localeCompare(b.name, collation()))
     .slice(0, OBJECT_MAX);
 }
 

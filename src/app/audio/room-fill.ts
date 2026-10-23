@@ -54,7 +54,7 @@ export function roomToneFiles(s: ProjectState): { versionId: string; label: stri
       if (!s.assetVersions[t.versionId]?.composition && t.durationMs)
         out.push({ versionId: t.versionId, label: `${a.name} · ${audioTakeLabel(t.number)}` });
   }
-  return out.sort((x, y) => x.label.localeCompare(y.label, "nb"));
+  return out.sort((x, y) => x.label.localeCompare(y.label, collation()));
 }
 
 /**

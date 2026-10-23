@@ -62,7 +62,7 @@ export function tokenizeLine(text: string): LineToken[] {
   for (const m of text.matchAll(/\S+/g)) {
     const norm = m[0]
       .normalize("NFC")
-      .toLocaleLowerCase("nb")
+      .toLocaleLowerCase("und")
       .replace(/[^\p{L}\p{N}]+/gu, "");
     out.push({ text: m[0], norm, start: m.index!, end: m.index! + m[0].length });
   }

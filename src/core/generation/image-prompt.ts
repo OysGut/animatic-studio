@@ -797,7 +797,7 @@ export function scriptMentions(
       for (const sentence of b.text.replace(/\s+/g, " ").split(/(?<=[.!?…])\s+/)) {
         const t = sentence.trim();
         if (!t || !re.test(t)) continue;
-        const key = t.toLocaleLowerCase("nb");
+        const key = t.toLocaleLowerCase("und");
         if (seen.has(key)) continue;
         const cut = t.length > 300 ? `${t.slice(0, 297)}…` : t;
         if (total + cut.length > maxChars) return out;

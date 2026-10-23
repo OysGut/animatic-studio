@@ -107,6 +107,6 @@ export function voiceUsers(s: ProjectState): ReadonlyMap<string, readonly string
     list.push(a.name);
     out.set(a.voice.voiceId, list);
   }
-  for (const l of out.values()) l.sort((x, y) => x.localeCompare(y, "nb"));
+  for (const l of out.values()) l.sort((x, y) => x.localeCompare(y, collation()));
   return out;
 }

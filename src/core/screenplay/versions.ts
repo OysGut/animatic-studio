@@ -229,7 +229,7 @@ function setChange(
   before: ReadonlySet<string>,
   after: ReadonlySet<string>,
 ): { added: string[]; removed: string[] } {
-  const sort = (xs: string[]) => xs.sort((x, y) => x.localeCompare(y, "nb"));
+  const sort = (xs: string[]) => xs.sort((x, y) => x.localeCompare(y, collation()));
   return {
     added: sort([...after].filter((x) => !before.has(x))),
     removed: sort([...before].filter((x) => !after.has(x))),

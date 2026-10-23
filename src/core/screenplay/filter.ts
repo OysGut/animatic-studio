@@ -146,7 +146,7 @@ export function charactersInProduction(s: ProjectState, productionId: string): C
       name,
       scenes: texts.filter((t) => t.speakers.has(name) || textMentions(t, name)).length,
     }))
-    .sort((a, b) => b.scenes - a.scenes || a.name.localeCompare(b.name, "nb"));
+    .sort((a, b) => b.scenes - a.scenes || a.name.localeCompare(b.name, collation()));
 }
 
 /** Opptrer karakteren i scenen? Har replikk, eller nevnes i handling eller sceneoverskrift. */

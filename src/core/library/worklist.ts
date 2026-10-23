@@ -170,7 +170,7 @@ export function assetWorklist(
     }
   }
   const at = (x: WorkItem) => (x.occurrenceId ? (order.get(x.occurrenceId) ?? 1e9) : 1e9);
-  return out.sort((a, b) => at(a) - at(b) || a.label.localeCompare(b.label, "nb"));
+  return out.sort((a, b) => at(a) - at(b) || a.label.localeCompare(b.label, collation()));
 }
 
 /** «Behold»: posten er gått gjennom mot den nye versjonen og forsvinner fra listen til neste versjon. */

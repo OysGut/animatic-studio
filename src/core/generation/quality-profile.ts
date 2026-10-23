@@ -153,7 +153,7 @@ export function qualityProfilesOf(
 ): readonly QualityProfile[] {
   return Object.values(s.qualityProfiles ?? {})
     .filter((p) => !p.removed)
-    .sort((a, b) => a.name.localeCompare(b.name, "nb") || a.id.localeCompare(b.id));
+    .sort((a, b) => a.name.localeCompare(b.name, collation()) || a.id.localeCompare(b.id));
 }
 
 /**

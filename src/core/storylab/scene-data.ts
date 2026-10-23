@@ -13,7 +13,7 @@ import { canHaveStoryProfile } from "./profile";
 export function storyCharacters(s: ProjectState): Asset[] {
   return Object.values(s.assets)
     .filter((a) => canHaveStoryProfile(a.kind) && !a.archived && !(a as { removed?: boolean }).removed)
-    .sort((a, b) => a.name.localeCompare(b.name, "nb"));
+    .sort((a, b) => a.name.localeCompare(b.name, collation()));
 }
 
 /** Karakterens replikker i hovedfilmen (talernavn mot ressursens navn og alternative navn). */

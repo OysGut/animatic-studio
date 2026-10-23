@@ -20,7 +20,7 @@ import { layerVersions } from "../composition/render";
 import { t as tk } from "@/core/i18n/keyed";
 
 /** Sammenligningsnøkkel: små bokstaver, NFC (macOS lagrer filnavn som NFD). */
-const key = (t: string) => t.normalize("NFC").toLocaleLowerCase("nb").replace(/\s+/g, " ").trim();
+const key = (t: string) => t.normalize("NFC").toLocaleLowerCase("und").replace(/\s+/g, " ").trim();
 
 /**
  * Versjonen en opplastet fil kommer fra, ut fra filnavnet (null: ukjent). Filtypen kan være en annen
