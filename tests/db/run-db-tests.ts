@@ -8235,8 +8235,7 @@ try {
     // RLS: ikke-medlem ser ingen rader direkte
     const seen = await as("authenticated", DAVE, (tx) => tx`select id from public.global_character_bundles where global_asset_id = ${ga}`);
     assert(seen.length === 0, "ikke-medlem skal ikke se knipper");
-    const seenAnon = await as("anon", null, (tx) => tx`select id from public.global_character_bundles`);
-    assert(seenAnon.length === 0, "anon skal ikke se knipper");
+    await expectError(as("anon", null, (tx) => tx`select id from public.global_character_bundles`), /permission|42501/);
     // Direkte skriving er stengt for vanlige brukere
     await expectError(
       as("authenticated", BOB, (tx) => tx`insert into public.global_character_bundles (workspace_id, global_asset_id, number, created_by) values (${ws}, ${ga}, 99, ${BOB})`),
@@ -8276,8 +8275,7 @@ try {
     assert(seen.length === 2, "medlem skal se begge profilene");
     const seenOut = await as("authenticated", DAVE, (tx) => tx`select id from public.workspace_profiles where workspace_id = ${ws}`);
     assert(seenOut.length === 0, "ikke-medlem skal ikke se profiler");
-    const seenAnon = await as("anon", null, (tx) => tx`select id from public.workspace_profiles`);
-    assert(seenAnon.length === 0, "anon skal ikke se profiler");
+    await expectError(as("anon", null, (tx) => tx`select id from public.workspace_profiles`), /permission|42501/);
   });
 
   await test("0098 G-6.3: assets.global_bundle_number er metadata og flyter gjennom apply_changes", async () => {
@@ -8287,7 +8285,7 @@ try {
     const assetId = crypto.randomUUID();
     const change = { inserts: { assets: [{ id: assetId, project_id: p, revision: 1, kind: "character", name: "Mor", global_bundle_number: 2 }] } };
     await as("service_role", null, (tx) =>
-      tx`select public.apply_changes(${p}, ${ALICE}, ${crypto.randomUUID()}, '{}'::jsonb, '{}'::jsonb, ${tx.json(change as never)})`);
+      tx`select public.apply_changes(${p}, ${ALICE}, ${crypto.randomUUID()}, '{"type":"G6Test"}'::jsonb, '{}'::jsonb, ${tx.json(change as never)})`);
     const [row] = await sql`select global_bundle_number from public.assets where id = ${assetId}`;
     assert(row!["global_bundle_number"] === 2, "knippenummeret skal lagres som metadata");
   });

@@ -185,6 +185,11 @@ begin
   if p_spec is null or jsonb_typeof(p_spec) <> 'object' or pg_column_size(p_spec) > 200000 then
     raise exception 'Ugyldig profilinnhold' using errcode = '22023';
   end if;
+  -- Fjern tidligere standard FØR innsetting/endring, slik at den unike indeksen ikke slår til underveis
+  if coalesce(p_is_default, false) then
+    update public.workspace_profiles set is_default = false
+      where workspace_id = p_workspace and kind = p_kind and is_default and id is distinct from p_id;
+  end if;
   if p_id is null then
     insert into public.workspace_profiles (workspace_id, kind, name, spec, is_default, created_by)
       values (p_workspace, p_kind, btrim(p_name), p_spec, coalesce(p_is_default, false), (select auth.uid()))
