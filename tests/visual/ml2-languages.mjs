@@ -20,10 +20,14 @@ const EXPECT = {
   "en-XA": { group: pseudo("Language"), tip: pseudo("Change language"), cancel: pseudo("Cancel") },
 };
 // Bytter med et programmatisk klikk, så fokus blir i utkastfeltet (ingen blur som lagrer det)
-const switchTo = (page, tag) => page.evaluate((t) => document.querySelector(`[data-testid="language-${t}"]`)?.click(), tag);
+// Kompakt velger i toppmenyen: åpnes med et programmatisk klikk på koden, så velges språket (fokus blir i utkastet)
+const openCompact = (page) => page.evaluate(() => { if (!document.querySelector('[data-testid="language-compact"] [role="radiogroup"]')) document.querySelector('[data-testid="language-compact-toggle"]')?.click(); });
+const switchTo = async (page, tag) => { await openCompact(page); await page.waitForSelector(`[data-testid="language-compact-${tag}"]`, { state: "attached" }); await page.evaluate((t) => document.querySelector(`[data-testid="language-compact-${t}"]`)?.click(), tag); };
 
 await h.scenario("ml2-bytte", clip.occurrence_id, "nb", async (page) => {
-  h.check((await page.getByTestId("language-en-XA").count()) > 0, "testspråket en-XA er valgbart i utviklingsmodus");
+  await openCompact(page);
+  h.check((await page.getByTestId("language-compact-en-XA").count()) > 0, "testspråket en-XA er valgbart i utviklingsmodus");
+  await page.keyboard.press("Escape");
   await page.getByTestId("scene-script").locator(`[data-script-block="${clip.block_id}"] [data-script-text]`).dblclick();
   const dialog = page.getByTestId("record-audio-dialog");
   await dialog.waitFor({ timeout: 8000 });
@@ -48,8 +52,8 @@ await h.scenario("ml2-bytte", clip.occurrence_id, "nb", async (page) => {
     const dialogText = await dialog.innerText();
     if (tag !== "nb") h.check(/\((nb|en|[a-z]{2}(-[A-Z]{2})?)\)/.test(dialogText) && !/\(nnbb\)/.test(dialogText) && !/norsk bokmål/.test(dialogText), `${tag}: språknavn på engelsk og koden urørt i dialogen`);
     h.check(!h.state.commands.some((c) => c.type === "SetDialogueLanguage"), `${tag}: utkastet er ikke lagret i stillhet`);
-    const sw = page.getByTestId("language-switch").first();
-    h.check((await sw.getAttribute("aria-label")) === e.group, `${tag}: skjermlesertekst på språkvelgeren`);
+    const sw = page.getByTestId("language-compact-toggle").first();
+    h.check((await sw.getAttribute("aria-label"))?.startsWith(`${e.group}: `), `${tag}: skjermlesertekst på språkvelgeren`);
     h.check((await sw.getAttribute("title")) === e.tip, `${tag}: verktøytips på språkvelgeren`);
     h.check(
       (await dialog.getByRole("button", { name: e.cancel, exact: true }).count()) > 0,
@@ -216,7 +220,7 @@ await h.scenario("ml2e-eksport", clip.occurrence_id, "en-XA", async (page) => {
   await page.waitForTimeout(800);
   const late = await page.evaluate(() => ({
     pending: document.documentElement.classList.contains("lang-pending"),
-    group: document.querySelector('[data-testid="language-switch"]')?.getAttribute("aria-label"),
+    group: document.querySelector('[data-testid="language-compact-toggle"]')?.getAttribute("aria-label")?.split(": ")[0] ?? document.querySelector('[data-testid="language-switch"]')?.getAttribute("aria-label"),
   }));
   h.check(!late.pending && late.group === "Language", "siden vises på engelsk etter oppstart");
   await browser.close();
