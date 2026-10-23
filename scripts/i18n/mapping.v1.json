@@ -61905,33 +61905,6 @@
       "migrated": true
     },
     {
-      "file": "src/core/script-assist/prompts.ts",
-      "line": 336,
-      "column": 36,
-      "start": 15534,
-      "end": 15634,
-      "scope": "message",
-      "context": "message",
-      "kind": "L",
-      "semantic": "core-script-assist-prompts.message.message",
-      "nb": {
-        "kind": "literal",
-        "text": "Alle linjene har allerede engelsk oversettelse",
-        "raw": "\"Alle linjene har allerede engelsk oversettelse\"",
-        "parameters": []
-      },
-      "en": {
-        "kind": "literal",
-        "text": "All lines already have an English translation",
-        "raw": "\"All lines already have an English translation\"",
-        "parameters": []
-      },
-      "parameterConflict": false,
-      "signature": "975880aef759",
-      "key": "core-script-assist-prompts.message.message.975880aef759",
-      "migrated": true
-    },
-    {
       "file": "src/core/script-assist/proposal.ts",
       "line": 188,
       "column": 69,
@@ -241104,33 +241077,6 @@
     },
     {
       "file": "src/app/script/assist/WritingPanel.tsx",
-      "line": 312,
-      "column": 16,
-      "start": 13133,
-      "end": 13337,
-      "scope": "writing-panel",
-      "context": "p",
-      "kind": "L",
-      "semantic": "app-script-assist-writing-panel.writing-panel.p",
-      "nb": {
-        "kind": "literal",
-        "text": "Utkastet lagres som usikker oversettelse og må godkjennes. Det norske manuset endres ikke.",
-        "raw": "\"Utkastet lagres som usikker oversettelse og må godkjennes. Det norske manuset endres ikke.\"",
-        "parameters": []
-      },
-      "en": {
-        "kind": "literal",
-        "text": "The draft is saved as an uncertain translation and must be approved. The Norwegian script is not changed.",
-        "raw": "\"The draft is saved as an uncertain translation and must be approved. The Norwegian script is not changed.\"",
-        "parameters": []
-      },
-      "parameterConflict": false,
-      "signature": "44cd5e7686d9",
-      "key": "app-script-assist-writing-panel.writing-panel.p.44cd5e7686d9",
-      "migrated": true
-    },
-    {
-      "file": "src/app/script/assist/WritingPanel.tsx",
       "line": 323,
       "column": 16,
       "start": 13789,
@@ -242155,33 +242101,6 @@
       "parameterConflict": false,
       "signature": "590e2bab5227",
       "key": "app-script-assist-writing-panel.writing-panel.toolbar-button.590e2bab5227",
-      "migrated": true
-    },
-    {
-      "file": "src/app/script/assist/WritingPanel.tsx",
-      "line": 458,
-      "column": 14,
-      "start": 22181,
-      "end": 22217,
-      "scope": "writing-panel",
-      "context": "ToolbarButton",
-      "kind": "L",
-      "semantic": "app-script-assist-writing-panel.writing-panel.toolbar-button",
-      "nb": {
-        "kind": "literal",
-        "text": "Engelsk utkast",
-        "raw": "\"Engelsk utkast\"",
-        "parameters": []
-      },
-      "en": {
-        "kind": "literal",
-        "text": "English draft",
-        "raw": "\"English draft\"",
-        "parameters": []
-      },
-      "parameterConflict": false,
-      "signature": "51ceafe95950",
-      "key": "app-script-assist-writing-panel.writing-panel.toolbar-button.51ceafe95950",
       "migrated": true
     },
     {
@@ -293515,6 +293434,96 @@
       "signature": "ead44afb7c76",
       "key": "core-composition-fields.error.error.ead44afb7c76",
       "migrated": true
+    },
+    {
+      "file": "src/core/script-assist/prompts.ts",
+      "line": 336,
+      "column": 36,
+      "start": 15534,
+      "end": 15634,
+      "scope": "message",
+      "context": "message",
+      "kind": "L",
+      "semantic": "core-script-assist-prompts.message.message",
+      "nb": {
+        "kind": "literal",
+        "text": "Alle linjene har allerede engelsk oversettelse",
+        "raw": "\"Alle linjene har allerede engelsk oversettelse\"",
+        "parameters": []
+      },
+      "en": {
+        "kind": "literal",
+        "text": "All lines already have an English translation",
+        "raw": "\"All lines already have an English translation\"",
+        "parameters": []
+      },
+      "parameterConflict": false,
+      "signature": "975880aef759",
+      "key": "core-script-assist-prompts.message.message.975880aef759",
+      "migrated": true,
+      "supersededBy": [
+        "g1b-assist.translate.all-done"
+      ]
+    },
+    {
+      "file": "src/app/script/assist/WritingPanel.tsx",
+      "line": 312,
+      "column": 16,
+      "start": 13133,
+      "end": 13337,
+      "scope": "writing-panel",
+      "context": "p",
+      "kind": "L",
+      "semantic": "app-script-assist-writing-panel.writing-panel.p",
+      "nb": {
+        "kind": "literal",
+        "text": "Utkastet lagres som usikker oversettelse og må godkjennes. Det norske manuset endres ikke.",
+        "raw": "\"Utkastet lagres som usikker oversettelse og må godkjennes. Det norske manuset endres ikke.\"",
+        "parameters": []
+      },
+      "en": {
+        "kind": "literal",
+        "text": "The draft is saved as an uncertain translation and must be approved. The Norwegian script is not changed.",
+        "raw": "\"The draft is saved as an uncertain translation and must be approved. The Norwegian script is not changed.\"",
+        "parameters": []
+      },
+      "parameterConflict": false,
+      "signature": "44cd5e7686d9",
+      "key": "app-script-assist-writing-panel.writing-panel.p.44cd5e7686d9",
+      "migrated": true,
+      "supersededBy": [
+        "g1b-assist.translate.note"
+      ]
+    },
+    {
+      "file": "src/app/script/assist/WritingPanel.tsx",
+      "line": 458,
+      "column": 14,
+      "start": 22181,
+      "end": 22217,
+      "scope": "writing-panel",
+      "context": "ToolbarButton",
+      "kind": "L",
+      "semantic": "app-script-assist-writing-panel.writing-panel.toolbar-button",
+      "nb": {
+        "kind": "literal",
+        "text": "Engelsk utkast",
+        "raw": "\"Engelsk utkast\"",
+        "parameters": []
+      },
+      "en": {
+        "kind": "literal",
+        "text": "English draft",
+        "raw": "\"English draft\"",
+        "parameters": []
+      },
+      "parameterConflict": false,
+      "signature": "51ceafe95950",
+      "key": "app-script-assist-writing-panel.writing-panel.toolbar-button.51ceafe95950",
+      "migrated": true,
+      "supersededBy": [
+        "g1b-assist.translate.button"
+      ]
     }
   ],
   "conflicts": [

@@ -1,15 +1,5 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`promptbyggerne > fritt ønske krever tekst; oversettelse ber om engelsk 1`] = `
-"You are a professional screenwriting assistant for an animated feature film.
-Translate the marked lines from Norwegian to English for the English version of the film. Keep CHARACTER names unchanged.
-Write the new text in English.
-Only lines marked with [bN] may be changed; the others are context.
-Never change the type of a line, and keep character names unchanged.
-Cinematic, with subtext, never caricature.
-Reply with a single valid JSON value only, no markdown. Format: {"blocks":[{"ref":"b1","text":"..."}]} with one entry per marked line."
-`;
-
 exports[`promptbyggerne > neste replikk og ny scene har faste instrukser 1`] = `
 "You are a professional screenwriting assistant for an animated feature film.
 Write the next line of dialogue for MAJA, continuing the scene naturally.

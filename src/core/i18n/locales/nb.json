@@ -16288,12 +16288,6 @@
     "parameters": [],
     "executable": true
   },
-  "core-script-assist-prompts.message.message.975880aef759": {
-    "text": "Alle linjene har allerede engelsk oversettelse",
-    "source": "\"Alle linjene har allerede engelsk oversettelse\"",
-    "parameters": [],
-    "executable": true
-  },
   "core-script-assist-proposal.message.message.7382c1d94424": {
     "text": "Velg minst én linje",
     "source": "\"Velg minst én linje\"",
@@ -59415,12 +59409,6 @@
     "parameters": [],
     "executable": true
   },
-  "app-script-assist-writing-panel.writing-panel.p.44cd5e7686d9": {
-    "text": "Utkastet lagres som usikker oversettelse og må godkjennes. Det norske manuset endres ikke.",
-    "source": "\"Utkastet lagres som usikker oversettelse og må godkjennes. Det norske manuset endres ikke.\"",
-    "parameters": [],
-    "executable": true
-  },
   "app-script-assist-writing-panel.writing-panel.p.8c550f9bedc7": {
     "text": "Noen linjer er endret av noen andre etter at forslaget ble laget. De kan ikke brukes; lag forslaget på nytt.",
     "source": "\"Noen linjer er endret av noen andre etter at forslaget ble laget. De kan ikke brukes; lag forslaget på nytt.\"",
@@ -59662,12 +59650,6 @@
   "app-script-assist-writing-panel.writing-panel.toolbar-button.590e2bab5227": {
     "text": "Formatsjekk",
     "source": "\"Formatsjekk\"",
-    "parameters": [],
-    "executable": true
-  },
-  "app-script-assist-writing-panel.writing-panel.toolbar-button.51ceafe95950": {
-    "text": "Engelsk utkast",
-    "source": "\"Engelsk utkast\"",
     "parameters": [],
     "executable": true
   },
@@ -71771,6 +71753,24 @@
     "parameters": [],
     "executable": true
   },
+  "core-script-assist-prompts.message.message.975880aef759": {
+    "text": "Alle linjene har allerede engelsk oversettelse",
+    "source": "\"Alle linjene har allerede engelsk oversettelse\"",
+    "parameters": [],
+    "executable": true
+  },
+  "app-script-assist-writing-panel.writing-panel.p.44cd5e7686d9": {
+    "text": "Utkastet lagres som usikker oversettelse og må godkjennes. Det norske manuset endres ikke.",
+    "source": "\"Utkastet lagres som usikker oversettelse og må godkjennes. Det norske manuset endres ikke.\"",
+    "parameters": [],
+    "executable": true
+  },
+  "app-script-assist-writing-panel.writing-panel.toolbar-button.51ceafe95950": {
+    "text": "Engelsk utkast",
+    "source": "\"Engelsk utkast\"",
+    "parameters": [],
+    "executable": true
+  },
   "adapters-account-lock-server.owner-blocked": {
     "text": "Prosjektet er låst fordi eieren er blokkert. Kontakt administrator ({admin})."
   },
@@ -74633,6 +74633,21 @@
   },
   "g1-source-language.import.suggestion": {
     "text": "Foreslått: {language}"
+  },
+  "g1b-assist.target.invalid": {
+    "text": "Velg et gyldig målspråk som ikke er manusets språk."
+  },
+  "g1b-assist.target.label": {
+    "text": "Målspråk"
+  },
+  "g1b-assist.translate.all-done": {
+    "text": "Alle linjene har allerede oversettelse til {language}"
+  },
+  "g1b-assist.translate.button": {
+    "text": "Utkast på {language}"
+  },
+  "g1b-assist.translate.note": {
+    "text": "Utkastet lagres som usikker oversettelse til {language} og må godkjennes. Manuset på kildespråket endres ikke."
   },
   "g1b-fdx.import.invalid": {
     "text": "Filen er ikke en gyldig Final Draft-fil (.fdx)."

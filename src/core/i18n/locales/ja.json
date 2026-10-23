@@ -33387,11 +33387,6 @@
     "sourceHash": "5d7ea8292ad2f45ffd01220922e289c341ce998fef159d84e9516497d8f3edfc",
     "review": "user"
   },
-  "app-script-assist-writing-panel.writing-panel.p.44cd5e7686d9": {
-    "text": "下書きは未確定の翻訳として保存され、承認が必要です。ノルウェー語の脚本は変更されません。",
-    "sourceHash": "d5a847f09650744a7ce3db1015f9db63443b14c6d3bb4e7f2294a4caa25813a7",
-    "review": "user"
-  },
   "app-script-assist-writing-panel.writing-panel.p.7934c771bc6b": {
     "text": "{value1} · {label} · 推定 {value3}",
     "sourceHash": "04be6e5e3078cfeb6e402bc79e1359cbfef68e1a57b48e391637d780e71dffd6",
@@ -33475,11 +33470,6 @@
   "app-script-assist-writing-panel.writing-panel.toolbar-button.43722c49eb65": {
     "text": "書き直し…",
     "sourceHash": "9a2106ae874bef1b37b5d9090349462381110be5d90cc301c01168a416bd25f0",
-    "review": "user"
-  },
-  "app-script-assist-writing-panel.writing-panel.toolbar-button.51ceafe95950": {
-    "text": "英語の下書き",
-    "sourceHash": "20c2cfef14058d1d377ba2a2589ed18a2bf513d1da9ec6e4a2328700148fcde4",
     "review": "user"
   },
   "app-script-assist-writing-panel.writing-panel.toolbar-button.5289d6353b39": {
@@ -52288,11 +52278,6 @@
     "sourceHash": "0f609827151a54c580edecd1877b8ca6a5d73e6a8de83dd2e7f8b37c08a7fbd9",
     "review": "user"
   },
-  "core-script-assist-prompts.message.message.975880aef759": {
-    "text": "すべての行にすでに英語の翻訳が存在します",
-    "sourceHash": "263b085479d5422ad3e4ba111e3867674eab3de190db6048e3561fdd02a6471d",
-    "review": "user"
-  },
   "core-script-assist-prompts.next-line-prompt.message.65b837273648": {
     "text": "シーンを選択",
     "sourceHash": "457db3d3ce0a5b0fab6747bcd1dc64eab62d8b9012a82afbb536a77e134ff863",
@@ -53533,6 +53518,31 @@
   "g1-source-language.import.suggestion": {
     "text": "提案: {language}",
     "sourceHash": "935a8b83fd98c937cfd2ca7319c14ab8f6a66fad5bf10bb1dcd89e0630bce063",
+    "review": "machine"
+  },
+  "g1b-assist.target.invalid": {
+    "text": "脚本の言語以外の有効な翻訳先言語を選んでください。",
+    "sourceHash": "f5682342e46256111742a52a7d9bc1d16fead14eb6a04546d01437ad5d27e004",
+    "review": "machine"
+  },
+  "g1b-assist.target.label": {
+    "text": "翻訳先言語",
+    "sourceHash": "bd95281c0c7a8bceb296bda9c9e936b3a862363c4509bb30a43bab2865474f2d",
+    "review": "machine"
+  },
+  "g1b-assist.translate.all-done": {
+    "text": "すべての行にすでに翻訳（{language}）があります",
+    "sourceHash": "27d95782febf4d06074ad324d0cc4fefdf299c971a12e98c1e45ebde3b9383b3",
+    "review": "machine"
+  },
+  "g1b-assist.translate.button": {
+    "text": "{language}の下書き",
+    "sourceHash": "e18ea485e8187ad560ca451fe2be56c987dc3e518beac6549920546ef5325541",
+    "review": "machine"
+  },
+  "g1b-assist.translate.note": {
+    "text": "下書きは未確認の翻訳（{language}）として保存され、承認が必要です。原語の脚本は変更されません。",
+    "sourceHash": "413fe6cd8807af4b034d06d01e6e062f4d15fb0e76f959d72acdd25b8dffb0b5",
     "review": "machine"
   },
   "g1b-fdx.import.invalid": {

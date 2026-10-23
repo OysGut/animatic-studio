@@ -8135,6 +8135,57 @@
         "text": "Suggested: {language}"
       }
     },
+    "g1b-assist.target.invalid": {
+      "replaces": [],
+      "nb": {
+        "text": "Velg et gyldig målspråk som ikke er manusets språk."
+      },
+      "en": {
+        "text": "Choose a valid target language that is not the script's language."
+      }
+    },
+    "g1b-assist.target.label": {
+      "replaces": [],
+      "nb": {
+        "text": "Målspråk"
+      },
+      "en": {
+        "text": "Target language"
+      }
+    },
+    "g1b-assist.translate.all-done": {
+      "replaces": [
+        "core-script-assist-prompts.message.message.975880aef759"
+      ],
+      "nb": {
+        "text": "Alle linjene har allerede oversettelse til {language}"
+      },
+      "en": {
+        "text": "All lines already have a {language} translation"
+      }
+    },
+    "g1b-assist.translate.button": {
+      "replaces": [
+        "app-script-assist-writing-panel.writing-panel.toolbar-button.51ceafe95950"
+      ],
+      "nb": {
+        "text": "Utkast på {language}"
+      },
+      "en": {
+        "text": "Draft in {language}"
+      }
+    },
+    "g1b-assist.translate.note": {
+      "replaces": [
+        "app-script-assist-writing-panel.writing-panel.p.44cd5e7686d9"
+      ],
+      "nb": {
+        "text": "Utkastet lagres som usikker oversettelse til {language} og må godkjennes. Manuset på kildespråket endres ikke."
+      },
+      "en": {
+        "text": "The draft is saved as an uncertain {language} translation and must be approved. The script in the source language is not changed."
+      }
+    },
     "g1b-fdx.import.invalid": {
       "replaces": [],
       "nb": {

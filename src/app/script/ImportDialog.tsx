@@ -435,7 +435,7 @@ function Preview({
         <dd className="truncate text-right text-text-primary">{step.file.name}</dd>
         <dt className="text-text-secondary">{t("app-script-import-dialog.preview.dt.15766f518d67")}</dt>
         <dd className="tabular text-right text-text-primary">
-          {(p.format === "fountain" || p.format === "fdx")
+          {p.format === "fountain"
             ? t("app-script-import-dialog.preview.dd.a856071b7964", { pageCount: String(p.pageCount) })
             : p.pageCount}
         </dd>

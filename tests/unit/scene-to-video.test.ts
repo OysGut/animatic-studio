@@ -230,7 +230,8 @@ describe("scenebeskrivelsen fra manuset", () => {
     // Replikkene siteres ikke; bare hvem som snakker
     expect(text).not.toMatch(/«/);
     const user = sceneDescriptionUserText(s0, clip, text, sceneCast(s0, main.id, occ.id));
-    expect(user).toContain("SCREENPLAY (Norwegian, the scene in full)");
+    expect(user).toContain("SCREENPLAY (in the film's original language, the scene in full)");
+    expect(user).not.toMatch(/Norwegian/);
     expect(user).toContain("DRAFT MADE FROM THE SCREENPLAY");
     expect(SCENE_DESCRIPTION_SYSTEM).toMatch(/Scene:.*\n.*Characters:/s);
   });

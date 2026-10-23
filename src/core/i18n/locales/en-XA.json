@@ -16270,12 +16270,6 @@
     "parameters": [],
     "executable": true
   },
-  "core-script-assist-prompts.message.message.975880aef759": {
-    "text": "[!! ÁÁllll llïïnnëëss áállrrëëááddyy hháávvëë áánn ËËnnggllïïsshh ttrráánnssllááttïïôônn !!]",
-    "source": "\"All lines already have an English translation\"",
-    "parameters": [],
-    "executable": true
-  },
   "core-script-assist-proposal.message.message.7382c1d94424": {
     "text": "[!! SSëëllëëcctt áátt llëëáásstt ôônnëë llïïnnëë !!]",
     "source": "\"Select at least one line\"",
@@ -59397,12 +59391,6 @@
     "parameters": [],
     "executable": true
   },
-  "app-script-assist-writing-panel.writing-panel.p.44cd5e7686d9": {
-    "text": "[!! TThhëë ddrrááfftt ïïss ssáávvëëdd ááss áánn üünnccëërrttááïïnn ttrráánnssllááttïïôônn áánndd mmüüsstt bbëë áápppprrôôvvëëdd. TThhëë NNôôrrwwëëggïïáánn ssccrrïïpptt ïïss nnôôtt cchháánnggëëdd. !!]",
-    "source": "\"The draft is saved as an uncertain translation and must be approved. The Norwegian script is not changed.\"",
-    "parameters": [],
-    "executable": true
-  },
   "app-script-assist-writing-panel.writing-panel.p.8c550f9bedc7": {
     "text": "[!! SSôômmëë llïïnnëëss wwëërrëë cchháánnggëëdd bbyy ssôômmëëôônnëë ëëllssëë ááffttëërr tthhëë ssüüggggëëssttïïôônn wwááss mmááddëë. TThhëëyy ccáánnnnôôtt bbëë üüssëëdd; ccrrëëááttëë tthhëë ssüüggggëëssttïïôônn áággááïïnn. !!]",
     "source": "\"Some lines were changed by someone else after the suggestion was made. They cannot be used; create the suggestion again.\"",
@@ -59644,12 +59632,6 @@
   "app-script-assist-writing-panel.writing-panel.toolbar-button.590e2bab5227": {
     "text": "[!! FFôôrrmmáátt cchhëëcckk !!]",
     "source": "\"Format check\"",
-    "parameters": [],
-    "executable": true
-  },
-  "app-script-assist-writing-panel.writing-panel.toolbar-button.51ceafe95950": {
-    "text": "[!! ËËnnggllïïsshh ddrrááfftt !!]",
-    "source": "\"English draft\"",
     "parameters": [],
     "executable": true
   },
@@ -71753,6 +71735,24 @@
     "parameters": [],
     "executable": true
   },
+  "core-script-assist-prompts.message.message.975880aef759": {
+    "text": "[!! ÁÁllll llïïnnëëss áállrrëëááddyy hháávvëë áánn ËËnnggllïïsshh ttrráánnssllááttïïôônn !!]",
+    "source": "\"All lines already have an English translation\"",
+    "parameters": [],
+    "executable": true
+  },
+  "app-script-assist-writing-panel.writing-panel.p.44cd5e7686d9": {
+    "text": "[!! TThhëë ddrrááfftt ïïss ssáávvëëdd ááss áánn üünnccëërrttááïïnn ttrráánnssllááttïïôônn áánndd mmüüsstt bbëë áápppprrôôvvëëdd. TThhëë NNôôrrwwëëggïïáánn ssccrrïïpptt ïïss nnôôtt cchháánnggëëdd. !!]",
+    "source": "\"The draft is saved as an uncertain translation and must be approved. The Norwegian script is not changed.\"",
+    "parameters": [],
+    "executable": true
+  },
+  "app-script-assist-writing-panel.writing-panel.toolbar-button.51ceafe95950": {
+    "text": "[!! ËËnnggllïïsshh ddrrááfftt !!]",
+    "source": "\"English draft\"",
+    "parameters": [],
+    "executable": true
+  },
   "adapters-account-lock-server.owner-blocked": {
     "text": "[!! TThhëë pprrôôjjëëcctt ïïss llôôcckkëëdd bbëëccááüüssëë tthhëë ôôwwnnëërr ïïss bbllôôcckkëëdd. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ({admin}). !!]"
   },
@@ -74615,6 +74615,21 @@
   },
   "g1-source-language.import.suggestion": {
     "text": "[!! SSüüggggëëssttëëdd: {language} !!]"
+  },
+  "g1b-assist.target.invalid": {
+    "text": "[!! CChhôôôôssëë áá vváállïïdd ttáárrggëëtt lláánnggüüáággëë tthháátt ïïss nnôôtt tthhëë ssccrrïïpptt'ss lláánnggüüáággëë. !!]"
+  },
+  "g1b-assist.target.label": {
+    "text": "[!! TTáárrggëëtt lláánnggüüáággëë !!]"
+  },
+  "g1b-assist.translate.all-done": {
+    "text": "[!! ÁÁllll llïïnnëëss áállrrëëááddyy hháávvëë áá {language} ttrráánnssllááttïïôônn !!]"
+  },
+  "g1b-assist.translate.button": {
+    "text": "[!! DDrrááfftt ïïnn {language} !!]"
+  },
+  "g1b-assist.translate.note": {
+    "text": "[!! TThhëë ddrrááfftt ïïss ssáávvëëdd ááss áánn üünnccëërrttááïïnn {language} ttrráánnssllááttïïôônn áánndd mmüüsstt bbëë áápppprrôôvvëëdd. TThhëë ssccrrïïpptt ïïnn tthhëë ssôôüürrccëë lláánnggüüáággëë ïïss nnôôtt cchháánnggëëdd. !!]"
   },
   "g1b-fdx.import.invalid": {
     "text": "[!! TThhëë ffïïllëë ïïss nnôôtt áá vváállïïdd FFïïnnááll DDrrááfftt ffïïllëë (.ffddxx). !!]"
