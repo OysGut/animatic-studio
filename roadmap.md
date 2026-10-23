@@ -355,5 +355,6 @@
 - [x] Plassholderretting del 2: felles Thumbnail med contain (AGENTS.md regel 58, thumbnail-contain.test.tsx).
 
 - [x] Karaktertekst (Øystein 23.10): tekstversjoner, bildereferanse og fremheving (0089, KARAKTERTEKST_REPORT.md).
+- [x] Faktaarket alltid (Øystein 23.10): «Skriv med AI» lager studien først når faktaarket mangler, og faktaarket er alltid med i tekst- og bildekallet (0089, KARAKTERTEKST_REPORT.md del C). Visuell sjekk venter på 0089 i Cloud.
 - [x] Resultater i synet: versjonsstriper bryter linjen, lenken ruller resultatet inn i synet.
 - [ ] Plassering av nye lag innenfor gjeldende lerretsvisning.
