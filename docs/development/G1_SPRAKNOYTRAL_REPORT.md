@@ -169,3 +169,16 @@ Eksakt liste for G-1 frem til denne delrapporten, gruppert med kort formål:
 - Full Vitest-kjøring og DB-tester er ikke kjørt i denne bolken; 45 berørte tester er grønne.
 
 **Avvik:** Testforventningen i `dv5-dv6.test.ts` (en-US-u-ca-gregory) er endret som en del av den bestilte samordningen i punkt 4. Ingen andre avvik.
+
+## G-1b – andre arbeidsbolk (2026-10-23)
+
+**Levert:**
+- Punkt 2-rest (FDX): ren kjerneomforming `src/core/screenplay/fdx.ts` (Final Draft-XML → tvungen Fountain), koblet inn i importleseren med språkforslag fra skriftsystemet og samme bekreftelse som de andre formatene. Test: `tests/unit/g1b-fdx.test.ts` (3 grønne).
+- Migrasjon `db/migrations/0091_fdx_import_format.sql`: tillater formatet `fdx` for registrerte originalfiler. `EXPECTED_SCHEMA_VERSION` = 91. **Ikke kjørt – Claude kjører den.**
+- Punkt 5 (forberedt): Noto Sans Arabic, Hebrew, Devanagari og Thai ligger i `public/fonts/pdf/` med `OFL.txt`. Noto Sans SC (17 MB) er for stor for repoet og ligger i fillageret (`src/assets/fonts/NotoSansSC.ttf.asset.json`).
+
+**Gjenstår (ikke levert):**
+- Punkt 5: fontene er ikke koblet til manus-PDF, plakat eller presentasjon ennå. Manus-PDF er en egen PDF-skriver med Courier; plan er jsPDF-vei med Noto når teksten har tegn utenfor WinAnsi. Begrensning: jsPDF former ikke devanagari/thai, og arabisk krever egen høyre-til-venstre-behandling.
+- Plakat/presentasjon for alle språk (Øysteins valg): krever at `LocalizedText` blir et språkkart, at `Poster.language` blir BCP-47, og at sperren `language in ('nb','en')` på `posters` fjernes i 0091.
+- Oversettelsesassistentens målspråk (Øysteins valg: fra språkversjonene, forhåndsvalgt grensesnittspråket).
+- 3-rest (arkitekturtest nb/no, sceneoverskrift-nøkkelord per språk), 6 (rundtur), 7 (brukerflyt), 8 (check_kb), full Vitest og DB-tester.

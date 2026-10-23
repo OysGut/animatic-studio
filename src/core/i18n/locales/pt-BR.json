@@ -53677,6 +53677,11 @@
     "sourceHash": "935a8b83fd98c937cfd2ca7319c14ab8f6a66fad5bf10bb1dcd89e0630bce063",
     "review": "machine"
   },
+  "g1b-fdx.import.invalid": {
+    "text": "O arquivo não é um arquivo Final Draft válido (.fdx).",
+    "sourceHash": "19c3ccc26277acc6c5db758b6b95723e41bdbda4f650d80cc33268c982737068",
+    "review": "machine"
+  },
   "id3.derived-from.invalid": {
     "text": "A versão de origem não existe neste ativo.",
     "sourceHash": "e1546317349827ff0e6aa2b518dfb9750b69eee101811d7de5d5c9b42ce78523",

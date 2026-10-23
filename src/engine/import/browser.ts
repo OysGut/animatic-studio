@@ -27,11 +27,11 @@ export interface ReadScreenplay {
   readonly languageHint: { readonly language: string; readonly basis: "metadata" | "script" } | null;
 }
 
-export type ScreenplayFileFormat = "pdf" | "docx" | "fountain";
+export type ScreenplayFileFormat = "pdf" | "docx" | "fountain" | "fdx";
 
 /** Filtyper som kan velges i importdialogene. */
 export const SCREENPLAY_ACCEPT =
-  ".pdf,.docx,.fountain,.spmd,.txt,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain";
+  ".pdf,.docx,.fdx,.fountain,.spmd,.txt,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain";
 
 /** MIME-type originalen lagres med. */
 export function contentTypeOf(format: ScreenplayFileFormat): string {
@@ -45,6 +45,7 @@ export function formatOf(name: string): ScreenplayFileFormat | null {
   const n = name.toLowerCase();
   if (n.endsWith(".pdf")) return "pdf";
   if (n.endsWith(".docx")) return "docx";
+  if (n.endsWith(".fdx")) return "fdx";
   if (n.endsWith(".fountain") || n.endsWith(".spmd") || n.endsWith(".txt")) return "fountain";
   return null;
 }
@@ -93,8 +94,17 @@ export async function readScreenplayFile(file: File): Promise<ReadScreenplay> {
     throw new Error(t("engine-import-browser.read-screenplay-file.message.bd8815be4553"));
   const bytes = new Uint8Array(await file.arrayBuffer());
   const sha256 = await sha256Hex(bytes);
-  if (format === "fountain") {
-    const text = decodeFountain(bytes);
+  if (format === "fountain" || format === "fdx") {
+    // G-1b: Final Draft er åpen XML; avsnittene gjøres om til tvungen Fountain og tolkes likt.
+    let text = decodeFountain(bytes);
+    if (format === "fdx") {
+      const { fdxToFountain } = await import("@/core/screenplay/fdx");
+      try {
+        text = fdxToFountain(text);
+      } catch {
+        throw new Error(t("g1b-fdx.import.invalid"));
+      }
+    }
     const { parsed, notes } = parseFountain(text);
     if (!parsed.scenes.some((sc) => sc.elements.length > 0 || !sc.isContinuation))
       throw new Error(

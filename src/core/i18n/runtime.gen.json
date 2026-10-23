@@ -31969,6 +31969,9 @@
     "g1-source-language.import.suggestion": {
       "text": "Foreslått: {language}"
     },
+    "g1b-fdx.import.invalid": {
+      "text": "Filen er ikke en gyldig Final Draft-fil (.fdx)."
+    },
     "id3.derived-from.invalid": {
       "text": "Kildeversjonen finnes ikke i denne ressursen."
     },
@@ -33391,38 +33394,38 @@
     "time.weekday-at": {
       "text": "{weekday} kl. {time}"
     },
-    "server.error.invalid_request": {
-      "text": "Ugyldig forespørsel"
-    },
-    "server.error.invalid_project_id": {
-      "text": "Ugyldig prosjekt-ID"
-    },
-    "server.error.invalid_command": {
-      "text": "Ugyldig kommando"
-    },
-    "server.error.invalid_revisions": {
-      "text": "Ugyldige revisjoner"
+    "server.error.asset_missing": {
+      "text": "Ressursen finnes ikke"
     },
     "server.error.change_too_large": {
       "text": "Endringen er for stor"
     },
+    "server.error.invalid_command": {
+      "text": "Ugyldig kommando"
+    },
     "server.error.invalid_command_id": {
       "text": "Ugyldig kommando-ID"
     },
-    "server.error.no_workspace_access": {
-      "text": "Ingen tilgang til gruppen"
+    "server.error.invalid_project_id": {
+      "text": "Ugyldig prosjekt-ID"
     },
-    "server.error.asset_missing": {
-      "text": "Ressursen finnes ikke"
+    "server.error.invalid_request": {
+      "text": "Ugyldig forespørsel"
     },
-    "server.error.storage_no_response": {
-      "text": "Lagringen svarte ikke"
+    "server.error.invalid_revisions": {
+      "text": "Ugyldige revisjoner"
+    },
+    "server.error.invalid_script_revision": {
+      "text": "Ugyldig manusrevisjon"
     },
     "server.error.invalid_storage_path": {
       "text": "Ugyldig lagringssti"
     },
-    "server.error.invalid_script_revision": {
-      "text": "Ugyldig manusrevisjon"
+    "server.error.no_workspace_access": {
+      "text": "Ingen tilgang til gruppen"
+    },
+    "server.error.storage_no_response": {
+      "text": "Lagringen svarte ikke"
     },
     "server.error.text_too_long": {
       "text": "Teksten er for lang (maks {max} tegn)"
@@ -65398,6 +65401,9 @@
     "g1-source-language.import.suggestion": {
       "text": "Suggested: {language}"
     },
+    "g1b-fdx.import.invalid": {
+      "text": "The file is not a valid Final Draft file (.fdx)."
+    },
     "id3.derived-from.invalid": {
       "text": "The source version does not exist in this asset."
     },
@@ -66820,38 +66826,38 @@
     "time.weekday-at": {
       "text": "{weekday} at {time}"
     },
-    "server.error.invalid_request": {
-      "text": "Invalid request"
-    },
-    "server.error.invalid_project_id": {
-      "text": "Invalid project ID"
-    },
-    "server.error.invalid_command": {
-      "text": "Invalid command"
-    },
-    "server.error.invalid_revisions": {
-      "text": "Invalid revisions"
+    "server.error.asset_missing": {
+      "text": "The asset does not exist"
     },
     "server.error.change_too_large": {
       "text": "The change is too large"
     },
+    "server.error.invalid_command": {
+      "text": "Invalid command"
+    },
     "server.error.invalid_command_id": {
       "text": "Invalid command ID"
     },
-    "server.error.no_workspace_access": {
-      "text": "No access to the workspace"
+    "server.error.invalid_project_id": {
+      "text": "Invalid project ID"
     },
-    "server.error.asset_missing": {
-      "text": "The asset does not exist"
+    "server.error.invalid_request": {
+      "text": "Invalid request"
     },
-    "server.error.storage_no_response": {
-      "text": "The storage did not respond"
+    "server.error.invalid_revisions": {
+      "text": "Invalid revisions"
+    },
+    "server.error.invalid_script_revision": {
+      "text": "Invalid script revision"
     },
     "server.error.invalid_storage_path": {
       "text": "Invalid storage path"
     },
-    "server.error.invalid_script_revision": {
-      "text": "Invalid script revision"
+    "server.error.no_workspace_access": {
+      "text": "No access to the workspace"
+    },
+    "server.error.storage_no_response": {
+      "text": "The storage did not respond"
     },
     "server.error.text_too_long": {
       "text": "The text is too long (max {max} characters)"
