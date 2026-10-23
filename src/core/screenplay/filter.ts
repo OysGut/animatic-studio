@@ -34,10 +34,10 @@ export function mentions(text: string, name: string): boolean {
   if (!re) {
     // Stor forbokstav i hvert ord: «BESTEMOR ANNE» → «Bestemor Anne»
     const cap = name
-      .toLocaleLowerCase("nb")
+      .toLocaleLowerCase("und")
       .replace(
         /(^|[\s-])(\p{L})/gu,
-        (_m, sep: string, ch: string) => sep + ch.toLocaleUpperCase("nb"),
+        (_m, sep: string, ch: string) => sep + ch.toLocaleUpperCase("und"),
       );
     const alt = name === cap ? escapeRe(name) : `${escapeRe(name)}|${escapeRe(cap)}`;
     re = new RegExp(`(^|[^\\p{L}\\p{N}])(${alt})($|[^\\p{L}\\p{N}])`, "u");
@@ -98,8 +98,8 @@ function sceneText(s: ProjectState, variantId: string): SceneText {
     for (const m of text.matchAll(WORD_RE)) {
       const w = m[0];
       const first = w.charAt(0);
-      if (first !== first.toLocaleLowerCase("nb")) capsWords.add(w.toLocaleUpperCase("nb"));
-      lower.add(w.toLocaleLowerCase("nb"));
+      if (first !== first.toLocaleLowerCase("und")) capsWords.add(w.toLocaleUpperCase("und"));
+      lower.add(w.toLocaleLowerCase("und"));
     }
     t = { speakers, text, capsWords, lowerWords: [...lower] };
     byVariant.set(variantId, t);
@@ -111,7 +111,7 @@ function sceneText(s: ProjectState, variantId: string): SceneText {
 function textMentions(t: SceneText, name: string): boolean {
   const words = name.match(WORD_RE);
   if (!words) return false;
-  for (const w of words) if (!t.capsWords.has(w.toLocaleUpperCase("nb"))) return false;
+  for (const w of words) if (!t.capsWords.has(w.toLocaleUpperCase("und"))) return false;
   return words.length === 1 ? true : mentions(t.text, name);
 }
 
@@ -126,7 +126,7 @@ export function sceneMentions(s: ProjectState, variantId: string, name: string):
  */
 export function sceneHasWordPrefix(s: ProjectState, variantId: string, name: string): boolean {
   const t = sceneText(s, variantId);
-  const key = name.toLocaleLowerCase("nb").trim();
+  const key = name.toLocaleLowerCase("und").trim();
   if (key.length < 2) return false;
   const words = key.match(WORD_RE);
   if (!words) return false;
@@ -203,7 +203,7 @@ export function matchingOccurrences(
   productionId: string,
   f: SceneFilter,
 ): Set<string> {
-  const text = f.text?.trim().toLocaleLowerCase("nb") ?? "";
+  const text = f.text?.trim().toLocaleLowerCase("und") ?? "";
   const out = new Set<string>();
   for (const o of orderedOccurrences(s, productionId)) {
     if (!isScriptOccurrence(o)) continue; // MTS MT6: tittel/tekst/rulletekst er ikke manusscener
@@ -221,7 +221,7 @@ export function matchingOccurrences(
         ...(annotationsByVariant(s).get(o.variantId) ?? []).map((a) => a.text),
       ]
         .join("\n")
-        .toLocaleLowerCase("nb");
+        .toLocaleLowerCase("und");
       if (!hay.includes(text)) continue;
     }
     out.add(o.id);

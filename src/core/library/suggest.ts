@@ -113,8 +113,8 @@ export function similarName(candidate: string, existing: string): boolean {
   return false;
 }
 
-const upper = (s: string) => s.toLocaleUpperCase("nb");
-const lower = (s: string) => s.toLocaleLowerCase("nb");
+const upper = (s: string) => s.toLocaleUpperCase("und");
+const lower = (s: string) => s.toLocaleLowerCase("und");
 
 function assetKeys(a: Pick<Asset, "name" | "names">): string[] {
   return [a.name, ...a.names.map((n) => n.name)].map(characterName).filter(Boolean);

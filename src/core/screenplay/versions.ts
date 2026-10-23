@@ -208,7 +208,7 @@ function escapeRe(s: string): string {
 
 /** Ord som begynner med navnet, uansett store/små bokstaver («vase» treffer «vasen»); flere ord i sammenheng. */
 function hasWordPrefix(text: string, name: string): boolean {
-  const key = name.toLocaleLowerCase("nb").trim();
+  const key = name.toLocaleLowerCase("und").trim();
   if (key.length < 2) return false;
   const re = new RegExp(`(^|[^\\p{L}\\p{N}])${escapeRe(key)}`, "iu");
   return re.test(text);
