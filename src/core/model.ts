@@ -680,7 +680,11 @@ export type LayerKind =
   /** Side (MTS MT6, migrasjon 0050): en side i en tittel- eller tekstscene. Oppfører seg som en gruppe
    * (lagene i den følger dens bevegelse og synlighet), med `activeRange` som synlighetsintervall og
    * `pageTransition` som overgangen inn i siden. */
-  | "page";
+  | "page"
+  /** SB-1 (migrasjon 0102): lapp, pil og kameramerke. Bare tillatt i storyboardkomposisjoner. */
+  | "note"
+  | "arrow"
+  | "camera_mark";
 
 /** Plassering av et lag i scenen. Posisjon er midtpunktet i scenens koordinater (piksler). */
 export interface LayerTransform {
@@ -1030,6 +1034,11 @@ export interface ProjectState {
   readonly printJobElements?: Readonly<Record<string, import("./print/job/commands").StoredPrintJobElement>>;
   readonly rigTemplates: Readonly<Record<string, import("./rig/multiplane").RigTemplate>>;
   readonly rigSetups: Readonly<Record<string, import("./rig/multiplane").RigSetup>>;
+  /** SB-1 (migrasjon 0102): panelenes forankring i manusblokker, statusspor med historikk og bevarte panelrevisjoner. */
+  readonly panelBlocks: Readonly<Record<string, import("./storyboard").PanelBlockLink>>;
+  readonly productionStatuses: Readonly<Record<string, import("./storyboard").ProductionStatus>>;
+  readonly productionStatusEvents: Readonly<Record<string, import("./storyboard").ProductionStatusEvent>>;
+  readonly panelSnapshots: Readonly<Record<string, import("./storyboard").PanelSnapshot>>;
   readonly project: Project;
   readonly productions: Readonly<Record<string, Production>>;
   readonly scenes: Readonly<Record<string, Scene>>;
@@ -1475,6 +1484,10 @@ export const COLLECTION_TABLES = {
   printJobElements: "print_job_elements",
   rigTemplates: "rig_templates",
   rigSetups: "rig_setups",
+  panelBlocks: "storyboard_panel_blocks",
+  productionStatuses: "production_statuses",
+  productionStatusEvents: "production_status_events",
+  panelSnapshots: "storyboard_panel_snapshots",
 } as const;
 
 export type CollectionName = keyof typeof COLLECTION_TABLES;
@@ -1530,6 +1543,10 @@ export function emptyProjectState(project: Project): ProjectState {
     printJobElements: {},
     rigTemplates: {},
     rigSetups: {},
+    panelBlocks: {},
+    productionStatuses: {},
+    productionStatusEvents: {},
+    panelSnapshots: {},
   };
 }
 
