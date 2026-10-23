@@ -57,7 +57,7 @@ export function RhythmPanel({ state, occurrenceId, editable, run }: {
 
   return <Popover open={open} onOpenChange={o => { setOpen(o); if (!o) reset(); }}>
     <PopoverTrigger asChild>
-      <button type="button" data-testid="ca8-rhythm-open" aria-label={t("app-scene-editor-animation-rhythm-panel.rhythm-panel.aria-label.f19d593893d0")} disabled={!editable}
+      <button type="button" data-testid="ca8-rhythm-open" aria-description={t("app-scene-editor-animation-rhythm-panel.rhythm-panel.aria-label.f19d593893d0")} disabled={!editable}
         className="flex h-7 items-center gap-1 rounded-sm border border-accent-warm px-2 text-xs text-accent-warm hover:bg-surface-3 focus-visible:ring-2 focus-visible:ring-focus-ring disabled:opacity-50">
         <Activity className="size-3.5" aria-hidden />{t("app-scene-editor-animation-rhythm-panel.rhythm-panel.button.3ce45bd0ae01")}
       </button>
