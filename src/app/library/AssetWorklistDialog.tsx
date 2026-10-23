@@ -4,6 +4,7 @@
  * «Behold» (posten forsvinner til neste versjon godkjennes) og «Åpne …». AI-video lages aldri på nytt
  * automatisk: «Lag ny video …» åpner scenen i monteringen, der brukeren starter genereringen selv.
  */
+import { Thumbnail } from "@/app/shared/Thumbnail";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight, Check, Clapperboard, Layers } from "lucide-react";
 import { AiGlyph } from "@/app/design/icons/AiGlyph";
@@ -179,10 +180,10 @@ export function AssetWorklistDialog({
                 </p>
                 <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
                   <figure className="flex flex-col gap-1">
-                    <img
+                    <Thumbnail
                       src={oldV ? urls.data?.[oldV.mediaPath] : undefined}
                       alt={t("app-library-asset-worklist-dialog.asset-worklist-dialog.alt.e259cc2e67bc", { value1: String(oldV?.number ?? "") })}
-                      className="aspect-video w-full bg-media object-contain"
+                      className="aspect-video bg-media"
                     />
                     <figcaption className="text-[11px] text-text-tertiary">
                       {t("app-library-asset-worklist-dialog.asset-worklist-dialog.figcaption.b8549f730d8e")} (v{oldV?.number})
@@ -190,10 +191,10 @@ export function AssetWorklistDialog({
                   </figure>
                   <ArrowRight className="size-4 text-text-tertiary" aria-hidden />
                   <figure className="flex flex-col gap-1">
-                    <img
+                    <Thumbnail
                       src={newV ? urls.data?.[newV.mediaPath] : undefined}
                       alt={t("app-library-asset-worklist-dialog.asset-worklist-dialog.alt.4c9b8b2ffea0", { value1: String(newV?.number ?? "") })}
-                      className="aspect-video w-full bg-media object-contain"
+                      className="aspect-video bg-media"
                     />
                     <figcaption className="text-[11px] text-text-tertiary">
                       {t("app-library-asset-worklist-dialog.asset-worklist-dialog.figcaption.e05d24939499")} (v{newV?.number})

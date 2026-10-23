@@ -6,6 +6,7 @@
  * biblioteket» – samme forslag og samme dialog som «Forslag fra manuset» i biblioteket. Ingenting legges
  * til før brukeren velger det.
  */
+import { Thumbnail } from "@/app/shared/Thumbnail";
 import { PanelHeader } from "@/app/shell/workspace-chrome";
 import { useNavigate } from "@tanstack/react-router";
 import { BookPlus, Check, ListPlus, Plus, X } from "lucide-react";
@@ -228,11 +229,11 @@ export const SceneAssetsPanel = memo(function SceneAssetsPanel({
                   ) : null}
                   <div className="flex h-16 items-center justify-center bg-surface-3">
                     {url ? (
-                      <img
+                      <Thumbnail
                         src={url}
                         alt=""
                         draggable={false}
-                        className="h-full w-full object-contain p-1"
+                        className="p-1"
                       />
                     ) : (
                       <AssetSymbolIcon state={state} assetId={asset.id} className="size-10" />

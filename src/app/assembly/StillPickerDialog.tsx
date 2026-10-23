@@ -3,6 +3,7 @@
  * scenen eller som en ny del etter de andre. Bildet kopieres ikke; versjonen peker på bildefilen i biblioteket.
  * Lengden kan endres etterpå i «Klipp». Alt kan angres som ett steg.
  */
+import { Thumbnail } from "@/app/shared/Thumbnail";
 import { ImageIcon } from "lucide-react";
 import { useMemo, useState } from "react";
 import { locale, STILL_MAX_MS, STILL_MIN_MS, newId, stillCandidates, stillCommands, type Command, type FilmClip, type ProjectState } from "@/core";
@@ -102,10 +103,10 @@ export function StillPickerDialog({
                   }
                 >
                   {urls.data?.[x.version.mediaPath] ? (
-                    <img
+                    <Thumbnail
                       src={urls.data[x.version.mediaPath]}
                       alt=""
-                      className="aspect-video w-full bg-media object-contain"
+                      className="aspect-video bg-media"
                     />
                   ) : (
                     <span className="flex aspect-video w-full items-center justify-center bg-surface-3">

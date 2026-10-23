@@ -3,6 +3,7 @@
  * visuelle varianter med bildeversjoner og godkjenning (REQ-0135, REQ-0136, REQ-0146, REQ-0149)
  * og scenene der ressursen er brukt (REQ-0131). Kontinuitet (DEC-0055) i ContinuityPanel.
  */
+import { Thumbnail } from "@/app/shared/Thumbnail";
 import { NoteFlagControl } from "@/app/dialogue/NoteFlagControl";
 import { Link } from "@tanstack/react-router";
 import {
@@ -1150,10 +1151,10 @@ function VariantCard({
                     aria-label={tk("app-library-asset-detail.variant-card.aria-label.f1e9196cc8ac", { name: String(asset.name), name2: String(variant.name), number: String(ver.number) })}
                   >
                     {url ? (
-                      <img
+                      <Thumbnail
                         src={url}
                         alt={tk("app-library-asset-detail.variant-card.alt.8a3a225c63c0", { name: String(asset.name), name2: String(variant.name), number: String(ver.number) })}
-                        className="max-h-full max-w-full object-contain"
+                        
                       />
                     ) : (
                       <Loader2 className="size-4 animate-spin text-text-tertiary" aria-hidden />

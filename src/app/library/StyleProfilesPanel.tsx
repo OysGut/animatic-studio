@@ -2,6 +2,7 @@
  * Visuelle stilprofiler i ressursbiblioteket (REQ-0121, mandat 8 og 9.4, DEC-0078). Profilene er de samme som
  * under «Filmens visuelle stil» på prosjektoversikten; redigeringen bruker samme dialog (StyleGuideDialog).
  */
+import { Thumbnail } from "@/app/shared/Thumbnail";
 import { Palette, Plus } from "lucide-react";
 import { STYLE_TEXT_FIELDS, type LibraryStyleProfile, type ProjectState, type StyleTextField } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
@@ -184,10 +185,10 @@ export function StyleProfileDetail({
                 <li key={v.id} className="flex w-28 flex-col gap-1 text-[11px] text-text-secondary">
                   <span className="flex h-20 items-center justify-center overflow-hidden bg-surface-3">
                     {urls[v.mediaPath] ? (
-                      <img
+                      <Thumbnail
                         src={urls[v.mediaPath]}
                         alt={label}
-                        className="max-h-full max-w-full object-contain"
+                        
                       />
                     ) : null}
                   </span>
