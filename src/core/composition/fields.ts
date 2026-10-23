@@ -421,7 +421,28 @@ export function normalizeLayerFields(f: LayerFields): Result<LayerFields> {
     };
   if (!textLayer && f.text)
     return { ok: false, error: tk("core-composition-fields.error.error.b016677c4eb9") };
-  if (!group && !textLayer && f.assetId === null && fill === null)
+  // Storyboardlag (SB-1): lapp, pil og kameramerke bærer innholdet sitt i egen spesifikasjon.
+  // At lagtypen bare er tillatt i storyboardkomposisjoner, kontrolleres i kommandoen og i databasen.
+  const sbKind = f.kind === "note" || f.kind === "arrow" || f.kind === "camera_mark";
+  if (sbKind) {
+    if (f.assetId !== null || fill !== null || (f.swaps ?? []).length > 0)
+      return { ok: false, error: tk("sb1.error.invalid-layer") };
+    const specError =
+      f.kind === "note"
+        ? panelNoteError(f.note as never)
+        : f.kind === "arrow"
+          ? arrowSpecError(f.arrow as never)
+          : cameraMarkError(f.cameraMark as never);
+    if (
+      specError ||
+      (f.kind !== "note" && f.note) ||
+      (f.kind !== "arrow" && f.arrow) ||
+      (f.kind !== "camera_mark" && f.cameraMark)
+    )
+      return { ok: false, error: tk("sb1.error.invalid-layer") };
+  } else if (f.note || f.arrow || f.cameraMark)
+    return { ok: false, error: tk("sb1.error.invalid-layer") };
+  if (!group && !textLayer && !sbKind && f.assetId === null && fill === null)
     return {
       ok: false,
       error: tk("core-composition-fields.error.error.93ee74e67b12"),
@@ -548,6 +569,9 @@ export function normalizeLayerFields(f: LayerFields): Result<LayerFields> {
       ...(effects.value ? { effects: effects.value } : {}),
       ...(tpl.value ? { template: tpl.value } : {}),
       ...(pageTransition ? { pageTransition } : {}),
+      ...(f.kind === "note" && f.note ? { note: f.note } : {}),
+      ...(f.kind === "arrow" && f.arrow ? { arrow: f.arrow } : {}),
+      ...(f.kind === "camera_mark" && f.cameraMark ? { cameraMark: f.cameraMark } : {}),
     },
   };
 }
