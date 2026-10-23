@@ -14,8 +14,8 @@ import { knowledgeAt } from "../storylab/facts";
 import { profileAt } from "../storylab/stages";
 import { profileText } from "../storylab/prompts";
 import { formatHeading } from "../screenplay";
-import { sourceLanguageOf } from "../dialogue/languages";
-import { englishLanguageName } from "../translation/language-tags";
+import { isSourceLanguage, sourceLanguageOf } from "../dialogue/languages";
+import { canonicalLanguageTag, englishLanguageName } from "../translation/language-tags";
 import { t as tk } from "@/core/i18n/keyed";
 
 export type AssistKind = "rewrite" | "next_line" | "scene" | "polish" | "translate";
@@ -184,7 +184,7 @@ function editPrompt(s: ProjectState, r: AssistRequest, picked: ScriptBlock[], ta
   const ctx = blocks.slice(Math.max(0, first - ASSIST_CONTEXT_BLOCKS), last + 1 + ASSIST_CONTEXT_BLOCKS);
   const occ = s.occurrences[r.occurrenceId!]!;
   const excerpt = tail(ctx.map((b) => line(b, refOf.get(b.id))), MAX_ASSIST_EXCERPT_CHARS);
-  const lang = replyLanguage(r.kind, sourceLanguageOf(s));
+  const lang = replyLanguage(r.kind, sourceLanguageOf(s), r.targetLanguage);
   return {
     system: [
       "You are a professional screenwriting assistant for an animated feature film.",
