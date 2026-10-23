@@ -189,6 +189,14 @@ async function runCommand(
   return res.state;
 }
 
+// 0103: tabellrekkefølgen i apply_changes ligger i private.apply_change_tables. Eldre tester som
+// sjekket rekkefølgen i funksjonskroppen, leser den samme rekkefølgen fra registeret.
+async function applyChangesTableOrder(): Promise<string> {
+  const rows = await sql`select table_name, insert_order, delete_order from private.apply_change_tables`;
+  const by = (k: string) => [...rows].sort((a, b) => Number(a[k]) - Number(b[k])).map((r) => `'${String(r["table_name"])}'`).join(",");
+  return `array[${by("insert_order")}] array[${by("delete_order")}]`;
+}
+
 console.log(`Databasetester (${DB})`);
 try {
   await sql.unsafe(readFileSync(join(root, "tests/db/supabase-emulation.sql"), "utf8"));
