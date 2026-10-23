@@ -182,10 +182,10 @@ describe("SB-1 bevarte revisjoner", () => {
     st = mustApply(st, {
       type: "AddLayers", layers: [{
         layerId: tid(), compositionId: panelId,
-        fields: defaultLayerFields(st, st.compositions[panelId]!, {
-          kind: "note", name: "Lapp",
+        fields: { ...defaultLayerFields(st, st.compositions[panelId]!, { fill: "#101114" }),
+          kind: "note", fill: null, name: "Lapp",
           note: { noteType: "visual", text: "Husk skygge", color: "#ffcc00", handled: false, anchor: null },
-        }),
+        },
       }],
     });
     const r = undoRedo(st, { type: "SnapshotStoryboardPanel", panelId, snapshotId: tid() });
@@ -207,7 +207,7 @@ describe("SB-1 storyboardlag", () => {
     const note = { noteType: "direction" as const, text: "x", color: "#ffcc00", handled: false, anchor: null };
     const mk = (compositionId: string): Command => ({
       type: "AddLayers",
-      layers: [{ layerId: tid(), compositionId, fields: defaultLayerFields(st, st.compositions[compositionId]!, { kind: "note", note }) }],
+      layers: [{ layerId: tid(), compositionId, fields: { ...defaultLayerFields(st, st.compositions[compositionId]!, { fill: "#101114" }), kind: "note", fill: null, note } }],
     });
     if (sceneComp) expect(applyCommand(st, envelope(mk(sceneComp.id))).ok).toBe(false);
     const r = undoRedo(st, mk(panelId));
@@ -217,12 +217,12 @@ describe("SB-1 storyboardlag", () => {
     // Ugyldig spesifikasjon avvises (farge må være #rrggbb)
     expect(applyCommand(st, envelope({
       type: "AddLayers",
-      layers: [{ layerId: tid(), compositionId: panelId, fields: defaultLayerFields(st, st.compositions[panelId]!, { kind: "note", note: { ...note, color: "gul" } }) }],
+      layers: [{ layerId: tid(), compositionId: panelId, fields: { ...defaultLayerFields(st, st.compositions[panelId]!, { fill: "#101114" }), kind: "note", fill: null, note: { ...note, color: "gul" } } }],
     })).ok).toBe(false);
     // note-felt på en vanlig lagtype avvises
     expect(applyCommand(st, envelope({
       type: "AddLayers",
-      layers: [{ layerId: tid(), compositionId: panelId, fields: defaultLayerFields(st, st.compositions[panelId]!, { kind: "other", fill: "#101114", note }) }],
+      layers: [{ layerId: tid(), compositionId: panelId, fields: { ...defaultLayerFields(st, st.compositions[panelId]!, { fill: "#101114" }), kind: "other", note } }],
     })).ok).toBe(false);
   });
 });
@@ -230,7 +230,12 @@ describe("SB-1 storyboardlag", () => {
 describe("SB-1 sikkerhetskopi", () => {
   it("rundtur tar med paneler, forankringer, status og øyeblikksbilder", async () => {
     const { s, occ } = setup();
-    const { st, panelId } = addPanel(s, occ);
+    const blocks = Object.values(s.blocks).filter((b) => b.variantId === occ.variantId && !b.removed);
+    const panelId = tid();
+    const st = mustApply(s, {
+      type: "AddStoryboardPanel", panelId, occurrenceId: occ.id, variantId: occ.variantId, orderKey: "a",
+      blocks: [{ linkId: tid(), blockId: blocks[0]!.id, orderKey: "a" }],
+    });
     const st2 = mustApply(st, {
       type: "SetProductionStatus", statusId: tid(), eventId: tid(), area: "storyboard", compositionId: panelId, status: "done",
     });
