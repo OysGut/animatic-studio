@@ -180,3 +180,66 @@ describe("G-6 pkt 4: sikkerhetskopi tar med globale ressurser som snapshot", () 
     expect(back.activeBriefId).toBe("b1");
   });
 });
+
+describe("characterBundleFromAsset / planCharacterPullCommands", () => {
+  function stateWith(over: Partial<Record<string, unknown>> = {}) {
+    const asset = {
+      id: "a1", revision: 1, kind: "character", name: "Mor", names: [], description: "",
+      category: "", tags: [], archived: false, removed: false,
+      voice: VOICE, briefVersions: [B1], activeBriefId: "b1", globalAssetId: "g1",
+    } as unknown as Asset;
+    const variant = { id: "v1", revision: 1, assetId: "a1", name: "Åpen", style: "reference", appearance: "", approvedVersionId: "ver1", archived: false };
+    const version = { id: "ver1", revision: 1, variantId: "v1", globalSource: { assetId: "ga", variantId: "gv", versionId: "22222222-2222-2222-2222-222222222222" }, removed: false };
+    const mouth = { id: "m1", revision: 1, characterId: "a1", system: "rhubarb", variants: { A: "v1", B: null }, removed: false };
+    return {
+      assets: { a1: asset },
+      assetVariants: { v1: variant },
+      assetVersions: { ver1: version },
+      mouthSets: { m1: mouth },
+      ...over,
+    } as never;
+  }
+
+  it("bygger et flyttbart knippe med variantnavn og globale godkjenninger", () => {
+    const s = stateWith();
+    const b = characterBundleFromAsset(s, "a1" as never)!;
+    expect(b.voice).toEqual(VOICE);
+    expect(b.briefVersions).toEqual([B1]);
+    expect(b.activeBriefId).toBe("b1");
+    expect(b.mouthSets).toEqual([{ system: "rhubarb", variants: { A: "Åpen", B: null } }]);
+    expect(b.approvedVersionIds).toEqual(["22222222-2222-2222-2222-222222222222"]);
+    expect(b.rigSetup).toBeNull();
+    expect(characterBundleError({ ...b, number: 1 })).toBeNull();
+  });
+
+  it("innhentingen gir kommandoer felt for felt og merker knippenummeret, med inverser", () => {
+    const s = stateWith();
+    const local = {
+      voice: VOICE, briefVersions: [B1], activeBriefId: "b1",
+      mouthSets: [{ system: "rhubarb", variants: { A: "Åpen", B: null } }], globalBundleNumber: 1,
+    } as const;
+    const latest = bundle(2, { voice: VOICE_LOCAL, briefVersions: [B1, B2], activeBriefId: "b2",
+      mouthSets: [{ system: "rhubarb", variants: { A: "Åpen", B: "Åpen" } }] });
+    const plan = planCharacterPull(local, bundle(1), latest);
+    const cmds = planCharacterPullCommands(s, "a1" as never, plan);
+    const types = cmds.map((c) => c.type);
+    expect(types).toEqual(["SetAssetVoice", "SetAssetBriefVersions", "SaveMouthSet", "UpdateAsset"]);
+    const briefs = cmds[1] as { versions: BriefVersion[]; activeId: string | null };
+    expect(briefs.versions.map((v) => v.id)).toEqual(["b1", "b2"]);
+    expect(briefs.activeId).toBe("b2");
+    const mouth = (cmds[2] as { set: { id: string; variants: Record<string, string | null> } }).set;
+    expect(mouth.id).toBe("m1");
+    expect(mouth.variants).toEqual({ A: "v1", B: "v1" });
+    const upd = cmds[3] as { fields: { globalBundleNumber?: number } };
+    expect(upd.fields.globalBundleNumber).toBe(2);
+  });
+
+  it("lokale overstyringer gir ingen kommando for feltet", () => {
+    const s = stateWith();
+    const local = { voice: { ...VOICE, label: "Egen stemme" }, briefVersions: [B1], activeBriefId: "b1",
+      mouthSets: [{ system: "rhubarb", variants: { A: "Annen", B: null } }], globalBundleNumber: 1 } as const;
+    const plan = planCharacterPull(local, bundle(1), bundle(2, { briefVersions: [B1] }));
+    const cmds = planCharacterPullCommands(s, "a1" as never, plan);
+    expect(cmds.map((c) => c.type)).toEqual(["UpdateAsset"]);
+  });
+});
