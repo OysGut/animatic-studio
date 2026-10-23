@@ -616,13 +616,18 @@ function Variants({
   cmds,
   provenance,
   origin = "all",
+  focusVersionId = null,
 }: Props) {
   const variants = variantsOf(state, asset.id);
   const [name, setName] = useState("");
   const [style, setStyle] = useState<VisualStyle>("animatic");
   const [appearance, setAppearance] = useState("");
   const [err, setErr] = useState<string | null>(null);
-  const [showArchived, setShowArchived] = useState(false);
+  // Versjonen lenken ber om, skal synes selv om varianten er arkivert
+  const [showArchived, setShowArchived] = useState(() => {
+    const fv = focusVersionId ? state.assetVersions[focusVersionId] : undefined;
+    return fv ? state.assetVariants[fv.variantId]?.archived === true : false;
+  });
   const paths = variants.flatMap((v) => versionsOf(state, v.id).map((x) => x.mediaPath));
   const urls = useImageUrls(paths);
   const shown = variants.filter((v) => showArchived || !v.archived);
@@ -693,7 +698,7 @@ function Variants({
       {shown.map((v) => (
         <VariantCard
           key={v.id}
-          focusVersionId={props.focusVersionId ?? null}
+          focusVersionId={focusVersionId}
           state={state}
           projectId={projectId}
           productionId={productionId}
