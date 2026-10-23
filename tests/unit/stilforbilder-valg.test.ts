@@ -31,7 +31,7 @@ function fixture(): ProjectState {
   const versions: Record<string, unknown> = {};
   for (let i = 1; i <= 9; i++) {
     const a = uid(i), va = uid(100 + i), v = uid(200 + i);
-    assets[a] = { id: a, name: `Figur${i}`, kind: "character", removed: false };
+    assets[a] = { id: a, name: `Figur${i}`, kind: "character", removed: false, names: [] };
     variants[va] = { id: va, assetId: a, name: "Standard", approvedVersionId: v, archived: false };
     versions[v] = { id: v, variantId: va, number: 1, mediaPath: `${uid(999)}/${a}/${v}/bilde.png`, mimeType: "image/png" };
   }
