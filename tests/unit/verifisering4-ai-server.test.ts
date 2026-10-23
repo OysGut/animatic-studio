@@ -54,7 +54,7 @@ function project(jobs: Record<string, unknown>[] = []): FakeDb {
         { project_id: P, user_id: EDITOR, role: "editor", removed_at: null },
         { project_id: P, user_id: VIEWER, role: "viewer", removed_at: null },
       ],
-      assets: [{ id: ASSET, project_id: P, kind: "character" }],
+      assets: [{ id: ASSET, project_id: P, kind: "character", visual_brief: "- Maja er sju år", revision: 3 }],
       asset_versions: [
         { project_id: P, media_path: REF1, mime_type: "image/png", byte_size: 3 },
         { project_id: P, media_path: REF2, mime_type: "image/png", byte_size: 3 },
