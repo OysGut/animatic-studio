@@ -116,3 +116,4 @@ export * from "./assembly/material-update";
 export * from "./interchange";
 export * from "./assembly/scene-marks";
 export * from "./assets/brief-versions";
+export * from "./sync/remote-log";
