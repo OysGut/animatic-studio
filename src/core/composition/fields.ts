@@ -29,6 +29,7 @@ import {
   normalizeTextSpec,
 } from "../typography/validate";
 import { t as tk, tLocalized } from "@/core/i18n/keyed";
+import { panelNoteError, arrowSpecError, cameraMarkError } from "../storyboard";
 
 export const LAYER_KINDS: readonly LayerKind[] = [
   "background",
@@ -41,9 +42,13 @@ export const LAYER_KINDS: readonly LayerKind[] = [
   "group",
   "text",
   "page",
+  // SB-1 (migrasjon 0102): bare tillatt i storyboardkomposisjoner (kontrolleres i kommandoen og i databasen)
+  "note",
+  "arrow",
+  "camera_mark",
 ];
 
-export const LAYER_KIND_LABEL: Record<LayerKind, string> = tLocalized({ background: "core-composition-fields.layer-kind-label.background.6e4860fc7e26", midground: "core-composition-fields.layer-kind-label.midground.31b050e96f64", foreground: "core-composition-fields.layer-kind-label.foreground.6f7287418771", character: "core-composition-fields.layer-kind-label.character.4ad6ccb07769", object: "core-composition-fields.layer-kind-label.object.0cc9d5535e35", effect: "core-composition-fields.layer-kind-label.effect.e9a75c00a85f", other: "core-composition-fields.layer-kind-label.other.03f5066b9af7", group: "core-composition-fields.layer-kind-label.group.0cdb01acb892", text: "core-composition-fields.layer-kind-label.text.07732bbe6214", page: "core-composition-fields.layer-kind-label.page.1fb83e5a1234" });
+export const LAYER_KIND_LABEL: Record<LayerKind, string> = tLocalized({ background: "core-composition-fields.layer-kind-label.background.6e4860fc7e26", midground: "core-composition-fields.layer-kind-label.midground.31b050e96f64", foreground: "core-composition-fields.layer-kind-label.foreground.6f7287418771", character: "core-composition-fields.layer-kind-label.character.4ad6ccb07769", object: "core-composition-fields.layer-kind-label.object.0cc9d5535e35", effect: "core-composition-fields.layer-kind-label.effect.e9a75c00a85f", other: "core-composition-fields.layer-kind-label.other.03f5066b9af7", group: "core-composition-fields.layer-kind-label.group.0cdb01acb892", text: "core-composition-fields.layer-kind-label.text.07732bbe6214", page: "core-composition-fields.layer-kind-label.page.1fb83e5a1234", note: "sb1.layer-note", arrow: "sb1.layer-arrow", camera_mark: "sb1.layer-camera-mark" });
 
 /** Standard parallakse per lagtype: bakgrunnen beveger seg minst, forgrunnen mest. */
 export const DEFAULT_PARALLAX: Record<LayerKind, number> = {
@@ -57,6 +62,9 @@ export const DEFAULT_PARALLAX: Record<LayerKind, number> = {
   group: 1,
   text: 1,
   page: 1,
+  note: 1,
+  arrow: 1,
+  camera_mark: 1,
 };
 
 /** Egenskapene i lagets plassering som kan animeres. */
