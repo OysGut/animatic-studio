@@ -32,7 +32,6 @@ Kortversjonen († = detaljer i `docs/development/AGENTS_DETAILS.md`):
 18. Carry-over (GP3): pure planCarryOver, one undo group, never the source 2D scene.†
 19. Film shares (GP5): a token binds one exported mp4; new tokens derive from a DB-only pepper and are stored only as a peppered digest (film_share_lookup, service role), so /se/$token resolves only via a server function.†
 20. src/core/typography, src/core/animation and src/app/asset-studio have their own AGENTS.md; read it first.
-21. Asset versions sort via compareVersionCreation.
 23. Invitations bind to the invited email (checked against the signed-in email), so leaked links grant no access.
 
 24. Note resolution is reversible; audio edits persist projected alignment without changing sources.
@@ -47,7 +46,7 @@ Kortversjonen († = detaljer i `docs/development/AGENTS_DETAILS.md`):
 31. Line links use scene-scoped IDs and reversible commands; backup remaps both, so sources never change. ML3: one language version per project+tag.
 32. ProRes: own worker encoder, append-only MOV (moov last), so exports stream to OPFS without GPL code.
 33. Harmonization (P8): one image runner; "only here" is an archived variant; batches keep receipts so billed work never replays.
-34. M6: additive updates, computed forecasts.
+34. M6: additive updates, computed forecasts. Asset versions sort via compareVersionCreation.
 35. i18n: new/changed text ships all registered languages, source hashes and machine-review markers. Missing/stale translations fail checks. Only t()/tLocalized, never new L()/localized().†
 36. New file-path tables/columns join ORPHAN_REFERENCE_TABLES in the same change, with a test, so cleanup keeps used files.
 37. R3: global publish undo/redo is a group-bound history effect (withdraw/republish via security-definer RPC); global rows/files never change.
