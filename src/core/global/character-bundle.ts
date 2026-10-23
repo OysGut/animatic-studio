@@ -8,7 +8,9 @@
  * lokale verdien er uendret siden forrige innhenting (eller mangler), oppdateres; et felt brukeren har
  * endret selv (lokal overstyring), bevares og meldes som «beholdt». Plattformnøytralt, ingen sideeffekter.
  */
-import type { AssetVoice, BriefVersion } from "../model";
+import type { Asset, AssetId, AssetVoice, BriefVersion, ProjectState } from "../model";
+import type { Command } from "../commands/types";
+import { newId } from "../ids";
 import { assetVoiceError } from "../dialogue/voice";
 import { briefVersionsError } from "../assets/brief-versions";
 
