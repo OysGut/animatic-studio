@@ -22,7 +22,7 @@ async function axe(page, label) {
   await page.addScriptTag({ content: AXE });
   const res = await page.evaluate(async () => {
     const r = await window.axe.run(document, { runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"] }, resultTypes: ["violations"] });
-    return r.violations.map((v) => ({ id: v.id, impact: v.impact, n: v.nodes.length, nodes: v.nodes.slice(0, 6).map((x) => `${x.target.join(" ")} :: ${(x.failureSummary || "").split("\n").slice(1, 2).join(" ").slice(0, 160)}`) }));
+    return r.violations.map((v) => ({ id: v.id, impact: v.impact, n: v.nodes.length, nodes: v.nodes.slice(0, 6).map((x) => `${x.target.join(" ")} {${x.html.slice(0, 220)}} :: ${(x.failureSummary || "").split("\n").slice(1, 2).join(" ").slice(0, 160)}`) }));
   });
   if (VERBOSE) for (const v of res) console.log(`    [${label}] ${v.id} (${v.impact}) x${v.n}\n      ${v.nodes.join("\n      ")}`);
   h.check(res.length === 0, `${label}: ingen axe-avvik (WCAG 2.1 AA)${res.length ? ": " + res.map((v) => `${v.id}×${v.n}`).join(", ") : ""}`);
