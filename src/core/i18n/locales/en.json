@@ -16270,12 +16270,6 @@
     "parameters": [],
     "executable": true
   },
-  "core-script-assist-prompts.message.message.975880aef759": {
-    "text": "All lines already have an English translation",
-    "source": "\"All lines already have an English translation\"",
-    "parameters": [],
-    "executable": true
-  },
   "core-script-assist-proposal.message.message.7382c1d94424": {
     "text": "Select at least one line",
     "source": "\"Select at least one line\"",
@@ -59397,12 +59391,6 @@
     "parameters": [],
     "executable": true
   },
-  "app-script-assist-writing-panel.writing-panel.p.44cd5e7686d9": {
-    "text": "The draft is saved as an uncertain translation and must be approved. The Norwegian script is not changed.",
-    "source": "\"The draft is saved as an uncertain translation and must be approved. The Norwegian script is not changed.\"",
-    "parameters": [],
-    "executable": true
-  },
   "app-script-assist-writing-panel.writing-panel.p.8c550f9bedc7": {
     "text": "Some lines were changed by someone else after the suggestion was made. They cannot be used; create the suggestion again.",
     "source": "\"Some lines were changed by someone else after the suggestion was made. They cannot be used; create the suggestion again.\"",
@@ -59644,12 +59632,6 @@
   "app-script-assist-writing-panel.writing-panel.toolbar-button.590e2bab5227": {
     "text": "Format check",
     "source": "\"Format check\"",
-    "parameters": [],
-    "executable": true
-  },
-  "app-script-assist-writing-panel.writing-panel.toolbar-button.51ceafe95950": {
-    "text": "English draft",
-    "source": "\"English draft\"",
     "parameters": [],
     "executable": true
   },
@@ -74615,6 +74597,21 @@
   },
   "g1-source-language.import.suggestion": {
     "text": "Suggested: {language}"
+  },
+  "g1b-assist.target.invalid": {
+    "text": "Choose a valid target language that is not the script's language."
+  },
+  "g1b-assist.target.label": {
+    "text": "Target language"
+  },
+  "g1b-assist.translate.all-done": {
+    "text": "All lines already have a {language} translation"
+  },
+  "g1b-assist.translate.button": {
+    "text": "Draft in {language}"
+  },
+  "g1b-assist.translate.note": {
+    "text": "The draft is saved as an uncertain {language} translation and must be approved. The script in the source language is not changed."
   },
   "g1b-fdx.import.invalid": {
     "text": "The file is not a valid Final Draft file (.fdx)."

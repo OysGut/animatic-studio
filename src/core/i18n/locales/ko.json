@@ -53535,6 +53535,31 @@
     "sourceHash": "935a8b83fd98c937cfd2ca7319c14ab8f6a66fad5bf10bb1dcd89e0630bce063",
     "review": "machine"
   },
+  "g1b-assist.target.invalid": {
+    "text": "대본 언어가 아닌 올바른 대상 언어를 선택하세요.",
+    "sourceHash": "f5682342e46256111742a52a7d9bc1d16fead14eb6a04546d01437ad5d27e004",
+    "review": "machine"
+  },
+  "g1b-assist.target.label": {
+    "text": "대상 언어",
+    "sourceHash": "bd95281c0c7a8bceb296bda9c9e936b3a862363c4509bb30a43bab2865474f2d",
+    "review": "machine"
+  },
+  "g1b-assist.translate.all-done": {
+    "text": "모든 줄에 이미 번역({language})이 있습니다",
+    "sourceHash": "27d95782febf4d06074ad324d0cc4fefdf299c971a12e98c1e45ebde3b9383b3",
+    "review": "machine"
+  },
+  "g1b-assist.translate.button": {
+    "text": "{language} 초안",
+    "sourceHash": "e18ea485e8187ad560ca451fe2be56c987dc3e518beac6549920546ef5325541",
+    "review": "machine"
+  },
+  "g1b-assist.translate.note": {
+    "text": "초안은 확인되지 않은 번역({language})으로 저장되며 승인이 필요합니다. 원어 대본은 변경되지 않습니다.",
+    "sourceHash": "413fe6cd8807af4b034d06d01e6e062f4d15fb0e76f959d72acdd25b8dffb0b5",
+    "review": "machine"
+  },
   "g1b-fdx.import.invalid": {
     "text": "이 파일은 올바른 Final Draft 파일(.fdx)이 아닙니다.",
     "sourceHash": "19c3ccc26277acc6c5db758b6b95723e41bdbda4f650d80cc33268c982737068",
