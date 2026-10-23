@@ -146,7 +146,7 @@ function paintItem(ctx: Ctx2D, it: DrawItem, v: Matrix, opts: DrawOptions, place
     }
   } else if (it.cameraMark) {
     const f = it.cameraMark.frame;
-    ctx.strokeStyle = it.fill ?? it.cameraMark.zoom.toString(); ctx.lineWidth = 4;
+    ctx.strokeStyle = it.fill ?? ctx.strokeStyle; ctx.lineWidth = 4;
     ctx.strokeRect(f.x, f.y, f.width, f.height);
     ctx.font = "24px sans-serif"; ctx.fillStyle = ctx.strokeStyle; ctx.fillText(`${it.cameraMark.zoom}×`, f.x + 12, f.y + 30);
   } else if (it.kind === "text") {

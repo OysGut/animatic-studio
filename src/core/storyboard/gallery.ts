@@ -136,10 +136,12 @@ export function planDuplicatePanel(s: ProjectState, panelId: string): Command[] 
   const layers = Object.values(s.layers)
     .filter((l) => !l.removed && l.compositionId === panelId)
     .sort((a, b) => a.orderKey.localeCompare(b.orderKey));
+  const remap = new Map(layers.map(l => [l.id, newId<"composition_layer">()]));
+  if (p.storyboard) cmds.push({type:"SetStoryboardDetails",panelId:id,details:{...p.storyboard,number:""}});
   if (layers.length > 0)
     cmds.push({
       type: "AddLayers",
-      layers: layers.map((l) => ({ layerId: newId<"layer">() as never, compositionId: id as never, orderKey: l.orderKey, fields: layerFieldsOf(l) })),
+      layers: layers.map((l) => { const fields = layerFieldsOf(l); return { layerId: remap.get(l.id) as never, compositionId: id, orderKey: l.orderKey, fields: { ...fields, ...(l.groupId ? {groupId:remap.get(l.groupId)??null}:{}), ...(l.note?.anchor && "layerId" in l.note.anchor ? {note:{...l.note,anchor:{layerId:remap.get(l.note.anchor.layerId)??l.note.anchor.layerId}}}:{}), ...(l.arrow?.layerId ? {arrow:{...l.arrow,layerId:remap.get(l.arrow.layerId)??l.arrow.layerId}}:{}) } }; }),
     });
   return cmds;
 }

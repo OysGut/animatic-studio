@@ -30,8 +30,7 @@ export function panelDetailsValid(s: ProjectState, p: Composition, d: PanelDetai
   if (d.angle !== null && !SHOT_ANGLES.includes(d.angle)) return false;
   if (d.focalMm !== null && (!Number.isFinite(d.focalMm) || d.focalMm <= 0 || d.focalMm > 2000)) return false;
   if (typeof d.movement !== "string" || d.movement.length > 10000 || !d.fields || typeof d.fields !== "object" || Array.isArray(d.fields)) return false;
-  const keys = new Set(panelFields(s).map(f => f.id));
-  if (Object.entries(d.fields).some(([k, v]) => !keys.has(k) || typeof v !== "string" || v.length > 10000)) return false;
+  if (Object.entries(d.fields).some(([k, v]) => !/^[a-z][a-z0-9_-]{0,63}$/.test(k) || typeof v !== "string" || v.length > 10000)) return false;
   if (!Array.isArray(d.dialogueIds) || d.dialogueIds.length > 1000 || new Set(d.dialogueIds).size !== d.dialogueIds.length) return false;
   return d.dialogueIds.every(id => { const b = s.blocks[id]; return b && !b.removed && b.variantId === p.variantId && b.kind === "dialogue"; });
 }
@@ -54,14 +53,16 @@ export function planPanelNumbers(s: ProjectState, productionId: string, renumber
   const occurrences = Object.values(s.occurrences).filter(o => o.productionId === productionId && o.active).sort((a,b) => a.orderKey.localeCompare(b.orderKey));
   return occurrences.flatMap((o, si) => {
     const panels = storyboardPanelsOf(s, o.id);
-    const scene = renumber ? String(si + 1) : panels.map(p => panelDetails(p).sceneNumber).find(Boolean) ?? String(si + 1);
+    const scene = renumber ? String(si + 1) : panels.map(p => panelDetails(p).sceneNumber).find(Boolean) ?? o.productionNumber ?? String(si + 1);
     const occupied = panels.map(p => panelDetails(p).number).filter(Boolean);
     let previous: string | null = null;
+    const assigned = new Set<string>();
     return panels.map((p, i) => {
       const d = panelDetails(p);
       let after = d.number;
       if (renumber) after = String(i + 1);
-      else if (!after) { after = previous ? insertedPanelNumber(previous, occupied) : String(i + 1); if (occupied.includes(after)) after = insertedPanelNumber(previous, occupied); occupied.push(after); }
+      else if (!after || assigned.has(after)) { after = previous ? insertedPanelNumber(previous, occupied) : String(i + 1); if (occupied.includes(after)) after = insertedPanelNumber(previous, occupied); occupied.push(after); }
+      assigned.add(after);
       previous = after;
       return { panelId: p.id, before: d.number, after, sceneBefore: d.sceneNumber, sceneAfter: scene };
     }).filter(c => c.before !== c.after || c.sceneBefore !== c.sceneAfter);

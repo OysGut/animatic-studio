@@ -623,6 +623,7 @@ export function restoredState(
       ai_price_per_image: p["ai_price_per_image"] ?? null,
       // Antakelsene for varighetsestimat (migrasjon 0028, KI-28) følger med sikkerhetskopien
       duration_assumptions: p["duration_assumptions"] ?? null,
+      storyboard_fields: p["storyboard_fields"] ?? null,
       // Aktiv kvalitetsprofil (M8, migrasjon 0063) følger med; ID-en omskrives til den nye profilen
       active_quality_profile_id: remapValue(p["active_quality_profile_id"] ?? null, map),
     },
