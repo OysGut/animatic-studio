@@ -31843,6 +31843,27 @@
     "engine-import-zip-read.zip-entry-blob.message.d7953441644d": {
       "text": "Zip-filen er skadet ({name})."
     },
+    "factSheet.auto.label": {
+      "text": "Laget automatisk fra manuset {date}"
+    },
+    "factSheet.cost.ready": {
+      "text": "Faktaarket fra manuset brukes alltid, i tillegg til teksten i feltet."
+    },
+    "factSheet.cost.study": {
+      "text": "Faktaarket mangler: først lages en studie av manuset (ett ekstra tekstkall, også langt rimeligere enn et bilde), deretter skrives teksten. Ett trykk godkjenner begge kallene."
+    },
+    "factSheet.error.save": {
+      "text": "Faktaarket kunne ikke lagres på ressursen."
+    },
+    "factSheet.error.study": {
+      "text": "Faktaarket kunne ikke lages fra manuset, så teksten ble ikke skrevet. {message}"
+    },
+    "factSheet.history": {
+      "text": "Faktaark laget fra manuset ({name})"
+    },
+    "factSheet.retry": {
+      "text": "Prøv igjen"
+    },
     "id3.derived-from.invalid": {
       "text": "Kildeversjonen finnes ikke i denne ressursen."
     },
@@ -64983,6 +65004,27 @@
     },
     "engine-import-zip-read.zip-entry-blob.message.d7953441644d": {
       "text": "The zip file is damaged ({name})."
+    },
+    "factSheet.auto.label": {
+      "text": "Created automatically from the script {date}"
+    },
+    "factSheet.cost.ready": {
+      "text": "The fact sheet from the script is always used, in addition to the text in the field."
+    },
+    "factSheet.cost.study": {
+      "text": "No fact sheet yet: a study of the script runs first (one extra text call, also far cheaper than an image), then the text is written. One click approves both calls."
+    },
+    "factSheet.error.save": {
+      "text": "The fact sheet could not be saved on the asset."
+    },
+    "factSheet.error.study": {
+      "text": "The fact sheet could not be created from the script, so the text was not written. {message}"
+    },
+    "factSheet.history": {
+      "text": "Fact sheet created from the script ({name})"
+    },
+    "factSheet.retry": {
+      "text": "Try again"
     },
     "id3.derived-from.invalid": {
       "text": "The source version does not exist in this asset."

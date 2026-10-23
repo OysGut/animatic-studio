@@ -75521,5 +75521,26 @@
   },
   "brief.versions.fromText": {
     "text": "Laget fra teksten under"
+  },
+  "factSheet.auto.label": {
+    "text": "Laget automatisk fra manuset {date}"
+  },
+  "factSheet.cost.study": {
+    "text": "Faktaarket mangler: først lages en studie av manuset (ett ekstra tekstkall, også langt rimeligere enn et bilde), deretter skrives teksten. Ett trykk godkjenner begge kallene."
+  },
+  "factSheet.cost.ready": {
+    "text": "Faktaarket fra manuset brukes alltid, i tillegg til teksten i feltet."
+  },
+  "factSheet.error.study": {
+    "text": "Faktaarket kunne ikke lages fra manuset, så teksten ble ikke skrevet. {message}"
+  },
+  "factSheet.error.save": {
+    "text": "Faktaarket kunne ikke lagres på ressursen."
+  },
+  "factSheet.retry": {
+    "text": "Prøv igjen"
+  },
+  "factSheet.history": {
+    "text": "Faktaark laget fra manuset ({name})"
   }
 }
