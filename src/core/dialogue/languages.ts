@@ -1,4 +1,4 @@
-import { isScriptLanguageTag } from "../translation/language-tags";
+import { canonicalLanguageTag, isScriptLanguageTag } from "../translation/language-tags";
 /** DV6: language preferences are independent from UI locale and recorded audio. */
 import type { ProjectState } from "../model";
 import { locale } from "../i18n";
@@ -26,11 +26,12 @@ export function languageLabel(tag: string, ui: string = locale()): string {
   } catch { return code; }
 }
 
+/**
+ * G-1b: én felles BCP-47-regel overalt – samme kanoniske mønster som kjernen og databasen
+ * (canonicalLanguageTag). Utvidelser og privat bruk (-u-, -x-) avvises likt i alle lag.
+ */
 export function languageTagError(value: string): string | null {
-  try {
-    if (!value || value.length > 100 || Intl.getCanonicalLocales(value).length !== 1) throw new Error();
-    return null;
-  } catch { return t("core-dialogue-languages.language-tag-error.message.3028cba16405"); }
+  return canonicalLanguageTag(value) ? null : t("core-dialogue-languages.language-tag-error.message.3028cba16405");
 }
 /**
  * Intern lagringsnøkkel for kildeteksten (manusblokkene). Nøkkelen betyr «kilden», ikke «norsk»: manuset kan
