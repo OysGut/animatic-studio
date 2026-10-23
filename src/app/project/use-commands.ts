@@ -353,11 +353,13 @@ export function useCommands(projectId: string, actorId: string, enabled: boolean
 
   const exec = useCallback(
     (
-      command: Command,
+      rawCommand: Command,
       opts: { label: string; mode: "do" | "undo" | "redo"; keepText?: boolean },
     ):
       | { ok: true; entry: HistoryEntry; done: Promise<string | null> }
       | { ok: false; message: string } => {
+      // G-4: all tekst lagres som NFC – normaliser kommandoen før lokal kjøring og lagring
+      const command = nfcDeep(rawCommand);
       if (!enabled)
         return {
           ok: false,
