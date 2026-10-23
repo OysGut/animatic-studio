@@ -77,6 +77,9 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-surface-1: var(--surface-1);
+  --color-google-bg: var(--google-bg);
+  --color-google-fg: var(--google-fg);
+  --color-google-border: var(--google-border);
   --color-surface-2: var(--surface-2);
   --color-surface-3: var(--surface-3);
   --color-bg-app: var(--bg-app);
@@ -168,6 +171,10 @@
   /* Egne tokens */
   --bg-app: oklch(0.173 0.004 264.5);
   --surface-1: oklch(0.205 0.006 271.1);
+  /* Googles stilregler for «Fortsett med Google» (mørkt tema): faste merkevarefarger */
+  --google-bg: #131314;
+  --google-fg: #e3e3e3;
+  --google-border: #8e918f;
   --surface-2: oklch(0.239 0.008 264.4);
   --surface-3: oklch(0.276 0.01 260.7);
   --border-subtle: oklch(0.301 0.012 264.4);
