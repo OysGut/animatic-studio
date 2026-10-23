@@ -16,6 +16,7 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { applyCommand, forkPlan, newId, revisionsOf, type Command, type ProjectState } from "@/core";
+import { nfcDeep } from "@/core/nfc";
 import { runCommand } from "@/adapters/storage/commands.functions";
 import {
   commandQueue,
@@ -352,11 +353,13 @@ export function useCommands(projectId: string, actorId: string, enabled: boolean
 
   const exec = useCallback(
     (
-      command: Command,
+      rawCommand: Command,
       opts: { label: string; mode: "do" | "undo" | "redo"; keepText?: boolean },
     ):
       | { ok: true; entry: HistoryEntry; done: Promise<string | null> }
       | { ok: false; message: string } => {
+      // G-4: all tekst lagres som NFC – normaliser kommandoen før lokal kjøring og lagring
+      const command = nfcDeep(rawCommand);
       if (!enabled)
         return {
           ok: false,

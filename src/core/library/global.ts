@@ -9,6 +9,7 @@
  */
 import { segmentWords } from "../language/text-metrics";
 import { collation } from "../i18n";
+import { foldSearch } from "../search-fold";
 import type { Asset, AssetKind, AssetVersion, ProjectState, VisualStyle } from "../model";
 import type { AssetId, AssetVariantId, AssetVersionId } from "../ids";
 import type { AssetMedia, Command } from "../commands/types";
@@ -143,7 +144,8 @@ export const EMPTY_GLOBAL_FILTER: GlobalFilter = {
 };
 
 function fold(s: string): string {
-  return s.normalize("NFKD").replace(/[\u0300-\u036f]/g, "").toLocaleLowerCase(collation());
+  // G-4: felles fold (NFKC, diakritiske tegn, små bokstaver) – samme regel som databasens private.fold_text
+  return foldSearch(s);
 }
 
 /**

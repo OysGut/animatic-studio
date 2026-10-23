@@ -8054,6 +8054,30 @@ try {
     await as("service_role", null, (tx) => tx`select public.delete_project(${pid}, ${ALICE})`);
     await as("authenticated", ALICE, (tx) => tx`select public.set_my_time_zone(null)`);
   });
+  // ---------- G-4 (0096): aksent- og skriftolerant søk ----------
+  await test("0096 G-4.2: fold_text fjerner aksenter, trigramindeksene finnes og RPC-en håndhever medlemskap", async () => {
+    // fold_text: aksenter og store bokstaver foldes bort
+    const f1 = String((await sql`select private.fold_text('Café ÁRBOL piñón') t`)[0]!["t"]);
+    assert(f1 === "cafe arbol pinon", `fold_text ga '${f1}'`);
+    const f2 = String((await sql`select private.fold_text('映画テスト') t`)[0]!["t"]);
+    assert(f2 === "映画テスト", "CJK skal være uendret");
+    // Indeksene finnes
+    const idx = await sql`select indexname from pg_indexes where schemaname = 'public' and indexname in ('script_blocks_fold_trgm_idx','assets_name_fold_trgm_idx','script_annotations_fold_trgm_idx','note_flags_fold_trgm_idx','global_assets_name_fold_trgm_idx','profiles_display_name_fold_trgm_idx')`;
+    assert(idx.length === 6, `mangler trigramindekser: fant ${idx.length} av 6`);
+    // Medlem finner aksentert tekst med aksentfritt søk; ikke-medlem får null treff
+    const pid = String((await as("authenticated", ALICE, (tx) => tx`select public.create_project('Søketest', 25, 1, 'nb') id`))[0]!["id"]);
+    const prod = String((await sql`select id from public.productions where project_id=${pid} and kind='main'`)[0]!["id"]);
+    const scene = String((await sql`insert into public.scenes (id, project_id, origin_production_id) values (gen_random_uuid(), ${pid}, ${prod}) returning id`)[0]!["id"]);
+    const variant = String((await sql`insert into public.scene_variants (id, project_id, scene_id) values (gen_random_uuid(), ${pid}, ${scene}) returning id`)[0]!["id"]);
+    await sql`insert into public.script_blocks (id, project_id, variant_id, kind, order_key, language, text) values (gen_random_uuid(), ${pid}, ${variant}, 'action', 'k1', 'nb', 'Sara går inn på caféen'), (gen_random_uuid(), ${pid}, ${variant}, 'action', 'k2', 'nb', '映画のテスト')`;
+    const hits = Number((await as("authenticated", ALICE, (tx) => tx`select count(*) n from public.search_script_blocks(${pid}, 'cafe', 10)`))[0]!["n"]);
+    assert(hits === 1, `«cafe» skulle treffe «caféen», fikk ${hits}`);
+    const cjk = Number((await as("authenticated", ALICE, (tx) => tx`select count(*) n from public.search_script_blocks(${pid}, 'テスト', 10)`))[0]!["n"]);
+    assert(cjk === 1, `CJK-søk skulle treffe, fikk ${cjk}`);
+    const fremmed = Number((await as("authenticated", BOB, (tx) => tx`select count(*) n from public.search_script_blocks(${pid}, 'cafe', 10)`))[0]!["n"]);
+    assert(fremmed === 0, `ikke-medlem så ${fremmed} blokker`);
+    await as("service_role", null, (tx) => tx`select public.delete_project(${pid}, ${ALICE})`);
+  });
   // ---------- search_path: alle SECURITY DEFINER-funksjoner skal ha search_path='' ----------
   await test("alle SECURITY DEFINER-funksjoner i public/private har search_path=''", async () => {
     const rows = await sql`

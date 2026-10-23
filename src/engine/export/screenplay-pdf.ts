@@ -237,7 +237,13 @@ export async function screenplayPdfUnicode(
     if (!first) doc.addPage([PAGE_W, PAGE_H], "portrait");
     first = false;
   };
-  const put = (x: number, yTop: number, text: string) => drawRuns(doc, names, text, x, yTop, opts.language);
+  // G-4: RTL-linjer (arabisk/hebraisk) speiles om sidens midtlinje, slik at marg og innrykk speilvendes.
+  // Bidi-rekkefølge og shaping gjøres av jsPDF i drawRuns (isInputVisual/isOutputVisual).
+  const { isRtlText } = await import("@/core/rtl");
+  const put = (x: number, yTop: number, text: string) => {
+    const xr = isRtlText(text) ? PAGE_W - x - runsWidth(doc, names, text, opts.language) : x;
+    drawRuns(doc, names, text, xr, yTop, opts.language);
+  };
   if (opts.titlePage?.length) {
     next();
     let y = 252;

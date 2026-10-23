@@ -46,7 +46,7 @@ export function collapseDoubledGlyphs(s: string): string {
 }
 
 function normalize(text: string): string {
-  return collapseDoubledGlyphs(text.replace(/\u00a0/g, " ").trim()).trim();
+  return collapseDoubledGlyphs(text.normalize("NFC").replace(/\u00a0/g, " ").trim()).trim();
 }
 
 /** «(sukker) Hei» → parentes + replikk. */
