@@ -1126,9 +1126,11 @@ export type Database = {
           active_from: number | null
           active_to: number | null
           anchor: Json | null
+          arrow: Json | null
           asset_id: string | null
           asset_variant_id: string | null
           blend: string
+          camera_mark: Json | null
           composition_id: string
           created_at: string
           created_by: string | null
@@ -1145,6 +1147,7 @@ export type Database = {
           mask: Json | null
           motion_path: Json | null
           name: string
+          note: Json | null
           order_key: string
           page_transition: Json | null
           parallax: number
@@ -1168,9 +1171,11 @@ export type Database = {
           active_from?: number | null
           active_to?: number | null
           anchor?: Json | null
+          arrow?: Json | null
           asset_id?: string | null
           asset_variant_id?: string | null
           blend?: string
+          camera_mark?: Json | null
           composition_id: string
           created_at?: string
           created_by?: string | null
@@ -1187,6 +1192,7 @@ export type Database = {
           mask?: Json | null
           motion_path?: Json | null
           name?: string
+          note?: Json | null
           order_key: string
           page_transition?: Json | null
           parallax?: number
@@ -1210,9 +1216,11 @@ export type Database = {
           active_from?: number | null
           active_to?: number | null
           anchor?: Json | null
+          arrow?: Json | null
           asset_id?: string | null
           asset_variant_id?: string | null
           blend?: string
+          camera_mark?: Json | null
           composition_id?: string
           created_at?: string
           created_by?: string | null
@@ -1229,6 +1237,7 @@ export type Database = {
           mask?: Json | null
           motion_path?: Json | null
           name?: string
+          note?: Json | null
           order_key?: string
           page_transition?: Json | null
           parallax?: number
@@ -1295,14 +1304,19 @@ export type Database = {
       }
       compositions: {
         Row: {
+          active: boolean
           background: string
           camera: Json
           created_at: string
           created_by: string | null
           duration_frames: number
           height: number
+          hidden: boolean
           id: string
+          kind: string
           name: string
+          occurrence_id: string | null
+          order_key: string | null
           produced_from: Json
           project_id: string
           removed: boolean
@@ -1313,14 +1327,19 @@ export type Database = {
           width: number
         }
         Insert: {
+          active?: boolean
           background?: string
           camera?: Json
           created_at?: string
           created_by?: string | null
           duration_frames?: number
           height?: number
+          hidden?: boolean
           id: string
+          kind?: string
           name?: string
+          occurrence_id?: string | null
+          order_key?: string | null
           produced_from?: Json
           project_id: string
           removed?: boolean
@@ -1331,14 +1350,19 @@ export type Database = {
           width?: number
         }
         Update: {
+          active?: boolean
           background?: string
           camera?: Json
           created_at?: string
           created_by?: string | null
           duration_frames?: number
           height?: number
+          hidden?: boolean
           id?: string
+          kind?: string
           name?: string
+          occurrence_id?: string | null
+          order_key?: string | null
           produced_from?: Json
           project_id?: string
           removed?: boolean
@@ -1349,6 +1373,13 @@ export type Database = {
           width?: number
         }
         Relationships: [
+          {
+            foreignKeyName: "compositions_occurrence_id_fkey"
+            columns: ["occurrence_id"]
+            isOneToOne: false
+            referencedRelation: "scene_occurrences"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "compositions_project_id_fkey"
             columns: ["project_id"]
@@ -4053,6 +4084,138 @@ export type Database = {
           },
         ]
       }
+      production_status_events: {
+        Row: {
+          area: string
+          composition_id: string | null
+          created_at: string
+          created_by: string | null
+          id: string
+          occurrence_id: string | null
+          project_id: string
+          removed: boolean
+          revision: number
+          status: string
+          status_id: string
+        }
+        Insert: {
+          area: string
+          composition_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          id: string
+          occurrence_id?: string | null
+          project_id: string
+          removed?: boolean
+          revision?: number
+          status: string
+          status_id: string
+        }
+        Update: {
+          area?: string
+          composition_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          occurrence_id?: string | null
+          project_id?: string
+          removed?: boolean
+          revision?: number
+          status?: string
+          status_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "production_status_events_composition_id_fkey"
+            columns: ["composition_id"]
+            isOneToOne: false
+            referencedRelation: "compositions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "production_status_events_occurrence_id_fkey"
+            columns: ["occurrence_id"]
+            isOneToOne: false
+            referencedRelation: "scene_occurrences"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "production_status_events_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "production_status_events_status_id_fkey"
+            columns: ["status_id"]
+            isOneToOne: false
+            referencedRelation: "production_statuses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      production_statuses: {
+        Row: {
+          area: string
+          composition_id: string | null
+          created_at: string
+          created_by: string | null
+          id: string
+          occurrence_id: string | null
+          project_id: string
+          removed: boolean
+          revision: number
+          status: string
+        }
+        Insert: {
+          area: string
+          composition_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          id: string
+          occurrence_id?: string | null
+          project_id: string
+          removed?: boolean
+          revision?: number
+          status: string
+        }
+        Update: {
+          area?: string
+          composition_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          occurrence_id?: string | null
+          project_id?: string
+          removed?: boolean
+          revision?: number
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "production_statuses_composition_id_fkey"
+            columns: ["composition_id"]
+            isOneToOne: false
+            referencedRelation: "compositions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "production_statuses_occurrence_id_fkey"
+            columns: ["occurrence_id"]
+            isOneToOne: false
+            referencedRelation: "scene_occurrences"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "production_statuses_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       productions: {
         Row: {
           created_at: string
@@ -6004,6 +6167,115 @@ export type Database = {
             columns: ["session_id"]
             isOneToOne: false
             referencedRelation: "story_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      storyboard_panel_blocks: {
+        Row: {
+          block_id: string
+          created_at: string
+          created_by: string | null
+          id: string
+          order_key: string
+          panel_id: string
+          project_id: string
+          removed: boolean
+          revision: number
+        }
+        Insert: {
+          block_id: string
+          created_at?: string
+          created_by?: string | null
+          id: string
+          order_key: string
+          panel_id: string
+          project_id: string
+          removed?: boolean
+          revision?: number
+        }
+        Update: {
+          block_id?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          order_key?: string
+          panel_id?: string
+          project_id?: string
+          removed?: boolean
+          revision?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "storyboard_panel_blocks_block_id_fkey"
+            columns: ["block_id"]
+            isOneToOne: false
+            referencedRelation: "script_blocks"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "storyboard_panel_blocks_panel_id_fkey"
+            columns: ["panel_id"]
+            isOneToOne: false
+            referencedRelation: "compositions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "storyboard_panel_blocks_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      storyboard_panel_snapshots: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          panel_id: string
+          panel_revision: number
+          project_id: string
+          removed: boolean
+          revision: number
+          snapshot: Json
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id: string
+          panel_id: string
+          panel_revision: number
+          project_id: string
+          removed?: boolean
+          revision?: number
+          snapshot: Json
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          panel_id?: string
+          panel_revision?: number
+          project_id?: string
+          removed?: boolean
+          revision?: number
+          snapshot?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "storyboard_panel_snapshots_panel_id_fkey"
+            columns: ["panel_id"]
+            isOneToOne: false
+            referencedRelation: "compositions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "storyboard_panel_snapshots_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
             referencedColumns: ["id"]
           },
         ]
