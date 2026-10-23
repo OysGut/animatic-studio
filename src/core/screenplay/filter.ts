@@ -203,7 +203,7 @@ export function matchingOccurrences(
   productionId: string,
   f: SceneFilter,
 ): Set<string> {
-  const text = f.text?.trim().toLocaleLowerCase("und") ?? "";
+  const text = f.text?.trim() ? foldSearch(f.text.trim()) : "";
   const out = new Set<string>();
   for (const o of orderedOccurrences(s, productionId)) {
     if (!isScriptOccurrence(o)) continue; // MTS MT6: tittel/tekst/rulletekst er ikke manusscener

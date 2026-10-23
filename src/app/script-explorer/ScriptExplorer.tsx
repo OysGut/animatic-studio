@@ -46,12 +46,15 @@ export function ScriptExplorer(props: Props) {
 }
 
 function Highlight({ text, query }: { text: string; query: string }) {
-  const at = query ? text.toLowerCase().indexOf(query.toLowerCase()) : -1;
+  // G-4: foldet søk – «cafe» treffer og markerer «Café»; posisjonen regnes i originalteksten
+  const match = query ? foldMatch(text, query) : null;
+  const at = match ? match.index : -1;
+  const matchLen = match ? match.length : 0;
   const start = at < 0 ? 0 : Math.max(0, at - 65);
-  const excerpt = text.slice(start, Math.max(start + 180, at + query.length));
+  const excerpt = text.slice(start, Math.max(start + 180, at + matchLen));
   if (at < 0) return <>{excerpt}</>;
   const offset = at - start;
-  return <>{start > 0 ? "… " : ""}{excerpt.slice(0, offset)}<mark className="mark-search text-inherit">{excerpt.slice(offset, offset + query.length)}</mark>{excerpt.slice(offset + query.length)}</>;
+  return <>{start > 0 ? "… " : ""}{excerpt.slice(0, offset)}<mark className="mark-search text-inherit">{excerpt.slice(offset, offset + matchLen)}</mark>{excerpt.slice(offset + matchLen)}</>;
 }
 
 function ExplorerContent({ state, editable, cmds, ...props }: Props & { state: ProjectState; editable: boolean; cmds: ReturnType<typeof useCommands> }) {
