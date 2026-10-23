@@ -228,7 +228,7 @@ describe("SB-1 storyboardlag", () => {
 });
 
 describe("SB-1 sikkerhetskopi", () => {
-  it("rundtur tar med paneler, forankringer, status og øyeblikksbilder", () => {
+  it("rundtur tar med paneler, forankringer, status og øyeblikksbilder", async () => {
     const { s, occ } = setup();
     const { st, panelId } = addPanel(s, occ);
     const st2 = mustApply(st, {
