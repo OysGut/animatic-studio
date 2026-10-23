@@ -217,7 +217,7 @@ describe("SB-1 storyboardlag", () => {
     // Ugyldig spesifikasjon avvises (farge må være #rrggbb)
     expect(applyCommand(st, envelope({
       type: "AddLayers",
-      layers: [{ layerId: tid(), compositionId: panelId, fields: { ...defaultLayerFields(st, st.compositions[panelId]!, { fill: "#101114" }), kind: "note", fill: null, note: { ...note, color: "gul" } } }],
+      layers: [{ layerId: tid(), compositionId: panelId as never, fields: { ...defaultLayerFields(st, st.compositions[panelId]!, { fill: "#101114" }), kind: "note", fill: null, note: { ...note, color: "gul" } } }],
     })).ok).toBe(false);
     // note-felt på en vanlig lagtype avvises
     expect(applyCommand(st, envelope({
