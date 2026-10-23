@@ -1406,8 +1406,8 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         ...(typeof x["visual_brief"] === "string" && x["visual_brief"]
           ? { visualBrief: x["visual_brief"] }
           : {}),
-        ...(typeof x["visual_brief"] === "string" && x["visual_brief"] && typeof x["visual_brief_auto_at"] === "string"
-          ? { visualBriefAuto: x["visual_brief_auto_at"] }
+        ...(typeof x["visual_brief"] === "string" && x["visual_brief"] && x["visual_brief_auto_at"]
+          ? { visualBriefAuto: new Date(x["visual_brief_auto_at"] as string).toISOString() }
           : {}),
         ...(Array.isArray(json(x["brief_versions"])) && (json(x["brief_versions"]) as unknown[]).length > 0 &&
         !briefVersionsError(json(x["brief_versions"]), typeof x["active_brief_id"] === "string" ? x["active_brief_id"] : null)
