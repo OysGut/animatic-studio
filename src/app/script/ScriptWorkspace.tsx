@@ -518,7 +518,7 @@ function Workspace({
   const onPageSelect = useCallback((s: Selection) => select(s), [select]);
   const onPageActivate = useCallback(
     (s: Selection, heading?: boolean) => {
-      if (heading) return openScene(s.occurrenceId);
+      if (heading && s.occurrenceId) return openScene(s.occurrenceId);
       select(s);
       setTimeout(() => textRef.current?.focus(), 30);
     },
