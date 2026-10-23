@@ -5637,12 +5637,6 @@
     "parameters": [],
     "executable": true
   },
-  "core-commands-apply.translation-fields-of.fail.b8697ac1dfc3": {
-    "text": "Norwegian is the main script and is not translated",
-    "source": "\"Norwegian is the main script and is not translated\"",
-    "parameters": [],
-    "executable": true
-  },
   "core-commands-apply.translation-fields-of.fail.73a9adebd4ff": {
     "text": "The translation is too long",
     "source": "\"The translation is too long\"",

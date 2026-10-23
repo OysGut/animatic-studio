@@ -11,6 +11,7 @@
  * godkjennes av brukeren.
  */
 import type { ProjectState, ScriptBlock, SceneHeading, Translation } from "../model";
+import { isSourceLanguage } from "../dialogue/languages";
 import type { ParsedScene, ParsedScreenplay } from "../screenplay/types";
 import { parseHeading } from "../screenplay/parse";
 import { characterName } from "../screenplay/filter";

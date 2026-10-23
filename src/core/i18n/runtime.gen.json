@@ -27921,9 +27921,6 @@
     "core-commands-apply.translation-fields-of.fail.90cb0f0670c0": {
       "text": "Ugyldig status"
     },
-    "core-commands-apply.translation-fields-of.fail.b8697ac1dfc3": {
-      "text": "Norsk er hovedmanuset og oversettes ikke"
-    },
     "core-commands-apply.translation-fields-of.fail.eb653dd6de37": {
       "text": "Ugyldig oversettelse"
     },
@@ -32001,7 +31998,7 @@
       "text": "Gjenopprett"
     },
     "ml3-language-versions.dialog.description": {
-      "text": "Norsk er alltid kilden. Hver språkversjon har ett målspråk. Å fjerne en språkversjon sletter ingen oversettelser."
+      "text": "Manusets språk ({language}) er alltid kilden. Hver språkversjon har ett målspråk. Å fjerne en språkversjon sletter ingen oversettelser."
     },
     "ml3-language-versions.dialog.title": {
       "text": "Språkversjoner"
@@ -32025,10 +32022,13 @@
       "text": "Navnet må ha mellom 1 og 120 tegn."
     },
     "ml3-language-versions.error.norwegian": {
-      "text": "Norsk er kildespråket og kan ikke være en språkversjon."
+      "text": "Norsk kan foreløpig ikke lagres som språkversjon."
     },
     "ml3-language-versions.error.not-found": {
       "text": "Fant ikke språkversjonen."
+    },
+    "ml3-language-versions.error.source": {
+      "text": "Manusets språk er kilden og kan ikke være en språkversjon."
     },
     "ml3-language-versions.error.status": {
       "text": "Ukjent status for språkversjonen."
@@ -32090,8 +32090,8 @@
     "ml3-language-versions.review.languages": {
       "text": "Norsk er endret. Må gjennomgås i: {languages}"
     },
-    "ml3-language-versions.select.norwegian": {
-      "text": "Norsk (kilde)"
+    "ml3-language-versions.select.source": {
+      "text": "{label} – manus (kilde)"
     },
     "ml3-language-versions.undo.add": {
       "text": "Legg til språkversjon {name}"
@@ -61227,9 +61227,6 @@
     "core-commands-apply.translation-fields-of.fail.90cb0f0670c0": {
       "text": "Invalid status"
     },
-    "core-commands-apply.translation-fields-of.fail.b8697ac1dfc3": {
-      "text": "Norwegian is the main script and is not translated"
-    },
     "core-commands-apply.translation-fields-of.fail.eb653dd6de37": {
       "text": "Invalid translation"
     },
@@ -65307,7 +65304,7 @@
       "text": "Restore"
     },
     "ml3-language-versions.dialog.description": {
-      "text": "Norwegian is always the source. Each language version has one target language. Removing a language version deletes no translations."
+      "text": "The script language ({language}) is always the source. Each language version has one target language. Removing a language version deletes no translations."
     },
     "ml3-language-versions.dialog.title": {
       "text": "Language versions"
@@ -65331,10 +65328,13 @@
       "text": "The name must be between 1 and 120 characters."
     },
     "ml3-language-versions.error.norwegian": {
-      "text": "Norwegian is the source language and cannot be a language version."
+      "text": "Norwegian cannot be saved as a language version yet."
     },
     "ml3-language-versions.error.not-found": {
       "text": "The language version was not found."
+    },
+    "ml3-language-versions.error.source": {
+      "text": "The script language is the source and cannot be a language version."
     },
     "ml3-language-versions.error.status": {
       "text": "Unknown status for the language version."
@@ -65396,8 +65396,8 @@
     "ml3-language-versions.review.languages": {
       "text": "The Norwegian text has changed. Needs review in: {languages}"
     },
-    "ml3-language-versions.select.norwegian": {
-      "text": "Norwegian (source)"
+    "ml3-language-versions.select.source": {
+      "text": "{label} – script (source)"
     },
     "ml3-language-versions.undo.add": {
       "text": "Add language version {name}"

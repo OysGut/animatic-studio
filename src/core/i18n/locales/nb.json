@@ -5655,12 +5655,6 @@
     "parameters": [],
     "executable": true
   },
-  "core-commands-apply.translation-fields-of.fail.b8697ac1dfc3": {
-    "text": "Norsk er hovedmanuset og oversettes ikke",
-    "source": "\"Norsk er hovedmanuset og oversettes ikke\"",
-    "parameters": [],
-    "executable": true
-  },
   "core-commands-apply.translation-fields-of.fail.73a9adebd4ff": {
     "text": "Oversettelsen er for lang",
     "source": "\"Oversettelsen er for lang\"",
