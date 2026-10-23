@@ -55949,5 +55949,15 @@
     "text": "Три способа открыть пакет: 1) Распакуйте ZIP и дважды щёлкните «Åpne i After Effects (Windows).bat» или «Åpne i After Effects (Mac).command». 2) Или откройте After Effects и выберите File > Scripts > Run Script File и bygg-after-effects.jsx. 3) Скрипт сохраняет проект как {value1} в той же папке; затем этот файл можно открыть двойным щелчком. Для сохранения должно быть включено «Allow Scripts to Write Files and Access Network» в Preferences > Scripting & Expressions. Переходы между сценами и текстовые слои не воссоздаются. Файл .aep нельзя создать напрямую, потому что формат закрыт; поэтому скрипт собирает его внутри After Effects.",
     "sourceHash": "d13925d644fdf152d5266ee188be1a4de3709e96b806e2b49af90e7ddfb049d2",
     "review": "machine"
+  },
+  "ptg3.ae-wrong-host": {
+    "text": "Этот скрипт нужно запускать в After Effects. Используйте файл запуска «Åpne i After Effects» в той же папке.",
+    "sourceHash": "99a1892fa712173988d0f298ddb453653430afe7d4ff2661c6b5edc312c962de",
+    "review": "machine"
+  },
+  "ptg3.readme-ae-other-app": {
+    "text": "Примечание: двойной щелчок по bygg-after-effects.jsx может открыть другую программу Adobe, например Audition, потому что файлы .jsx связаны со всеми программами Adobe с ExtendScript. В этом случае используйте файл запуска «Åpne i After Effects». Либо щёлкните файл правой кнопкой и выберите After Effects в «Открыть с помощью», либо в Finder выберите «Свойства» → «Открыть с помощью».",
+    "sourceHash": "9b460fe08f45bd18a5eb3e5fbac17d7bac30413d288b1bef41ea89a9174e425b",
+    "review": "machine"
   }
 }

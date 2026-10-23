@@ -75671,5 +75671,11 @@
   },
   "ptg3.readme-ae-open": {
     "text": "Tre måter å åpne pakken på: 1) Pakk ut ZIP-filen og dobbeltklikk «Åpne i After Effects (Windows).bat» eller «Åpne i After Effects (Mac).command». 2) Eller åpne After Effects og velg File > Scripts > Run Script File og bygg-after-effects.jsx. 3) Skriptet lagrer prosjektet som {value1} i samme mappe; etterpå kan du dobbeltklikke den filen direkte. For lagringen må «Allow Scripts to Write Files and Access Network» være slått på i Preferences > Scripting & Expressions. Overganger mellom scener og tekstlag gjenskapes ikke. Vi kan ikke lage .aep-filen direkte, fordi formatet er lukket; derfor bygger skriptet den inne i After Effects."
+  },
+  "ptg3.ae-wrong-host": {
+    "text": "Dette skriptet må kjøres i After Effects. Bruk startfilen «Åpne i After Effects» i samme mappe."
+  },
+  "ptg3.readme-ae-other-app": {
+    "text": "Merk: dobbeltklikk på bygg-after-effects.jsx kan åpne et annet Adobe-program, for eksempel Audition, fordi .jsx-filer er knyttet til alle Adobe-programmer med ExtendScript. Bruk da startfilen «Åpne i After Effects». Alternativt kan du høyreklikke filen og velge After Effects under «Åpne med», eller i Finder velge «Vis info» → «Åpne med»."
   }
 }

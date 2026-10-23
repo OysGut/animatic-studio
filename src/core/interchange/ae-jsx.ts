@@ -317,9 +317,12 @@ export interface AeJsxMessages {
   readonly missing: string;
   /** Vises når prosjektet ikke kan lagres som .aep (skriptrettigheter av); bygget beholdes. */
   readonly saveFailed: string;
+  /** Vises når skriptet åpnes i et annet Adobe-program enn After Effects; ingenting bygges. */
+  readonly wrongHost: string;
 }
 export const AE_JSX_DEFAULT_MESSAGES: AeJsxMessages = {
   missing: "These files are missing next to bygg-after-effects.jsx, so the build stops:",
+  wrongHost: "This script must be run in After Effects. Use the launcher \"Åpne i After Effects\" in the same folder.",
   saveFailed: "The project was built but could not be saved. Turn on Preferences > Scripting & Expressions > \"Allow Scripts to Write Files and Access Network\" and run the script again.",
 };
 
@@ -336,8 +339,13 @@ export function buildAeJsx(doc: InterchangeDoc, o: { readonly cameraMode: AeCame
     for (const a of s.audio) if (a.fileId) used.add(a.fileId);
   }
   const out: string[] = [
+    // Må stå først: andre Adobe-programmer (f.eks. Audition) sender skriptet videre til After Effects
+    "#target aftereffects",
     "// bygg-after-effects.jsx - From Pen to Glass (PTG3). ES3/ExtendScript. Run in After Effects from the package folder.",
     "// Transitions between scenes are out of scope (PTG-F1). Text and unfinished layers are not recreated.",
+    "function ptgVarsel(s) { try { alert(s); } catch (e) {} }",
+    `if (typeof app.project === "undefined" || BridgeTalk.appName !== "aftereffects") { ptgVarsel(${js(msg.wrongHost)}); } else { ptgBygg(); }`,
+    "function ptgBygg() {",
     "function ptgNokkler(p, tider, verdier, inn, ut, hold) {",
     "  var i;",
     "  for (i = 0; i < tider.length; i++) p.setValueAtTime(tider[i], verdier[i]);",
@@ -362,7 +370,6 @@ export function buildAeJsx(doc: InterchangeDoc, o: { readonly cameraMode: AeCame
     "var ptgBase = \".\";",
     "try { ptgBase = new File($.fileName).parent.fsName; } catch (e) {}",
     "try { Folder.current = new Folder(ptgBase); } catch (e) {}",
-    "function ptgVarsel(s) { try { alert(s); } catch (e) {} }",
     "var ptgMangler = [];",
     "function ptgImport(rel) {",
     "  var f = new File(ptgBase + \"/\" + rel);",
@@ -388,5 +395,6 @@ export function buildAeJsx(doc: InterchangeDoc, o: { readonly cameraMode: AeCame
   out.push("app.endUndoGroup();");
   // Etter første kjøring kan brukeren dobbeltklikke .aep-filen direkte
   out.push(`try { app.project.save(new File(ptgBase + "/" + ${js(aeProjectFileName(doc))})); } catch (e) { ptgVarsel(${js(msg.saveFailed)}); }`);
+  out.push("}");
   return out.join("\n") + "\n";
 }

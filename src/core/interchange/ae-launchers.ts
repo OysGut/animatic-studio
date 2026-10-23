@@ -9,6 +9,8 @@
 export const AE_LAUNCHER_WINDOWS = "Åpne i After Effects (Windows).bat";
 // i18n-ignore: faste filnavn i pakkeformatet (oppdraget)
 export const AE_LAUNCHER_MAC = "Åpne i After Effects (Mac).command";
+/** Skriptet startfilene kjører (navnet sier hvilket program det er for). */
+export const AE_JSX_FILE = "bygg-after-effects.jsx";
 /** rwxr-xr-x for en vanlig fil. */
 export const AE_LAUNCHER_MAC_MODE = 0o100755;
 

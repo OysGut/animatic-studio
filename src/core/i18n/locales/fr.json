@@ -55875,5 +55875,15 @@
     "text": "Trois façons d’ouvrir le paquet : 1) Décompressez le ZIP et double-cliquez sur « Åpne i After Effects (Windows).bat » ou « Åpne i After Effects (Mac).command ». 2) Ou ouvrez After Effects et choisissez File > Scripts > Run Script File puis bygg-after-effects.jsx. 3) Le script enregistre le projet sous {value1} dans le même dossier ; ensuite, vous pouvez double-cliquer directement sur ce fichier. L’enregistrement exige « Allow Scripts to Write Files and Access Network » dans Preferences > Scripting & Expressions. Les transitions entre scènes et les calques de texte ne sont pas recréés. Nous ne pouvons pas créer le fichier .aep directement, car le format est fermé ; c’est pourquoi le script le construit dans After Effects.",
     "sourceHash": "d13925d644fdf152d5266ee188be1a4de3709e96b806e2b49af90e7ddfb049d2",
     "review": "machine"
+  },
+  "ptg3.ae-wrong-host": {
+    "text": "Ce script doit être exécuté dans After Effects. Utilisez le fichier de lancement « Åpne i After Effects » du même dossier.",
+    "sourceHash": "99a1892fa712173988d0f298ddb453653430afe7d4ff2661c6b5edc312c962de",
+    "review": "machine"
+  },
+  "ptg3.readme-ae-other-app": {
+    "text": "Remarque : un double-clic sur bygg-after-effects.jsx peut ouvrir une autre application Adobe, comme Audition, car les fichiers .jsx sont associés à toutes les applications Adobe dotées d’ExtendScript. Utilisez alors le fichier de lancement « Åpne i After Effects ». Vous pouvez aussi faire un clic droit et choisir After Effects dans « Ouvrir avec », ou dans le Finder « Lire les informations » → « Ouvrir avec ».",
+    "sourceHash": "9b460fe08f45bd18a5eb3e5fbac17d7bac30413d288b1bef41ea89a9174e425b",
+    "review": "machine"
   }
 }

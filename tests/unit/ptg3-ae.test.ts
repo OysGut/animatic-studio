@@ -59,6 +59,9 @@ const doc: InterchangeDoc = {
   namingVersion: "1",
 };
 
+/** `#target` er et ExtendScript-direktiv, ikke JavaScript; fjernes før kjøring i testene. */
+const stripTarget = (s: string) => s.replace(/^#target aftereffects\n/, "");
+
 /** Minimal mock av AE sitt ES3-objektmodell; registrerer alt scriptet gjør. */
 function runJsx(script: string) {
   const log = { comps: [] as { name: string; w: number; h: number; dur: number; fps: number }[], cameras: 0, nulls: [] as string[], imports: [] as string[], folders: [] as string[], keys: [] as { prop: string; times: number[]; values: unknown[] }[], parents: 0, audio: 0, texts: [] as string[], adds: [] as { comp: string; item: string; layer: Layer }[] };
@@ -119,8 +122,8 @@ function runJsx(script: string) {
   const addComp = app.project.items.addComp;
   app.project.items.addComp = (...a: [string, number, number, number, number, number]) => { const c = addComp(...a); comps.push(c); return c; };
   const ParagraphJustification = { CENTER_JUSTIFY: 1 };
-  const fn = new Function("app", "File", "ImportOptions", "KeyframeEase", "KeyframeInterpolationType", "TrackMatteType", "ParagraphJustification", script);
-  fn(app, File, ImportOptions, KeyframeEase, KeyframeInterpolationType, TrackMatteType, ParagraphJustification);
+  const fn = new Function("app", "BridgeTalk", "File", "ImportOptions", "KeyframeEase", "KeyframeInterpolationType", "TrackMatteType", "ParagraphJustification", stripTarget(script));
+  fn(app, { appName: "aftereffects" }, File, ImportOptions, KeyframeEase, KeyframeInterpolationType, TrackMatteType, ParagraphJustification);
   return { log, comps };
 }
 
@@ -232,7 +235,7 @@ describe("PTG3 «dobbeltklikk og åpne» (Øystein 23.10)", () => {
   const jsx = buildAeJsx(doc, { cameraMode: "ae" });
 
   /** Kjører bare starten (importene) og slutten (lagringen) med en AE-mock som har $, Folder og alert. */
-  function runOpen(opts: { exists?: (p: string) => boolean; saveThrows?: boolean }) {
+  function runOpen(opts: { exists?: (p: string) => boolean; saveThrows?: boolean; host?: string }) {
     const imports: string[] = []; const alerts: string[] = []; const saved: string[] = []; let current = "";
     class File { constructor(public path: string) {} get exists() { return opts.exists ? opts.exists(this.path) : true; } get parent() { return { fsName: "/pakke" }; } }
     class Folder { constructor(public fsName: string) {} }
@@ -246,10 +249,10 @@ describe("PTG3 «dobbeltklikk og åpne» (Øystein 23.10)", () => {
       importFile(o: { file: File }) { imports.push(o.file.path); return {}; },
       save(f: File) { if (opts.saveThrows) throw new Error("no rights"); saved.push(f.path); },
     } };
-    const fn = new Function("app", "File", "Folder", "$", "alert", "ImportOptions", "KeyframeEase", "KeyframeInterpolationType", "TrackMatteType", "ParagraphJustification", jsx);
+    const fn = new Function("app", "BridgeTalk", "File", "Folder", "$", "alert", "ImportOptions", "KeyframeEase", "KeyframeInterpolationType", "TrackMatteType", "ParagraphJustification", stripTarget(jsx));
     let threw = false;
     try {
-      fn(app, File, FolderStatic, { fileName: "/pakke/bygg-after-effects.jsx" }, (s: string) => alerts.push(s), class { constructor(public file: File) {} }, class {}, { LINEAR: 1, HOLD: 2 }, { ALPHA: 1, ALPHA_INVERTED: 2 }, { CENTER_JUSTIFY: 1 });
+      fn(opts.host === "audition" ? { beginUndoGroup() {} } : app, { appName: opts.host ?? "aftereffects" }, File, FolderStatic, { fileName: "/pakke/bygg-after-effects.jsx" }, (s: string) => alerts.push(s), class { constructor(public file: File) {} }, class {}, { LINEAR: 1, HOLD: 2 }, { ALPHA: 1, ALPHA_INVERTED: 2 }, { CENTER_JUSTIFY: 1 });
     } catch { threw = true; }
     return { imports, alerts, saved, current, threw };
   }
@@ -283,6 +286,20 @@ describe("PTG3 «dobbeltklikk og åpne» (Øystein 23.10)", () => {
     expect(r.threw).toBe(false);
     expect(r.alerts).toHaveLength(1);
     expect(r.alerts[0]).toContain("Allow Scripts to Write Files and Access Network");
+  });
+
+  it("første linje er #target aftereffects, og vertskontrollen finnes", () => {
+    expect(jsx.split("\n")[0]).toBe("#target aftereffects");
+    expect(jsx).toContain('if (typeof app.project === "undefined" || BridgeTalk.appName !== "aftereffects")');
+  });
+
+  it("åpnet i Audition: ett varsel om å bruke startfilen, og ingenting bygges eller lagres", () => {
+    const r = runOpen({ host: "audition" });
+    expect(r.threw).toBe(false);
+    expect(r.imports).toEqual([]);
+    expect(r.saved).toEqual([]);
+    expect(r.alerts).toHaveLength(1);
+    expect(r.alerts[0]).toContain("After Effects");
   });
 
   it("er fortsatt ES3", () => {

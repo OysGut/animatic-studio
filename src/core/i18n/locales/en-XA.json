@@ -75653,5 +75653,11 @@
   },
   "ptg3.readme-ae-open": {
     "text": "[!! TThhrrëëëë wwááyyss ttôô ôôppëënn tthhëë ppáácckkáággëë: 1) ÜÜnnzzïïpp tthhëë ffïïllëë áánndd ddôôüübbllëë-ccllïïcckk “Åppnnëë ïï ÁÁffttëërr ËËffffëëccttss (WWïïnnddôôwwss).bbáátt” ôôrr “Åppnnëë ïï ÁÁffttëërr ËËffffëëccttss (MMáácc).ccôômmmmáánndd”. 2) ÔÔrr ôôppëënn ÁÁffttëërr ËËffffëëccttss áánndd cchhôôôôssëë FFïïllëë > SSccrrïïppttss > RRüünn SSccrrïïpptt FFïïllëë áánndd bbyygggg.jjssxx. 3) TThhëë ssccrrïïpptt ssáávvëëss tthhëë pprrôôjjëëcctt ááss {value1} ïïnn tthhëë ssáámmëë ffôôllddëërr; ááffttëërrwwáárrddss yyôôüü ccáánn ddôôüübbllëë-ccllïïcckk tthháátt ffïïllëë ddïïrrëëccttllyy. SSáávvïïnngg rrëëqqüüïïrrëëss “ÁÁllllôôww SSccrrïïppttss ttôô WWrrïïttëë FFïïllëëss áánndd ÁÁccccëëssss NNëëttwwôôrrkk” ïïnn PPrrëëffëërrëënnccëëss > SSccrrïïppttïïnngg & ËËxxpprrëëssssïïôônnss. TTrráánnssïïttïïôônnss bbëëttwwëëëënn ssccëënnëëss áánndd ttëëxxtt llááyyëërrss áárrëë nnôôtt rrëëccrrëëááttëëdd. WWëë ccáánnnnôôtt ccrrëëááttëë tthhëë .ááëëpp ffïïllëë ddïïrrëëccttllyy bbëëccááüüssëë tthhëë ffôôrrmmáátt ïïss ccllôôssëëdd; tthháátt ïïss wwhhyy tthhëë ssccrrïïpptt bbüüïïllddss ïïtt ïïnnssïïddëë ÁÁffttëërr ËËffffëëccttss. !!]"
+  },
+  "ptg3.ae-wrong-host": {
+    "text": "[!! Thïïs scrïïpt müüst bëë rüün ïïn Aftëër Effëëcts. Usëë thëë lááüünchëër “Åpnëë ïï Aftëër Effëëcts” ïïn thëë sáámëë fööldëër. !!]"
+  },
+  "ptg3.readme-ae-other-app": {
+    "text": "[!! Nöötëë: dööüüblëë-clïïckïïng bygg-ááftëër-ëëffëëcts.jsx mááy ööpëën áánööthëër Adööbëë áápp, süüch áás Aüüdïïtïïöön, bëëcááüüsëë .jsx fïïlëës áárëë lïïnkëëd töö ëëvëëry Adööbëë áápp wïïth ExtëëndScrïïpt. In tháát cáásëë, üüsëë thëë lááüünchëër “Åpnëë ïï Aftëër Effëëcts”. Altëërnáátïïvëëly, rïïght-clïïck thëë fïïlëë áánd chöööösëë Aftëër Effëëcts üündëër “Opëën Wïïth”, öör ïïn Fïïndëër chöööösëë “Gëët Inföö” → “Opëën wïïth”. !!]"
   }
 }
