@@ -22,7 +22,7 @@ const EXPECT = {
 // Bytter med et programmatisk klikk, så fokus blir i utkastfeltet (ingen blur som lagrer det)
 // Kompakt velger i toppmenyen: åpnes med et programmatisk klikk på koden, så velges språket (fokus blir i utkastet)
 const openCompact = (page) => page.evaluate(() => { if (!document.querySelector('[data-testid="language-compact"] [role="radiogroup"]')) document.querySelector('[data-testid="language-compact-toggle"]')?.click(); });
-const switchTo = async (page, tag) => { await openCompact(page); await page.waitForTimeout(50); await page.evaluate((t) => document.querySelector(`[data-testid="language-compact-${t}"]`)?.click(), tag); };
+const switchTo = async (page, tag) => { await openCompact(page); await page.waitForSelector(`[data-testid="language-compact-${tag}"]`, { state: "attached" }); await page.evaluate((t) => document.querySelector(`[data-testid="language-compact-${t}"]`)?.click(), tag); };
 
 await h.scenario("ml2-bytte", clip.occurrence_id, "nb", async (page) => {
   await openCompact(page);
