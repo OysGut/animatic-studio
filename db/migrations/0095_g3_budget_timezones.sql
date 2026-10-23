@@ -48,6 +48,17 @@ end $$;
 revoke all on function public.user_period_start(uuid, text) from public, anon;
 grant execute on function public.user_period_start(uuid, text) to authenticated, service_role;
 
+-- Lokal dato for periodestarten (ai_spend.month er en date i brukerens tidssone).
+create or replace function public.user_period_start_date(p_user uuid, p_unit text) returns date
+  language plpgsql stable security definer set search_path = public, pg_catalog
+as $$
+begin
+  if auth.uid() is not null and auth.uid() <> p_user then raise exception 'not_self' using errcode = '42501'; end if;
+  return date_trunc(p_unit, now() at time zone private.user_time_zone(p_user))::date;
+end $$;
+revoke all on function public.user_period_start_date(uuid, text) from public, anon;
+grant execute on function public.user_period_start_date(uuid, text) to authenticated, service_role;
+
 create or replace function private.guard_quality_profile_job() returns trigger
 language plpgsql security definer set search_path = '' as $$
 declare v_profile public.quality_profiles; v_used integer; v_limit integer; v_id uuid;
