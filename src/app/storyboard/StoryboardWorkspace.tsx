@@ -477,6 +477,7 @@ export function Gallery({
         aria-label={tk("sb2.gallery")}
         aria-rowcount={rows.length}
         data-testid="sb-grid"
+        data-view={textView ? "text" : "grid"}
         tabIndex={sel ? -1 : 0}
       >
         {gallery.length === 0 ? <p className="py-8 text-[13px] text-text-tertiary">{tk("sb2.empty")}</p> : null}

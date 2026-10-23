@@ -9,7 +9,7 @@ const h = harness("/tmp/claude-0/sb2-storyboard");
 const OCC = "00000000-0000-7000-8000-000000000006";
 const gallery = async (page) => {
   await page.goto(`${h.base}${h.P}/storyboard`, { waitUntil: "networkidle" });
-  await page.getByTestId("sb-gallery").waitFor({ timeout: 30000 });
+  await page.getByTestId("sb-grid").waitFor({ timeout: 30000 });
 };
 
 for (const lang of ["nb", "en"]) {
@@ -49,7 +49,7 @@ for (const lang of ["nb", "en"]) {
     await page.getByTestId("sb-text-view").click();
     await gallery(page);
     h.check(!(await page.getByTestId("sb-show-dialogue").isChecked()), `${lang}: vis/skjul huskes etter ny lasting`);
-    h.check(await page.getByTestId("sb-text-list").isVisible().catch(() => false), `${lang}: tekstvisningen huskes`);
+    h.check((await page.getByTestId("sb-grid").getAttribute("data-view")) === "text", `${lang}: tekstvisningen huskes`);
     await page.screenshot({ path: `${h.out}/prefs-${lang}.png` });
   });
 }
