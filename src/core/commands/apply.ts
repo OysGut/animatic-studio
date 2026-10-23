@@ -1,4 +1,5 @@
 import { canonicalLanguageTag } from "../translation/language-tags";
+import { EMPTY_PANEL_DETAILS, insertedPanelNumber, panelDetailsValid } from "../storyboard/editing";
 import { applyStoryboardEditing } from "../storyboard/editing-commands";
 import { briefVersionsError } from "../assets/brief-versions";
 import { applyMeasureSetCommand } from "../print/measure/commands";
@@ -7094,6 +7095,11 @@ function run(
         hidden: false,
         producedFrom: { blockRevisions: currentBlockRevisions(s, c.variantId as never) },
       };
+      const siblings=Object.values(s.compositions).filter(p=>p.kind==="storyboard"&&!p.removed&&p.occurrenceId===occ.id).sort((a,b)=>(a.orderKey??"").localeCompare(b.orderKey??""));
+      const previous=siblings.filter(p=>(p.orderKey??"")<c.orderKey).at(-1);
+      const locked=siblings.find(p=>p.storyboard?.number);
+      if(c.details){if(!panelDetailsValid(s,comp,c.details))fail("invalid",tk("sb1.error.invalid-panel"));comp.storyboard=c.details;}
+      else if(locked)comp.storyboard={...EMPTY_PANEL_DETAILS,number:insertedPanelNumber(previous?.storyboard?.number??null,siblings.map(p=>p.storyboard?.number??"")),sceneNumber:locked.storyboard?.sceneNumber??""};
       const links = sbBlockLinks(s, comp, c.blocks ?? []);
       const panelBlocks = { ...s.panelBlocks };
       for (const l of links) panelBlocks[l.id] = l;
@@ -7122,6 +7128,7 @@ function run(
           name: comp.name,
           durationFrames: comp.durationFrames,
           blocks: panelBlockRefs(s, comp.id),
+          ...(comp.storyboard?{details:comp.storyboard}:{}),
         },
         affected: [comp.id],
       };

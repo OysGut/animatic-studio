@@ -1080,7 +1080,7 @@ export type Command = import("../animation/rig-commands").RigCommand
   | { readonly type: "UpdateNoteFlag"; readonly flagId: string; readonly text?: string; readonly enabled?: boolean }
   | { readonly type: "SetNoteFlagRemoved"; readonly flagId: string; readonly removed: boolean }
   /** SB-1: storyboardgrunnmur (migrasjon 0102). Panelet er en komposisjon med kind «storyboard». */
-  | { readonly type: "AddStoryboardPanel"; readonly panelId: string; readonly occurrenceId: string; readonly variantId: string; readonly orderKey: string; readonly name?: string; readonly durationFrames?: number; readonly blocks?: readonly StoryboardBlockRef[] }
+  | { readonly type: "AddStoryboardPanel"; readonly details?: import("../storyboard/editing").PanelDetails; readonly panelId: string; readonly occurrenceId: string; readonly variantId: string; readonly orderKey: string; readonly name?: string; readonly durationFrames?: number; readonly blocks?: readonly StoryboardBlockRef[] }
   | { readonly type: "UndoAddStoryboardPanel"; readonly panelId: string }
   | { readonly type: "UpdateStoryboardPanel"; readonly panelId: string; readonly name?: string; readonly durationFrames?: number; readonly active?: boolean; readonly hidden?: boolean; readonly blocks?: readonly StoryboardBlockRef[] }
   | { readonly type: "SetStoryboardPanelRemoved"; readonly panelId: string; readonly removed: boolean }

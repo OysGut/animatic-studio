@@ -4,6 +4,7 @@
  * per scene. Ingen ny lagring: alt bygges av ProjectState, og alle endringer er SB-1-kommandoer.
  */
 import type { Command } from "../commands/types";
+import {insertedPanelNumber} from "./editing";
 import { layerFieldsOf } from "../composition";
 import { newId } from "../ids";
 import type { Composition, ProjectState, SceneOccurrence } from "../model";
@@ -137,7 +138,7 @@ export function planDuplicatePanel(s: ProjectState, panelId: string): Command[] 
     .filter((l) => !l.removed && l.compositionId === panelId)
     .sort((a, b) => a.orderKey.localeCompare(b.orderKey));
   const remap = new Map<string, import("../ids").LayerId>(layers.map(l => [l.id, newId<"composition_layer">()]));
-  if (p.storyboard) cmds.push({type:"SetStoryboardDetails",panelId:id,details:{...p.storyboard,number:""}});
+  if (p.storyboard) cmds.push({type:"SetStoryboardDetails",panelId:id,details:{...p.storyboard,number:insertedPanelNumber(p.storyboard.number,storyboardPanelsOf(s,p.occurrenceId).map(p=>p.storyboard?.number??""))}});
   if (layers.length > 0)
     cmds.push({
       type: "AddLayers",
