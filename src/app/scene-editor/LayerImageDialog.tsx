@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 import { ImageLightbox } from "@/app/library/ImageLightbox";
 import { useMemo, useRef, useState } from "react";
-import { ASSET_KIND_LABEL, coverVersion, layerFieldsOf, layerVersion, newId, partLayers, sortedAssets, variantsOf, versionsOf, type AssetMedia, type AssetVariant, type AssetVersion, type CompositionLayer, type LayerFields, type ProjectState, workingImageMaxSide, collation } from "@/core";
+import { briefHighlight, ASSET_KIND_LABEL, coverVersion, layerFieldsOf, layerVersion, newId, partLayers, sortedAssets, variantsOf, versionsOf, type AssetMedia, type AssetVariant, type AssetVersion, type CompositionLayer, type LayerFields, type ProjectState, workingImageMaxSide, collation } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
 import {
   IMAGE_ACCEPT,
