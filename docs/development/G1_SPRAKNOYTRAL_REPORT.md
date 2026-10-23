@@ -5,6 +5,8 @@
 
 **Status: planlegging, ikke implementert eller verifisert.** G-1 følger etter den delvise N11-leveransen. N11s 17 uverifiserte restkrav forblir separate. Ingen migrasjon eller publisering er utført.
 
+G-1 erstatter eldre norsk-kildekrav uttrykkelig. Historiske rapporter brukes som kode-/testreferanser, ikke som grunnlag for å avvise nye bestilte språk eller importformater.
+
 ## Plan
 
 ### G-1a – database og kjerne
@@ -29,6 +31,8 @@ Full Vitest, automatisk typekontroll, i18n og isolerte lokale DB-tester skal dok
 
 ## G-1a – resultat
 Ikke påbegynt. Funksjonslisten, konverteringsreglene og testresultatene fylles inn under implementeringen. Claude gjennomgår og kjører 0090 i Cloud.
+
+Foreløpig kartlegging: siste migrasjon er 0089; 0090 finnes ikke. Siste apply_changes-definisjon ligger i 0088 og relevant delete_project-logikk i 0087. sourceLanguageOf har fortsatt norsk reserve og SOURCE_TEXT_KEY er nb. Språkversjoner og flere historiske DB-begrensninger sperrer norsk mål. Dette må konverteres samlet, ikke bare i velgeren. Eksisterende referansetester er kildesprak, ml3-language-versions, ml4-backup-languages og tests/db/run-db-tests.ts.
 
 ## G-1b – resultat
 Ikke påbegynt. Brukerflyt, standardvalg, språkdekning og testresultater fylles inn under implementeringen.

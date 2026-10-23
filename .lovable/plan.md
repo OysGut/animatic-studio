@@ -7,12 +7,15 @@ Oppdraget deles i G-1a og G-1b, med egne resultatdeler i `docs/development/G1_SP
 
 Ingen publisering, betalte kall, nye pakker eller Cloud-endringer. Migrasjon 0090 leveres som fil til Claude; 0089 og eldre og deres hash-baseline røres ikke.
 
+G-1 er en uttrykkelig ny produktbeslutning og erstatter eldre norsk-kildekrav. Historiske rapporter eller beslutninger brukes ikke til å gjeninnføre norsk som kilde eller be om ny godkjenning av allerede bestilte importformater.
+
 ## G-1a – database og kjerne
 1. Kartlegg alle språkfelt, siste RPC-definisjoner og hardkodede språkverdier. Rapporten skiller legitime språkregistre, i18n-forfatterspråk og testeksempler fra feilaktige standarder.
 2. Skriv `db/migrations/0090_language_neutral_foundation.sql`: ett påkrevd BCP-47-felt `projects.source_language` erstatter de to manusfeltene. Konverter eksisterende testprosjekter fra faktisk manusspråk når tilgjengelig. Bevar data der det er enkelt, og dokumenter konflikter og konvertering før sletting vurderes.
 3. Kildeblokker lagrer prosjektets kildespråk, ikke en norsk markør. Erstatt interne kildetekstnøkler med en språkfri identitet, adskilt fra språkversjonsnøkler, slik at norsk kan være et vanlig mål.
 4. Databasen validerer språkkoder og håndhever mål ≠ kilde for oversettelser, språkversjoner og linjekoblinger; språkversjonenes kildefelt følger prosjektet. Endring av prosjektets språk må også kontrollere eksisterende barn, ikke bare nye rader.
 5. Kopier siste berørte RPC-definisjoner og endre bare nødvendig logikk. Kontroller `apply_changes`, prosjektoppretting, sletting/purge og eksportreservasjoner; list alle opprettede/erstattede funksjoner med begrunnelse. Bevar rettigheter, revisjonssjekker og angregrupper.
+   Foreløpig kartlegging: siste `apply_changes` ligger i 0088, slettelogikk i 0087; 0089 inneholder ikke nye RPC-definisjoner. Ingen 0090-fil finnes. Alle definisjoner verifiseres mot siste fil før kopiering.
 6. Én `sourceLanguageOf(state)` brukes av kjerne, lasting/lagring, oversettelse, linjejustering, avvik, tale, Story Lab, PTG/manus-PDF og sikkerhetskopi/gjenoppretting. Schema-kontrakten blir 90.
 7. Omskriv INV-05 til Øysteins formulering i autoriserte invariant-/kravdokumenter, ikke i det låste mandatet. Oppdater gammel Norge-binding i AGENTS.md uten å endre andre regler.
 
