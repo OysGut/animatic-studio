@@ -8,6 +8,8 @@ import { FrameFrozen } from "./frame-frozen";
 import { ZoomIn, ZoomOut } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { textSpecsOf, useTextFonts } from "@/engine/typography/fonts";
+import { pathSpacingMarks, type PathSpacingMark } from "@/core/animation/path-spacing";
+import { motionDraftStore } from "./motion-draft";
 import { valueAt, applyMatrix, cameraAt, groupMatrixAt, groupOf, pathPointAt, pathProgress, pathSegments, translatePath, type Matrix, type MotionPath, dragMaskRect, fieldsWithMaskAt, fieldsWithTransformAt, isMaskProperty, layerFieldsOf, maskAt, type MaskRect, shotAt, toggleCurve, transformAt, withShot, type CameraShot, type CompositionLayer, hitTest, invert, itemCorners, maskOutline, multiply, renderFrame, rotate, translate, type Command, type Composition, type DrawItem, type Frame, type LayerId, type LayerTransform, type ProjectState, defaultLayerFields, newId, sceneContinuityVariant, stretchedTransform } from "@/core";
 import { ASSET_DRAG_TYPE } from "./SceneAssetsPanel";
 import { removeLayer } from "./layer-actions";
@@ -420,9 +422,18 @@ function drawPathOverlay(
   v: View,
   colors: Colors,
   current: Pt | null,
+  marks: readonly PathSpacingMark[] = [],
 ) {
   const sc = (x: number, y: number) => toScreen(v, toScene ? applyMatrix(toScene, x, y) : { x, y });
   ctx.save();
+  // Avstandsmerkene: ett per bilde (samme data som sporet på tidslinjen); nøkkelbilder større, hold som ring
+  for (const m of marks) {
+    const q = sc(m.x, m.y);
+    ctx.beginPath();
+    ctx.arc(q.x, q.y, m.key ? 3 : 1.6, 0, Math.PI * 2);
+    if (m.held) { ctx.strokeStyle = colors.warm ?? colors.accent; ctx.lineWidth = 1; ctx.stroke(); }
+    else { ctx.fillStyle = m.key ? (colors.warm ?? colors.accent) : colors.accent; ctx.fill(); }
+  }
   ctx.strokeStyle = colors.accent;
   ctx.lineWidth = 1.5;
   ctx.setLineDash([5, 4]);
@@ -674,17 +685,23 @@ export function Stage({
     cacheRef.current.ensure(imageUrls);
   }, [imageUrls]);
 
+  // Utkast fra inspektøren eller spacing-draget (motion-draft): samme bane i scenen, inspektøren og tidslinjen
+  const motionDraft = useSyncExternalStore(motionDraftStore.subscribe, motionDraftStore.get, () => null);
+  const stateIn = useMemo(() => {
+    const l = motionDraft ? state.layers[motionDraft.layerId] : undefined;
+    return l && motionDraft ? { ...state, layers: { ...state.layers, [l.id]: { ...l, path: motionDraft.path } } } : state;
+  }, [state, motionDraft]);
   // Utkastet gjelder bare mens laget finnes og ikke er låst
   const stateWithDraft = useMemo(() => {
     if (maskDraft) {
       // Masken under dra: utkastet gjelder på alle bilder (nøkkelbildene for masken brukes ikke så lenge)
-      const layer = state.layers[maskDraft.layerId];
+      const layer = stateIn.layers[maskDraft.layerId];
       const m = layer?.mask;
       if (layer && m && m.kind !== "layer")
         return {
-          ...state,
+          ...stateIn,
           layers: {
-            ...state.layers,
+            ...stateIn.layers,
             [layer.id]: {
               ...layer,
               mask: { ...m, ...maskDraft.rect },
@@ -694,19 +711,19 @@ export function Stage({
         };
     }
     if (pathDraft) {
-      const layer = state.layers[pathDraft.layerId];
+      const layer = stateIn.layers[pathDraft.layerId];
       if (layer)
         return {
-          ...state,
-          layers: { ...state.layers, [layer.id]: { ...layer, path: pathDraft.path } },
+          ...stateIn,
+          layers: { ...stateIn.layers, [layer.id]: { ...layer, path: pathDraft.path } },
         };
     }
-    const layer = draft ? state.layers[draft.layerId] : undefined;
-    if (!draft || !layer) return state;
+    const layer = draft ? stateIn.layers[draft.layerId] : undefined;
+    if (!draft || !layer) return stateIn;
     return {
-      ...state,
+      ...stateIn,
       layers: {
-        ...state.layers,
+        ...stateIn.layers,
         [draft.layerId]: {
           ...layer,
           transform: draft.transform,
@@ -717,7 +734,7 @@ export function Stage({
         },
       },
     };
-  }, [state, draft, pathDraft, maskDraft]);
+  }, [stateIn, draft, pathDraft, maskDraft]);
   // Fontene for tekstlagene lastes først nå (MTS §61); ny måling når de er lastet
   const fontsVersion = useTextFonts(textSpecsOf(state, composition.id)).version;
   const frame = useMemo(
@@ -756,6 +773,10 @@ export function Stage({
   const pathGroup = pathLayer ? groupOf(stateWithDraft, pathLayer) : null;
   const pathToScene = pathGroup ? groupMatrixAt(pathGroup, time) : null;
   const pathNow = shownPath ? pathPointAt(shownPath, pathProgress(shownPath, time)) : null;
+  const pathMarks = useMemo(
+    () => (shownPath && pathLayer ? pathSpacingMarks(shownPath, pathLayer.keyframes.map((k) => k.frame)) : []),
+    [shownPath, pathLayer],
+  );
   /** Scene → koordinatene til laget (gjennom gruppen det ligger i). */
   const toLocalOf = (layerId: string): Matrix | null => {
     const l = state.layers[layerId];
@@ -821,7 +842,7 @@ export function Stage({
       if (selectedItem && canEditSelected && !drawPath)
         drawMaskHandles(ctx, selectedItem, view, colors);
       if (shownPath && !drawPath)
-        drawPathOverlay(ctx, shownPath, pathToScene, view, colors, pathNow);
+        drawPathOverlay(ctx, shownPath, pathToScene, view, colors, pathNow, pathMarks);
       if (spacingHover) {
         const hl = state.layers[spacingHover.layerId];
         const g = hl ? groupOf(state, hl) : null;
