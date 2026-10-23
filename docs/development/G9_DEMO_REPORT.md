@@ -29,6 +29,8 @@
   De tre nye knappe-/feiltekstene (`g9-demo.*`) finnes på alle registrerte språk.
 
 ## Tester
+- Full Vitest: 2849 bestått, 0 feilet etter rettingen, 10 hoppet over. Typekontroll 0 feil, i18n-sjekk grønn.
+- `tests/architecture/g1b-no-hardcoded-norwegian.test.ts`: to begrunnede unntak for eksempelprosjektets språkliste.
 - `tests/unit/g9-demo-project.test.ts`: språkvalg (grensesnittspråk/reserve engelsk) og oppretting for ny
   bruker på alle fire språk: alle kommandoene godtas av kjernen, kildespråket blir riktig, manusvisningen
   bygges, og vi får 5 scener, 2 karakterer, 3 steder, 3 språkversjoner, alle oversettelser, 5 monteringer og
