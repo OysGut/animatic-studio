@@ -57,3 +57,9 @@ Dato: 23.10.2026. Ikke publisert. Ny migrasjon `db/migrations/0094_g3_global.sql
 ## Endrede filer
 - Ny: `src/core/language/text-metrics.ts`, `src/core/screenplay/heading-keywords.ts`, `src/core/settings/resolve.ts`, `db/migrations/0094_g3_global.sql`, `tests/unit/g3-global.test.ts`, `docs/agents/AUTH.md`, `docs/agents/G3_GLOBAL.md`, denne rapporten.
 - Endret: `src/core/assembly/film.ts`, `src/core/screenplay/forecast.ts`, `src/core/screenplay/duration.ts`, `src/core/screenplay/parse.ts`, `src/core/screenplay/fountain.ts`, `src/core/language/index.ts`, `src/core/presentation/metrics.ts`, `src/core/library/global.ts`, `src/adapters/storage/project-rows.ts`, `tests/db/run-db-tests.ts`, `tests/architecture/g1b-no-hardcoded-norwegian.test.ts`, `scripts/i18n/references.v1.json`, `AGENTS.md`, `roadmap.md`.
+
+## Rettelse før kjøring av 0094 (23.10, fra Claudes gjennomgang)
+- Alle SECURITY DEFINER-funksjoner i 0094 (`budget_time_zone`, `budget_period_start`, `set_my_time_zone`, `set_workspace_settings`) og hjelpefunksjonen `is_iana_time_zone` bruker nå `set search_path = ''`, som resten av databasen. Alle navn er fullt kvalifisert: `pg_catalog.pg_timezone_names`, `pg_catalog.now()`, `pg_catalog.date_trunc`, `public.…` og `auth.uid()`.
+- De fem nye funksjonene i 0095 fikk samme rettelse, slik at kontrollen under ikke slår ut på dem.
+- Ny DB-test i `tests/db/run-db-tests.ts` spør `pg_proc` og feiler hvis en SECURITY DEFINER-funksjon i `public` eller `private` mangler `search_path=''`. Testen er grønn: 0 avvik i hele databasen.
+- DB-tester: 193 bestått, 0 feilet. **0094 er klar til at Claude gjennomgår og kjører den i Cloud.**
