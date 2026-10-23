@@ -8133,8 +8133,8 @@ try {
     assert(n === 1, `radantallet skulle være 1 (transaksjonen rulles tilbake), var ${n}`);
     // Lagringskvote
     await as("authenticated", CAROL, (tx) => tx`select public.admin_set_usage_quota(null, ${G5USER}, 1000::bigint, null, null, null)`);
-    await expectError(as("service_role", null, (tx) => tx`select private.check_quota_upload(${pid}, 2000)`), 'PTG13');
-    await as("service_role", null, (tx) => tx`select private.check_quota_upload(${pid}, 500)`);
+    await expectError(sql`select private.check_quota_upload(${pid}, 2000)`, 'PTG13');
+    await sql`select private.check_quota_upload(${pid}, 500)`;
     // Admin ser kvoten med brukstall
     const rows = await as("authenticated", CAROL, (tx) => tx`select * from public.admin_usage_quotas()`);
     const mine = rows.find((r) => String(r["user_id"]) === G5USER);
