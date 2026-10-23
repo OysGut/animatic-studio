@@ -75851,5 +75851,23 @@
   },
   "google.account.method-email": {
     "text": "[!! ËËmmááïïll áánndd ppáásssswwôôrrdd !!]"
+  },
+  "adapters-storage-commands-functions.quota-projects": {
+    "text": "[!! TThhëë pprrôôjjëëcctt llïïmmïïtt hhááss bbëëëënn rrëëáácchhëëdd. DDëëllëëttëë áá pprrôôjjëëcctt ôôrr ccôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô rrááïïssëë tthhëë llïïmmïïtt. !!]"
+  },
+  "adapters-storage-commands-functions.quota-change-log": {
+    "text": "[!! TThhëë cchháánnggëë llôôgg ïïss ffüüllll. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô rrááïïssëë tthhëë llïïmmïïtt. !!]"
+  },
+  "adapters-storage-commands-functions.quota-storage": {
+    "text": "[!! TThhëë ssttôôrráággëë qqüüôôttáá hhááss bbëëëënn rrëëáácchhëëdd. DDëëllëëttëë ffïïllëëss yyôôüü nnôô llôônnggëërr nnëëëëdd, ôôrr ccôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô rrááïïssëë tthhëë llïïmmïïtt. !!]"
+  },
+  "adapters-storage-commands-functions.quota-uploads": {
+    "text": "[!! TTôôôô mmáánnyy üüppllôôááddss ïïnn tthhëë lláásstt hhôôüürr. WWááïïtt áá mmôômmëënntt áánndd ttrryy áággááïïnn. !!]"
+  },
+  "adapters-mobile-mobile-functions.db-message.quota-storage": {
+    "text": "[!! TThhëë ssttôôrráággëë qqüüôôttáá hhááss bbëëëënn rrëëáácchhëëdd. DDëëllëëttëë ffïïllëëss yyôôüü nnôô llôônnggëërr nnëëëëdd, ôôrr ccôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô rrááïïssëë tthhëë llïïmmïïtt. !!]"
+  },
+  "adapters-mobile-mobile-functions.db-message.quota-uploads": {
+    "text": "[!! TTôôôô mmáánnyy üüppllôôááddss ïïnn tthhëë lláásstt hhôôüürr. WWááïïtt áá mmôômmëënntt áánndd ttrryy áággááïïnn. !!]"
   }
 }

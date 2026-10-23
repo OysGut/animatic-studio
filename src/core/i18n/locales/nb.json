@@ -75869,5 +75869,23 @@
   },
   "google.account.method-email": {
     "text": "E-post og passord"
+  },
+  "adapters-storage-commands-functions.quota-projects": {
+    "text": "Grensen for antall prosjekter er nådd. Slett et prosjekt eller kontakt administrator for å øke grensen."
+  },
+  "adapters-storage-commands-functions.quota-change-log": {
+    "text": "Endringsloggen er full. Kontakt administrator for å øke grensen."
+  },
+  "adapters-storage-commands-functions.quota-storage": {
+    "text": "Lagringskvoten er nådd. Slett filer du ikke trenger, eller kontakt administrator for å øke grensen."
+  },
+  "adapters-storage-commands-functions.quota-uploads": {
+    "text": "For mange opplastinger den siste timen. Vent litt og prøv igjen."
+  },
+  "adapters-mobile-mobile-functions.db-message.quota-storage": {
+    "text": "Lagringskvoten er nådd. Slett filer du ikke trenger, eller kontakt administrator for å øke grensen."
+  },
+  "adapters-mobile-mobile-functions.db-message.quota-uploads": {
+    "text": "For mange opplastinger den siste timen. Vent litt og prøv igjen."
   }
 }

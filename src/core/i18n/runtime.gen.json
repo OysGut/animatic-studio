@@ -1254,6 +1254,12 @@
     "adapters-mobile-mobile-functions.db-message.message.4e3db25eced1": {
       "text": "Noe gikk galt. Prøv igjen."
     },
+    "adapters-mobile-mobile-functions.db-message.quota-storage": {
+      "text": "Lagringskvoten er nådd. Slett filer du ikke trenger, eller kontakt administrator for å øke grensen."
+    },
+    "adapters-mobile-mobile-functions.db-message.quota-uploads": {
+      "text": "For mange opplastinger den siste timen. Vent litt og prøv igjen."
+    },
     "adapters-mobile-mobile-functions.message.message.000c6715628a": {
       "text": "Bare eier og redaktør kan lage QR-koder for opplasting."
     },
@@ -1481,6 +1487,9 @@
     },
     "adapters-storage-commands-functions.message.message.fe59c3be6214": {
       "text": "Databasen mangler tillegget for vinkler på bilder og visuelle faktaark. Kontakt administratoren for å oppdatere From Pen to Glass."
+    },
+    "adapters-storage-commands-functions.quota-projects": {
+      "text": "Grensen for antall prosjekter er nådd. Slett et prosjekt eller kontakt administrator for å øke grensen."
     },
     "adapters-storage-commands-functions.undo-production-history": {
       "text": "Produksjonen har eksporter eller lagrede estimater og kan ikke angres. Den beholdes som den er."
@@ -34692,6 +34701,12 @@
     "adapters-mobile-mobile-functions.db-message.message.4e3db25eced1": {
       "text": "Something went wrong. Try again."
     },
+    "adapters-mobile-mobile-functions.db-message.quota-storage": {
+      "text": "The storage quota has been reached. Delete files you no longer need, or contact the administrator to raise the limit."
+    },
+    "adapters-mobile-mobile-functions.db-message.quota-uploads": {
+      "text": "Too many uploads in the last hour. Wait a moment and try again."
+    },
     "adapters-mobile-mobile-functions.message.message.000c6715628a": {
       "text": "Only the owner and editors can make QR codes for upload."
     },
@@ -34919,6 +34934,9 @@
     },
     "adapters-storage-commands-functions.message.message.fe59c3be6214": {
       "text": "The database is missing the addition for angles on images and visual fact sheets. Contact the administrator to update From Pen to Glass."
+    },
+    "adapters-storage-commands-functions.quota-projects": {
+      "text": "The project limit has been reached. Delete a project or contact the administrator to raise the limit."
     },
     "adapters-storage-commands-functions.undo-production-history": {
       "text": "The production has exports or saved estimates and cannot be undone. It is kept as it is."
