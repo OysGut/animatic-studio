@@ -43,7 +43,7 @@ describe("G-3.1 talehastighet per språk", () => {
     expect(speechRateFor("ar").unit).toBe("wpm");
   });
   it("japansk: 14 tegn ved 7 tegn/s er 2 sekunder", () => {
-    expect(speechSeconds("今日はいい天気ですね本当に良い", "ja")).toBeCloseTo(2, 5);
+    expect(speechSeconds("今日はいい天気ですね本当に良", "ja")).toBeCloseTo(2, 5);
   });
   it("engelsk: 150 ord/min gir 2 sekunder for 5 ord", () => {
     expect(speechSeconds("one two three four five", "en")).toBeCloseTo(2, 5);
@@ -69,7 +69,7 @@ describe("G-3.1 plakattekst og søk", () => {
 describe("G-3.2 sceneoverskrifter per språk", () => {
   it("tvungen overskrift med punktum virker alltid", () => {
     const r = parseFountain(".KJØKKENET – NATT\n\nHun går.\n", { sourceLanguage: "ja" });
-    expect(r.screenplay.scenes.length).toBe(1);
+    expect(r.parsed.scenes.length).toBe(1);
   });
   it("fransk, spansk, italiensk, svensk og russisk innledning gjenkjennes", () => {
     for (const h of ["INTÉRIEUR. CUISINE - NUIT", "EXTERIOR. CALLE - DÍA", "ESTERNO. PIAZZA - GIORNO", "INTERIÖR. KÖK - NATT", "ИНТ. КУХНЯ - НОЧЬ"]) {
@@ -78,7 +78,7 @@ describe("G-3.2 sceneoverskrifter per språk", () => {
   });
   it("Fountain tolker dansk og tysk uten tvang", () => {
     const r = parseFountain("UDE. GADE - DAG\n\nHan løber.\n\nINNEN. KÜCHE - NACHT\n\nSie sitzt.\n", { sourceLanguage: "da" });
-    expect(r.screenplay.scenes.length).toBe(2);
+    expect(r.parsed.scenes.length).toBe(2);
   });
   it("kildespråket kommer først, prosjektets egne ord deretter", () => {
     const w = headingWords("ja", ["SET."]);
@@ -87,7 +87,7 @@ describe("G-3.2 sceneoverskrifter per språk", () => {
   });
   it("prosjektets egne ord gjenkjennes i Fountain", () => {
     const r = parseFountain("STUDIO. SCENE A\n\nTekst.\n", { headingWords: ["STUDIO."] });
-    expect(r.screenplay.scenes.length).toBe(1);
+    expect(r.parsed.scenes.length).toBe(1);
   });
 });
 
