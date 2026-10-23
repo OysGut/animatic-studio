@@ -1065,6 +1065,22 @@ export type Command = import("../animation/rig-commands").RigCommand
   | { readonly type: "UndoAddNoteFlag"; readonly flagId: string }
   | { readonly type: "UpdateNoteFlag"; readonly flagId: string; readonly text?: string; readonly enabled?: boolean }
   | { readonly type: "SetNoteFlagRemoved"; readonly flagId: string; readonly removed: boolean }
+  /** SB-1: storyboardgrunnmur (migrasjon 0102). Panelet er en komposisjon med kind «storyboard». */
+  | { readonly type: "AddStoryboardPanel"; readonly panelId: string; readonly occurrenceId: string; readonly variantId: string; readonly orderKey: string; readonly name?: string; readonly durationFrames?: number; readonly blockIds?: readonly string[] }
+  | { readonly type: "UndoAddStoryboardPanel"; readonly panelId: string }
+  | { readonly type: "UpdateStoryboardPanel"; readonly panelId: string; readonly name?: string; readonly durationFrames?: number; readonly active?: boolean; readonly hidden?: boolean; readonly blockIds?: readonly string[] }
+  | { readonly type: "SetStoryboardPanelRemoved"; readonly panelId: string; readonly removed: boolean }
+  | { readonly type: "MoveStoryboardPanel"; readonly panelId: string; readonly orderKey: string }
+  | { readonly type: "MoveStoryboardPanelToScene"; readonly panelId: string; readonly occurrenceId: string; readonly variantId: string; readonly orderKey: string; readonly blockIds?: readonly string[] }
+  /** SB-1: bekreftet førstegangsoppretting – ett tomt panel per forekomst i planen. */
+  | { readonly type: "SeedStoryboardPanels"; readonly productionId: string; readonly panels: readonly { readonly panelId: string; readonly occurrenceId: string; readonly variantId: string; readonly orderKey: string }[] }
+  | { readonly type: "UndoSeedStoryboardPanels"; readonly panelIds: readonly string[] }
+  /** SB-1: «Rediger storyboard» etter godkjenning – den gamle revisjonen bevares som øyeblikksbilde. */
+  | { readonly type: "SnapshotStoryboardPanel"; readonly panelId: string; readonly snapshotId: string }
+  | { readonly type: "UndoSnapshotStoryboardPanel"; readonly snapshotId: string }
+  /** SB-1: statusspor per fagområde, med historikk. Nøyaktig ett mål (forekomst eller panel). */
+  | { readonly type: "SetProductionStatus"; readonly statusId: string; readonly eventId: string; readonly area: import("../storyboard").ProductionArea; readonly occurrenceId?: string; readonly compositionId?: string; readonly status: import("../storyboard").ProductionStatusValue }
+  | { readonly type: "RevertProductionStatus"; readonly statusId: string; readonly eventId: string; readonly previousStatus: import("../storyboard").ProductionStatusValue | null }
   // M8 kvalitetsprofiler (REQ-0854–0862, migrasjon 0063)
   // ML3: språkversjoner per prosjekt (migrasjon 0066). Fjerning sletter aldri oversettelser.
   | { readonly type: "AddLanguageVersion"; readonly versionId: string; readonly language: string; readonly name: string; readonly status?: import("../translation/language-versions").LanguageVersionStatus }
