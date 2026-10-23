@@ -250,11 +250,12 @@ describe("SB-1 sikkerhetskopi", () => {
     expect(backup.tables["production_statuses"]?.length).toBe(1);
     expect(backup.tables["storyboard_panel_snapshots"]?.length).toBe(1);
     // Gjenoppretting i et tomt prosjekt tar med panel, status og øyeblikksbilde
-    const map = await backupIdMap(backup, tid() as never, tid() as never);
-    const main = Object.values(st3.productions).find((p) => p.kind === "main")!;
+    const newProject = tid();
     const newMain = tid();
+    const map = await backupIdMap(backup, newProject as never, newMain as never);
+    const main = Object.values(st3.productions).find((p) => p.kind === "main")!;
     const restored = restoredState(backup, map, {
-      ...emptyProjectState({ ...st3.project, id: tid() as never }),
+      ...emptyProjectState({ ...st3.project, id: newProject as never }),
       productions: { [newMain]: { ...main, id: newMain as never } },
     }, tid() as never);
     expect(Object.values(restored.compositions).some((c) => c.kind === "storyboard")).toBe(true);
