@@ -8693,8 +8693,8 @@ try {
     await sbApply(g7p, { inserts: { compositions: [
       { id: newId(), project_id: g7p, variant_id: variant, kind: "storyboard", occurrence_id: occurrence, order_key: "a2", revision: 1 }] } });
     await expectError(sbApply(g7p, { inserts: { compositions: [
-      { id: newId(), project_id: g7p, variant_id, kind: "scene", revision: 1 },
-      { id: newId(), project_id: g7p, variant_id, kind: "scene", revision: 1 }] } }), "23505");
+      { id: newId(), project_id: g7p, variant_id: variant, kind: "scene", revision: 1 },
+      { id: newId(), project_id: g7p, variant_id: variant, kind: "scene", revision: 1 }] } }), "23505");
   });
 
   await test("0102 SB-1.2: note/arrow/camera_mark bare i storyboardkomposisjoner, med riktig felt", async () => {
@@ -8702,7 +8702,7 @@ try {
     const panel = newId(), sceneComp = newId();
     await sbApply(g7p, { inserts: { compositions: [
       { id: panel, project_id: g7p, variant_id: variant, kind: "storyboard", occurrence_id: occurrence, order_key: "a3", revision: 1 },
-      { id: sceneComp, project_id: g7p, variant_id, kind: "scene", revision: 1 }] } });
+      { id: sceneComp, project_id: g7p, variant_id: variant, kind: "scene", revision: 1 }] } });
     const noteSpec = { noteType: "visual", text: "Husk skygge", color: "#ffcc00", x: 0.1, y: 0.2, w: 0.3, h: 0.2, anchor: { kind: "free" }, handled: false };
     const layer = (kind: string, comp: string, extra: Record<string, unknown> = {}) => ({
       id: newId(), project_id: g7p, composition_id: comp, order_key: "a1", kind, width: 10, height: 10,
