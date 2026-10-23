@@ -194,7 +194,8 @@ describe("REQ-0565 – AI-bilder gjennom Lovable AI Gateway (simulert)", () => {
     expect(sent).toHaveLength(1);
     expect(sent[0]!.url).toBe("https://ai.gateway.lovable.dev/v1/images/edits");
     expect(sent[0]!.headers["Authorization"]).toBe(`Bearer ${KEY}`);
-    expect(sent[0]!.form!.get("prompt")).toBe(input().prompt);
+    // Faktaarket legges alltid til av serveren når teksten mangler det (Øystein 23.10)
+    expect(sent[0]!.form!.get("prompt")).toBe(`VISUAL FACT SHEET (authoritative for appearance; the text after it may refine details but never contradict or remove these facts):\n- Maja er sju år\n\n${input().prompt}`);
     expect(sent[0]!.form!.get("image")).toBeInstanceOf(File);
     // Loggen
     const [job] = jobsOf(db);
