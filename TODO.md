@@ -301,6 +301,9 @@ B-087: REQ-0879–REQ-0895 (Rigg & 2D-utskrift, A1–A17) og REQ-0896–REQ-0915
 ## Samlet åpent (N7, 22.10.2026)
 
 ### Krever Øystein
+- G-8 lagring: skal bøttene få faste filtyper (allowed_mime_types)? Forslag: «sources» = pdf/docx/fountain/fdx/tekst; «assets» = bilde/lyd/video/mp4/zip. I dag finnes bare størrelsestak (100 MB / 2 GB) og typekontroll i koden; en for streng liste kan stoppe eksisterende importflyter.
+- G-8 hastighetsgrenser: takene i private.rate_limit_rules (0100) er satt romslig; Øystein bør bekrefte nivåene for KI (400 jobber/10 min per bruker) og invitasjoner (50/time) før lansering.
+- G-8 avhengigheter: fire funn står igjen fordi de krever hovedversjonsbytte (vitest/@vitest/mocker, esbuild 0.18 i drizzle-kit, uuid 8 i exceljs, brace-expansion); bare utviklingsverktøy eller ubrukt API. Ta stilling til større oppgradering.
 - Avklaringer: «tilt» i 2D (KI-45), hendelser i deaktiverte scener (KI-100), deling av scener brukt i spinoff (KI-107), navn i REQ-0430 (KI-171), redaktør med eierens nøkkel (KI-157), varsel ved ferdig generering (DEC-0085, satt på vent), redigerbare bildeprompter.
 - Prosesskravene REQ-0450–0530 og språkvask av engelsk (KI-198) og maskinoversatte språk.
 - Personvernerklæring og juridisk gjennomgang (KI-214); region/databehandleravtale.
