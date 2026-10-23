@@ -1492,7 +1492,12 @@ function Editor({
           open={recordOpen}
           onOpenChange={(o) => {
             setRecordOpen(o);
-            if (!o) setRecordBlockId(null);
+            if (!o) {
+              // N10: fokus tilbake til replikken dialogen ble åpnet fra (tastaturbruk)
+              const back = recordBlockId;
+              if (back) requestAnimationFrame(() => document.querySelector<HTMLElement>(`[data-testid="scene-script"] [data-script-block="${CSS.escape(back)}"]`)?.focus());
+              setRecordBlockId(null);
+            }
           }}
           initialBlockId={recordBlockId}
           state={state}
