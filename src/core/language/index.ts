@@ -251,7 +251,7 @@ export function timingConflicts(
         const text = translationOf(s, sp.blockId, lang)?.text;
         if (!text?.trim()) continue;
         lStart = start;
-        lLength = estimateSpeechMs(text);
+        lLength = estimateSpeechMs(text, lang);
         source = "estimate";
       }
       const overflow = lStart + lLength - end;
