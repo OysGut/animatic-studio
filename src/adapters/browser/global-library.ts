@@ -239,3 +239,84 @@ export async function publishGlobalRigTemplate(
   fail(error);
   return data as string;
 }
+
+// ---------- G-6: globale karakterknipper og arbeidsgruppeprofiler (migrasjon 0098) ----------
+
+/** Publiserer karakterens knippe (stemme, faktaark, munnsett, rigg, godkjente versjoner) som neste nummer. */
+export async function publishCharacterBundle(
+  globalAssetId: string,
+  bundle: Omit<CharacterBundle, "number">,
+  note: string,
+): Promise<number> {
+  const { data, error } = await db.rpc("global_publish_character_bundle", {
+    p_global_asset: globalAssetId,
+    p_voice: bundle.voice as never,
+    p_brief_versions: bundle.briefVersions as never,
+    p_active_brief_id: bundle.activeBriefId,
+    p_mouth_sets: bundle.mouthSets as never,
+    p_rig_setup: bundle.rigSetup as never,
+    p_approved_version_ids: bundle.approvedVersionIds as never,
+    p_note: note,
+  });
+  fail(error);
+  return data as number;
+}
+
+/** Henter ett knippe (siste som standard). Null når karakteren ikke har noen ennå. */
+export async function characterBundle(
+  globalAssetId: string,
+  number?: number,
+): Promise<CharacterBundle | null> {
+  const { data, error } = await db.rpc("global_character_bundle", {
+    p_global_asset: globalAssetId,
+    p_number: number ?? null,
+  });
+  fail(error);
+  return data ? parseCharacterBundle(data) : null;
+}
+
+/** Gruppens profiler (stil, kvalitet, font, mal); RLS slipper bare medlemmer til. */
+export async function listWorkspaceProfiles(workspaceId: string): Promise<WorkspaceProfile[]> {
+  const { data, error } = await db.from("workspace_profiles").select("*").eq("workspace_id", workspaceId);
+  fail(error);
+  return ((data ?? []) as Row[]).map((r) => ({
+    id: str(r["id"]),
+    workspaceId: str(r["workspace_id"]),
+    kind: r["kind"] as WorkspaceProfile["kind"],
+    name: str(r["name"]),
+    spec: (r["spec"] ?? {}) as Record<string, unknown>,
+    isDefault: r["is_default"] === true,
+    archived: r["archived_at"] !== null && r["archived_at"] !== undefined,
+    revision: num(r["revision"]),
+  }));
+}
+
+/** Lagrer (id null = ny) eller endrer en profil. Returnerer profilens id. */
+export async function saveWorkspaceProfile(
+  workspaceId: string,
+  f: {
+    id: string | null;
+    kind: WorkspaceProfile["kind"];
+    name: string;
+    spec: Record<string, unknown>;
+    isDefault: boolean;
+    revision: number;
+  },
+): Promise<string> {
+  const { data, error } = await db.rpc("workspace_save_profile", {
+    p_workspace: workspaceId,
+    p_id: f.id,
+    p_kind: f.kind,
+    p_name: f.name,
+    p_spec: f.spec as never,
+    p_is_default: f.isDefault,
+    p_revision: f.revision,
+  });
+  fail(error);
+  return data as string;
+}
+
+export async function archiveWorkspaceProfile(profileId: string, archived: boolean): Promise<void> {
+  const { error } = await db.rpc("workspace_archive_profile", { p_profile: profileId, p_archived: archived });
+  fail(error);
+}
