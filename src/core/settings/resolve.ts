@@ -141,5 +141,5 @@ export function isCurrencyCode(c: string): boolean {
 /** Sekunder per manusside for formatet («én side er ett minutt» = 60). */
 export function secondsPerPage(f: ScriptFormat): number {
   if (f.kind === "custom") return f.secondsPerPage && f.secondsPerPage > 0 ? f.secondsPerPage : 60;
-  return f.pageIsMinute ? 60 : 60;
+  return 60;
 }
