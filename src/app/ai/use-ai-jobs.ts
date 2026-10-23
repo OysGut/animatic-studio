@@ -15,6 +15,8 @@ export interface AiJobs {
   readonly jobs: readonly GenerationJob[];
   /** Genereringer denne måneden som ikke feilet (null hvis tellingen ikke kunne hentes). */
   readonly monthCount: number | null;
+  /** Starten på budsjettmåneden i prosjektets tidssone (G-3 del 2); null hvis den ikke kunne hentes. */
+  readonly periodStart: Date | null;
 }
 
 const missing = (m: string) => /does not exist|schema cache|Could not find the table/i.test(m);
@@ -24,18 +26,19 @@ export function useAiJobs(projectId: string, enabled = true) {
     queryKey: aiJobsKey(projectId),
     enabled,
     queryFn: async (): Promise<AiJobs> => {
-      const { list, count } = await fetchProjectJobs(
-        projectId,
-        monthStartUtc(new Date()).toISOString(),
-      );
+      const period = await fetchProjectPeriodStart(projectId);
+      if (period.error || !period.data) throw new Error(period.error?.message ?? "project_period_start");
+      const periodStart = new Date(period.data);
+      const { list, count } = await fetchProjectJobs(projectId, period.data);
       if (list.error) {
         // Før migrasjon 0010 finnes ikke loggen
-        if (missing(list.error.message)) return { jobs: [], monthCount: 0 };
+        if (missing(list.error.message)) return { jobs: [], monthCount: 0, periodStart };
         throw new Error(list.error.message);
       }
       return {
         jobs: ((list.data ?? []) as Record<string, unknown>[]).map(jobFromRow),
         monthCount: count.error ? null : (count.count ?? 0),
+        periodStart,
       };
     },
     refetchInterval: (q) =>
