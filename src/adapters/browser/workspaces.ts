@@ -3,7 +3,7 @@
  * med feilmeldingen derfra. Klienten skriver aldri direkte i tabellene.
  */
 import { isWorkspaceRole, type WorkspaceRole } from "@/core";
-import { db } from "./client";
+import { backendMessage, db } from "./client";
 
 export interface WorkspaceSummary {
   readonly id: string;
@@ -28,8 +28,8 @@ export interface WorkspaceProject {
   readonly workspaceId: string | null;
 }
 
-function fail(e: { message: string } | null): void {
-  if (e) throw new Error(e.message);
+function fail(e: { message: string; code?: string | null } | null): void {
+  if (e) throw new Error(backendMessage(e));
 }
 
 /** Gruppene jeg er aktivt medlem av, med min rolle. */

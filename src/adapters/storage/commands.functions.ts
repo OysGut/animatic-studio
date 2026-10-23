@@ -72,6 +72,7 @@ export function quotaErrorMessage(
   if (error.code === "PTG12") return { code: "quota", message: tk("adapters-storage-commands-functions.quota-change-log") };
   if (error.code === "PTG13") return { code: "quota", message: tk("adapters-storage-commands-functions.quota-storage") };
   if (error.code === "PTG14") return { code: "quota", message: tk("adapters-storage-commands-functions.quota-uploads") };
+  if (error.code === "PTG15") return { code: "quota", message: tk("adapters-storage-commands-functions.rate-limited") };
   return null;
 }
 

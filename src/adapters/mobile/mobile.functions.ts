@@ -42,6 +42,7 @@ const SCHEMA_MESSAGE = t("adapters-mobile-mobile-functions.schema-message.messag
 function dbMessage(message: string, code?: string): string {
   if (code === "PTG13") return t("adapters-mobile-mobile-functions.db-message.quota-storage");
   if (code === "PTG14") return t("adapters-mobile-mobile-functions.db-message.quota-uploads");
+  if (code === "PTG15") return t("adapters-storage-commands-functions.rate-limited");
   if (missingSchema(message)) return SCHEMA_MESSAGE;
   if (/utløpt eller tilbakekalt/.test(message))
     return t("adapters-mobile-mobile-functions.db-message.message.089685f21124");
