@@ -54,7 +54,11 @@ describe("REQ-0326 / REQ-0327 – analyser og forslag endrer ikke manuset", () =
     for (const f of readdirSync(dir).filter((x) => x.endsWith(".ts"))) {
       const src = readFileSync(join(dir, f), "utf8");
       // Ingen kommandoer eller lagring av endringssett fra AI-koden
-      expect(src, f).not.toMatch(/apply_changes|\.rpc\(|runCommand/);
+      expect(src, f).not.toMatch(/apply_changes|runCommand/);
+      // Bare lesende budsjett-RPC-er er tillatt; alle andre RPC-kall er forbudt
+      const readOnlyRpc = new Set(["user_period_start", "user_period_start_date", "project_period_start"]);
+      for (const m of src.matchAll(/\.rpc\(\s*"(\w+)"/g))
+        expect(readOnlyRpc, `${f}: .rpc("${m[1]}")`).toContain(m[1]);
       for (const m of src.matchAll(/\.from\(\s*"(\w+)"\s*\)\s*\.(update|insert|upsert|delete)\(/g))
         writes.push(`${f}: ${m[1]}.${m[2]}`);
     }
