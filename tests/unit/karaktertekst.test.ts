@@ -103,11 +103,11 @@ function undoInverse(before: typeof s0, after: typeof s0, versionId: string) {
 }
 
 describe("fremheving av bildene laget fra teksten", () => {
-  const vs = [
+  const vs = ([
     { id: "v1", briefVersionId: "b1" },
     { id: "v2", briefVersionId: "b2" },
     { id: "v3" },
-  ];
+  ] as never[]);
   it("bilder fra den aktive teksten lyser opp, de andre dempes", () => {
     expect(briefHighlight(vs, "b1")).toEqual({ v1: "match", v2: "dim", v3: "dim" });
   });
@@ -116,7 +116,7 @@ describe("fremheving av bildene laget fra teksten", () => {
     expect(briefHighlight(vs, null)).toEqual({ v1: "none", v2: "none", v3: "none" });
   });
   it("eldre bilder uten referanse lyser aldri opp", () => {
-    expect(briefHighlight([{ id: "v3" }], "b1")).toEqual({ v3: "none" });
+    expect(briefHighlight([{ id: "v3" }] as never[], "b1")).toEqual({ v3: "none" });
   });
 });
 
