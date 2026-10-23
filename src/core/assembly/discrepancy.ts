@@ -135,7 +135,7 @@ export function materialsOf(s: ProjectState, occurrenceId: string, clip?: FilmCl
     for (const p of clip.parts) if (p.source === "take" && p.take) usedTakes.add(p.take.id);
   } else if (o.activeTakeId) usedTakes.add(o.activeTakeId);
   const out: Material[] = [];
-  const comp = Object.values(s.compositions).find((c) => c.variantId === o.variantId && !c.removed);
+  const comp = Object.values(s.compositions).find((c) => c.variantId === o.variantId && !c.removed && (c.kind ?? "scene") === "scene");
   if (comp)
     out.push({
       kind: "composition",
