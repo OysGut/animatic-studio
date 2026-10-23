@@ -54,7 +54,7 @@ const AUTO_HEADING_RE = /^(?:INT\.?\/EXT|INT\/EXT|INT|EXT|EST|I\/E)[.\s]/i;
 /** G-3: språksettenes ord med punktum (store bokstaver), i tillegg til de internasjonale over. */
 let langHeadingRe = new RegExp(String.raw`^(?:${headingPrefixPattern()})(?=\s|$)`, "u");
 /** Kildespråket og prosjektets egne ord prioriteres; settes av parseFountain for én tolkning. */
-export function setFountainHeadingLanguage(sourceLanguage?: string, projectWords?: readonly string[]): void {
+function setFountainHeadingLanguage(sourceLanguage?: string, projectWords?: readonly string[]): void {
   langHeadingRe = new RegExp(
     String.raw`^(?:${headingPrefixPattern(sourceLanguage, projectWords)})(?=\s|$)`,
     "u",
@@ -301,7 +301,19 @@ function noteQuote(raw: string, col: number, place: RowPlace | undefined): strin
  * Tolker en Fountain-fil. Gir samme struktur som PDF/DOCX-tolkningen, med kildereferanse
  * `{ page: eksplisitt side (===), y: linjenummer × 12 }`.
  */
-export function parseFountain(source: string): FountainImport {
+export function parseFountain(
+  source: string,
+  opts: { readonly sourceLanguage?: string; readonly headingWords?: readonly string[] } = {},
+): FountainImport {
+  setFountainHeadingLanguage(opts.sourceLanguage, opts.headingWords);
+  try {
+    return parseFountainInner(source);
+  } finally {
+    setFountainHeadingLanguage();
+  }
+}
+
+function parseFountainInner(source: string): FountainImport {
   let text = source.replace(/^\uFEFF/, "").replace(/\r\n?/g, "\n");
   // Boneyard /* … */ ignoreres helt (også over flere linjer)
   text = text.replace(/\/\*[\s\S]*?\*\//g, "");
