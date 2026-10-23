@@ -6,13 +6,10 @@
  *
  * Ren TypeScript: kallene (språkmodell, lagring) gis inn av adapteren, så rekkefølgen kan prøves uten nett.
  */
-import type { Asset, ProjectState } from "../model";
-import { ASSET_KIND_LABEL } from "../assets/labels";
-import { coverVersion } from "../assets/cover";
-import { mainProduction } from "../productions/main";
-import { scriptMentions } from "../script/mentions";
+import { mainProduction, type Asset, type ProjectState } from "../model";
+import { ASSET_KIND_LABEL, coverVersion } from "../library/index";
 import { visualBriefUserText } from "./style-analysis";
-import { visualBriefFacts } from "./image-prompt";
+import { scriptMentions, visualBriefFacts } from "./image-prompt";
 
 export const FACT_SHEET_HEADING =
   "VISUAL FACT SHEET (authoritative for appearance; the text after it may refine details but never contradict or remove these facts):";
