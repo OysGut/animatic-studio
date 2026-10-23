@@ -41,7 +41,7 @@ Tallene er databasetid lokalt. I nettleseren kommer nettverk i tillegg. Der spar
 ## A4 – RLS
 
 - Ny `private.my_project_ids()` (security definer, stable) gir prosjektene der brukeren er aktivt medlem (`removed_at is null`). Den kjøres én gang per spørring.
-- **Alle 73 policyer som brukte `private.is_project_member(...)`** er skrevet om med `alter policy`. Alle er lesepolicyer; skriving går som før bare via RPC. `project_id in (select private.my_project_ids())`, for `projects` med `id`. `project_members_own_read` fikk i tillegg `(select auth.uid())` i stedet for `auth.uid()` per rad.
+- **Alle 73 policyer som brukte `private.is_project_member(...)`** er skrevet om med `alter policy`. Alle er lesepolicyer; skriving går som før bare via RPC. `project_id in (select private.my_project_ids())`, for `projects` med `id`. `user_bookmarks_own` fikk i tillegg `(select auth.uid())` i stedet for `auth.uid()` per rad.
 - Rollene, `to authenticated` og kommandoen er uendret, fordi `alter policy` bare bytter uttrykket. `private.is_project_member` beholdes, siden den brukes i funksjoner.
 - **DB-tester:**
   - På alle berørte tabeller: ikke-medlem 0, aktivt medlem (eier og leser) alle, fjernet medlem 0.
