@@ -44,7 +44,7 @@ describe("nfcDeep", () => {
 describe("import normaliserer til NFC", () => {
   it("Fountain: handlingslinje med NFD lagres som NFC", () => {
     const result = parseFountain(`INT. HUS – DAG\n\nSara går inn i caf${NFD_E}en.\n`);
-    const texts = result.blocks.map((b) => b.text);
+    const texts = result.parsed.scenes.flatMap((s) => s.blocks.map((b) => b.text));
     expect(texts.some((t) => t.includes(`caf${NFC_E}en`))).toBe(true);
     expect(texts.some((t) => t.includes(NFD_E))).toBe(false);
   });
@@ -54,7 +54,7 @@ describe("import normaliserer til NFC", () => {
       [{ page: 1, x: 108, y: 72, text: `En caf${NFD_E} i byen.` }],
       { format: "pdf" },
     );
-    const texts = result.blocks.map((b) => b.text);
+    const texts = result.scenes.flatMap((s) => s.blocks.map((b) => b.text));
     expect(texts.some((t) => t.includes(NFD_E))).toBe(false);
   });
 });
