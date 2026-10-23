@@ -408,7 +408,7 @@ export function AiPanel({
                       <Link
                         to="/prosjekt/$projectId/bibliotek"
                         params={{ projectId }}
-                        search={{ asset: asset.id, ...(versionIdFromResultPath(j.resultPath) ? { version: versionIdFromResultPath(j.resultPath)! } : {}) }}
+                        search={{ asset: asset.id, ...((j.resultPath ? versionIdFromResultPath(j.resultPath) : null) ? { version: (j.resultPath ? versionIdFromResultPath(j.resultPath) : null)! } : {}) }}
                       >
                         {tk("app-ai-ai-panel.ai-panel.link.4016655f7c25")}
                       </Link>
