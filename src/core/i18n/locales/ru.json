@@ -56124,5 +56124,10 @@
     "text": "Изменить ширину боковой панели",
     "sourceHash": "233acf6d578376478a4d51ecd2212c85f619e069e39b36cac3dddbff44f3969a",
     "review": "machine"
+  },
+  "build.version": {
+    "text": "Версия {sha} · сборка {time}",
+    "sourceHash": "298b1683ec91394e4f4aa8711203368938595c405b4a4cb3c38be4d682b90b33",
+    "review": "machine"
   }
 }

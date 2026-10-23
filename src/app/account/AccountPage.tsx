@@ -3,6 +3,7 @@
  * bla annet foretrukket språk og forbrukte kreditter, endre passord, osv»). Profil, språk, passord,
  * AI-forbruk med kostnadsrapport, personvern og «Slett kontoen min».
  */
+import { BuildVersion } from "@/app/shared/BuildVersion";
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
@@ -272,6 +273,7 @@ function AccountPageForUser({ email, userId }: { email: string; userId?: string 
           {t("app-account-account-page.account-page.button.6900b1be5d0a")}
         </Button>
       </div>
+      <BuildVersion />
     </main>
   );
 }
