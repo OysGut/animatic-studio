@@ -7928,7 +7928,7 @@ try {
     const blocks = await sql`select id from public.script_blocks where project_id=${g2Project} order by id`;
     assert(JSON.stringify(tables["script_blocks"]!.map((b) => b.id)) === JSON.stringify(blocks.map((b) => b["id"])), "blokker");
     assert(tables["script_block_revisions"]!.length === blocks.length, "bare gjeldende revisjon per blokk");
-    assert(Object.keys(tables).length === 52, `tabeller: ${Object.keys(tables).length}`);
+    assert(Object.keys(tables).length === 56, `tabeller: ${Object.keys(tables).length}`);
     for (const u of [BOB, CAROL]) {
       const other = (await as("authenticated", u, (tx) => tx`select public.project_snapshot(${g2Project}) s`))[0]!["s"] as typeof snap;
       const ot = Object.assign({}, ...other.tables) as Record<string, unknown[]>;
@@ -8714,7 +8714,7 @@ try {
     // Notatlag uten note-felt avvises
     await expectError(sbApply(g7p, { inserts: { composition_layers: [layer("note", panel)] } }), "22023");
     // note-felt på et annet lag avvises
-    await expectError(sbApply(g7p, { inserts: { composition_layers: [layer("arrow", panel, { note: noteSpec, arrow: { points: [{ x: 0, y: 0 }, { x: 1, y: 1 }], form: "straight", thickness: 2, color: "#ffffff", category: "character" } })] } }), "22023");
+    await expectError(sbApply(g7p, { inserts: { composition_layers: [layer("arrow", panel, { note: noteSpec, arrow: { points: [{ x: 0, y: 0 }, { x: 1, y: 1 }], form: "straight", thickness: 2, color: "#ffffff", category: "character" } })] } }), "23514");
   });
 
   await test("0102 SB-1.3: blokkforankring krever blokk i samme prosjekt og variant; RLS som resten", async () => {
@@ -8724,7 +8724,7 @@ try {
       { id: panel, project_id: g7p, variant_id: variant, kind: "storyboard", occurrence_id: occurrence, order_key: "a4", revision: 1 }] } });
     // Blokk som ikke finnes (eller er i et annet prosjekt), avvises
     await expectError(sbApply(g7p, { inserts: { storyboard_panel_blocks: [
-      { id: newId(), project_id: g7p, panel_id: panel, block_id: newId(), order_key: "a1", revision: 1 }] } }), "22023");
+      { id: newId(), project_id: g7p, panel_id: panel, block_id: newId(), order_key: "a1", revision: 1 }] } }), "23503");
     // Blokk i en annen variant enn panelet avvises
     const otherVariant = newId(), otherBlock = newId();
     await sql`insert into public.scene_variants (id, project_id, scene_id) values (${otherVariant},${g7p},${sbSetup.scene})`;
@@ -8773,9 +8773,9 @@ try {
       { id: newId(), project_id: g7p, area: "storyboard", composition_id: panel, status: "review", revision: 1 }] } }), "23505");
     // Målet må finnes i prosjektet; panelmål må være et storyboardpanel
     await expectError(sbApply(g7p, { inserts: { production_statuses: [
-      { id: newId(), project_id: g7p, area: "storyboard", occurrence_id: newId(), status: "review", revision: 1 }] } }), "22023");
+      { id: newId(), project_id: g7p, area: "storyboard", occurrence_id: newId(), status: "review", revision: 1 }] } }), "23503");
     await expectError(sbApply(g7p, { inserts: { production_status_events: [
-      { id: newId(), project_id: g7p, status_id: newId(), area: "storyboard", composition_id: panel, status: "review", revision: 1 }] } }), "22023");
+      { id: newId(), project_id: g7p, status_id: newId(), area: "storyboard", composition_id: panel, status: "review", revision: 1 }] } }), "23503");
   });
 
   await test("0102 SB-1.5: øyeblikksbilde og sletting tar med storyboardtabellene", async () => {

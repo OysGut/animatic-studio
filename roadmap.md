@@ -67,3 +67,18 @@
 
 - [x] G-9 Eksempelprosjekt på flere språk (rapport: docs/development/G9_DEMO_REPORT.md; ende-til-ende mot Cloud ikke kjørt)
 - [x] Rest G-5/G-6 (0101, adminpaneler, knippe-UI, profiler, arv, snapshot i sikkerhetskopi)
+
+## SB-1 storyboardgrunnmur (23.10.2026)
+- [x] Kjerne + migrasjon 0102; tsc 0, full Vitest 2868/0/10, DB 224/0, i18n grønn, rapport docs/development/SB1_REPORT.md
+- [ ] Claude: gjennomgå og kjør 0102 i Cloud
+
+## SB-2 storyboardgalleri og navigasjon (23.10.2026) – kjøres etter SB-1
+- [ ] Fane «Storyboard» + rute prosjekt/$projectId/storyboard med vindu-ID
+- [ ] Galleri i fortellerrekkefølge per produksjon, gruppert per scene, felles Thumbnail
+- [ ] Kontroller: panelstørrelse/zoom, vis-skjul, tekstvisning, filter, «Hopp til manus», husket per bruker
+- [ ] Klikk/dobbeltklikk/Enter-navigasjon med panel-markering (URL-parameter)
+- [ ] Omorganisering: dra paneler/scener, legg til/dupliser/skjul/deaktiver/gjeninnfør, flytt til scene, alt med angre
+- [ ] Første åpning: forslag ett tomt panel per scene med bekreftelse
+- [ ] Statusmerker per fagområde + redigering
+- [ ] Tilgjengelighet (piltaster, aria, RTL), virtualisering for 2 000 paneler
+- [ ] Tester jsdom + visuelt nb/en; tsc 0, full vitest grønn, i18n grønn; rapport docs/development/SB2_REPORT.md

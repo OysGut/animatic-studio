@@ -16,12 +16,11 @@
 -- =====================================================================================
 
 -- ---------- 1. compositions blir også storyboardpaneler ----------
-alter table public.compositions
-  add column if not exists kind text not null default 'scene',
-  add column if not exists occurrence_id uuid references public.scene_occurrences (id) on delete restrict,
-  add column if not exists order_key text,
-  add column if not exists active boolean not null default true,
-  add column if not exists hidden boolean not null default false;
+alter table public.compositions add column if not exists kind text not null default 'scene';
+alter table public.compositions add column if not exists occurrence_id uuid references public.scene_occurrences (id) on delete restrict;
+alter table public.compositions add column if not exists order_key text;
+alter table public.compositions add column if not exists active boolean not null default true;
+alter table public.compositions add column if not exists hidden boolean not null default false;
 alter table public.compositions add constraint compositions_kind_check
   check (kind in ('scene', 'storyboard'));
 -- Et panel er knyttet til én sceneforekomst og har plass i scenens panelrekkefølge
@@ -53,11 +52,11 @@ alter table public.composition_layers add column if not exists camera_mark jsonb
 alter table public.composition_layers drop constraint if exists composition_layers_shows_something;
 alter table public.composition_layers add constraint composition_layers_shows_something
   check (kind in ('group','page','note','arrow','camera_mark') or (kind = 'text' and text_spec is not null) or asset_id is not null or fill is not null);
-alter table public.composition_layers add constraint composition_layers_note_check
+alter table public.composition_layers add constraint composition_layers_note_kind_check
   check ((note is null) or kind = 'note');
-alter table public.composition_layers add constraint composition_layers_arrow_check
+alter table public.composition_layers add constraint composition_layers_arrow_kind_check
   check ((arrow is null) or kind = 'arrow');
-alter table public.composition_layers add constraint composition_layers_camera_mark_check
+alter table public.composition_layers add constraint composition_layers_camera_mark_kind_check
   check ((camera_mark is null) or kind = 'camera_mark');
 
 -- ---------- 3. Nye tabeller ----------
