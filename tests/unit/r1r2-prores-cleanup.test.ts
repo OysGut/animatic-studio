@@ -87,7 +87,7 @@ function setup(opts: { role?: string; tables?: Record<string, Row[]>; files?: { 
   } };
   h.admin = {
     from: (table: string) => {
-      const q = { select: () => q, eq: () => q, order: () => q, range: async () => ({ data: tables[table] ?? [], error: null }), insert: async (row: Row) => { inserts.push({ table, row }); return { error: null }; } };
+      const q = { select: () => q, eq: () => q, order: () => q, gt: () => q, limit: async () => ({ data: tables[table] ?? [], error: null }), insert: async (row: Row) => { inserts.push({ table, row }); return { error: null }; } };
       return q;
     },
     storage: { from: () => ({
