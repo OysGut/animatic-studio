@@ -32,13 +32,13 @@ create table public.global_character_bundles (
   -- Faktaark: tekstversjoner (samme form som assets.brief_versions, 0089) og hvilken som er aktiv
   brief_versions jsonb not null default '[]'::jsonb
     check (jsonb_typeof(brief_versions) = 'array' and jsonb_array_length(brief_versions) <= 50
-           and octet_length(brief_versions::text) <= 2000000),
+           and pg_column_size(brief_versions) <= 2000000),
   active_brief_id text check (active_brief_id is null or length(active_brief_id) between 1 and 64),
   -- Munnsett: liste av {system, variants} (samme form som mouth_sets, 0084)
   mouth_sets jsonb not null default '[]'::jsonb
-    check (jsonb_typeof(mouth_sets) = 'array' and octet_length(mouth_sets::text) <= 200000),
+    check (jsonb_typeof(mouth_sets) = 'array' and pg_column_size(mouth_sets) <= 200000),
   -- Riggoppsett (samme form som rig_setups.spec, 0071); null = karakteren har ingen egen rigg
-  rig_setup jsonb check (rig_setup is null or (jsonb_typeof(rig_setup) = 'object' and octet_length(rig_setup::text) <= 65536)),
+  rig_setup jsonb check (rig_setup is null or (jsonb_typeof(rig_setup) = 'object' and pg_column_size(rig_setup) <= 65536)),
   -- Godkjente bildeversjoner: henvisninger til global_asset_versions for denne ressursen
   approved_version_ids uuid[] not null default '{}' check (cardinality(approved_version_ids) <= 200),
   note text not null default '' check (length(note) <= 2000),
