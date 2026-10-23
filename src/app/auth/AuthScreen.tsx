@@ -210,7 +210,7 @@ export function AuthScreen({ invited = false }: { invited?: boolean } = {}) {
       <div className="w-full max-w-[360px]">
         <div className="mb-8">
           <h1 className="text-2xl font-semibold tracking-tight text-text-primary">
-            From Pen to Glass
+            from Pen to Glass
           </h1>
           <p className="mt-1 text-[13px] text-text-secondary">
             {t("app-auth-auth-screen.auth-screen.p.e99ee6ebdf9f")}
