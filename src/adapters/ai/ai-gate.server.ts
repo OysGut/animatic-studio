@@ -113,14 +113,26 @@ export async function projectProviderIds(
   return [...new Set(((data ?? []) as { provider: string }[]).map((r) => r.provider))].sort();
 }
 
-/** Brukt denne måneden (USD) med eierens nøkler. */
+/** Periodestart (måned) i eierens tidssone, fra databasen (G-3 del 2) – samme grense som ai_spend. */
+async function ownerMonthStart(admin: AnyClient, ownerId: string): Promise<{ since: string; month: string }> {
+  const [{ data: since, error: e1 }, { data: month, error: e2 }] = await Promise.all([
+    admin.rpc("user_period_start", { p_user: ownerId, p_unit: "month" }),
+    admin.rpc("user_period_start_date", { p_user: ownerId, p_unit: "month" }),
+  ]);
+  if (e1 || e2 || typeof since !== "string" || typeof month !== "string")
+    throw new Error(String(e1?.message ?? e2?.message ?? "user_period_start"));
+  return { since, month };
+}
+
+/** Brukt denne måneden (USD) med eierens nøkler, i eierens tidssone (G-3 del 2). */
 export async function usedUsd(admin: AnyClient, ownerId: string): Promise<number> {
+  const { since, month } = await ownerMonthStart(admin, ownerId);
   const { data } = await admin
     .from("generation_jobs")
     .select("cost_usd")
     .eq("key_owner", ownerId)
     .neq("status", "failed")
-    .gte("created_at", monthStartUtc(new Date()).toISOString())
+    .gte("created_at", since)
     .limit(20000);
   const jobs = ((data ?? []) as { cost_usd: number | string | null }[]).reduce(
     // Ugyldige tall telles som 0 her, så summen aldri blir NaN (NaN ville sluppet forbi taket)
@@ -132,7 +144,7 @@ export async function usedUsd(admin: AnyClient, ownerId: string): Promise<number
     .from("ai_spend")
     .select("usd")
     .eq("key_owner", ownerId)
-    .eq("month", monthStartUtc(new Date()).toISOString().slice(0, 10))
+    .eq("month", month)
     .maybeSingle();
   const k = (kept as { usd?: number | string | null } | null)?.usd;
   return jobs + finite(k);
@@ -186,6 +198,12 @@ export async function overProjectBudget(
   includesThisJob: boolean,
 ): Promise<string | null> {
   if (limit === null || limit === undefined) return null;
+  // Månedsstarten i prosjektets budsjettidssone (G-3 del 2) – samme grense som databasetriggerne
+  const { data: since, error: pe } = await admin.rpc("project_period_start", {
+    p_project: projectId,
+    p_unit: "month",
+  });
+  if (pe || typeof since !== "string") throw new Error(String(pe?.message ?? "project_period_start"));
   const { count } = await admin
     .from("generation_jobs")
     .select("id", { count: "exact", head: true })
@@ -194,7 +212,7 @@ export async function overProjectBudget(
     .neq("kind", "prompt")
     // Tekstkall (T1) teller heller ikke i genereringsbudsjettet, som AI-beskrivelsene
     .neq("kind", "text")
-    .gte("created_at", monthStartUtc(new Date()).toISOString());
+    .gte("created_at", since);
   const used = count ?? 0;
   if (includesThisJob ? used > limit : used >= limit)
     return tk("adapters-ai-ai-gate-server.over-project-budget.message.d516d5c0ac48", { limit: String(limit) });
