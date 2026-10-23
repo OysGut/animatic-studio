@@ -401,3 +401,10 @@ span.mark-search-chip {
 html.lang-pending body {
   visibility: hidden;
 }
+
+/* Plassholderretting del 2: nøytralt sjakkmønster bak miniatyrer (alfa og tomrom ved contain) */
+@utility thumb-checker {
+  background-color: var(--surface-3);
+  background-image: conic-gradient(var(--surface-2) 25%, transparent 0 50%, var(--surface-2) 0 75%, transparent 0);
+  background-size: 8px 8px;
+}

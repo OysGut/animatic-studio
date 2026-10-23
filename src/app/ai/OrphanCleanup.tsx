@@ -3,6 +3,7 @@
  * eksplisitt bekreftelse før noe slettes. Serveren sjekker alt på nytt ved sletting.
  */
 import { useState } from "react";
+import { Thumbnail } from "@/app/shared/Thumbnail";
 import { useServerFn } from "@tanstack/react-start";
 import { Eraser } from "lucide-react";
 import { previewOrphanCleanup, confirmOrphanCleanup } from "@/adapters/storage/orphan-cleanup.functions";
@@ -56,7 +57,7 @@ export function OrphanCleanup({ projectId }: { projectId: string }) {
         <ul className="grid max-h-64 grid-cols-4 gap-2 overflow-y-auto text-xs text-text-secondary">
           {found?.files.map((f) => <li key={f.path} data-testid="orphan-cleanup-file" className="flex flex-col gap-1">
             {f.thumbUrl
-              ? <img src={f.thumbUrl} alt={f.path.split("/").at(-1) ?? ""} loading="lazy" className="aspect-square w-full rounded-sm border border-border bg-surface-3 object-cover" />
+              ? <span className="block aspect-square w-full overflow-hidden rounded-sm border border-border"><Thumbnail src={f.thumbUrl} alt={f.path.split("/").at(-1) ?? ""} loading="lazy" /></span>
               : <div className="flex aspect-square w-full items-center justify-center rounded-sm border border-border bg-surface-3 text-text-tertiary">{(f.path.split(".").at(-1) ?? "").toUpperCase()}</div>}
             <span className="truncate" title={f.path.split("/").at(-1)}>{f.path.split("/").at(-1)}</span>
           </li>)}

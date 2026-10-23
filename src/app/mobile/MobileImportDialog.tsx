@@ -4,6 +4,7 @@
  * tilkoblet, hva som er mottatt, siste fil, pågående opplastinger og feil. Hver kontekst får sin egen kode.
  */
 import { Camera, Check, Copy, Loader2, Smartphone, TriangleAlert } from "lucide-react";
+import { Thumbnail } from "@/app/shared/Thumbnail";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { formatDate, type UploadContext } from "@/core";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
@@ -302,7 +303,7 @@ function Body({
             >
               <div className="flex aspect-square items-center justify-center overflow-hidden bg-surface-3">
                 {r.kind === "image" && thumbs.data?.[r.path] ? (
-                  <img src={thumbs.data[r.path]} alt="" className="size-full object-cover" />
+                  <Thumbnail src={thumbs.data[r.path]} />
                 ) : r.kind === "image" ? (
                   <Loader2 className="size-4 animate-spin text-text-tertiary" aria-hidden />
                 ) : (

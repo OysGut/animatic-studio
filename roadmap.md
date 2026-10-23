@@ -351,3 +351,5 @@
 
 ## Feil fra Øystein: plassholder → bilde (23.10)
 - [x] Nytt bilde på en plassholder får egne proporsjoner og vanlig innsettingsstørrelse rundt samme senter; ett angretrinn (tests/unit/placeholder-refit.test.ts, tests/visual/placeholder-refit.mjs).
+
+- [x] Plassholderretting del 2: felles Thumbnail med contain (AGENTS.md regel 58, thumbnail-contain.test.tsx).

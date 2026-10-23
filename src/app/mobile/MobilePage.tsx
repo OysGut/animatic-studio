@@ -4,6 +4,7 @@
  * ta bilder (hurtigmodus: bilde etter bilde, sendes automatisk), velg bilder, ta opp eller velg video, og «Del
  * lenke» med telefonens egen deling. Bidragsytere ser bare sine egne filer.
  */
+import { Thumbnail } from "@/app/shared/Thumbnail";
 import {
   Camera,
   Check,
@@ -417,7 +418,7 @@ function QueueTile({ it, onRetry }: { it: QueueItem; onRetry: (id: string) => vo
     >
       <div className="flex aspect-square items-center justify-center overflow-hidden rounded-md bg-surface-3">
         {url ? (
-          <img src={url} alt="" className="size-full object-cover" />
+          <Thumbnail src={url} />
         ) : (
           <Film className="size-6 text-text-tertiary" aria-hidden />
         )}

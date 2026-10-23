@@ -1,5 +1,6 @@
 import { InspectionWindow } from "@/app/rig/InspectionWindow";
 import { ContourPreview } from "@/app/rig/ContourPreview";
+import { Thumbnail } from "@/app/shared/Thumbnail";
 /**
  * Lagliste for 2D-scenen: forreste lag øverst. Valg, synlighet, lås, rekkefølge (knapper og dra-og-slipp),
  * grupper (dra et lag inn på en gruppe for å legge det i gruppen, eller ut ved siden av et lag utenfor) og
@@ -563,7 +564,7 @@ export const LayersPanel = memo(function LayersPanel({
                       style={l.fill && l.assetId === null ? { backgroundColor: l.fill } : undefined}
                     >
                       {url ? (
-                        <img src={url} alt="" className="size-full object-cover" />
+                        <Thumbnail src={url} />
                       ) : l.kind === "group" ? (
                         <Group className="m-auto mt-0.5 size-3.5 text-text-tertiary" />
                       ) : l.assetId ? (
