@@ -88,8 +88,8 @@
       "key": "adapters-account-lock-server.lock-message.message.719814c41621",
       "migrated": true,
       "supersededBy": [
-        "adapters-account-lock-server.owner-blocked-with-owner",
-        "adapters-account-lock-server.owner-blocked"
+        "adapters-account-lock-server.owner-blocked",
+        "adapters-account-lock-server.owner-blocked-with-owner"
       ]
     },
     {
@@ -157,8 +157,8 @@
       "key": "adapters-ai-video-functions.message.message.b49b7f3f602c",
       "migrated": true,
       "supersededBy": [
-        "adapters-ai-video-functions.database-outdated-queue",
-        "adapters-ai-video-functions.database-outdated"
+        "adapters-ai-video-functions.database-outdated",
+        "adapters-ai-video-functions.database-outdated-queue"
       ]
     },
     {
@@ -296,8 +296,8 @@
       "key": "app-ai-ai-panel.ai-panel.p.e43f41cffc8c",
       "migrated": true,
       "supersededBy": [
-        "app-ai-ai-panel.usage-estimate-partly-unknown",
-        "app-ai-ai-panel.usage-estimate"
+        "app-ai-ai-panel.usage-estimate",
+        "app-ai-ai-panel.usage-estimate-partly-unknown"
       ]
     },
     {
@@ -339,8 +339,8 @@
       "key": "app-ai-providers-dialog.text.text.9f438ecf8438",
       "migrated": true,
       "supersededBy": [
-        "app-ai-providers-dialog.key-saved-encrypted",
-        "app-ai-providers-dialog.key-not-tested"
+        "app-ai-providers-dialog.key-not-tested",
+        "app-ai-providers-dialog.key-saved-encrypted"
       ]
     },
     {
@@ -1449,8 +1449,8 @@
       "key": "app-assembly-export-animatic-dialog.text.text.4bac8570af99",
       "migrated": true,
       "supersededBy": [
-        "app-assembly-export-animatic-dialog.audio-clips-included-muted",
-        "app-assembly-export-animatic-dialog.audio-clips-included"
+        "app-assembly-export-animatic-dialog.audio-clips-included",
+        "app-assembly-export-animatic-dialog.audio-clips-included-muted"
       ]
     },
     {
@@ -2282,12 +2282,12 @@
       "migrated": true,
       "supersededBy": [
         "app-assembly-film-timeline.clip-label",
-        "app-assembly-film-timeline.clip-label-no-2d",
         "app-assembly-film-timeline.clip-label-finished-film",
-        "app-assembly-film-timeline.clip-label-transition",
-        "app-assembly-film-timeline.clip-label-transition-overlap",
         "app-assembly-film-timeline.clip-label-monochrome",
-        "app-assembly-film-timeline.clip-label-script-changed"
+        "app-assembly-film-timeline.clip-label-no-2d",
+        "app-assembly-film-timeline.clip-label-script-changed",
+        "app-assembly-film-timeline.clip-label-transition",
+        "app-assembly-film-timeline.clip-label-transition-overlap"
       ]
     },
     {
@@ -2616,12 +2616,12 @@
       "migrated": true,
       "supersededBy": [
         "app-assembly-film-timeline.clip-tooltip",
-        "app-assembly-film-timeline.clip-tooltip-estimate",
-        "app-assembly-film-timeline.clip-tooltip-planned",
-        "app-assembly-film-timeline.clip-tooltip-no-2d",
         "app-assembly-film-timeline.clip-tooltip-edited",
+        "app-assembly-film-timeline.clip-tooltip-estimate",
         "app-assembly-film-timeline.clip-tooltip-film",
-        "app-assembly-film-timeline.clip-tooltip-move"
+        "app-assembly-film-timeline.clip-tooltip-move",
+        "app-assembly-film-timeline.clip-tooltip-no-2d",
+        "app-assembly-film-timeline.clip-tooltip-planned"
       ]
     },
     {
@@ -3611,8 +3611,8 @@
       "key": "app-assembly-script-changes.script-changes.p.bdad7e6b0806",
       "migrated": true,
       "supersededBy": [
-        "app-assembly-script-changes.restore-lines",
-        "app-assembly-script-changes.restore-line"
+        "app-assembly-script-changes.restore-line",
+        "app-assembly-script-changes.restore-lines"
       ]
     },
     {
@@ -3642,9 +3642,9 @@
       "key": "app-assembly-mts-occurrences.label.message.181e9b47f9dc",
       "migrated": true,
       "supersededBy": [
-        "app-assembly-mts-occurrences.label-title",
+        "app-assembly-mts-occurrences.label-credits",
         "app-assembly-mts-occurrences.label-text",
-        "app-assembly-mts-occurrences.label-credits"
+        "app-assembly-mts-occurrences.label-title"
       ]
     },
     {
@@ -3674,9 +3674,9 @@
       "key": "app-assembly-mts-occurrences.location.location.77bd3c5d608e",
       "migrated": true,
       "supersededBy": [
-        "app-assembly-mts-occurrences.marker-title",
+        "app-assembly-mts-occurrences.marker-credits",
         "app-assembly-mts-occurrences.marker-text",
-        "app-assembly-mts-occurrences.marker-credits"
+        "app-assembly-mts-occurrences.marker-title"
       ]
     },
     {
@@ -3767,8 +3767,8 @@
       "migrated": true,
       "supersededBy": [
         "app-audio-audio-composition-editor.overlaps",
-        "app-audio-audio-composition-editor.overlaps-one",
-        "app-audio-audio-composition-editor.overlaps-many"
+        "app-audio-audio-composition-editor.overlaps-many",
+        "app-audio-audio-composition-editor.overlaps-one"
       ]
     },
     {
@@ -3958,10 +3958,10 @@
       "migrated": true,
       "supersededBy": [
         "app-library-asset-detail.in-use",
-        "app-library-asset-detail.in-use-layers",
-        "app-library-asset-detail.in-use-scenes",
+        "app-library-asset-detail.in-use-and",
         "app-library-asset-detail.in-use-audio",
-        "app-library-asset-detail.in-use-and"
+        "app-library-asset-detail.in-use-layers",
+        "app-library-asset-detail.in-use-scenes"
       ]
     },
     {
@@ -4640,8 +4640,8 @@
       "key": "app-library-cutout-dialog.editor.p.23b3e277a7aa",
       "migrated": true,
       "supersededBy": [
-        "app-library-cutout-dialog.size-kept-scaled",
-        "app-library-cutout-dialog.size-kept"
+        "app-library-cutout-dialog.size-kept",
+        "app-library-cutout-dialog.size-kept-scaled"
       ]
     },
     {
@@ -4808,10 +4808,10 @@
       "migrated": true,
       "supersededBy": [
         "app-library-dialogue-batch-panel.batch-estimate",
-        "app-library-dialogue-batch-panel.batch-estimate-no-voice",
         "app-library-dialogue-batch-panel.batch-estimate-no-model",
-        "app-library-dialogue-batch-panel.batch-estimate-unknown",
-        "app-library-dialogue-batch-panel.batch-estimate-time"
+        "app-library-dialogue-batch-panel.batch-estimate-no-voice",
+        "app-library-dialogue-batch-panel.batch-estimate-time",
+        "app-library-dialogue-batch-panel.batch-estimate-unknown"
       ]
     },
     {
@@ -5191,8 +5191,8 @@
       "migrated": true,
       "supersededBy": [
         "app-library-generate-sound-panel.confirm-sound",
-        "app-library-generate-sound-panel.confirm-sound-unknown-price",
-        "app-library-generate-sound-panel.confirm-sound-longest"
+        "app-library-generate-sound-panel.confirm-sound-longest",
+        "app-library-generate-sound-panel.confirm-sound-unknown-price"
       ]
     },
     {
@@ -5436,8 +5436,8 @@
       "supersededBy": [
         "app-library-harmonize-batch-panel.batch-total",
         "app-library-harmonize-batch-panel.batch-total-price",
-        "app-library-harmonize-batch-panel.batch-total-unknown-price",
-        "app-library-harmonize-batch-panel.batch-total-profile"
+        "app-library-harmonize-batch-panel.batch-total-profile",
+        "app-library-harmonize-batch-panel.batch-total-unknown-price"
       ]
     },
     {
@@ -5563,8 +5563,8 @@
       "key": "app-library-image-ai-panels.turnaround-panel.p.fd6dc2662f2e",
       "migrated": true,
       "supersededBy": [
-        "app-library-image-ai-panels.images-estimate",
-        "app-library-image-ai-panels.images-credits"
+        "app-library-image-ai-panels.images-credits",
+        "app-library-image-ai-panels.images-estimate"
       ]
     },
     {
@@ -5690,8 +5690,8 @@
       "key": "app-library-image-ai-panels.cost-confirm.p.1c24a389e79e",
       "migrated": true,
       "supersededBy": [
-        "app-library-image-ai-panels.images-estimate",
-        "app-library-image-ai-panels.images-credits"
+        "app-library-image-ai-panels.images-credits",
+        "app-library-image-ai-panels.images-estimate"
       ]
     },
     {
@@ -5859,8 +5859,8 @@
       "key": "app-library-image-lightbox.split.on-job.d36ebeeac755",
       "migrated": true,
       "supersededBy": [
-        "app-library-image-lightbox.tiles-saved-skipped",
-        "app-library-image-lightbox.tiles-saved"
+        "app-library-image-lightbox.tiles-saved",
+        "app-library-image-lightbox.tiles-saved-skipped"
       ]
     },
     {
@@ -6169,8 +6169,8 @@
       "key": "app-library-trash-dialog.text.text.dc7d2be28d4c",
       "migrated": true,
       "supersededBy": [
-        "app-library-trash-dialog.purged-leftover",
-        "app-library-trash-dialog.purged"
+        "app-library-trash-dialog.purged",
+        "app-library-trash-dialog.purged-leftover"
       ]
     },
     {
@@ -6213,9 +6213,9 @@
       "migrated": true,
       "supersededBy": [
         "app-library-trash-dialog.still-used",
-        "app-library-trash-dialog.still-used-layers",
+        "app-library-trash-dialog.still-used-and",
         "app-library-trash-dialog.still-used-audio",
-        "app-library-trash-dialog.still-used-and"
+        "app-library-trash-dialog.still-used-layers"
       ]
     },
     {
@@ -6687,8 +6687,8 @@
       "key": "app-scene-editor-carry-over-dialog.submit.on-done.363d9984ee39",
       "migrated": true,
       "supersededBy": [
-        "app-scene-editor-carry-over-dialog.carried-over-reused",
-        "app-scene-editor-carry-over-dialog.carried-over"
+        "app-scene-editor-carry-over-dialog.carried-over",
+        "app-scene-editor-carry-over-dialog.carried-over-reused"
       ]
     },
     {
@@ -6718,9 +6718,9 @@
       "key": "app-scene-editor-credits-panel.design-tab.option.c0137faa825d",
       "migrated": true,
       "supersededBy": [
-        "app-scene-editor-credits-panel.presentation-roll",
         "app-scene-editor-credits-panel.presentation-one-at-a-time",
-        "app-scene-editor-credits-panel.presentation-positions"
+        "app-scene-editor-credits-panel.presentation-positions",
+        "app-scene-editor-credits-panel.presentation-roll"
       ]
     },
     {
@@ -7043,8 +7043,8 @@
       "key": "app-scene-editor-layer-inspector.layer-inspector.span.5d6bf790ea53",
       "migrated": true,
       "supersededBy": [
-        "app-scene-editor-layer-inspector.magnified-frame",
-        "app-scene-editor-layer-inspector.magnified"
+        "app-scene-editor-layer-inspector.magnified",
+        "app-scene-editor-layer-inspector.magnified-frame"
       ]
     },
     {
@@ -7277,12 +7277,12 @@
       "migrated": true,
       "supersededBy": [
         "app-scene-editor-pages-panel.transition-cut",
-        "app-scene-editor-pages-panel.transition-dissolve",
         "app-scene-editor-pages-panel.transition-dip",
         "app-scene-editor-pages-panel.transition-dipwhite",
-        "app-scene-editor-pages-panel.transition-wipe",
+        "app-scene-editor-pages-panel.transition-dissolve",
+        "app-scene-editor-pages-panel.transition-iris",
         "app-scene-editor-pages-panel.transition-push",
-        "app-scene-editor-pages-panel.transition-iris"
+        "app-scene-editor-pages-panel.transition-wipe"
       ]
     },
     {
@@ -7505,11 +7505,11 @@
       "migrated": true,
       "supersededBy": [
         "app-scene-editor-scene-assets-panel.asset-tooltip",
-        "app-scene-editor-scene-assets-panel.asset-tooltip-planned",
-        "app-scene-editor-scene-assets-panel.asset-tooltip-look",
         "app-scene-editor-scene-assets-panel.asset-tooltip-in-scene",
         "app-scene-editor-scene-assets-panel.asset-tooltip-in-scene-layers",
-        "app-scene-editor-scene-assets-panel.asset-tooltip-not-in-scene"
+        "app-scene-editor-scene-assets-panel.asset-tooltip-look",
+        "app-scene-editor-scene-assets-panel.asset-tooltip-not-in-scene",
+        "app-scene-editor-scene-assets-panel.asset-tooltip-planned"
       ]
     },
     {
@@ -7589,8 +7589,8 @@
       "key": "app-scene-editor-scene-assets-panel.scene-assets-panel.aria-label.dfb42bb8ba29",
       "migrated": true,
       "supersededBy": [
-        "app-scene-editor-scene-assets-panel.in-scene-layers",
-        "app-scene-editor-scene-assets-panel.in-scene"
+        "app-scene-editor-scene-assets-panel.in-scene",
+        "app-scene-editor-scene-assets-panel.in-scene-layers"
       ]
     },
     {
@@ -7773,9 +7773,9 @@
       "migrated": true,
       "supersededBy": [
         "app-scene-editor-scene-assets-panel.suggestion-tooltip",
-        "app-scene-editor-scene-assets-panel.suggestion-tooltip-uncertain-kind",
         "app-scene-editor-scene-assets-panel.suggestion-tooltip-match",
-        "app-scene-editor-scene-assets-panel.suggestion-tooltip-uncertain"
+        "app-scene-editor-scene-assets-panel.suggestion-tooltip-uncertain",
+        "app-scene-editor-scene-assets-panel.suggestion-tooltip-uncertain-kind"
       ]
     },
     {
@@ -7905,8 +7905,8 @@
       "key": "app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.span.f7a2daae4f71",
       "migrated": true,
       "supersededBy": [
-        "app-scene-editor-scene-to-video-dialog.references-sheet",
-        "app-scene-editor-scene-to-video-dialog.references"
+        "app-scene-editor-scene-to-video-dialog.references",
+        "app-scene-editor-scene-to-video-dialog.references-sheet"
       ]
     },
     {
@@ -8072,8 +8072,8 @@
       "key": "app-scene-editor-stage.label.message.76e4da85b9e3",
       "migrated": true,
       "supersededBy": [
-        "app-scene-editor-stage.stage-label-camera",
         "app-scene-editor-stage.stage-label",
+        "app-scene-editor-stage.stage-label-camera",
         "app-scene-editor-stage.stage-label-unnamed"
       ]
     },
@@ -8585,8 +8585,8 @@
       "key": "app-script-scene-navigator.scene-navigator.aria-label.d22feb0aad44",
       "migrated": true,
       "supersededBy": [
-        "app-script-scene-navigator.scene-without-number",
-        "app-script-scene-navigator.deactivate-scene"
+        "app-script-scene-navigator.deactivate-scene",
+        "app-script-scene-navigator.scene-without-number"
       ]
     },
     {
@@ -8910,8 +8910,8 @@
         "app-script-translation-import-dialog.link-summary",
         "app-script-translation-import-dialog.link-summary-manual",
         "app-script-translation-import-dialog.link-summary-sure",
-        "app-script-translation-import-dialog.link-summary-unsure",
-        "app-script-translation-import-dialog.link-summary-unmatched"
+        "app-script-translation-import-dialog.link-summary-unmatched",
+        "app-script-translation-import-dialog.link-summary-unsure"
       ]
     },
     {
@@ -9055,8 +9055,8 @@
       "supersededBy": [
         "app-script-translation-import-dialog.ai-suggestion",
         "app-script-translation-import-dialog.ai-suggestion-high",
-        "app-script-translation-import-dialog.ai-suggestion-medium",
-        "app-script-translation-import-dialog.ai-suggestion-low"
+        "app-script-translation-import-dialog.ai-suggestion-low",
+        "app-script-translation-import-dialog.ai-suggestion-medium"
       ]
     },
     {
@@ -9658,8 +9658,8 @@
       "key": "core-generation-brief.brief-summary-nb.message.561d2279680c",
       "migrated": true,
       "supersededBy": [
-        "core-generation-brief.style-colours",
-        "core-generation-brief.style"
+        "core-generation-brief.style",
+        "core-generation-brief.style-colours"
       ]
     },
     {
@@ -9702,8 +9702,8 @@
       "migrated": true,
       "supersededBy": [
         "core-generation-brief.reference-images",
-        "core-generation-brief.reference-images-subject",
-        "core-generation-brief.reference-images-style"
+        "core-generation-brief.reference-images-style",
+        "core-generation-brief.reference-images-subject"
       ]
     },
     {
@@ -9791,8 +9791,8 @@
       "key": "core-generation-providers.quality-mechanisms.out-push.2b3eda074604",
       "migrated": true,
       "supersededBy": [
-        "core-generation-providers.lengths",
-        "core-generation-providers.length"
+        "core-generation-providers.length",
+        "core-generation-providers.lengths"
       ]
     },
     {
@@ -10015,8 +10015,8 @@
       "key": "core-generation-video.reason.reason.20613688625a",
       "migrated": true,
       "supersededBy": [
-        "core-generation-video.changes-affect-unknown",
-        "core-generation-video.changes-affect"
+        "core-generation-video.changes-affect",
+        "core-generation-video.changes-affect-unknown"
       ]
     },
     {
@@ -10154,19 +10154,19 @@
       "key": "core-presentation-poster.get.get.670123440a05",
       "migrated": true,
       "supersededBy": [
-        "core-presentation-poster.option-images-and-names-only",
-        "core-presentation-poster.option-short-descriptions",
-        "core-presentation-poster.option-long-descriptions",
-        "core-presentation-poster.option-relation-lines",
-        "core-presentation-poster.option-named-relations",
-        "core-presentation-poster.option-relation-texts",
-        "core-presentation-poster.option-object-images",
-        "core-presentation-poster.option-object-descriptions",
-        "core-presentation-poster.option-place-images",
-        "core-presentation-poster.option-place-descriptions",
-        "core-presentation-poster.option-logline",
         "core-presentation-poster.option-genre-mood",
-        "core-presentation-poster.option-project-data"
+        "core-presentation-poster.option-images-and-names-only",
+        "core-presentation-poster.option-logline",
+        "core-presentation-poster.option-long-descriptions",
+        "core-presentation-poster.option-named-relations",
+        "core-presentation-poster.option-object-descriptions",
+        "core-presentation-poster.option-object-images",
+        "core-presentation-poster.option-place-descriptions",
+        "core-presentation-poster.option-place-images",
+        "core-presentation-poster.option-project-data",
+        "core-presentation-poster.option-relation-lines",
+        "core-presentation-poster.option-relation-texts",
+        "core-presentation-poster.option-short-descriptions"
       ]
     },
     {
@@ -10585,11 +10585,9 @@
       "key": "core-translation-line-link-labels.ratio-title.message.a1c06218c905",
       "migrated": true,
       "supersededBy": [
-        "core-translation-line-link-labels.pair-summary",
-        "core-translation-line-link-labels.pair-summary-sources",
-        "core-translation-line-link-labels.pair-summary-targets",
         "core-translation-line-link-labels.number-word-0",
         "core-translation-line-link-labels.number-word-1",
+        "core-translation-line-link-labels.number-word-10",
         "core-translation-line-link-labels.number-word-2",
         "core-translation-line-link-labels.number-word-3",
         "core-translation-line-link-labels.number-word-4",
@@ -10598,7 +10596,9 @@
         "core-translation-line-link-labels.number-word-7",
         "core-translation-line-link-labels.number-word-8",
         "core-translation-line-link-labels.number-word-9",
-        "core-translation-line-link-labels.number-word-10"
+        "core-translation-line-link-labels.pair-summary",
+        "core-translation-line-link-labels.pair-summary-sources",
+        "core-translation-line-link-labels.pair-summary-targets"
       ]
     },
     {
@@ -259368,8 +259368,8 @@
       "key": "routes-prosjekt-project-id.project-layout.p.de039078a0f5",
       "migrated": true,
       "supersededBy": [
-        "routes-prosjekt-project-id.owner-blocked-with-owner",
-        "routes-prosjekt-project-id.owner-blocked"
+        "routes-prosjekt-project-id.owner-blocked",
+        "routes-prosjekt-project-id.owner-blocked-with-owner"
       ]
     },
     {
@@ -293367,8 +293367,8 @@
       "key": "app-assembly-use-film-language.language-name.message.666421b951b7",
       "migrated": true,
       "supersededBy": [
-        "app-assembly-use-film-language.language-name-nb",
-        "app-assembly-use-film-language.language-name-en"
+        "app-assembly-use-film-language.language-name-en",
+        "app-assembly-use-film-language.language-name-nb"
       ]
     },
     {
@@ -293458,8 +293458,8 @@
       "key": "app-script-remove-translations-dialog.name.message.15d1b5cf63e3",
       "migrated": true,
       "supersededBy": [
-        "app-script-remove-translations-dialog.language-word-nb",
-        "app-script-remove-translations-dialog.language-word-en"
+        "app-script-remove-translations-dialog.language-word-en",
+        "app-script-remove-translations-dialog.language-word-nb"
       ]
     },
     {
