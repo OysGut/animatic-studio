@@ -1,30 +1,18 @@
-# PTG1 – utvekslingsmodell og skuddliste
+# N11 – teknisk gjeld uten produktvalg
 
 ## Leveranse
-- Én ren utvekslingsmodell for valgt produksjon, språk og scener. Ett skudd per sceneforekomst; lag, lyd og dialog fra eksisterende prosjektdata, kamera `null`.
-- Felles avrunding av absolutte grenser. Toere bruker 24 bilder/s i tidslinjen med eksponering hvert andre bilde; øvrige opptaksfrekvenser kan velges.
-- Prosjektkode med A–Z, 0–9 og bindestrek, maksimalt 32 tegn. Forslag translittererer æ/ø/å til AE/OE/AA. Navn følger `PROSJEKT_SC012_SH010_v003`, med tillegg og arvede scenenumre.
-- Skuddliste i CSV med UTF-8 BOM og JSON, standardkolonner fra PTG-A4 samt profiler for Flow, ftrack og Kitsu. PNG-miniatyrer med relative stier i pakken.
-- «Til produksjonen» i eksportdialogen; prosjektkode og opptaksinnstillinger kan endres med angring i prosjektinnstillingene.
-- Strømmet ZIP64 og norsk/engelsk `LESMEG.txt` i pakkene, uten nye pakker eller AI-kall.
-
-## Bekreftet regel for overlapp
-Klippunktet er `secondsToFrames(midten av overgangen)`, avrundet langs filmen. Utgående og innkommende skudd deler samme grense. `handleIn` og `handleOut` er den delen av overlappen som ligger på naboens side; overgangstype og overgangslengde følger modellen. Håndtak vises etter lengde i skuddlisten. Lyd- og ordhendelser eies av skuddet der de starter, med både absolutt og relativ tid. Hele lengden bevares ved kryssing av klippunktet og merkes `crossesCut: true`. Uten overlapp er håndtakene null. Regelen dokumenteres i LESMEG og rapporten og får en gyllen oddetallstest.
-
-## Teknisk gjennomføring
-- Legg modell, navngivning, frekvenskonvertering og skuddlisteverdier i `src/core/interchange/`; eksportøren pakker og gjengir miniatyrer uten egne tids-/navneberegninger.
-- Bruk sceneforekomstens permanente ID som skuddidentitet. Versjoner skal være kollisjonssikre ved samtidige eksporter og kunne leses tilbake fra eksportloggen; utvid historikklagringen i samme 0081 ved behov.
-- Skriv additiv migrasjon 0081 oppå 0080, med prosjektkode og opptaksinnstillinger. Bevar revisjonskontroll og angring via `apply_changes`; kopier siste funksjonsdefinisjon før målrettede endringer. Oppgi alle erstattede funksjoner. Migrasjonen kjøres ikke i Cloud i denne leveransen.
-- Bevar innlasting og sikkerhetskopi av de nye prosjektfeltene. Oppdater forventet skjemaversjon og testfixture til 81.
-- Alle nye brukerstrenger går gjennom `t()` på samtlige registrerte språk med kildehash og gjennomgangsmerking.
-- Utvid eksisterende ZIP-strømming med 64-bits størrelser/posisjoner og test syntetiske store hoder uten å skrive 4 GB.
-
-## Verifisering
-- Gyldne tester for 12, 24, 25 og 30 bilder/s, prosjekt 24 → opptak 12/25, toere, absolutte ord-/lydgrenser, tidskode og lengdesum.
-- Tester for tomme/svært korte scener, tillegg, spinoff, språk, navnekollisjoner, versjonering samt kommando, invers og angre/gjør om.
-- DB-tester for prosjektfelter, revisjonskontroll, rettigheter og eksportversjoner; ingen endring av levende database.
-- `ptg1-shotlist.mjs` på norsk og engelsk, der nedlastet pakke leses tilbake og kolonner, navn, miniatyrer og lengder kontrolleres. Export-e2e og p4 kjøres som separate regresjoner.
-- Full Vitest, alle språkkontroller og automatisk type-/byggekontroll. Rapporten skiller beståtte kontroller fra kontroller som eventuelt ikke kan kjøres.
+- Finn årsaken til feilene i scene-paneltesten, og rett testen eller eksisterende kode. Kjør samme kontroller på bokmål og engelsk.
+- Gå gjennom «Gjenstår uten målrettet test» i N6-rapporten. Legg til tester som faktisk sjekker akseptansekriteriene for allerede bygget funksjonalitet. Bare krav med bestått, dekkende test flyttes til Verifisert; eventuelle udekkede kriterier beskrives konkret.
+- Mål en full Vitest-kjøring før og etter. Fjern unødvendig importarbeid eller juster testinnstillinger med bevart isolasjon og alle eksisterende kontroller.
+- La eksisterende plassholderregel også gjelde Asset Studio-utkast, med bevart feltvis sammenslåing, revisjonskontroll og angring. Krever det produktvalg eller databaseendring, dokumenteres hindringen i stedet.
+- Lever norsk rapport i `docs/development/N11_REPORT.md` med årsaker, målinger, tester, kravstatus og nøyaktig filliste.
 
 ## Avgrensning
-Ingen PTG2–PTG7, kamerautveksling, nye AI-kall eller publisering. Oppdragets 0081, 32-tegnskode og språkkrav overstyrer den eldre byggeplanens verdier.
+Ingen ny funksjonalitet, migrasjoner, betalte tjenestekall eller publisering. Migrasjoner til og med 0089 forblir uendret. Arbeidet holdes innenfor omtrent 300 credits; undersøkelser deles i tre avgrensede spor.
+
+## Teknisk gjennomføring og kontroll
+- Bruk eksisterende testoppsett og samme metode som N4/N6. Ingen endring av mandat eller akseptansekriterier.
+- Sammenlign før/etter under samme forhold og oppgi at lokale tider ikke nødvendigvis matcher Claudes maskin.
+- Bevar kataloglasting i appen og brukerisolasjon; optimalisering av tester må ikke skjule språkfeil.
+- Kjør berørte tester, full Vitest og relevante språk-/dokumentasjonskontroller. Automatisk type- og byggekontroll må være uten feil.
+- Dokumentasjon og kravregister oppdateres bare for N11-resultater; øvrige oppdrag i køen berøres ikke.
