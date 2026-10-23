@@ -88,3 +88,28 @@ Lest i Cloud og kontrollert i DB-testene G-8.1–G-8.3:
 ## Endrede filer
 
 `db/migrations/0100_g8_rate_limits.sql`, `src/adapters/storage/project-rows.ts`, `src/adapters/auth/captcha.functions.ts`, `src/adapters/browser/client.ts`, `src/adapters/browser/film-shares.ts`, `src/adapters/browser/interchange.ts`, `src/adapters/browser/members.ts`, `src/adapters/browser/workspaces.ts`, `src/adapters/storage/commands.functions.ts`, `src/adapters/mobile/mobile.functions.ts`, `src/lib/error-capture.ts`, `src/lib/no-store.ts`, `src/server.ts`, `src/core/i18n/authored.json` + `locales/*.json` + `runtime.gen.json`, `scripts/i18n/*` (regenerert inventar), `tests/db/run-db-tests.ts`, `tests/unit/g8-security.test.ts`, `package.json`, `bun.lock`, `TODO.md`, `roadmap.md`, denne rapporten.
+
+## Oppfølging (23.10.2026) – migrasjon 0101
+
+**1. Masseinnsettinger fra serveren.** I 0100 telte `g8_rate_limit`-triggerne hver rad. `create_dialogue_batch` og
+`create_harmonize_batch` legger inn mange `generation_jobs` i én transaksjon, så en stor batch (for eksempel en hel
+spillefilm) ville gått over «ai»-taket (400 per 10 min) og feilet i sin helhet, selv om den allerede har kostnadsport og
+bekreftelse. 0101 erstatter `private.rate_limit_trigger()`:
+- Innsettinger gjort som `service_role` (lest fra `SET ROLE` eller JWT-kravet, fordi `current_user` i en
+  SECURITY DEFINER-funksjon er eieren) teller **ett treff per transaksjon** per omfang og nøkkel. En batch er ett treff.
+  Hvert separate serverkall teller fortsatt, så taket gjelder fortsatt antall forespørsler.
+- Innsettinger fra andre roller teller per rad som før. Brukerens direkte kall er fortsatt begrenset.
+- Begrunnelse: å hoppe helt over `service_role` ville fjernet grensen for all KI-bruk, fordi alle KI-jobber skrives av
+  serveren. Ett treff per transaksjon beholder vernet mot gjentatte kall uten å straffe en godkjent batch.
+- Gjennomgang av de andre triggerne: samme funksjon brukes på alle (`export_records`, `upload_sessions`,
+  `film_shares`, invitasjoner, import, rapporter, kommentarer, registreringspass), så rettelsen gjelder alle.
+  `export_records` og `upload_sessions` skrives én rad per forespørsel og var ikke rammet i praksis, men en fremtidig
+  masseinnsetting fra serveren er nå dekket.
+
+**2. Escaping av `%`, `_` og `\`** i `admin_find_users` og `search_script_blocks` var allerede lagt inn i 0101
+(`private.like_escape`), med test.
+
+**3. DB-tester:** ny test «en batch på 1 000 KI-jobber via service_role er ett treff; direkte misbruk stoppes». Den viser
+at 1 000 rader i én transaksjon gir ett treff, at det fjerde separate serverkallet stoppes med tak 3, og at
+`authenticated` stoppes per rad både i én transaksjon og over flere kall. DB-suiten: 219 bestått, 0 feilet; `search_path=''`
+er fortsatt grønn. 0101 er ikke kjørt i Cloud, og ingenting er publisert.
