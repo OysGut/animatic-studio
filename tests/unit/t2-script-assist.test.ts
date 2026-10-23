@@ -3,7 +3,7 @@
  * Skrivehjelp i manuset (T2): promptbyggere, kunnskapsgrenser, forslag, «Bruk», konflikter, forsøksvise
  * redigeringer, oversettelsesutkast og formatsjekk. Ingen ekte AI-kall.
  */
-import { describe, expect, it } from "vitest";
+import { defaultTranslateTarget, sourceLanguageOf, describe, expect, it } from "vitest";
 import {
   assistRequestError,
   buildAssistPrompt,
@@ -92,7 +92,7 @@ describe("promptbyggerne", () => {
     expect(prompt(sNoEn, req({ kind: "translate", targetLanguage: "en" })).system).toContain("to English");
     // Uten mål, eller med kildespråket som mål, lages ingen prompt
     expect(buildAssistPrompt(sNoEn, req({ kind: "translate" })).ok).toBe(false);
-    expect(buildAssistPrompt(sNoEn, req({ kind: "translate", targetLanguage: sNoEn.project.sourceLanguage })).ok).toBe(false);
+    expect(buildAssistPrompt(sNoEn, req({ kind: "translate", targetLanguage: sourceLanguageOf(sNoEn) })).ok).toBe(false);
   });
 
   it("neste replikk og ny scene har faste instrukser", () => {
@@ -211,6 +211,10 @@ describe("forslag og «Bruk»", () => {
 });
 
 describe("oversettelsesutkast", () => {
+  it("forhåndsvalgt mål er grensesnittspråket når det ikke er kildespråket", () => {
+    expect(defaultTranslateTarget(sNoEn, "ja")).toBe("ja");
+    expect(defaultTranslateTarget(sNoEn, sourceLanguageOf(sNoEn))).not.toBe(sourceLanguageOf(sNoEn));
+  });
   it("lagres som usikker engelsk oversettelse, norsk endres aldri", () => {
     const r = req({ kind: "translate", blockIds: [editable[0]!.id], targetLanguage: "en" });
     const p = proposalFromReply(sNoEn, r, prompt(sNoEn, r), JSON.stringify({ blocks: [{ ref: "b1", text: "English draft." }] }), { costUsd: 0, usedFallback: false })!;
