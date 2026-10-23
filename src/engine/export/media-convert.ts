@@ -82,11 +82,10 @@ export async function* convertedMediaFiles(o: {
       if (c.kind === "image-png") { const data = await cv.image(blob); yield { path: c.path, data }; }
       else if (c.kind === "audio-wav") { const data = await cv.audio(blob, c.sampleRate); yield { path: c.path, data }; }
       else {
-        // Bildene samles først, så en halv sekvens aldri havner i pakken
-        const frames: Uint8Array[] = [];
-        for await (const f of cv.videoFrames(blob, o.fps, o.signal)) frames.push(f);
-        if (frames.length === 0) throw new Error("empty");
-        for (let i = 0; i < frames.length; i++) yield { path: sequenceFramePath(c, i), data: frames[i]! };
+        // Strømmes bilde for bilde (lange takes får ikke plass i minnet)
+        let i = 0;
+        for await (const f of cv.videoFrames(blob, o.fps, o.signal)) yield { path: sequenceFramePath(c, i++), data: f };
+        if (i === 0) throw new Error("empty");
       }
     } catch (e) {
       if ((e as { name?: string }).name === "AbortError") throw e;
