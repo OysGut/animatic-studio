@@ -371,6 +371,8 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
       const n = e as Annotation;
       return {
         ...base,
+        panel_id: n.panelId ?? null,
+        layer_id: n.layerId ?? null,
         variant_id: n.variantId,
         block_id: n.blockId,
         range_start: n.start,
@@ -1533,6 +1535,7 @@ export function stateFromRows(r: ProjectRows): ProjectState {
     annotations: byId(
       (r.script_annotations ?? []).map((x) => ({
         id: str(x["id"]) as never,
+        ...(x["panel_id"] ? { panelId: str(x["panel_id"]) as never, layerId: optStr(x["layer_id"]) as never } : {}),
         revision: num(x["revision"]),
         variantId: optStr(x["variant_id"]) as never,
         blockId: optStr(x["block_id"]) as never,

@@ -192,6 +192,8 @@ export interface AssetVariantFields {
 
 /** Et nytt notat (DEC-0031). Enten blockId med tegnområde, eller variantId (nål på scenen). */
 export interface NewAnnotation {
+  readonly panelId?: CompositionId | null;
+  readonly layerId?: LayerId | null;
   readonly annotationId: AnnotationId;
   readonly resolved?: boolean;
   readonly blockId: BlockId | null;

@@ -462,6 +462,11 @@ function normalizeVariantFields(f: AssetVariantFields): AssetVariantFields {
 // ---------- Notater ----------
 
 function normalizeAnnotation(s: ProjectState, n: NewAnnotation, now: string): Annotation {
+  if (n.panelId) {
+    const panel = s.compositions[n.panelId];
+    if (!panel || panel.removed || panel.kind !== "storyboard" || n.variantId !== panel.variantId || n.blockId !== null) fail("invalid", tk("sb1.error.invalid-panel"));
+    if (n.layerId && (!s.layers[n.layerId] || s.layers[n.layerId]?.compositionId !== panel.id)) fail("invalid", tk("sb1.error.invalid-panel"));
+  } else if (n.layerId) fail("invalid", tk("sb1.error.invalid-panel"));
   if (n.resolved !== undefined && typeof n.resolved !== "boolean")
     fail("invalid", tk("core-commands-apply.normalize-annotation.fail.6eabe261790c"));
   // Forsøksvis manusredigering (AS3, C2): bare på tekst, med foreslått tekst
@@ -539,6 +544,7 @@ function normalizeAnnotation(s: ProjectState, n: NewAnnotation, now: string): An
   function base(): Annotation {
     return {
       id: n.annotationId,
+      ...(n.panelId ? { panelId: n.panelId, layerId: n.layerId ?? null } : {}),
       revision: 1,
       variantId: n.variantId,
       blockId: n.blockId,
@@ -6944,6 +6950,7 @@ function run(
         const a = need(s.annotations[id], tk("core-commands-apply.a.need.d46e4f867b8c"));
         back.push({
           annotationId: a.id,
+          ...(a.panelId ? { panelId: a.panelId, layerId: a.layerId ?? null } : {}),
           blockId: a.blockId,
           variantId: a.variantId,
           start: a.start,

@@ -633,6 +633,8 @@ export interface ScenePlan {
  * Stempelet (navn og tidspunkt) vises i hjørnet; ved import fra fil beholdes originalens stempel.
  */
 export interface Annotation extends Entity<AnnotationId> {
+  readonly panelId?: CompositionId | null;
+  readonly layerId?: LayerId | null;
   /** Nål på scenen: scenevarianten (følger scenen dit den flyttes). null for notater på tekst. */
   readonly variantId: VariantId | null;
   /** Notat på tekst: blokken (scenen er blokkens variant). null for nål på scenen. */
