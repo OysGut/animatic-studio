@@ -11658,6 +11658,30 @@
       "en": {
         "text": "Too many requests in a short time. Wait a moment and try again."
       }
+    },
+    "g9-demo.open": {
+      "nb": {
+        "text": "Åpne eksempelprosjektet"
+      },
+      "en": {
+        "text": "Open the example project"
+      }
+    },
+    "g9-demo.opening": {
+      "nb": {
+        "text": "Lager eksempelprosjektet …"
+      },
+      "en": {
+        "text": "Creating the example project…"
+      }
+    },
+    "g9-demo.failed": {
+      "nb": {
+        "text": "Eksempelprosjektet kunne ikke lages: {message}"
+      },
+      "en": {
+        "text": "The example project could not be created: {message}"
+      }
     }
   }
 }

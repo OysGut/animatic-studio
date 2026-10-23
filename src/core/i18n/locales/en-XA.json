@@ -75872,5 +75872,14 @@
   },
   "adapters-storage-commands-functions.rate-limited": {
     "text": "[!! TTôôôô mmáánnyy rrëëqqüüëëssttss ïïnn áá sshhôôrrtt ttïïmmëë. WWááïïtt áá mmôômmëënntt áánndd ttrryy áággááïïnn. !!]"
+  },
+  "g9-demo.open": {
+    "text": "[!! ÔÔppëënn tthhëë ëëxxáámmppllëë pprrôôjjëëcctt !!]"
+  },
+  "g9-demo.opening": {
+    "text": "[!! CCrrëëááttïïnngg tthhëë ëëxxáámmppllëë pprrôôjjëëcctt… !!]"
+  },
+  "g9-demo.failed": {
+    "text": "[!! TThhëë ëëxxáámmppllëë pprrôôjjëëcctt ccôôüülldd nnôôtt bbëë ccrrëëááttëëdd: {message} !!]"
   }
 }
