@@ -8,6 +8,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import type { Command, CompositionLayer, ProjectState } from "@/core";
 import { planSpacingDrag, spacingLayers, spacingSpan, type SpacingPlan } from "@/core/animation/spacing";
 import { t } from "@/core/i18n/keyed";
+import { motionDraftStore } from "./motion-draft";
 
 export interface SpacingHover { readonly layerId: string; readonly frame: number; readonly whole: boolean; readonly dragging: boolean }
 
@@ -34,7 +35,7 @@ export function SpacingRow({ state, layer, ppf, trackLeft, durationFrames, edita
   const [drag, setDrag] = useState<{ anchor: number; x0: number; pointerId: number; plan: SpacingPlan | null } | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const dragRef = useRef(drag); dragRef.current = drag;
-  const cancel = () => { setDrag(null); onPreview?.(null); onHover?.(null); };
+  const cancel = () => { setDrag(null); onPreview?.(null); onHover?.(null); motionDraftStore.clear(layer.id); };
   useEffect(() => {
     if (!drag) return;
     const key = (e: KeyboardEvent) => { if (e.key === "Escape") { e.preventDefault(); cancel(); } };
@@ -62,7 +63,11 @@ export function SpacingRow({ state, layer, ppf, trackLeft, durationFrames, edita
           setDrag({ ...d, plan: p });
           setHover({ frame: d.anchor, whole: e.shiftKey });
           setMessage(p.limit ? limitText(p.limit) : p.newEnd > durationFrames - 1 ? t("b100.beyond.text", { n: String(p.newEnd - (durationFrames - 1)) }) : null);
-          onPreview?.(p.command ? spacingPreviewState(state, p) : null);
+          const preview = p.command ? spacingPreviewState(state, p) : null;
+          onPreview?.(preview);
+          // Samme utkast til inspektørens tempokurve og avstandssporet på tidslinjen
+          if (preview && layer.path) motionDraftStore.set({ layerId: layer.id, path: preview.layers[layer.id]?.path ?? null });
+          else motionDraftStore.clear(layer.id);
           onHover?.({ layerId: layer.id, frame: d.anchor, whole: e.shiftKey, dragging: true });
           return;
         }
@@ -87,7 +92,7 @@ export function SpacingRow({ state, layer, ppf, trackLeft, durationFrames, edita
         const d = dragRef.current;
         if (!d || e.pointerId !== d.pointerId) return;
         if (d.plan?.command) run(d.plan.command, t("b100.spacing.command"));
-        setDrag(null); onPreview?.(null);
+        setDrag(null); onPreview?.(null); motionDraftStore.clear(layer.id);
         if (!d.plan?.limit) setMessage(null);
       }}
       onPointerCancel={cancel}
