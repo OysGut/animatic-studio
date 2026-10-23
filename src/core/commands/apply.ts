@@ -645,7 +645,7 @@ function sbBlockLinks(s: ProjectState, panel: Composition, refs: readonly Storyb
     if (old && old.panelId !== panel.id) fail("duplicate_id", tk("core-commands-apply.assert-new-id.fail.a6e7d3cb494b", { id: String(r.linkId) }));
     if (!old) assertNewId(s, r.linkId);
     const b = need(s.blocks[r.blockId], tk("core-commands-apply.b.need.e4b7085bbc3f"));
-    if (b.variantId !== panel.variantId) fail("invalid", tk("sb1.error.blocks-variant"));
+    if (b.removed || b.variantId !== panel.variantId) fail("invalid", tk("sb1.error.blocks-variant"));
     out.push(old
       ? { ...old, blockId: b.id, orderKey: r.orderKey, removed: false, revision: old.revision + 1 }
       : { id: r.linkId, revision: 1, panelId: panel.id, blockId: b.id, orderKey: r.orderKey, removed: false });
@@ -7237,6 +7237,7 @@ function run(
       };
     }
     case "UndoSeedStoryboardPanels": {
+      if (c.panelIds.length === 0) fail("invalid", tk("sb1.error.invalid-panel"));
       const compositions = { ...s.compositions };
       const restored: Composition[] = [];
       for (const id of c.panelIds) {
