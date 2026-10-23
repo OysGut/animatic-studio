@@ -4,8 +4,8 @@
  * ta bilder (hurtigmodus: bilde etter bilde, sendes automatisk), velg bilder, ta opp eller velg video, og «Del
  * lenke» med telefonens egen deling. Bidragsytere ser bare sine egne filer.
  */
-import {
 import { Thumbnail } from "@/app/shared/Thumbnail";
+import {
   Camera,
   Check,
   Film,
