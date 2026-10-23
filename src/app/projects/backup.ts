@@ -2,6 +2,8 @@
  * Sikkerhetskopi i nettleseren (DEC-0049): hente alt som skal med, lage zip-filen, og gjenopprette fra en
  * zip-fil til et nytt prosjekt (filene lastes opp her, dataene skrives av serverfunksjonen restoreBackup).
  */
+import { globalAssetIdsOf, type GlobalSnapshotEntry } from "@/core/backup";
+import { db } from "@/adapters/browser/client";
 import { BACKUP_JSON, BACKUP_MAX_JSON_BYTES, BACKUP_README, backupIdMap, backupReadme, makeBackup, parseBackup, restoreFiles, validateBackup, type BackupData, type BackupFileCategory, type ProjectRows, type Row } from "@/core";
 import { EXPECTED_SCHEMA_VERSION } from "@/adapters/storage/project-rows";
 import { restoreBackup } from "@/adapters/storage/backup.functions";
@@ -24,6 +26,29 @@ export interface BackupSource {
   readonly changeLog: readonly Row[];
   readonly generationJobs: readonly Row[];
   readonly schemaVersion: number;
+  readonly globalSnapshot?: readonly GlobalSnapshotEntry[];
+}
+
+/**
+ * G-6 pkt 4: øyeblikksbilde av globale ressurser prosjektet bruker. Leses med brukerens egen tilgang (RLS):
+ * mangler tilgangen til arbeidsgruppen, utelates ressursen – prosjektet er uansett selvstendig.
+ */
+async function loadGlobalSnapshot(rows: ProjectRows): Promise<GlobalSnapshotEntry[]> {
+  const ids = globalAssetIdsOf(rows);
+  if (!ids.length) return [];
+  const { data } = await db.from("global_assets").select("id, name, kind, description").in("id", ids);
+  const out: GlobalSnapshotEntry[] = [];
+  for (const g of (data ?? []) as Row[]) {
+    const id = String(g["id"]);
+    const kind = String(g["kind"] ?? "");
+    let bundle: unknown = null;
+    if (kind === "character" || kind === "animal") {
+      const r = await db.rpc("global_character_bundle" as never, { p_global_asset: id, p_number: null } as never);
+      bundle = r.error ? null : (r.data ?? null);
+    }
+    out.push({ globalAssetId: id, name: String(g["name"] ?? ""), kind, description: String(g["description"] ?? ""), bundle });
+  }
+  return out;
 }
 
 /** Alt prosjektet består av (det brukeren har lesetilgang til). */
@@ -37,8 +62,10 @@ export async function loadBackupSource(projectId: string): Promise<BackupSource>
       fetchTable("generation_jobs", projectId),
       fetchSchemaStatus(),
     ]);
+  const globalSnapshot = await loadGlobalSnapshot(rows).catch(() => []);
   return {
     rows,
+    globalSnapshot,
     scriptVersions,
     importedDocuments,
     changeLog,
