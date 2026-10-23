@@ -75488,5 +75488,20 @@
   },
   "n10.playback.stopped": {
     "text": "[!! SSttôôppppëëdd áátt {timecode} !!]"
+  },
+  "brief.versions.previous": {
+    "text": "[!! PPrrëëvvïïôôüüss ttëëxxtt vvëërrssïïôônn !!]"
+  },
+  "brief.versions.next": {
+    "text": "[!! NNëëxxtt ttëëxxtt vvëërrssïïôônn !!]"
+  },
+  "brief.versions.counter": {
+    "text": "[!! TTëëxxtt vvëërrssïïôônn {current} ôôff {total} !!]"
+  },
+  "brief.versions.save": {
+    "text": "[!! SSáávvëë tthhëë ddëëssccrrïïppttïïôônn ôôff {name} !!]"
+  },
+  "brief.versions.fromText": {
+    "text": "[!! MMááddëë ffrrôômm tthhëë ttëëxxtt bbëëllôôww !!]"
   }
 }

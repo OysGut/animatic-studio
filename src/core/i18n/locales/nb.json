@@ -75506,5 +75506,20 @@
   },
   "n10.playback.stopped": {
     "text": "Stoppet på {timecode}"
+  },
+  "brief.versions.previous": {
+    "text": "Forrige tekstversjon"
+  },
+  "brief.versions.next": {
+    "text": "Neste tekstversjon"
+  },
+  "brief.versions.counter": {
+    "text": "Tekstversjon {current} av {total}"
+  },
+  "brief.versions.save": {
+    "text": "Lagre beskrivelsen av {name}"
+  },
+  "brief.versions.fromText": {
+    "text": "Laget fra teksten under"
   }
 }

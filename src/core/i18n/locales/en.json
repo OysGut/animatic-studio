@@ -75488,5 +75488,20 @@
   },
   "n10.playback.stopped": {
     "text": "Stopped at {timecode}"
+  },
+  "brief.versions.previous": {
+    "text": "Previous text version"
+  },
+  "brief.versions.next": {
+    "text": "Next text version"
+  },
+  "brief.versions.counter": {
+    "text": "Text version {current} of {total}"
+  },
+  "brief.versions.save": {
+    "text": "Save the description of {name}"
+  },
+  "brief.versions.fromText": {
+    "text": "Made from the text below"
   }
 }
