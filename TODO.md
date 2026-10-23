@@ -1,5 +1,10 @@
 # TODO – From Pen to Glass
 
+## SPERRET: bygges bare når Øystein ber om det
+Ikke foreslå, ikke start og ikke bygg dette før Øystein uttrykkelig ber om det. Unngå unødvendige trinn som gjør drift dyrere.
+- Eget test- og produksjonsmiljø (Øystein 23.10.2026): en egen testkopi av prosjektet med egen database, der databaseendringer kjøres først. Mellomtrinnet er funksjonsbryterne (av, beta og på). Til da er forhåndsvisningen test og pentoglass.com produksjon, og Claude prøver migrasjoner på en lokal kopi før de kjøres i Cloud.
+
+
 ## B-116 – delt klipp
 - Delt klipp via server-generert kort eksport (≤15 s), med målt varighet og MIME. Til da deles scener bare som stillbilde, og 0087 avviser video.
 

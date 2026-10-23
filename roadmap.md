@@ -1,5 +1,12 @@
 # Veikart
 
+## Dokumentasjon: SPERRET-listen (23.10.2026)
+- [x] SPERRET-seksjon øverst i TODO.md og henvisning i AGENTS.md (regel 67); ingen kode
+
+## Neste oppdrag i køen
+- [ ] Manusutforsker leveranse 2 (punkt 4 a–i) – se punktet under
+
+
 ## Fast ID-merke i vinduer (23.10.2026)
 - [x] UiId, register (162), arkitekturtest, versjon i Konto/admin; rapport VINDU_ID_REPORT.md
 - [ ] 10 px mot REQ-0425 (11 px brukt) – venter på Øysteins valg
