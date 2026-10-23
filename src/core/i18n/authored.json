@@ -8154,7 +8154,9 @@
       }
     },
     "g1b-assist.translate.all-done": {
-      "replaces": [],
+      "replaces": [
+        "core-script-assist-prompts.message.message.975880aef759"
+      ],
       "nb": {
         "text": "Alle linjene har allerede oversettelse til {language}"
       },
@@ -8163,7 +8165,9 @@
       }
     },
     "g1b-assist.translate.button": {
-      "replaces": [],
+      "replaces": [
+        "app-script-assist-writing-panel.writing-panel.toolbar-button.51ceafe95950"
+      ],
       "nb": {
         "text": "Utkast på {language}"
       },
@@ -8172,7 +8176,9 @@
       }
     },
     "g1b-assist.translate.note": {
-      "replaces": [],
+      "replaces": [
+        "app-script-assist-writing-panel.writing-panel.p.44cd5e7686d9"
+      ],
       "nb": {
         "text": "Utkastet lagres som usikker oversettelse til {language} og må godkjennes. Manuset på kildespråket endres ikke."
       },
