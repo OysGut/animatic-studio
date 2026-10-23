@@ -88,7 +88,7 @@ export function StillPickerDialog({
         ) : (
           <ul
             aria-label={t("app-assembly-still-picker-dialog.still-picker-dialog.aria-label.c4b236bfb135")}
-            className="grid max-h-[50vh] grid-cols-4 gap-2 overflow-y-auto"
+            className="grid max-h-[50vh] grid-cols-[repeat(auto-fill,minmax(140px,1fr))] gap-2 overflow-y-auto"
           >
             {list.map((x) => (
               <li key={x.version.id}>

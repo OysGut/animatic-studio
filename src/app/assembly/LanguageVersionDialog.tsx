@@ -83,7 +83,7 @@ export function LanguageVersionDialog({
         </DialogHeader>
         <ul
           aria-label={t("app-assembly-language-version-dialog.language-version-dialog.aria-label.0f954da47c95")}
-          className="grid grid-cols-2 gap-x-6 gap-y-1 text-xs sm:grid-cols-3"
+          className="grid grid-cols-[repeat(auto-fill,minmax(180px,1fr))] gap-x-6 gap-y-1 text-xs"
         >
           <Summary
             ok={translated === lines}

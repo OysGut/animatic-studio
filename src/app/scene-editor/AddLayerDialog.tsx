@@ -247,7 +247,7 @@ export function AddLayerDialog({
                   {t("app-scene-editor-add-layer-dialog.add-layer-dialog.p.6cda4dfbe164")}
                 </p>
               ) : (
-                <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                <ul className="grid grid-cols-[repeat(auto-fill,minmax(150px,1fr))] gap-2">
                   {shown.map((a) => {
                     const on = picked.includes(a.id);
                     const path = covers.get(a.id);

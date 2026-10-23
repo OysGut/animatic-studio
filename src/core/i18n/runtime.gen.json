@@ -31738,6 +31738,12 @@
     "core-workspaces.workspace-role-label.owner.8c979f17c6d5": {
       "text": "Eier"
     },
+    "dialog.resize.grip": {
+      "text": "Endre størrelse på vinduet (dra, eller Shift + piltaster; dobbeltklikk gir standardstørrelse)"
+    },
+    "dialog.resize.reset": {
+      "text": "Standardstørrelse"
+    },
     "dv5.background-result.undo-label": {
       "text": "Legg inn bakgrunnsresultat"
     },
@@ -64962,6 +64968,12 @@
     },
     "core-workspaces.workspace-role-label.owner.8c979f17c6d5": {
       "text": "Owner"
+    },
+    "dialog.resize.grip": {
+      "text": "Resize the window (drag, or Shift + arrow keys; double-click for the default size)"
+    },
+    "dialog.resize.reset": {
+      "text": "Default size"
     },
     "dv5.background-result.undo-label": {
       "text": "Add background result"
