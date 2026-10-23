@@ -16,12 +16,11 @@
 -- =====================================================================================
 
 -- ---------- 1. compositions blir også storyboardpaneler ----------
-alter table public.compositions
-  add column if not exists kind text not null default 'scene',
-  add column if not exists occurrence_id uuid references public.scene_occurrences (id) on delete restrict,
-  add column if not exists order_key text,
-  add column if not exists active boolean not null default true,
-  add column if not exists hidden boolean not null default false;
+alter table public.compositions add column if not exists kind text not null default 'scene';
+alter table public.compositions add column if not exists occurrence_id uuid references public.scene_occurrences (id) on delete restrict;
+alter table public.compositions add column if not exists order_key text;
+alter table public.compositions add column if not exists active boolean not null default true;
+alter table public.compositions add column if not exists hidden boolean not null default false;
 alter table public.compositions add constraint compositions_kind_check
   check (kind in ('scene', 'storyboard'));
 -- Et panel er knyttet til én sceneforekomst og har plass i scenens panelrekkefølge
