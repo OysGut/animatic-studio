@@ -1,3 +1,4 @@
+import { ReturnAfterSignIn } from "@/app/auth/ReturnAfterSignIn";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   Outlet,
@@ -155,6 +156,7 @@ function RootComponent() {
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <LanguageRoot>
         <Outlet />
+        <ReturnAfterSignIn />
         <RouteUiId />
         <ExportQueueStatus />
       </LanguageRoot>

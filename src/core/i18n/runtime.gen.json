@@ -31960,6 +31960,24 @@
     "g1b.poster.untranslated-one": {
       "text": "1 tekst finnes ikke på {language} og vises på et annet språk."
     },
+    "google.account.method-email": {
+      "text": "E-post og passord"
+    },
+    "google.account.method-google": {
+      "text": "Google"
+    },
+    "google.account.methods": {
+      "text": "Innlogging"
+    },
+    "google.sign-in.button": {
+      "text": "Fortsett med Google"
+    },
+    "google.sign-in.failed": {
+      "text": "Innloggingen med Google ble ikke fullført. Prøv igjen."
+    },
+    "google.sign-in.or": {
+      "text": "eller"
+    },
     "id3.derived-from.invalid": {
       "text": "Kildeversjonen finnes ikke i denne ressursen."
     },
@@ -65379,6 +65397,24 @@
     },
     "g1b.poster.untranslated-one": {
       "text": "1 text has no {language} version and is shown in another language."
+    },
+    "google.account.method-email": {
+      "text": "Email and password"
+    },
+    "google.account.method-google": {
+      "text": "Google"
+    },
+    "google.account.methods": {
+      "text": "Sign-in"
+    },
+    "google.sign-in.button": {
+      "text": "Continue with Google"
+    },
+    "google.sign-in.failed": {
+      "text": "Signing in with Google was not completed. Please try again."
+    },
+    "google.sign-in.or": {
+      "text": "or"
     },
     "id3.derived-from.invalid": {
       "text": "The source version does not exist in this asset."

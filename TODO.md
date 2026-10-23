@@ -5,6 +5,11 @@ Ikke foreslå, ikke start og ikke bygg dette før Øystein uttrykkelig ber om de
 - Eget test- og produksjonsmiljø (Øystein 23.10.2026): en egen testkopi av prosjektet med egen database, der databaseendringer kjøres først. Mellomtrinnet er funksjonsbryterne (av, beta og på). Til da er forhåndsvisningen test og pentoglass.com produksjon, og Claude prøver migrasjoner på en lokal kopi før de kjøres i Cloud.
 
 
+## Google-innlogging (23.10.2026)
+- [ ] Claude: kjør 0092 i Cloud og prøv vernet mot overtakelse én gang med en testadresse.
+- [ ] Øystein: bekreft at nye Google-brukere slipper registreringspasset (begrunnet i GOOGLE_INNLOGGING_REPORT.md), eller velg at de stoppes når pass kreves.
+- [ ] Valgfritt: egen Google OAuth-klient for eget navn og logo i Googles samtykkevindu.
+
 ## G-1 – språknøytral grunnmur (23.10.2026)
 - [ ] G-1a gjennomgang: 0090 er skrevet og testet bare lokalt; Claude kjører i Cloud etter gjennomgang.
 - [ ] G-1a rest: full BCP-47-kontrakt, bred hardkodekontroll, kildebytte med bevart dokumenthistorikk, japansk manus-PDF og komplett backup-/avvikdekning.

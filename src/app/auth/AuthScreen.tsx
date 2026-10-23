@@ -11,6 +11,9 @@ import {
   signUp,
 } from "@/adapters/browser/captcha-auth";
 import { TurnstileBox } from "./TurnstileBox";
+import { GoogleButton } from "./GoogleButton";
+import { startGoogleSignIn } from "@/adapters/browser/google-auth";
+import { oauthReturnError, type OAuthReturnError } from "@/core/auth/google";
 import { LoginGlobe } from "./LoginGlobe";
 import { ShowcaseCarousel } from "@/app/community/ShowcaseCarousel";
 import { Button } from "@/components/ui/button";
@@ -193,6 +196,23 @@ export function AuthScreen({ invited = false }: { invited?: boolean } = {}) {
     else setNotice(t("auth.password-reset.sent"));
   }
 
+  // Google: feil som kommer tilbake i adressen (for eksempel stengt registrering) vises som rolig melding
+  const googleMessage = (kind: OAuthReturnError) =>
+    kind === "closed" ? closedText : kind === "blocked" ? t("app-auth-auth-screen.norwegian-auth-error.message.2c6406a859ea") : t("google.sign-in.failed");
+  useEffect(() => {
+    const kind = oauthReturnError(window.location.search, window.location.hash);
+    if (kind) setError(googleMessage(kind));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [reg.data?.open]);
+  async function google() {
+    setBusy(true);
+    setError(null);
+    setNotice(null);
+    const kind = await startGoogleSignIn();
+    setBusy(false);
+    if (kind) setError(googleMessage(kind));
+  }
+
   // Når boksen er godkjent, kjøres handlingen brukeren ba om
   const run = useRef({ submit, sendLink, resetPassword });
   run.current = { submit, sendLink, resetPassword };
@@ -345,6 +365,12 @@ export function AuthScreen({ invited = false }: { invited?: boolean } = {}) {
               {t("app-auth-auth-screen.auth-screen.button.54c2a58316bb")}
             </button>
           </div>
+          <div className="flex items-center gap-3 pt-1" aria-hidden="true">
+            <span className="h-px flex-1 bg-border" />
+            <span className="text-[11px] text-text-tertiary">{t("google.sign-in.or")}</span>
+            <span className="h-px flex-1 bg-border" />
+          </div>
+          <GoogleButton onClick={() => void google()} disabled={busy} />
         </form>
         <div className="mt-3 flex justify-center"><LanguageSwitch compact /></div>
         <div className="mt-3 flex justify-center">

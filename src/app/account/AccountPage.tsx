@@ -20,6 +20,8 @@ import { RegionSettings } from "./RegionCard";
 import { WorkspacesCard } from "@/app/workspaces/WorkspacesCard";
 import { MY_ACCOUNT_KEY, PrivacyLink, useMyAccount } from "./use-account";
 import { t } from "@/core/i18n/keyed";
+import { useSession } from "@/app/auth/use-session";
+import { loginMethods } from "@/core/auth/google";
 
 function Card({ title, children, id }: { title: string; children: React.ReactNode; id?: string }) {
   return (
@@ -55,6 +57,8 @@ function AccountPageForUser({ email, userId }: { email: string; userId?: string 
   const [delMsg, setDelMsg] = useState<{ ok: boolean; text: string } | null>(null);
   const [busy, setBusy] = useState(false);
   const close = useCloseToPrevious();
+  const session = useSession();
+  const methods = session.status === "signed-in" ? loginMethods(session.session.user) : [];
 
   async function saveName() {
     if (name === null) return;
@@ -118,6 +122,12 @@ function AccountPageForUser({ email, userId }: { email: string; userId?: string 
         <dl className="grid grid-cols-[140px_1fr] gap-x-3 gap-y-1.5 text-[13px]">
           <dt className="text-text-tertiary">{t("app-account-account-page.account-page.dt.ade51be1b3f1")}</dt>
           <dd className="text-text-primary">{email}</dd>
+          <dt className="text-text-tertiary">{t("google.account.methods")}</dt>
+          <dd className="text-text-primary" data-testid="account-login-methods">
+            {methods.length
+              ? methods.map((m) => (m === "google" ? t("google.account.method-google") : t("google.account.method-email"))).join(" · ")
+              : "–"}
+          </dd>
           <dt className="text-text-tertiary">{t("app-account-account-page.account-page.dt.4ccb2731bfab")}</dt>
           <dd className="text-text-primary">
             {a?.createdAt

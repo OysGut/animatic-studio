@@ -6903,6 +6903,51 @@ try {
     await sql`insert into auth.users (id, email) values (${crypto.randomUUID()}, 'direkte@example.no')`;
   });
 
+  // ---------- Google-innlogging (0092) ----------
+  await test("0092: Google uten pass ved åpen registrering, stoppes ved stengt, uten profilbilde og uten overtakelse", async () => {
+    assert(Number((await sql`select max(version) v from public.schema_version`)[0]?.["v"]) >= 92, "schema version 92");
+    const OYSTEIN = "55555555-5555-7555-8555-555555555555";
+    await sql.unsafe(`grant update on auth.users to supabase_auth_admin`);
+    const asAuth = <T,>(f: (tx: postgres.TransactionSql) => Promise<T>) =>
+      sql.begin(async (tx) => {
+        await tx.unsafe(`set local session authorization supabase_auth_admin`);
+        return f(tx);
+      });
+    const google = (email: string, confirmed = true) => {
+      const id = crypto.randomUUID();
+      return asAuth((tx) => tx`insert into auth.users (id, email, email_confirmed_at, raw_app_meta_data, raw_user_meta_data)
+        values (${id}, ${email}, ${confirmed ? new Date() : null},
+                ${sql.json({ provider: "google", providers: ["google"] })},
+                ${sql.json({ full_name: "Kari Nordmann", avatar_url: "https://lh3.googleusercontent.com/x", picture: "https://lh3.googleusercontent.com/x" })})`).then(() => id);
+    };
+    // Åpen registrering: ny Google-bruker uten pass slipper inn, og profilbildet lagres ikke
+    const id = await google("ny.google@example.no");
+    const meta = (await sql`select raw_user_meta_data m from auth.users where id = ${id}`)[0]!["m"] as Record<string, unknown>;
+    assert(meta["full_name"] === "Kari Nordmann" && !("avatar_url" in meta) && !("picture" in meta), "navn beholdes, bilde fjernes");
+    // Google uten bekreftet e-post og e-postregistrering uten pass krever fortsatt pass
+    await expectError(google("ubekreftet@example.no", false), "PTG02");
+    await expectError(asAuth((tx) => tx`insert into auth.users (id, email, raw_app_meta_data) values (${crypto.randomUUID()}, 'epost@example.no', ${sql.json({ provider: "email", providers: ["email"] })})`), "PTG02");
+    // Stengt registrering stopper også Google; invitasjon slipper inn som før
+    await as("authenticated", OYSTEIN, (tx) => tx`select public.set_registration_open(false, null)`);
+    await expectError(google("stengt.google@example.no"), "PTG01");
+    assert((await sql`select 1 from auth.users where email = 'stengt.google@example.no'`).length === 0, "ingen konto lages");
+    await as("authenticated", OYSTEIN, (tx) => tx`select public.set_registration_open(true, null)`);
+    // Senere innlogging oppdaterer metadata: bildet fjernes igjen
+    await asAuth((tx) => tx`update auth.users set raw_user_meta_data = ${sql.json({ full_name: "Kari", picture: "https://x" })} where id = ${id}`);
+    const meta2 = (await sql`select raw_user_meta_data m from auth.users where id = ${id}`)[0]!["m"] as Record<string, unknown>;
+    assert(!("picture" in meta2), "bildet fjernes ved oppdatering");
+    // Overtakelse: ubekreftet passordkonto får Google koblet til – passordet fjernes
+    const victim = crypto.randomUUID();
+    await sql`insert into auth.users (id, email, encrypted_password, raw_app_meta_data) values (${victim}, 'offer@example.no', 'angriperens-hash', ${sql.json({ provider: "email", providers: ["email"] })})`;
+    await asAuth((tx) => tx`update auth.users set raw_app_meta_data = ${sql.json({ provider: "email", providers: ["email", "google"] })}, email_confirmed_at = now() where id = ${victim}`);
+    assert((await sql`select encrypted_password p from auth.users where id = ${victim}`)[0]!["p"] === "", "passordet fra før bekreftelsen fjernes");
+    // Bekreftet passordkonto beholder passordet når Google kobles til
+    const owner = crypto.randomUUID();
+    await sql`insert into auth.users (id, email, email_confirmed_at, encrypted_password, raw_app_meta_data) values (${owner}, 'eier@example.no', now(), 'eierens-hash', ${sql.json({ provider: "email", providers: ["email"] })})`;
+    await asAuth((tx) => tx`update auth.users set raw_app_meta_data = ${sql.json({ provider: "email", providers: ["email", "google"] })} where id = ${owner}`);
+    assert((await sql`select encrypted_password p from auth.users where id = ${owner}`)[0]!["p"] === "eierens-hash", "bekreftet konto beholder passordet");
+  });
+
 
   await test('0077 (B-107): alle åtte UI-språk kan lagres uten å endre andre brukere; anon og testspråk avvises', async () => {
     for (const language of ['fr', 'es', 'ru', 'ja', 'pt-BR', 'de', 'it', 'ko']) {

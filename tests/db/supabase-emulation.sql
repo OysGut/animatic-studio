@@ -6,6 +6,8 @@ do $$ begin
 end $$;
 create schema if not exists auth;
 create table if not exists auth.users (id uuid primary key, email text, email_confirmed_at timestamptz, created_at timestamptz default now());
+-- 0092: kolonnene Google-vernet leser (finnes i ekte Supabase)
+alter table auth.users add column if not exists raw_app_meta_data jsonb, add column if not exists raw_user_meta_data jsonb, add column if not exists encrypted_password text;
 create or replace function auth.uid() returns uuid language sql stable as $$
   select nullif(current_setting('request.jwt.claims', true)::jsonb ->> 'sub', '')::uuid
 $$;

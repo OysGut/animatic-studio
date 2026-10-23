@@ -55967,5 +55967,35 @@
     "text": "{length}件のテキストに{language}版がないため、別の言語で表示されます。",
     "sourceHash": "f21125e13cbd0118be8f00c41d45bb0963711d198565f3337125e5c304741e84",
     "review": "machine"
+  },
+  "google.sign-in.button": {
+    "text": "Google で続行",
+    "sourceHash": "eea74e575db805f86998bf4dee99bcd1ab354c0c92ee576a08378b1ffd6e5488",
+    "review": "machine"
+  },
+  "google.sign-in.or": {
+    "text": "または",
+    "sourceHash": "396de008aa9b14ada7d1c919cd2ee067ee14a05ec7f970b9ef26b3ab49811f64",
+    "review": "machine"
+  },
+  "google.sign-in.failed": {
+    "text": "Google でのログインが完了しませんでした。もう一度お試しください。",
+    "sourceHash": "7e39202db1be2880a9da4720e55c66cde22030f040c35b47d548e673ce0aa50e",
+    "review": "machine"
+  },
+  "google.account.methods": {
+    "text": "ログイン方法",
+    "sourceHash": "c3a6792703c1f74cae8f8af237b3c6ed80cde29f14691d25f18a5ca32ea39eb0",
+    "review": "machine"
+  },
+  "google.account.method-google": {
+    "text": "Google",
+    "sourceHash": "c19164c3482698e2e12d8452e6664b3facf711e936bfe78d2f3d6181629f6910",
+    "review": "machine"
+  },
+  "google.account.method-email": {
+    "text": "メールとパスワード",
+    "sourceHash": "bccbb358370012347775af1442b85d4e99c24ceaabf1f91ec66038af47b8531f",
+    "review": "machine"
   }
 }
