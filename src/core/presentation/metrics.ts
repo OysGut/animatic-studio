@@ -3,6 +3,7 @@
  * linjebryting og plassering er lik i forhåndsvisningen (Arial/Liberation Sans og Times New Roman/Liberation
  * Serif har samme mål), PNG-eksporten og trykk-PDF-en. Ren TypeScript uten avhengigheter.
  */
+import { graphemes, segmentAll } from "../language/text-metrics";
 export type PosterFontKey = "sans" | "sansBold" | "serif" | "serifBold" | "serifItalic";
 
 /** Tegnbredder (1/1000 em) for PDF-standardskriftene, WinAnsi 32–255 (generert fra AFM via reportlab). */
@@ -179,14 +180,17 @@ export function wrapPosterText(
   const max = widthMm * MM_TO_PT;
   const out: string[] = [];
   for (const para of text.split(/\r?\n/)) {
-    const words = para.split(/\s+/).filter(Boolean);
+    // G-3: språk uten mellomrom (ja, zh, th) brytes ved ordgrenser fra Intl.Segmenter.
+    const unspaced = para.trim().length > 0 && !/\s/.test(para.trim());
+    const joiner = unspaced ? "" : " ";
+    const words = unspaced ? segmentAll(para.trim()) : para.split(/\s+/).filter(Boolean);
     if (!words.length) {
       out.push("");
       continue;
     }
     let line = "";
     for (const word of words) {
-      const next = line ? `${line} ${word}` : word;
+      const next = line ? `${line}${joiner}${word}` : word;
       if (textWidthPt(next, font, sizePt, tracking) <= max) {
         line = next;
         continue;
@@ -194,9 +198,10 @@ export function wrapPosterText(
       if (line) out.push(line);
       // Ord som er lengre enn linjen, deles
       let rest = word;
-      while (textWidthPt(rest, font, sizePt, tracking) > max && rest.length > 1) {
+      // Grafemene hentes én gang per ord (ikke per linje), så lange ord brytes i lineær tid
+      let chars = graphemes(rest);
+      while (textWidthPt(rest, font, sizePt, tracking) > max && chars.length > 1) {
         // Så mange tegn som får plass (minst ett), målt fortløpende
-        const chars = [...rest];
         let cut = 1;
         let w = textWidthPt(chars[0]!, font, sizePt, 0);
         const step = (tracking / 1000) * sizePt;
@@ -207,7 +212,8 @@ export function wrapPosterText(
           cut++;
         }
         out.push(chars.slice(0, cut).join(""));
-        rest = chars.slice(cut).join("");
+        chars = chars.slice(cut);
+        rest = chars.join("");
       }
       line = rest;
     }

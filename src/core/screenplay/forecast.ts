@@ -5,6 +5,7 @@
  * - ferdige scener (film eller satt lengde) gir forholdet mellom faktisk lengde og anslaget.
  * Prognosen er bare beregnet. Den lagres aldri og endrer aldri manus eller scenelengder.
  */
+import { countWords as segCount } from "../language/text-metrics";
 import { sourceLanguageOf } from "../dialogue/languages";
 import type { ProjectState } from "../model";
 import { blocksOfVariant, isScriptOccurrence, orderedOccurrences, sceneNumberOf } from "../views";
@@ -40,7 +41,7 @@ export interface SpeechRate {
 }
 
 function countWords(text: string): number {
-  return text.split(/\s+/).filter((w) => /[\p{L}\p{N}]/u.test(w)).length;
+  return segCount(text);
 }
 
 /** Talerens ressurs ut fra karakterlinjen foran replikken (entydig navn), ellers null. */

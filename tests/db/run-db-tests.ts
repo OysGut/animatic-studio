@@ -7966,6 +7966,34 @@ try {
     assert(/Index/.test(plan), `keyset bruker ikke indeks:\n${plan}`);
     await as("service_role", null, (tx) => tx`select public.delete_project(${pid}, ${ALICE})`);
   });
+
+  // ---------- G-3 global (0094) ----------
+  await test("0094 G-3.6: budsjettperioden følger arbeidsgruppens tidssone rundt midnatt og månedsskifte", async () => {
+    const pid = String((await as("authenticated", ALICE, (tx) => tx`select public.create_project('G3', 25, 1, 'ja') id`))[0]?.["id"]);
+    const start = async (unit: string, at: string) =>
+      new Date(String((await sql`select private.budget_period_start(${pid}, ${unit}, ${at}::timestamptz) s`)[0]!["s"])).toISOString();
+    // Uten tidssone: UTC
+    assert((await start("day", "2026-01-31T23:30:00Z")) === "2026-01-31T00:00:00.000Z", "utc dag");
+    // Brukerens tidssone (ingen arbeidsgruppe): Auckland er UTC+13 i januar
+    await as("authenticated", ALICE, (tx) => tx`select public.set_my_time_zone('Pacific/Auckland')`);
+    assert((await start("day", "2026-01-31T10:59:00Z")) === "2026-01-30T11:00:00.000Z", "auckland før midnatt");
+    assert((await start("day", "2026-01-31T11:00:00Z")) === "2026-01-31T11:00:00.000Z", "auckland ved midnatt");
+    assert((await start("month", "2026-01-31T11:00:00Z")) === "2026-01-31T11:00:00.000Z", "auckland nytt måned (1. feb lokal)");
+    assert((await start("month", "2026-01-31T10:59:00Z")) === "2025-12-31T11:00:00.000Z", "auckland januar");
+    // Arbeidsgruppens tidssone vinner: Los Angeles er UTC-8 i januar
+    const ws = String((await as("authenticated", ALICE, (tx) => tx`select public.create_workspace('G3 ws') id`))[0]?.["id"]);
+    await sql`update public.projects set workspace_id=${ws} where id=${pid}`;
+    await as("authenticated", ALICE, (tx) => tx`select public.set_workspace_settings(${ws}, 'America/Los_Angeles', 'eu-north', '{}'::jsonb)`);
+    assert((await start("day", "2026-02-01T07:59:00Z")) === "2026-01-31T08:00:00.000Z", "LA før midnatt");
+    assert((await start("month", "2026-02-01T08:00:00Z")) === "2026-02-01T08:00:00.000Z", "LA månedsskifte");
+    assert((await sql`select region from public.workspaces where id=${ws}`)[0]!["region"] === "eu-north", "region");
+    await expectError(as("authenticated", ALICE, (tx) => tx`select public.set_my_time_zone('Mars/Olympus')`), /invalid_time_zone/);
+    await expectError(as("authenticated", BOB, (tx) => tx`select public.set_workspace_settings(${ws}, 'UTC', null, '{}'::jsonb)`), /not_workspace_owner/);
+    await expectError(as("authenticated", ALICE, (tx) => tx`insert into public.fx_rates (base, quote, rate_date, rate, source) values ('USD','NOK','2026-01-01',10,'x')`), /permission|denied|policy/);
+    await as("authenticated", ALICE, (tx) => tx`select public.set_my_time_zone(null)`);
+    await sql`update public.projects set workspace_id=null where id=${pid}`;
+    await as("service_role", null, (tx) => tx`select public.delete_project(${pid}, ${ALICE})`);
+  });
 } finally {
   await sql.end();
   await admin.unsafe(`drop database if exists ${DB} with (force)`);

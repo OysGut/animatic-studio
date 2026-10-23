@@ -14,6 +14,8 @@ const LITERAL = /["'`](nb|no|nn|nb-NO|no-NO|nn-NO)["'`]/g;
 
 /** Fil → tekst som må stå på linjen, med begrunnelse. */
 const EXCEPTIONS: readonly { file: string; contains: string; why: string }[] = [
+  { file: "src/core/screenplay/heading-keywords.ts", contains: 'language: "nb"', why: "G-3: nøkkelordsett for sceneoverskrifter per språk; norsk er ett av mange sett." },
+  { file: "src/core/screenplay/heading-keywords.ts", contains: 'language: "nn"', why: "G-3: nøkkelordsett for nynorsk sceneoverskrift." },
   { file: "src/test/setup.ts", contains: "setLanguage('nb')", why: "Testoppsett: katalogens forfatterspråk i jsdom-tester." },
   { file: "src/core/storylab/line-check.ts", contains: '"no"', why: "Engelsk svarverdi (yes/partly/no), ikke et språk." },
   { file: "src/core/screenplay/export-fonts.ts", contains: 'language === "nb" ? "nb-NO"', why: "Word kjenner bokmål bare med region; andre språk skrives uendret." },

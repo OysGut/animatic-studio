@@ -3,6 +3,12 @@
  * Estimatet bygger på dialogmengde og handlingsbeskrivelser med synlige, justerbare antakelser.
  * Det vises på prosjektoversikten, aldri i manusvisningen (REQ-0117).
  */
+import {
+  countWords as segCount,
+  countWords,
+  speechRateFor,
+  speechSeconds,
+} from "../language/text-metrics";
 import type { BlockKind, ProjectState } from "../model";
 import type { ScriptSnapshot } from "./versions";
 import { blocksOfVariant, isScriptOccurrence, orderedOccurrences, sceneNumberOf } from "../views";
@@ -140,26 +146,33 @@ export interface ProductionEstimate {
 }
 
 function words(text: string): number {
-  return text.split(/\s+/).filter((w) => /[\p{L}\p{N}]/u.test(w)).length;
+  return segCount(text);
 }
 
 /** Estimatet for én scene ut fra blokkene (dialogord, handlingslinjer). */
 export function estimateBlocks(
   blocks: readonly { readonly kind: BlockKind; readonly text: string }[],
   assumptions: DurationAssumptions = DEFAULT_DURATION_ASSUMPTIONS,
+  /** G-3: manusets språk. Tegnbaserte språk (ja, zh, ko) regnes i tegn per sekund, ikke ord. */
+  language?: string,
 ): { dialogueWords: number; actionLines: number; seconds: number } {
+  const cps = language && speechRateFor(language).unit === "cps";
+  let dialogueSeconds = 0;
   const width = US_LETTER_LAYOUT.columns.action.width;
   let dialogueWords = 0;
   let actionLines = 0;
   for (const b of blocks) {
-    if (b.kind === "dialogue") dialogueWords += words(b.text);
+    if (b.kind === "dialogue") {
+      dialogueWords += cps ? countWords(b.text, language) : words(b.text);
+      if (cps) dialogueSeconds += speechSeconds(b.text, language);
+    }
     else if (b.kind === "action" || b.kind === "shot")
       actionLines += wrapText(b.text.trim(), width).filter((l) => l.trim()).length;
   }
   const seconds = Math.max(
     assumptions.minSceneSeconds,
     assumptions.headingSeconds +
-      (dialogueWords / Math.max(1, assumptions.dialogueWordsPerMinute)) * 60 +
+      (cps ? dialogueSeconds : (dialogueWords / Math.max(1, assumptions.dialogueWordsPerMinute)) * 60) +
       actionLines * assumptions.actionSecondsPerLine,
   );
   return { dialogueWords, actionLines, seconds };

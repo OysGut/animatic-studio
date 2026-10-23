@@ -14,6 +14,7 @@ import { sourceLanguageOf, isSourceLanguage } from "../dialogue/languages";
  * endringer gjøres på den egentlige tilstanden). Ingenting her endrer hovedfilmen (REQ-0344) eller starter en
  * generering (REQ-0347): forslagene er råd som brukeren velger å følge.
  */
+import { countWords as segCount, speechSeconds } from "./text-metrics";
 import type { AudioClip, AudioKind, CompositionLayer, ProjectState, Take } from "../model";
 import { blockSpans, filmClips, type FilmClip } from "../assembly/film";
 import { MAIN_LANGUAGE, clipLanguage, isVoiceKind } from "../audio";
@@ -148,13 +149,15 @@ const WORDS_PER_SECOND = 150 / 60;
 /** Avvik som ikke regnes som konflikt (ms). */
 const TOLERANCE_MS = 200;
 
-export function wordCount(text: string): number {
-  return text.split(/\s+/).filter((w) => /[\p{L}\p{N}]/u.test(w)).length;
+export function wordCount(text: string, lang?: string): number {
+  return segCount(text, lang);
 }
 
 /** Beregnet taletid for en replikk (ms). */
-export function estimateSpeechMs(text: string): number {
-  return Math.round((Math.max(1, wordCount(text)) / WORDS_PER_SECOND) * 1000);
+export function estimateSpeechMs(text: string, lang?: string): number {
+  return Math.round(
+    (lang ? speechSeconds(text, lang) : Math.max(1, wordCount(text)) / WORDS_PER_SECOND) * 1000,
+  );
 }
 
 export type TimingSuggestion =
@@ -248,7 +251,7 @@ export function timingConflicts(
         const text = translationOf(s, sp.blockId, lang)?.text;
         if (!text?.trim()) continue;
         lStart = start;
-        lLength = estimateSpeechMs(text);
+        lLength = estimateSpeechMs(text, lang);
         source = "estimate";
       }
       const overflow = lStart + lLength - end;
