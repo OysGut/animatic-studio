@@ -151,6 +151,17 @@ export interface LayerFields {
   readonly template?: import("../typography/types").TemplateSlotRef | null;
   /** Overgangen inn i siden (bare sidelag, MTS MT6). Utelatt = uendret ved endring, kutt ved nytt lag. */
   readonly pageTransition?: import("../model").Transition | null;
+  /** Lapp, pil og kameramerke (SB-1, bare lagtypene note/arrow/camera_mark i storyboardkomposisjoner). */
+  readonly note?: import("../storyboard").PanelNoteSpec | null;
+  readonly arrow?: import("../storyboard").ArrowSpec | null;
+  readonly cameraMark?: import("../storyboard").CameraMarkSpec | null;
+}
+
+/** SB-1: en blokkobling på et panel. linkId lages av klienten, slik at koblingen kan angres og gjøres om likt på alle klienter. */
+export interface StoryboardBlockRef {
+  readonly linkId: string;
+  readonly blockId: BlockId;
+  readonly orderKey: string;
 }
 
 export interface NewLayer {
@@ -1066,12 +1077,12 @@ export type Command = import("../animation/rig-commands").RigCommand
   | { readonly type: "UpdateNoteFlag"; readonly flagId: string; readonly text?: string; readonly enabled?: boolean }
   | { readonly type: "SetNoteFlagRemoved"; readonly flagId: string; readonly removed: boolean }
   /** SB-1: storyboardgrunnmur (migrasjon 0102). Panelet er en komposisjon med kind «storyboard». */
-  | { readonly type: "AddStoryboardPanel"; readonly panelId: string; readonly occurrenceId: string; readonly variantId: string; readonly orderKey: string; readonly name?: string; readonly durationFrames?: number; readonly blockIds?: readonly string[] }
+  | { readonly type: "AddStoryboardPanel"; readonly panelId: string; readonly occurrenceId: string; readonly variantId: string; readonly orderKey: string; readonly name?: string; readonly durationFrames?: number; readonly blocks?: readonly StoryboardBlockRef[] }
   | { readonly type: "UndoAddStoryboardPanel"; readonly panelId: string }
-  | { readonly type: "UpdateStoryboardPanel"; readonly panelId: string; readonly name?: string; readonly durationFrames?: number; readonly active?: boolean; readonly hidden?: boolean; readonly blockIds?: readonly string[] }
+  | { readonly type: "UpdateStoryboardPanel"; readonly panelId: string; readonly name?: string; readonly durationFrames?: number; readonly active?: boolean; readonly hidden?: boolean; readonly blocks?: readonly StoryboardBlockRef[] }
   | { readonly type: "SetStoryboardPanelRemoved"; readonly panelId: string; readonly removed: boolean }
   | { readonly type: "MoveStoryboardPanel"; readonly panelId: string; readonly orderKey: string }
-  | { readonly type: "MoveStoryboardPanelToScene"; readonly panelId: string; readonly occurrenceId: string; readonly variantId: string; readonly orderKey: string; readonly blockIds?: readonly string[] }
+  | { readonly type: "MoveStoryboardPanelToScene"; readonly panelId: string; readonly occurrenceId: string; readonly variantId: string; readonly orderKey: string; readonly blocks?: readonly StoryboardBlockRef[] }
   /** SB-1: bekreftet førstegangsoppretting – ett tomt panel per forekomst i planen. */
   | { readonly type: "SeedStoryboardPanels"; readonly productionId: string; readonly panels: readonly { readonly panelId: string; readonly occurrenceId: string; readonly variantId: string; readonly orderKey: string }[] }
   | { readonly type: "UndoSeedStoryboardPanels"; readonly panelIds: readonly string[] }
