@@ -64,6 +64,19 @@ export function applyChangesErrorMessage(
   return null;
 }
 
+/** G-5: vennlig, oversatt melding for kvotefeil fra databasen (SQLSTATE PTG11–PTG14), ellers null. */
+export function quotaErrorMessage(
+  error: { readonly code?: string | null; readonly message?: string | null },
+): { readonly code: string; readonly message: string } | null {
+  const key =
+    error.code === "PTG11" ? "adapters-storage-commands-functions.quota-projects"
+    : error.code === "PTG12" ? "adapters-storage-commands-functions.quota-change-log"
+    : error.code === "PTG13" ? "adapters-storage-commands-functions.quota-storage"
+    : error.code === "PTG14" ? "adapters-storage-commands-functions.quota-uploads"
+    : null;
+  return key ? { code: "quota", message: tk(key) } : null;
+}
+
 export type RunCommandResult =
   | {
       readonly ok: true;
