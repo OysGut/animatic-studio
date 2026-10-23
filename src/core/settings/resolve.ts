@@ -143,3 +143,30 @@ export function secondsPerPage(f: ScriptFormat): number {
   if (f.kind === "custom") return f.secondsPerPage && f.secondsPerPage > 0 ? f.secondsPerPage : 60;
   return 60;
 }
+
+/**
+ * G-6 del 2: et lagret innstillingsnivå (f.eks. workspaces.settings + time_zone) tolket trygt. Ukjente
+ * nøkler og ugyldige verdier hoppes over, så et skadet felt aldri overstyrer et annet nivå.
+ */
+export function settingLevelFrom(raw: unknown, timeZone?: string | null): SettingLevel {
+  const o = raw && typeof raw === "object" && !Array.isArray(raw) ? (raw as Record<string, unknown>) : {};
+  const out: { -readonly [K in SettingKey]?: SettingValues[K] } = {};
+  const s = (k: string) => (typeof o[k] === "string" && (o[k] as string).trim() ? (o[k] as string).trim() : null);
+  if (s("language")) out.language = s("language")!;
+  if (o["units"] === "metric" || o["units"] === "imperial") out.units = o["units"];
+  if (o["paper"] === "A4" || o["paper"] === "Letter") out.paper = o["paper"];
+  const cur = s("currency");
+  if (cur && /^[A-Z]{3}$/.test(cur)) out.currency = cur;
+  const tz = (timeZone ?? s("timeZone"))?.trim();
+  if (tz && isIanaTimeZone(tz)) out.timeZone = tz;
+  const f = o["scriptFormat"] as Record<string, unknown> | undefined;
+  if (f && (f["kind"] === "us_letter_courier12" || f["kind"] === "a4_europe" || f["kind"] === "custom") && typeof f["pageIsMinute"] === "boolean")
+    out.scriptFormat = {
+      kind: f["kind"],
+      pageIsMinute: f["pageIsMinute"],
+      ...(typeof f["secondsPerPage"] === "number" && f["secondsPerPage"] > 0 ? { secondsPerPage: f["secondsPerPage"] } : {}),
+    };
+  if (s("exportName")) out.exportName = s("exportName")!;
+  if (s("projectCode")) out.projectCode = s("projectCode")!;
+  return out;
+}
