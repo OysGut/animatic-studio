@@ -1112,19 +1112,6 @@
     "parameterNames": []
   },
   {
-    "file": "src/adapters/ai/fact-sheet.server.ts",
-    "line": 85,
-    "column": 34,
-    "start": 3207,
-    "end": 3232,
-    "scope": "message",
-    "context": "message",
-    "kind": "t",
-    "raw": "t(\"factSheet.error.save\")",
-    "key": "factSheet.error.save",
-    "parameterNames": []
-  },
-  {
     "file": "src/adapters/ai/gateway.ts",
     "line": 22,
     "column": 12,
@@ -5440,8 +5427,8 @@
     "file": "src/adapters/ai/write-prompt.functions.ts",
     "line": 458,
     "column": 36,
-    "start": 20114,
-    "end": 20182,
+    "start": 20131,
+    "end": 20199,
     "scope": "message",
     "context": "message",
     "kind": "t",
@@ -5453,8 +5440,8 @@
     "file": "src/adapters/ai/write-prompt.functions.ts",
     "line": 464,
     "column": 58,
-    "start": 20476,
-    "end": 20501,
+    "start": 20493,
+    "end": 20518,
     "scope": "message",
     "context": "message",
     "kind": "t",
@@ -5466,8 +5453,8 @@
     "file": "src/adapters/ai/write-prompt.functions.ts",
     "line": 483,
     "column": 49,
-    "start": 21285,
-    "end": 21337,
+    "start": 21302,
+    "end": 21354,
     "scope": "message",
     "context": "message",
     "kind": "t",
@@ -7492,6 +7479,19 @@
     "parameterNames": [
       "undone"
     ]
+  },
+  {
+    "file": "src/adapters/storage/fact-sheet.server.ts",
+    "line": 86,
+    "column": 34,
+    "start": 3368,
+    "end": 3393,
+    "scope": "message",
+    "context": "message",
+    "kind": "t",
+    "raw": "t(\"factSheet.error.save\")",
+    "key": "factSheet.error.save",
+    "parameterNames": []
   },
   {
     "file": "src/adapters/storage/harmonize-batch.functions.ts",
