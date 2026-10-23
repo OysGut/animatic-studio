@@ -1052,6 +1052,8 @@ export const runCommand = createServerFn({ method: "POST" })
     if (error) {
       const known = applyChangesErrorMessage(data.command, error);
       if (known) return { ok: false, ...known };
+      const quota = quotaErrorMessage(error);
+      if (quota) return { ok: false, ...quota };
       if (error.code === "23505") {
         // Enten et nytt forsøk av en kommando som allerede er lagret (idempotent), eller to samtidige
         // endringer som ville gitt samme plass i rekkefølgen.

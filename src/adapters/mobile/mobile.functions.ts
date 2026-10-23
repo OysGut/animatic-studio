@@ -39,7 +39,9 @@ function missingSchema(message: string): boolean {
 const SCHEMA_MESSAGE = t("adapters-mobile-mobile-functions.schema-message.message.9443d2639538");
 
 /** Feilmeldingene fra databasen på norsk og engelsk. */
-function dbMessage(message: string): string {
+function dbMessage(message: string, code?: string): string {
+  if (code === "PTG13") return t("adapters-mobile-mobile-functions.db-message.quota-storage");
+  if (code === "PTG14") return t("adapters-mobile-mobile-functions.db-message.quota-uploads");
   if (missingSchema(message)) return SCHEMA_MESSAGE;
   if (/utløpt eller tilbakekalt/.test(message))
     return t("adapters-mobile-mobile-functions.db-message.message.089685f21124");
