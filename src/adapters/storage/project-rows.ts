@@ -88,6 +88,8 @@ export const SNAPSHOT_TABLES = [
 export interface LoadOptions {
   /** «current»: bare gjeldende revisjon per blokk (rask åpning); full historikk hentes etterpå. Standard: full. */
   readonly history?: "full" | "current";
+  /** Trengs log_seq (synkronisering i nettleseren)? Serveren trenger den ikke. Standard: ja. */
+  readonly withLogSeq?: boolean;
 }
 
 export interface ProjectSnapshot {
@@ -109,7 +111,13 @@ function missingFunction(message: string): boolean {
  */
 export async function loadProjectSnapshot(db: AnyClient, projectId: string, opts: LoadOptions = {}): Promise<ProjectSnapshot> {
   const full = opts.history !== "current";
-  const { data, error } = await db.rpc("project_snapshot", { p_project: projectId, p_full_history: full });
+  let data: unknown = null;
+  let error: { message: string; code?: string } | null = null;
+  try {
+    ({ data, error } = await db.rpc("project_snapshot", { p_project: projectId, p_full_history: full }));
+  } catch (e) {
+    error = { message: `project_snapshot: ${String(e)}` };
+  }
   if (!error && data && typeof data === "object") {
     const snap = data as { project: Row | null; log_seq: number; history: string; tables: Record<string, Row[]>[] };
     if (!snap.project)
@@ -123,6 +131,7 @@ export async function loadProjectSnapshot(db: AnyClient, projectId: string, opts
     };
   }
   if (error && !missingFunction(error.message)) console.warn("[project-snapshot] reserve: sidevis lesing", error.code); // i18n-ignore: logg
+  if (opts.withLogSeq === false) return { rows: await loadProjectRows(db, projectId), logSeq: null, via: "pages" };
   // Reserve: sidevis. log_seq leses før og etter; er de like, bygger radene på akkurat den loggposisjonen.
   for (let attempt = 0; attempt < 3; attempt++) {
     const before = await fetchLogSeq(db, projectId);
@@ -320,8 +329,9 @@ export async function loadProjectRows(db: AnyClient, projectId: string): Promise
   };
 }
 
+/** Hele prosjekttilstanden med full historikk (serveren og andre som må ha alt). Ett kall når 0093 er kjørt. */
 export async function loadProjectState(db: AnyClient, projectId: string): Promise<ProjectState> {
-  return stateFromRows(await loadProjectRows(db, projectId));
+  return stateFromRows((await loadProjectSnapshot(db, projectId, { withLogSeq: false })).rows);
 }
 
 export type SchemaStatus =
