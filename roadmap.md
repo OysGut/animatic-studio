@@ -78,11 +78,11 @@
 - [x] Galleri i fortellerrekkefølge per produksjon, gruppert per scene, felles Thumbnail
 - [x] Kontroller: panelstørrelse/zoom, vis-skjul, tekstvisning, filter, «Hopp til manus», husket per bruker
 - [x] Klikk/dobbeltklikk/Enter-navigasjon med panel-markering (URL-parameter)
-- [x] Omorganisering: dra paneler/scener, legg til/dupliser/skjul/deaktiver/gjeninnfør, flytt til scene, alt med angre
+- [~] Omorganisering: paneldrag og opp/ned for scener testet; scenedrag skal verifiseres i SB-3. Legg til/dupliser/skjul/deaktiver/gjeninnfør og flytt til scene med angre er testet.
 - [x] Første åpning: forslag ett tomt panel per scene med bekreftelse
 - [x] Statusmerker per fagområde + redigering
 - [x] Tilgjengelighet (piltaster, aria, RTL), virtualisering for 2 000 paneler
-- [x] Tester jsdom (12) + rapport; tsc 0, full vitest 2880 grønn, i18n grønn, DB 226/0. Visuell suite nb/en skrevet, ikke kjørt (Claude kjører). tsc 0, full vitest grønn, i18n grønn; rapport docs/development/SB2_REPORT.md
+- [~] Tester jsdom (12) + rapport; typekontroll og i18n grønne, DB 226/0. Siste dokumenterte fullkjøring: 2879 bestått, én feil siden rettet; fullkjøring må gjentas. Visuell suite nb/en skrevet, ikke kjørt.
 
 ## SB-3 panelredigering (23.10.2026) – kjøres etter SB-2
 - [ ] Panelflate: dra inn ressurser (ID+versjon, proporsjoner), flytt/skaler/roter/ordne/lås/skjul
@@ -93,7 +93,7 @@
 - [ ] Egendefinerte felt per prosjekt; dialog koblet til replikker
 - [ ] Kamera/utsnitt per panel, formatmasker, sikre soner, tredjedeler
 - [ ] Hurtigtaster i «?»-hjelpen
-- [ ] Tester + rapport docs/development/SB3_REPORT.md; ny migrasjon ved behov (0103+)
+- [ ] Tester + rapport docs/development/SB3_REPORT.md; nye DB-endringer i 0104. 0103 og eldre er låst; ingen publisering.
 
 ## SB-4 tid, avspilling, storyboardfilm og sømløs veksling (23.10.2026) – kjøres etter SB-3
 - [ ] Lyd fra scenen som én kilde (filmAudio/audioBank, ingen kopi, over scenegrenser, av/på + volum husket, lyd er tidsmaster)
