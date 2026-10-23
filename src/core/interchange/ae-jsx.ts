@@ -390,9 +390,12 @@ export function buildAeJsx(doc: InterchangeDoc, o: { readonly cameraMode: AeCame
     "  } catch (e) { ptgFeilet.push(rel); return null; }",
     "}",
     // Mangler mediet (import feilet), får laget en grå solid med navnet, så nøkkelbildene likevel bygges
+    // i18n-ignore: ExtendScript-kode, ikke tekst brukeren ser
     "function ptgLag(c, rel, navn, w, h, d, lyd) {",
     "  if (media[rel]) return c.layers.add(media[rel]);",
+    // i18n-ignore: ExtendScript-kode, ikke tekst brukeren ser
     "  var l = c.layers.addSolid([0.5, 0.5, 0.5], navn + \" (\" + rel + \")\", Math.max(1, w), Math.max(1, h), 1, d);",
+    // i18n-ignore: ExtendScript-kode, ikke tekst brukeren ser
     "  if (lyd) { try { l.enabled = false; } catch (e) {} }",
     "  return l;",
     "}",
