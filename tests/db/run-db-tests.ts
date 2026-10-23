@@ -8846,9 +8846,8 @@ try {
   });
 
   await test("0104 SB-3: panelopplysninger og egendefinerte felt lagres via apply_changes og valideres", async () => {
-    const panel = newId(); const details = {number:"12",sceneNumber:"7",fields:{action:"Move"},dialogueIds:[sbSetup.block],shot:"CU",angle:"eye",focalMm:50,movement:"Pan"};
-    console.log("SB3 block kind",(await sql`select kind from public.script_blocks where id=${sbSetup.block}`)[0]?.["kind"]);
-    // sbSetup.block er handlingsblokken; bare replikker kan kobles.
+    const panel = newId(); const details = {number:"12",sceneNumber:"7",fields:{action:"Move"},dialogueIds:[newId()],shot:"CU",angle:"eye",focalMm:50,movement:"Pan"};
+    // En ukjent replikk skal avvises.
     await expectError(sbApply(g7p,{inserts:{compositions:[{id:panel,project_id:g7p,variant_id:sbSetup.variant,kind:"storyboard",occurrence_id:sbSetup.occurrence,order_key:"zz8",revision:1,storyboard:details}]}}),"22023");
     await sbApply(g7p,{inserts:{compositions:[{id:panel,project_id:g7p,variant_id:sbSetup.variant,kind:"storyboard",occurrence_id:sbSetup.occurrence,order_key:"zz8",revision:1,storyboard:{...details,dialogueIds:[]}}]}});
     assert((await sql`select storyboard->>'number' n from public.compositions where id=${panel}`)[0]?.["n"]==="12","panelnummer gikk tapt");
