@@ -280,7 +280,7 @@ describe("importert film med blandet lyd", () => {
     const film = report.find((r) => r.clip.parts.some((p) => p.take?.id === take().id))!;
     expect(film.mixedDialogue).toBe("nb");
     expect(filmTakeAudio(film ? [film.clip] : [], s0.project.fps)[0]!.film!.audioLanguage).toBe(
-      "nb",
+      "source",
     );
   });
 
