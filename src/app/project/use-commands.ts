@@ -251,6 +251,15 @@ const pendingServerHistory = new Map<string, { rows: ServerHistoryRow[]; label: 
 /** Kommandoer som allerede er lagt på en angreliste i denne fanen (samme resultat legges aldri inn to ganger). */
 export const adoptedServerCommands = new Set<string>();
 
+/**
+ * N9 (KI-22): kilder som henter bakgrunnsresultater som ble ferdige mens panelet deres var lukket.
+ * Kalles hver gang en arbeidsflate med serverHistory monteres; gjelder bare denne fanen og økten.
+ */
+const serverHistoryCatchUps = new Set<(projectId: string) => void>();
+export function registerServerHistoryCatchUp(fn: (projectId: string) => void): void {
+  serverHistoryCatchUps.add(fn);
+}
+
 /** Legg bakgrunnsresultater på angrelisten for prosjektet. Venter til en angreliste er montert. */
 export function adoptServerHistory(projectId: string, rows: readonly ServerHistoryRow[], label: string): number {
   const fresh = rows.filter((r) => r.commandId && !adoptedServerCommands.has(r.commandId));
@@ -314,6 +323,7 @@ export function useCommands(projectId: string, actorId: string, enabled: boolean
       pendingServerHistory.delete(projectId);
       for (const w of waiting) receive(w.rows, w.label);
     }
+    for (const catchUp of serverHistoryCatchUps) catchUp(projectId);
     return () => {
       const rest = (serverHistoryTargets.get(projectId) ?? []).filter((f) => f !== receive);
       if (rest.length) serverHistoryTargets.set(projectId, rest);

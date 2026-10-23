@@ -20,8 +20,12 @@ import {
 } from "@/components/ui/dialog";
 import { t as tk } from "@/core/i18n/keyed";
 
-/** Største zip-fil (formatet uten ZIP64 tåler 4 GB). */
-export const ZIP_MAX_BYTES = 3.8 * 1024 * 1024 * 1024;
+/**
+ * Største zip-fil. Pakken skrives som ZIP64 (N9, KI-66/KI-80), så 4 GB-grensen i det gamle formatet gjelder
+ * ikke; grensen er en sikkerhetsmargin for strømming til disk. Uten lagringsvindu samles filen i minnet
+ * (se BackupDialogs), der en lavere grense gjelder.
+ */
+export const ZIP_MAX_BYTES = 256 * 1024 * 1024 * 1024;
 
 export function formatBytes(n: number): string {
   if (n < 1024) return `${n} B`;
@@ -76,7 +80,7 @@ export function AssetZipPanel({
   const chosen = entries.filter((e) => !off.has(e.category));
   const bytes = chosen.reduce((t, e) => t + e.byteSize, 0);
   const busy = progress !== null;
-  // Zip uten ZIP64 tåler høyst 4 GB; hold god margin
+  // ZIP64: grensen er bare en sikkerhetsmargin (N9)
   const tooBig = bytes > ZIP_MAX_BYTES;
   useEffect(
     () => () => {
