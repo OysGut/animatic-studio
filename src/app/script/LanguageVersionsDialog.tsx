@@ -8,6 +8,7 @@ import { useMemo, useState } from "react";
 import {
   canonicalLanguageTag,
   languageLabel,
+  sourceLanguageOf,
   languageTagCollisions,
   newId,
   scriptLanguageOptions,
@@ -70,7 +71,7 @@ export function LanguageVersionsDialog({
       <ResizableDialogContent sizeKey="language-versions" data-testid="language-versions-dialog" className="max-h-[90vh] max-w-[640px] overflow-y-auto border-border bg-surface-2">
         <DialogHeader>
           <DialogTitle>{t("ml3-language-versions.dialog.title")}</DialogTitle>
-          <DialogDescription>{t("ml3-language-versions.dialog.description")}</DialogDescription>
+          <DialogDescription>{t("ml3-language-versions.dialog.description", { language: languageLabel(sourceLanguageOf(state)) })}</DialogDescription>
         </DialogHeader>
 
         <section className="space-y-2">

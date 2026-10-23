@@ -46275,11 +46275,6 @@
     "sourceHash": "5d2788119de16c7658f75dd2aa42b432e400f0f442e921bfbc3d7c994446895f",
     "review": "user"
   },
-  "core-commands-apply.translation-fields-of.fail.b8697ac1dfc3": {
-    "text": "노르웨이어는 메인 대본이므로 번역되지 않습니다",
-    "sourceHash": "cd74ef93f879d93e0a7527dddaf25f9f3385e3eb7fc084e149ca17a83a6ab660",
-    "review": "user"
-  },
   "core-commands-apply.translation-fields-of.fail.eb653dd6de37": {
     "text": "잘못된 번역입니다",
     "sourceHash": "2d06069ff369133c10724bb51f3aaef1e1c1d1b7845d682d8267d1a99797b95e",
@@ -52992,9 +52987,9 @@
     "review": "user"
   },
   "ml3-language-versions.dialog.description": {
-    "text": "노르웨이어가 항상 소스 언어입니다. 각 언어 버전은 하나의 대상 언어를 갖습니다. 언어 버전을 제거해도 번역은 삭제되지 않습니다.",
-    "sourceHash": "780616d7935ffdf2c9359b92f6002bffcaa8aa59c208be7b553a7c4efdba9f3d",
-    "review": "user"
+    "text": "대본 언어({language})가 항상 원본입니다. 각 언어 버전에는 대상 언어가 하나 있습니다. 언어 버전을 제거해도 번역은 삭제되지 않습니다.",
+    "sourceHash": "29e229e4301e941f1b36c273bc5fd0b0796f7ffc18f677fbbc14c9c13320c7b3",
+    "review": "machine"
   },
   "ml3-language-versions.dialog.title": {
     "text": "언어 버전",
@@ -53032,9 +53027,9 @@
     "review": "user"
   },
   "ml3-language-versions.error.norwegian": {
-    "text": "노르웨이어는 소스 언어이므로 언어 버전이 될 수 없습니다.",
-    "sourceHash": "5f8cbf24ee694a42f592cb6d756c807956304e986b413186f970dc193f6fe7b2",
-    "review": "user"
+    "text": "노르웨이어는 아직 언어 버전으로 저장할 수 없습니다.",
+    "sourceHash": "2deb30d7d2aa11df620d8f0a57b26ea1c7f204edd362f5e30577bb3498a0e48f",
+    "review": "machine"
   },
   "ml3-language-versions.error.not-found": {
     "text": "언어 버전을 찾을 수 없습니다.",
@@ -55752,5 +55747,20 @@
     "text": "경로를 따라 레이어가 프레임마다 이동하는 거리입니다. 촘촘한 표시는 느리고, 넓은 표시는 빠릅니다.",
     "sourceHash": "de16a9e1d33b4f0d764b2f3a76fdda8fdf478f73acdb622f246135f45b6796ee",
     "review": "machine"
+  },
+  "ml3-language-versions.error.source": {
+    "text": "대본 언어는 원본이므로 언어 버전이 될 수 없습니다.",
+    "sourceHash": "0431f009bf24dd3310f0696af0192e26e0f745a09458992b37deee210b0f6dc2",
+    "review": "machine"
+  },
+  "ml3-language-versions.select.source": {
+    "text": "{label} – 대본(원본)",
+    "sourceHash": "85f7723bb55e1306399b5c8195ae51655f145e11ccddf07ec104b0276ce7ae7a",
+    "review": "machine"
+  },
+  "core-commands-apply.translation-fields-of.fail.b8697ac1dfc3": {
+    "text": "노르웨이어는 메인 대본이므로 번역되지 않습니다",
+    "sourceHash": "cd74ef93f879d93e0a7527dddaf25f9f3385e3eb7fc084e149ca17a83a6ab660",
+    "review": "user"
   }
 }

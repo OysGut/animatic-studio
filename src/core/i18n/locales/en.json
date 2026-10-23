@@ -73081,7 +73081,7 @@
     "text": "The language code is invalid. Use a BCP-47 code such as de, pt-BR or sr-Latn."
   },
   "ml3-language-versions.error.norwegian": {
-    "text": "Norwegian is the source language and cannot be a language version."
+    "text": "Norwegian cannot be saved as a language version yet."
   },
   "ml3-language-versions.error.name": {
     "text": "The name must be between 1 and 120 characters."
@@ -73111,7 +73111,7 @@
     "text": "Language versions"
   },
   "ml3-language-versions.dialog.description": {
-    "text": "Norwegian is always the source. Each language version has one target language. Removing a language version deletes no translations."
+    "text": "The script language ({language}) is always the source. Each language version has one target language. Removing a language version deletes no translations."
   },
   "ml3-language-versions.field.language": {
     "text": "Target language (BCP-47)"
@@ -75668,5 +75668,11 @@
   },
   "pathSpacing.aria": {
     "text": "How far the layer moves per frame along the path. Close marks are slow, spread marks are fast."
+  },
+  "ml3-language-versions.error.source": {
+    "text": "The script language is the source and cannot be a language version."
+  },
+  "ml3-language-versions.select.source": {
+    "text": "{label} – script (source)"
   }
 }

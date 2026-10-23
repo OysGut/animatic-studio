@@ -31,6 +31,20 @@ export function languageTagError(value: string): string | null {
     return null;
   } catch { return t("core-dialogue-languages.language-tag-error.message.3028cba16405"); }
 }
+/**
+ * Intern lagringsnøkkel for kildeteksten (manusblokkene). Nøkkelen betyr «kilden», ikke «norsk»: manuset kan
+ * være skrevet på et hvilket som helst språk. Vis aldri denne verdien som språknavn – bruk sourceLanguageOf.
+ */
+export const SOURCE_TEXT_KEY = "nb";
+/** Manusets språk, det vil si kildespråket for alle språkversjoner (aldri fast norsk). */
+export function sourceLanguageOf(s: Pick<ProjectState, "project">): string {
+  return normalizeLanguageTag(s.project?.scriptLanguage || s.project?.primaryLanguage || "nb");
+}
+/** Er språket kilden? Den interne nøkkelen SOURCE_TEXT_KEY og manusets eget språk betyr begge kilden. */
+export function isSourceLanguage(s: Pick<ProjectState, "project">, tag: string): boolean {
+  if (tag === SOURCE_TEXT_KEY) return true;
+  return normalizeLanguageTag(tag).toLowerCase() === sourceLanguageOf(s).toLowerCase();
+}
 export function scriptLanguageOf(s: ProjectState, blockId: string): string {
   const b = s.blocks[blockId];
   return normalizeLanguageTag(b?.scriptLanguage ?? s.variants[b?.variantId ?? ""]?.scriptLanguage ?? s.project.scriptLanguage ?? s.project.primaryLanguage);

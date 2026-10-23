@@ -4015,10 +4015,10 @@
     "ml3-language-versions.error.norwegian": {
       "replaces": [],
       "nb": {
-        "text": "Norsk er kildespråket og kan ikke være en språkversjon."
+        "text": "Norsk kan foreløpig ikke lagres som språkversjon."
       },
       "en": {
-        "text": "Norwegian is the source language and cannot be a language version."
+        "text": "Norwegian cannot be saved as a language version yet."
       }
     },
     "ml3-language-versions.error.name": {
@@ -4105,10 +4105,10 @@
     "ml3-language-versions.dialog.description": {
       "replaces": [],
       "nb": {
-        "text": "Norsk er alltid kilden. Hver språkversjon har ett målspråk. Å fjerne en språkversjon sletter ingen oversettelser."
+        "text": "Manusets språk ({language}) er alltid kilden. Hver språkversjon har ett målspråk. Å fjerne en språkversjon sletter ingen oversettelser."
       },
       "en": {
-        "text": "Norwegian is always the source. Each language version has one target language. Removing a language version deletes no translations."
+        "text": "The script language ({language}) is always the source. Each language version has one target language. Removing a language version deletes no translations."
       }
     },
     "ml3-language-versions.field.language": {
@@ -11012,6 +11012,24 @@
       },
       "en": {
         "text": "How far the layer moves per frame along the path. Close marks are slow, spread marks are fast."
+      }
+    },
+    "ml3-language-versions.error.source": {
+      "replaces": [],
+      "nb": {
+        "text": "Manusets språk er kilden og kan ikke være en språkversjon."
+      },
+      "en": {
+        "text": "The script language is the source and cannot be a language version."
+      }
+    },
+    "ml3-language-versions.select.source": {
+      "replaces": [],
+      "nb": {
+        "text": "{label} – manus (kilde)"
+      },
+      "en": {
+        "text": "{label} – script (source)"
       }
     }
   }

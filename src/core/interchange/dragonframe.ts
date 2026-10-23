@@ -8,6 +8,7 @@ import type { ProjectState } from "../model";
 import { blockSpans, filmClips } from "../assembly/film";
 import { languageState } from "../language";
 import { translationOf } from "../translation";
+import { isSourceLanguage } from "../dialogue/languages";
 import { annotationsOfVariant } from "../notes";
 import { blocksOfVariant } from "../views";
 import { formatTimecode, framesToSeconds, secondsToFrames, type Rational } from "../time";
@@ -135,7 +136,7 @@ export function buildXsheets(state: ProjectState, doc: InterchangeDoc, labels: X
     const spans = new Map(blockSpans(s, c).map(x => [x.blockId, x]));
     for (const b of blocksOfVariant(s, c.variantId)) {
       if (b.kind !== "action") continue;
-      const text = lang === "nb" ? b.text : translationOf(s, b.id, lang)?.text ?? "";
+      const text = isSourceLanguage(s, lang) ? b.text : translationOf(s, b.id, lang)?.text ?? "";
       if (text) actions.push({ at: toCapture(spans.get(b.id)?.startFrame ?? c.startFrame), text });
     }
     for (const a of annotationsOfVariant(s, c.variantId)) {

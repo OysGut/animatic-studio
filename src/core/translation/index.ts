@@ -11,6 +11,7 @@
  * godkjennes av brukeren.
  */
 import type { ProjectState, ScriptBlock, SceneHeading, Translation } from "../model";
+import { isSourceLanguage } from "../dialogue/languages";
 import type { ParsedScene, ParsedScreenplay } from "../screenplay/types";
 import { parseHeading } from "../screenplay/parse";
 import { characterName } from "../screenplay/filter";
@@ -121,7 +122,7 @@ const translatedCache = new WeakMap<object, Map<string, ProjectState>>();
  * beholder norsk. Brukes bare til visning og eksport (REQ-0349) – aldri til endringer.
  */
 export function translatedState(s: ProjectState, lang: string): ProjectState {
-  if (lang === "nb") return s;
+  if (isSourceLanguage(s, lang)) return s;
   let byLang = translatedCache.get(s);
   if (!byLang) translatedCache.set(s, (byLang = new Map()));
   const hit = byLang.get(lang);
@@ -688,7 +689,7 @@ export function subtitleCues(
       if (!b || b.kind !== "dialogue" || !b.text.trim()) continue;
       // Replikker som ikke er med i filmen (kuttet bort, eller tid utenfor klippet)
       if (sp.uncovered || sp.endFrame <= sp.startFrame) continue;
-      const text = lang === "nb" ? b.text : translationOf(s, b.id, lang)?.text;
+      const text = isSourceLanguage(s, lang) ? b.text : translationOf(s, b.id, lang)?.text;
       if (!text?.trim()) {
         missing++;
         continue;

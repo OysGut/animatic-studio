@@ -46275,11 +46275,6 @@
     "sourceHash": "5d2788119de16c7658f75dd2aa42b432e400f0f442e921bfbc3d7c994446895f",
     "review": "user"
   },
-  "core-commands-apply.translation-fields-of.fail.b8697ac1dfc3": {
-    "text": "ノルウェー語はメイン脚本のため翻訳されません",
-    "sourceHash": "cd74ef93f879d93e0a7527dddaf25f9f3385e3eb7fc084e149ca17a83a6ab660",
-    "review": "user"
-  },
   "core-commands-apply.translation-fields-of.fail.eb653dd6de37": {
     "text": "無効な翻訳",
     "sourceHash": "2d06069ff369133c10724bb51f3aaef1e1c1d1b7845d682d8267d1a99797b95e",
@@ -52992,9 +52987,9 @@
     "review": "user"
   },
   "ml3-language-versions.dialog.description": {
-    "text": "ノルウェー語が常にソース言語となります。各言語バージョンには1つのターゲット言語が設定されます。言語バージョンを削除しても翻訳は削除されません。",
-    "sourceHash": "780616d7935ffdf2c9359b92f6002bffcaa8aa59c208be7b553a7c4efdba9f3d",
-    "review": "user"
+    "text": "脚本の言語（{language}）が常に元の言語です。各言語版には翻訳先の言語が1つあります。言語版を削除しても翻訳は削除されません。",
+    "sourceHash": "29e229e4301e941f1b36c273bc5fd0b0796f7ffc18f677fbbc14c9c13320c7b3",
+    "review": "machine"
   },
   "ml3-language-versions.dialog.title": {
     "text": "言語バージョン",
@@ -53032,9 +53027,9 @@
     "review": "user"
   },
   "ml3-language-versions.error.norwegian": {
-    "text": "ノルウェー語はソース言語であるため、言語バージョンとして追加することはできません。",
-    "sourceHash": "5f8cbf24ee694a42f592cb6d756c807956304e986b413186f970dc193f6fe7b2",
-    "review": "user"
+    "text": "ノルウェー語はまだ言語版として保存できません。",
+    "sourceHash": "2deb30d7d2aa11df620d8f0a57b26ea1c7f204edd362f5e30577bb3498a0e48f",
+    "review": "machine"
   },
   "ml3-language-versions.error.not-found": {
     "text": "言語バージョンが見つかりませんでした。",
@@ -55752,5 +55747,20 @@
     "text": "パスに沿ってレイヤーが1フレームごとに移動する距離。間隔が狭いと遅く、広いと速い動きです。",
     "sourceHash": "de16a9e1d33b4f0d764b2f3a76fdda8fdf478f73acdb622f246135f45b6796ee",
     "review": "machine"
+  },
+  "ml3-language-versions.error.source": {
+    "text": "脚本の言語は元の言語のため、言語版にはできません。",
+    "sourceHash": "0431f009bf24dd3310f0696af0192e26e0f745a09458992b37deee210b0f6dc2",
+    "review": "machine"
+  },
+  "ml3-language-versions.select.source": {
+    "text": "{label} – 脚本（元の言語）",
+    "sourceHash": "85f7723bb55e1306399b5c8195ae51655f145e11ccddf07ec104b0276ce7ae7a",
+    "review": "machine"
+  },
+  "core-commands-apply.translation-fields-of.fail.b8697ac1dfc3": {
+    "text": "ノルウェー語はメイン脚本のため翻訳されません",
+    "sourceHash": "cd74ef93f879d93e0a7527dddaf25f9f3385e3eb7fc084e149ca17a83a6ab660",
+    "review": "user"
   }
 }

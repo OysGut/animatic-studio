@@ -10,6 +10,7 @@ import { layersOf, layerVersion, layerVersions } from "../composition/render";
 import { assetsInScene } from "../library";
 import { languageState } from "../language";
 import { translationOf } from "../translation";
+import { isSourceLanguage } from "../dialogue/languages";
 import { blocksOfVariant, sceneNumberOf } from "../views";
 import { formatTimecode, framesToSeconds, secondsToFrames, validateFps, type Rational } from "../time";
 import { DEFAULT_CAPTURE, captureSettingsValid, captureTimeline, suggestProjectCode, type CaptureSettings } from "./settings";
@@ -155,7 +156,7 @@ export function buildInterchange(state: ProjectState, o: InterchangeOptions): In
     const spans = new Map(blockSpans(s, c).map(x => [x.blockId, x]));
     let character = "";
     for (const b of blocksOfVariant(s, c.variantId)) {
-      const text = lang.dialogue === "nb" ? b.text : translationOf(s, b.id, lang.dialogue)?.text ?? "";
+      const text = isSourceLanguage(s, lang.dialogue) ? b.text : translationOf(s, b.id, lang.dialogue)?.text ?? "";
       if (b.kind === "character") character = text;
       if (b.kind !== "dialogue") continue;
       const audio = shots.flatMap(x => x.audio).find(x => x.source.blockId === b.id && x.sourceOccurrenceId === c.occurrenceId);

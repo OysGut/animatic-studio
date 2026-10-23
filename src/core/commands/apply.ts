@@ -5,7 +5,7 @@ import { DEFAULT_CAPTURE, captureSettingsValid, projectCodeValid } from "../inte
 import { applyPrintJobCommand } from "../print/job/commands";
 import { lineLinkError, translationLineError, type TranslationLineLink, type TranslationLine } from "../translation/line-align-prompt";
 import { assetVoiceError } from "../dialogue/voice";
-import { languageTagError } from "../dialogue/languages";
+import { languageTagError, isSourceLanguage, sourceLanguageOf } from "../dialogue/languages";
 import { clipDrift, type DialogueReview } from "../dialogue/drift";
 import { NOTE_FLAG_TARGETS, NOTE_FLAG_MAX_TEXT, type NoteFlag } from "../notes/flags";
 import { qualityProfileError, type QualityProfile } from "../generation/quality-profile";
@@ -1066,6 +1066,7 @@ function languageVersionMessage(code: LanguageVersionErrorCode, language: string
   switch (code) {
     case "duplicate": return tk("ml3-language-versions.error.duplicate", { language });
     case "language": return tk("ml3-language-versions.error.language");
+    case "source": return tk("ml3-language-versions.error.source");
     case "norwegian": return tk("ml3-language-versions.error.norwegian");
     case "name": return tk("ml3-language-versions.error.name");
     case "status": return tk("ml3-language-versions.error.status");
@@ -1083,8 +1084,13 @@ function translationFieldsOf(
   if (f.language === "nb" || f.language === "no")
     fail(
       "invalid",
-      tk("core-commands-apply.translation-fields-of.fail.b8697ac1dfc3"),
+      // Norsk manus: norsk er kilden. Annet manusspråk: databasen godtar ennå ikke nb/no som mål (KILDESPRAK_REPORT.md).
+      sourceLanguageOf(s) === "nb"
+        ? tk("core-commands-apply.translation-fields-of.fail.b8697ac1dfc3")
+        : tk("ml3-language-versions.error.norwegian"),
     );
+  if (isSourceLanguage(s, f.language))
+    fail("invalid", tk("ml3-language-versions.error.source"));
   if (typeof f.text !== "string" || f.text.length > TRANSLATION_MAX)
     fail("invalid", tk("core-commands-apply.translation-fields-of.fail.73a9adebd4ff"));
   if (!f.text.trim())

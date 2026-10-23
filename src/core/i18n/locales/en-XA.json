@@ -73081,7 +73081,7 @@
     "text": "[!! TThhëë lláánnggüüáággëë ccôôddëë ïïss ïïnnvváállïïdd. ÜÜssëë áá BBCCPP-47 ccôôddëë ssüücchh ááss ddëë, pptt-BBRR ôôrr ssrr-LLááttnn. !!]"
   },
   "ml3-language-versions.error.norwegian": {
-    "text": "[!! NNôôrrwwëëggïïáánn ïïss tthhëë ssôôüürrccëë lláánnggüüáággëë áánndd ccáánnnnôôtt bbëë áá lláánnggüüáággëë vvëërrssïïôônn. !!]"
+    "text": "[!! NNôôrrwwëëggïïáánn ccáánnnnôôtt bbëë ssáávvëëdd ááss áá lláánnggüüáággëë vvëërrssïïôônn yyëëtt. !!]"
   },
   "ml3-language-versions.error.name": {
     "text": "[!! TThhëë nnáámmëë mmüüsstt bbëë bbëëttwwëëëënn 1 áánndd 120 cchháárrááccttëërrss. !!]"
@@ -73111,7 +73111,7 @@
     "text": "[!! LLáánnggüüáággëë vvëërrssïïôônnss !!]"
   },
   "ml3-language-versions.dialog.description": {
-    "text": "[!! NNôôrrwwëëggïïáánn ïïss áállwwááyyss tthhëë ssôôüürrccëë. ËËáácchh lláánnggüüáággëë vvëërrssïïôônn hhááss ôônnëë ttáárrggëëtt lláánnggüüáággëë. RRëëmmôôvvïïnngg áá lláánnggüüáággëë vvëërrssïïôônn ddëëllëëttëëss nnôô ttrráánnssllááttïïôônnss. !!]"
+    "text": "[!! TThhëë ssccrrïïpptt lláánnggüüáággëë ({language}) ïïss áállwwááyyss tthhëë ssôôüürrccëë. ËËáácchh lláánnggüüáággëë vvëërrssïïôônn hhááss ôônnëë ttáárrggëëtt lláánnggüüáággëë. RRëëmmôôvvïïnngg áá lláánnggüüáággëë vvëërrssïïôônn ddëëllëëttëëss nnôô ttrráánnssllááttïïôônnss. !!]"
   },
   "ml3-language-versions.field.language": {
     "text": "[!! TTáárrggëëtt lláánnggüüáággëë (BBCCPP-47) !!]"
@@ -75668,5 +75668,11 @@
   },
   "pathSpacing.aria": {
     "text": "[!! HHôôww ffáárr tthhëë llááyyëërr mmôôvvëëss ppëërr ffrráámmëë áállôônngg tthhëë ppáátthh. CCllôôssëë mmáárrkkss áárrëë ssllôôww, sspprrëëáádd mmáárrkkss áárrëë ffáásstt. !!]"
+  },
+  "ml3-language-versions.error.source": {
+    "text": "[!! TThhëë ssccrrïïpptt lláánnggüüáággëë ïïss tthhëë ssôôüürrccëë áánndd ccáánnnnôôtt bbëë áá lláánnggüüáággëë vvëërrssïïôônn. !!]"
+  },
+  "ml3-language-versions.select.source": {
+    "text": "[!! {label} – ssccrrïïpptt (ssôôüürrccëë) !!]"
   }
 }

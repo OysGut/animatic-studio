@@ -24,6 +24,7 @@ export const LANGUAGE_VERSION_NAME_MAX = 120;
 
 export { SCRIPT_LANGUAGE_TAG, isScriptLanguageTag, canonicalLanguageTag, isNorwegianSourceTag, sameLanguageTag } from "./language-tags";
 import { isScriptLanguageTag, isNorwegianSourceTag, sameLanguageTag } from "./language-tags";
+import { isSourceLanguage } from "../dialogue/languages";
 
 export interface LanguageTagCollision {
   /** Felles nøkkel (små bokstaver). */
@@ -47,7 +48,7 @@ export function languageTagCollisions(tags: Iterable<string>): LanguageTagCollis
     .sort((a, b) => a.key.localeCompare(b.key));
 }
 
-export type LanguageVersionErrorCode = "language" | "norwegian" | "name" | "status" | "duplicate";
+export type LanguageVersionErrorCode = "language" | "source" | "norwegian" | "name" | "status" | "duplicate";
 export interface LanguageVersionFields {
   readonly language: string;
   readonly name: string;
@@ -55,12 +56,15 @@ export interface LanguageVersionFields {
 }
 
 export function languageVersionError(
-  s: Pick<ProjectState, "languageVersions">,
+  s: Pick<ProjectState, "languageVersions"> & { readonly project?: ProjectState["project"] },
   f: LanguageVersionFields,
   selfId?: string,
 ): LanguageVersionErrorCode | null {
   if (!f || !isScriptLanguageTag(f.language)) return "language";
+  // Lagringsgrense uten migrasjon: databasen godtar ennå ikke nb/no som målspråk (se KILDESPRAK_REPORT.md).
   if (isNorwegianSourceTag(f.language)) return "norwegian";
+  // Manusets eget språk er kilden og kan aldri være et mål.
+  if (s.project && isSourceLanguage({ project: s.project }, f.language)) return "source";
   if (typeof f.name !== "string" || !f.name.trim() || f.name.length > LANGUAGE_VERSION_NAME_MAX) return "name";
   if (!LANGUAGE_VERSION_STATUSES.includes(f.status)) return "status";
   for (const v of Object.values(s.languageVersions ?? {}))
