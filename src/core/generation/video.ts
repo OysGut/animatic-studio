@@ -41,7 +41,7 @@ export function videoStartImages(
     out.push(v);
   };
   const comp = Object.values(s.compositions).find(
-    (c) => c.variantId === occ.variantId && !c.removed,
+    (c) => c.variantId === occ.variantId && !c.removed && (c.kind ?? "scene") === "scene",
   );
   if (comp) {
     const layers = Object.values(s.layers)

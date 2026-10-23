@@ -29,6 +29,7 @@ import { Route as ProsjektProjectIdManusRouteImport } from './routes/prosjekt.$p
 import { Route as ProsjektProjectIdMonteringRouteImport } from './routes/prosjekt.$projectId.montering'
 import { Route as ProsjektProjectIdRiggRouteImport } from './routes/prosjekt.$projectId.rigg'
 import { Route as ProsjektProjectIdSceneRouteImport } from './routes/prosjekt.$projectId.scene'
+import { Route as ProsjektProjectIdStoryboardRouteImport } from './routes/prosjekt.$projectId.storyboard'
 import { Route as ProsjektProjectIdStorylabRouteImport } from './routes/prosjekt.$projectId.storylab'
 import { Route as ProsjektProjectIdUtgivelseRouteImport } from './routes/prosjekt.$projectId.utgivelse'
 import { Route as ApiPublicCronAiJobsRouteImport } from './routes/api/public/cron/ai-jobs'
@@ -135,6 +136,12 @@ const ProsjektProjectIdSceneRoute = ProsjektProjectIdSceneRouteImport.update({
   path: '/scene',
   getParentRoute: () => ProsjektProjectIdRoute,
 } as any)
+const ProsjektProjectIdStoryboardRoute =
+  ProsjektProjectIdStoryboardRouteImport.update({
+    id: '/storyboard',
+    path: '/storyboard',
+    getParentRoute: () => ProsjektProjectIdRoute,
+  } as any)
 const ProsjektProjectIdStorylabRoute =
   ProsjektProjectIdStorylabRouteImport.update({
     id: '/storylab',
@@ -173,6 +180,7 @@ export interface FileRoutesByFullPath {
   '/prosjekt/$projectId/montering': typeof ProsjektProjectIdMonteringRoute
   '/prosjekt/$projectId/rigg': typeof ProsjektProjectIdRiggRoute
   '/prosjekt/$projectId/scene': typeof ProsjektProjectIdSceneRoute
+  '/prosjekt/$projectId/storyboard': typeof ProsjektProjectIdStoryboardRoute
   '/prosjekt/$projectId/storylab': typeof ProsjektProjectIdStorylabRoute
   '/prosjekt/$projectId/utgivelse': typeof ProsjektProjectIdUtgivelseRoute
   '/prosjekt/$projectId/': typeof ProsjektProjectIdIndexRoute
@@ -197,6 +205,7 @@ export interface FileRoutesByTo {
   '/prosjekt/$projectId/montering': typeof ProsjektProjectIdMonteringRoute
   '/prosjekt/$projectId/rigg': typeof ProsjektProjectIdRiggRoute
   '/prosjekt/$projectId/scene': typeof ProsjektProjectIdSceneRoute
+  '/prosjekt/$projectId/storyboard': typeof ProsjektProjectIdStoryboardRoute
   '/prosjekt/$projectId/storylab': typeof ProsjektProjectIdStorylabRoute
   '/prosjekt/$projectId/utgivelse': typeof ProsjektProjectIdUtgivelseRoute
   '/prosjekt/$projectId': typeof ProsjektProjectIdIndexRoute
@@ -223,6 +232,7 @@ export interface FileRoutesById {
   '/prosjekt/$projectId/montering': typeof ProsjektProjectIdMonteringRoute
   '/prosjekt/$projectId/rigg': typeof ProsjektProjectIdRiggRoute
   '/prosjekt/$projectId/scene': typeof ProsjektProjectIdSceneRoute
+  '/prosjekt/$projectId/storyboard': typeof ProsjektProjectIdStoryboardRoute
   '/prosjekt/$projectId/storylab': typeof ProsjektProjectIdStorylabRoute
   '/prosjekt/$projectId/utgivelse': typeof ProsjektProjectIdUtgivelseRoute
   '/prosjekt/$projectId/': typeof ProsjektProjectIdIndexRoute
@@ -250,6 +260,7 @@ export interface FileRouteTypes {
     | '/prosjekt/$projectId/montering'
     | '/prosjekt/$projectId/rigg'
     | '/prosjekt/$projectId/scene'
+    | '/prosjekt/$projectId/storyboard'
     | '/prosjekt/$projectId/storylab'
     | '/prosjekt/$projectId/utgivelse'
     | '/prosjekt/$projectId/'
@@ -274,6 +285,7 @@ export interface FileRouteTypes {
     | '/prosjekt/$projectId/montering'
     | '/prosjekt/$projectId/rigg'
     | '/prosjekt/$projectId/scene'
+    | '/prosjekt/$projectId/storyboard'
     | '/prosjekt/$projectId/storylab'
     | '/prosjekt/$projectId/utgivelse'
     | '/prosjekt/$projectId'
@@ -299,6 +311,7 @@ export interface FileRouteTypes {
     | '/prosjekt/$projectId/montering'
     | '/prosjekt/$projectId/rigg'
     | '/prosjekt/$projectId/scene'
+    | '/prosjekt/$projectId/storyboard'
     | '/prosjekt/$projectId/storylab'
     | '/prosjekt/$projectId/utgivelse'
     | '/prosjekt/$projectId/'
@@ -465,6 +478,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProsjektProjectIdSceneRouteImport
       parentRoute: typeof ProsjektProjectIdRoute
     }
+    '/prosjekt/$projectId/storyboard': {
+      id: '/prosjekt/$projectId/storyboard'
+      path: '/storyboard'
+      fullPath: '/prosjekt/$projectId/storyboard'
+      preLoaderRoute: typeof ProsjektProjectIdStoryboardRouteImport
+      parentRoute: typeof ProsjektProjectIdRoute
+    }
     '/prosjekt/$projectId/storylab': {
       id: '/prosjekt/$projectId/storylab'
       path: '/storylab'
@@ -495,6 +515,7 @@ interface ProsjektProjectIdRouteChildren {
   ProsjektProjectIdMonteringRoute: typeof ProsjektProjectIdMonteringRoute
   ProsjektProjectIdRiggRoute: typeof ProsjektProjectIdRiggRoute
   ProsjektProjectIdSceneRoute: typeof ProsjektProjectIdSceneRoute
+  ProsjektProjectIdStoryboardRoute: typeof ProsjektProjectIdStoryboardRoute
   ProsjektProjectIdStorylabRoute: typeof ProsjektProjectIdStorylabRoute
   ProsjektProjectIdUtgivelseRoute: typeof ProsjektProjectIdUtgivelseRoute
   ProsjektProjectIdIndexRoute: typeof ProsjektProjectIdIndexRoute
@@ -506,6 +527,7 @@ const ProsjektProjectIdRouteChildren: ProsjektProjectIdRouteChildren = {
   ProsjektProjectIdMonteringRoute: ProsjektProjectIdMonteringRoute,
   ProsjektProjectIdRiggRoute: ProsjektProjectIdRiggRoute,
   ProsjektProjectIdSceneRoute: ProsjektProjectIdSceneRoute,
+  ProsjektProjectIdStoryboardRoute: ProsjektProjectIdStoryboardRoute,
   ProsjektProjectIdStorylabRoute: ProsjektProjectIdStorylabRoute,
   ProsjektProjectIdUtgivelseRoute: ProsjektProjectIdUtgivelseRoute,
   ProsjektProjectIdIndexRoute: ProsjektProjectIdIndexRoute,

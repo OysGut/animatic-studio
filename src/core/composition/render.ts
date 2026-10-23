@@ -115,7 +115,7 @@ export function layersOf(
 export function compositionOfVariant(s: ProjectState, variantId: string): Composition | null {
   return (
     Object.values(s.compositions)
-      .filter((c) => c.variantId === variantId && !c.removed)
+      .filter((c) => c.variantId === variantId && !c.removed && (c.kind ?? "scene") === "scene")
       .sort((a, b) => a.id.localeCompare(b.id))[0] ?? null
   );
 }

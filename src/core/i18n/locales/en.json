@@ -76157,5 +76157,275 @@
   },
   "sb1.layer-camera-mark": {
     "text": "Camera mark"
+  },
+  "sb2.nav": {
+    "text": "Storyboard"
+  },
+  "sb2.route.title": {
+    "text": "Storyboard – Pen to Glass"
+  },
+  "sb2.route.description": {
+    "text": "The whole film as storyboard panels, in story order."
+  },
+  "sb2.loading": {
+    "text": "Loading the storyboard …"
+  },
+  "sb2.load-error": {
+    "text": "The storyboard could not be loaded."
+  },
+  "sb2.toolbar": {
+    "text": "Storyboard view"
+  },
+  "sb2.production": {
+    "text": "Production"
+  },
+  "sb2.zoom": {
+    "text": "Zoom"
+  },
+  "sb2.zoom-out": {
+    "text": "Zoom out (overview)"
+  },
+  "sb2.zoom-in": {
+    "text": "Zoom in (detail)"
+  },
+  "sb2.panel-size": {
+    "text": "Panel size"
+  },
+  "sb2.text-view": {
+    "text": "Text view"
+  },
+  "sb2.show-legend": {
+    "text": "Show on cards"
+  },
+  "sb2.show.name": {
+    "text": "Name"
+  },
+  "sb2.show.number": {
+    "text": "Number"
+  },
+  "sb2.show.dialogue": {
+    "text": "Dialogue"
+  },
+  "sb2.show.script": {
+    "text": "Script text"
+  },
+  "sb2.show.notes": {
+    "text": "Notes"
+  },
+  "sb2.show.timing": {
+    "text": "Timing"
+  },
+  "sb2.show.status": {
+    "text": "Status"
+  },
+  "sb2.show-hidden": {
+    "text": "Show hidden and deactivated"
+  },
+  "sb2.filter": {
+    "text": "Filter"
+  },
+  "sb2.filter-area": {
+    "text": "Area to filter on"
+  },
+  "sb2.filter-status": {
+    "text": "Status to filter on"
+  },
+  "sb2.filter-none": {
+    "text": "All"
+  },
+  "sb2.jump-script": {
+    "text": "Jump to script"
+  },
+  "sb2.undo": {
+    "text": "Undo"
+  },
+  "sb2.redo": {
+    "text": "Redo"
+  },
+  "sb2.panel-actions": {
+    "text": "Selected panel"
+  },
+  "sb2.selected": {
+    "text": "Panel {number} selected"
+  },
+  "sb2.none-selected": {
+    "text": "No panel selected"
+  },
+  "sb2.add": {
+    "text": "New panel"
+  },
+  "sb2.duplicate": {
+    "text": "Duplicate"
+  },
+  "sb2.hide": {
+    "text": "Hide"
+  },
+  "sb2.show-panel": {
+    "text": "Show"
+  },
+  "sb2.deactivate": {
+    "text": "Deactivate"
+  },
+  "sb2.restore": {
+    "text": "Reinstate"
+  },
+  "sb2.move-to-scene": {
+    "text": "Move to scene …"
+  },
+  "sb2.status-of": {
+    "text": "Status for {area}"
+  },
+  "sb2.area.script": {
+    "text": "Script"
+  },
+  "sb2.area.storyboard": {
+    "text": "Storyboard"
+  },
+  "sb2.area.animation": {
+    "text": "Animation"
+  },
+  "sb2.area.sound": {
+    "text": "Sound"
+  },
+  "sb2.area.film": {
+    "text": "Film"
+  },
+  "sb2.area-short.script": {
+    "text": "S"
+  },
+  "sb2.area-short.storyboard": {
+    "text": "SB"
+  },
+  "sb2.area-short.animation": {
+    "text": "A"
+  },
+  "sb2.area-short.sound": {
+    "text": "Snd"
+  },
+  "sb2.area-short.film": {
+    "text": "F"
+  },
+  "sb2.status.not-started": {
+    "text": "Not started"
+  },
+  "sb2.status.in-progress": {
+    "text": "In progress"
+  },
+  "sb2.status.review": {
+    "text": "Ready for review"
+  },
+  "sb2.status.changes-requested": {
+    "text": "Changes requested"
+  },
+  "sb2.status.done": {
+    "text": "Done"
+  },
+  "sb2.gallery": {
+    "text": "Storyboard panels"
+  },
+  "sb2.empty": {
+    "text": "The production has no active scenes yet."
+  },
+  "sb2.drag-scene": {
+    "text": "Drag the scene – changes the film’s scene order"
+  },
+  "sb2.untitled-scene": {
+    "text": "Scene without heading"
+  },
+  "sb2.scene-order-warning": {
+    "text": "Moving changes the film’s scene order"
+  },
+  "sb2.scene-earlier": {
+    "text": "Move the scene earlier in the film"
+  },
+  "sb2.scene-later": {
+    "text": "Move the scene later in the film"
+  },
+  "sb2.scene-order-changed": {
+    "text": "The film’s scene order changed. Script and edit follow. Can be undone."
+  },
+  "sb2.scene-empty": {
+    "text": "No panels in the scene."
+  },
+  "sb2.panel-label": {
+    "text": "Panel {number}, scene {scene}"
+  },
+  "sb2.notes-count": {
+    "text": "Notes: {count}"
+  },
+  "sb2.seed-title": {
+    "text": "Create storyboard panels?"
+  },
+  "sb2.seed-body": {
+    "text": "Suggestion: one empty panel per scene ({count} scenes). Nothing is created until you confirm, and it can be undone."
+  },
+  "sb2.seed-confirm": {
+    "text": "Create panels"
+  },
+  "sb2.seed-later": {
+    "text": "Not now"
+  },
+  "sb2.move-title": {
+    "text": "Move panel to another scene"
+  },
+  "sb2.move-body": {
+    "text": "Panel {number} is moved and gets a new anchor in the script. Can be undone."
+  },
+  "sb2.move-target": {
+    "text": "Target scene"
+  },
+  "sb2.move-choose": {
+    "text": "Choose scene"
+  },
+  "sb2.move-anchor": {
+    "text": "New anchor in the script (optional)"
+  },
+  "sb2.move-no-blocks": {
+    "text": "The scene has no lines or action."
+  },
+  "sb2.move-confirm": {
+    "text": "Move"
+  },
+  "sb2.cancel": {
+    "text": "Cancel"
+  },
+  "sb2.mark": {
+    "text": "Opened from storyboard panel {number} {name}"
+  },
+  "sb2.mark-back": {
+    "text": "Back to the storyboard"
+  },
+  "sb2.undo.add": {
+    "text": "New storyboard panel"
+  },
+  "sb2.undo.duplicate": {
+    "text": "Duplicate panel"
+  },
+  "sb2.undo.hide": {
+    "text": "Hide panel"
+  },
+  "sb2.undo.show": {
+    "text": "Show panel"
+  },
+  "sb2.undo.deactivate": {
+    "text": "Deactivate panel"
+  },
+  "sb2.undo.activate": {
+    "text": "Reinstate panel"
+  },
+  "sb2.undo.move": {
+    "text": "Move panel"
+  },
+  "sb2.undo.move-scene": {
+    "text": "Change the film’s scene order"
+  },
+  "sb2.undo.move-to-scene": {
+    "text": "Move panel to scene"
+  },
+  "sb2.undo.seed": {
+    "text": "Create storyboard panels"
+  },
+  "sb2.undo.status": {
+    "text": "Change status"
   }
 }

@@ -55,7 +55,7 @@ export function materialUpdateTargets(
     });
   };
   const comps = Object.values(s.compositions).filter(
-    (c) => !c.removed && c.variantId === o.variantId,
+    (c) => !c.removed && c.variantId === o.variantId && (c.kind ?? "scene") === "scene",
   );
   const compIds = new Set(comps.map((c) => c.id as string));
   const images: ImageTarget[] = [];

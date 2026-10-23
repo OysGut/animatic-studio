@@ -178,6 +178,9 @@ export const UI_IDS: readonly UiIdEntry[] = [
   {"id":"V-161","kind":"panel","component":"GenerateDialogue","file":"src/app/scene-editor/GenerateDialogue.tsx","description":"Flytende panel «Koble karakter til replikken» i GenerateDialogue","status":"aktiv"},
   {"id":"V-162","kind":"panel","component":"DeleteVersionConfirm","file":"src/app/scene-editor/LayerImageDialog.tsx","description":"Flytende panel «Valgt» i DeleteVersionConfirm","status":"aktiv"},
   {"id":"V-163","kind":"dialog","component":"CharacterBundleControls","file":"src/app/global/CharacterBundleControls.tsx","description":"Dialog i CharacterBundleControls","status":"aktiv"},
+  {"id":"V-164","kind":"side","component":"StoryboardRoute","file":"src/routes/prosjekt.$projectId.storyboard.tsx","description":"Side «Storyboard – Pen to Glass» (/prosjekt/$projectId/storyboard)","route":"/prosjekt/$projectId/storyboard","status":"aktiv"},
+  {"id":"V-165","kind":"dialog","component":"MovePanelDialog","file":"src/app/storyboard/StoryboardWorkspace.tsx","description":"Dialog i MovePanelDialog","status":"aktiv"},
+  {"id":"V-166","kind":"dialog","component":"Gallery","file":"src/app/storyboard/StoryboardWorkspace.tsx","description":"Dialog i Gallery","status":"aktiv"},
 ];
 
 const BY_ID = new Map(UI_IDS.map((e) => [e.id, e]));

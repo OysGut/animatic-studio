@@ -56655,5 +56655,455 @@
     "text": "Marca de cámara",
     "sourceHash": "1012cf412fcaac614e7bc72c99cb5328ac91145360a26f07d180d3513cce9d65",
     "review": "machine"
+  },
+  "sb2.nav": {
+    "text": "Storyboard",
+    "sourceHash": "815c898f681324d6b377c380c0b224b82d227dc0e2f76a876f70080892191e5e",
+    "review": "machine"
+  },
+  "sb2.route.title": {
+    "text": "Storyboard – Pen to Glass",
+    "sourceHash": "014b1122fddbbeb518af26a0a81dbd9b5e5a2572dbb2132f4e4440324d0dd4e2",
+    "review": "machine"
+  },
+  "sb2.route.description": {
+    "text": "Toda la película como viñetas de storyboard, en orden narrativo.",
+    "sourceHash": "001f9090dff9c4908b69d244331da73d3cab813aec2c4bf71f61af405425d45d",
+    "review": "machine"
+  },
+  "sb2.loading": {
+    "text": "Cargando el storyboard …",
+    "sourceHash": "b1941cb5338f2fee63737b25589685eb2e9033453e00c9aa15e898b0018c1319",
+    "review": "machine"
+  },
+  "sb2.load-error": {
+    "text": "No se pudo cargar el storyboard.",
+    "sourceHash": "9ecce84322e506e0ce91ad7c5877084ab523ccf6f2a339f959f4a87fba7cf01b",
+    "review": "machine"
+  },
+  "sb2.toolbar": {
+    "text": "Vista del storyboard",
+    "sourceHash": "4ae7a9f326c64711cb9e44b1cfead18e62ad6dd0dd8ae64faf6315ca9f0b3393",
+    "review": "machine"
+  },
+  "sb2.production": {
+    "text": "Producción",
+    "sourceHash": "4cb6b779b7561fac11fef9a356873cea29672b12b828d6ad12ac566666857740",
+    "review": "machine"
+  },
+  "sb2.zoom": {
+    "text": "Zoom",
+    "sourceHash": "f44051e0ee06743b4e7e636d589762cf2e593daf2b4653e1066cf1db4527e3b1",
+    "review": "machine"
+  },
+  "sb2.zoom-out": {
+    "text": "Alejar (vista general)",
+    "sourceHash": "1bc691c0bec9bd573e22bdef70f71cb1c95327ef32384925cbe0ebbd40a52a76",
+    "review": "machine"
+  },
+  "sb2.zoom-in": {
+    "text": "Acercar (detalle)",
+    "sourceHash": "7acfa212db77c1e9e576c5e8ae162eb7da102d7a35d039ddda284b11f041f190",
+    "review": "machine"
+  },
+  "sb2.panel-size": {
+    "text": "Tamaño de viñeta",
+    "sourceHash": "da4f137513f76e48c3db772f62c820dd9c2629c097fa3c13deb06b677653211c",
+    "review": "machine"
+  },
+  "sb2.text-view": {
+    "text": "Vista de texto",
+    "sourceHash": "fa2a29a2a5f5b96fd7622fe3c0c947e60a933e2ccf502465537357f9e3f7a4ac",
+    "review": "machine"
+  },
+  "sb2.show-legend": {
+    "text": "Mostrar en las tarjetas",
+    "sourceHash": "ca089aaf5b6f42caee71bf828584518c5d959898dc23f54ca51b0c9b3d1e0032",
+    "review": "machine"
+  },
+  "sb2.show.name": {
+    "text": "Nombre",
+    "sourceHash": "9bf37575be11ab4b0c7ef52ccf313a51e7e6fb47d740cbe82ec6302a31753ec1",
+    "review": "machine"
+  },
+  "sb2.show.number": {
+    "text": "Número",
+    "sourceHash": "98b9b05563903ec9c888e2012db40a4866603e3b9c0e00723de1eeaffeb68e17",
+    "review": "machine"
+  },
+  "sb2.show.dialogue": {
+    "text": "Diálogo",
+    "sourceHash": "d74f5425eb9a0ab831a15a4fbfeaf912fc4c959eecea292514df0aeffc73bb92",
+    "review": "machine"
+  },
+  "sb2.show.script": {
+    "text": "Texto del guion",
+    "sourceHash": "0796a1068cba465894562a99a0a07bb49e97f3dd08b7ea31786fcd21a7ebe56d",
+    "review": "machine"
+  },
+  "sb2.show.notes": {
+    "text": "Notas",
+    "sourceHash": "066c61b12326fabc5e195c15c5170d23909cadafaaa99d8ca22f9c9c5068d6ad",
+    "review": "machine"
+  },
+  "sb2.show.timing": {
+    "text": "Duración",
+    "sourceHash": "b4bf53105e6792f46c7af6021156b5dcc09bdc93f354ec60d83f359f03563bac",
+    "review": "machine"
+  },
+  "sb2.show.status": {
+    "text": "Estado",
+    "sourceHash": "be3bbad934cf2741e76a238d3b8fbe62055bb717e6809c0f1ccac6dc195f65a9",
+    "review": "machine"
+  },
+  "sb2.show-hidden": {
+    "text": "Mostrar ocultas y desactivadas",
+    "sourceHash": "e45f40a775b2d24bcc11efa6a3bec08e89d59319163cf3baf561eb3cb85a2549",
+    "review": "machine"
+  },
+  "sb2.filter": {
+    "text": "Filtro",
+    "sourceHash": "c5c5e0cf07af6a3ee55172d4b052fd09d8d6f22f99dee45d0d967527fdcb39a0",
+    "review": "machine"
+  },
+  "sb2.filter-area": {
+    "text": "Área del filtro",
+    "sourceHash": "32f93bd40fd867f23433b61a5c686316983a312de84d181918b2fb69b0e13c85",
+    "review": "machine"
+  },
+  "sb2.filter-status": {
+    "text": "Estado del filtro",
+    "sourceHash": "cec2461b7ae3fab44641aa1acf241cf7a9edc785ff235d0506fbb71f115b2a2c",
+    "review": "machine"
+  },
+  "sb2.filter-none": {
+    "text": "Todos",
+    "sourceHash": "c7ae6d8a864120f0e467f680f4eb9fbdea9562ab029bd21d1c92136b3ba4c568",
+    "review": "machine"
+  },
+  "sb2.jump-script": {
+    "text": "Ir al guion",
+    "sourceHash": "ba87b9b861511d1e18591ecd0bf00fe0fa63594c4e919d3969bd136eb8bd116f",
+    "review": "machine"
+  },
+  "sb2.undo": {
+    "text": "Deshacer",
+    "sourceHash": "6881fe7857730412e31c41210c8e1f39ff952410fc5cb238c20cb07dc5c8ced0",
+    "review": "machine"
+  },
+  "sb2.redo": {
+    "text": "Rehacer",
+    "sourceHash": "07d542af33ec8c51702e27cac68762c9b44578896559db0aaeaf6da8b526b679",
+    "review": "machine"
+  },
+  "sb2.panel-actions": {
+    "text": "Viñeta seleccionada",
+    "sourceHash": "e7c3e119f93969dedf3cb92b63b2f116cd0f2bf4bf424498eb451717cbe47181",
+    "review": "machine"
+  },
+  "sb2.selected": {
+    "text": "Viñeta {number} seleccionada",
+    "sourceHash": "e29398de156591e0b622edd96955d2f02dd657b4b61ed3752bdca57e0556ab63",
+    "review": "machine"
+  },
+  "sb2.none-selected": {
+    "text": "Ninguna viñeta seleccionada",
+    "sourceHash": "f31371411a86f300ad20f68afeaa4f94c6ccd062c20a11669a67bfa8e37a3591",
+    "review": "machine"
+  },
+  "sb2.add": {
+    "text": "Nueva viñeta",
+    "sourceHash": "1fc89ec10d44f3a3060a69c7eaf52a73332224517818340eeb0f3d9c268b5fac",
+    "review": "machine"
+  },
+  "sb2.duplicate": {
+    "text": "Duplicar",
+    "sourceHash": "0d4ccb94c53fef9d4a4a0203fb03e74ac323b076cceb913edfbc95cb964f4dec",
+    "review": "machine"
+  },
+  "sb2.hide": {
+    "text": "Ocultar",
+    "sourceHash": "379fdc0ea76a7f635c1e19cc16c8e33720dca59812af4cd3f38b0ca2f9dd9355",
+    "review": "machine"
+  },
+  "sb2.show-panel": {
+    "text": "Mostrar",
+    "sourceHash": "53f2899454d416c1912737952ec52d0b4c8bb9e6d42412e1c65b01fed62af640",
+    "review": "machine"
+  },
+  "sb2.deactivate": {
+    "text": "Desactivar",
+    "sourceHash": "77c760fa266936b9babfea7167a0098f6f390342a1f06f4c81c5347ec26cc644",
+    "review": "machine"
+  },
+  "sb2.restore": {
+    "text": "Restablecer",
+    "sourceHash": "e75374f9c67ee7a1178e2d49c244f9cd606769cbc6519a64982b1069594e2c5f",
+    "review": "machine"
+  },
+  "sb2.move-to-scene": {
+    "text": "Mover a escena …",
+    "sourceHash": "d8b5870aba114d6362b17c48b191722f6d7c294e57e176144d22a3b52a26c3de",
+    "review": "machine"
+  },
+  "sb2.status-of": {
+    "text": "Estado de {area}",
+    "sourceHash": "c8aef653b010ad947ecaf5dd1743c9eb37215263866fdd2cc75581e263174a17",
+    "review": "machine"
+  },
+  "sb2.area.script": {
+    "text": "Guion",
+    "sourceHash": "b66ef7e1052a98fa58235776665284ae3510d514598b707f7908277d30330ea4",
+    "review": "machine"
+  },
+  "sb2.area.storyboard": {
+    "text": "Storyboard",
+    "sourceHash": "815c898f681324d6b377c380c0b224b82d227dc0e2f76a876f70080892191e5e",
+    "review": "machine"
+  },
+  "sb2.area.animation": {
+    "text": "Animación",
+    "sourceHash": "cb9e3fffc952209e79f1dbf1aed029f66b44524d07b1e5643f16d563a53729e5",
+    "review": "machine"
+  },
+  "sb2.area.sound": {
+    "text": "Sonido",
+    "sourceHash": "cf9ed75c62e6c4e4a5dc698f04d5080b4d55550169dbbbfcde332f5d14e7b4f3",
+    "review": "machine"
+  },
+  "sb2.area.film": {
+    "text": "Película",
+    "sourceHash": "4331761179120caa296be77a6736b20ea07c1527ed0924cc07188bff0233dece",
+    "review": "machine"
+  },
+  "sb2.area-short.script": {
+    "text": "G",
+    "sourceHash": "7fa4a3eee849524087b9f25159ded2c1e0b6e5d6944758d875ddf153a229da74",
+    "review": "machine"
+  },
+  "sb2.area-short.storyboard": {
+    "text": "SB",
+    "sourceHash": "9efd3881a246141ffe6fbf85cfe5d9c9e1ad93b24e97027c3e63dbed47731fb0",
+    "review": "machine"
+  },
+  "sb2.area-short.animation": {
+    "text": "A",
+    "sourceHash": "0fa8ea8b9c88ed325a39048a1cd9e0fe8ac880b93df2a678da226308185765e8",
+    "review": "machine"
+  },
+  "sb2.area-short.sound": {
+    "text": "So",
+    "sourceHash": "df8d827bfc374c4ed4ad7fd998fc49c1a8022609aa32d7941b2e7e2e21436b3f",
+    "review": "machine"
+  },
+  "sb2.area-short.film": {
+    "text": "P",
+    "sourceHash": "052caad39e84fadf30b127b5b24f51fd7c9e66016aa038b7acf4436f13c092a6",
+    "review": "machine"
+  },
+  "sb2.status.not-started": {
+    "text": "Sin empezar",
+    "sourceHash": "f31dde385d4a630690dc29a3e3a81f3185adbff45c1b93ea51f3f5edcb06f0f8",
+    "review": "machine"
+  },
+  "sb2.status.in-progress": {
+    "text": "En curso",
+    "sourceHash": "c0a254d3f66791a753965fcf05ad037bcce530e1eb6aea20bfb8f3150f6a7870",
+    "review": "machine"
+  },
+  "sb2.status.review": {
+    "text": "Lista para revisión",
+    "sourceHash": "7793b5373cc869d24dead30d58f9dd4ac5ce9c987ef7692cd2ee3a07298aa8db",
+    "review": "machine"
+  },
+  "sb2.status.changes-requested": {
+    "text": "Cambios solicitados",
+    "sourceHash": "0bf58a41657d1608117966a44f8fe17f00e24aa937d90559ef8c4a6e0d302cbd",
+    "review": "machine"
+  },
+  "sb2.status.done": {
+    "text": "Hecho",
+    "sourceHash": "753e9175ccd285a256cadfbab21272e42d7b85ea4f65229806ba31d891a16f46",
+    "review": "machine"
+  },
+  "sb2.gallery": {
+    "text": "Viñetas del storyboard",
+    "sourceHash": "d77b960e3e992a9cc4f9ff7f26adcb01735e5ace70bf4577c498842c33e2bac9",
+    "review": "machine"
+  },
+  "sb2.empty": {
+    "text": "La producción aún no tiene escenas activas.",
+    "sourceHash": "f164da4ef8d2c18736dc4a5d6da291afeaef46fd4f3de39b5c0bfd556133cddd",
+    "review": "machine"
+  },
+  "sb2.drag-scene": {
+    "text": "Arrastrar la escena: cambia el orden de escenas de la película",
+    "sourceHash": "100f13711a1620e229d41d0bc103d23436936ed22478d0a047b4f88c547ad174",
+    "review": "machine"
+  },
+  "sb2.untitled-scene": {
+    "text": "Escena sin encabezado",
+    "sourceHash": "0d3a9ffdb539b8784b0ddbeab207a3dfa994d6a67ecf2c35f55b2073c9979bcd",
+    "review": "machine"
+  },
+  "sb2.scene-order-warning": {
+    "text": "Mover cambia el orden de escenas de la película",
+    "sourceHash": "ec1816b62f07f184f23a5317bb3ed19de9262643d63ff33128c25a447c322151",
+    "review": "machine"
+  },
+  "sb2.scene-earlier": {
+    "text": "Mover la escena antes en la película",
+    "sourceHash": "c3d4a8995c46f26157122283522481d39df2547bb2c2e994fe5895ee59b3579f",
+    "review": "machine"
+  },
+  "sb2.scene-later": {
+    "text": "Mover la escena después en la película",
+    "sourceHash": "dc06f8c46adb0ae926996f3a90632897866d319bf7e53ab04186a648dfdbd962",
+    "review": "machine"
+  },
+  "sb2.scene-order-changed": {
+    "text": "El orden de escenas cambió. Guion y montaje lo siguen. Se puede deshacer.",
+    "sourceHash": "34320283a06ee118cae806ccceb8b9f215fc6243b1bbe3a8da0f28575df0e00f",
+    "review": "machine"
+  },
+  "sb2.scene-empty": {
+    "text": "No hay viñetas en la escena.",
+    "sourceHash": "34c784c3e9bcc18009510509f874f46d9e2a714cc5ceb6879dd94fbdc9fe1201",
+    "review": "machine"
+  },
+  "sb2.panel-label": {
+    "text": "Viñeta {number}, escena {scene}",
+    "sourceHash": "4c5759d83f8ba8e78dad12fe73d1f2b602ec1311148afc82ba6663107d8dc92f",
+    "review": "machine"
+  },
+  "sb2.notes-count": {
+    "text": "Notas: {count}",
+    "sourceHash": "be3ddfa812ea036af8ff13b8a7b532358a88c6c217ae9166ae60312b85eb02b9",
+    "review": "machine"
+  },
+  "sb2.seed-title": {
+    "text": "¿Crear viñetas?",
+    "sourceHash": "f969be6fc78abaa969883d622e78a6b1bc46b000073f7d94c76779da57f5bfd5",
+    "review": "machine"
+  },
+  "sb2.seed-body": {
+    "text": "Propuesta: una viñeta vacía por escena ({count} escenas). No se crea nada hasta que confirmes y se puede deshacer.",
+    "sourceHash": "729734ca2cf119afec5b5192c51f36a0e548e4abc243d771b3aec73b94146868",
+    "review": "machine"
+  },
+  "sb2.seed-confirm": {
+    "text": "Crear viñetas",
+    "sourceHash": "a6fe7a4d4a352e32c931dd2c979bf487c49eac855422c29dd704cd312e98f3ee",
+    "review": "machine"
+  },
+  "sb2.seed-later": {
+    "text": "Ahora no",
+    "sourceHash": "b776b541949c33bf78b945319760c3fae8a106624c69bdbb695793ff43849701",
+    "review": "machine"
+  },
+  "sb2.move-title": {
+    "text": "Mover la viñeta a otra escena",
+    "sourceHash": "008c3d2e44e8176035a812ac432408cf3d916409f1a1745b535cb699b11c1102",
+    "review": "machine"
+  },
+  "sb2.move-body": {
+    "text": "La viñeta {number} se mueve y obtiene un nuevo anclaje en el guion. Se puede deshacer.",
+    "sourceHash": "2e8cdd506372fecbe2460883990302eb893092be57049fc2c2d9d0f457306a3c",
+    "review": "machine"
+  },
+  "sb2.move-target": {
+    "text": "Escena de destino",
+    "sourceHash": "a36107ff550793f223468739920e35048adc831340ff6d70d055cc8c13f8daf9",
+    "review": "machine"
+  },
+  "sb2.move-choose": {
+    "text": "Elegir escena",
+    "sourceHash": "38a1c3cd4309b03940f6a1d96999bdc0b6afa6d694b20645f1e9cf0de089cd72",
+    "review": "machine"
+  },
+  "sb2.move-anchor": {
+    "text": "Nuevo anclaje en el guion (opcional)",
+    "sourceHash": "708e9f42f89534c77c6c27dd22689ee1d119bb501438be63132b2f12383b4c0e",
+    "review": "machine"
+  },
+  "sb2.move-no-blocks": {
+    "text": "La escena no tiene diálogos ni acción.",
+    "sourceHash": "11eaa9a105bec85090cb854f881b62376fc9c7927503c9c1f9403574c4240f7a",
+    "review": "machine"
+  },
+  "sb2.move-confirm": {
+    "text": "Mover",
+    "sourceHash": "a2d13c136d95765accd9946a9a9e44f6ffc37643b3fb8754a1240f5c50e7388b",
+    "review": "machine"
+  },
+  "sb2.cancel": {
+    "text": "Cancelar",
+    "sourceHash": "a69ea29ae854ab93e4967572b360e5a50e1c854ae20c4ae9b47ee3b1368bab86",
+    "review": "machine"
+  },
+  "sb2.mark": {
+    "text": "Abierto desde la viñeta {number} {name}",
+    "sourceHash": "8cb682b77c283b1cc1ff4cab2ada05556d43b8f935c473b1577906da2b449952",
+    "review": "machine"
+  },
+  "sb2.mark-back": {
+    "text": "Volver al storyboard",
+    "sourceHash": "6c8aa2d0f148b0128ece6cab06528ca8e0f2dc8bab9414f2ac5b860d4ddb6db8",
+    "review": "machine"
+  },
+  "sb2.undo.add": {
+    "text": "Nueva viñeta",
+    "sourceHash": "eb22f4656d809d3bfe010ddd6fc96eca656fec27af5bc9176d0ac652e5cd9f9a",
+    "review": "machine"
+  },
+  "sb2.undo.duplicate": {
+    "text": "Duplicar viñeta",
+    "sourceHash": "8389b3f21299c9949a157845ef8e32a0d36ea8f451422e36c7d64761ed1be016",
+    "review": "machine"
+  },
+  "sb2.undo.hide": {
+    "text": "Ocultar viñeta",
+    "sourceHash": "e6bed081bee57ef004aa4a2a5d5a5dbc9ed697ff88cc3794a9d54541d6532ef1",
+    "review": "machine"
+  },
+  "sb2.undo.show": {
+    "text": "Mostrar viñeta",
+    "sourceHash": "17c30b6923f9feecc3f2f7598cd6ff44021786650fb35129160cafb145d873df",
+    "review": "machine"
+  },
+  "sb2.undo.deactivate": {
+    "text": "Desactivar viñeta",
+    "sourceHash": "0c8077cc2c02ea4fc8181b411c94d9bf8e7b5fb3be0fc9fcba7cb0383e804446",
+    "review": "machine"
+  },
+  "sb2.undo.activate": {
+    "text": "Restablecer viñeta",
+    "sourceHash": "237496bb1e653492eeb9f4dfd397fcba966bc4128cd362d61401ac0295130c56",
+    "review": "machine"
+  },
+  "sb2.undo.move": {
+    "text": "Mover viñeta",
+    "sourceHash": "049aff3ea931878357ac67c9f56d92d68999a7d5580dd577fc64f0b1c1f90210",
+    "review": "machine"
+  },
+  "sb2.undo.move-scene": {
+    "text": "Cambiar el orden de escenas",
+    "sourceHash": "139f4d9610c69459030703c415e0204fc4fe911f9dfe2d33137c96844f63c329",
+    "review": "machine"
+  },
+  "sb2.undo.move-to-scene": {
+    "text": "Mover viñeta a escena",
+    "sourceHash": "d4aac8a76c03ea9611d9f7ea658e8c3647f0da76d1a97b54e3f298e89d464eaf",
+    "review": "machine"
+  },
+  "sb2.undo.seed": {
+    "text": "Crear viñetas",
+    "sourceHash": "b1b2b9054b15e5b34d58fe6a5e998f3f3b8ffbd202bf13fd68b604851696b939",
+    "review": "machine"
+  },
+  "sb2.undo.status": {
+    "text": "Cambiar estado",
+    "sourceHash": "e88e1726d11b65fe5aa80e0cb9326b7c41233a29b976271f058ab652f5c57114",
+    "review": "machine"
   }
 }

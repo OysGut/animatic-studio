@@ -235,7 +235,7 @@ export function compositionForOccurrence(
   s: ProjectState,
   occ: SceneOccurrence,
 ): Composition | undefined {
-  return Object.values(s.compositions).find((c) => c.variantId === occ.variantId && !c.removed);
+  return Object.values(s.compositions).find((c) => c.variantId === occ.variantId && !c.removed && (c.kind ?? "scene") === "scene");
 }
 
 function emptyReport(before: number, target: number, method: RetimeMethod): RetimeReport {

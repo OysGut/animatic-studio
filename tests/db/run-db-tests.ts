@@ -189,6 +189,14 @@ async function runCommand(
   return res.state;
 }
 
+// 0103: tabellrekkefølgen i apply_changes ligger i private.apply_change_tables. Eldre tester som
+// sjekket rekkefølgen i funksjonskroppen, leser den samme rekkefølgen fra registeret.
+async function applyChangesTableOrder(): Promise<string> {
+  const rows = await sql`select table_name, insert_order, delete_order from private.apply_change_tables`;
+  const by = (k: string) => [...rows].sort((a, b) => Number(a[k]) - Number(b[k])).map((r) => `'${String(r["table_name"])}'`).join(",");
+  return `array[${by("insert_order")}] array[${by("delete_order")}]`;
+}
+
 console.log(`Databasetester (${DB})`);
 try {
   await sql.unsafe(readFileSync(join(root, "tests/db/supabase-emulation.sql"), "utf8"));
@@ -6059,7 +6067,7 @@ try {
       const g = await sql`select has_table_privilege('anon',${`public.${table}`},'SELECT') as anon,has_table_privilege('authenticated',${`public.${table}`},'SELECT') as read,has_table_privilege('authenticated',${`public.${table}`},'INSERT') as ins,has_table_privilege('authenticated',${`public.${table}`},'DELETE') as del,has_table_privilege('service_role',${`public.${table}`},'INSERT') as service`;
       assert(g[0]?.["anon"] === false && g[0]?.["read"] === true && g[0]?.["ins"] === false && g[0]?.["del"] === false && g[0]?.["service"] === true, `${table}: grants avviker`);
     }
-    const body = String((await sql`select pg_get_functiondef('public.apply_changes(uuid,uuid,uuid,jsonb,jsonb,jsonb)'::regprocedure) as b`)[0]?.["b"]);
+    const body = await applyChangesTableOrder();
     assert(body.includes("'dialogue_reviews','note_flags'") && body.includes("'note_flags','dialogue_reviews','animation_patterns'"), "apply_changes kjenner ikke de nye tabellene i riktig rekkefølge");
     for (const fn of ["delete_project(uuid,uuid)", "purge_project_assets(uuid,uuid)"]) {
       const b = String((await sql`select pg_get_functiondef(${`public.${fn}`}::regprocedure) as b`)[0]?.["b"]);
@@ -6110,10 +6118,10 @@ try {
     assert(g[0]?.["anon"] === false && g[0]?.["read"] === true && g[0]?.["ins"] === false && g[0]?.["del"] === false && g[0]?.["service"] === true, "quality_profiles: grants avviker");
     const col = await sql`select 1 from information_schema.columns where table_schema='public' and table_name='projects' and column_name='active_quality_profile_id'`;
     assert(col.length === 1, "projects.active_quality_profile_id mangler");
-    const body = String((await sql`select pg_get_functiondef('public.apply_changes(uuid,uuid,uuid,jsonb,jsonb,jsonb)'::regprocedure) as b`)[0]?.["b"]);
+    const body = await applyChangesTableOrder();
     assert(body.includes("'dialogue_reviews','note_flags','quality_profiles'"), "apply_changes kjenner ikke quality_profiles");
     assert(body.includes("'quality_profiles','note_flags'"), "apply_changes sletter ikke profiler først");
-    assert(body.includes("active_quality_profile_id"), "apply_changes oppdaterer ikke aktiv profil");
+    assert(String((await sql`select pg_get_functiondef('public.apply_changes(uuid,uuid,uuid,jsonb,jsonb,jsonb)'::regprocedure) b`)[0]?.["b"]).includes("active_quality_profile_id"), "apply_changes oppdaterer ikke aktiv profil");
     for (const fn of ["delete_project(uuid,uuid)", "purge_project_assets(uuid,uuid)"]) {
       const b = String((await sql`select pg_get_functiondef(${`public.${fn}`}::regprocedure) as b`)[0]?.["b"]);
       assert(b.indexOf("quality_profiles") < b.indexOf("delete from public.dialogue_versions"), `${fn}: rydder ikke profilene`);
@@ -6212,7 +6220,7 @@ try {
       const body=String((await sql`select pg_get_functiondef(${`public.${fn}`}::regprocedure) b`)[0]?.["b"]);
       assert(body.indexOf("delete from public.translation_line_links")<body.indexOf("delete from public.translations"),"line links must delete before translations");
     }
-    const body=String((await sql`select pg_get_functiondef('public.apply_changes(uuid,uuid,uuid,jsonb,jsonb,jsonb)'::regprocedure) b`)[0]?.["b"]);
+    const body=await applyChangesTableOrder();
     assert(body.includes("'translation_line_links'") && body.includes("'translation_lines'"),"apply_changes kjenner ikke linjetabellene");
     const vbody=String((await sql`select pg_get_functiondef('private.validate_translation_line_links(uuid,jsonb,uuid[])'::regprocedure) b`)[0]?.["b"]);
     const pbody=String((await sql`select pg_get_functiondef('private.prepare_translation_line_links(uuid,jsonb)'::regprocedure) b`)[0]?.["b"]);
@@ -6330,7 +6338,7 @@ try {
       const body=String((await sql`select pg_get_functiondef(${`public.${name}(uuid,uuid)`}::regprocedure) b`)[0]?.["b"]);
       assert(body.indexOf("delete from public.translations")>0 && body.indexOf("delete from public.translations")<body.indexOf("delete from public.language_versions") && (name==="delete_project" || body.indexOf("delete from public.language_versions")<body.indexOf("delete from public.projects")),`${name}: language versions must delete after translations (and before the project row)`);
     }
-    const ac=String((await sql`select pg_get_functiondef('public.apply_changes(uuid,uuid,uuid,jsonb,jsonb,jsonb)'::regprocedure) b`)[0]?.["b"]);
+    const ac=await applyChangesTableOrder();
     assert(ac.indexOf("'language_versions','translations'")>0 && ac.includes("'translations','language_versions'"),"apply_changes lacks language versions");
     const lac=String((await sql`select pg_get_functiondef('private.validate_language_scope(uuid,jsonb,uuid[])'::regprocedure) b`)[0]?.["b"]);
     assert(lac.includes("Invalid language version scope"),"language scope validation absent");
@@ -6442,7 +6450,7 @@ try {
       assert(body.indexOf("delete from public.style_harmonizations")<body.indexOf("delete from public.style_profiles"),"harmonizations must delete before style profiles");
       assert(body.includes("delete from public.harmonize_batches"),"harmonize batches not deleted");
     }
-    const applyBody=String((await sql`select pg_get_functiondef('public.apply_changes(uuid,uuid,uuid,jsonb,jsonb,jsonb)'::regprocedure) b`)[0]?.["b"]);
+    const applyBody=await applyChangesTableOrder();
     assert(applyBody.includes("'style_harmonizations'") && applyBody.includes("'style_preferred_references'"),"new tables missing from apply_changes");
     const harmBody=String((await sql`select pg_get_functiondef('private.validate_style_harmonizations(uuid,jsonb,uuid[])'::regprocedure) b`)[0]?.["b"]);
     const prefBody=String((await sql`select pg_get_functiondef('private.validate_preferred_reference_unique(uuid,jsonb,uuid[])'::regprocedure) b`)[0]?.["b"]);
@@ -6621,7 +6629,7 @@ try {
       assert(!grants.some((r) => r.g === "anon"), `${tbl}: ikke anon`);
     }
     // apply_changes kjenner tabellene, og riggene slettes før scenene og prosjektraden
-    const ac = String((await sql`select pg_get_functiondef('public.apply_changes(uuid,uuid,uuid,jsonb,jsonb,jsonb)'::regprocedure) b`)[0]?.["b"]);
+    const ac = await applyChangesTableOrder();
     assert(ac.includes("rig_templates") && ac.includes("rig_setups"), "apply_changes kjenner riggtabellene");
     assert(ac.indexOf("'rig_setups'") < ac.indexOf("'scenes','rig_templates'") && ac.indexOf("'rig_templates','productions'") > 0, "sletterekkefølgen");
     const dp = String((await sql`select pg_get_functiondef('public.delete_project(uuid,uuid)'::regprocedure) b`)[0]?.["b"]);
@@ -8807,6 +8815,30 @@ try {
       (select count(*) from public.storyboard_panel_snapshots where project_id=${p}) n`;
     assert(Number(left[0]!["n"]) === 0, "storyboardrader ble igjen etter sletting");
     await as("service_role", null, (tx) => tx`select public.purge_project_assets(${p}, ${ALICE})`);
+  });
+
+  // ---------- 0103: tabellrekkefølgen i apply_changes ligger i et register ----------
+  await test("0103: apply_changes har ingen hardkodet tabelliste; registeret har alle 55 tabeller i samme rekkefølge som 0102", async () => {
+    const src = String((await sql`select pg_get_functiondef('public.apply_changes(uuid,uuid,uuid,jsonb,jsonb,jsonb)'::regprocedure) d`)[0]!["d"]);
+    assert(!src.includes("'storyboard_panel_snapshots'") && !src.includes("'productions','rig_templates'"), "kjernen har fortsatt hardkodet tabelliste");
+    assert(src.includes("private.apply_change_tables"), "kjernen leser ikke registeret");
+    const rows = await sql`select table_name, insert_order, delete_order from private.apply_change_tables`;
+    assert(rows.length === 55, `forventet 55 registrerte tabeller, fikk ${rows.length}`);
+    // Nøyaktig samme rekkefølge som de hardkodede listene i 0102 (lik oppførsel)
+    const ins0102 = ['productions', 'rig_templates', 'scenes', 'rig_setups', 'scene_variants', 'script_blocks', 'scene_occurrences', 'production_segments', 'takes', 'assets', 'asset_variants', 'asset_versions', 'animation_rigs', 'animation_rig_versions', 'script_annotations', 'compositions', 'template_instances', 'credit_participants', 'credit_sequences', 'composition_layers', 'measure_sets', 'print_jobs', 'print_job_elements', 'animation_uses', 'audio_clips', 'dialogue_versions', 'clip_parts', 'time_links', 'generation_prompts', 'continuity_events', 'language_versions', 'translations', 'asset_relations', 'posters', 'style_profiles', 'story_profiles', 'story_profile_stages', 'story_facts', 'story_canvas_nodes', 'story_canvas_edges', 'lipsync_results', 'animation_patterns', 'dialogue_reviews', 'note_flags', 'quality_profiles', 'translation_lines', 'translation_line_links', 'style_harmonizations', 'style_preferred_references', 'mouth_sets', 'mouth_tracks', 'storyboard_panel_blocks', 'production_statuses', 'production_status_events', 'storyboard_panel_snapshots'];
+    const del0102 = ['storyboard_panel_snapshots', 'storyboard_panel_blocks', 'production_status_events', 'production_statuses', 'mouth_tracks', 'mouth_sets', 'style_preferred_references', 'style_harmonizations', 'translation_line_links', 'translation_lines', 'quality_profiles', 'note_flags', 'dialogue_reviews', 'animation_patterns', 'lipsync_results', 'dialogue_versions', 'story_canvas_edges', 'story_canvas_nodes', 'story_facts', 'story_profile_stages', 'story_profiles', 'style_profiles', 'posters', 'asset_relations', 'translations', 'language_versions', 'continuity_events', 'generation_prompts', 'time_links', 'clip_parts', 'audio_clips', 'animation_uses', 'print_job_elements', 'print_jobs', 'measure_sets', 'composition_layers', 'credit_sequences', 'credit_participants', 'template_instances', 'compositions', 'script_annotations', 'animation_rig_versions', 'animation_rigs', 'asset_versions', 'asset_variants', 'assets', 'takes', 'production_segments', 'scene_occurrences', 'script_blocks', 'scene_variants', 'rig_setups', 'scenes', 'rig_templates', 'productions'];
+    const sorted = (k: string) => [...rows].sort((x, y) => Number(x[k]) - Number(y[k])).map((r) => String(r["table_name"]));
+    assert(JSON.stringify(sorted("insert_order")) === JSON.stringify(ins0102), "innsettingsrekkefølgen avviker fra 0102");
+    assert(JSON.stringify(sorted("delete_order")) === JSON.stringify(del0102), "sletterekkefølgen avviker fra 0102");
+  });
+  await test("0103: ukjent tabell avvises fortsatt med 22023; insert og angre-sletting virker via registeret", async () => {
+    let code = "";
+    try { await sbApply(g7p, { inserts: { not_a_table: [] } }); } catch (e) { code = String((e as { code?: string }).code); }
+    assert(code === "22023", `forventet 22023, fikk ${code}`);
+    const panel = newId();
+    await sbApply(g7p, { inserts: { compositions: [{ id: panel, project_id: g7p, variant_id: sbSetup.variant, kind: "storyboard", occurrence_id: sbSetup.occurrence, order_key: "z9", revision: 1 }] } });
+    await sbApply(g7p, { deletes: { compositions: [{ id: panel, expected_revision: 1 }] } });
+    assert((await sql`select 1 from public.compositions where id=${panel}`).length === 0, "angre-sletting virket ikke");
   });
 
   // ---------- search_path: alle SECURITY DEFINER-funksjoner skal ha search_path='' ----------

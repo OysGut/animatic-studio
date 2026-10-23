@@ -76175,5 +76175,275 @@
   },
   "sb1.layer-camera-mark": {
     "text": "Kameramerke"
+  },
+  "sb2.nav": {
+    "text": "Storyboard"
+  },
+  "sb2.route.title": {
+    "text": "Storyboard – Pen to Glass"
+  },
+  "sb2.route.description": {
+    "text": "Hele filmen som storyboardpaneler, i fortellerrekkefølge."
+  },
+  "sb2.loading": {
+    "text": "Laster storyboardet …"
+  },
+  "sb2.load-error": {
+    "text": "Storyboardet kunne ikke lastes."
+  },
+  "sb2.toolbar": {
+    "text": "Storyboardvisning"
+  },
+  "sb2.production": {
+    "text": "Produksjon"
+  },
+  "sb2.zoom": {
+    "text": "Zoom"
+  },
+  "sb2.zoom-out": {
+    "text": "Zoom ut (oversikt)"
+  },
+  "sb2.zoom-in": {
+    "text": "Zoom inn (detalj)"
+  },
+  "sb2.panel-size": {
+    "text": "Panelstørrelse"
+  },
+  "sb2.text-view": {
+    "text": "Tekstvisning"
+  },
+  "sb2.show-legend": {
+    "text": "Vis på kortene"
+  },
+  "sb2.show.name": {
+    "text": "Navn"
+  },
+  "sb2.show.number": {
+    "text": "Nummer"
+  },
+  "sb2.show.dialogue": {
+    "text": "Dialog"
+  },
+  "sb2.show.script": {
+    "text": "Manustekst"
+  },
+  "sb2.show.notes": {
+    "text": "Notater"
+  },
+  "sb2.show.timing": {
+    "text": "Timing"
+  },
+  "sb2.show.status": {
+    "text": "Status"
+  },
+  "sb2.show-hidden": {
+    "text": "Vis skjulte og deaktiverte"
+  },
+  "sb2.filter": {
+    "text": "Filter"
+  },
+  "sb2.filter-area": {
+    "text": "Fagområde for filteret"
+  },
+  "sb2.filter-status": {
+    "text": "Status for filteret"
+  },
+  "sb2.filter-none": {
+    "text": "Alle"
+  },
+  "sb2.jump-script": {
+    "text": "Hopp til manus"
+  },
+  "sb2.undo": {
+    "text": "Angre"
+  },
+  "sb2.redo": {
+    "text": "Gjør om"
+  },
+  "sb2.panel-actions": {
+    "text": "Valgt panel"
+  },
+  "sb2.selected": {
+    "text": "Panel {number} valgt"
+  },
+  "sb2.none-selected": {
+    "text": "Ingen paneler valgt"
+  },
+  "sb2.add": {
+    "text": "Nytt panel"
+  },
+  "sb2.duplicate": {
+    "text": "Dupliser"
+  },
+  "sb2.hide": {
+    "text": "Skjul"
+  },
+  "sb2.show-panel": {
+    "text": "Vis"
+  },
+  "sb2.deactivate": {
+    "text": "Deaktiver"
+  },
+  "sb2.restore": {
+    "text": "Gjeninnfør"
+  },
+  "sb2.move-to-scene": {
+    "text": "Flytt til scene …"
+  },
+  "sb2.status-of": {
+    "text": "Status for {area}"
+  },
+  "sb2.area.script": {
+    "text": "Manus"
+  },
+  "sb2.area.storyboard": {
+    "text": "Storyboard"
+  },
+  "sb2.area.animation": {
+    "text": "Animasjon"
+  },
+  "sb2.area.sound": {
+    "text": "Lyd"
+  },
+  "sb2.area.film": {
+    "text": "Film"
+  },
+  "sb2.area-short.script": {
+    "text": "M"
+  },
+  "sb2.area-short.storyboard": {
+    "text": "SB"
+  },
+  "sb2.area-short.animation": {
+    "text": "A"
+  },
+  "sb2.area-short.sound": {
+    "text": "L"
+  },
+  "sb2.area-short.film": {
+    "text": "F"
+  },
+  "sb2.status.not-started": {
+    "text": "Ikke startet"
+  },
+  "sb2.status.in-progress": {
+    "text": "Under arbeid"
+  },
+  "sb2.status.review": {
+    "text": "Klar for gjennomgang"
+  },
+  "sb2.status.changes-requested": {
+    "text": "Endringer ønskes"
+  },
+  "sb2.status.done": {
+    "text": "Ferdig"
+  },
+  "sb2.gallery": {
+    "text": "Storyboardpaneler"
+  },
+  "sb2.empty": {
+    "text": "Produksjonen har ingen aktive scener ennå."
+  },
+  "sb2.drag-scene": {
+    "text": "Dra scenen – endrer filmens scenerekkefølge"
+  },
+  "sb2.untitled-scene": {
+    "text": "Scene uten overskrift"
+  },
+  "sb2.scene-order-warning": {
+    "text": "Flytting endrer filmens scenerekkefølge"
+  },
+  "sb2.scene-earlier": {
+    "text": "Flytt scenen tidligere i filmen"
+  },
+  "sb2.scene-later": {
+    "text": "Flytt scenen senere i filmen"
+  },
+  "sb2.scene-order-changed": {
+    "text": "Filmens scenerekkefølge er endret. Manus og montering følger med. Kan angres."
+  },
+  "sb2.scene-empty": {
+    "text": "Ingen paneler i scenen."
+  },
+  "sb2.panel-label": {
+    "text": "Panel {number}, scene {scene}"
+  },
+  "sb2.notes-count": {
+    "text": "Notater: {count}"
+  },
+  "sb2.seed-title": {
+    "text": "Lag storyboardpaneler?"
+  },
+  "sb2.seed-body": {
+    "text": "Forslag: ett tomt panel per scene ({count} scener). Ingenting lages før du bekrefter, og det kan angres."
+  },
+  "sb2.seed-confirm": {
+    "text": "Lag paneler"
+  },
+  "sb2.seed-later": {
+    "text": "Ikke nå"
+  },
+  "sb2.move-title": {
+    "text": "Flytt panel til en annen scene"
+  },
+  "sb2.move-body": {
+    "text": "Panel {number} flyttes og får ny forankring i manuset. Kan angres."
+  },
+  "sb2.move-target": {
+    "text": "Målscene"
+  },
+  "sb2.move-choose": {
+    "text": "Velg scene"
+  },
+  "sb2.move-anchor": {
+    "text": "Ny forankring i manuset (valgfritt)"
+  },
+  "sb2.move-no-blocks": {
+    "text": "Scenen har ingen replikker eller handling."
+  },
+  "sb2.move-confirm": {
+    "text": "Flytt"
+  },
+  "sb2.cancel": {
+    "text": "Avbryt"
+  },
+  "sb2.mark": {
+    "text": "Åpnet fra storyboardpanel {number} {name}"
+  },
+  "sb2.mark-back": {
+    "text": "Tilbake til storyboardet"
+  },
+  "sb2.undo.add": {
+    "text": "Nytt storyboardpanel"
+  },
+  "sb2.undo.duplicate": {
+    "text": "Dupliser panel"
+  },
+  "sb2.undo.hide": {
+    "text": "Skjul panel"
+  },
+  "sb2.undo.show": {
+    "text": "Vis panel"
+  },
+  "sb2.undo.deactivate": {
+    "text": "Deaktiver panel"
+  },
+  "sb2.undo.activate": {
+    "text": "Gjeninnfør panel"
+  },
+  "sb2.undo.move": {
+    "text": "Flytt panel"
+  },
+  "sb2.undo.move-scene": {
+    "text": "Endre filmens scenerekkefølge"
+  },
+  "sb2.undo.move-to-scene": {
+    "text": "Flytt panel til scene"
+  },
+  "sb2.undo.seed": {
+    "text": "Lag storyboardpaneler"
+  },
+  "sb2.undo.status": {
+    "text": "Endre status"
   }
 }

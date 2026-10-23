@@ -168,3 +168,6 @@ Merket nederst i hvert vindu viser «V-nnn · commit». Slå opp nummeret her.
 | V-161 | panel | `src/app/scene-editor/GenerateDialogue.tsx` | GenerateDialogue | Flytende panel «Koble karakter til replikken» i GenerateDialogue | aktiv |
 | V-162 | panel | `src/app/scene-editor/LayerImageDialog.tsx` | DeleteVersionConfirm | Flytende panel «Valgt» i DeleteVersionConfirm | aktiv |
 | V-163 | dialog | `src/app/global/CharacterBundleControls.tsx` | CharacterBundleControls | Dialog i CharacterBundleControls | aktiv |
+| V-164 | side | `src/routes/prosjekt.$projectId.storyboard.tsx` | StoryboardRoute | Side «Storyboard – Pen to Glass» (/prosjekt/$projectId/storyboard) | aktiv |
+| V-165 | dialog | `src/app/storyboard/StoryboardWorkspace.tsx` | MovePanelDialog | Dialog i MovePanelDialog | aktiv |
+| V-166 | dialog | `src/app/storyboard/StoryboardWorkspace.tsx` | Gallery | Dialog i Gallery | aktiv |
