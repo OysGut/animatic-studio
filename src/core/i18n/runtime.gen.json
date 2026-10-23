@@ -1488,8 +1488,17 @@
     "adapters-storage-commands-functions.message.message.fe59c3be6214": {
       "text": "Databasen mangler tillegget for vinkler på bilder og visuelle faktaark. Kontakt administratoren for å oppdatere From Pen to Glass."
     },
+    "adapters-storage-commands-functions.quota-change-log": {
+      "text": "Endringsloggen er full. Kontakt administrator for å øke grensen."
+    },
     "adapters-storage-commands-functions.quota-projects": {
       "text": "Grensen for antall prosjekter er nådd. Slett et prosjekt eller kontakt administrator for å øke grensen."
+    },
+    "adapters-storage-commands-functions.quota-storage": {
+      "text": "Lagringskvoten er nådd. Slett filer du ikke trenger, eller kontakt administrator for å øke grensen."
+    },
+    "adapters-storage-commands-functions.quota-uploads": {
+      "text": "For mange opplastinger den siste timen. Vent litt og prøv igjen."
     },
     "adapters-storage-commands-functions.undo-production-history": {
       "text": "Produksjonen har eksporter eller lagrede estimater og kan ikke angres. Den beholdes som den er."
@@ -34935,8 +34944,17 @@
     "adapters-storage-commands-functions.message.message.fe59c3be6214": {
       "text": "The database is missing the addition for angles on images and visual fact sheets. Contact the administrator to update From Pen to Glass."
     },
+    "adapters-storage-commands-functions.quota-change-log": {
+      "text": "The change log is full. Contact the administrator to raise the limit."
+    },
     "adapters-storage-commands-functions.quota-projects": {
       "text": "The project limit has been reached. Delete a project or contact the administrator to raise the limit."
+    },
+    "adapters-storage-commands-functions.quota-storage": {
+      "text": "The storage quota has been reached. Delete files you no longer need, or contact the administrator to raise the limit."
+    },
+    "adapters-storage-commands-functions.quota-uploads": {
+      "text": "Too many uploads in the last hour. Wait a moment and try again."
     },
     "adapters-storage-commands-functions.undo-production-history": {
       "text": "The production has exports or saved estimates and cannot be undone. It is kept as it is."
