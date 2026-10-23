@@ -30,7 +30,7 @@ export function GenerateDialogue({ state, projectId, occurrenceId, blockId, char
     onBusy(true); setBusy(true); setConfirm(false); setError(null);
     const approvedVoice = { ...voice, settings: { ...voice.settings } };
     try {
-      const r = await generateSpeech({ data: { projectId, blockId, voiceId: voice.voiceId, modelId: model, language: voice.language ?? "no", settings: voice.settings ?? {}, scriptRevision: block.currentRev, approved: true, qualityProfile: quality.profile ? qualityProfileSnapshot(quality.profile) : null } });
+      const r = await generateSpeech({ data: { projectId, blockId, voiceId: voice.voiceId, modelId: model, language: voice.language ?? language, settings: voice.settings ?? {}, scriptRevision: block.currentRev, approved: true, qualityProfile: quality.profile ? qualityProfileSnapshot(quality.profile) : null } });
       if (!r.ok) throw new Error(r.message);
       const url = (await signedUrls([r.media.path], 600))[r.media.path];
       if (!url) throw new Error(t("app-scene-editor-generate-dialogue.run.message.b6737e0b5a59"));
@@ -40,7 +40,7 @@ export function GenerateDialogue({ state, projectId, occurrenceId, blockId, char
       const current = cmds.current();
       if (!current) throw new Error(t("app-scene-editor-generate-dialogue.run.message.12b237836818"));
       const result = await saveTake(cmds, current, { kind: "line", occurrenceId, blockId }, { ...r.media, durationMs }, t("app-scene-editor-generate-dialogue.result.save-take.b19702b8562f"), r.assetId,
-        { source: "ai", provider: "elevenlabs", voiceId: approvedVoice.voiceId, modelId: model, settings: { ...approvedVoice.settings, language: approvedVoice.language ?? "no", ...(quality.profile ? {qualityProfileId:quality.profile.id, qualityProfileName:quality.profile.name, qualityProfileSnapshot:JSON.stringify(qualityProfileSnapshot(quality.profile))} : {}) }, scriptRevision: r.scriptRevision ?? block.currentRev, parentVersionId: Object.values(current.audioClips).find(c => !c.removed && c.occurrenceId === occurrenceId && c.blockId === blockId)?.activeVersionId ?? null }, true);
+        { source: "ai", provider: "elevenlabs", voiceId: approvedVoice.voiceId, modelId: model, settings: { ...approvedVoice.settings, language: approvedVoice.language ?? language, ...(quality.profile ? {qualityProfileId:quality.profile.id, qualityProfileName:quality.profile.name, qualityProfileSnapshot:JSON.stringify(qualityProfileSnapshot(quality.profile))} : {}) }, scriptRevision: r.scriptRevision ?? block.currentRev, parentVersionId: Object.values(current.audioClips).find(c => !c.removed && c.occurrenceId === occurrenceId && c.blockId === blockId)?.activeVersionId ?? null }, true);
       const fresh = cmds.current();
       if (!fresh) throw new Error(t("app-scene-editor-generate-dialogue.run.message.12b237836818.2"));
       const clip = result.clipId ? fresh.audioClips[result.clipId] : Object.values(fresh.audioClips).find(c => !c.removed && c.occurrenceId === occurrenceId && c.blockId === blockId);
@@ -52,7 +52,7 @@ export function GenerateDialogue({ state, projectId, occurrenceId, blockId, char
     <Button data-testid="dialogue-generate-open" size="sm" variant="secondary" disabled={busy} onClick={() => setOpen(!open)}>{t("app-scene-editor-generate-dialogue.generate-dialogue.button.daa0584f5037")}</Button>
     {open ? <div className="mt-3 flex flex-col gap-3"><QualityProfilePicker state={state} value={quality.choice} disabled={busy} onChange={v => { quality.setChoice(v); setVoice(old => { if (!old) return old; const { modelId: _modelId, ...rest } = old; return rest; }); setConfirm(false); }} /><QualityProfileBudget error={quality.budgetError} /><VoiceControls projectId={projectId} value={voice ? { ...voice, modelId: model } : null} onChange={v => { setVoice(v); setConfirm(false); }} disabled={busy} />
       {confirm ? <div role="alertdialog" data-testid="dialogue-generation-confirm" aria-label={t("app-scene-editor-generate-dialogue.generate-dialogue.aria-label.5aad2202408b")} className="relative flex flex-col gap-2 border border-border p-2 text-xs text-text-primary"><UiId id="V-161" />
-        {t("app-scene-editor-generate-dialogue.generate-summary", { model, language: voice?.language ?? "no", cost: cost === null ? t("app-scene-editor-generate-dialogue.generate-summary-unknown-price") : formatUsd(cost) })}
+        {t("app-scene-editor-generate-dialogue.generate-summary", { model, language: voice?.language ?? language, cost: cost === null ? t("app-scene-editor-generate-dialogue.generate-summary-unknown-price") : formatUsd(cost) })}
         <Button data-testid="dialogue-generation-approve" size="sm" disabled={busy || !!quality.budgetError} onClick={() => void run()}>{t("app-scene-editor-generate-dialogue.generate-dialogue.button.686a55a7ebf5")}</Button>
         <Button size="sm" variant="ghost" onClick={() => setConfirm(false)}>{t("app-scene-editor-generate-dialogue.generate-dialogue.button.18b2f897b3d7")}</Button>
       </div> : <Button data-testid="dialogue-generation-start" size="sm" disabled={!voice || busy || cost === null || !!quality.budgetError} onClick={() => setConfirm(true)}>{busy ? t("app-scene-editor-generate-dialogue.generate-dialogue.button.d20d6afa2eb6") : t("app-scene-editor-generate-dialogue.generate-dialogue.button.75e32e6da4db")}</Button>}
