@@ -61,7 +61,7 @@ export function PathSpacingTrack({ layer, ppf, gutter, labelCss, playback }: {
   if (!path || !marks.length) return null;
   return (
     <div className="flex border-b border-border bg-surface-2/40" style={{ height: SPACING_TRACK_H }} data-testid={`path-spacing-track-${layer.id}`}>
-      <div className="sticky left-0 z-20 flex shrink-0 items-center border-r border-border-strong bg-surface-2 px-2 text-[10px] text-text-tertiary"
+      <div className="sticky left-0 z-20 flex shrink-0 items-center border-r border-border-strong bg-surface-2 px-2 text-[11px] text-text-tertiary"
         style={{ width: labelCss }}>
         <span className="truncate">{t("pathSpacing.track")}</span>
       </div>
