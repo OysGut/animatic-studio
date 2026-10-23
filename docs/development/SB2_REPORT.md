@@ -30,7 +30,7 @@ Kjernens invariant «én 2D-scene per variant» og `compositionOfVariant` talte 
 ## Tester
 - `tests/unit/sb2-storyboard-gallery.test.tsx` (12, jsdom): fortellerrekkefølge og deaktiverte scener, filter og skjulte, dupliser med angre, piltaster med høyre-til-venstre, validering av valg, virtualisering; flaten: dobbeltklikk/Enter navigerer med forekomst og panel, scenerekkefølge endrer manusets rekkefølge og kan angres, vis/skjul/filter/tekstvisning huskes, forslag krever bekreftelse, deaktiver uten sletting, 2 000 paneler tegner under 300 kort.
 - `tests/visual/sb2-storyboard-gallery.mjs` (nb og en): skrevet for Claude; ikke kjørt av meg.
-- Typekontroll 0, i18n-sjekk grønn, DB 226/0. Full Vitest: se svaret.
+- Typekontroll 0, i18n-sjekk grønn, DB 226/0. Full Vitest: 2879 bestått, 1 feilet (tekststørrelse 10 px i galleriet), rettet til 11 px; den testen og arkitekturtestene består etterpå. Full suite ikke kjørt på nytt etter rettingen.
 
 ## Oversettelser
 90 nye `sb2.*`-nøkler. nb og en skrevet; fr, es, ru, ja, pt-BR, de, it og ko maskinoversatt og merket for gjennomlesing.
