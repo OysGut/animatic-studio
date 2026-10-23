@@ -33,6 +33,11 @@ create table private.apply_change_validators (
 create unique index apply_change_validators_key
   on private.apply_change_validators (validator, coalesce(table_name, ''));
 
+-- Kjernen kjører som eieren og trenger ikke rettigheter, men serverrollen skal kunne
+-- registrere valideringer for nye tabeller uten å endre kjernen.
+grant usage on schema private to service_role;
+grant select, insert on private.apply_change_validators to service_role;
+
 -- ---------- 2. Valideringsfunksjoner (flyttet ordrett fra public.apply_changes i 0090) ----------
 
 -- 0064: linjekoblinger å validere: nye rader, og endrede rader hvis scene-, språk- eller
