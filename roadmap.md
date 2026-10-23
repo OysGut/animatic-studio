@@ -1,5 +1,11 @@
 # Veikart
 
+## G-4 skriftsystemer (23.10.2026)
+- [ ] 1. RTL: dir=auto på brukertekst, logisk CSS, manusvisning/PDF speilet + shaping, tekstlag, tester ar/he
+- [ ] 2. Søk: 0096 unaccent+pg_trgm, indekser, CJK, admin_find_users, kjerne-fold NFKC, måling 50k blokker
+- [ ] 3. NFC-normalisering i apply_changes-klientveien og import, med test
+- [ ] Rapport docs/development/G4_SKRIFT_REPORT.md
+
 ## G-3 global bruk (23.10.2026)
 - [x] 1. Intl.Segmenter for ord/grafemer (film, forecast, varighet, plakat, globalt søk) + talehastighet per språk
 - [x] 2. Sceneoverskrifter per språk, prosjektord, tvungen overskrift alltid
