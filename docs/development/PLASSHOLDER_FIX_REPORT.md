@@ -47,3 +47,20 @@ Disse rettes ikke automatisk. «Tilbakestill proporsjoner» finnes allerede som 
 **Bytte av aktiv versjon:** Miniatyrene hentes fra gjeldende versjon hver gang, og viser nå hele bildet. Den gamle plassholderformen vises derfor ikke.
 
 **Tester:** `tests/unit/thumbnail-contain.test.tsx` sjekker at Thumbnail bruker contain uten faste mål, at generatoren gir 128 × 256 for 1:2 og 256 × 128 for 2:1, og at ingen fil i src/app bruker `object-cover`. AGENTS.md regel 58.
+
+## Del 3: regelen gjelder hele løsningen
+
+**Fullt søk i src** etter `<img`, `poster=`, `backgroundImage`/`bg-cover`, `object-cover`/`object-fill`, `aspect-square` og `drawImage`. I tillegg til del 2 er disse nå ført over på `Thumbnail`: stillbildevelgeren i montering, stilguiden på prosjektsiden, ressurspanelet i sceneeditoren, arbeidslisten, kontinuitetspanelet, stilprofiler, variantkort i Asset Studio, versjonssammenligning, utstillingskortet, velgeren for globale ressurser, mobilbiblioteket, «Legg til element», «Legg til lag», bildedialogen for lag og sporene/forhåndsvisningene i animasjonsvisningen.
+
+Story Lab, scenelisten, prosjektkort, tidslinjen, sporgrupper, naboscener, eksport- og PTG-dialoger, adminsiden og delingslenker viser bilder via `AssetThumb` (nå `Thumbnail`), via lerretet eller viser ingen bilder. Videoer bruker nettleserens standard (contain); ingen video har `object-cover`. Miniatyrer tegnet på lerret (rutenettet i scene-til-video) skaleres allerede med contain og sentrering.
+
+**Arkitekturtest:** `tests/unit/thumbnail-architecture.test.ts` feiler hvis en fil i src (utenom shadcn-grunnkomponentene) har en rå `<img>`, `object-cover`, `object-fill`, `bg-cover` eller `background-size: cover` utenfor unntakslisten, eller hvis et bilde selv har `aspect-square`.
+
+**Unntak og begrunnelse:**
+- `Thumbnail.tsx`: selve komponenten.
+- `ShowcaseBox.tsx`: rundt profilbilde (avatar); der er beskjæringen bevisst.
+- `QrCode.tsx`: QR-kode, ikke et ressursbilde.
+- `FaceMarkDialog.tsx`: markeringsflate der klikkene må treffe riktig sted; boksen har bildets egne proporsjoner, så `object-fill` forvrenger ikke.
+- `ImageLightbox.tsx`, `ImageViewer.tsx`: fullskjerm- og zoomvisning, ikke miniatyrer; viser hele bildet.
+- `HarmonizeCompare.tsx`: sammenligningsglider som trenger egen klippestil; viser hele bildet med contain.
+- `MouthShapeCapture.tsx`: munnformeditor der bildet flyttes, roteres og zoomes; viser hele bildet med contain.

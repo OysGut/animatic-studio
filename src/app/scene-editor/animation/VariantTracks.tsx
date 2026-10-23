@@ -1,3 +1,4 @@
+import { Thumbnail } from "@/app/shared/Thumbnail";
 import { useMemo, useRef, useState } from "react";
 import { Copy, ImagePlus, Pencil, Trash2 } from "lucide-react";
 import { layerFieldsOf, insertImageSegment, replaceImageSegment, removeImageSegment, moveImageSegment, trimImageSegment, variantsOf, versionsOf, type Command, type LayerFields, type ProjectState } from "@/core";
@@ -95,7 +96,7 @@ export function VariantTracks({ state, compositionId, occurrenceId, duration, vi
             <span data-testid={thumb && urls[thumb.mediaPath] ? "anim-layer-thumbnail" : "anim-layer-fallback"} data-asset-kind={assetKind ?? "prop"} className="flex size-6 shrink-0 items-center justify-center">{layer.assetId ? <AssetThumb state={state} assetId={layer.assetId} url={thumb ? urls[thumb.mediaPath] : undefined} size="sm" /> : <Fallback className="size-5 text-text-tertiary" />}</span>
             <span className="truncate">{layer.name}</span>
           </ToolbarButton></HoverCardTrigger>
-          {thumb && urls[thumb.mediaPath] ? <HoverCardContent className="w-60 p-0" side="right"><img data-testid="anim-layer-hover" className="max-h-60 w-60 object-contain" src={urls[thumb.mediaPath]} alt={layer.name} /></HoverCardContent> : null}
+          {thumb && urls[thumb.mediaPath] ? <HoverCardContent className="w-60 p-0" side="right"><Thumbnail data-testid="anim-layer-hover" className="max-h-60 w-60" src={urls[thumb.mediaPath]} alt={layer.name} /></HoverCardContent> : null}
         </HoverCard>
         <div className="relative min-w-0 flex-1 bg-surface-0">
           {segments.filter(s => s.end > active.from && s.start <= active.to && s.end > view.from && s.start < view.from + view.span).map(s => {
@@ -116,9 +117,9 @@ export function VariantTracks({ state, compositionId, occurrenceId, duration, vi
                 setDraft({ layerId: d.layerId, fields: d.next });
               }} onPointerUp={finish} onPointerCancel={() => { drag.current = null; setDraft(null); }}
               onKeyDown={e => { if (e.key === "Escape") { drag.current = null; setDraft(null); } }}>
-              {s.version && urls[s.version.mediaPath] ? <img src={urls[s.version.mediaPath]} alt="" className="h-full w-10 shrink-0 object-contain" /> : null}
+              {s.version && urls[s.version.mediaPath] ? <Thumbnail src={urls[s.version.mediaPath]} alt="" className="h-full w-10 shrink-0" /> : null}
               {end - start > 1 ? <span className="truncate px-1 text-xs">{name}</span> : null}
-              {s.version && urls[s.version.mediaPath] ? <img data-testid="anim-segment-hover" src={urls[s.version.mediaPath]} alt={name} className="pointer-events-none absolute bottom-full left-0 z-30 mb-2 hidden h-32 w-32 border border-border bg-surface-1 object-contain group-hover:block group-focus-visible:block" /> : null}
+              {s.version && urls[s.version.mediaPath] ? <Thumbnail data-testid="anim-segment-hover" src={urls[s.version.mediaPath]} alt={name} className="pointer-events-none absolute bottom-full left-0 z-30 mb-2 hidden h-32 w-32 border border-border bg-surface-1 group-hover:block group-focus-visible:block" /> : null}
               {editable && !layer.locked && s.end < duration ? <span data-testid="anim-segment-trim" role="separator" aria-label={tk("app-scene-editor-animation-variant-tracks.variant-tracks.aria-label.202d9160b65b")} className="absolute inset-y-0 right-0 w-2 cursor-ew-resize bg-border-control"
                 onPointerDown={e => { e.stopPropagation(); const width = e.currentTarget.parentElement?.parentElement?.clientWidth; if (!width) return; e.currentTarget.parentElement?.setPointerCapture(e.pointerId); drag.current = { layerId: layer.id, revision: layer.revision, index: s.index, kind: "trim", x: e.clientX, start: s.end, fields: layerFieldsOf(layer), width }; }} /> : null}
             </ToolbarButton>;

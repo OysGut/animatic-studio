@@ -4,6 +4,7 @@
  * «Ny versjon finnes – oppdater?». Redaktører kan legge til ressurser, varianter og versjoner; eieren kan
  * arkivere. Ingenting i prosjektet endres automatisk (§9).
  */
+import { Thumbnail } from "@/app/shared/Thumbnail";
 import { Link } from "@tanstack/react-router";
 import { useMemo, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -36,7 +37,7 @@ const select =
 function Preview({ v, url }: { v: GlobalVersion; url: string | undefined }) {
   if (!url) return <div className="size-16 rounded-sm bg-surface-3" aria-hidden />;
   if (v.mimeType.startsWith("image/"))
-    return <img src={url} alt="" className="max-h-32 max-w-[12rem] rounded-sm object-contain" />;
+    return <Thumbnail src={url} alt="" className="max-h-32 max-w-[12rem] rounded-sm" />;
   if (v.mimeType.startsWith("audio/"))
     return <audio controls src={url} className="w-56" data-testid="global-audio-preview" />;
   if (v.mimeType.startsWith("video/"))
@@ -324,7 +325,7 @@ export function GlobalLibraryDialog({
                         }`}
                       >
                         {v?.mimeType.startsWith("image/") && urls.data?.[v.storageKey] ? (
-                          <img src={urls.data[v.storageKey]} alt="" className="size-10 rounded-sm object-contain" />
+                          <Thumbnail src={urls.data[v.storageKey]} alt="" className="size-10 rounded-sm" />
                         ) : (
                           <span className="size-10 rounded-sm bg-surface-3" aria-hidden />
                         )}

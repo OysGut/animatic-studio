@@ -6,6 +6,7 @@
  *
  * Lag uten ressurs (fargeflater) kan kobles til en ressurs fra biblioteket her.
  */
+import { Thumbnail } from "@/app/shared/Thumbnail";
 import { Link } from "@tanstack/react-router";
 import {
   Check,
@@ -819,7 +820,7 @@ export function Thumb({ url }: { url: string | undefined }) {
     <span className="flex h-20 items-center justify-center bg-surface-3">
       {url ? (
         // Litt luft rundt, så en tett beskåret figur ikke slår i kanten (DEC-0080)
-        <img src={url} alt="" className="h-full w-full object-contain p-1.5" draggable={false} />
+        <Thumbnail src={url} alt="" className="h-full w-full p-1.5" draggable={false} />
       ) : (
         <ImageOff className="size-5 text-text-tertiary" aria-hidden />
       )}

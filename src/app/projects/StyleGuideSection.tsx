@@ -4,6 +4,7 @@
  * skal unngås og forbildebilder. Brukes i alle bildebeskrivelser. Utkastet kan foreslås fra prosjektet, og
  * forhåndsvisningen viser hvordan en beskrivelse blir.
  */
+import { Thumbnail } from "@/app/shared/Thumbnail";
 import { useImagePromptPreview } from "@/app/library/image-prompt-preview";
 import { useMemo, useState } from "react";
 import { ClipboardList, Loader2, Palette, Plus, ScanSearch, Trash2 } from "lucide-react";
@@ -700,10 +701,10 @@ export function StyleGuideDialog({
                         >
                           <span className="flex h-20 items-center justify-center overflow-hidden bg-surface-3">
                             {url ? (
-                              <img
+                              <Thumbnail
                                 src={url}
                                 alt=""
-                                className="max-h-full max-w-full object-contain"
+                                
                               />
                             ) : null}
                           </span>

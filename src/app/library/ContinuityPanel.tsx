@@ -3,6 +3,7 @@
  * hendelser som endrer utseendet (hårklipp, kostyme, skade …), forslag fra manuset som må godkjennes
  * eller avvises, og en tidslinje over scenene i fortellingsrekkefølge med utseendet i hver scene.
  */
+import { Thumbnail } from "@/app/shared/Thumbnail";
 import { SceneSelect, mainOccurrenceOfScene } from "@/app/shell/SceneSelect";
 import { ArrowRight, Check, Clock, Lightbulb, Pencil, Plus, Trash2, Undo2, X } from "lucide-react";
 import { useMemo, useState, type ReactNode } from "react";
@@ -538,10 +539,10 @@ export function ContinuityPanel({
                   </span>
                   <span className="flex items-center gap-1.5 text-text-secondary">
                     {url ? (
-                      <img
+                      <Thumbnail
                         src={url}
                         alt=""
-                        className="size-6 rounded-sm bg-surface-3 object-contain"
+                        className="size-6 rounded-sm bg-surface-3"
                       />
                     ) : null}
                     {look ? variantName(look) : t("app-library-continuity-panel.continuity-panel.span.7c48db48aef3")}

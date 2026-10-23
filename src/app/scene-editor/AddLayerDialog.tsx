@@ -1,6 +1,7 @@
 /**
  * Legg til lag i 2D-scenen: bilder fra ressursbiblioteket (ett eller flere samtidig) eller en fargeflate.
  */
+import { Thumbnail } from "@/app/shared/Thumbnail";
 import { AssetSymbolIcon } from "@/app/library/AssetSymbolIcon";
 import { Check, Search } from "lucide-react";
 import { useMemo, useState } from "react";
@@ -269,7 +270,7 @@ export function AddLayerDialog({
                         >
                           <span className="relative flex aspect-[4/3] w-full items-center justify-center overflow-hidden rounded-sm bg-surface-3">
                             {url ? (
-                              <img src={url} alt="" className="size-full object-contain" />
+                              <Thumbnail src={url} alt="" className="size-full" />
                             ) : (
                               <AssetSymbolIcon
                                 state={state}

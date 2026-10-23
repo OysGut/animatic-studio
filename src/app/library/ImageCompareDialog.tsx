@@ -2,6 +2,7 @@
  * Sammenlign to bildeversjoner side ved side (mandat 19.7, REQ-0258, REQ-0285, REQ-0318, DEC-0070): for
  * kandidater fra AI eller tidligere og nye versjoner. «Godkjenn» velger versjonen uten å slette den andre.
  */
+import { Thumbnail } from "@/app/shared/Thumbnail";
 import { Check } from "lucide-react";
 import { locale, type AssetVersion } from "@/core";
 import { Button } from "@/components/ui/button";
@@ -49,10 +50,10 @@ export function ImageCompareDialog({
             <figure key={v.id} className="flex flex-col gap-1.5">
               <div className="flex h-[60vh] items-center justify-center bg-surface-3 [background-image:repeating-conic-gradient(var(--color-surface-2)_0_25%,transparent_0_50%)] [background-size:16px_16px]">
                 {urls[v.mediaPath] ? (
-                  <img
+                  <Thumbnail
                     src={urls[v.mediaPath]}
                     alt={t("app-library-image-compare-dialog.image-compare-dialog.alt.adccf792faee", { number: String(v.number) })}
-                    className="max-h-full max-w-full object-contain"
+                    
                   />
                 ) : null}
               </div>

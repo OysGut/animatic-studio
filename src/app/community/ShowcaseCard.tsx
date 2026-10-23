@@ -2,6 +2,7 @@
  * B-116: kortet som viser ett bidrag – likt i karusellen, i forhåndsvisningen før deling,
  * på «Mine delinger» og i admin-køen, slik at forhåndsvisningen er nøyaktig lik visningen.
  */
+import { Thumbnail } from "@/app/shared/Thumbnail";
 import { Film, Music, FileText } from "lucide-react";
 import type { ShowcaseItem } from "@/core/community";
 import { t } from "@/core/i18n/keyed";
@@ -15,7 +16,7 @@ export function ShowcaseCard({ item, testId = "showcase-card" }: { item: Pick<Sh
           <p className="whitespace-pre-line text-[13px] italic text-text-secondary">{item.excerpt}</p>
         </div>
       ) : item.url && item.mime?.startsWith("image/") ? (
-        <img src={item.url} alt={item.title} className="max-h-48 w-full bg-surface-2 object-contain" />
+        <Thumbnail src={item.url} alt={item.title} className="max-h-48 w-full bg-surface-2" />
       ) : item.url && item.mime?.startsWith("video/") ? (
         <video src={item.url} className="max-h-48 w-full bg-surface-2" controls muted playsInline preload="metadata" />
       ) : item.url && item.mime?.startsWith("audio/") ? (
