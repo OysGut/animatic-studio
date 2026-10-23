@@ -7971,7 +7971,7 @@ try {
   await test("0094 G-3.6: budsjettperioden følger arbeidsgruppens tidssone rundt midnatt og månedsskifte", async () => {
     const pid = String((await as("authenticated", ALICE, (tx) => tx`select public.create_project('G3', 25, 1, 'ja') id`))[0]?.["id"]);
     const start = async (unit: string, at: string) =>
-      new Date(String((await as("service_role", null, (tx) => tx`select private.budget_period_start(${pid}, ${unit}, ${at}::timestamptz) s`))[0]!["s"])).toISOString();
+      new Date(String((await sql`select private.budget_period_start(${pid}, ${unit}, ${at}::timestamptz) s`)[0]!["s"])).toISOString();
     // Uten tidssone: UTC
     assert((await start("day", "2026-01-31T23:30:00Z")) === "2026-01-31T00:00:00.000Z", "utc dag");
     // Brukerens tidssone (ingen arbeidsgruppe): Auckland er UTC+13 i januar
