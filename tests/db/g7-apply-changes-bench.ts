@@ -53,7 +53,7 @@ try {
       project_id: project,
       variant_id: variant,
       kind: "dialogue",
-      order_key: `k${String(b * BATCH + i).padStart(8, "0")}`,
+      order_key: `k${String(b * BATCH + i).padStart(8, "0")}1`,
       text: `Replikk nummer ${b * BATCH + i}`,
       revision: 1,
     }));
