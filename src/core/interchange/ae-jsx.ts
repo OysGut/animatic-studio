@@ -133,7 +133,7 @@ function emitLayer(out: string[], doc: InterchangeDoc, shot: Shot, layer: LayerT
     frames.forEach((f, k) => {
       const ref = files[k] ? refs.get(files[k]!) : null;
       if (!ref) { out.push(`// missing media for swap ${k} in ${js(navn)}`); return; }
-      out.push(`var e${i}_${k} = skift${i}.layers.add(media[${js(ref)}]);`);
+      out.push(`var e${i}_${k} = ptgLag(skift${i}, ${js(ref)}, ${js(navn)}, ${Math.round(src.width)}, ${Math.round(src.height)}, ${len}, false);`);
       out.push(`e${i}_${k}.startTime = ${r6(sec(doc, f))}; e${i}_${k}.inPoint = ${r6(sec(doc, f))}; e${i}_${k}.outPoint = ${r6(sec(doc, ends[k] ?? shot.lengthFrames))};`);
       const tr = layer.swaps[k - 1]?.transition;
       if (tr && tr.frames > 0) {
@@ -145,7 +145,7 @@ function emitLayer(out: string[], doc: InterchangeDoc, shot: Shot, layer: LayerT
   } else if (src.kind === "group") {
     out.push(`var ${v} = comp.layers.addNull();`); // grupper er null-foreldre
   } else if (layer.fileId && refs.get(layer.fileId)) {
-    out.push(`var ${v} = comp.layers.add(media[${js(refs.get(layer.fileId)!)}]);`);
+    out.push(`var ${v} = ptgLag(comp, ${js(refs.get(layer.fileId)!)}, ${js(navn)}, ${Math.round(src.width)}, ${Math.round(src.height)}, ${len}, false);`);
   } else if (src.fill) {
     out.push(`var ${v} = comp.layers.addSolid(${js(color(src.fill))}, ${js(navn)}, ${Math.max(1, Math.round(src.width))}, ${Math.max(1, Math.round(src.height))}, 1, ${len});`);
   } else {
@@ -256,7 +256,7 @@ function emitShot(out: string[], doc: InterchangeDoc, shot: Shot, refs: Readonly
   shot.audio.forEach((a, i) => {
     const ref = a.fileId ? refs.get(a.fileId) : null;
     if (!ref) { out.push(`// audio ${js(a.source.name)} has no file`); return; }
-    out.push(`var aud${i} = comp.layers.add(media[${js(ref)}]); aud${i}.name = ${js(shot.name + "_" + a.source.name)};`);
+    out.push(`var aud${i} = ptgLag(comp, ${js(ref)}, ${js(shot.name + "_" + a.source.name)}, 100, 100, ${r6(sec(doc, shot.lengthFrames))}, true); aud${i}.name = ${js(shot.name + "_" + a.source.name)};`);
     out.push(`aud${i}.startTime = ${r6(sec(doc, a.startFrame))};`);
     const keys = a.volumeKeys.length > 0 ? a.volumeKeys : [{ frame: 0, db: 0 }];
     out.push(`ptgNokkler(aud${i}.property("Audio Levels"), ${js(keys.map(k => r6(sec(doc, a.startFrame + k.frame))))}, ${js(keys.map(k => [r6(k.db + a.gain), r6(k.db + a.gain)]))}, ${js(keys.map(() => 0))}, ${js(keys.map(() => 0))}, ${js(keys.map(() => false))});`);
@@ -297,7 +297,7 @@ function emitTitleCard(out: string[], doc: InterchangeDoc, name: string, lenFram
   out.push(`ptgTekst(tk, ${js(tc.filmTitle)}, ${r6(h * 0.06)}, [${r6(w / 2)}, ${r6(h * 0.13)}], ${js(CARD_FG)}, null);`);
   if (scene) out.push(`ptgTekst(tk, ${js(scene)}, ${r6(h * 0.038)}, [${r6(w / 2)}, ${r6(h * 0.2)}], ${js(CARD_ACCENT)}, null);`);
   if (qr) {
-    out.push(`var qr = tk.layers.add(media[${js(qr)}]); qr.property("Position").setValue([${r6(w / 2)}, ${r6(h * 0.48)}]);`);
+    out.push(`var qr = ptgLag(tk, ${js(qr)}, "QR", 200, 200, ${card}, false); qr.property("Position").setValue([${r6(w / 2)}, ${r6(h * 0.48)}]);`);
     out.push(`var qs = 100 * ${r6(h * 0.44)} / qr.source.height; qr.property("Scale").setValue([qs, qs]);`);
     out.push(`ptgTekst(tk, ${js(tc.explain)}, ${r6(h * 0.026)}, [${r6(w / 2)}, ${r6(h * 0.8)}], ${js(CARD_FG)}, [${r6(w * 0.7)}, ${r6(h * 0.1)}]);`);
   }
@@ -319,9 +319,12 @@ export interface AeJsxMessages {
   readonly saveFailed: string;
   /** Vises når skriptet åpnes i et annet Adobe-program enn After Effects; ingenting bygges. */
   readonly wrongHost: string;
+  /** Vises til slutt over listen med filer AE ikke kunne importere; lagene fikk plassholdere. */
+  readonly importFailed: string;
 }
 export const AE_JSX_DEFAULT_MESSAGES: AeJsxMessages = {
   missing: "These files are missing next to bygg-after-effects.jsx, so the build stops:",
+  importFailed: "After Effects could not import these files. The layers got grey placeholders with the same name, so structure and keyframes are built:",
   // i18n-ignore: standardtekst for tester; eksportøren setter inn nb og en via t()
   wrongHost: "This script must be run in After Effects. Use the launcher \"Åpne i After Effects\" in the same folder.",
   saveFailed: "The project was built but could not be saved. Turn on Preferences > Scripting & Expressions > \"Allow Scripts to Write Files and Access Network\" and run the script again.",
@@ -333,6 +336,7 @@ export const aeProjectFileName = (doc: InterchangeDoc): string => `${doc.project
 export function buildAeJsx(doc: InterchangeDoc, o: { readonly cameraMode: AeCameraMode; readonly titleCards?: AeTitleCards | null; readonly messages?: AeJsxMessages }): string {
   const msg = o.messages ?? AE_JSX_DEFAULT_MESSAGES;
   const refs = new Map(doc.references.map(r => [r.id, r.path]));
+  const sequences = new Set(doc.references.filter(r => r.sequence).map(r => r.path));
   const tc = o.titleCards ?? null;
   const used = new Set<string>();
   for (const s of doc.shots) {
@@ -372,17 +376,32 @@ export function buildAeJsx(doc: InterchangeDoc, o: { readonly cameraMode: AeCame
     "try { ptgBase = new File($.fileName).parent.fsName; } catch (e) {}",
     "try { Folder.current = new Folder(ptgBase); } catch (e) {}",
     "var ptgMangler = [];",
-    "function ptgImport(rel) {",
+    "var ptgFeilet = [];",
+    // Hver import i try/catch: ett medium AE ikke tåler skal aldri stoppe byggingen
+    "function ptgImport(rel, seq) {",
     "  var f = new File(ptgBase + \"/\" + rel);",
     "  if (f.exists === false) { ptgMangler.push(rel); return null; }",
-    "  return app.project.importFile(new ImportOptions(f));",
+    "  try {",
+    "    var io = new ImportOptions(f);",
+    "    if (seq) { io.sequence = true; io.forceAlphabetical = true; }",
+    "    var it = app.project.importFile(io);",
+    `    if (seq) { try { it.mainSource.conformFrameRate = ${r6(fpsFloat(doc))}; } catch (e2) {} }`,
+    "    return it;",
+    "  } catch (e) { ptgFeilet.push(rel); return null; }",
+    "}",
+    // Mangler mediet (import feilet), får laget en grå solid med navnet, så nøkkelbildene likevel bygges
+    "function ptgLag(c, rel, navn, w, h, d, lyd) {",
+    "  if (media[rel]) return c.layers.add(media[rel]);",
+    "  var l = c.layers.addSolid([0.5, 0.5, 0.5], navn + \" (\" + rel + \")\", Math.max(1, w), Math.max(1, h), 1, d);",
+    "  if (lyd) { try { l.enabled = false; } catch (e) {} }",
+    "  return l;",
     "}",
     "app.beginUndoGroup(\"From Pen to Glass\");",
     `var rot = app.project.items.addFolder(${js(doc.project.code)});`,
     "var media = {};",
     ...[...[...used].filter(id => refs.has(id)).map(id => refs.get(id)!), ...(tc ? doc.shots.map(s => tc.qrPath(s)) : [])].map(path => {
       const p = js(path);
-      return `media[${p}] = ptgImport(${p});`;
+      return `media[${p}] = ptgImport(${p}, ${sequences.has(path) ? "true" : "false"});`;
     }),
     `if (ptgMangler.length > 0) { ptgVarsel(${js(msg.missing)} + "\\n\\n" + ptgMangler.join("\\n")); app.endUndoGroup(); throw new Error("From Pen to Glass: missing files"); }`,
     `var hoved = app.project.items.addComp(${js(doc.project.code + "_hoved")}, ${doc.frameSize.width}, ${doc.frameSize.height}, 1, ${r6(sec(doc, doc.lengthFrames))}, ${r6(fpsFloat(doc))});`,
@@ -394,6 +413,7 @@ export function buildAeJsx(doc: InterchangeDoc, o: { readonly cameraMode: AeCame
   }
   if (tc) emitTitleCard(out, doc, doc.project.code + "_hoved", doc.lengthFrames, "hoved", tc, null, null);
   out.push("app.endUndoGroup();");
+  out.push(`if (ptgFeilet.length > 0) ptgVarsel(${js(msg.importFailed)} + "\\n\\n" + ptgFeilet.join("\\n"));`);
   // Etter første kjøring kan brukeren dobbeltklikke .aep-filen direkte
   out.push(`try { app.project.save(new File(ptgBase + "/" + ${js(aeProjectFileName(doc))})); } catch (e) { ptgVarsel(${js(msg.saveFailed)}); }`);
   out.push("}");
