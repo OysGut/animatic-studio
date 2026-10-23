@@ -5,6 +5,7 @@
 import { MessageSquare } from "lucide-react";
 import { memo, useMemo, type ReactNode } from "react";
 import { flowLines, lineKey, type LineDecor, type Page, type PageLine, type ProjectState, tm } from "@/core";
+import { isRtlText } from "@/core/rtl";
 import { useLanguage } from "@/app/i18n/language";
 import { t } from "@/core/i18n/keyed";
 
@@ -361,7 +362,11 @@ function Line({
         }
         style={{
           top,
-          left: `${line.left * CHAR_EM}em`,
+          // G-4: RTL-linjer forankres i høyre kant av den speilvendte kolonnen (85 tegn = 51 em / 0,6 em),
+          // slik at marg og innrykk speiles for arabisk/hebraisk. LTR er uendret.
+          ...(isRtlText(line.text)
+            ? { right: `${(85 - line.left) * CHAR_EM}em`, direction: "rtl" as const }
+            : { left: `${line.left * CHAR_EM}em` }),
           minWidth: line.text ? undefined : "1ch",
           height: "1em",
           // Valgt scene vises øverst i visningen, med litt luft over
