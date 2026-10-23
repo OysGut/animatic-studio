@@ -11508,7 +11508,17 @@
     },
     "g1b.poster.fallback-placeholder": {
       "replaces": [
-        "app-release-poster-inspector.bilingual.placeholder.701d079a0cb5"
+        "app-release-poster-dialogs.export-poster-dialog.option.2ba2c82ca3fa",
+        "app-release-poster-dialogs.export-poster-dialog.option.7d645d203fe3",
+        "app-release-poster-dialogs.new-poster-dialog.option.39e4c15e4b70",
+        "app-release-poster-dialogs.new-poster-dialog.option.e3870b997183",
+        "app-release-poster-inspector.bilingual.label.2f1aee6df04c",
+        "app-release-poster-inspector.bilingual.label.e68a78963db2",
+        "app-release-poster-inspector.bilingual.placeholder.701d079a0cb5",
+        "app-release-poster-inspector.poster-settings.option.cf6b065837cf",
+        "app-release-poster-inspector.poster-settings.option.e6ed30832c1c",
+        "app-release-poster-workspace.release.option.c8bb36bc83a1",
+        "app-release-poster-workspace.release.option.cad6bb633625"
       ],
       "nb": {
         "text": "Tom: teksten på {language} brukes"
