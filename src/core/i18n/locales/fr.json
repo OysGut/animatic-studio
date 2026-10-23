@@ -55855,5 +55855,25 @@
     "text": "Formes de bouche par image pour les animateurs et l’atelier des rigs.",
     "sourceHash": "5171a7213230676184f6461d6d6b712fed2f0771e520925a6438caf527fca5fd",
     "review": "machine"
+  },
+  "ptg3.ae-missing": {
+    "text": "Ces fichiers manquent à côté de bygg.jsx, la construction s’arrête donc :",
+    "sourceHash": "28b6792a4adc701e98a312ae2111d7440319b66dd3bb16846001f53fcc6959a4",
+    "review": "machine"
+  },
+  "ptg3.ae-save-failed": {
+    "text": "Le projet a été construit mais n’a pas pu être enregistré. Activez Preferences > Scripting & Expressions > « Allow Scripts to Write Files and Access Network » puis relancez le script.",
+    "sourceHash": "dc7a6ad39901dae5d1459ad03cfe91ea423b826b576e2076de329175d0ca5342",
+    "review": "machine"
+  },
+  "ptg3.ae-not-found": {
+    "text": "Adobe After Effects est introuvable. Ouvrez After Effects, choisissez File > Scripts > Run Script File et sélectionnez bygg.jsx dans ce dossier.",
+    "sourceHash": "02abe0dbac8a2f294779195c01bda4a1ecab3b0344f81856db87a16e8d11262b",
+    "review": "machine"
+  },
+  "ptg3.readme-ae-open": {
+    "text": "Trois façons d’ouvrir le paquet : 1) Décompressez le ZIP et double-cliquez sur « Åpne i After Effects (Windows).bat » ou « Åpne i After Effects (Mac).command ». 2) Ou ouvrez After Effects et choisissez File > Scripts > Run Script File puis bygg.jsx. 3) Le script enregistre le projet sous {value1} dans le même dossier ; ensuite, vous pouvez double-cliquer directement sur ce fichier. L’enregistrement exige « Allow Scripts to Write Files and Access Network » dans Preferences > Scripting & Expressions. Les transitions entre scènes et les calques de texte ne sont pas recréés. Nous ne pouvons pas créer le fichier .aep directement, car le format est fermé ; c’est pourquoi le script le construit dans After Effects.",
+    "sourceHash": "68a7b29c58647ce9f0b9a077b1c1c66a17311760af1162937d2337d6df84069b",
+    "review": "machine"
   }
 }

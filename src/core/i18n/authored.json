@@ -10941,6 +10941,38 @@
       "en": {
         "text": "Mouth shapes per frame for animators and the rig workshop."
       }
+    },
+    "ptg3.ae-missing": {
+      "nb": {
+        "text": "Disse filene mangler ved siden av bygg.jsx, så byggingen stopper:"
+      },
+      "en": {
+        "text": "These files are missing next to bygg.jsx, so the build stops:"
+      }
+    },
+    "ptg3.ae-save-failed": {
+      "nb": {
+        "text": "Prosjektet er bygget, men kunne ikke lagres. Slå på Preferences > Scripting & Expressions > «Allow Scripts to Write Files and Access Network», og kjør skriptet på nytt."
+      },
+      "en": {
+        "text": "The project was built but could not be saved. Turn on Preferences > Scripting & Expressions > “Allow Scripts to Write Files and Access Network” and run the script again."
+      }
+    },
+    "ptg3.ae-not-found": {
+      "nb": {
+        "text": "Fant ikke Adobe After Effects. Åpne After Effects selv og velg File > Scripts > Run Script File, og velg bygg.jsx i denne mappen."
+      },
+      "en": {
+        "text": "Could not find Adobe After Effects. Open After Effects yourself, choose File > Scripts > Run Script File and pick bygg.jsx in this folder."
+      }
+    },
+    "ptg3.readme-ae-open": {
+      "nb": {
+        "text": "Tre måter å åpne pakken på: 1) Pakk ut ZIP-filen og dobbeltklikk «Åpne i After Effects (Windows).bat» eller «Åpne i After Effects (Mac).command». 2) Eller åpne After Effects og velg File > Scripts > Run Script File og bygg.jsx. 3) Skriptet lagrer prosjektet som {value1} i samme mappe; etterpå kan du dobbeltklikke den filen direkte. For lagringen må «Allow Scripts to Write Files and Access Network» være slått på i Preferences > Scripting & Expressions. Overganger mellom scener og tekstlag gjenskapes ikke. Vi kan ikke lage .aep-filen direkte, fordi formatet er lukket; derfor bygger skriptet den inne i After Effects."
+      },
+      "en": {
+        "text": "Three ways to open the package: 1) Unzip the file and double-click “Åpne i After Effects (Windows).bat” or “Åpne i After Effects (Mac).command”. 2) Or open After Effects and choose File > Scripts > Run Script File and bygg.jsx. 3) The script saves the project as {value1} in the same folder; afterwards you can double-click that file directly. Saving requires “Allow Scripts to Write Files and Access Network” in Preferences > Scripting & Expressions. Transitions between scenes and text layers are not recreated. We cannot create the .aep file directly because the format is closed; that is why the script builds it inside After Effects."
+      }
     }
   }
 }

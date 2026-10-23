@@ -55781,5 +55781,25 @@
     "text": "Mundformen pro Bild für Animatoren und die Rigwerkstatt.",
     "sourceHash": "5171a7213230676184f6461d6d6b712fed2f0771e520925a6438caf527fca5fd",
     "review": "machine"
+  },
+  "ptg3.ae-missing": {
+    "text": "Diese Dateien fehlen neben bygg.jsx, daher wird der Aufbau abgebrochen:",
+    "sourceHash": "28b6792a4adc701e98a312ae2111d7440319b66dd3bb16846001f53fcc6959a4",
+    "review": "machine"
+  },
+  "ptg3.ae-save-failed": {
+    "text": "Das Projekt wurde aufgebaut, konnte aber nicht gespeichert werden. Aktivieren Sie Preferences > Scripting & Expressions > „Allow Scripts to Write Files and Access Network“ und führen Sie das Skript erneut aus.",
+    "sourceHash": "dc7a6ad39901dae5d1459ad03cfe91ea423b826b576e2076de329175d0ca5342",
+    "review": "machine"
+  },
+  "ptg3.ae-not-found": {
+    "text": "Adobe After Effects wurde nicht gefunden. Öffnen Sie After Effects selbst, wählen Sie File > Scripts > Run Script File und dann bygg.jsx in diesem Ordner.",
+    "sourceHash": "02abe0dbac8a2f294779195c01bda4a1ecab3b0344f81856db87a16e8d11262b",
+    "review": "machine"
+  },
+  "ptg3.readme-ae-open": {
+    "text": "Drei Wege, das Paket zu öffnen: 1) ZIP entpacken und „Åpne i After Effects (Windows).bat“ oder „Åpne i After Effects (Mac).command“ doppelklicken. 2) Oder After Effects öffnen und File > Scripts > Run Script File und bygg.jsx wählen. 3) Das Skript speichert das Projekt als {value1} im selben Ordner; danach können Sie diese Datei direkt doppelklicken. Zum Speichern muss „Allow Scripts to Write Files and Access Network“ unter Preferences > Scripting & Expressions aktiviert sein. Übergänge zwischen Szenen und Textebenen werden nicht neu erstellt. Die .aep-Datei kann nicht direkt erzeugt werden, weil das Format geschlossen ist; deshalb baut das Skript sie in After Effects.",
+    "sourceHash": "68a7b29c58647ce9f0b9a077b1c1c66a17311760af1162937d2337d6df84069b",
+    "review": "machine"
   }
 }

@@ -311,7 +311,23 @@ function emitTitleCard(out: string[], doc: InterchangeDoc, name: string, lenFram
 /**
  * Hele bygg.jsx (ES3). `doc.references` gir fil-ID → relativ sti i pakken; bare media som brukes importeres.
  */
-export function buildAeJsx(doc: InterchangeDoc, o: { readonly cameraMode: AeCameraMode; readonly titleCards?: AeTitleCards | null }): string {
+/** Varsler i bygg.jsx (begge språk settes inn av eksportøren; standard er engelsk). */
+export interface AeJsxMessages {
+  /** Vises over listen med filer som mangler ved siden av bygg.jsx; bygget stopper. */
+  readonly missing: string;
+  /** Vises når prosjektet ikke kan lagres som .aep (skriptrettigheter av); bygget beholdes. */
+  readonly saveFailed: string;
+}
+export const AE_JSX_DEFAULT_MESSAGES: AeJsxMessages = {
+  missing: "These files are missing next to bygg.jsx, so the build stops:",
+  saveFailed: "The project was built but could not be saved. Turn on Preferences > Scripting & Expressions > \"Allow Scripts to Write Files and Access Network\" and run the script again.",
+};
+
+/** Filnavnet bygg.jsx lagrer prosjektet som, i pakkemappen. */
+export const aeProjectFileName = (doc: InterchangeDoc): string => `${doc.project.code}.aep`;
+
+export function buildAeJsx(doc: InterchangeDoc, o: { readonly cameraMode: AeCameraMode; readonly titleCards?: AeTitleCards | null; readonly messages?: AeJsxMessages }): string {
+  const msg = o.messages ?? AE_JSX_DEFAULT_MESSAGES;
   const refs = new Map(doc.references.map(r => [r.id, r.path]));
   const tc = o.titleCards ?? null;
   const used = new Set<string>();
@@ -342,13 +358,25 @@ export function buildAeJsx(doc: InterchangeDoc, o: { readonly cameraMode: AeCame
     "  try { d.font = \"Inter-Regular\"; } catch (e) {}",
     "  p.setValue(d); l.property(\"Position\").setValue(pos); return l;",
     "}",
+    // Relative stier løses mot skriptets egen mappe, ikke Folder.current (som kan være en annen mappe)
+    "var ptgBase = \".\";",
+    "try { ptgBase = new File($.fileName).parent.fsName; } catch (e) {}",
+    "try { Folder.current = new Folder(ptgBase); } catch (e) {}",
+    "function ptgVarsel(s) { try { alert(s); } catch (e) {} }",
+    "var ptgMangler = [];",
+    "function ptgImport(rel) {",
+    "  var f = new File(ptgBase + \"/\" + rel);",
+    "  if (f.exists === false) { ptgMangler.push(rel); return null; }",
+    "  return app.project.importFile(new ImportOptions(f));",
+    "}",
     "app.beginUndoGroup(\"From Pen to Glass\");",
     `var rot = app.project.items.addFolder(${js(doc.project.code)});`,
     "var media = {};",
     ...[...[...used].filter(id => refs.has(id)).map(id => refs.get(id)!), ...(tc ? doc.shots.map(s => tc.qrPath(s)) : [])].map(path => {
       const p = js(path);
-      return `media[${p}] = app.project.importFile(new ImportOptions(new File(${p})));`;
+      return `media[${p}] = ptgImport(${p});`;
     }),
+    `if (ptgMangler.length > 0) { ptgVarsel(${js(msg.missing)} + "\\n\\n" + ptgMangler.join("\\n")); app.endUndoGroup(); throw new Error("From Pen to Glass: missing files"); }`,
     `var hoved = app.project.items.addComp(${js(doc.project.code + "_hoved")}, ${doc.frameSize.width}, ${doc.frameSize.height}, 1, ${r6(sec(doc, doc.lengthFrames))}, ${r6(fpsFloat(doc))});`,
     "hoved.parentFolder = rot;",
   ];
@@ -358,5 +386,7 @@ export function buildAeJsx(doc: InterchangeDoc, o: { readonly cameraMode: AeCame
   }
   if (tc) emitTitleCard(out, doc, doc.project.code + "_hoved", doc.lengthFrames, "hoved", tc, null, null);
   out.push("app.endUndoGroup();");
+  // Etter første kjøring kan brukeren dobbeltklikke .aep-filen direkte
+  out.push(`try { app.project.save(new File(ptgBase + "/" + ${js(aeProjectFileName(doc))})); } catch (e) { ptgVarsel(${js(msg.saveFailed)}); }`);
   return out.join("\n") + "\n";
 }

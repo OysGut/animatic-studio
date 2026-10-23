@@ -287,6 +287,7 @@ B-087: REQ-0879–REQ-0895 (Rigg & 2D-utskrift, A1–A17) og REQ-0896–REQ-0915
 - Menneskelig vurdering av harmoniserte bilder: REQ-0139. VP9 med alfa i ekte nettleser: REQ-0839.
 - Ekte nøkler mot leverandørene (KI-153, KI-193, KI-204, KI-213), sperring/sletting av konto (KI-215), opprydding mot ekte lagring (KI-207).
 - Ekte programimport: Dragonframe (PTG2/PTG5), Resolve/Premiere/Avid (PTG6), Nuke/Fusion (PTG7), After Effects/FBX (PTG3), Moho/Papagayo (PTG4), fysisk riggutskrift.
+- After Effects «dobbeltklikk og åpne» (PTG3): startfilene på Windows og Mac, basemappe for medier og lagring som .aep. Sjekkliste i docs/development/AE_AAPNE_REPORT.md (Øystein eller Trollfilm).
 
 ### Teknisk gjeld
 - Plassholder → bilde (23.10): lag i Asset Studio-utkast tilpasses ikke automatisk (utkastet lagrer egne lagfelter); allerede forvrengte lag rettes bare med «Nullstill format». Se docs/development/PLASSHOLDER_FIX_REPORT.md.

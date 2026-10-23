@@ -75641,5 +75641,17 @@
   },
   "ptg.card.mouth.desc": {
     "text": "Mouth shapes per frame for animators and the rig workshop."
+  },
+  "ptg3.ae-missing": {
+    "text": "These files are missing next to bygg.jsx, so the build stops:"
+  },
+  "ptg3.ae-save-failed": {
+    "text": "The project was built but could not be saved. Turn on Preferences > Scripting & Expressions > “Allow Scripts to Write Files and Access Network” and run the script again."
+  },
+  "ptg3.ae-not-found": {
+    "text": "Could not find Adobe After Effects. Open After Effects yourself, choose File > Scripts > Run Script File and pick bygg.jsx in this folder."
+  },
+  "ptg3.readme-ae-open": {
+    "text": "Three ways to open the package: 1) Unzip the file and double-click “Åpne i After Effects (Windows).bat” or “Åpne i After Effects (Mac).command”. 2) Or open After Effects and choose File > Scripts > Run Script File and bygg.jsx. 3) The script saves the project as {value1} in the same folder; afterwards you can double-click that file directly. Saving requires “Allow Scripts to Write Files and Access Network” in Preferences > Scripting & Expressions. Transitions between scenes and text layers are not recreated. We cannot create the .aep file directly because the format is closed; that is why the script builds it inside After Effects."
   }
 }

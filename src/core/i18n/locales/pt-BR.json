@@ -55855,5 +55855,25 @@
     "text": "Formas de boca por quadro para animadores e a oficina de rigs.",
     "sourceHash": "5171a7213230676184f6461d6d6b712fed2f0771e520925a6438caf527fca5fd",
     "review": "machine"
+  },
+  "ptg3.ae-missing": {
+    "text": "Estes arquivos estão faltando ao lado de bygg.jsx, então a montagem para:",
+    "sourceHash": "28b6792a4adc701e98a312ae2111d7440319b66dd3bb16846001f53fcc6959a4",
+    "review": "machine"
+  },
+  "ptg3.ae-save-failed": {
+    "text": "O projeto foi montado, mas não pôde ser salvo. Ative Preferences > Scripting & Expressions > “Allow Scripts to Write Files and Access Network” e execute o script novamente.",
+    "sourceHash": "dc7a6ad39901dae5d1459ad03cfe91ea423b826b576e2076de329175d0ca5342",
+    "review": "machine"
+  },
+  "ptg3.ae-not-found": {
+    "text": "Adobe After Effects não foi encontrado. Abra o After Effects, escolha File > Scripts > Run Script File e selecione bygg.jsx nesta pasta.",
+    "sourceHash": "02abe0dbac8a2f294779195c01bda4a1ecab3b0344f81856db87a16e8d11262b",
+    "review": "machine"
+  },
+  "ptg3.readme-ae-open": {
+    "text": "Três formas de abrir o pacote: 1) Descompacte o ZIP e clique duas vezes em “Åpne i After Effects (Windows).bat” ou “Åpne i After Effects (Mac).command”. 2) Ou abra o After Effects e escolha File > Scripts > Run Script File e bygg.jsx. 3) O script salva o projeto como {value1} na mesma pasta; depois você pode clicar duas vezes nesse arquivo diretamente. Para salvar, “Allow Scripts to Write Files and Access Network” precisa estar ativado em Preferences > Scripting & Expressions. Transições entre cenas e camadas de texto não são recriadas. Não podemos criar o arquivo .aep diretamente porque o formato é fechado; por isso o script o monta dentro do After Effects.",
+    "sourceHash": "68a7b29c58647ce9f0b9a077b1c1c66a17311760af1162937d2337d6df84069b",
+    "review": "machine"
   }
 }

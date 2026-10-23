@@ -32519,8 +32519,17 @@
     "ptg2.send": {
       "text": "Send til Dragonframe"
     },
+    "ptg3.ae-missing": {
+      "text": "Disse filene mangler ved siden av bygg.jsx, så byggingen stopper:"
+    },
+    "ptg3.ae-not-found": {
+      "text": "Fant ikke Adobe After Effects. Åpne After Effects selv og velg File > Scripts > Run Script File, og velg bygg.jsx i denne mappen."
+    },
     "ptg3.ae-package": {
       "text": "After Effects-pakke"
+    },
+    "ptg3.ae-save-failed": {
+      "text": "Prosjektet er bygget, men kunne ikke lagres. Slå på Preferences > Scripting & Expressions > «Allow Scripts to Write Files and Access Network», og kjør skriptet på nytt."
     },
     "ptg3.camera-fbx": {
       "text": "Kamera (FBX)"
@@ -32545,6 +32554,9 @@
     },
     "ptg3.readme-ae": {
       "text": "Åpne After Effects, velg File > Scripts > Run Script File og kjør bygg.jsx fra denne mappen. Scriptet bygger én komposisjon per skudd og en hovedkomposisjon med lag, nøkkelbilder, bildeskifter, masker og lyd. Overganger mellom scener er ikke med. Tekstlag gjenskapes ikke."
+    },
+    "ptg3.readme-ae-open": {
+      "text": "Tre måter å åpne pakken på: 1) Pakk ut ZIP-filen og dobbeltklikk «Åpne i After Effects (Windows).bat» eller «Åpne i After Effects (Mac).command». 2) Eller åpne After Effects og velg File > Scripts > Run Script File og bygg.jsx. 3) Skriptet lagrer prosjektet som {value1} i samme mappe; etterpå kan du dobbeltklikke den filen direkte. For lagringen må «Allow Scripts to Write Files and Access Network» være slått på i Preferences > Scripting & Expressions. Overganger mellom scener og tekstlag gjenskapes ikke. Vi kan ikke lage .aep-filen direkte, fordi formatet er lukket; derfor bygger skriptet den inne i After Effects."
     },
     "ptg3.readme-camera": {
       "text": "Denne pakken inneholder én FBX-fil (ASCII 7.4) per skudd med kamerabevegelsen i fysiske mål: tid i KTime (46 186 158 000 per sekund), FilmWidth i tommer, FocalLength i mm og platene som null-objekter. FBX-eksporten er eksperimentell – prøv den på riggen din og rapporter avvik."
@@ -65798,8 +65810,17 @@
     "ptg2.send": {
       "text": "Send to Dragonframe"
     },
+    "ptg3.ae-missing": {
+      "text": "These files are missing next to bygg.jsx, so the build stops:"
+    },
+    "ptg3.ae-not-found": {
+      "text": "Could not find Adobe After Effects. Open After Effects yourself, choose File > Scripts > Run Script File and pick bygg.jsx in this folder."
+    },
     "ptg3.ae-package": {
       "text": "After Effects package"
+    },
+    "ptg3.ae-save-failed": {
+      "text": "The project was built but could not be saved. Turn on Preferences > Scripting & Expressions > “Allow Scripts to Write Files and Access Network” and run the script again."
     },
     "ptg3.camera-fbx": {
       "text": "Camera (FBX)"
@@ -65824,6 +65845,9 @@
     },
     "ptg3.readme-ae": {
       "text": "Open After Effects, choose File > Scripts > Run Script File and run bygg.jsx from this folder. The script builds one composition per shot and a main composition with layers, keyframes, image swaps, masks and audio. Transitions between scenes are not included. Text layers are not recreated."
+    },
+    "ptg3.readme-ae-open": {
+      "text": "Three ways to open the package: 1) Unzip the file and double-click “Åpne i After Effects (Windows).bat” or “Åpne i After Effects (Mac).command”. 2) Or open After Effects and choose File > Scripts > Run Script File and bygg.jsx. 3) The script saves the project as {value1} in the same folder; afterwards you can double-click that file directly. Saving requires “Allow Scripts to Write Files and Access Network” in Preferences > Scripting & Expressions. Transitions between scenes and text layers are not recreated. We cannot create the .aep file directly because the format is closed; that is why the script builds it inside After Effects."
     },
     "ptg3.readme-camera": {
       "text": "This package contains one FBX file (ASCII 7.4) per shot with the camera move in physical units: time in KTime (46,186,158,000 per second), FilmWidth in inches, FocalLength in mm, and the plates as null objects. The FBX export is experimental – try it on your rig and report any discrepancies."

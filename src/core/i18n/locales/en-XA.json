@@ -75641,5 +75641,17 @@
   },
   "ptg.card.mouth.desc": {
     "text": "[!! MMôôüütthh sshhááppëëss ppëërr ffrráámmëë ffôôrr áánnïïmmááttôôrrss áánndd tthhëë rrïïgg wwôôrrkksshhôôpp. !!]"
+  },
+  "ptg3.ae-missing": {
+    "text": "[!! TThhëëssëë ffïïllëëss áárrëë mmïïssssïïnngg nnëëxxtt ttôô bbyygggg.jjssxx, ssôô tthhëë bbüüïïlldd ssttôôppss: !!]"
+  },
+  "ptg3.ae-save-failed": {
+    "text": "[!! TThhëë pprrôôjjëëcctt wwááss bbüüïïlltt bbüütt ccôôüülldd nnôôtt bbëë ssáávvëëdd. TTüürrnn ôônn PPrrëëffëërrëënnccëëss > SSccrrïïppttïïnngg & ËËxxpprrëëssssïïôônnss > “ÁÁllllôôww SSccrrïïppttss ttôô WWrrïïttëë FFïïllëëss áánndd ÁÁccccëëssss NNëëttwwôôrrkk” áánndd rrüünn tthhëë ssccrrïïpptt áággááïïnn. !!]"
+  },
+  "ptg3.ae-not-found": {
+    "text": "[!! CCôôüülldd nnôôtt ffïïnndd ÁÁddôôbbëë ÁÁffttëërr ËËffffëëccttss. ÔÔppëënn ÁÁffttëërr ËËffffëëccttss yyôôüürrssëëllff, cchhôôôôssëë FFïïllëë > SSccrrïïppttss > RRüünn SSccrrïïpptt FFïïllëë áánndd ppïïcckk bbyygggg.jjssxx ïïnn tthhïïss ffôôllddëërr. !!]"
+  },
+  "ptg3.readme-ae-open": {
+    "text": "[!! TThhrrëëëë wwááyyss ttôô ôôppëënn tthhëë ppáácckkáággëë: 1) ÜÜnnzzïïpp tthhëë ffïïllëë áánndd ddôôüübbllëë-ccllïïcckk “Åppnnëë ïï ÁÁffttëërr ËËffffëëccttss (WWïïnnddôôwwss).bbáátt” ôôrr “Åppnnëë ïï ÁÁffttëërr ËËffffëëccttss (MMáácc).ccôômmmmáánndd”. 2) ÔÔrr ôôppëënn ÁÁffttëërr ËËffffëëccttss áánndd cchhôôôôssëë FFïïllëë > SSccrrïïppttss > RRüünn SSccrrïïpptt FFïïllëë áánndd bbyygggg.jjssxx. 3) TThhëë ssccrrïïpptt ssáávvëëss tthhëë pprrôôjjëëcctt ááss {value1} ïïnn tthhëë ssáámmëë ffôôllddëërr; ááffttëërrwwáárrddss yyôôüü ccáánn ddôôüübbllëë-ccllïïcckk tthháátt ffïïllëë ddïïrrëëccttllyy. SSáávvïïnngg rrëëqqüüïïrrëëss “ÁÁllllôôww SSccrrïïppttss ttôô WWrrïïttëë FFïïllëëss áánndd ÁÁccccëëssss NNëëttwwôôrrkk” ïïnn PPrrëëffëërrëënnccëëss > SSccrrïïppttïïnngg & ËËxxpprrëëssssïïôônnss. TTrráánnssïïttïïôônnss bbëëttwwëëëënn ssccëënnëëss áánndd ttëëxxtt llááyyëërrss áárrëë nnôôtt rrëëccrrëëááttëëdd. WWëë ccáánnnnôôtt ccrrëëááttëë tthhëë .ááëëpp ffïïllëë ddïïrrëëccttllyy bbëëccááüüssëë tthhëë ffôôrrmmáátt ïïss ccllôôssëëdd; tthháátt ïïss wwhhyy tthhëë ssccrrïïpptt bbüüïïllddss ïïtt ïïnnssïïddëë ÁÁffttëërr ËËffffëëccttss. !!]"
   }
 }

@@ -92,6 +92,9 @@ export interface ZipProgress {
   readonly totalBytes: number;
 }
 
+/** Fil laget i minnet. `unixMode` (f.eks. 0o100755) gjør filen kjørbar etter utpakking på Mac/Linux. */
+export interface ZipExtra { readonly path: string; readonly data: Uint8Array; readonly unixMode?: number }
+
 /**
  * Pakker filene i zip-filen. `urls`: mediesti → signert lenke. Filer som ikke kan hentes, listes i
  * «MANGLER.txt» i zip-filen og returneres.
@@ -104,7 +107,7 @@ export async function writeZip(
     onProgress?: (p: ZipProgress) => void;
     signal?: AbortSignal;
     /** Filer laget i minnet (f.eks. sikkerhetskopiens data), skrives først. */
-    extra?: readonly { readonly path: string; readonly data: Uint8Array }[] | AsyncIterable<{ readonly path: string; readonly data: Uint8Array }>;
+    extra?: readonly ZipExtra[] | AsyncIterable<ZipExtra>;
   } = {},
 ): Promise<{ missing: string[] }> {
   let written = 0n;
@@ -112,7 +115,7 @@ export async function writeZip(
   const names = new Set<string>();
   const check = () => { if (o.signal?.aborted) throw new DOMException(tk("engine-export-zip.write-zip.message.080bb98d06cc"), "AbortError"); };
   const write = async (data: Uint8Array) => { check(); await sink.write(data); written += BigInt(data.byteLength); };
-  const add = async (name: string, chunks: AsyncIterable<Uint8Array>) => {
+  const add = async (name: string, chunks: AsyncIterable<Uint8Array>, unixMode?: number) => {
     if (names.has(name)) throw new Error(tk("engine-export-zip.zip.message.d8988ee64a25"));
     names.add(name);
     const offset = written;
@@ -122,7 +125,7 @@ export async function writeZip(
     for await (const data of chunks) { check(); crc = zipCrcUpdate(crc, data); size += BigInt(data.byteLength); await write(data); }
     crc = (crc ^ 0xffffffff) >>> 0;
     await write(zipDescriptor(crc, size));
-    directory.push({ name, offset, size, crc });
+    directory.push({ name, offset, size, crc, ...(unixMode ? { unixMode } : {}) });
   };
   async function* one(data: Uint8Array) { yield data; }
   const totalBytes = entries.reduce((t, e) => t + e.byteSize, 0);
@@ -131,7 +134,7 @@ export async function writeZip(
   try {
     for await (const x of o.extra ?? []) {
       if (o.signal?.aborted) throw new DOMException(tk("engine-export-zip.write-zip.message.080bb98d06cc"), "AbortError");
-      await add(x.path, one(x.data));
+      await add(x.path, one(x.data), x.unixMode);
     }
     if (!names.has("LESMEG.txt")) await add("LESMEG.txt", one(interchangeReadme()));
     for (let i = 0; i < entries.length; i++) {

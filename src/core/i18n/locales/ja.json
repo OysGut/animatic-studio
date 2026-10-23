@@ -55707,5 +55707,25 @@
     "text": "アニメーターとリグ工房向けのフレームごとの口形。",
     "sourceHash": "5171a7213230676184f6461d6d6b712fed2f0771e520925a6438caf527fca5fd",
     "review": "machine"
+  },
+  "ptg3.ae-missing": {
+    "text": "bygg.jsx と同じ場所に次のファイルがないため、構築を中止します：",
+    "sourceHash": "28b6792a4adc701e98a312ae2111d7440319b66dd3bb16846001f53fcc6959a4",
+    "review": "machine"
+  },
+  "ptg3.ae-save-failed": {
+    "text": "プロジェクトは構築されましたが、保存できませんでした。Preferences > Scripting & Expressions >「Allow Scripts to Write Files and Access Network」をオンにして、スクリプトをもう一度実行してください。",
+    "sourceHash": "dc7a6ad39901dae5d1459ad03cfe91ea423b826b576e2076de329175d0ca5342",
+    "review": "machine"
+  },
+  "ptg3.ae-not-found": {
+    "text": "Adobe After Effects が見つかりません。After Effects を開き、File > Scripts > Run Script File を選んで、このフォルダーの bygg.jsx を選択してください。",
+    "sourceHash": "02abe0dbac8a2f294779195c01bda4a1ecab3b0344f81856db87a16e8d11262b",
+    "review": "machine"
+  },
+  "ptg3.readme-ae-open": {
+    "text": "パッケージを開く方法は3つあります：1) ZIP を展開し、「Åpne i After Effects (Windows).bat」または「Åpne i After Effects (Mac).command」をダブルクリックする。2) または After Effects を開き、File > Scripts > Run Script File で bygg.jsx を選ぶ。3) スクリプトはプロジェクトを同じフォルダーに {value1} として保存するので、以後はそのファイルを直接ダブルクリックできます。保存には Preferences > Scripting & Expressions の「Allow Scripts to Write Files and Access Network」をオンにする必要があります。シーン間のトランジションとテキストレイヤーは再現されません。.aep 形式は非公開のため直接作成できず、スクリプトが After Effects 内で構築します。",
+    "sourceHash": "68a7b29c58647ce9f0b9a077b1c1c66a17311760af1162937d2337d6df84069b",
+    "review": "machine"
   }
 }

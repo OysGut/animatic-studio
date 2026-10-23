@@ -108,7 +108,7 @@ function runJsx(script: string) {
     project: { items: {
       addFolder(n: string) { log.folders.push(n); return {}; },
       addComp(n: string, w: number, h: number, px: number, dur: number, fps: number) { return new Comp(n, w, h, px, dur, fps); },
-    }, importFile(o: { file: { path: string } }) { log.imports.push(o.file.path); const l = new Layer("media-audio"); return l; } },
+    }, save() {}, importFile(o: { file: { path: string } }) { log.imports.push(o.file.path); const l = new Layer("media-audio"); return l; } },
   };
   class File { constructor(public path: string) {} }
   class ImportOptions { constructor(public file: File) {} }
@@ -170,7 +170,7 @@ describe("PTG3 After Effects bygg.jsx", () => {
 
   it("importerer bare brukte media og legger lyd til med volumnøkler i dB", () => {
     const { log } = runJsx(jsxAe);
-    expect(log.imports.sort()).toEqual(["media/f1.png", "media/f2.mp3"]);
+    expect(log.imports.sort()).toEqual(["./media/f1.png", "./media/f2.mp3"]);
     const levels = log.keys.filter(k => k.prop === "Audio Levels");
     expect(levels.length).toBeGreaterThan(0);
     expect(levels[0]!.values[0]).toEqual([-9, -9]); // volumnøkkel −6 dB + klippforsterkning −3 dB
@@ -218,12 +218,76 @@ describe("PTG3 After Effects bygg.jsx", () => {
       expect(inRender).toEqual([["TEST_SC001_SH001_v001", 1], ["TEST_SC001_SH001_v001_TITLE", 0]]);
       expect(comps.find(c => c.name === "TEST_hoved_RENDER")!.displayStartTime).toBe(-1);
       expect(log.texts).toEqual(expect.arrayContaining(["Jula på Dovre", "SC001 – Scene – TEST_SC001_SH001_v001", "Forklaring", "Eksportert fra From Pen to Glass"]));
-      expect(log.imports).toContain("tittelkort/TEST_SC001_SH001_v001_qr.png");
+      expect(log.imports).toContain("./tittelkort/TEST_SC001_SH001_v001_qr.png");
     });
 
     it("er fortsatt ES3", () => {
       expect(withCard).not.toMatch(/(^|\s)(let|const)\s/);
       expect(withCard).not.toContain("=>");
     });
+  });
+});
+
+describe("PTG3 «dobbeltklikk og åpne» (Øystein 23.10)", () => {
+  const jsx = buildAeJsx(doc, { cameraMode: "ae" });
+
+  /** Kjører bare starten (importene) og slutten (lagringen) med en AE-mock som har $, Folder og alert. */
+  function runOpen(opts: { exists?: (p: string) => boolean; saveThrows?: boolean }) {
+    const imports: string[] = []; const alerts: string[] = []; const saved: string[] = []; let current = "";
+    class File { constructor(public path: string) {} get exists() { return opts.exists ? opts.exists(this.path) : true; } get parent() { return { fsName: "/pakke" }; } }
+    class Folder { constructor(public fsName: string) {} }
+    const FolderStatic = Object.assign(Folder, {}) as unknown as { current: unknown };
+    Object.defineProperty(FolderStatic, "current", { set(v: { fsName: string }) { current = v.fsName; }, get() { return { fsName: current }; } });
+    const prop = () => ({ setValue() {}, setValueAtTime() {}, setTemporalEaseAtKey() {}, setInterpolationTypeAtKey() {}, setSpatialTangentsAtKey() {}, addProperty: prop, value: {} });
+    const layer = (): Record<string, unknown> => ({ property: prop, moveBefore() {}, source: { height: 1 } });
+    const comp = () => ({ layers: { add: layer, addNull: layer, addSolid: layer, addText: layer, addBoxText: layer, addShape: layer, addCamera: layer } });
+    const app = { beginUndoGroup() {}, endUndoGroup() {}, project: {
+      items: { addFolder: () => ({}), addComp: comp },
+      importFile(o: { file: File }) { imports.push(o.file.path); return {}; },
+      save(f: File) { if (opts.saveThrows) throw new Error("no rights"); saved.push(f.path); },
+    } };
+    const fn = new Function("app", "File", "Folder", "$", "alert", "ImportOptions", "KeyframeEase", "KeyframeInterpolationType", "TrackMatteType", "ParagraphJustification", jsx);
+    let threw = false;
+    try {
+      fn(app, File, FolderStatic, { fileName: "/pakke/bygg.jsx" }, (s: string) => alerts.push(s), class { constructor(public file: File) {} }, class {}, { LINEAR: 1, HOLD: 2 }, { ALPHA: 1, ALPHA_INVERTED: 2 }, { CENTER_JUSTIFY: 1 });
+    } catch { threw = true; }
+    return { imports, alerts, saved, current, threw };
+  }
+
+  it("alle importFile-kall går via ptgImport med basemappen fra $.fileName", () => {
+    expect(jsx).toContain("new File($.fileName).parent.fsName");
+    const calls = jsx.split("\n").filter(l => l.includes("importFile("));
+    expect(calls).toEqual(["  return app.project.importFile(new ImportOptions(f));"]);
+    expect(jsx).not.toMatch(/new File\("media\//);
+    const r = runOpen({});
+    expect(r.current).toBe("/pakke");
+    expect(r.imports.sort()).toEqual(["/pakke/media/f1.png", "/pakke/media/f2.mp3"]);
+  });
+
+  it("filer som mangler listes i ett varsel, og byggingen stopper", () => {
+    const r = runOpen({ exists: p => !p.endsWith("f2.mp3") });
+    expect(r.threw).toBe(true);
+    expect(r.alerts).toHaveLength(1);
+    expect(r.alerts[0]).toContain("media/f2.mp3");
+    expect(r.saved).toEqual([]);
+  });
+
+  it("lagrer prosjektet som <prosjektkode>.aep i pakkemappen", () => {
+    const r = runOpen({});
+    expect(r.saved).toEqual([`/pakke/${doc.project.code}.aep`]);
+    expect(r.alerts).toEqual([]);
+  });
+
+  it("feiler lagringen, forklarer varselet skriptrettighetene og skriptet fortsetter", () => {
+    const r = runOpen({ saveThrows: true });
+    expect(r.threw).toBe(false);
+    expect(r.alerts).toHaveLength(1);
+    expect(r.alerts[0]).toContain("Allow Scripts to Write Files and Access Network");
+  });
+
+  it("er fortsatt ES3", () => {
+    expect(jsx).not.toMatch(/(^|\s)(let|const)\s/);
+    expect(jsx).not.toContain("=>");
+    expect(jsx).not.toContain("`");
   });
 });
