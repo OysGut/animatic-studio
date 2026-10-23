@@ -14,6 +14,8 @@ import { knowledgeAt } from "../storylab/facts";
 import { profileAt } from "../storylab/stages";
 import { profileText } from "../storylab/prompts";
 import { formatHeading } from "../screenplay";
+import { sourceLanguageOf } from "../dialogue/languages";
+import { englishLanguageName } from "../translation/language-tags";
 import { t as tk } from "@/core/i18n/keyed";
 
 export type AssistKind = "rewrite" | "next_line" | "scene" | "polish" | "translate";
@@ -76,9 +78,12 @@ export function assistRequestError(r: unknown): string | null {
   return null;
 }
 
-/** Hovedmanuset er på norsk bokmål (REQ-0331); oversettelsesutkastet på engelsk. */
-export function replyLanguage(kind: AssistKind): string {
-  return kind === "translate" ? "English" : "Norwegian Bokmål"; // i18n-ignore: promptspråk
+/**
+ * G-1: nyskriving skjer på manusets eget språk. Oversettelsesutkastet går foreløpig alltid til engelsk
+ * (målspråket er ikke parameterisert ennå – se G1_SPRAKNOYTRAL_REPORT.md).
+ */
+export function replyLanguage(kind: AssistKind, manuscriptLanguage: string): string {
+  return kind === "translate" ? "English" : englishLanguageName(manuscriptLanguage); // i18n-ignore: promptspråk
 }
 
 const KIND_LABEL: Record<BlockKind, string> = {

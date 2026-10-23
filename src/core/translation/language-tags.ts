@@ -25,3 +25,12 @@ export function sameLanguageTag(a: string, b: string): boolean {
   return a.toLowerCase() === b.toLowerCase();
 }
 
+/** Språkets engelske navn for AI-prompter («ja» → «Japanese»). Ukjente koder brukes som de er. */
+export function englishLanguageName(tag: string): string {
+  try {
+    return new Intl.DisplayNames(["en"], { type: "language" }).of(tag) ?? tag;
+  } catch {
+    return tag;
+  }
+}
+
