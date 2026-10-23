@@ -104,7 +104,7 @@ describe("stilforbilder: brukerens valg", () => {
     expect(p).toContain("Exactly 4 image(s) are attached.");
     expect(p).not.toContain("Image 5:");
     expect(p).not.toContain("gammel");
-    expect(p).toContain("Image 4: Figur9");
+    expect(p).toContain("Image 4: Figur6");
     expect(withAttachedLegend("x", "Figur1", [])).toBe("x");
   });
 
