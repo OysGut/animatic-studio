@@ -82,5 +82,5 @@ Kortversjonen († = detaljer i `docs/development/AGENTS_DETAILS.md`):
 67. Punkter under SPERRET i TODO.md skal ikke implementeres eller forberedes, verken helt eller delvis, før Øystein uttrykkelig ber om det.
 68. A migration file is locked once Claude reports it run in Cloud or it predates the published EXPECTED_SCHEMA_VERSION; changes go in a new file (next number), and if in doubt, make a new file. MD5s in tests/fixtures/migration-hashes.json (checked by migration-hashes.test.ts) guard locked bytes; Claude updates them after each Cloud run.
 69. Google sign-in: managed Lovable OAuth, redirect_uri = site root, sanitized same-origin return path; registration rules live only in auth.users triggers (0092).
-70. G-2: browsers load via project_snapshot (history merged after) and apply foreign change_log commands in project_seq order, fetching gaps; full reload is a logged last resort. RLS uses private.my_project_ids().
+70. G-2: browsers load via project_snapshot (history merged after) and apply foreign change_log commands in project_seq order, fetching gaps; full reload is logged last resort; RLS uses my_project_ids().
 
