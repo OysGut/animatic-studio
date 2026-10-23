@@ -56219,5 +56219,35 @@
     "text": "Эл. почта и пароль",
     "sourceHash": "bccbb358370012347775af1442b85d4e99c24ceaabf1f91ec66038af47b8531f",
     "review": "machine"
+  },
+  "adapters-storage-commands-functions.quota-projects": {
+    "text": "Достигнут лимит проектов. Удалите проект или обратитесь к администратору, чтобы увеличить лимит.",
+    "sourceHash": "67d432953fcd0343e721c3518ca8cc88faf91ff5e20a04ad93ac4888b3793055",
+    "review": "machine"
+  },
+  "adapters-storage-commands-functions.quota-change-log": {
+    "text": "Журнал изменений заполнен. Обратитесь к администратору, чтобы увеличить лимит.",
+    "sourceHash": "a9df3da7101bcceff687700a927b912ed74c1105a92ae1b06b39626c5ce30577",
+    "review": "machine"
+  },
+  "adapters-storage-commands-functions.quota-storage": {
+    "text": "Достигнута квота хранилища. Удалите ненужные файлы или обратитесь к администратору, чтобы увеличить лимит.",
+    "sourceHash": "51f8ccd57f60b987193bc6652497a5299c597159e46b59d048c4fa12f4c0cbd3",
+    "review": "machine"
+  },
+  "adapters-storage-commands-functions.quota-uploads": {
+    "text": "Слишком много загрузок за последний час. Подождите немного и повторите попытку.",
+    "sourceHash": "7ba8fa68f3b4275c6558d6798807706cefc0ed84cb152277da5d89282108a06e",
+    "review": "machine"
+  },
+  "adapters-mobile-mobile-functions.db-message.quota-storage": {
+    "text": "Достигнута квота хранилища. Удалите ненужные файлы или обратитесь к администратору, чтобы увеличить лимит.",
+    "sourceHash": "51f8ccd57f60b987193bc6652497a5299c597159e46b59d048c4fa12f4c0cbd3",
+    "review": "machine"
+  },
+  "adapters-mobile-mobile-functions.db-message.quota-uploads": {
+    "text": "Слишком много загрузок за последний час. Подождите немного и повторите попытку.",
+    "sourceHash": "7ba8fa68f3b4275c6558d6798807706cefc0ed84cb152277da5d89282108a06e",
+    "review": "machine"
   }
 }
