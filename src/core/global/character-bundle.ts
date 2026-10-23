@@ -184,3 +184,111 @@ export function pullPlanHasChanges(plan: CharacterPullPlan): boolean {
       plan.rigSetup.action === "apply")
   );
 }
+
+/**
+ * Bygger knippet som publiseres fra prosjektets karakter (G-6 pkt 1). Munnsettene lagres med
+ * variantens NAVN per munnform – aldri lokale ID-er – slik at knippet er flyttbart mellom prosjekter.
+ * Godkjente bildeversjoner tas bare med når de er kopiert fra det globale biblioteket (globalSource);
+ * lokale versjoner må først publiseres som globale versjoner i den vanlige flyten. Riggoppsett er
+ * scenebundet i prosjektmodellen og har ingen karakterkobling ennå, så rigSetup er null inntil en
+ * slik kobling er vedtatt.
+ */
+export function characterBundleFromAsset(
+  state: ProjectState,
+  assetId: AssetId,
+): Omit<CharacterBundle, "number"> | null {
+  const asset = state.assets[assetId];
+  if (!asset || asset.removed || (asset.kind !== "character" && asset.kind !== "animal")) return null;
+  const variantsOf = Object.values(state.assetVariants).filter((v) => v.assetId === assetId && !v.archived);
+  const variantName = new Map(variantsOf.map((v) => [v.id, v.name]));
+  const mouthSets: BundleMouthSet[] = Object.values(state.mouthSets)
+    .filter((ms) => ms.characterId === assetId && !ms.removed)
+    .map((ms) => ({
+      system: ms.system as MouthSystem,
+      variants: Object.fromEntries(
+        Object.entries(ms.variants).map(([shape, variantId]) => [
+          shape,
+          variantId ? (variantName.get(variantId) ?? null) : null,
+        ]),
+      ),
+    }));
+  const approvedVersionIds: string[] = [];
+  for (const v of variantsOf) {
+    if (!v.approvedVersionId) continue;
+    const version = state.assetVersions[v.approvedVersionId];
+    if (version && !version.removed && version.globalSource) approvedVersionIds.push(version.globalSource.versionId);
+  }
+  return {
+    voice: asset.voice ?? null,
+    briefVersions: asset.briefVersions ?? [],
+    activeBriefId: asset.activeBriefId ?? null,
+    mouthSets,
+    rigSetup: null,
+    approvedVersionIds: [...new Set(approvedVersionIds)],
+  };
+}
+
+/**
+ * Kommandoene som gjennomfører en bekreftet innhenting (G-6 pkt 1): ett felt per kommando, alt i én
+ * angregruppe. Munnformer som peker på et variantnavn som ikke finnes lokalt, utelates (bevares aldri
+ * som døde referanser). Knippenummeret merkes på ressursen via UpdateAsset, slik at senere innhentinger
+ * kjenner igjen hva som er lokalt endret.
+ */
+export function planCharacterPullCommands(
+  state: ProjectState,
+  assetId: AssetId,
+  plan: CharacterPullPlan,
+): Command[] {
+  const asset = state.assets[assetId];
+  if (!asset || asset.removed) return [];
+  const commands: Command[] = [];
+  if (plan.voice.action === "apply") commands.push({ type: "SetAssetVoice", assetId, voice: plan.voice.value });
+  if (plan.briefVersionsToAppend.length || plan.activeBriefId.action === "apply") {
+    commands.push({
+      type: "SetAssetBriefVersions",
+      assetId,
+      versions: [...(asset.briefVersions ?? []), ...plan.briefVersionsToAppend],
+      activeId:
+        plan.activeBriefId.action === "apply" ? plan.activeBriefId.value : (asset.activeBriefId ?? null),
+    });
+  }
+  const localVariants = Object.values(state.assetVariants).filter((v) => v.assetId === assetId && !v.archived);
+  const variantIdByName = new Map(localVariants.map((v) => [v.name, v.id]));
+  for (const m of plan.mouthSets) {
+    if (m.set.action !== "apply") continue;
+    const existing = Object.values(state.mouthSets).find(
+      (ms) => ms.characterId === assetId && ms.system === m.system && !ms.removed,
+    );
+    const variants: Record<string, string | null> = {};
+    for (const [shape, name] of Object.entries(m.set.value.variants)) {
+      if (typeof name !== "string" || !name) continue;
+      const id = variantIdByName.get(name);
+      if (id) variants[shape] = id;
+    }
+    commands.push({
+      type: "SaveMouthSet",
+      set: {
+        id: existing?.id ?? newId("mouth_sets"),
+        revision: 0,
+        characterId: assetId,
+        system: m.system,
+        variants,
+        removed: false,
+      },
+    });
+  }
+  commands.push({
+    type: "UpdateAsset",
+    assetId,
+    fields: {
+      kind: asset.kind,
+      name: asset.name,
+      names: asset.names,
+      description: asset.description,
+      category: asset.category,
+      tags: asset.tags,
+      globalBundleNumber: plan.bundleNumber,
+    },
+  });
+  return commands;
+}
