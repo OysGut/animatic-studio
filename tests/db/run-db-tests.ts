@@ -8418,7 +8418,7 @@ try {
     const bad = newId();
     await g7Expect(async (tx) => {
       await tx`insert into public.style_preferred_references (id, project_id, asset_id, style_profile_id, variant_id) values (${bad},${g7p},${a.asset},${profile},${b.variant})`;
-    }, `select private.validate_style_preferred_references('${g7p}'::jsonb::text::uuid, '{}'::jsonb, '{${bad}}'::uuid[])`, /Invalid preferred reference/);
+    }, `select private.validate_style_preferred_references('${g7p}'::uuid, '{}'::jsonb, '{${bad}}'::uuid[])`, /Invalid preferred reference/);
     // REQ-0144: to aktive foretrukne referanser for samme (ressurs, profil) avvises
     await g7Expect(async (tx) => {
       await tx`insert into public.style_preferred_references (id, project_id, asset_id, style_profile_id, variant_id) values (${newId()},${g7p},${a.asset},${profile},${a.variant}), (${newId()},${g7p},${a.asset},${profile},${a.variant})`;
