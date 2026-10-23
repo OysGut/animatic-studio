@@ -16,7 +16,6 @@ import { lineInfo } from "../audio/takes";
 import { DEFAULT_COMPOSITION } from "../composition/fields";
 import {
   layerKindInCompositionError,
-  panelBlockIds,
   panelSnapshotContentOf,
   productionStatusError,
   productionStatusOf,
@@ -128,6 +127,7 @@ import {
   type AudioClip,
   type BlockRevision,
   type CompositionLayer,
+  type Composition,
   type ProjectState,
   type ScriptBlock,
   type ClipPart,
@@ -647,7 +647,7 @@ function sbBlockLinks(s: ProjectState, panel: Composition, refs: readonly Storyb
     const b = need(s.blocks[r.blockId], tk("core-commands-apply.b.need.e4b7085bbc3f"));
     if (b.variantId !== panel.variantId) fail("invalid", tk("sb1.error.blocks-variant"));
     out.push(old
-      ? { ...old, blockId: b.id, orderKey: r.orderKey, removed: false, revision: rev(old) }
+      ? { ...old, blockId: b.id, orderKey: r.orderKey, removed: false, revision: old.revision + 1 }
       : { id: r.linkId, revision: 1, panelId: panel.id, blockId: b.id, orderKey: r.orderKey, removed: false });
   }
   return out;
@@ -665,11 +665,11 @@ function applyPanelBlocks(s: ProjectState, panel: Composition, refs: readonly St
     if (l.panelId !== panel.id || l.removed) continue;
     const r = target.get(l.blockId);
     if (!r) {
-      panelBlocks[l.id] = { ...l, removed: true, revision: rev(l) };
+      panelBlocks[l.id] = { ...l, removed: true, revision: l.revision + 1 };
       affected.push(l.id);
     } else {
       if (r.orderKey !== l.orderKey) {
-        panelBlocks[l.id] = { ...l, orderKey: r.orderKey, revision: rev(l) };
+        panelBlocks[l.id] = { ...l, orderKey: r.orderKey, revision: l.revision + 1 };
         affected.push(l.id);
       }
       target.delete(l.blockId);
