@@ -93,3 +93,14 @@
 - [ ] Kamera/utsnitt per panel, formatmasker, sikre soner, tredjedeler
 - [ ] Hurtigtaster i «?»-hjelpen
 - [ ] Tester + rapport docs/development/SB3_REPORT.md; ny migrasjon ved behov (0103+)
+
+## SB-4 tid, avspilling, storyboardfilm og sømløs veksling (23.10.2026) – kjøres etter SB-3
+- [ ] Lyd fra scenen som én kilde (filmAudio/audioBank, ingen kopi, over scenegrenser, av/på + volum husket, lyd er tidsmaster)
+- [ ] Timing med arv (panel/scene/sekvens/produksjon), forslag fra manus/dialog/lyd, aldri trimming av ferdig film
+- [ ] Scrubbing over kort (RTL-speilet tid, mus/berøring/tastatur, ingen autolyd)
+- [ ] Avspilling i galleriet (kontroller, 40 % for inaktive, fokus følger, hopper over deaktiverte)
+- [ ] Storyboardfilm i fullskjerm med overganger
+- [ ] Kamerabevegelse fra kameramerke (start/slutt-ramme)
+- [ ] Midlertidig lyd per panel (opptak/QR/opplasting), aldri blandet inn uten bekreftelse
+- [ ] Felles posisjon mellom Manus/Storyboard/Scene/Montering/Manusutforsker, hurtigtast, tilbake-knapp, replikk↔panel
+- [ ] Tester + rapport docs/development/SB4_REPORT.md
