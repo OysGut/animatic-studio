@@ -687,6 +687,15 @@ export const runCommand = createServerFn({ method: "POST" })
     // SB-1: storyboardgrunnmuren krever migrasjon 0102
     if (["AddStoryboardPanel", "UndoAddStoryboardPanel", "UpdateStoryboardPanel", "SetStoryboardPanelRemoved", "MoveStoryboardPanel", "MoveStoryboardPanelToScene", "SeedStoryboardPanels", "UndoSeedStoryboardPanels", "SnapshotStoryboardPanel", "UndoSnapshotStoryboardPanel", "SetProductionStatus", "RevertProductionStatus"].includes(checked.type)) {
       const schema = await checkSchema(admin);
+       if (schema.kind === "missing" || schema.version < 102) return { ok: false, code: "schema", message: tk("sb1.schema") };
+    }
+    // SB-1: lagtypene note/arrow/camera_mark krever migrasjon 0102 (også inni UpdateSceneDraft)
+    const sbLayerSteps = animationSteps.filter((step) =>
+      (step.type === "AddLayers" || step.type === "UpdateLayers") &&
+      step.layers.some((l) => l.fields && ("note" in l.fields || "arrow" in l.fields || "cameraMark" in l.fields ||
+        l.fields.kind === "note" || l.fields.kind === "arrow" || l.fields.kind === "camera_mark")));
+    if (sbLayerSteps.length > 0) {
+      const schema = await checkSchema(admin);
       if (schema.kind === "missing" || schema.version < 102) return { ok: false, code: "schema", message: tk("sb1.schema") };
     }
     // Stempelet på nye notater settes av serveren (navnet i profilen og tidspunktet nå), så ingen kan
