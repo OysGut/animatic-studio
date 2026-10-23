@@ -1,8 +1,12 @@
 # Veikart
 
+## Fast ID-merke i vinduer (23.10.2026)
+- [x] UiId, register (162), arkitekturtest, versjon i Konto/admin; rapport VINDU_ID_REPORT.md
+- [ ] 10 px mot REQ-0425 (11 px brukt) – venter på Øysteins valg
+
 ## Manusutforsker – stålkontroll (23.10.2026)
 - [x] Leveranse 1 (punkt 1–3): vindu med åtte grep, maksimer/fest, lagret plass (panel og popup), dra-skiller, notatknapp og -merker, «Åpne i»-rad, ressursbrikker og navnemeny
-- [ ] Skjermbilder i rapporten – venter på hvilken konto forhåndsvisningen skal logges inn med
+- [ ] Skjermbilder (manusutforsker og innloggede vinduer for ID-merket) – venter på hvilken konto forhåndsvisningen skal logges inn med
 - [ ] Leveranse 2 (punkt 4 a–i): sceneoversikt, hurtigtaster og «?»-hjelp, historikk og smulespor, hopp, filtre, minikart, kopier lenke, side om side (kildespråk), bokmerker
 
 ## N3 – rester (natt 22.–23.10.2026)
