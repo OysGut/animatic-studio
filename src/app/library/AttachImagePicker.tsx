@@ -89,7 +89,7 @@ export function AttachImagePicker({
                   <span className="block aspect-[4/3] w-full">
                     {urls[paths[i]!] ? <Thumbnail src={urls[paths[i]!]} alt="" /> : null}
                   </span>
-                  <span className="truncate text-[10px] text-text-secondary">{label}</span>
+                  <span className="truncate text-[11px] text-text-secondary">{label}</span>
                 </button>
               </li>
             );
