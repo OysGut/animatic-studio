@@ -1,6 +1,6 @@
 // @vitest-environment node
 import { describe, expect, it } from "vitest";
-import { applyCommand, blocksOfVariant, buildInterchange, clipLanguage, diffStates, emptyProjectState, isSourceLanguage, languageVersionError, stateFromRows, sourceLanguageOf, speechLanguageOf, translatedState, type Command, type ProjectRows, type ProjectState } from "@/core";
+import { applyCommand, blocksOfVariant, buildInterchange, clipLanguage, diffStates, emptyProjectState, isSourceLanguage, languageVersionError, stateFromRows, sourceLanguageOf, speechLanguageOf, translatedState, TABLE_ORDER, type Command, type ProjectRows, type ProjectState } from "@/core";
 import { envelope, seedProject } from "../helpers/fixtures";
 
 function run(s: ProjectState, c: Command) {
@@ -28,8 +28,8 @@ describe("G-1 source foundation", () => {
       expect(languageVersionError(s, { language: target, name: target, status: "active" })).toBeNull();
     const text = blocksOfVariant(s, block.variantId).map(b => b.text);
     expect(buildInterchange(s, { productionId: production.id, language }).language.dialogue).toBe(language);
-    const patch = diffStates(emptyProjectState(s.project), s, "00000000-0000-7000-8000-000000000111");
-    const loaded = stateFromRows({ project: { id: s.project.id, name: s.project.name, fps_num: 25, fps_den: 1, frame_width: 1920, frame_height: 1080, revision: s.project.revision, source_language: language }, ...patch.inserts } as unknown as ProjectRows);
+    const patch = diffStates(emptyProjectState(s.project), s);
+    const loaded = stateFromRows({ ...Object.fromEntries(TABLE_ORDER.map(table => [table, []])), script_block_revisions: [], project: { id: s.project.id, name: s.project.name, fps_num: 25, fps_den: 1, frame_width: 1920, frame_height: 1080, revision: s.project.revision, source_language: language }, ...patch.inserts } as unknown as ProjectRows);
     expect(sourceLanguageOf(loaded)).toBe(language);
     expect(blocksOfVariant(loaded, block.variantId).map(b => b.text)).toEqual(text);
     const undo = run(s, changed.inverse);
