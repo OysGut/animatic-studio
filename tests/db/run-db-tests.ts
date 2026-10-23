@@ -7848,6 +7848,124 @@ try {
       await as("service_role", null, tx => tx`select public.purge_project_assets(${bp},${ALICE})`);
     }
   });
+
+  // ---------- G-2 skala (0093) ----------
+  const DAVE = "55555555-5555-7555-8555-555555555555";
+  await sql`insert into auth.users (id, email) values (${DAVE}, 'dave@example.no') on conflict do nothing`;
+  const g2Project = String((await as("authenticated", ALICE, (tx) => tx`select public.create_project('G2', 25, 1, 'en') id`))[0]?.["id"]);
+  const g2Prod = String((await sql`select id from public.productions where project_id=${g2Project} and kind='main'`)[0]!["id"]);
+  // BOB er fjernet medlem, DAVE er aktivt medlem (leser), CAROL er ikke medlem
+  await sql`insert into public.project_members (project_id, user_id, role) values (${g2Project}, ${BOB}, 'viewer'), (${g2Project}, ${DAVE}, 'viewer')`;
+  await sql`update public.project_members set removed_at = now() where project_id=${g2Project} and user_id=${BOB}`;
+  {
+    let st = await loadState(g2Project);
+    for (let i = 0; i < 3; i++)
+      st = await runCommand(st, ALICE, { type: "CreateScene", productionId: g2Prod as never, sceneId: newId() as never, variantId: newId() as never, occurrenceId: newId() as never, orderKey: keyBetween(Object.values(st.occurrences).map(o => o.orderKey).sort().at(-1) ?? null, null), heading: { intExt: "INT.", location: "G2", time: "DAY" }, blocks: [{ blockId: newId() as never, kind: "action", text: "G2 " + i, orderKey: keyBetween(null, null) }] });
+  }
+  const g2Tables = (await sql`select distinct tablename from pg_policies where schemaname='public' and (qual like '%my_project_ids%' or with_check like '%my_project_ids%') order by 1`).map((r) => String(r["tablename"]));
+
+  await test("0093 A4: alle 73 lesepolicyer bruker my_project_ids og ingen bruker is_project_member per rad", async () => {
+    assert(g2Tables.length >= 70, `for få tabeller: ${g2Tables.length}`);
+    const left = await sql`select tablename from pg_policies where schemaname='public' and (qual like '%is_project_member%' or with_check like '%is_project_member%')`;
+    assert(left.length === 0, `fortsatt per rad: ${left.map((r) => r["tablename"]).join(",")}`);
+  });
+
+  await test("0093 A4: ikke-medlem ser 0, medlem ser alle, fjernet medlem ser 0 – på alle berørte tabeller", async () => {
+    let nonEmpty = 0;
+    for (const t of g2Tables) {
+      const col = t === "projects" ? "id" : "project_id";
+      const total = Number((await sql.unsafe(`select count(*) n from public.${t} where ${col} = $1`, [g2Project]))[0]!["n"]);
+      if (total > 0) nonEmpty++;
+      const seen = async (u: string) => Number((await as("authenticated", u, (tx) => tx.unsafe(`select count(*) n from public.${t} where ${col} = $1`, [g2Project])))[0]!["n"]);
+      const [owner, member, removed, outsider] = [await seen(ALICE), await seen(DAVE), await seen(BOB), await seen(CAROL)];
+      // project_members har egen regel for egne rader; alle andre: medlem ser alt, andre ingenting
+      assert(owner === total && member === total, `${t}: medlem ser ${owner}/${member} av ${total}`);
+      assert(removed === 0 && outsider === 0, `${t}: fjernet ${removed}, ikke-medlem ${outsider}`);
+    }
+    assert(nonEmpty >= 8, `for få tabeller med rader i testprosjektet: ${nonEmpty}`);
+  });
+
+  await test("0093 A4: samme resultat som den gamle per-rad-regelen for alle brukere og alle prosjekter", async () => {
+    for (const u of [ALICE, BOB, CAROL, DAVE]) {
+      for (const t of g2Tables) {
+        const col = t === "projects" ? "id" : "project_id";
+        const visible = Number((await as("authenticated", u, (tx) => tx.unsafe(`select count(*) n from public.${t}`)))[0]!["n"]);
+        const old = Number((await sql.begin(async (tx) => {
+          await tx`select set_config('request.jwt.claims', ${JSON.stringify({ sub: u })}, true)`;
+          const extra = t === "project_members" ? ` or false` : "";
+          return tx.unsafe(`select count(*) n from public.${t} where private.is_project_member(${col})${extra}`);
+        }))[0]!["n"]);
+        if (t === "project_members") assert(visible >= old, `${t}/${u}: ${visible} < ${old}`);
+        else assert(visible === old, `${t}/${u}: ny ${visible}, gammel ${old}`);
+      }
+    }
+  });
+
+  await test("0093 A2: project_seq er sammenhengende per prosjekt og uavhengig av andre prosjekter", async () => {
+    const rows = await sql`select project_seq from public.change_log where project_id=${g2Project} order by seq`;
+    assert(rows.length === 4, `forventet 4 rader, fikk ${rows.length}`);
+    assert(rows.every((r, i) => Number(r["project_seq"]) === i + 1), `ikke sammenhengende: ${rows.map((r) => r["project_seq"]).join(",")}`);
+    const holes = await sql`select project_id from public.change_log group by project_id having max(project_seq) <> count(*) or min(project_seq) <> 1`;
+    assert(holes.length === 0, "hull i project_seq i et prosjekt");
+    await expectError(sql`update public.change_log set project_seq = 99 where project_id=${g2Project}`, "P0001");
+  });
+
+  await test("0093 A1: project_snapshot gir medlemmet samme rader som tabellene, og andre ingenting", async () => {
+    const snap = (await as("authenticated", DAVE, (tx) => tx`select public.project_snapshot(${g2Project}) s`))[0]!["s"] as { project: { id: string } | null; log_seq: number; history: string; tables: Record<string, unknown[]>[] };
+    const tables = Object.assign({}, ...snap.tables) as Record<string, { id?: string }[]>;
+    assert(snap.project?.id === g2Project && snap.log_seq === 4 && snap.history === "current", "hode");
+    const blocks = await sql`select id from public.script_blocks where project_id=${g2Project} order by id`;
+    assert(JSON.stringify(tables["script_blocks"]!.map((b) => b.id)) === JSON.stringify(blocks.map((b) => b["id"])), "blokker");
+    assert(tables["script_block_revisions"]!.length === blocks.length, "bare gjeldende revisjon per blokk");
+    assert(Object.keys(tables).length === 52, `tabeller: ${Object.keys(tables).length}`);
+    for (const u of [BOB, CAROL]) {
+      const other = (await as("authenticated", u, (tx) => tx`select public.project_snapshot(${g2Project}) s`))[0]!["s"] as typeof snap;
+      const ot = Object.assign({}, ...other.tables) as Record<string, unknown[]>;
+      assert(other.project === null && other.log_seq === 0 && Object.values(ot).every((v) => v.length === 0), `${u} ser data`);
+    }
+    await expectError(as("anon", null, (tx) => tx`select public.project_snapshot(${g2Project})`), "42501");
+  });
+
+  await test("0093 ytelse: 5 000 blokker åpnes, leses og legges inn innenfor fornuftige tak", async () => {
+    const pid = String((await as("authenticated", ALICE, (tx) => tx`select public.create_project('G2 stor', 25, 1, 'nb') id`))[0]?.["id"]);
+    const prod = String((await sql`select id from public.productions where project_id=${pid} and kind='main'`)[0]!["id"]);
+    await sql.unsafe(`
+      create temp table g2t as select gen_random_uuid() scene, gen_random_uuid() variant, gen_random_uuid() occ, i from generate_series(1, 500) i;
+      insert into public.scenes (id, project_id, origin_production_id) select scene, '${pid}', '${prod}' from g2t;
+      insert into public.scene_variants (id, project_id, scene_id) select variant, '${pid}', scene from g2t;
+      insert into public.scene_occurrences (id, project_id, production_id, scene_id, variant_id, order_key)
+        select occ, '${pid}', '${prod}', scene, variant, 'k' || lpad(i::text, 7, '0') || '1' from g2t;`);
+    let t0 = performance.now();
+    await sql.unsafe(`insert into public.script_blocks (id, project_id, variant_id, kind, order_key, language, text)
+      select gen_random_uuid(), '${pid}', variant, 'action', 'b' || lpad(j::text, 4, '0') || '1', 'xx', 'T' || j from g2t, generate_series(1, 10) j`);
+    const insertMs = performance.now() - t0;
+    assert((await sql`select count(*) n from public.script_blocks where project_id=${pid} and language <> 'nb'`)[0]!["n"] === "0", "g1 setter kildespråket");
+    await sql.unsafe(`insert into public.script_block_revisions (project_id, block_id, rev, text, author) select project_id, id, 1, text, '${ALICE}' from public.script_blocks where project_id='${pid}'`);
+    const lv = String((await sql`insert into public.language_versions (id, project_id, language, source_language, name) values (gen_random_uuid(), ${pid}, 'en', 'nb', 'English') returning id`)[0]!["id"]);
+    t0 = performance.now();
+    await sql.unsafe(`insert into public.translation_lines (id, project_id, variant_id, language, ord, text, language_version_id)
+      select gen_random_uuid(), '${pid}', variant, 'en', j, 'L' || j, '${lv}' from g2t, generate_series(1, 10) j`);
+    const linesMs = performance.now() - t0;
+    await expectError(sql.unsafe(`insert into public.translation_lines (id, project_id, variant_id, language, ord, text, language_version_id)
+      select gen_random_uuid(), '${pid}', variant, 'de', 1, 'X', '${lv}' from g2t limit 1`), /version scope/);
+    await sql`analyze`;
+    t0 = performance.now();
+    const snap = (await as("authenticated", ALICE, (tx) => tx`select public.project_snapshot(${pid}) s`))[0]!["s"] as { tables: Record<string, unknown[]>[] };
+    const snapMs = performance.now() - t0;
+    const tables = Object.assign({}, ...snap.tables) as Record<string, unknown[]>;
+    assert(tables["script_blocks"]!.length === 5000 && tables["translation_lines"]!.length === 5000, "antall");
+    t0 = performance.now();
+    await as("authenticated", ALICE, (tx) => tx`select count(*) from public.script_blocks`);
+    const rlsMs = performance.now() - t0;
+    console.log(`      blokker ${insertMs.toFixed(0)} ms, linjer ${linesMs.toFixed(0)} ms, øyeblikksbilde ${snapMs.toFixed(0)} ms, RLS ${rlsMs.toFixed(0)} ms`);
+    assert(insertMs < 3000, `5 000 blokker tok ${insertMs.toFixed(0)} ms (tak 3 000)`);
+    assert(linesMs < 3000, `5 000 linjer tok ${linesMs.toFixed(0)} ms (tak 3 000; før 0093 kvadratisk)`);
+    assert(snapMs < 4000, `øyeblikksbildet tok ${snapMs.toFixed(0)} ms (tak 4 000)`);
+    assert(rlsMs < 1000, `RLS-lesing tok ${rlsMs.toFixed(0)} ms (tak 1 000)`);
+    const plan = (await as("authenticated", ALICE, (tx) => tx.unsafe(`explain select * from public.script_blocks where project_id = '${pid}' and id > '00000000-0000-0000-0000-000000000000' order by id limit 1000`))).map((r) => String(r["QUERY PLAN"])).join("\n");
+    assert(/Index/.test(plan), `keyset bruker ikke indeks:\n${plan}`);
+    await as("service_role", null, (tx) => tx`select public.delete_project(${pid}, ${ALICE})`);
+  });
 } finally {
   await sql.end();
   await admin.unsafe(`drop database if exists ${DB} with (force)`);
