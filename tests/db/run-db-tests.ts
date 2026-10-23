@@ -6209,8 +6209,11 @@ try {
       assert(body.indexOf("delete from public.translation_line_links")<body.indexOf("delete from public.translations"),"line links must delete before translations");
     }
     const body=String((await sql`select pg_get_functiondef('public.apply_changes(uuid,uuid,uuid,jsonb,jsonb,jsonb)'::regprocedure) b`)[0]?.["b"]);
-    assert(body.includes("'translation_line_links'") && body.includes("'translation_lines'") && body.includes("Invalid line link scope"),"scope validation absent");
-    assert(body.includes("p_changes -> 'inserts' -> 'translation_line_links'") && body.includes("v_link_check"),"validation must only cover links in this call");
+    assert(body.includes("'translation_line_links'") && body.includes("'translation_lines'"),"apply_changes kjenner ikke linjetabellene");
+    const vbody=String((await sql`select pg_get_functiondef('private.validate_translation_line_links(uuid,jsonb,uuid[])'::regprocedure) b`)[0]?.["b"]);
+    const pbody=String((await sql`select pg_get_functiondef('private.prepare_translation_line_links(uuid,jsonb)'::regprocedure) b`)[0]?.["b"]);
+    assert(vbody.includes("Invalid line link scope"),"scope validation absent");
+    assert(pbody.includes("p_changes -> 'inserts' -> 'translation_line_links'") && vbody.includes("any(p_ids)"),"validation must only cover links in this call");
     for (const t of ["translation_lines"]) {
       const g=await sql`select has_table_privilege('anon',${`public.${t}`},'SELECT') a, has_table_privilege('authenticated',${`public.${t}`},'SELECT') r, has_table_privilege('authenticated',${`public.${t}`},'INSERT') w, has_table_privilege('service_role',${`public.${t}`},'INSERT') s, (select relrowsecurity from pg_class where oid=${`public.${t}`}::regclass) rls`;
       assert(g[0]?.["a"]===false && g[0]?.["r"]===true && g[0]?.["w"]===false && g[0]?.["s"]===true && g[0]?.["rls"]===true,`${t} grants/RLS`);
@@ -6324,7 +6327,9 @@ try {
       assert(body.indexOf("delete from public.translations")>0 && body.indexOf("delete from public.translations")<body.indexOf("delete from public.language_versions") && (name==="delete_project" || body.indexOf("delete from public.language_versions")<body.indexOf("delete from public.projects")),`${name}: language versions must delete after translations (and before the project row)`);
     }
     const ac=String((await sql`select pg_get_functiondef('public.apply_changes(uuid,uuid,uuid,jsonb,jsonb,jsonb)'::regprocedure) b`)[0]?.["b"]);
-    assert(ac.indexOf("'language_versions','translations'")>0 && ac.includes("'translations','language_versions'") && ac.includes("Invalid language version scope"),"apply_changes lacks language versions");
+    assert(ac.indexOf("'language_versions','translations'")>0 && ac.includes("'translations','language_versions'"),"apply_changes lacks language versions");
+    const lac=String((await sql`select pg_get_functiondef('private.validate_language_scope(uuid,jsonb,uuid[])'::regprocedure) b`)[0]?.["b"]);
+    assert(lac.includes("Invalid language version scope"),"language scope validation absent");
     assert(Number((await sql`select max(version) v from public.schema_version`)[0]?.["v"])>=66,"schema version 66");
     await expectError(as("authenticated",ALICE,tx=>tx`insert into public.language_versions(id,project_id,language,name) values(gen_random_uuid(),gen_random_uuid(),'de','Tysk')`),"42501");
   });
@@ -6435,7 +6440,9 @@ try {
     }
     const applyBody=String((await sql`select pg_get_functiondef('public.apply_changes(uuid,uuid,uuid,jsonb,jsonb,jsonb)'::regprocedure) b`)[0]?.["b"]);
     assert(applyBody.includes("'style_harmonizations'") && applyBody.includes("'style_preferred_references'"),"new tables missing from apply_changes");
-    assert(applyBody.includes("Invalid harmonization") && applyBody.includes("More than one preferred reference"),"validation absent");
+    const harmBody=String((await sql`select pg_get_functiondef('private.validate_style_harmonizations(uuid,jsonb,uuid[])'::regprocedure) b`)[0]?.["b"]);
+    const prefBody=String((await sql`select pg_get_functiondef('private.validate_preferred_reference_unique(uuid,jsonb,uuid[])'::regprocedure) b`)[0]?.["b"]);
+    assert(harmBody.includes("Invalid harmonization") && prefBody.includes("More than one preferred reference"),"validation absent");
     const purgeBody=String((await sql`select pg_get_functiondef('public.purge_removed_assets(uuid,uuid,uuid[],uuid[])'::regprocedure) b`)[0]?.["b"]);
     assert(purgeBody.includes("delete from public.style_harmonizations") && purgeBody.includes("delete from public.style_preferred_references"),"purge_removed_assets misses the new tables");
   });
@@ -6484,7 +6491,7 @@ try {
     await as("service_role",null,tx=>tx`select public.apply_changes(${bp},${ALICE},${newId()},${tx.json({type:"SetLineLink"})},null,${tx.json({updates:{translation_line_links:[{id:link,target_translation_ids:[uSr,uSr2],revision:lr+1,expected_revision:lr}]}})})`);
     await as("service_role",null,tx=>tx`select public.apply_changes(${bp},${ALICE},${newId()},${tx.json({type:"UpdateTranslationLine"})},null,${tx.json({updates:{translation_lines:[{id:uSr,text:"Prva!",revision:r+1,expected_revision:r}]}})})`);
     assert((await sql`select target_translation_ids t from public.translation_line_links where id=${link}`)[0]?.["t"].length===2,"valid link update lost");
-    const ac=String((await sql`select pg_get_functiondef('public.apply_changes(uuid,uuid,uuid,jsonb,jsonb,jsonb)'::regprocedure) b`)[0]?.["b"]);
+    const ac=String((await sql`select pg_get_functiondef('private.validate_language_scope(uuid,jsonb,uuid[])'::regprocedure) b`)[0]?.["b"]);
     assert(ac.includes("v_link_scope") && ac.includes("target_translation_ids && v_lang_changed"),"apply_changes lacks the 0067 link scope");
   });
   await test("0068: R3 tilbaketrekking av globale versjoner – grants, rettigheter, angre/gjør om, andre prosjekter uendret", async () => {
