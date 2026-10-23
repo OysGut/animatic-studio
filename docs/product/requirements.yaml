@@ -29334,7 +29334,7 @@ requirements:
   - src/app/scene-editor/GenerateDialogue.tsx
   - src/adapters/ai/speech.functions.ts
   verification:
-  - "tests/visual/dv4-voice.mjs::generation metadata matches exact voice/model/language/settings"
+  - "tests/visual/dv4-voice.mjs::generation metadata preserves local settings"
   notes: 'Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §128. DEC-0099
     er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte
     testkall. Status Implementert innebærer ikke full Cloud-verifikasjon. Kontoens eksisterende stemmer/modeller
