@@ -409,6 +409,12 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         step: c.step ?? 1,
         // Migrasjon 0042 (SV1): alltid med, så en tilbakestilling lagres
         timing: c.timing ?? EMPTY_TIMING,
+        // Migrasjon 0102 (SB-1): komposisjonstype og panelfelt (ignoreres før migrasjonen er kjørt)
+        kind: c.kind ?? "scene",
+        occurrence_id: c.occurrenceId ?? null,
+        order_key: c.orderKey ?? null,
+        active: c.active ?? true,
+        hidden: c.hidden ?? false,
       };
     }
     case "layers": {
@@ -457,6 +463,10 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         // Migrasjon 0071 (B-087): platen laget ligger på i scenens rigg, med dybde i mm
         rig_plate_id: l.rigPlateId ?? null,
         rig_plate_depth_mm: l.rigPlateDepthMm ?? 0,
+        // Migrasjon 0102 (SB-1): lapp, pil og kameramerke (bare storyboardlag)
+        note: l.note ?? null,
+        arrow: l.arrow ?? null,
+        camera_mark: l.cameraMark ?? null,
         removed: l.removed,
       };
     }
@@ -526,6 +536,22 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
     case "noteFlags": {
       const f = e as unknown as NoteFlag;
       return { ...base, target_kind: f.targetKind, target_id: f.targetId, text: f.text, enabled: f.enabled, edited_by: f.editedBy ?? null, edited_at: f.editedAt ?? null, removed: f.removed };
+    }
+    case "panelBlocks": {
+      const p = e as unknown as import("./storyboard").PanelBlockLink;
+      return { ...base, panel_id: p.panelId, block_id: p.blockId, order_key: p.orderKey, removed: p.removed };
+    }
+    case "productionStatuses": {
+      const p = e as unknown as import("./storyboard").ProductionStatus;
+      return { ...base, area: p.area, occurrence_id: p.occurrenceId, composition_id: p.compositionId, status: p.status, removed: p.removed };
+    }
+    case "productionStatusEvents": {
+      const p = e as unknown as import("./storyboard").ProductionStatusEvent;
+      return { ...base, status_id: p.statusId, area: p.area, occurrence_id: p.occurrenceId, composition_id: p.compositionId, status: p.status, removed: p.removed };
+    }
+    case "panelSnapshots": {
+      const p = e as unknown as import("./storyboard").PanelSnapshot;
+      return { ...base, panel_id: p.panelId, panel_revision: p.panelRevision, snapshot: p.snapshot, removed: p.removed };
     }
     case "qualityProfiles": {
       const q = e as unknown as QualityProfile;
@@ -862,6 +888,10 @@ export const TABLE_ORDER: readonly string[] = [
   "translation_line_links",
   "style_harmonizations",
   "style_preferred_references",
+  "storyboard_panel_blocks",
+  "production_statuses",
+  "production_status_events",
+  "storyboard_panel_snapshots",
 ];
 
 export function diffStates(before: ProjectState, after: ProjectState): ChangeSet {
@@ -1017,6 +1047,11 @@ export interface ProjectRows {
   readonly print_job_elements?: readonly Row[];
   readonly rig_templates?: readonly Row[];
   readonly rig_setups?: readonly Row[];
+  /** SB-1 storyboard (migrasjon 0102). Tomt hvis migrasjonen ikke er kjørt ennå. */
+  readonly storyboard_panel_blocks?: readonly Row[];
+  readonly production_statuses?: readonly Row[];
+  readonly production_status_events?: readonly Row[];
+  readonly storyboard_panel_snapshots?: readonly Row[];
 }
 
 const str = (v: unknown) => String(v);
