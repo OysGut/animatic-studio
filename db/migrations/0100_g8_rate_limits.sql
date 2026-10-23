@@ -49,7 +49,7 @@ returns text
 language plpgsql stable security definer set search_path = '' as $$
 declare h jsonb; v text;
 begin
-  if current_user not in ('anon', 'authenticated') then return null; end if;
+  if coalesce(current_setting('role', true), '') not in ('anon', 'authenticated') then return null; end if;
   begin
     h := nullif(current_setting('request.headers', true), '')::jsonb;
   exception when others then return null;
@@ -121,7 +121,7 @@ create trigger g8_rate_limit before insert on public.content_reports
   for each row execute function private.rate_limit_trigger('report', 'reporter');
 create trigger g8_rate_limit before insert on public.showcase_comments
   for each row execute function private.rate_limit_trigger('comment', 'author');
-create trigger g8_rate_limit before insert or update on public.signup_passes
+create trigger g8_rate_limit before insert on public.signup_passes
   for each row execute function private.rate_limit_trigger('signup_pass', 'email', 'e');
 
 -- Serverfunksjonene (innlogging/pass) sender egne nøkler med IP. Bare service_role.
