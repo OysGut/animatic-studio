@@ -8685,13 +8685,13 @@ try {
     // Gyldig panel med forankring til blokken i samme variant
     const link = newId();
     const res = await sbApply(g7p, { inserts: {
-      compositions: [{ id: panel, project_id: g7p, variant_id, kind: "storyboard", occurrence_id, order_key: "a1", revision: 1 }],
+      compositions: [{ id: panel, project_id: g7p, variant_id: variant, kind: "storyboard", occurrence_id: occurrence, order_key: "a1", revision: 1 }],
       storyboard_panel_blocks: [{ id: link, project_id: g7p, panel_id: panel, block_id: block, order_key: "a1", revision: 1 }],
     } });
     assert(res.length === 1, "panelet ble ikke lagret");
     // Unikhetsregelen «én aktiv komposisjon per variant» gjelder fortsatt bare 2D-scener
     await sbApply(g7p, { inserts: { compositions: [
-      { id: newId(), project_id: g7p, variant_id, kind: "storyboard", occurrence_id, order_key: "a2", revision: 1 }] } });
+      { id: newId(), project_id: g7p, variant_id: variant, kind: "storyboard", occurrence_id: occurrence, order_key: "a2", revision: 1 }] } });
     await expectError(sbApply(g7p, { inserts: { compositions: [
       { id: newId(), project_id: g7p, variant_id, kind: "scene", revision: 1 },
       { id: newId(), project_id: g7p, variant_id, kind: "scene", revision: 1 }] } }), "23505");
@@ -8701,7 +8701,7 @@ try {
     const { variant, occurrence } = sbSetup;
     const panel = newId(), sceneComp = newId();
     await sbApply(g7p, { inserts: { compositions: [
-      { id: panel, project_id: g7p, variant_id, kind: "storyboard", occurrence_id, order_key: "a3", revision: 1 },
+      { id: panel, project_id: g7p, variant_id: variant, kind: "storyboard", occurrence_id: occurrence, order_key: "a3", revision: 1 },
       { id: sceneComp, project_id: g7p, variant_id, kind: "scene", revision: 1 }] } });
     const noteSpec = { noteType: "visual", text: "Husk skygge", color: "#ffcc00", x: 0.1, y: 0.2, w: 0.3, h: 0.2, anchor: { kind: "free" }, handled: false };
     const layer = (kind: string, comp: string, extra: Record<string, unknown> = {}) => ({
@@ -8721,7 +8721,7 @@ try {
     const { block, occurrence, variant } = sbSetup;
     const panel = newId();
     await sbApply(g7p, { inserts: { compositions: [
-      { id: panel, project_id: g7p, variant_id, kind: "storyboard", occurrence_id, order_key: "a4", revision: 1 }] } });
+      { id: panel, project_id: g7p, variant_id: variant, kind: "storyboard", occurrence_id: occurrence, order_key: "a4", revision: 1 }] } });
     // Blokk som ikke finnes (eller er i et annet prosjekt), avvises
     await expectError(sbApply(g7p, { inserts: { storyboard_panel_blocks: [
       { id: newId(), project_id: g7p, panel_id: panel, block_id: newId(), order_key: "a1", revision: 1 }] } }), "22023");
@@ -8746,7 +8746,7 @@ try {
     const { occurrence, variant } = sbSetup;
     const panel = newId();
     await sbApply(g7p, { inserts: { compositions: [
-      { id: panel, project_id: g7p, variant_id, kind: "storyboard", occurrence_id, order_key: "a5", revision: 1 }] } });
+      { id: panel, project_id: g7p, variant_id: variant, kind: "storyboard", occurrence_id: occurrence, order_key: "a5", revision: 1 }] } });
     const status = newId();
     // Gyldig: status på panelet + første historikkrad
     await sbApply(g7p, { inserts: {
@@ -8787,14 +8787,14 @@ try {
     await sql`insert into public.script_blocks (id, project_id, variant_id, kind, order_key, text) values (${block},${p},${variant},'dialogue','a1','Hei')`;
     await sql`insert into public.scene_occurrences (id, project_id, production_id, scene_id, variant_id, order_key) values (${occurrence},${p},${prod},${scene},${variant},'a1')`;
     await sbApply(p, { inserts: {
-      compositions: [{ id: panel, project_id: p, variant_id, kind: "storyboard", occurrence_id, order_key: "a1", revision: 1 }],
+      compositions: [{ id: panel, project_id: p, variant_id: variant, kind: "storyboard", occurrence_id: occurrence, order_key: "a1", revision: 1 }],
       storyboard_panel_blocks: [{ id: newId(), project_id: p, panel_id: panel, block_id: block, order_key: "a1", revision: 1 }],
       production_statuses: [{ id: newId(), project_id: p, area: "storyboard", composition_id: panel, status: "done", revision: 1 }],
       storyboard_panel_snapshots: [{ id: newId(), project_id: p, panel_id: panel, panel_revision: 1, snapshot: { panel: {}, layers: [], blocks: [] }, revision: 1 }],
     } });
     // project_snapshot tar med alle fire tabellene (G-2-innlasting)
     const snap = await as("authenticated", ALICE, (tx) => tx`select public.project_snapshot(${p}) s`);
-    const tables = (snap[0]!["s"] as { tables: Record<string, unknown>[] }[])[1]!;
+    const tables = (snap[0]!["s"] as { tables: Record<string, unknown>[] }).tables[1]!;
     for (const t of ["storyboard_panel_blocks", "production_statuses", "production_status_events", "storyboard_panel_snapshots"])
       assert(Array.isArray(tables[t]), `project_snapshot mangler ${t}`);
     assert((tables["storyboard_panel_blocks"] as unknown[]).length === 1, "forankringen mangler i øyeblikksbildet");
