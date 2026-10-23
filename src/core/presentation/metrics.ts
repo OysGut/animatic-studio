@@ -3,6 +3,7 @@
  * linjebryting og plassering er lik i forhåndsvisningen (Arial/Liberation Sans og Times New Roman/Liberation
  * Serif har samme mål), PNG-eksporten og trykk-PDF-en. Ren TypeScript uten avhengigheter.
  */
+import { graphemes, segmentAll } from "../language/text-metrics";
 export type PosterFontKey = "sans" | "sansBold" | "serif" | "serifBold" | "serifItalic";
 
 /** Tegnbredder (1/1000 em) for PDF-standardskriftene, WinAnsi 32–255 (generert fra AFM via reportlab). */
