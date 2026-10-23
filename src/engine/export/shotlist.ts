@@ -1,4 +1,4 @@
-import type { ProjectState, FilmClip } from "@/core";
+import { storyboardShotRows, type ProjectState, type FilmClip } from "@/core";
 import type { InterchangeDoc } from "@/core/interchange";
 import { shotlistCsv, shotlistJson, type ShotlistProfile } from "@/core/interchange/shotlist";
 import { interchangeReadme } from "@/core/interchange/readme";
@@ -25,6 +25,8 @@ export async function exportShotlist(o: {
   await fontsReady(doc.shots.flatMap(s => s.layers.flatMap(l => l.source.text ? [l.source.text] : [])));
   const video = new FilmVideoFrames(await import("mediabunny"), o.filmUrls);
   async function* files() {
+    const panels = storyboardShotRows(o.state, doc.production.id);
+    if (panels.length) yield {path:"storyboard.json",data:new TextEncoder().encode(JSON.stringify(panels,null,2))};
     yield { path: "shotlist.csv", data: shotlistCsv(doc, o.profile) };
     yield { path: "shotlist.json", data: shotlistJson(doc, o.profile) };
     yield { path: "interchange.json", data: new TextEncoder().encode(JSON.stringify(doc, null, 2)) };
