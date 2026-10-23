@@ -183,7 +183,7 @@ export function AssetWorklistDialog({
                     <Thumbnail
                       src={oldV ? urls.data?.[oldV.mediaPath] : undefined}
                       alt={t("app-library-asset-worklist-dialog.asset-worklist-dialog.alt.e259cc2e67bc", { value1: String(oldV?.number ?? "") })}
-                      className="aspect-video bg-media"
+                      className="aspect-video h-auto w-full bg-media"
                     />
                     <figcaption className="text-[11px] text-text-tertiary">
                       {t("app-library-asset-worklist-dialog.asset-worklist-dialog.figcaption.b8549f730d8e")} (v{oldV?.number})
@@ -194,7 +194,7 @@ export function AssetWorklistDialog({
                     <Thumbnail
                       src={newV ? urls.data?.[newV.mediaPath] : undefined}
                       alt={t("app-library-asset-worklist-dialog.asset-worklist-dialog.alt.4c9b8b2ffea0", { value1: String(newV?.number ?? "") })}
-                      className="aspect-video bg-media"
+                      className="aspect-video h-auto w-full bg-media"
                     />
                     <figcaption className="text-[11px] text-text-tertiary">
                       {t("app-library-asset-worklist-dialog.asset-worklist-dialog.figcaption.e05d24939499")} (v{newV?.number})

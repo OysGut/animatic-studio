@@ -106,7 +106,7 @@ export function StillPickerDialog({
                     <Thumbnail
                       src={urls.data[x.version.mediaPath]}
                       alt=""
-                      className="aspect-video bg-media"
+                      className="aspect-video h-auto w-full bg-media"
                     />
                   ) : (
                     <span className="flex aspect-video w-full items-center justify-center bg-surface-3">
