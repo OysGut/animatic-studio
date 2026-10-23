@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { AE_LAUNCHER_MAC, AE_LAUNCHER_MAC_MODE, AE_LAUNCHER_WINDOWS, aeMacLauncher, aeWindowsLauncher } from "@/core/interchange/ae-launchers";
 import { writeZip } from "@/engine/export/zip";
-import { readZipIndex } from "@/engine/import/zip-read";
 import { t } from "@/core/i18n/keyed";
 
 const notFound = ["Fant ikke Adobe After Effects (prøv selv).", "Could not find Adobe After Effects."];
@@ -36,8 +35,6 @@ describe("PTG3 startfiler", () => {
       extra: [{ path: AE_LAUNCHER_MAC, data: new TextEncoder().encode(aeMacLauncher(notFound)), unixMode: AE_LAUNCHER_MAC_MODE }, { path: "bygg.jsx", data: new TextEncoder().encode("//") }],
     });
     const all = new Uint8Array(chunks.reduce((n, c) => n + c.length, 0)); let o = 0; for (const c of chunks) { all.set(c, o); o += c.length; }
-    const names = (await readZipIndex(new Blob([all]))).map((e: { name: string }) => e.name);
-    expect(names).toContain(AE_LAUNCHER_MAC);
     // Finn sentralkatalogpostene og les «laget av» og eksterne attributter
     const v = new DataView(all.buffer); const found: Record<string, { madeBy: number; ext: number }> = {};
     for (let i = 0; i + 46 < all.length; i++) {

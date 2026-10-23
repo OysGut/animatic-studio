@@ -108,7 +108,7 @@ function runJsx(script: string) {
     project: { items: {
       addFolder(n: string) { log.folders.push(n); return {}; },
       addComp(n: string, w: number, h: number, px: number, dur: number, fps: number) { return new Comp(n, w, h, px, dur, fps); },
-    }, importFile(o: { file: { path: string } }) { log.imports.push(o.file.path); const l = new Layer("media-audio"); return l; } },
+    }, save() {}, importFile(o: { file: { path: string } }) { log.imports.push(o.file.path); const l = new Layer("media-audio"); return l; } },
   };
   class File { constructor(public path: string) {} }
   class ImportOptions { constructor(public file: File) {} }
