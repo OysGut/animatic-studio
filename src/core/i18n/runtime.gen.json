@@ -1500,6 +1500,9 @@
     "adapters-storage-commands-functions.quota-uploads": {
       "text": "For mange opplastinger den siste timen. Vent litt og prøv igjen."
     },
+    "adapters-storage-commands-functions.rate-limited": {
+      "text": "For mange forespørsler på kort tid. Vent litt og prøv igjen."
+    },
     "adapters-storage-commands-functions.undo-production-history": {
       "text": "Produksjonen har eksporter eller lagrede estimater og kan ikke angres. Den beholdes som den er."
     },
@@ -34955,6 +34958,9 @@
     },
     "adapters-storage-commands-functions.quota-uploads": {
       "text": "Too many uploads in the last hour. Wait a moment and try again."
+    },
+    "adapters-storage-commands-functions.rate-limited": {
+      "text": "Too many requests in a short time. Wait a moment and try again."
     },
     "adapters-storage-commands-functions.undo-production-history": {
       "text": "The production has exports or saved estimates and cannot be undone. It is kept as it is."
