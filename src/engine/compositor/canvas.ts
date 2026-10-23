@@ -519,6 +519,8 @@ function paintFill(ctx: Ctx2D, it: DrawItem, x: number, y: number) {
 }
 
 /** Tekstlag (MTS): hvert tegn på plassen renderFrame har beregnet, med sin egen tilstand. */
+const RTL_GLYPH = /[\u0590-\u05FF\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB1D-\uFB4F\uFB50-\uFDFF\uFE70-\uFEFF]/;
+
 function paintText(ctx: Ctx2D, it: DrawItem) {
   const t = it.text;
   if (!t) return;
@@ -527,7 +529,27 @@ function paintText(ctx: Ctx2D, it: DrawItem) {
   ctx.textBaseline = "alphabetic";
   const base = ctx.globalAlpha;
   const outline = it.effects?.outline;
+  // G-4: en linje med RTL-tegn må tegnes i én fillText med ctx.direction='rtl' for riktig shaping og
+  // bidi-rekkefølge (tegn-for-tegn-tegning bryter arabisk sammenbinding). Bokstavanimasjon tegner da
+  // hele linjen samlet. LTR-linjer er uendret.
+  const lines = new Map<number, { chars: string[]; x: number; y: number; opacity: number }>();
   for (const g of t.glyphs) {
+    if (!RTL_GLYPH.test(g.char)) continue;
+    const key = g.y;
+    const cur = lines.get(key) ?? { chars: [], x: g.x, y: g.y, opacity: g.opacity };
+    cur.chars.push(g.char);
+    cur.x = Math.min(cur.x, g.x + g.dx);
+    lines.set(key, cur);
+  }
+  for (const l of lines.values()) {
+    ctx.save();
+    ctx.direction = "rtl";
+    ctx.globalAlpha = base * l.opacity;
+    drawGlyph(ctx, l.chars.join(""), l.x, l.y, t.color, outline);
+    ctx.restore();
+  }
+  for (const g of t.glyphs) {
+    if (lines.has(g.y)) continue;
     if (g.opacity <= 0) continue;
     ctx.globalAlpha = base * g.opacity;
     const gx = g.x + g.dx;
