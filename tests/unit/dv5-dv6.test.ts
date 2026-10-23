@@ -60,8 +60,9 @@ describe("DV5 permanent identity and lossless batch", () => {
   });
 });
 describe("DV6 independent BCP-47 preferences",()=>{
-  it.each(["es-MX","zh-Hant-TW","sr-Latn-RS","ar","hi","th","ja","en-US-u-ca-gregory"])("accepts %s without an allowlist", tag=>expect(languageTagError(tag)).toBeNull());
-  it.each(["","not_a_language","en--US","<script>"])("rejects %s", tag=>expect(languageTagError(tag)).not.toBeNull());
+  it.each(["es-MX","zh-Hant-TW","sr-Latn-RS","ar","hi","th","ja"])("accepts %s without an allowlist", tag=>expect(languageTagError(tag)).toBeNull());
+  // G-1b: samme kanoniske mønster som kjernen og databasen – utvidelser (-u-, -x-) avvises likt i alle lag
+  it.each(["","not_a_language","en--US","<script>","en-US-u-ca-gregory","nb-x-privat"])("rejects %s", tag=>expect(languageTagError(tag)).not.toBeNull());
   it("project, variant and block language have ordered priority and reversible changes",()=>{
     const {s,clipId}=dvBase();const c=generatedCommand(s,clipId);const b=s.blocks[c.blockId];if(!b)throw new Error("block");
     const p=apply(s,{type:"SetDialogueLanguage",target:"project",targetId:s.project.id,language:"en-US"});expect(scriptLanguageOf(p.state,c.blockId)).toBe("en-US");
