@@ -80,3 +80,5 @@ Kortversjonen († = detaljer i `docs/development/AGENTS_DETAILS.md`):
 64. The translation source is the script language (sourceLanguageOf/isSourceLanguage in core/dialogue/languages), never a literal "nb"; "nb" survives only as the internal SOURCE_TEXT_KEY for block text, so non-Norwegian scripts work without a migration.
 65. Script explorer window, pane widths and notes visibility use pure rules in src/app/script-explorer/window-geometry.ts and are stored via useUiPref (panel, popup and panes keyed separately); "Open in" targets come from projectUrls and open in window.opener from the popup, so the explorer only navigates and never writes.
 66. Every window (dialog, popup, sheet, floating panel, page) shows its fixed ID from src/app/ui-ids.ts via UiId or the uiId prop on shared contents; new windows get the next free number with `node scripts/ui-ids/ui-ids.mjs --assign`, numbers are never reused (removed ones stay as «fjernet»), and tests/architecture/ui-ids.test.ts fails on missing, duplicate or unregistered IDs.
+67. Punkter under SPERRET i TODO.md skal ikke implementeres eller forberedes, verken helt eller delvis, før Øystein uttrykkelig ber om det.
+
