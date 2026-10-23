@@ -1,5 +1,12 @@
 # Veikart
 
+## G-1 – språknøytral grunnmur (23.10.2026), etter N11
+- [ ] Plan og rapport i docs/development/G1_SPRAKNOYTRAL_REPORT.md
+- [ ] G-1a: ny migrasjonsfil 0090, én kildeidentitet, språknøytral kjerne, sikkerhetskopi og DB-/kjernetester
+- [ ] G-1b: nøytrale standarder, manusspråk ved oppretting/endring/import, alle grensesnittspråk og flyttester
+- [ ] Krav, INV-05, AGENTS.md og TODO.md; full Vitest, automatisk typekontroll, i18n og isolerte DB-tester
+- [ ] Claudes gjennomgang og kjøring av 0090 i Cloud; ingen publisering eller betalte kall
+
 ## N11 – teknisk gjeld (23.10.2026)
 - [x] Rett scene-panels-ui og kontroller nb/en: 39/0 på hvert språk
 - [ ] N6-restkrav: ni verifisert; 17 står fortsatt åpne, med konkrete manglende kontroller og avklaringer i N11_REPORT.md
