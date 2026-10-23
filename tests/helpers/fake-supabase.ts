@@ -33,6 +33,21 @@ export function fakeDb(tables: Record<string, Row[]>, files: readonly string[] =
         };
       },
     },
+    /**
+     * Falske RPC-er (G-3 del 2): periodestartene svarer med UTC-månedsstarten, slik databasen gjør for
+     * prosjekter og brukere uten egen tidssone. Tester som vil ha en annen tidssone, overstyrer `rpc`.
+     */
+    rpc(name: string, args: Record<string, unknown>) {
+      const now = new Date();
+      const start = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1));
+      if (name === "project_period_start" || name === "user_period_start") {
+        return Promise.resolve({ data: start.toISOString(), error: null });
+      }
+      if (name === "user_period_start_date") {
+        return Promise.resolve({ data: start.toISOString().slice(0, 10), error: null });
+      }
+      return Promise.resolve({ data: null, error: { message: `Ukjent rpc i fakeDb: ${name} (${JSON.stringify(args)})` } });
+    },
     from(table: string) {
       const filters: ((r: Row) => boolean)[] = [];
       let head = false;
