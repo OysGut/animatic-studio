@@ -627,7 +627,7 @@ export function ImageLightbox({
           </div>
           <aside
             aria-label={tk("app-library-image-lightbox.image-lightbox.aria-label.b5ae59f68645")}
-            className="flex w-[340px] shrink-0 flex-col gap-3 overflow-y-auto rounded-sm border border-border bg-surface-1 p-2"
+            className="flex w-[clamp(280px,28%,440px)] shrink-0 flex-col gap-3 overflow-y-auto rounded-sm border border-border bg-surface-1 p-2"
           >
             {tools && canEdit ? (
               <section
