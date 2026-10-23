@@ -13,6 +13,7 @@ import {
 import { BACKUP_STATE_TABLES } from "@/core/backup";
 import { toRow, stateFromRows } from "@/core/patch";
 import type { Asset, AssetVoice, BriefVersion } from "@/core/model";
+import { fixture } from "../visual/fixture-state";
 
 const VOICE: AssetVoice = { provider: "elevenlabs", voiceId: "stemme-1", label: "Mor" };
 const VOICE_LOCAL: AssetVoice = { provider: "elevenlabs", voiceId: "stemme-2", label: "Mor (lokal)" };
@@ -170,10 +171,7 @@ describe("G-6 pkt 4: sikkerhetskopi tar med globale ressurser som snapshot", () 
     expect(row["global_bundle_number"]).toBe(2);
     expect(row["voice"]).toEqual(VOICE);
     expect(row["brief_versions"]).toEqual([B1]);
-    const state = stateFromRows({
-      project: { id: "p1", revision: 1, name: "P", fps_num: 25, fps_den: 1 },
-      assets: [row],
-    } as never);
+    const state = stateFromRows({ ...fixture.rows, assets: [row] } as never);
     const back = state.assets["a1" as never]!;
     expect(back.globalAssetId).toBe(asset.globalAssetId);
     expect(back.globalBundleNumber).toBe(2);
