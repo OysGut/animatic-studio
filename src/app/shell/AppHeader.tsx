@@ -56,7 +56,7 @@ export function AppHeader({ email, trail }: AppHeaderProps) {
           <div className="min-w-0 truncate text-[13px] text-text-secondary">{trail}</div>
         </>
       ) : null}
-      <div className="ml-auto flex flex-wrap items-center justify-end gap-2">
+      <div className="ml-auto flex min-w-0 max-w-full flex-wrap items-center justify-end gap-2">
         {params.projectId ? <Button variant="ghost" size="icon" data-testid="script-explorer-button" title={t("app-shell-app-header.app-header.title.226fbea0a428")} aria-label={t("app-shell-app-header.app-header.aria-label.226fbea0a428")} onClick={() => setExplorerOpen(true)}><Globe className="size-4" /></Button> : null}
         {params.projectId && email ? <BookmarkMenu projectId={params.projectId} /> : null}
         {params.projectId ? <TaskNav projectId={params.projectId} /> : null}
