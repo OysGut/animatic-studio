@@ -105,7 +105,8 @@ export function AiPanel({
   const list = useMemo(() => jobs.data?.jobs ?? [], [jobs.data]);
   const profiles = useProfiles([...new Set(list.map((j) => j.createdBy))]);
   const now = new Date();
-  const usage = aiUsage(state.project, list, now, jobs.data?.monthCount ?? undefined);
+  // Budsjettmåneden følger prosjektets tidssone (G-3 del 2); periodestarten kommer med jobbene
+  const usage = aiUsage(state.project, list, jobs.data?.periodStart ?? now, jobs.data?.monthCount ?? undefined);
   const [filter, setFilter] = useState<"all" | "problems">("all");
   const [retry, setRetry] = useState<GenerationJob | null>(null);
   const [showAll, setShowAll] = useState(false);

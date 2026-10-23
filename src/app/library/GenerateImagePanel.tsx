@@ -333,10 +333,10 @@ export function GenerateImagePanel({
   // Kandidater (mandat 19.7): flere bilder å velge mellom, hvert som egen versjon
   const [candidates, setCandidates] = useState(1);
   const usage = budget
-    ? aiUsage(budget, jobs.data?.jobs ?? [], new Date(), jobs.data?.monthCount ?? undefined)
+    ? aiUsage(budget, jobs.data?.jobs ?? [], jobs.data?.periodStart ?? new Date(), jobs.data?.monthCount ?? undefined)
     : null;
   // Profilens budsjettgrense (M8, REQ-0858): gjelder i tillegg til prosjektets ramme
-  const profileLeft = profileBudgetRemaining(profile, profile ? qualityProfileUsage(profile.id, jobs.data?.jobs ?? [], new Date()) : 0);
+  const profileLeft = profileBudgetRemaining(profile, profile ? qualityProfileUsage(profile.id, jobs.data?.jobs ?? [], jobs.data?.periodStart ?? new Date()) : 0);
   const overBudget = (usage !== null && usage.remaining === 0) || (profileLeft !== null && profileLeft < candidates) || (profile?.spec.budgetLimit != null && !jobs.data);
   // Profilens valg fylles inn når den velges (brukerens egne valg overstyres ikke etterpå)
   const appliedProfile = useRef<string | null>(null);

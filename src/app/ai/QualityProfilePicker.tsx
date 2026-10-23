@@ -75,7 +75,7 @@ export function useQualityProfile(state: ProjectState | null, requested = 1) {
   const [choice, setChoice] = useState<QualityProfileChoice>("active");
   const profile = state ? chosenQualityProfile(state, choice) : null;
   const jobs = useAiJobs(state?.project.id ?? "", !!state && profile?.spec.budgetLimit != null);
-  const used = profile && jobs.data ? qualityProfileUsage(profile.id, jobs.data.jobs, new Date()) : 0;
+  const used = profile && jobs.data ? qualityProfileUsage(profile.id, jobs.data.jobs, jobs.data.periodStart ?? new Date()) : 0;
   const budgetError = profile?.spec.budgetLimit != null
     ? !jobs.data || jobs.isError || jobs.data.monthCount === null
       ? t("app-ai-quality-profile-picker.budget-error.message.9c44e228cc9d")
