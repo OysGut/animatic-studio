@@ -24,7 +24,7 @@ import {
   within,
 } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from "vitest";
-import {
+import { sourceLanguageOf,
   applyCommand,
   blocksOfVariant,
   continuitySuggestions,
