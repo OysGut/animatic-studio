@@ -7994,6 +7994,66 @@ try {
     await sql`update public.projects set workspace_id=null where id=${pid}`;
     await as("service_role", null, (tx) => tx`select public.delete_project(${pid}, ${ALICE})`);
   });
+
+  // ---------- G-3 del 2 (0095): kvoter og budsjetter i budsjettets tidssone ----------
+  await test("0095: kvalitetsprofilens månedsbudsjett regnes i budsjettets tidssone, ikke UTC", async () => {
+    await as("authenticated", ALICE, (tx) => tx`select public.set_my_time_zone('Pacific/Auckland')`);
+    const pid = String((await as("authenticated", ALICE, (tx) => tx`select public.create_project('G3-2', 25, 1, 'ja') id`))[0]?.["id"]);
+    const qid = "00000000-0000-7000-8000-009500000001";
+    await sql`insert into public.quality_profiles (id, project_id, name, spec, created_by)
+      values (${qid}, ${pid}, 'G3', '{"budgetLimit":1}'::jsonb, ${ALICE})`;
+    const params = await sql`select jsonb_build_object('id', ${qid}::uuid, 'name', 'G3', 'spec', '{"budgetLimit":1}'::jsonb) p`;
+    // En jobb fra forrige lokale måned (Auckland), som i UTC kan ligge i inneværende måned
+    const j1 = "00000000-0000-7000-8000-009500000002";
+    await sql`insert into public.generation_jobs (id, project_id, kind, provider, model, prompt, status, created_by, created_at, params)
+      values (${j1}, ${pid}, 'image', 'lovable', 'm', 'x', 'done', ${ALICE},
+        private.budget_period_start(${pid}, 'month', now()) - interval '1 minute', ${params[0]!["p"]}::jsonb)`;
+    // Auckland-månedsstarten er aldri lik UTC-månedsstarten (11–13 timer før), så skillet er reelt
+    const utcStart = String((await sql`select (date_trunc('month', now() at time zone 'UTC') at time zone 'UTC') s`)[0]!["s"]);
+    const localStart = String((await sql`select private.budget_period_start(${pid}, 'month', now()) s`)[0]!["s"]);
+    assert(utcStart !== localStart, "forutsetning: lokal og UTC-månedsstart er ulike");
+    // Ny jobb i inneværende lokale måned: den gamle teller ikke
+    const j2 = "00000000-0000-7000-8000-009500000003";
+    await sql`insert into public.generation_jobs (id, project_id, kind, provider, model, prompt, status, created_by, params)
+      values (${j2}, ${pid}, 'image', 'lovable', 'm', 'x', 'queued', ${ALICE}, ${params[0]!["p"]}::jsonb)`;
+    // Grensen på 1 er nå nådd – neste jobb stoppes
+    await expectError(
+      sql`insert into public.generation_jobs (id, project_id, kind, provider, model, prompt, status, created_by, params)
+        values ('00000000-0000-7000-8000-009500000004', ${pid}, 'image', 'lovable', 'm', 'x', 'queued', ${ALICE}, ${params[0]!["p"]}::jsonb)`,
+      /budget exceeded/i,
+    );
+    await as("service_role", null, (tx) => tx`select public.delete_project(${pid}, ${ALICE})`);
+    await as("authenticated", ALICE, (tx) => tx`select public.set_my_time_zone(null)`);
+  });
+
+  await test("0095: ai_spend-måneden og periodefunksjonene følger brukerens tidssone (Los Angeles)", async () => {
+    await as("authenticated", ALICE, (tx) => tx`select public.set_my_time_zone('America/Los_Angeles')`);
+    const pid = String((await as("authenticated", ALICE, (tx) => tx`select public.create_project('G3-3', 25, 1, 'ja') id`))[0]?.["id"]);
+    const j1 = "00000000-0000-7000-8000-009500000005";
+    await sql`insert into public.generation_jobs (id, project_id, kind, provider, model, prompt, status, created_by, key_owner, cost_usd)
+      values (${j1}, ${pid}, 'image', 'lovable', 'm', 'x', 'done', ${ALICE}, ${ALICE}, 0.5)`;
+    await sql.begin(async (tx) => {
+      await tx`select set_config('animatic.purge_project', ${pid}, true)`;
+      await tx`delete from public.generation_jobs where id = ${j1}`;
+    });
+    const kept = await sql`select month, usd from public.ai_spend where key_owner = ${ALICE}`;
+    const expected = String((await sql`select (date_trunc('month', now() at time zone 'America/Los_Angeles'))::date d`)[0]!["d"]).slice(0, 10);
+    assert(kept.length === 1 && String(kept[0]!["month"]).slice(0, 10) === expected,
+      `ai_spend.month ${String(kept[0]?.["month"]).slice(0, 10)} != lokal måned ${expected}`);
+    // Periodefunksjonene: egen bruker får lokal månedsstart; andre brukere avvises
+    const mine = String((await as("authenticated", ALICE, (tx) => tx`select public.user_period_start(${ALICE}, 'month') s`))[0]!["s"]);
+    const mineExpected = String((await sql`select (date_trunc('month', now() at time zone 'America/Los_Angeles') at time zone 'America/Los_Angeles') s`)[0]!["s"]);
+    assert(new Date(mine).toISOString() === new Date(mineExpected).toISOString(), "user_period_start");
+    const mineDate = String((await as("authenticated", ALICE, (tx) => tx`select public.user_period_start_date(${ALICE}, 'month') d`))[0]!["d"]).slice(0, 10);
+    assert(mineDate === expected, "user_period_start_date");
+    await expectError(as("authenticated", ALICE, (tx) => tx`select public.user_period_start(${BOB}, 'month')`), /not_self/);
+    const projStart = String((await as("authenticated", ALICE, (tx) => tx`select public.project_period_start(${pid}, 'month') s`))[0]!["s"]);
+    assert(new Date(projStart).toISOString() === new Date(mineExpected).toISOString(), "project_period_start uten arbeidsgruppe = eierens sone");
+    await expectError(as("authenticated", ALICE, (tx) => tx`select public.project_period_start(${pid}, 'year')`), /budget_period_unit/);
+    await sql`delete from public.ai_spend where key_owner = ${ALICE}`;
+    await as("service_role", null, (tx) => tx`select public.delete_project(${pid}, ${ALICE})`);
+    await as("authenticated", ALICE, (tx) => tx`select public.set_my_time_zone(null)`);
+  });
 } finally {
   await sql.end();
   await admin.unsafe(`drop database if exists ${DB} with (force)`);
