@@ -8,13 +8,15 @@ import { Loader2, RotateCcw } from "lucide-react";
 import { AiGlyph } from "@/app/design/icons/AiGlyph";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { writeWithAiCalls, planBriefSave, shownBriefVersion, type BriefVersion, aiUsage, type Asset, type AssetMedia, type AssetVariant, type AssetVersion, type AttachedImage, attachedImages, promptFamilyOf, costBreakdown, estimateCostUsd, formatCredits, formatUsd, hasStyleGuide, IMAGE_PURPOSE_FOR_KIND, IMAGE_SIZE_LABEL, fullSizeOriginal, type ImageSize, imageSizesOf, lastImagePrompt, LOVABLE_CUTOUT_MODEL, LOVABLE_IMAGE_MODEL, MAX_PROMPT_CHARS, type Project, type ProjectState, profileBudgetRemaining, qualityProfileUsage, providerInfo, providerModel, providersFor, qualityProfileSnapshot, stripAttachedSection, tm } from "@/core";
+import { writeWithAiCalls, planBriefSave, shownBriefVersion, type BriefVersion, aiUsage, type Asset, type AssetMedia, type AssetVariant, type AssetVersion, type AttachedImage, type AttachedChoice, attachedImageRows, attachedImages, EMPTY_ATTACHED_CHOICE, maxAttachedImagesFor, RECOMMENDED_STYLE_IMAGES, promptFamilyOf, costBreakdown, estimateCostUsd, formatCredits, formatUsd, hasStyleGuide, IMAGE_PURPOSE_FOR_KIND, IMAGE_SIZE_LABEL, fullSizeOriginal, type ImageSize, imageSizesOf, lastImagePrompt, LOVABLE_CUTOUT_MODEL, LOVABLE_IMAGE_MODEL, MAX_PROMPT_CHARS, type Project, type ProjectState, profileBudgetRemaining, qualityProfileUsage, providerInfo, providerModel, providersFor, qualityProfileSnapshot, stripAttachedSection, tm } from "@/core";
 import { QualityProfilePicker, chosenQualityProfile, type QualityProfileChoice } from "@/app/ai/QualityProfilePicker";
 import { aiJobsKey, useAiJobs } from "@/app/ai/use-ai-jobs";
 import { CUTOUT_MODEL, IMAGE_MODEL, generateImage } from "@/adapters/ai/generate-image.functions";
 import { writeImagePrompt } from "@/adapters/ai/write-prompt.functions";
 import { adoptServerHistory } from "@/app/project/use-commands";
 import { useImagePromptPreview } from "./image-prompt-preview";
+import { readAttachedChoice, writeAttachedChoice } from "./attached-choice";
+import { AttachImagePicker } from "./AttachImagePicker";
 import { useProjectProviders } from "@/app/ai/use-project-providers";
 import { EffortPicker } from "@/app/ai/EffortPicker";
 import { Button } from "@/components/ui/button";
@@ -97,60 +99,6 @@ export function GenerateImagePanel({
   const [withStyle, setWithStyle] = useState(true);
   const identity =
     withRef && reference && reference.mimeType.startsWith("image/") ? reference : null;
-  /** Bildene som sendes med til bildemodellen, i rekkefølge. */
-  const attached = useMemo((): readonly AttachedImage[] => {
-    if (context)
-      return attachedImages(context.state, {
-        assetId: asset.id,
-        productionId: context.productionId,
-        occurrenceId: context.occurrenceId,
-        identityVersionId: identity?.id ?? null,
-        style: withStyle,
-      });
-    return identity
-      ? [
-          {
-            versionId: identity.id,
-            path: identity.mediaPath,
-            mimeType: identity.mimeType,
-            role: "identity",
-            label: `the current design of ${asset.name} (v${identity.number})`,
-          },
-        ]
-      : [];
-  }, [context, asset, identity, withStyle]);
-  // Forbildebilder sendes som standard i arbeidsstørrelse (tilpasset scenen); originalen i full størrelse
-  // kan velges, f.eks. for karakterkort (Mars 2026-10-13, DEC-0079)
-  const [fullSize, setFullSize] = useState(false);
-  const originals = useMemo(
-    () =>
-      context
-        ? new Map(
-            attached.flatMap((a) => {
-              const o = fullSizeOriginal(context.state, a.versionId);
-              return o ? [[a.versionId, o] as const] : [];
-            }),
-          )
-        : new Map<string, never>(),
-    [context, attached],
-  );
-  const sentPaths = attached.map((a) =>
-    fullSize ? (originals.get(a.versionId)?.mediaPath ?? a.path) : a.path,
-  );
-  /** Hvor mange stilforbilder som finnes (for valget), uansett om de sendes nå. */
-  const styleAvailable = useMemo(
-    () =>
-      context
-        ? attachedImages(context.state, {
-            assetId: asset.id,
-            productionId: context.productionId,
-            occurrenceId: context.occurrenceId,
-            identityVersionId: null,
-            style: true,
-          }).length
-        : 0,
-    [context, asset],
-  );
   // Leverandør og modell (DEC-0069): innebygd, eller en prosjektets eiere har koblet til
   const available = useProjectProviders(projectId, editable);
   const options = providersFor("image", new Set(available.data?.providers ?? []));
@@ -183,6 +131,77 @@ export function GenerateImagePanel({
   // presis med identiteten først for Seedream, Qwen og FLUX
   const family = promptFamilyOf(choice.provider, chosenModel?.id);
   const transparent = !!chosenModel?.transparent;
+  /** Bildene som sendes med til bildemodellen, i rekkefølge. */
+  // Brukerens eget valg av vedlegg (Øystein 23.10), husket per ressurs i økten
+  const [choice, setChoiceState] = useState<AttachedChoice>(EMPTY_ATTACHED_CHOICE);
+  useEffect(() => setChoiceState(readAttachedChoice(asset.id)), [asset.id]);
+  const setChoice = (c: AttachedChoice) => {
+    setChoiceState(c);
+    writeAttachedChoice(asset.id, c);
+    setConfirm(false);
+  };
+  const maxImages = maxAttachedImagesFor(chosenModel);
+  const rows = useMemo(
+    () =>
+      context
+        ? attachedImageRows(context.state, {
+            assetId: asset.id,
+            productionId: context.productionId,
+            occurrenceId: context.occurrenceId,
+            identityVersionId: identity?.id ?? null,
+            style: withStyle,
+            choice,
+            max: maxImages,
+          })
+        : [],
+    [context, asset.id, identity?.id, withStyle, choice, maxImages],
+  );
+  const attached = useMemo((): readonly AttachedImage[] => {
+    if (context) return rows.filter((r) => r.included).map((r) => r.image);
+    return identity
+      ? [
+          {
+            versionId: identity.id,
+            path: identity.mediaPath,
+            mimeType: identity.mimeType,
+            role: "identity",
+            label: `the current design of ${asset.name} (v${identity.number})`,
+          },
+        ]
+      : [];
+  }, [context, rows, asset, identity]);
+  // Forbildebilder sendes som standard i arbeidsstørrelse (tilpasset scenen); originalen i full størrelse
+  // kan velges, f.eks. for karakterkort (Mars 2026-10-13, DEC-0079)
+  const [fullSize, setFullSize] = useState(false);
+  const originals = useMemo(
+    () =>
+      context
+        ? new Map(
+            attached.flatMap((a) => {
+              const o = fullSizeOriginal(context.state, a.versionId);
+              return o ? [[a.versionId, o] as const] : [];
+            }),
+          )
+        : new Map<string, never>(),
+    [context, attached],
+  );
+  const sentPaths = attached.map((a) =>
+    fullSize ? (originals.get(a.versionId)?.mediaPath ?? a.path) : a.path,
+  );
+  /** Hvor mange stilforbilder som finnes (for valget), uansett om de sendes nå. */
+  const styleAvailable = useMemo(
+    () =>
+      context
+        ? attachedImages(context.state, {
+            assetId: asset.id,
+            productionId: context.productionId,
+            occurrenceId: context.occurrenceId,
+            identityVersionId: null,
+            style: true,
+          }).length
+        : 0,
+    [context, asset],
+  );
   // B-105a: malene og stilreglene ligger på serveren. Her sendes bare innstillingene; svaret er den
   // automatiske beskrivelsen brukeren ser og kan redigere.
   const promptRequest = useMemo(
@@ -194,11 +213,14 @@ export function GenerateImagePanel({
       productionId: context?.productionId ?? null,
       occurrenceId: context?.occurrenceId ?? null,
       style: withStyle,
+      excluded: choice.excluded,
+      added: choice.added,
+      maxImages,
       fullSize,
       family,
       transparent,
     }),
-    [asset.id, variant?.id, identity?.id, context?.productionId, context?.occurrenceId, withStyle, fullSize, family, transparent],
+    [asset.id, variant?.id, identity?.id, context?.productionId, context?.occurrenceId, withStyle, choice, maxImages, fullSize, family, transparent],
   );
   const serverPreview = useImagePromptPreview(projectId, promptRequest, context?.state ?? asset).data ?? null;
   const summary = serverPreview?.summary ?? null;
