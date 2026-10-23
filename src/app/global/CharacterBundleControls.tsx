@@ -119,7 +119,7 @@ export function CharacterBundleControls({
         </span>
       ) : null}
       <Dialog open={plan !== null} onOpenChange={(o) => !o && setPlan(null)}>
-        <DialogContent className="max-w-[520px] bg-surface-2">
+        <DialogContent uiId="V-163" className="max-w-[520px] bg-surface-2">
           <DialogHeader>
             <DialogTitle>{t("g6-bundle.plan-title", { name: asset.name, number: plan?.bundleNumber ?? 0 })}</DialogTitle>
             <DialogDescription>{t("g6-bundle.plan-note")}</DialogDescription>
