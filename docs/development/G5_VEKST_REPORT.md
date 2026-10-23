@@ -68,5 +68,5 @@ Alle SECURITY DEFINER-funksjoner har `set search_path = ''`; den eksisterende ar
   - *Hastighetsgrenser (G-8):* alle omfang med vindu, tak per bruker/e-post og per IP, via de nye
     `admin_rate_limit_rules` / `admin_set_rate_limit_rule` (0101). Bare eksisterende omfang kan endres.
 - **0101** retter også escaping av `%`, `_` og `\` i `admin_find_users` og `search_script_blocks` (som i 0080).
-- Kontroller: DB-tester 218/0 (nye: 0101-escaping, 0101-hastighetsgrenser); enhetstester `tests/unit/g56-rest.test.ts`.
+- Kontroller: typekontroll 0, full Vitest 2856/0, i18n grønn, DB-tester 218/0 (nye: 0101-escaping, 0101-hastighetsgrenser); enhetstester `tests/unit/g56-rest.test.ts`.
 - Åpent: arbeidsgrupper velges med ID i kvotepanelet fordi det ikke finnes en adminliste over arbeidsgrupper.
