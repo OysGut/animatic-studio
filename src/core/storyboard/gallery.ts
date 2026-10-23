@@ -74,7 +74,7 @@ export function buildGallery(s: ProjectState, productionId: string, o: GalleryOp
     const heading = h ? formatHeading(h) : "";
     out.push({
       occurrence: occ,
-      number: sceneNumberOf(s, occ) ?? "",
+      number: panels.map(p=>p.panel.storyboard?.sceneNumber).find(Boolean) ?? sceneNumberOf(s, occ) ?? "",
       heading,
       statuses: sceneStatuses,
       panels,

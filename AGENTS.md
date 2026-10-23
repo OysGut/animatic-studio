@@ -31,7 +31,7 @@ Kortversjonen († = detaljer i `docs/development/AGENTS_DETAILS.md`):
 17. The global library (GP2) is written via security-definer functions; using an asset copies its files once per global version, so projects never depend on workspace membership.
 18. Carry-over (GP3): pure planCarryOver, one undo group, never the source 2D scene.†
 19. Film shares (GP5): a token binds one exported mp4; new tokens derive from a DB-only pepper and are stored only as a peppered digest (film_share_lookup, service role), so /se/$token resolves only via a server function.†
-20. src/core/typography, src/core/animation and src/app/asset-studio have their own AGENTS.md; read it first.
+20. Typography, animation, asset-studio and storyboard directories have AGENTS.md; read before edits.
 23. Invitations bind to the invited email (checked against the signed-in email), so leaked links grant no access.
 
 24. Note resolution is reversible; audio edits persist projected alignment without changing sources.

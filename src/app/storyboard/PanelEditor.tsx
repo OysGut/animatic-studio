@@ -66,7 +66,7 @@ export function PanelEditor({ state, panel, editable, cmds, projectId }: { state
   const duplicate = () => { const plan = planDuplicatePanel(state,panel.id); group(plan); const first = plan[0]; if (first?.type === "AddStoryboardPanel" && occurrence) void navigate({to:"/prosjekt/$projectId/scene",params:{projectId},search:{scene:occurrence.id,panel:first.panelId}}); };
   const colors = () => {
     const css = getComputedStyle(document.documentElement);
-    const hex = (name: string, fallback: string) => { const canvas = document.createElement("canvas"); const ctx = canvas.getContext("2d"); if (!ctx) return fallback; ctx.fillStyle = css.getPropertyValue(name).trim() || fallback; return typeof ctx.fillStyle === "string" && /^#[a-f0-9]{6}$/i.test(ctx.fillStyle) ? ctx.fillStyle : fallback; };
+    const hex = (name: string, fallback: string) => { const canvas = document.createElement("canvas"); const ctx = canvas.getContext("2d"); if (!ctx) return fallback; ctx.fillStyle = css.getPropertyValue(name).trim() || fallback; ctx.fillRect(0,0,1,1); const rgb=ctx.getImageData(0,0,1,1).data; return "#"+[rgb[0]??0,rgb[1]??0,rgb[2]??0].map(n=>n.toString(16).padStart(2,"0")).join(""); };
     return { ink:hex("--text-primary",panel.background), paper:hex("--surface-2",panel.background), accent:hex("--accent-brand",panel.background) };
   };
   const addTool = (kind: Tool) => {
