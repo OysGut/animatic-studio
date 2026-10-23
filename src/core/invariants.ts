@@ -266,7 +266,7 @@ export function checkInvariants(s: ProjectState): Violation[] {
   for (const c of Object.values(s.compositions)) {
     if (!s.variants[c.variantId])
       add("MODEL", tk("core-invariants.check-invariants.add.833bcd3d38b1", { id: String(c.id) }));
-    if (c.removed) continue;
+    if (c.removed || (c.kind ?? "scene") !== "scene") continue; // SB-2: storyboardpaneler deler variant med 2D-scenen
     if (activeComp.has(c.variantId))
       add(
         "MODEL",
