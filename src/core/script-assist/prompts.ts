@@ -14,7 +14,7 @@ import { knowledgeAt } from "../storylab/facts";
 import { profileAt } from "../storylab/stages";
 import { profileText } from "../storylab/prompts";
 import { formatHeading } from "../screenplay";
-import { isSourceLanguage, sourceLanguageOf } from "../dialogue/languages";
+import { isSourceLanguage, languageLabel, sourceLanguageOf } from "../dialogue/languages";
 import { canonicalLanguageTag, englishLanguageName } from "../translation/language-tags";
 import { t as tk } from "@/core/i18n/keyed";
 
@@ -351,7 +351,7 @@ export function buildAssistPrompt(
     if (isSourceLanguage(s, target)) return { ok: false, message: tk("g1b-assist.target.invalid") };
     const picked = untranslatedBlocks(s, r.occurrenceId, r.blockIds, target).slice(0, MAX_ASSIST_BLOCKS);
     if (picked.length === 0)
-      return { ok: false, message: tk("g1b-assist.translate.all-done", { language: englishLanguageName(target) }) };
+      return { ok: false, message: tk("g1b-assist.translate.all-done", { language: languageLabel(target) }) };
     p = editPrompt(
       s,
       { ...r, blockIds: picked.map((b) => b.id) },
