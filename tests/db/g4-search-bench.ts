@@ -59,16 +59,20 @@ try {
   await sql`analyze`;
   out["rows"] = Number((await sql`select count(*) n from public.script_blocks where project_id=${project}`)[0]!["n"]);
 
-  // FØR: slik det gamle ilike-søket ville gått (uten indeks)
+  // FØR: slik det gamle ilike-søket ville gått (uten indeks) – bredt treff og sjeldent treff
   await sql`drop index if exists public.script_blocks_fold_trgm_idx`;
-  await ms("ilike_uten_indeks_ms", () =>
+  await ms("ilike_bred_uten_indeks_ms", () =>
     asAlice((tx) => tx`select count(*) n from public.script_blocks b where b.project_id=${project} and b.text ilike '%café%'`));
+  await ms("ilike_sjelden_uten_indeks_ms", () =>
+    asAlice((tx) => tx`select count(*) n from public.script_blocks b where b.project_id=${project} and b.text ilike '%piñón número 7%'`));
   // ETTER: foldet søk med trigramindeks
   await sql.unsafe(`create index script_blocks_fold_trgm_idx on public.script_blocks using gin (private.fold_text(text) extensions.gin_trgm_ops)`);
   await sql`analyze`;
   // Måles som eier (direkte uttrykk krever USAGE på private, som authenticated ikke har; appen går via RPC-en)
-  await ms("fold_med_indeks_ms", () =>
+  await ms("fold_bred_med_indeks_ms", () =>
     sql`select count(*) n from public.script_blocks b where b.project_id=${project} and private.fold_text(b.text) like '%' || private.fold_text('café') || '%'`);
+  await ms("fold_sjelden_med_indeks_ms", () =>
+    sql`select count(*) n from public.script_blocks b where b.project_id=${project} and private.fold_text(b.text) like '%' || private.fold_text('piñón número 7') || '%'`);
   await ms("fold_cjk_ms", () =>
     sql`select count(*) n from public.script_blocks b where b.project_id=${project} and private.fold_text(b.text) like '%' || private.fold_text('字幕') || '%'`);
   await ms("rpc_search_ms", () =>
@@ -83,10 +87,20 @@ try {
 
   // Riktighet: foldet søk finner aksentert tekst, og RPC-en ser samme rader
   const direkte = Number((await sql`select count(*) n from public.script_blocks b where b.project_id=${project} and private.fold_text(b.text) like '%cafe%'`)[0]!["n"]);
+  // RPC-en returnerer høyst p_limit rader – sammenlign mot de 200 beste direktetreffene
   const rpc = Number((await asAlice((tx) => tx`select count(*) n from (select 1 from public.search_script_blocks(${project}, 'café', 200)) x`))[0]!["n"]);
   out["treff_fold"] = direkte;
   out["treff_rpc"] = rpc;
-  out["treff_lik"] = direkte === rpc ? "ja" : "NEI";
+  out["treff_lik"] = Math.min(direkte, 200) === rpc ? "ja" : "NEI";
+  // Ikke-medlem (BOB finnes ikke her, bruk en fremmed uuid) skal få null treff fra RPC-en
+  const fremmed = "33333333-3333-7333-8333-333333333333";
+  const fremmedTreff = Number((await sql.begin(async (tx) => {
+    await tx.unsafe(`set local role authenticated`);
+    await tx`select set_config('request.jwt.claims', ${JSON.stringify({ sub: fremmed })}, true)`;
+    return tx`select count(*) n from (select 1 from public.search_script_blocks(${project}, 'café', 200)) x`;
+  }))[0]!["n"]);
+  out["ikke_medlem_treff"] = fremmedTreff;
+  out["rls_stenger"] = fremmedTreff === 0 ? "ja" : "NEI";
 
   console.log(JSON.stringify(out, null, 2));
 } finally {
