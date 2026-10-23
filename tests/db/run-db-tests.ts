@@ -8582,6 +8582,35 @@ try {
     await sql`delete from private.rate_limit_hits`;
   });
 
+  await test("0101 G-8: en batch på 1 000 KI-jobber via service_role er ett treff; direkte misbruk stoppes", async () => {
+    await sql`delete from private.rate_limit_hits`;
+    const pid = String((await as("authenticated", ALICE, (tx) => tx`select public.create_project('Batch', 25, 1, 'nb') id`))[0]!["id"]);
+    // Standardtaket «ai» er 400 per 10 min; én transaksjon med 1 000 rader skal likevel gå gjennom.
+    await as("service_role", null, (tx) => tx`insert into public.generation_jobs (id, project_id, kind, provider, model, prompt, created_by)
+      select gen_random_uuid(), ${pid}, 'image', 'lovable', 'openai/gpt-image-2', 'x', ${ALICE} from generate_series(1, 1000)`);
+    const hits = Number((await sql`select coalesce(sum(hits),0) n from private.rate_limit_hits where scope = 'ai' and key = ${"u:" + ALICE}`)[0]!["n"]);
+    assert(hits === 1, `batchen skal telle ett treff, ikke ${hits}`);
+    // Hvert separate serverkall teller fortsatt: med tak 3 stoppes det fjerde kallet.
+    await sql`update private.rate_limit_rules set per_key = 3 where scope = 'ai'`;
+    const one = () => as("service_role", null, (tx) => tx`insert into public.generation_jobs (id, project_id, kind, provider, model, prompt, created_by) values (gen_random_uuid(), ${pid}, 'image', 'lovable', 'openai/gpt-image-2', 'x', ${ALICE})`);
+    await one(); await one();
+    await expectError(one(), "PTG15");
+    // Direkte innsettinger som authenticated teller per rad, også i samme transaksjon (samme trigger som export_records/upload_sessions).
+    await sql`create table public.g8_rl_probe (id uuid primary key default gen_random_uuid(), created_by uuid)`;
+    await sql`grant insert on public.g8_rl_probe to authenticated`;
+    await sql`create trigger g8_rate_limit before insert on public.g8_rl_probe for each row execute function private.rate_limit_trigger('export', 'created_by')`;
+    await sql`update private.rate_limit_rules set per_key = 2 where scope = 'export'`;
+    await expectError(as("authenticated", BOB, (tx) => tx`insert into public.g8_rl_probe (created_by) select ${BOB}::uuid from generate_series(1, 3)`), "PTG15");
+    await as("authenticated", BOB, (tx) => tx`insert into public.g8_rl_probe (created_by) values (${BOB})`);
+    await as("authenticated", BOB, (tx) => tx`insert into public.g8_rl_probe (created_by) values (${BOB})`);
+    await expectError(as("authenticated", BOB, (tx) => tx`insert into public.g8_rl_probe (created_by) values (${BOB})`), "PTG15");
+    await sql`drop table public.g8_rl_probe`;
+    await sql`update private.rate_limit_rules set per_key = 400 where scope = 'ai'`;
+    await sql`update private.rate_limit_rules set per_key = 300 where scope = 'export'`;
+    await sql`delete from private.rate_limit_hits`;
+    await as("service_role", null, (tx) => tx`select public.delete_project(${pid}, ${ALICE})`);
+  });
+
   // ---------- 0101: LIKE-escaping og admin for hastighetsgrenser ----------
   await test("0101 G-4/G-8: % og _ i søketekst er vanlige tegn i search_script_blocks og admin_find_users", async () => {
     assert(String((await sql`select private.like_escape('a%b_c\\d') v`)[0]!["v"]) === "a\\%b\\_c\\\\d", "like_escape escaper \\, % og _");

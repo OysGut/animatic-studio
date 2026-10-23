@@ -96,3 +96,35 @@ revoke all on function public.admin_set_rate_limit_rule(text, integer, integer, 
 grant execute on function public.admin_set_rate_limit_rule(text, integer, integer, integer) to authenticated;
 
 insert into public.schema_version (version, description) values (101, '0101_g5_g6_admin_and_search_escape: LIKE-escaping og admin for hastighetsgrenser');
+
+-- ---------------------------------------------------------------------------
+-- G-8 oppfølging: serverens egne masseinnsettinger (create_dialogue_batch, create_harmonize_batch m.fl.)
+-- skal ikke telle én gang per rad. Innsettinger gjort som service_role teller ett treff per transaksjon
+-- per (omfang, nøkkel) – en batch er ett treff. Direkte innsettinger fra andre roller teller som før per rad.
+-- Rollen leses fra SET ROLE (PostgREST/serveren) eller JWT-kravet, fordi current_user her er eieren.
+-- Gjelder alle g8_rate_limit-triggere (generation_jobs, export_records, upload_sessions, …).
+-- ---------------------------------------------------------------------------
+create or replace function private.rate_limit_trigger()
+returns trigger
+language plpgsql security definer set search_path = '' as $$
+declare v_who text := to_jsonb(new) ->> tg_argv[1];
+        v_prefix text := coalesce(tg_argv[2], 'u');
+        v_key text := v_prefix || ':' || coalesce(v_who, '');
+        v_role text := coalesce(nullif(pg_catalog.current_setting('role', true), 'none'), '');
+        v_claim_role text := coalesce(nullif(pg_catalog.current_setting('request.jwt.claims', true), '')::jsonb ->> 'role', '');
+        v_flag text;
+begin
+  if v_role = 'service_role' or v_claim_role = 'service_role' then
+    v_flag := 'ptg_rl.t' || pg_catalog.md5(tg_argv[0] || '|' || v_key);
+    if pg_catalog.current_setting(v_flag, true) = pg_catalog.txid_current()::text then
+      return new;
+    end if;
+    perform pg_catalog.set_config(v_flag, pg_catalog.txid_current()::text, true);
+  end if;
+  perform private.rate_limit_hit(
+    tg_argv[0],
+    array[v_key, 'ip:' || coalesce(private.request_ip(), '')]
+  );
+  return new;
+end $$;
+revoke all on function private.rate_limit_trigger() from public, anon, authenticated;

@@ -7611,6 +7611,10 @@ export type Database = {
         }
         Returns: Json
       }
+      rate_limit_hit: {
+        Args: { p_keys: string[]; p_scope: string }
+        Returns: undefined
+      }
       reconfirm_dialogue_batch: {
         Args: { p_actor: string; p_batch: string; p_project: string }
         Returns: undefined
