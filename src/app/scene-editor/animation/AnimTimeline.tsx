@@ -1,7 +1,7 @@
 import { useLayoutEffect, useState, useRef, type ReactNode } from "react";
 import { type Rational } from "@/core";
 import { animationRuler } from "@/core/animation/time-format";
-import type { Playback } from "../use-playback";
+import { useFrame, type Playback } from "../use-playback";
 import type { AnimWindow } from "./TimeNavigator";
 import { PlayRange, type AnimationRange } from "./PlayRange";
 import { RhythmDragLayer, type RhythmDragProps } from "./RhythmDrag";
@@ -9,6 +9,7 @@ import { t as tk } from "@/core/i18n/keyed";
 
 export function AnimTimeline({ fps, duration, playback, view, range, onRange, children, rhythm }: { fps: Rational; duration: number; playback: Playback; view: AnimWindow; range: AnimationRange; onRange: (r: AnimationRange) => void; children?: ReactNode; rhythm?: RhythmDragProps }) {
   const ref = useRef<HTMLDivElement>(null);
+  useFrame(playback); // N8: animasjonstidslinjen følger bildet som før
   const [width, setWidth] = useState(1);
   useLayoutEffect(() => {
     const el = ref.current; if (!el) return;

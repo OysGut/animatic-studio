@@ -80,7 +80,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { usePlayback } from "./use-playback";
+import { FrameValue, useFrame, usePlaybackStore, type Playback } from "./use-playback";
 import { FrameFrozen } from "./frame-frozen";
 import { lastScene, onGotoScene, rememberScene } from "@/app/shell/current-scene";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -301,7 +301,8 @@ function Editor({
   }, [duration]);
   // REQ-0210 (N2): bildet følger lydklokken når scenen har lyd
   const audioClock = useRef<(() => number | null) | null>(null);
-  const playback = usePlayback(duration, state.project.fps, true, tracksOpen ? animationRange : null, audioClock);
+  // N8: arbeidsflaten abonnerer ikke på bildet; bare lerretet, avspillingshodet, tidskoden og manuspanelet gjør det
+  const playback = usePlaybackStore(duration, state.project.fps, true, tracksOpen ? animationRange : null, audioClock);
   // Lyden i scenen spilles med (DEC-0044)
   // Filmens scener (for lyd som løper inn fra tidligere scener og lyd i scenene rundt, DEC-0045)
   // Språkversjonen som er valgt i monteringen (DEC-0059): bare den lyden spilles
@@ -339,13 +340,8 @@ function Editor({
     },
     [occurrenceId, productionId, filmLang.dialogue],
   );
-  useAudioPlayback({
-    items: sceneSound,
-    urls: soundUrls.data ?? null,
-    playing: playback.playing,
-    time: framesToSeconds(playback.frame, state.project.fps),
-    clock: audioClock,
-  });
+  // Lyden styres fra en egen liten del som følger bildet (N8), så lyden fortsatt er master (REQ-0210)
+  const audioSync = { items: sceneSound, urls: soundUrls.data ?? null, clock: audioClock };
   // I kameravisningen viser lerretet allerede det ferdige utsnittet
   const showPreview = view === "scene" && (previewOpen || (autoPreview && playback.playing));
   // Versjonen scenen vises som i filmen, på avspillingshodet (DEC-0085)
@@ -356,14 +352,13 @@ function Editor({
         : null,
     [state, productionId, occurrence],
   );
-  const shownSource =
+  const sourceOf = (f: number) =>
     previewVersion && shownClip && shownClip.source === "film"
-      ? sourceAt(
-          shownClip,
-          Math.min(playback.frame, shownClip.durationFrames - 1),
-          state.project.fps,
-        )
+      ? sourceAt(shownClip, Math.min(f, shownClip.durationFrames - 1), state.project.fps)
       : null;
+  // N8: bare når opptaket (take) på avspillingshodet skifter, tegnes arbeidsflaten på nytt
+  const shownTakeAt = useFrame(playback, (f) => { const src = sourceOf(f); return src?.kind === "take" ? src.take : null; });
+  const shownSource = shownTakeAt ? sourceOf(playback.frame) : null;
   const shownTake = shownSource?.kind === "take" ? shownSource.take : null;
   const shownUrl = useImageUrls(
     shownTake?.mediaRef && shownTake.kind !== "still" ? [shownTake.mediaRef] : [],
@@ -376,6 +371,12 @@ function Editor({
           playing: playback.playing,
         }
       : null;
+  /** Filmen i forhåndsvisningen med sekundene på gjeldende bilde (brukes inne i FrameValue). */
+  const previewFilmAt = (f: number) => {
+    if (!previewFilm) return null;
+    const src = sourceOf(f);
+    return src?.kind === "take" && src.take === shownTake ? { ...previewFilm, seconds: src.seconds } : previewFilm;
+  };
   const closePreview = useCallback(() => {
     setPreviewOpen(false);
     if (playback.playing) setAutoPreview(false);
@@ -629,21 +630,27 @@ function Editor({
     } else if (initialFrame !== null && initialFrame >= 0) { playback.pause(); playback.setFrame(initialFrame); }
     if (initialLayerId && state.layers[initialLayerId] && !state.layers[initialLayerId]!.removed) setSelectedLayerId(initialLayerId);
   }, [occurrence, initialOccurrenceId, initialLineId, initialFrame, initialLayerId, filmClip, state, playback, setSelectedLayerId]);
-  useEffect(() => { publishSceneBookmark({ projectId, occurrenceId: occurrence?.id ?? null, frame: playback.frame, tab: tracksOpen ? "animation" : "scene" }); }, [projectId, occurrence?.id, playback.frame, tracksOpen]);
+  useEffect(() => {
+    const publish = () => publishSceneBookmark({ projectId, occurrenceId: occurrence?.id ?? null, frame: playback.store.get(), tab: tracksOpen ? "animation" : "scene" });
+    publish();
+    return playback.store.subscribe(publish);
+  }, [projectId, occurrence?.id, playback.store, tracksOpen]);
   // N5: gjeldende bilde for tilbakekall i deler som ikke tegnes på nytt per bilde under avspilling
-  const frameNow = useRef(playback.frame);
-  frameNow.current = playback.frame;
+  const frameNow = useMemo(() => ({ get current() { return playback.store.get(); } }), [playback.store]);
   const frozen = playback.playing;
+  // N8: lagpanelet viser bilde 0 under avspilling (som før) og følger bare bildet når det står stille
+  const layersFrame = useFrame(playback, (f) => (playback.playing ? 0 : f));
+
   const cmdDeps = [cmds.status, cmds.canUndo, cmds.undoLabel, cmds.canRedo, cmds.redoLabel, cmds.rejected, cmds.conflicts] as const;
   /** Innholdet i hvert panel (null = vises ikke nå). Plasseringen bestemmes av brukerens valg over. */
   const panelContent: Record<PanelId, ReactNode | null> = {
     // Manuset for scenen (DEC-0089); redigeres i eget vindu
     script: occurrence ? (
-      <SceneScriptPanel
+      <FrameValue playback={playback}>{(frame) => <SceneScriptPanel
         state={state}
         occurrenceId={occurrence.id}
         clip={filmClip}
-        frame={playback.frame}
+        frame={frame}
         playing={playback.playing}
         editable={roleEditable}
         onOpenEditor={(blockId) => setScriptEdit({ blockId })}
@@ -662,7 +669,7 @@ function Editor({
               }
             : undefined
         }
-      />
+      />}</FrameValue>
     ) : null,
     assets: occurrence ? (
       <FrameFrozen frozen={frozen} deps={[state, projectId, productionId, occurrence.id, editable, composition, layersByAsset, ...cmdDeps]}>
@@ -706,7 +713,7 @@ function Editor({
         onSelect={setSelectedLayerId}
         run={cmds.run}
         onOpenImage={openLayerImage}
-        frame={playback.playing ? 0 : playback.frame}
+        frame={layersFrame}
       />
       </FrameFrozen>
     ) : null,
@@ -728,7 +735,7 @@ function Editor({
           onRemoved={() => setSelectedShotId(null)}
         />
       ) : selectedLayer ? (
-        <LayerInspector
+        <FrameValue playback={playback}>{(inspectorFrame) => <LayerInspector
           key={selectedLayer.id}
           state={state}
           composition={composition}
@@ -737,7 +744,7 @@ function Editor({
           run={cmds.run}
           projectId={projectId}
           runAndWait={cmds.runAndWait}
-          frame={playback.frame}
+          frame={inspectorFrame}
           autoKey={autoKey}
           onOpenImage={() => openLayerImage(selectedLayer.id)}
           {...(occurrenceId
@@ -762,7 +769,7 @@ function Editor({
             if (on) setView("scene");
             setDrawPathFor(on ? selectedLayer.id : null);
           }}
-        />
+        />}</FrameValue>
       ) : (
         <CompositionInspector
           key={composition.id}
@@ -793,6 +800,7 @@ function Editor({
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
+      <SceneAudioSync playback={playback} fps={state.project.fps} {...audioSync} />
       <FrameFrozen frozen={frozen} deps={[state, projectId, productionId, occurrences, occurrenceId, occurrence, variant, composition, hasComposition, contentSync, lastChanges.data, presence, editable, roleEditable, roleKnown, audioEditable, neighbours, previewOpen, autoPreview, previewVersion, ...cmdDeps]}>
       <Toolbar overflow="menu">
         <ToolbarGroup priority={9} className="[&>select]:max-w-[180px] [&>select]:truncate">
@@ -1154,7 +1162,7 @@ function Editor({
                 onExtend={(f) => { setRetimeFrames(f); setRetimeRequest((n) => n + 1); }}
               />
               <div className="relative flex min-h-[180px] flex-1 flex-col">
-                <Stage
+                <FrameValue playback={playback}>{(frame) => <Stage
                   state={spacingPreview ?? state}
                   spacingHover={spacingHover}
                   composition={composition}
@@ -1165,7 +1173,7 @@ function Editor({
                   onSelectShot={setSelectedShotId}
                   run={cmds.run}
                   imageUrls={urls.data ?? {}}
-                  frame={playback.frame}
+                  frame={frame}
                   playing={playback.playing}
                   view={view}
                   onViewChange={setView}
@@ -1176,14 +1184,14 @@ function Editor({
                   drawPath={drawingPath}
                   onPathDrawn={pathDrawn}
                   onDrawCancel={() => setDrawPathFor(null)}
-                />
-                {showPreview && popout ? (
+                />}</FrameValue>
+                {showPreview ? <FrameValue playback={playback}>{(frame) => popout ? (
                   <PopoutPreview
                     state={state}
                     composition={composition}
-                    frame={playback.frame}
+                    frame={frame}
                     imageUrls={urls.data ?? {}}
-                    film={previewFilm}
+                    film={previewFilmAt(frame)}
                     onClose={closePreview}
                     onDock={() => setPopout(false)}
                     onBlocked={() => {
@@ -1194,13 +1202,13 @@ function Editor({
                     }}
                     onTogglePlay={playback.toggle}
                   />
-                ) : showPreview ? (
+                ) : (
                   <PreviewWindow
                     state={state}
                     composition={composition}
-                    frame={playback.frame}
+                    frame={frame}
                     imageUrls={urls.data ?? {}}
-                    film={previewFilm}
+                    film={previewFilmAt(frame)}
                     onClose={closePreview}
                     onPopOut={() => {
                       setPreviewNote(null);
@@ -1208,18 +1216,18 @@ function Editor({
                     }}
                     note={previewNote}
                   />
-                ) : null}
+                )}</FrameValue> : null}
                 {neighbours && occurrence ? (
-                  <NeighbourScenes
+                  <FrameValue playback={playback}>{(frame) => <NeighbourScenes
                     state={state}
                     language={filmLang.dialogue}
                     film={film}
                     occurrenceId={occurrence.id}
-                    sceneFrame={playback.frame}
+                    sceneFrame={frame}
                     scenePlaying={playback.playing}
                     onSceneFrame={playback.setFrame}
                     onPauseScene={playback.pause}
-                  />
+                  />}</FrameValue>
                 ) : null}
               </div>
               <Timeline
@@ -1291,13 +1299,13 @@ function Editor({
                   tools={<RhythmPanel state={state} occurrenceId={occurrence.id} editable={editable} run={cmds.run} />}
                   rhythm={{ state, occurrenceId: occurrence.id, editable, run: cmds.run }}
                   tracks={animView => <>
-            <VariantTracks state={state} compositionId={composition.id} occurrenceId={occurrence.id} duration={duration} view={animView}
-              frame={playback.frame} editable={editable} run={cmds.run} onSeek={playback.setFrame} onStudio={openAssetStudio}
-              runGroup={(cs, label) => runGroup(cmds, cs, label)} onJump={pickScene} />
+            <FrameValue playback={playback}>{(frame) => <VariantTracks state={state} compositionId={composition.id} occurrenceId={occurrence.id} duration={duration} view={animView}
+              frame={frame} editable={editable} run={cmds.run} onSeek={playback.setFrame} onStudio={openAssetStudio}
+              runGroup={(cs, label) => runGroup(cmds, cs, label)} onJump={pickScene} />}</FrameValue>
             <DialogueTrack state={state} occurrenceId={occurrence.id} language={filmLang.dialogue}
               view={animView} onOpen={setProfileId} />
-            <MouthTrack state={state} occurrenceId={occurrence.id} language={filmLang.dialogue}
-              view={animView} frame={playback.frame} editable={editable} run={cmds.run} urls={urls.data ?? {}} />
+            <FrameValue playback={playback}>{(frame) => <MouthTrack state={state} occurrenceId={occurrence.id} language={filmLang.dialogue}
+              view={animView} frame={frame} editable={editable} run={cmds.run} urls={urls.data ?? {}} />}</FrameValue>
             <PatternStudio state={state} duration={duration} editable={editable} run={cmds.run} />
           </>} />
               ) : null}
@@ -1480,7 +1488,7 @@ function Editor({
       ) : null}
       {occurrence && audioEditable ? (
         <FrameFrozen frozen={frozen && !(recordOpen)} deps={[recordOpen, recordBlockId]}>
-<RecordAudioDialog
+<FrameValue playback={playback} select={(f) => (recordOpen ? f : 0)}>{(frame) => <RecordAudioDialog
           open={recordOpen}
           onOpenChange={(o) => {
             setRecordOpen(o);
@@ -1492,11 +1500,11 @@ function Editor({
           cmds={cmds}
           occurrenceId={occurrence.id}
           variantId={occurrence.variantId}
-          frame={playback.frame}
+          frame={frame}
           onPlay={playback.play}
           onStop={playback.pause}
           onAdded={(id) => setProfileId(id)}
-        />
+        />}</FrameValue>
       </FrameFrozen>
       ) : null}
       {composition && editable ? (
@@ -1513,6 +1521,13 @@ function Editor({
       ) : null}
     </div>
   );
+}
+
+/** N8: lyden i scenen følger bildet her, så resten av sceneeditoren ikke tegnes per bilde. Lyden er fortsatt master. */
+function SceneAudioSync({ playback, fps, ...rest }: { playback: Playback; fps: { num: number; den: number } } & Omit<Parameters<typeof useAudioPlayback>[0], "time" | "playing">) {
+  const frame = useFrame(playback);
+  useAudioPlayback({ ...rest, playing: playback.playing, time: framesToSeconds(frame, fps) });
+  return null;
 }
 
 function EmptyScene({

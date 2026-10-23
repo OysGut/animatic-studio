@@ -32,7 +32,7 @@ import {
 import { EASINGS, MAX_DURATION_SECONDS, MIN_DURATION_SECONDS, fpsToNumber, formatTimecode, framesToSeconds, keyAllAt, keyframeFrames, compositionDuration, retimeHasTimedContent, layerFieldsOf, layersOf, moveKeyframes, newShot, removeKeyframesAt, secondsToFrames, setKeyframeEasing, setKeyframeEase, EASE_STRENGTH, withShot, type CameraShot, type Command, type Composition, type CompositionCamera, type CompositionFields, type CompositionLayer, type Easing, type LockedRange, type ProjectState, freeShotSlot, newId, timingOf } from "@/core";
 import { PaneResizer, usePaneSize } from "@/app/shell/pane-size";
 import { Button } from "@/components/ui/button";
-import type { Playback } from "./use-playback";
+import { FrameValue, useFrame, type Playback } from "./use-playback";
 import { compositionFieldsOf, layerEventMarks, type LayerEventMark } from "./timeline-helpers";
 import { RetimeDialog } from "./RetimeDialog";
 import { SpacingRow, type SpacingHover } from "./SpacingDrag";
@@ -517,7 +517,9 @@ export function Timeline({
   const TRACK_X = labelW + GUTTER;
   const fps = state.project.fps;
   const fpsN = fpsToNumber(fps);
-  const { frame } = playback;
+  // N8: tidslinjen tegnes ikke per bilde; bare avspillingshodet, tidskoden og aktivt kameraskudd abonnerer.
+  const frameNow = () => playback.store.get();
+  const activeShotId = useFrame(playback, (f) => composition.camera.shots.find((x) => f >= x.startFrame && f <= x.endFrame)?.id ?? null);
   const last = Math.max(0, durationFrames - 1);
 
   const [error, setError] = useState<string | null>(null);
@@ -592,13 +594,17 @@ export function Timeline({
 
   // Avspillingshodet holdes synlig når det er zoomet inn
   useEffect(() => {
-    const el = scrollRef.current;
-    if (!el || zoom <= 1.001) return;
-    const x = frame * ppf;
-    const left = el.scrollLeft;
-    const right = left + el.clientWidth - TRACK_X;
-    if (x < left || x > right) el.scrollLeft = Math.max(0, x - (el.clientWidth - TRACK_X) / 4);
-  }, [frame, ppf, zoom, TRACK_X]);
+    const follow = () => {
+      const el = scrollRef.current;
+      if (!el || zoom <= 1.001) return;
+      const x = playback.store.get() * ppf;
+      const left = el.scrollLeft;
+      const right = left + el.clientWidth - TRACK_X;
+      if (x < left || x > right) el.scrollLeft = Math.max(0, x - (el.clientWidth - TRACK_X) / 4);
+    };
+    follow();
+    return playback.store.subscribe(follow);
+  }, [playback.store, ppf, zoom, TRACK_X]);
 
   // Mellomrom spiller av/pauser, også når fokus står på scenen eller siden, men aldri i skjemafelt eller på scenen
   useEffect(() => {
@@ -917,11 +923,11 @@ export function Timeline({
     switch (e.key) {
       case "ArrowLeft":
         e.preventDefault();
-        playback.setFrame(frame - step);
+        playback.setFrame(frameNow() - step);
         break;
       case "ArrowRight":
         e.preventDefault();
-        playback.setFrame(frame + step);
+        playback.setFrame(frameNow() + step);
         break;
       case "Home":
         e.preventDefault();
@@ -978,7 +984,7 @@ export function Timeline({
   }
   function addLockedRange() {
     const list = timingOf(composition).lockedRanges;
-    const start = Math.max(0, Math.min(frame, last));
+    const start = Math.max(0, Math.min(frameNow(), last));
     const nextStart = list.filter((r) => r.startFrame > start).map((r) => r.startFrame);
     const end = Math.min(durationFrames, start + Math.round(fpsN), ...nextStart);
     if (end <= start || list.some((r) => start >= r.startFrame && start < r.endFrame)) {
@@ -1051,12 +1057,12 @@ export function Timeline({
 
   function keyAll() {
     if (!selectedLayer) return;
-    updateKeys(selectedLayer, tk("app-scene-editor-timeline.key-all.update-keys.4a6a6c0c18aa"), keyAllAt(selectedLayer, frame));
+    updateKeys(selectedLayer, tk("app-scene-editor-timeline.key-all.update-keys.4a6a6c0c18aa"), keyAllAt(selectedLayer, frameNow()));
   }
 
   function addShot() {
     const id = newId<"camera_shot">();
-    const slot = freeShotSlot(composition.camera, frame, Math.round(3 * fpsN), last);
+    const slot = freeShotSlot(composition.camera, frameNow(), Math.round(3 * fpsN), last);
     if (!slot) {
       setError(
         tk("app-scene-editor-timeline.add-shot.set-error.dd3fcd06065a"),
@@ -1122,7 +1128,7 @@ export function Timeline({
         </IconButton>
         <IconButton
           label={tk("app-scene-editor-timeline.timeline.label.807cf7b285c2")}
-          onClick={() => playback.setFrame(frame - 1)}
+          onClick={() => playback.setFrame(frameNow() - 1)}
           className="size-7"
         >
           <ChevronLeft className="size-3.5" />
@@ -1142,7 +1148,7 @@ export function Timeline({
         </button>
         <IconButton
           label={tk("app-scene-editor-timeline.timeline.label.958ccea26d81")}
-          onClick={() => playback.setFrame(frame + 1)}
+          onClick={() => playback.setFrame(frameNow() + 1)}
           className="size-7"
         >
           <ChevronRight className="size-3.5" />
@@ -1166,7 +1172,7 @@ export function Timeline({
           className="shrink-0 whitespace-nowrap px-1 font-mono text-[13px] tabular-nums text-text-primary"
           aria-label={tk("app-scene-editor-timeline.timeline.aria-label.3369220b3383")}
         >
-          {formatTimecode(frame, fps)}
+          <FrameValue playback={playback}>{(f) => formatTimecode(f, fps)}</FrameValue>
           <span className="text-text-tertiary"> / {formatTimecode(durationFrames, fps)}</span>
         </span>
 
@@ -1537,11 +1543,12 @@ export function Timeline({
                   }}
                 />
               ) : null}
+              <FrameValue playback={playback}>{(f) => (
               <div
                 aria-hidden="true"
                 className="pointer-events-none absolute top-0 size-2.5 -translate-x-1/2 rounded-b-sm bg-accent-brand shadow-sm ring-1 ring-bg-app"
-                style={{ left: frame * ppf }}
-              />
+                style={{ left: f * ppf }}
+              />)}</FrameValue>
             </div>
           </div>
 
@@ -1568,10 +1575,7 @@ export function Timeline({
                 shots={composition.camera.shots}
                 draft={shotDraft}
                 selectedShotId={selectedShotId}
-                activeShotId={
-                  composition.camera.shots.find((x) => frame >= x.startFrame && frame <= x.endFrame)
-                    ?.id ?? null
-                }
+                activeShotId={activeShotId}
                 ppf={ppf}
                 editable={editable}
                 onShotPointerDown={onShotPointerDown}
@@ -1621,11 +1625,13 @@ export function Timeline({
           {audioRows?.({ ppf, labelW, gutter: GUTTER, rowH: ROW_H, fps: fpsN })}
 
           {/* Avspillingshodet (den eneste delen som følger bildet) */}
+          <FrameValue playback={playback}>{(f) => (
           <div
             aria-hidden="true"
+            data-testid="timeline-playhead"
             className="pointer-events-none absolute inset-y-0 z-10 w-px bg-text-primary"
-            style={{ left: TRACK_X + frame * ppf }}
-          />
+            style={{ left: TRACK_X + f * ppf }}
+          />)}</FrameValue>
         </div>
       </div>
     </div>

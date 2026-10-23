@@ -4,6 +4,7 @@
  * lokalt utkast; bare ved slipp kjøres én kommando (ett angresteg). Rektangel- og ellipsemasken til valgt lag
  * kan også flyttes og endres i størrelse her (DEC-0072). Bare på klienten (nettleser-API-er i effekter).
  */
+import { FrameFrozen } from "./frame-frozen";
 import { ZoomIn, ZoomOut } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { textSpecsOf, useTextFonts } from "@/engine/typography/fonts";
@@ -1589,6 +1590,8 @@ export function Stage({
         onPointerCancel={() => endDrag(false)}
         onDoubleClick={onDoubleClick}
       />
+      {/* N8: knappene på lerretet avhenger ikke av bildet og tegnes ikke på nytt per bilde under avspilling */}
+      <FrameFrozen frozen={playing} deps={[mode, cameraMode, view.zoom, error, onViewChange]}>
       <div
         role="group"
         aria-label={tk("app-scene-editor-stage.stage.aria-label.6e780463e36b")}
@@ -1673,6 +1676,7 @@ export function Stage({
           </Button>
         </div>
       </div>
+      </FrameFrozen>
     </div>
   );
 }
