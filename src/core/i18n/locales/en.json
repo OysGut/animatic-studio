@@ -71693,6 +71693,66 @@
     "parameters": [],
     "executable": true
   },
+  "app-release-poster-dialogs.export-poster-dialog.option.2ba2c82ca3fa": {
+    "text": "Norwegian",
+    "source": "\"Norwegian\"",
+    "parameters": [],
+    "executable": true
+  },
+  "app-release-poster-dialogs.export-poster-dialog.option.7d645d203fe3": {
+    "text": "English",
+    "source": "\"English\"",
+    "parameters": [],
+    "executable": true
+  },
+  "app-release-poster-dialogs.new-poster-dialog.option.39e4c15e4b70": {
+    "text": "English",
+    "source": "\"English\"",
+    "parameters": [],
+    "executable": true
+  },
+  "app-release-poster-dialogs.new-poster-dialog.option.e3870b997183": {
+    "text": "Norwegian",
+    "source": "\"Norwegian\"",
+    "parameters": [],
+    "executable": true
+  },
+  "app-release-poster-inspector.bilingual.label.2f1aee6df04c": {
+    "text": "English",
+    "source": "\"English\"",
+    "parameters": [],
+    "executable": true
+  },
+  "app-release-poster-inspector.bilingual.label.e68a78963db2": {
+    "text": "Norwegian",
+    "source": "\"Norwegian\"",
+    "parameters": [],
+    "executable": true
+  },
+  "app-release-poster-inspector.poster-settings.option.cf6b065837cf": {
+    "text": "Norwegian",
+    "source": "\"Norwegian\"",
+    "parameters": [],
+    "executable": true
+  },
+  "app-release-poster-inspector.poster-settings.option.e6ed30832c1c": {
+    "text": "English",
+    "source": "\"English\"",
+    "parameters": [],
+    "executable": true
+  },
+  "app-release-poster-workspace.release.option.c8bb36bc83a1": {
+    "text": "Norwegian",
+    "source": "\"Norwegian\"",
+    "parameters": [],
+    "executable": true
+  },
+  "app-release-poster-workspace.release.option.cad6bb633625": {
+    "text": "English",
+    "source": "\"English\"",
+    "parameters": [],
+    "executable": true
+  },
   "adapters-account-lock-server.owner-blocked": {
     "text": "The project is locked because the owner is blocked. Contact the administrator ({admin})."
   },

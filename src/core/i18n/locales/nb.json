@@ -71711,6 +71711,66 @@
     "parameters": [],
     "executable": true
   },
+  "app-release-poster-dialogs.export-poster-dialog.option.2ba2c82ca3fa": {
+    "text": "Norsk",
+    "source": "\"Norsk\"",
+    "parameters": [],
+    "executable": true
+  },
+  "app-release-poster-dialogs.export-poster-dialog.option.7d645d203fe3": {
+    "text": "Engelsk",
+    "source": "\"Engelsk\"",
+    "parameters": [],
+    "executable": true
+  },
+  "app-release-poster-dialogs.new-poster-dialog.option.39e4c15e4b70": {
+    "text": "Engelsk",
+    "source": "\"Engelsk\"",
+    "parameters": [],
+    "executable": true
+  },
+  "app-release-poster-dialogs.new-poster-dialog.option.e3870b997183": {
+    "text": "Norsk",
+    "source": "\"Norsk\"",
+    "parameters": [],
+    "executable": true
+  },
+  "app-release-poster-inspector.bilingual.label.2f1aee6df04c": {
+    "text": "engelsk",
+    "source": "\"engelsk\"",
+    "parameters": [],
+    "executable": true
+  },
+  "app-release-poster-inspector.bilingual.label.e68a78963db2": {
+    "text": "norsk",
+    "source": "\"norsk\"",
+    "parameters": [],
+    "executable": true
+  },
+  "app-release-poster-inspector.poster-settings.option.cf6b065837cf": {
+    "text": "Norsk",
+    "source": "\"Norsk\"",
+    "parameters": [],
+    "executable": true
+  },
+  "app-release-poster-inspector.poster-settings.option.e6ed30832c1c": {
+    "text": "Engelsk",
+    "source": "\"Engelsk\"",
+    "parameters": [],
+    "executable": true
+  },
+  "app-release-poster-workspace.release.option.c8bb36bc83a1": {
+    "text": "Norsk",
+    "source": "\"Norsk\"",
+    "parameters": [],
+    "executable": true
+  },
+  "app-release-poster-workspace.release.option.cad6bb633625": {
+    "text": "Engelsk",
+    "source": "\"Engelsk\"",
+    "parameters": [],
+    "executable": true
+  },
   "adapters-account-lock-server.owner-blocked": {
     "text": "Prosjektet er låst fordi eieren er blokkert. Kontakt administrator ({admin})."
   },

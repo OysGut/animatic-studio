@@ -293263,6 +293263,306 @@
       "supersededBy": [
         "g1b-assist.translate.button"
       ]
+    },
+    {
+      "file": "src/app/release/PosterDialogs.tsx",
+      "line": 406,
+      "column": 35,
+      "start": 14235,
+      "end": 14258,
+      "scope": "export-poster-dialog",
+      "context": "option",
+      "kind": "L",
+      "semantic": "app-release-poster-dialogs.export-poster-dialog.option",
+      "nb": {
+        "kind": "literal",
+        "text": "Norsk",
+        "raw": "\"Norsk\"",
+        "parameters": []
+      },
+      "en": {
+        "kind": "literal",
+        "text": "Norwegian",
+        "raw": "\"Norwegian\"",
+        "parameters": []
+      },
+      "parameterConflict": false,
+      "signature": "2ba2c82ca3fa",
+      "key": "app-release-poster-dialogs.export-poster-dialog.option.2ba2c82ca3fa",
+      "migrated": true,
+      "supersededBy": [
+        "g1b.poster.fallback-placeholder"
+      ]
+    },
+    {
+      "file": "src/app/release/PosterDialogs.tsx",
+      "line": 407,
+      "column": 35,
+      "start": 14303,
+      "end": 14326,
+      "scope": "export-poster-dialog",
+      "context": "option",
+      "kind": "L",
+      "semantic": "app-release-poster-dialogs.export-poster-dialog.option",
+      "nb": {
+        "kind": "literal",
+        "text": "Engelsk",
+        "raw": "\"Engelsk\"",
+        "parameters": []
+      },
+      "en": {
+        "kind": "literal",
+        "text": "English",
+        "raw": "\"English\"",
+        "parameters": []
+      },
+      "parameterConflict": false,
+      "signature": "7d645d203fe3",
+      "key": "app-release-poster-dialogs.export-poster-dialog.option.7d645d203fe3",
+      "migrated": true,
+      "supersededBy": [
+        "g1b.poster.fallback-placeholder"
+      ]
+    },
+    {
+      "file": "src/app/release/PosterDialogs.tsx",
+      "line": 186,
+      "column": 37,
+      "start": 6413,
+      "end": 6436,
+      "scope": "new-poster-dialog",
+      "context": "option",
+      "kind": "L",
+      "semantic": "app-release-poster-dialogs.new-poster-dialog.option",
+      "nb": {
+        "kind": "literal",
+        "text": "Engelsk",
+        "raw": "\"Engelsk\"",
+        "parameters": []
+      },
+      "en": {
+        "kind": "literal",
+        "text": "English",
+        "raw": "\"English\"",
+        "parameters": []
+      },
+      "parameterConflict": false,
+      "signature": "39e4c15e4b70",
+      "key": "app-release-poster-dialogs.new-poster-dialog.option.39e4c15e4b70",
+      "migrated": true,
+      "supersededBy": [
+        "g1b.poster.fallback-placeholder"
+      ]
+    },
+    {
+      "file": "src/app/release/PosterDialogs.tsx",
+      "line": 185,
+      "column": 37,
+      "start": 6343,
+      "end": 6366,
+      "scope": "new-poster-dialog",
+      "context": "option",
+      "kind": "L",
+      "semantic": "app-release-poster-dialogs.new-poster-dialog.option",
+      "nb": {
+        "kind": "literal",
+        "text": "Norsk",
+        "raw": "\"Norsk\"",
+        "parameters": []
+      },
+      "en": {
+        "kind": "literal",
+        "text": "Norwegian",
+        "raw": "\"Norwegian\"",
+        "parameters": []
+      },
+      "parameterConflict": false,
+      "signature": "e3870b997183",
+      "key": "app-release-poster-dialogs.new-poster-dialog.option.e3870b997183",
+      "migrated": true,
+      "supersededBy": [
+        "g1b.poster.fallback-placeholder"
+      ]
+    },
+    {
+      "file": "src/app/release/PosterInspector.tsx",
+      "line": 140,
+      "column": 29,
+      "start": 3934,
+      "end": 3957,
+      "scope": "bilingual",
+      "context": "label",
+      "kind": "L",
+      "semantic": "app-release-poster-inspector.bilingual.label",
+      "nb": {
+        "kind": "literal",
+        "text": "engelsk",
+        "raw": "\"engelsk\"",
+        "parameters": []
+      },
+      "en": {
+        "kind": "literal",
+        "text": "English",
+        "raw": "\"English\"",
+        "parameters": []
+      },
+      "parameterConflict": false,
+      "signature": "2f1aee6df04c",
+      "key": "app-release-poster-inspector.bilingual.label.2f1aee6df04c",
+      "migrated": true,
+      "supersededBy": [
+        "g1b.poster.fallback-placeholder"
+      ]
+    },
+    {
+      "file": "src/app/release/PosterInspector.tsx",
+      "line": 133,
+      "column": 29,
+      "start": 3710,
+      "end": 3733,
+      "scope": "bilingual",
+      "context": "label",
+      "kind": "L",
+      "semantic": "app-release-poster-inspector.bilingual.label",
+      "nb": {
+        "kind": "literal",
+        "text": "norsk",
+        "raw": "\"norsk\"",
+        "parameters": []
+      },
+      "en": {
+        "kind": "literal",
+        "text": "Norwegian",
+        "raw": "\"Norwegian\"",
+        "parameters": []
+      },
+      "parameterConflict": false,
+      "signature": "e68a78963db2",
+      "key": "app-release-poster-inspector.bilingual.label.e68a78963db2",
+      "migrated": true,
+      "supersededBy": [
+        "g1b.poster.fallback-placeholder"
+      ]
+    },
+    {
+      "file": "src/app/release/PosterInspector.tsx",
+      "line": 314,
+      "column": 35,
+      "start": 9996,
+      "end": 10019,
+      "scope": "poster-settings",
+      "context": "option",
+      "kind": "L",
+      "semantic": "app-release-poster-inspector.poster-settings.option",
+      "nb": {
+        "kind": "literal",
+        "text": "Norsk",
+        "raw": "\"Norsk\"",
+        "parameters": []
+      },
+      "en": {
+        "kind": "literal",
+        "text": "Norwegian",
+        "raw": "\"Norwegian\"",
+        "parameters": []
+      },
+      "parameterConflict": false,
+      "signature": "cf6b065837cf",
+      "key": "app-release-poster-inspector.poster-settings.option.cf6b065837cf",
+      "migrated": true,
+      "supersededBy": [
+        "g1b.poster.fallback-placeholder"
+      ]
+    },
+    {
+      "file": "src/app/release/PosterInspector.tsx",
+      "line": 315,
+      "column": 35,
+      "start": 10064,
+      "end": 10087,
+      "scope": "poster-settings",
+      "context": "option",
+      "kind": "L",
+      "semantic": "app-release-poster-inspector.poster-settings.option",
+      "nb": {
+        "kind": "literal",
+        "text": "Engelsk",
+        "raw": "\"Engelsk\"",
+        "parameters": []
+      },
+      "en": {
+        "kind": "literal",
+        "text": "English",
+        "raw": "\"English\"",
+        "parameters": []
+      },
+      "parameterConflict": false,
+      "signature": "e6ed30832c1c",
+      "key": "app-release-poster-inspector.poster-settings.option.e6ed30832c1c",
+      "migrated": true,
+      "supersededBy": [
+        "g1b.poster.fallback-placeholder"
+      ]
+    },
+    {
+      "file": "src/app/release/PosterWorkspace.tsx",
+      "line": 472,
+      "column": 37,
+      "start": 15681,
+      "end": 15704,
+      "scope": "release",
+      "context": "option",
+      "kind": "L",
+      "semantic": "app-release-poster-workspace.release.option",
+      "nb": {
+        "kind": "literal",
+        "text": "Norsk",
+        "raw": "\"Norsk\"",
+        "parameters": []
+      },
+      "en": {
+        "kind": "literal",
+        "text": "Norwegian",
+        "raw": "\"Norwegian\"",
+        "parameters": []
+      },
+      "parameterConflict": false,
+      "signature": "c8bb36bc83a1",
+      "key": "app-release-poster-workspace.release.option.c8bb36bc83a1",
+      "migrated": true,
+      "supersededBy": [
+        "g1b.poster.fallback-placeholder"
+      ]
+    },
+    {
+      "file": "src/app/release/PosterWorkspace.tsx",
+      "line": 473,
+      "column": 37,
+      "start": 15751,
+      "end": 15774,
+      "scope": "release",
+      "context": "option",
+      "kind": "L",
+      "semantic": "app-release-poster-workspace.release.option",
+      "nb": {
+        "kind": "literal",
+        "text": "Engelsk",
+        "raw": "\"Engelsk\"",
+        "parameters": []
+      },
+      "en": {
+        "kind": "literal",
+        "text": "English",
+        "raw": "\"English\"",
+        "parameters": []
+      },
+      "parameterConflict": false,
+      "signature": "cad6bb633625",
+      "key": "app-release-poster-workspace.release.option.cad6bb633625",
+      "migrated": true,
+      "supersededBy": [
+        "g1b.poster.fallback-placeholder"
+      ]
     }
   ],
   "conflicts": [
