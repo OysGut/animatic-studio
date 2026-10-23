@@ -11682,6 +11682,654 @@
       "en": {
         "text": "The example project could not be created: {message}"
       }
+    },
+    "g5-admin.cancel": {
+      "nb": {
+        "text": "Avbryt"
+      },
+      "en": {
+        "text": "Cancel"
+      }
+    },
+    "g5-admin.failed": {
+      "nb": {
+        "text": "Det gikk ikke. Prøv igjen."
+      },
+      "en": {
+        "text": "That didn't work. Try again."
+      }
+    },
+    "g5-admin.save": {
+      "nb": {
+        "text": "Lagre"
+      },
+      "en": {
+        "text": "Save"
+      }
+    },
+    "g5-admin.saved": {
+      "nb": {
+        "text": "Lagret."
+      },
+      "en": {
+        "text": "Saved."
+      }
+    },
+    "g5-admin.unavailable": {
+      "nb": {
+        "text": "Ikke tilgjengelig ennå (databasen er ikke oppdatert)."
+      },
+      "en": {
+        "text": "Not available yet (the database has not been updated)."
+      }
+    },
+    "g5-admin.log.title": {
+      "nb": {
+        "text": "Endringslogg"
+      },
+      "en": {
+        "text": "Change log"
+      }
+    },
+    "g5-admin.log.note": {
+      "nb": {
+        "text": "Full historikk beholdes i et antall dager eller endringer per prosjekt. Eldre endringer ryddes én gang i døgnet av bakgrunnsjobben, eller nå med knappen."
+      },
+      "en": {
+        "text": "Full history is kept for a number of days or changes per project. Older changes are cleaned up once a day by the background job, or now with the button."
+      }
+    },
+    "g5-admin.log.total": {
+      "nb": {
+        "text": "{rows} endringer i {projects} prosjekter"
+      },
+      "en": {
+        "text": "{rows} changes in {projects} projects"
+      }
+    },
+    "g5-admin.log.project": {
+      "nb": {
+        "text": "Prosjekt"
+      },
+      "en": {
+        "text": "Project"
+      }
+    },
+    "g5-admin.log.rows": {
+      "nb": {
+        "text": "Endringer"
+      },
+      "en": {
+        "text": "Changes"
+      }
+    },
+    "g5-admin.log.size": {
+      "nb": {
+        "text": "Størrelse"
+      },
+      "en": {
+        "text": "Size"
+      }
+    },
+    "g5-admin.log.days": {
+      "nb": {
+        "text": "Dager med full historikk"
+      },
+      "en": {
+        "text": "Days of full history"
+      }
+    },
+    "g5-admin.log.max-rows": {
+      "nb": {
+        "text": "Endringer per prosjekt"
+      },
+      "en": {
+        "text": "Changes per project"
+      }
+    },
+    "g5-admin.log.prune": {
+      "nb": {
+        "text": "Rydd nå"
+      },
+      "en": {
+        "text": "Clean up now"
+      }
+    },
+    "g5-admin.log.pruned": {
+      "nb": {
+        "text": "Ryddet. Slettede endringer: {count}."
+      },
+      "en": {
+        "text": "Cleaned up. Changes removed: {count}."
+      }
+    },
+    "g5-admin.log.invalid": {
+      "nb": {
+        "text": "Dager må være 1–3650 og endringer 100–10 000 000."
+      },
+      "en": {
+        "text": "Days must be 1–3650 and changes 100–10,000,000."
+      }
+    },
+    "g5-admin.quota.title": {
+      "nb": {
+        "text": "Kvoter"
+      },
+      "en": {
+        "text": "Quotas"
+      }
+    },
+    "g5-admin.quota.note": {
+      "nb": {
+        "text": "Grenser per arbeidsgruppe, eller per bruker for prosjekter uten arbeidsgruppe. Tomt felt betyr ingen grense. Databasen håndhever grensene."
+      },
+      "en": {
+        "text": "Limits per workspace, or per user for projects without a workspace. An empty field means no limit. The database enforces the limits."
+      }
+    },
+    "g5-admin.quota.none": {
+      "nb": {
+        "text": "Ingen kvoter er satt."
+      },
+      "en": {
+        "text": "No quotas have been set."
+      }
+    },
+    "g5-admin.quota.find-user": {
+      "nb": {
+        "text": "Finn bruker (e-post eller navn)"
+      },
+      "en": {
+        "text": "Find user (email or name)"
+      }
+    },
+    "g5-admin.quota.search": {
+      "nb": {
+        "text": "Søk"
+      },
+      "en": {
+        "text": "Search"
+      }
+    },
+    "g5-admin.quota.workspace-id": {
+      "nb": {
+        "text": "Arbeidsgruppens ID"
+      },
+      "en": {
+        "text": "Workspace ID"
+      }
+    },
+    "g5-admin.quota.add-workspace": {
+      "nb": {
+        "text": "Ny kvote for arbeidsgruppen"
+      },
+      "en": {
+        "text": "New quota for the workspace"
+      }
+    },
+    "g5-admin.quota.add-user": {
+      "nb": {
+        "text": "Ny kvote for {user}"
+      },
+      "en": {
+        "text": "New quota for {user}"
+      }
+    },
+    "g5-admin.quota.workspace": {
+      "nb": {
+        "text": "Arbeidsgruppe: {name}"
+      },
+      "en": {
+        "text": "Workspace: {name}"
+      }
+    },
+    "g5-admin.quota.user": {
+      "nb": {
+        "text": "Bruker: {name}"
+      },
+      "en": {
+        "text": "User: {name}"
+      }
+    },
+    "g5-admin.quota.storage": {
+      "nb": {
+        "text": "Lagring (GB)"
+      },
+      "en": {
+        "text": "Storage (GB)"
+      }
+    },
+    "g5-admin.quota.projects": {
+      "nb": {
+        "text": "Prosjekter"
+      },
+      "en": {
+        "text": "Projects"
+      }
+    },
+    "g5-admin.quota.log-rows": {
+      "nb": {
+        "text": "Endringer i loggen"
+      },
+      "en": {
+        "text": "Changes in the log"
+      }
+    },
+    "g5-admin.quota.uploads": {
+      "nb": {
+        "text": "Opplastinger per time"
+      },
+      "en": {
+        "text": "Uploads per hour"
+      }
+    },
+    "g5-admin.quota.unlimited": {
+      "nb": {
+        "text": "Ingen grense"
+      },
+      "en": {
+        "text": "No limit"
+      }
+    },
+    "g5-admin.quota.used": {
+      "nb": {
+        "text": "Brukt: {used}"
+      },
+      "en": {
+        "text": "Used: {used}"
+      }
+    },
+    "g5-admin.quota.remove": {
+      "nb": {
+        "text": "Fjern kvoten"
+      },
+      "en": {
+        "text": "Remove quota"
+      }
+    },
+    "g5-admin.quota.invalid": {
+      "nb": {
+        "text": "Bruk hele tall (lagring kan ha desimaler), eller la feltet stå tomt."
+      },
+      "en": {
+        "text": "Use whole numbers (storage may have decimals), or leave the field empty."
+      }
+    },
+    "g5-admin.rate.title": {
+      "nb": {
+        "text": "Hastighetsgrenser"
+      },
+      "en": {
+        "text": "Rate limits"
+      }
+    },
+    "g5-admin.rate.note": {
+      "nb": {
+        "text": "Hvor mange forespørsler som tillates i et tidsvindu, per bruker eller e-post og per IP-adresse. Over taket får brukeren «For mange forespørsler på kort tid»."
+      },
+      "en": {
+        "text": "How many requests are allowed in a time window, per user or email and per IP address. Above the limit the user sees “Too many requests in a short time”."
+      }
+    },
+    "g5-admin.rate.window": {
+      "nb": {
+        "text": "Vindu (sekunder)"
+      },
+      "en": {
+        "text": "Window (seconds)"
+      }
+    },
+    "g5-admin.rate.per-key": {
+      "nb": {
+        "text": "Per bruker/e-post"
+      },
+      "en": {
+        "text": "Per user/email"
+      }
+    },
+    "g5-admin.rate.per-ip": {
+      "nb": {
+        "text": "Per IP"
+      },
+      "en": {
+        "text": "Per IP"
+      }
+    },
+    "g6-bundle.publish": {
+      "nb": {
+        "text": "Publiser karakterknippe"
+      },
+      "en": {
+        "text": "Publish character bundle"
+      }
+    },
+    "g6-bundle.published": {
+      "nb": {
+        "text": "Knippe nr. {number} er publisert i arbeidsgruppen."
+      },
+      "en": {
+        "text": "Bundle no. {number} has been published to the workspace."
+      }
+    },
+    "g6-bundle.pull": {
+      "nb": {
+        "text": "Hent oppdatering (nr. {number})"
+      },
+      "en": {
+        "text": "Get update (no. {number})"
+      }
+    },
+    "g6-bundle.pull-label": {
+      "nb": {
+        "text": "Hent karakterknippe for {name}"
+      },
+      "en": {
+        "text": "Get character bundle for {name}"
+      }
+    },
+    "g6-bundle.pulled": {
+      "nb": {
+        "text": "Knippe nr. {number} er tatt inn. Du kan angre det i ett trinn."
+      },
+      "en": {
+        "text": "Bundle no. {number} has been brought in. You can undo it in one step."
+      }
+    },
+    "g6-bundle.plan-title": {
+      "nb": {
+        "text": "Hent knippe nr. {number} for {name}"
+      },
+      "en": {
+        "text": "Get bundle no. {number} for {name}"
+      }
+    },
+    "g6-bundle.plan-note": {
+      "nb": {
+        "text": "Dette tas inn felt for felt. Felt du har endret selv i prosjektet, beholdes. Ingenting tas i bruk før du bekrefter."
+      },
+      "en": {
+        "text": "This is brought in field by field. Fields you have changed yourself in the project are kept. Nothing is applied until you confirm."
+      }
+    },
+    "g6-bundle.cancel": {
+      "nb": {
+        "text": "Avbryt"
+      },
+      "en": {
+        "text": "Cancel"
+      }
+    },
+    "g6-bundle.confirm": {
+      "nb": {
+        "text": "Ta inn"
+      },
+      "en": {
+        "text": "Bring in"
+      }
+    },
+    "g6-bundle.apply": {
+      "nb": {
+        "text": "Oppdateres"
+      },
+      "en": {
+        "text": "Updated"
+      }
+    },
+    "g6-bundle.keep": {
+      "nb": {
+        "text": "Beholdes"
+      },
+      "en": {
+        "text": "Kept"
+      }
+    },
+    "g6-bundle.nothing": {
+      "nb": {
+        "text": "Ingenting å ta inn: prosjektet har allerede dette, eller du har endret alt selv."
+      },
+      "en": {
+        "text": "Nothing to bring in: the project already has this, or you have changed everything yourself."
+      }
+    },
+    "g6-bundle.field.voice": {
+      "nb": {
+        "text": "Stemmeprofil"
+      },
+      "en": {
+        "text": "Voice profile"
+      }
+    },
+    "g6-bundle.field.briefs": {
+      "nb": {
+        "text": "Tekstversjoner i faktaarket"
+      },
+      "en": {
+        "text": "Text versions in the fact sheet"
+      }
+    },
+    "g6-bundle.briefs-added": {
+      "nb": {
+        "text": "Legges til: {count}"
+      },
+      "en": {
+        "text": "Added: {count}"
+      }
+    },
+    "g6-bundle.field.active-brief": {
+      "nb": {
+        "text": "Aktiv tekstversjon"
+      },
+      "en": {
+        "text": "Active text version"
+      }
+    },
+    "g6-bundle.field.mouth": {
+      "nb": {
+        "text": "Munnsett ({system})"
+      },
+      "en": {
+        "text": "Mouth set ({system})"
+      }
+    },
+    "g6-bundle.field.rig": {
+      "nb": {
+        "text": "Rigg"
+      },
+      "en": {
+        "text": "Rig"
+      }
+    },
+    "g6-profiles.title": {
+      "nb": {
+        "text": "Profiler for prosjektene"
+      },
+      "en": {
+        "text": "Profiles for the projects"
+      }
+    },
+    "g6-profiles.note": {
+      "nb": {
+        "text": "Prosjekter i arbeidsgruppen arver standardprofilen av hver type når de ikke har en egen. En profil i prosjektet går alltid foran."
+      },
+      "en": {
+        "text": "Projects in the workspace inherit the default profile of each type when they have none of their own. A profile in the project always takes precedence."
+      }
+    },
+    "g6-profiles.unavailable": {
+      "nb": {
+        "text": "Profilene kunne ikke hentes."
+      },
+      "en": {
+        "text": "The profiles could not be loaded."
+      }
+    },
+    "g6-profiles.kind.style": {
+      "nb": {
+        "text": "Stilprofiler"
+      },
+      "en": {
+        "text": "Style profiles"
+      }
+    },
+    "g6-profiles.kind.quality": {
+      "nb": {
+        "text": "Kvalitetsprofiler"
+      },
+      "en": {
+        "text": "Quality profiles"
+      }
+    },
+    "g6-profiles.kind.font": {
+      "nb": {
+        "text": "Fonter"
+      },
+      "en": {
+        "text": "Fonts"
+      }
+    },
+    "g6-profiles.kind.template": {
+      "nb": {
+        "text": "Maler"
+      },
+      "en": {
+        "text": "Templates"
+      }
+    },
+    "g6-profiles.none": {
+      "nb": {
+        "text": "Ingen ennå."
+      },
+      "en": {
+        "text": "None yet."
+      }
+    },
+    "g6-profiles.default": {
+      "nb": {
+        "text": "Standard"
+      },
+      "en": {
+        "text": "Default"
+      }
+    },
+    "g6-profiles.make-default": {
+      "nb": {
+        "text": "Gjør til standard"
+      },
+      "en": {
+        "text": "Make default"
+      }
+    },
+    "g6-profiles.archive": {
+      "nb": {
+        "text": "Arkiver"
+      },
+      "en": {
+        "text": "Archive"
+      }
+    },
+    "g6-profiles.new-name": {
+      "nb": {
+        "text": "Navn på ny profil ({kind})"
+      },
+      "en": {
+        "text": "Name of new profile ({kind})"
+      }
+    },
+    "g6-profiles.add": {
+      "nb": {
+        "text": "Legg til"
+      },
+      "en": {
+        "text": "Add"
+      }
+    },
+    "g6-inherit.title": {
+      "nb": {
+        "text": "Arvet fra arbeidsgruppen {name}"
+      },
+      "en": {
+        "text": "Inherited from the workspace {name}"
+      }
+    },
+    "g6-inherit.none": {
+      "nb": {
+        "text": "Ingen"
+      },
+      "en": {
+        "text": "None"
+      }
+    },
+    "g6-inherit.paper": {
+      "nb": {
+        "text": "Papir"
+      },
+      "en": {
+        "text": "Paper"
+      }
+    },
+    "g6-inherit.currency": {
+      "nb": {
+        "text": "Valuta"
+      },
+      "en": {
+        "text": "Currency"
+      }
+    },
+    "g6-inherit.time-zone": {
+      "nb": {
+        "text": "Tidssone"
+      },
+      "en": {
+        "text": "Time zone"
+      }
+    },
+    "g6-inherit.units": {
+      "nb": {
+        "text": "Enheter"
+      },
+      "en": {
+        "text": "Units"
+      }
+    },
+    "g6-inherit.source.project": {
+      "nb": {
+        "text": "fra prosjektet"
+      },
+      "en": {
+        "text": "from the project"
+      }
+    },
+    "g6-inherit.source.workspace": {
+      "nb": {
+        "text": "fra arbeidsgruppen"
+      },
+      "en": {
+        "text": "from the workspace"
+      }
+    },
+    "g6-inherit.source.user": {
+      "nb": {
+        "text": "fra brukeren"
+      },
+      "en": {
+        "text": "from the user"
+      }
+    },
+    "g6-inherit.source.country": {
+      "nb": {
+        "text": "fra landet"
+      },
+      "en": {
+        "text": "from the country"
+      }
+    },
+    "g6-inherit.source.default": {
+      "nb": {
+        "text": "standard"
+      },
+      "en": {
+        "text": "default"
+      }
     }
   }
 }

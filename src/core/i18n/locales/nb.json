@@ -75899,5 +75899,248 @@
   },
   "g9-demo.failed": {
     "text": "Eksempelprosjektet kunne ikke lages: {message}"
+  },
+  "g5-admin.cancel": {
+    "text": "Avbryt"
+  },
+  "g5-admin.failed": {
+    "text": "Det gikk ikke. Prøv igjen."
+  },
+  "g5-admin.save": {
+    "text": "Lagre"
+  },
+  "g5-admin.saved": {
+    "text": "Lagret."
+  },
+  "g5-admin.unavailable": {
+    "text": "Ikke tilgjengelig ennå (databasen er ikke oppdatert)."
+  },
+  "g5-admin.log.title": {
+    "text": "Endringslogg"
+  },
+  "g5-admin.log.note": {
+    "text": "Full historikk beholdes i et antall dager eller endringer per prosjekt. Eldre endringer ryddes én gang i døgnet av bakgrunnsjobben, eller nå med knappen."
+  },
+  "g5-admin.log.total": {
+    "text": "{rows} endringer i {projects} prosjekter"
+  },
+  "g5-admin.log.project": {
+    "text": "Prosjekt"
+  },
+  "g5-admin.log.rows": {
+    "text": "Endringer"
+  },
+  "g5-admin.log.size": {
+    "text": "Størrelse"
+  },
+  "g5-admin.log.days": {
+    "text": "Dager med full historikk"
+  },
+  "g5-admin.log.max-rows": {
+    "text": "Endringer per prosjekt"
+  },
+  "g5-admin.log.prune": {
+    "text": "Rydd nå"
+  },
+  "g5-admin.log.pruned": {
+    "text": "Ryddet. Slettede endringer: {count}."
+  },
+  "g5-admin.log.invalid": {
+    "text": "Dager må være 1–3650 og endringer 100–10 000 000."
+  },
+  "g5-admin.quota.title": {
+    "text": "Kvoter"
+  },
+  "g5-admin.quota.note": {
+    "text": "Grenser per arbeidsgruppe, eller per bruker for prosjekter uten arbeidsgruppe. Tomt felt betyr ingen grense. Databasen håndhever grensene."
+  },
+  "g5-admin.quota.none": {
+    "text": "Ingen kvoter er satt."
+  },
+  "g5-admin.quota.find-user": {
+    "text": "Finn bruker (e-post eller navn)"
+  },
+  "g5-admin.quota.search": {
+    "text": "Søk"
+  },
+  "g5-admin.quota.workspace-id": {
+    "text": "Arbeidsgruppens ID"
+  },
+  "g5-admin.quota.add-workspace": {
+    "text": "Ny kvote for arbeidsgruppen"
+  },
+  "g5-admin.quota.add-user": {
+    "text": "Ny kvote for {user}"
+  },
+  "g5-admin.quota.workspace": {
+    "text": "Arbeidsgruppe: {name}"
+  },
+  "g5-admin.quota.user": {
+    "text": "Bruker: {name}"
+  },
+  "g5-admin.quota.storage": {
+    "text": "Lagring (GB)"
+  },
+  "g5-admin.quota.projects": {
+    "text": "Prosjekter"
+  },
+  "g5-admin.quota.log-rows": {
+    "text": "Endringer i loggen"
+  },
+  "g5-admin.quota.uploads": {
+    "text": "Opplastinger per time"
+  },
+  "g5-admin.quota.unlimited": {
+    "text": "Ingen grense"
+  },
+  "g5-admin.quota.used": {
+    "text": "Brukt: {used}"
+  },
+  "g5-admin.quota.remove": {
+    "text": "Fjern kvoten"
+  },
+  "g5-admin.quota.invalid": {
+    "text": "Bruk hele tall (lagring kan ha desimaler), eller la feltet stå tomt."
+  },
+  "g5-admin.rate.title": {
+    "text": "Hastighetsgrenser"
+  },
+  "g5-admin.rate.note": {
+    "text": "Hvor mange forespørsler som tillates i et tidsvindu, per bruker eller e-post og per IP-adresse. Over taket får brukeren «For mange forespørsler på kort tid»."
+  },
+  "g5-admin.rate.window": {
+    "text": "Vindu (sekunder)"
+  },
+  "g5-admin.rate.per-key": {
+    "text": "Per bruker/e-post"
+  },
+  "g5-admin.rate.per-ip": {
+    "text": "Per IP"
+  },
+  "g6-bundle.publish": {
+    "text": "Publiser karakterknippe"
+  },
+  "g6-bundle.published": {
+    "text": "Knippe nr. {number} er publisert i arbeidsgruppen."
+  },
+  "g6-bundle.pull": {
+    "text": "Hent oppdatering (nr. {number})"
+  },
+  "g6-bundle.pull-label": {
+    "text": "Hent karakterknippe for {name}"
+  },
+  "g6-bundle.pulled": {
+    "text": "Knippe nr. {number} er tatt inn. Du kan angre det i ett trinn."
+  },
+  "g6-bundle.plan-title": {
+    "text": "Hent knippe nr. {number} for {name}"
+  },
+  "g6-bundle.plan-note": {
+    "text": "Dette tas inn felt for felt. Felt du har endret selv i prosjektet, beholdes. Ingenting tas i bruk før du bekrefter."
+  },
+  "g6-bundle.cancel": {
+    "text": "Avbryt"
+  },
+  "g6-bundle.confirm": {
+    "text": "Ta inn"
+  },
+  "g6-bundle.apply": {
+    "text": "Oppdateres"
+  },
+  "g6-bundle.keep": {
+    "text": "Beholdes"
+  },
+  "g6-bundle.nothing": {
+    "text": "Ingenting å ta inn: prosjektet har allerede dette, eller du har endret alt selv."
+  },
+  "g6-bundle.field.voice": {
+    "text": "Stemmeprofil"
+  },
+  "g6-bundle.field.briefs": {
+    "text": "Tekstversjoner i faktaarket"
+  },
+  "g6-bundle.briefs-added": {
+    "text": "Legges til: {count}"
+  },
+  "g6-bundle.field.active-brief": {
+    "text": "Aktiv tekstversjon"
+  },
+  "g6-bundle.field.mouth": {
+    "text": "Munnsett ({system})"
+  },
+  "g6-bundle.field.rig": {
+    "text": "Rigg"
+  },
+  "g6-profiles.title": {
+    "text": "Profiler for prosjektene"
+  },
+  "g6-profiles.note": {
+    "text": "Prosjekter i arbeidsgruppen arver standardprofilen av hver type når de ikke har en egen. En profil i prosjektet går alltid foran."
+  },
+  "g6-profiles.unavailable": {
+    "text": "Profilene kunne ikke hentes."
+  },
+  "g6-profiles.kind.style": {
+    "text": "Stilprofiler"
+  },
+  "g6-profiles.kind.quality": {
+    "text": "Kvalitetsprofiler"
+  },
+  "g6-profiles.kind.font": {
+    "text": "Fonter"
+  },
+  "g6-profiles.kind.template": {
+    "text": "Maler"
+  },
+  "g6-profiles.none": {
+    "text": "Ingen ennå."
+  },
+  "g6-profiles.default": {
+    "text": "Standard"
+  },
+  "g6-profiles.make-default": {
+    "text": "Gjør til standard"
+  },
+  "g6-profiles.archive": {
+    "text": "Arkiver"
+  },
+  "g6-profiles.new-name": {
+    "text": "Navn på ny profil ({kind})"
+  },
+  "g6-profiles.add": {
+    "text": "Legg til"
+  },
+  "g6-inherit.title": {
+    "text": "Arvet fra arbeidsgruppen {name}"
+  },
+  "g6-inherit.none": {
+    "text": "Ingen"
+  },
+  "g6-inherit.paper": {
+    "text": "Papir"
+  },
+  "g6-inherit.currency": {
+    "text": "Valuta"
+  },
+  "g6-inherit.time-zone": {
+    "text": "Tidssone"
+  },
+  "g6-inherit.units": {
+    "text": "Enheter"
+  },
+  "g6-inherit.source.project": {
+    "text": "fra prosjektet"
+  },
+  "g6-inherit.source.workspace": {
+    "text": "fra arbeidsgruppen"
+  },
+  "g6-inherit.source.user": {
+    "text": "fra brukeren"
+  },
+  "g6-inherit.source.country": {
+    "text": "fra landet"
+  },
+  "g6-inherit.source.default": {
+    "text": "standard"
   }
 }
