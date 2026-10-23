@@ -169,6 +169,16 @@ function Body({
 
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  // Tekstversjonen i feltet: bildene laget fra den lyser opp (Øystein 23.10)
+  const [activeBrief, setActiveBrief] = useState<string | null>(null);
+  const highlight = useMemo(
+    () =>
+      briefHighlight(
+        variants.flatMap((v) => versionsOf(state, v.id)),
+        activeBrief,
+      ),
+    [variants, state, activeBrief],
+  );
   const [target, setTarget] = useState<string>(layer.assetVariantId ?? variants[0]?.id ?? "");
   const fileRef = useRef<HTMLInputElement | null>(null);
   /** Bildet som frilegges (det laget viser, eller et annet fra stor visning). */
