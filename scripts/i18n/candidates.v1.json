@@ -25431,7 +25431,6 @@
 {"file":"src/core/audio/index.ts","line":253,"column":22,"start":10220,"end":10235,"scope":"film-take-audio","context":"message","kind":"literal-candidate","text":"imported_film","raw":"\"imported_film\"","ignored":false},
 {"file":"src/core/audio/index.ts","line":253,"column":52,"start":10250,"end":10260,"scope":"film-take-audio","context":"message","kind":"literal-candidate","text":"ai_video","raw":"\"ai_video\"","ignored":false},
 {"file":"src/core/audio/index.ts","line":261,"column":15,"start":10613,"end":10623,"scope":"kind","context":"kind","kind":"literal-candidate","text":"dialogue","raw":"\"dialogue\"","ignored":false},
-{"file":"src/core/audio/index.ts","line":290,"column":51,"start":11485,"end":11489,"scope":"audio-language","context":"audioLanguage","kind":"literal-candidate","text":"nb","raw":"\"nb\"","ignored":false},
 {"file":"src/core/audio/pauses.ts","line":34,"column":56,"start":1628,"end":1634,"scope":"speech-parts","context":"c.segments\n    .filter","kind":"literal-candidate","text":"room","raw":"\"room\"","ignored":false},
 {"file":"src/core/audio/pauses.ts","line":43,"column":19,"start":1993,"end":2000,"scope":"in-part","context":"message","kind":"literal-candidate","text":"start","raw":"\"start\"","ignored":false},
 {"file":"src/core/audio/pauses.ts","line":66,"column":16,"start":2590,"end":2597,"scope":"inside","context":"message","kind":"literal-candidate","text":"start","raw":"\"start\"","ignored":false},

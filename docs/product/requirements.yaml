@@ -34941,7 +34941,7 @@ requirements:
   tests:
   - "tests/unit/g1-source-foundation.test.ts"
   - "tests/db/run-db-tests.ts: 0090 G-1"
-  status: Delvis implementert
+  status: Under arbeid
   implementation:
   - "db/migrations/0090_language_neutral_foundation.sql"
   - "src/core/dialogue/languages.ts"

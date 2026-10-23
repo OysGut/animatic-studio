@@ -287,7 +287,7 @@ export function filmTakeAudio(clips: readonly FilmClip[], fps: Rational): FilmAu
         fadeIn: 0,
         fadeOut: 0,
         keys: [],
-        film: { audioLanguage: t.audioLanguage ?? "nb" },
+        film: { audioLanguage: t.audioLanguage ?? sourceLanguageOf(s) },
       });
     }
   return out;
