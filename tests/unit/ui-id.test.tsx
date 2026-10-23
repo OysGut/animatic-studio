@@ -18,7 +18,7 @@ describe("UiId", () => {
     expect(el.getAttribute("aria-hidden")).toBe("true");
     expect(el.className).toContain("select-none");
     expect(el.className).toContain("pointer-events-none");
-    expect(el.className).toContain("text-[10px]");
+    expect(el.className).toContain("text-[11px]");
   });
   it("et ukjent nummer merkes med spørsmålstegn", () => {
     expect(uiIdLabel("V-999")).toBe("V-999? · dev");

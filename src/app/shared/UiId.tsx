@@ -14,7 +14,7 @@ export function uiIdLabel(id: string): string {
 
 export function UiId({ id, page = false }: { id: string; page?: boolean }) {
   return <span aria-hidden="true" data-ui-id={id} data-testid="ui-id"
-    className={(page ? "fixed bottom-0.5 left-1 z-30" : "absolute bottom-0.5 right-1 z-10") + " pointer-events-none select-none whitespace-nowrap font-mono text-[10px] leading-none text-text-tertiary opacity-50"}
+    className={(page ? "fixed bottom-0.5 left-1 z-30" : "absolute bottom-0.5 right-1 z-10") + " pointer-events-none select-none whitespace-nowrap font-mono text-[11px] leading-none text-text-tertiary opacity-50"}
     style={{ userSelect: "none" }}>{uiIdLabel(id)}</span>;
 }
 
