@@ -398,6 +398,9 @@ const NON_REFERENCE = new Set([
   // Lydversjoner (DV2): leverandørens stemme- og modell-ID er ikke prosjektrader
   "voice_id",
   "model_id",
+  // Migrasjon 0089: tekstversjonene har lokale ID-er inni ressursens egen liste, ikke prosjektrader
+  "active_brief_id",
+  "brief_version_id",
 ]);
 
 /**
