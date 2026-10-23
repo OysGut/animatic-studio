@@ -8722,9 +8722,13 @@ try {
     const panel = newId();
     await sbApply(g7p, { inserts: { compositions: [
       { id: panel, project_id: g7p, variant_id, kind: "storyboard", occurrence_id, order_key: "a4", revision: 1 }] } });
-    // Blokk i et annet prosjekt avvises
-    const otherBlock = newId();
-    await sql`insert into public.script_blocks (id, project_id, variant_id, kind, order_key, text) values (${otherBlock},${g7q},(select id from public.scene_variants where project_id=${g7q} limit 1),'dialogue','a1','Hei')`;
+    // Blokk som ikke finnes (eller er i et annet prosjekt), avvises
+    await expectError(sbApply(g7p, { inserts: { storyboard_panel_blocks: [
+      { id: newId(), project_id: g7p, panel_id: panel, block_id: newId(), order_key: "a1", revision: 1 }] } }), "22023");
+    // Blokk i en annen variant enn panelet avvises
+    const otherVariant = newId(), otherBlock = newId();
+    await sql`insert into public.scene_variants (id, project_id, scene_id) values (${otherVariant},${g7p},${sbSetup.scene})`;
+    await sql`insert into public.script_blocks (id, project_id, variant_id, kind, order_key, text) values (${otherBlock},${g7p},${otherVariant},'dialogue','a1','Hei')`;
     await expectError(sbApply(g7p, { inserts: { storyboard_panel_blocks: [
       { id: newId(), project_id: g7p, panel_id: panel, block_id: otherBlock, order_key: "a1", revision: 1 }] } }), "22023");
     // Gyldig forankring; medlem leser, ikke-medlem ser ingenting, direkte skriving er avslått
