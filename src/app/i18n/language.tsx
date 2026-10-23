@@ -265,11 +265,18 @@ export function CompactLanguageSwitch() {
   const radios = useRef<(HTMLButtonElement | null)[]>([]);
   const current = options.find((o) => o.tag === lang);
   const groupLabel = t("app-i18n-language.language-switch.aria-label.a2595484506d");
-  const close = (focus: boolean) => { setOpen(false); if (focus) window.requestAnimationFrame(() => toggle.current?.focus()); };
+  // Fokus flyttes bare når det allerede er i velgeren (tastatur), så et åpent felt andre steder aldri mister fokus.
+  const keyboard = useRef(false);
+  const close = (focus: boolean) => {
+    const inside = !!root.current?.contains(document.activeElement);
+    setOpen(false);
+    if (focus && inside) window.requestAnimationFrame(() => toggle.current?.focus());
+  };
   useEffect(() => {
     if (!open) return;
     const i = Math.max(0, options.findIndex((o) => o.tag === lang));
-    radios.current[i]?.focus();
+    if (keyboard.current || root.current?.contains(document.activeElement)) radios.current[i]?.focus();
+    keyboard.current = false;
     const outside = (e: PointerEvent) => { if (root.current && !root.current.contains(e.target as Node)) setOpen(false); };
     document.addEventListener("pointerdown", outside);
     return () => document.removeEventListener("pointerdown", outside);
@@ -296,6 +303,7 @@ export function CompactLanguageSwitch() {
         aria-controls="language-compact-options"
         aria-label={`${groupLabel}: ${current?.nativeName ?? lang}`}
         title={t("app-i18n-language.language-switch.change-title")}
+        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") keyboard.current = true; }}
         onClick={() => setOpen((x) => !x)}
         className={`${code} text-text-secondary hover:bg-surface-3 hover:text-text-primary focus-visible:outline focus-visible:outline-1 focus-visible:outline-accent-selection`}
         lang={lang}

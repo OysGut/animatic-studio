@@ -220,7 +220,7 @@ await h.scenario("ml2e-eksport", clip.occurrence_id, "en-XA", async (page) => {
   await page.waitForTimeout(800);
   const late = await page.evaluate(() => ({
     pending: document.documentElement.classList.contains("lang-pending"),
-    group: document.querySelector('[data-testid="language-compact-toggle"]')?.getAttribute("aria-label")?.split(": ")[0],
+    group: document.querySelector('[data-testid="language-compact-toggle"]')?.getAttribute("aria-label")?.split(": ")[0] ?? document.querySelector('[data-testid="language-switch"]')?.getAttribute("aria-label"),
   }));
   h.check(!late.pending && late.group === "Language", "siden vises på engelsk etter oppstart");
   await browser.close();

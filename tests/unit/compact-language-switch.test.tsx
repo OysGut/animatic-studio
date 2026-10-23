@@ -41,7 +41,10 @@ describe('kompakt språkvelger', () => {
     fireEvent.click(toggle);
     fireEvent.pointerDown(v.getByTestId('outside'));
     expect(v.queryByRole('radiogroup')).toBeNull();
+    toggle.focus();
+    fireEvent.keyDown(toggle, { key: ' ' });
     fireEvent.click(toggle);
+    expect(document.activeElement).toBe(v.getByTestId('language-compact-nb'));
     fireEvent.keyDown(v.getByTestId('language-compact-nb'), { key: 'Escape' });
     expect(v.queryByRole('radiogroup')).toBeNull();
     await waitFor(() => expect(document.activeElement).toBe(toggle));
@@ -50,7 +53,10 @@ describe('kompakt språkvelger', () => {
   it('piltaster flytter fokus, valg lagres som før og lukker', async () => {
     await chooseLanguage('nb');
     const v = mount();
-    fireEvent.click(v.getByTestId('language-compact-toggle'));
+    const toggle = v.getByTestId('language-compact-toggle');
+    toggle.focus();
+    fireEvent.keyDown(toggle, { key: 'Enter' });
+    fireEvent.click(toggle);
     const nb = v.getByTestId('language-compact-nb');
     expect(document.activeElement).toBe(nb);
     const tags = availableLanguages(testLanguagesEnabled()).map(o => o.tag);
