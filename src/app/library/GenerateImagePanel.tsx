@@ -8,11 +8,12 @@ import { Loader2, RotateCcw } from "lucide-react";
 import { AiGlyph } from "@/app/design/icons/AiGlyph";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { planBriefSave, shownBriefVersion, type BriefVersion, aiUsage, type Asset, type AssetMedia, type AssetVariant, type AssetVersion, type AttachedImage, attachedImages, promptFamilyOf, costBreakdown, estimateCostUsd, formatCredits, formatUsd, hasStyleGuide, IMAGE_PURPOSE_FOR_KIND, IMAGE_SIZE_LABEL, fullSizeOriginal, type ImageSize, imageSizesOf, lastImagePrompt, LOVABLE_CUTOUT_MODEL, LOVABLE_IMAGE_MODEL, MAX_PROMPT_CHARS, type Project, type ProjectState, profileBudgetRemaining, qualityProfileUsage, providerInfo, providerModel, providersFor, qualityProfileSnapshot, stripAttachedSection, tm } from "@/core";
+import { writeWithAiCalls, planBriefSave, shownBriefVersion, type BriefVersion, aiUsage, type Asset, type AssetMedia, type AssetVariant, type AssetVersion, type AttachedImage, attachedImages, promptFamilyOf, costBreakdown, estimateCostUsd, formatCredits, formatUsd, hasStyleGuide, IMAGE_PURPOSE_FOR_KIND, IMAGE_SIZE_LABEL, fullSizeOriginal, type ImageSize, imageSizesOf, lastImagePrompt, LOVABLE_CUTOUT_MODEL, LOVABLE_IMAGE_MODEL, MAX_PROMPT_CHARS, type Project, type ProjectState, profileBudgetRemaining, qualityProfileUsage, providerInfo, providerModel, providersFor, qualityProfileSnapshot, stripAttachedSection, tm } from "@/core";
 import { QualityProfilePicker, chosenQualityProfile, type QualityProfileChoice } from "@/app/ai/QualityProfilePicker";
 import { aiJobsKey, useAiJobs } from "@/app/ai/use-ai-jobs";
 import { CUTOUT_MODEL, IMAGE_MODEL, generateImage } from "@/adapters/ai/generate-image.functions";
 import { writeImagePrompt } from "@/adapters/ai/write-prompt.functions";
+import { adoptServerHistory } from "@/app/project/use-commands";
 import { useImagePromptPreview } from "./image-prompt-preview";
 import { useProjectProviders } from "@/app/ai/use-project-providers";
 import { EffortPicker } from "@/app/ai/EffortPicker";
@@ -326,6 +327,8 @@ export function GenerateImagePanel({
   /** Beskrivelsen er skrevet av AI (modell, og hvilke bilder den ble skrevet for). */
   const [written, setWritten] = useState<{ model: string; images: string } | null>(null);
   const [writing, setWriting] = useState(false);
+  /** Studien av manuset feilet: «Skriv med AI» fortsatte ikke uten faktaarket. */
+  const [writeRetry, setWriteRetry] = useState(false);
   const attachedKey = attached.map((a) => a.versionId).join(",");
 
   async function write() {
@@ -347,8 +350,13 @@ export function GenerateImagePanel({
       });
       if (!r.ok) {
         setError(r.message);
+        setWriteRetry(r.retry === true);
         return;
       }
+      setWriteRetry(false);
+      // Studien av manuset ble lagret som faktaark: et vanlig angresteg (Øystein 23.10)
+      if (r.factSheet)
+        adoptServerHistory(projectId, [r.factSheet], t("factSheet.history", { name: String(asset.name) }));
       setPrompt(r.prompt);
       promptRef.current = r.prompt;
       setEdited(true);
@@ -601,6 +609,14 @@ export function GenerateImagePanel({
               {t("app-library-generate-image-panel.generate-image-panel.span.05bd9b9aeedc")}
             </span>
           </div>
+          <p className="text-[11px] text-text-secondary" data-testid="write-ai-calls">
+            {writeWithAiCalls(asset).includes("study") ? t("factSheet.cost.study") : t("factSheet.cost.ready")}
+          </p>
+          {writeRetry && !writing ? (
+            <Button size="sm" variant="outline" onClick={() => void write()} disabled={!canWrite}>
+              {t("factSheet.retry")}
+            </Button>
+          ) : null}
           {written ? (
             <p
               role="status"

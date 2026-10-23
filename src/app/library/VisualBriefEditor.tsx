@@ -120,6 +120,11 @@ export function VisualBriefEditor({
           {t("app-library-visual-brief-editor.visual-brief-editor.span.5625b5f8c54a")}
         </span>
       </div>
+      {asset.visualBriefAuto && saved ? (
+        <p className="text-[11px] text-text-secondary" data-testid="fact-sheet-auto">
+          {t("factSheet.auto.label", { date: asset.visualBriefAuto.slice(0, 10) })}
+        </p>
+      ) : null}
       <p className="text-[11px] text-text-tertiary">
         {t("app-library-visual-brief-editor.visual-brief-editor.p.92ad57e47d88")}
       </p>
