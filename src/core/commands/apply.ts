@@ -7055,6 +7055,309 @@ function run(
       const f = need((s.noteFlags ?? {})[c.flagId], tk("core-commands-apply.f.need.8ab231644533.3"));
       return { state: { ...s, noteFlags: { ...(s.noteFlags ?? {}), [f.id]: { ...f, removed: c.removed === true, revision: rev(f) } } }, inverse: { type: "SetNoteFlagRemoved", flagId: f.id, removed: f.removed }, affected: [f.id] };
     }
+    // ---------- SB-1 storyboardgrunnmur (migrasjon 0102) ----------
+    case "AddStoryboardPanel": {
+      assertNewId(s, c.panelId);
+      const occ = need(s.occurrences[c.occurrenceId], tk("core-commands-apply.run.need.594b13c00857.7"));
+      if (occ.variantId !== c.variantId) fail("invalid", tk("sb1.error.invalid-panel"));
+      if (c.durationFrames !== undefined && (!Number.isInteger(c.durationFrames) || c.durationFrames < 0))
+        fail("invalid", tk("sb1.error.invalid-panel"));
+      const fields = compositionFields({
+        name: c.name ?? "",
+        width: s.project.frameWidth,
+        height: s.project.frameHeight,
+        durationFrames: c.durationFrames ?? 0,
+        background: DEFAULT_COMPOSITION.background,
+      });
+      const comp: Composition = {
+        id: c.panelId as never,
+        revision: 1,
+        variantId: c.variantId as never,
+        ...fields,
+        camera: { shots: [] },
+        removed: false,
+        kind: "storyboard",
+        occurrenceId: c.occurrenceId as never,
+        orderKey: c.orderKey,
+        active: true,
+        hidden: false,
+        producedFrom: { blockRevisions: currentBlockRevisions(s, c.variantId as never) },
+      };
+      const links = sbBlockLinks(s, comp, c.blocks ?? []);
+      const panelBlocks = { ...s.panelBlocks };
+      for (const l of links) panelBlocks[l.id] = l;
+      return {
+        state: { ...s, compositions: { ...s.compositions, [comp.id]: comp }, panelBlocks },
+        inverse: { type: "UndoAddStoryboardPanel", panelId: comp.id },
+        affected: [comp.id, ...links.map((l) => l.id)],
+      };
+    }
+    case "UndoAddStoryboardPanel": {
+      const comp = need(s.compositions[c.panelId], tk("core-commands-apply.comp.need.118fc96033c3.3"));
+      if (Object.values(s.layers).some((l) => l.compositionId === comp.id))
+        fail("referenced", tk("core-commands-apply.run.fail.b141715260ce"));
+      const compositions = { ...s.compositions };
+      delete compositions[comp.id];
+      const panelBlocks = { ...s.panelBlocks };
+      for (const l of Object.values(s.panelBlocks)) if (l.panelId === comp.id) delete panelBlocks[l.id];
+      return {
+        state: { ...s, compositions, panelBlocks },
+        inverse: {
+          type: "AddStoryboardPanel",
+          panelId: comp.id,
+          occurrenceId: comp.occurrenceId ?? "",
+          variantId: comp.variantId,
+          orderKey: comp.orderKey ?? "",
+          name: comp.name,
+          durationFrames: comp.durationFrames,
+          blocks: panelBlockRefs(s, comp.id),
+        },
+        affected: [comp.id],
+      };
+    }
+    case "UpdateStoryboardPanel": {
+      const comp = need(s.compositions[c.panelId], tk("core-commands-apply.comp.need.118fc96033c3.3"));
+      if (comp.kind !== "storyboard") fail("invalid", tk("sb1.error.not-panel"));
+      if (c.durationFrames !== undefined && (!Number.isInteger(c.durationFrames) || c.durationFrames < 0))
+        fail("invalid", tk("sb1.error.invalid-panel"));
+      const next: Composition = { ...comp, revision: rev(comp) };
+      if (c.name !== undefined)
+        next.name = compositionFields({ name: c.name, width: comp.width, height: comp.height, durationFrames: comp.durationFrames, background: comp.background }).name;
+      if (c.durationFrames !== undefined) next.durationFrames = c.durationFrames;
+      if (c.active !== undefined) next.active = c.active;
+      if (c.hidden !== undefined) next.hidden = c.hidden;
+      let panelBlocks = s.panelBlocks;
+      let affected = [comp.id];
+      if (c.blocks !== undefined) {
+        const r = applyPanelBlocks(s, comp, c.blocks);
+        panelBlocks = r.panelBlocks;
+        affected = [...affected, ...r.affected];
+      }
+      return {
+        state: { ...s, compositions: { ...s.compositions, [comp.id]: next }, panelBlocks },
+        inverse: {
+          type: "UpdateStoryboardPanel",
+          panelId: comp.id,
+          ...(c.name !== undefined ? { name: comp.name } : {}),
+          ...(c.durationFrames !== undefined ? { durationFrames: comp.durationFrames } : {}),
+          ...(c.active !== undefined ? { active: comp.active ?? true } : {}),
+          ...(c.hidden !== undefined ? { hidden: comp.hidden ?? false } : {}),
+          ...(c.blocks !== undefined ? { blocks: panelBlockRefs(s, comp.id) } : {}),
+        },
+        affected,
+      };
+    }
+    case "SetStoryboardPanelRemoved": {
+      const comp = need(s.compositions[c.panelId], tk("core-commands-apply.comp.need.118fc96033c3.3"));
+      if (comp.kind !== "storyboard") fail("invalid", tk("sb1.error.not-panel"));
+      return {
+        state: { ...s, compositions: { ...s.compositions, [comp.id]: { ...comp, removed: c.removed === true, revision: rev(comp) } } },
+        inverse: { type: "SetStoryboardPanelRemoved", panelId: comp.id, removed: comp.removed },
+        affected: [comp.id],
+      };
+    }
+    case "MoveStoryboardPanel": {
+      const comp = need(s.compositions[c.panelId], tk("core-commands-apply.comp.need.118fc96033c3.3"));
+      if (comp.kind !== "storyboard") fail("invalid", tk("sb1.error.not-panel"));
+      if (typeof c.orderKey !== "string" || !c.orderKey) fail("invalid", tk("sb1.error.invalid-panel"));
+      return {
+        state: { ...s, compositions: { ...s.compositions, [comp.id]: { ...comp, orderKey: c.orderKey, revision: rev(comp) } } },
+        inverse: { type: "MoveStoryboardPanel", panelId: comp.id, orderKey: comp.orderKey ?? "" },
+        affected: [comp.id],
+      };
+    }
+    case "MoveStoryboardPanelToScene": {
+      const comp = need(s.compositions[c.panelId], tk("core-commands-apply.comp.need.118fc96033c3.3"));
+      if (comp.kind !== "storyboard") fail("invalid", tk("sb1.error.not-panel"));
+      const occ = need(s.occurrences[c.occurrenceId], tk("core-commands-apply.run.need.594b13c00857.7"));
+      if (occ.variantId !== c.variantId || typeof c.orderKey !== "string" || !c.orderKey)
+        fail("invalid", tk("sb1.error.invalid-panel"));
+      const prevRefs = panelBlockRefs(s, comp.id);
+      const next: Composition = {
+        ...comp,
+        occurrenceId: c.occurrenceId as never,
+        variantId: c.variantId as never,
+        orderKey: c.orderKey,
+        revision: rev(comp),
+        producedFrom: { blockRevisions: currentBlockRevisions(s, c.variantId as never) },
+      };
+      // Ny forankring: med referanser erstattes koblingene, ellers fjernes de (blokkene hørte til den gamle scenen)
+      const r = applyPanelBlocks(s, next, c.blocks ?? []);
+      return {
+        state: { ...s, compositions: { ...s.compositions, [comp.id]: next }, panelBlocks: r.panelBlocks },
+        inverse: {
+          type: "MoveStoryboardPanelToScene",
+          panelId: comp.id,
+          occurrenceId: comp.occurrenceId ?? "",
+          variantId: comp.variantId,
+          orderKey: comp.orderKey ?? "",
+          blocks: prevRefs,
+        },
+        affected: [comp.id, ...r.affected],
+      };
+    }
+    case "SeedStoryboardPanels": {
+      if (c.panels.length === 0 || c.panels.length > 1000) fail("invalid", tk("sb1.error.invalid-panel"));
+      const compositions = { ...s.compositions };
+      for (const p of c.panels) {
+        assertNewId(s, p.panelId);
+        const occ = need(s.occurrences[p.occurrenceId], tk("core-commands-apply.run.need.594b13c00857.7"));
+        if (occ.productionId !== c.productionId || occ.variantId !== p.variantId)
+          fail("invalid", tk("sb1.error.invalid-panel"));
+        const fields = compositionFields({
+          name: "",
+          width: s.project.frameWidth,
+          height: s.project.frameHeight,
+          durationFrames: 0,
+          background: DEFAULT_COMPOSITION.background,
+        });
+        compositions[p.panelId] = {
+          id: p.panelId as never,
+          revision: 1,
+          variantId: p.variantId as never,
+          ...fields,
+          camera: { shots: [] },
+          removed: false,
+          kind: "storyboard",
+          occurrenceId: p.occurrenceId as never,
+          orderKey: p.orderKey,
+          active: true,
+          hidden: false,
+          producedFrom: { blockRevisions: currentBlockRevisions(s, p.variantId as never) },
+        };
+      }
+      return {
+        state: { ...s, compositions },
+        inverse: { type: "UndoSeedStoryboardPanels", panelIds: c.panels.map((p) => p.panelId) },
+        affected: c.panels.map((p) => p.panelId),
+      };
+    }
+    case "UndoSeedStoryboardPanels": {
+      const compositions = { ...s.compositions };
+      const restored: Composition[] = [];
+      for (const id of c.panelIds) {
+        const comp = need(s.compositions[id], tk("core-commands-apply.comp.need.118fc96033c3.3"));
+        if (Object.values(s.layers).some((l) => l.compositionId === comp.id))
+          fail("referenced", tk("core-commands-apply.run.fail.b141715260ce"));
+        delete compositions[id];
+        restored.push(comp);
+      }
+      const productionId = s.occurrences[restored[0]?.occurrenceId ?? ""]?.productionId ?? "";
+      return {
+        state: { ...s, compositions },
+        inverse: {
+          type: "SeedStoryboardPanels",
+          productionId,
+          panels: restored.map((comp) => ({
+            panelId: comp.id,
+            occurrenceId: comp.occurrenceId ?? "",
+            variantId: comp.variantId,
+            orderKey: comp.orderKey ?? "",
+          })),
+        },
+        affected: c.panelIds,
+      };
+    }
+    case "SnapshotStoryboardPanel": {
+      assertNewId(s, c.snapshotId);
+      const comp = need(s.compositions[c.panelId], tk("core-commands-apply.comp.need.118fc96033c3.3"));
+      if (comp.kind !== "storyboard") fail("invalid", tk("sb1.error.not-panel"));
+      // «Rediger storyboard» etter godkjenning: den gamle revisjonen bevares som øyeblikksbilde
+      if (productionStatusOf(s, "storyboard", { compositionId: comp.id as never })?.status !== "done")
+        fail("invalid", tk("sb1.error.not-approved"));
+      const content = panelSnapshotContentOf(s, comp.id as never);
+      if (!content) fail("invalid", tk("sb1.error.not-panel"));
+      if (JSON.stringify(content).length > 4_000_000) fail("invalid", tk("sb1.error.invalid-panel"));
+      const snap: PanelSnapshot = {
+        id: c.snapshotId,
+        revision: 1,
+        panelId: comp.id as never,
+        panelRevision: comp.revision,
+        snapshot: content,
+        removed: false,
+      };
+      return {
+        state: { ...s, panelSnapshots: { ...s.panelSnapshots, [snap.id]: snap } },
+        inverse: { type: "UndoSnapshotStoryboardPanel", snapshotId: snap.id },
+        affected: [snap.id],
+      };
+    }
+    case "UndoSnapshotStoryboardPanel": {
+      const snap = need(s.panelSnapshots[c.snapshotId], tk("core-commands-apply.run.fail.ae2bf229e914"));
+      const panelSnapshots = { ...s.panelSnapshots };
+      delete panelSnapshots[snap.id];
+      return {
+        state: { ...s, panelSnapshots },
+        inverse: { type: "SnapshotStoryboardPanel", panelId: snap.panelId, snapshotId: snap.id },
+        affected: [snap.id],
+      };
+    }
+    case "SetProductionStatus": {
+      assertNewId(s, c.eventId);
+      const occurrenceId = c.occurrenceId ?? null;
+      const compositionId = c.compositionId ?? null;
+      if (productionStatusError(c.area, occurrenceId as never, compositionId as never, c.status))
+        fail("invalid", tk("sb1.error.invalid-status"));
+      if (occurrenceId) need(s.occurrences[occurrenceId], tk("core-commands-apply.run.need.594b13c00857.7"));
+      else {
+        const comp = need(s.compositions[compositionId!], tk("core-commands-apply.comp.need.118fc96033c3.3"));
+        if (comp.kind !== "storyboard") fail("invalid", tk("sb1.error.not-panel"));
+      }
+      const target = occurrenceId ? { occurrenceId: occurrenceId as never } : { compositionId: compositionId as never };
+      const existing = productionStatusOf(s, c.area, target as never);
+      const statusId = existing?.id ?? c.statusId;
+      if (!existing) assertNewId(s, c.statusId);
+      const row: ProductionStatus = {
+        id: statusId,
+        revision: existing ? rev(existing) : 1,
+        area: c.area,
+        occurrenceId: occurrenceId as never,
+        compositionId: compositionId as never,
+        status: c.status,
+        removed: false,
+      };
+      const event: ProductionStatusEvent = {
+        id: c.eventId,
+        revision: 1,
+        statusId,
+        area: c.area,
+        occurrenceId: occurrenceId as never,
+        compositionId: compositionId as never,
+        status: c.status,
+        removed: false,
+      };
+      return {
+        state: {
+          ...s,
+          productionStatuses: { ...s.productionStatuses, [row.id]: row },
+          productionStatusEvents: { ...s.productionStatusEvents, [event.id]: event },
+        },
+        inverse: { type: "RevertProductionStatus", statusId, eventId: event.id, previousStatus: existing?.status ?? null },
+        affected: [row.id, event.id],
+      };
+    }
+    case "RevertProductionStatus": {
+      const row = need(s.productionStatuses[c.statusId], tk("core-commands-apply.run.fail.ae2bf229e914"));
+      const ev = need(s.productionStatusEvents[c.eventId], tk("core-commands-apply.run.fail.ae2bf229e914"));
+      const productionStatusEvents = { ...s.productionStatusEvents };
+      delete productionStatusEvents[ev.id];
+      const productionStatuses = { ...s.productionStatuses };
+      if (c.previousStatus === null) delete productionStatuses[row.id];
+      else productionStatuses[row.id] = { ...row, status: c.previousStatus, revision: rev(row) };
+      return {
+        state: { ...s, productionStatuses, productionStatusEvents },
+        inverse: {
+          type: "SetProductionStatus",
+          statusId: row.id,
+          eventId: ev.id,
+          area: ev.area,
+          ...(ev.occurrenceId ? { occurrenceId: ev.occurrenceId } : {}),
+          ...(ev.compositionId ? { compositionId: ev.compositionId } : {}),
+          status: ev.status,
+        },
+        affected: [row.id, ev.id],
+      };
+    }
     // ML3 språkversjoner (B-049): register per prosjekt, alltid med norsk kilde
     case "AddLanguageVersion": {
       assertNewId(s, c.versionId);
