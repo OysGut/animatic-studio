@@ -6,6 +6,7 @@
 import { describe, expect, it } from "vitest";
 import {
   aiUsage,
+  monthStartUtc,
   jobEffort,
   applyCommand,
   blocksOfVariant,
@@ -65,7 +66,7 @@ describe("AI-budsjett og forbruk", () => {
         job({ status: "running", estimatedCost: null }),
         job({ createdAt: "2026-09-30T23:00:00.000Z" }),
       ],
-      now,
+      monthStartUtc(now),
     );
     expect(u).toMatchObject({
       used: 2,
@@ -75,7 +76,7 @@ describe("AI-budsjett og forbruk", () => {
       partlyUnknown: true,
       nextCost: 2,
     });
-    expect(aiUsage({}, [], now)).toMatchObject({
+    expect(aiUsage({}, [], monthStartUtc(now))).toMatchObject({
       used: 0,
       limit: null,
       remaining: null,
@@ -101,10 +102,10 @@ describe("AI-budsjett og forbruk", () => {
         job({ costUsd: null }),
         job({ status: "queued", costUsd: 3 }),
       ],
-      now,
+      monthStartUtc(now),
     );
     expect(u.costUsd).toBeCloseTo(0.41);
-    expect(aiUsage({}, [job({})], now).costUsd).toBeNull();
+    expect(aiUsage({}, [job({})], monthStartUtc(now)).costUsd).toBeNull();
   });
 
   it("en jobb som har stått som «pågår» lenge, er stoppet underveis", () => {

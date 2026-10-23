@@ -286,11 +286,11 @@ describe("REQ-0589 – «Skriv beskrivelsen med AI» og bildene som sendes med (
     const [job] = jobsOf(db);
     expect(job).toMatchObject({ kind: "prompt", status: "done", reference_paths: [REF1, REF2] });
     // Bildebudsjettet teller ikke «prompt»-jobber (samme filter som i grensene og oversikten)
-    const { aiUsage, jobFromRow } = await import("@/core");
+    const { aiUsage, jobFromRow, monthStartUtc } = await import("@/core");
     const usage = aiUsage(
       { aiMonthLimit: 50, aiPricePerImage: 2 },
       jobsOf(db).map(jobFromRow),
-      new Date(),
+      monthStartUtc(new Date()),
     );
     expect(usage.used).toBe(0);
   });

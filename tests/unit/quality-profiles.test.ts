@@ -2,6 +2,7 @@
 /** M8 kvalitetsprofiler (REQ-0854–0862): kommandoer, validering, modellvalg, budsjett og øyeblikksbilde. */
 import { describe, expect, it } from "vitest";
 import {
+  monthStartUtc,
   activeQualityProfile, qualityProfileBudgetError, qualityProfileUsage, parseQualityProfileMeta,
   applyCommand,
   BACKUP_STATE_TABLES,
@@ -160,7 +161,7 @@ describe("M8 budget and validation", () => {
   it("counts only this profile in the UTC month, including queued receipts", () => {
     const job = { id:"x", kind:"image", status:"queued", createdAt:"2026-10-01T00:00:00Z", params:{qualityProfile:{id:"p"}} };
     const jobs = [job, {...job,status:"failed"}, {...job,params:{qualityProfile:{id:"other"}}}, {...job,createdAt:"2026-09-30T23:59:59Z"}, {...job,kind:"prompt"}];
-    expect(qualityProfileUsage("p", jobs as never, new Date("2026-10-20T00:00:00Z"))).toBe(1);
+    expect(qualityProfileUsage("p", jobs as never, monthStartUtc(new Date("2026-10-20T00:00:00Z")))).toBe(1);
   });
   it("rejects unsafe export and model settings", () => {
     expect(qualityProfileError("P", { export: { bitrateKbps: 99 } })).not.toBeNull();
