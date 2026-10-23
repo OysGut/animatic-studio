@@ -1566,6 +1566,12 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         ...compositionProducedFrom(x["produced_from"]),
         ...(num(x["step"] ?? 1) > 1 ? { step: num(x["step"]) } : {}),
         ...compositionTiming(x["timing"]),
+        // Migrasjon 0102 (SB-1): komposisjonstype og panelfelt (mangler = scene, aktiv, synlig)
+        ...(x["kind"] !== undefined && x["kind"] !== null && x["kind"] !== "scene" ? { kind: str(x["kind"]) } : {}),
+        ...(x["occurrence_id"] !== undefined ? { occurrenceId: optStr(x["occurrence_id"]) } : {}),
+        ...(x["order_key"] !== undefined ? { orderKey: optStr(x["order_key"]) } : {}),
+        ...(x["active"] === false ? { active: false } : {}),
+        ...(x["hidden"] === true ? { hidden: true } : {}),
       })),
     ),
     layers: byId(
@@ -1606,6 +1612,10 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         ...(json(x["text_spec"]) ? { text: json(x["text_spec"]) as never } : {}),
         ...(json(x["shape"]) ? { shape: json(x["shape"]) as never } : {}),
         ...(json(x["effects"]) ? { effects: json(x["effects"]) as never } : {}),
+        // Migrasjon 0102 (SB-1): lapp, pil og kameramerke
+        ...(json(x["note"]) ? { note: json(x["note"]) as never } : {}),
+        ...(json(x["arrow"]) ? { arrow: json(x["arrow"]) as never } : {}),
+        ...(json(x["camera_mark"]) ? { cameraMark: json(x["camera_mark"]) as never } : {}),
         ...(typeof x["template_instance_id"] === "string" && typeof x["template_key"] === "string"
           ? {
               template: {
