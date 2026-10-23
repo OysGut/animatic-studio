@@ -55590,5 +55590,15 @@
     "text": "Añadir resultado en segundo plano",
     "sourceHash": "cc9d0f8aac5f7bd2996299a8c27fe27694c08472b6f6bd7d298a28e40e1b99a7",
     "review": "machine"
+  },
+  "n10.playback.playing": {
+    "text": "Reproduciendo",
+    "sourceHash": "2746bac47887a263d5099060a00e3dae804ebd217aa8137ec2331d8e9b892b8a",
+    "review": "machine"
+  },
+  "n10.playback.stopped": {
+    "text": "Detenido en {timecode}",
+    "sourceHash": "0df9933516d2cfcf6e63ef2c9c5f6d4beb5c7bc768d1abd0c06a3d048084f1ee",
+    "review": "machine"
   }
 }

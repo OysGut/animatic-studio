@@ -10517,6 +10517,22 @@
       "en": {
         "text": "Add background result"
       }
+    },
+    "n10.playback.playing": {
+      "nb": {
+        "text": "Spiller av"
+      },
+      "en": {
+        "text": "Playing"
+      }
+    },
+    "n10.playback.stopped": {
+      "nb": {
+        "text": "Stoppet på {timecode}"
+      },
+      "en": {
+        "text": "Stopped at {timecode}"
+      }
     }
   }
 }

@@ -75482,5 +75482,11 @@
   },
   "dv5.background-result.undo-label": {
     "text": "Add background result"
+  },
+  "n10.playback.playing": {
+    "text": "Playing"
+  },
+  "n10.playback.stopped": {
+    "text": "Stopped at {timecode}"
   }
 }
