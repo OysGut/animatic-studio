@@ -516,7 +516,8 @@ describe("Fountain – filtype", () => {
     expect(formatOf("manus.fountain")).toBe("fountain");
     expect(formatOf("MANUS.SPMD")).toBe("fountain");
     expect(formatOf("manus.txt")).toBe("fountain");
-    expect(formatOf("manus.fdx")).toBeNull();
+    expect(formatOf("manus.fdx")).toBe("fdx"); // G-1b: Final Draft importeres via fdxToFountain
+    expect(formatOf("manus.odt")).toBeNull();
   });
 
   it("avviser binærfiler og leser UTF-8 eller Windows-1252", () => {
