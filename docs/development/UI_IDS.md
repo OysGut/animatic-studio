@@ -5,28 +5,28 @@ Merket nederst i hvert vindu viser «V-nnn · commit». Slå opp nummeret her.
 
 | ID | Type | Fil | Komponent | Beskrivelse | Status |
 |---|---|---|---|---|---|
-| V-001 | side | `src/routes/admin.tsx` | Route | Side «Administrasjon – Pen to Glass» (/admin) | aktiv |
-| V-002 | side | `src/routes/delinger.tsx` | Route | Side «Mine delinger – From Pen to Glass» (/delinger) | aktiv |
-| V-003 | side | `src/routes/gruppe.$workspaceId.tsx` | Route | Side «Arbeidsgruppe – Pen to Glass» (/gruppe/$workspaceId) | aktiv |
-| V-004 | side | `src/routes/index.tsx` | Route | Side «From Pen to Glass – Prosjekter» (/) | aktiv |
-| V-005 | side | `src/routes/invitasjon.tsx` | Route | Side «Invitasjon – Pen to Glass» (/invitasjon) | aktiv |
-| V-006 | side | `src/routes/k.$code.tsx` | Route | Side «Utskrevet figur – Pen to Glass» (/k/$code) | aktiv |
-| V-007 | side | `src/routes/konto.tsx` | Route | Side «Min konto – Pen to Glass» (/konto) | aktiv |
-| V-008 | side | `src/routes/m.$token.tsx` | Route | Side «Last opp – Pen to Glass» (/m/$token) | aktiv |
-| V-009 | side | `src/routes/manusutforsker.$projectId.tsx` | Route | Side «Manusutforskeren – Pen to Glass» (/manusutforsker/$projectId) | aktiv |
-| V-010 | side | `src/routes/personvern.tsx` | Route | Side «Personvern – Pen to Glass» (/personvern) | aktiv |
-| V-011 | side | `src/routes/prosjekt.$projectId.bibliotek.tsx` | Route | Side «Ressursbibliotek – Pen to Glass» (/prosjekt/$projectId/bibliotek) | aktiv |
-| V-012 | side | `src/routes/prosjekt.$projectId.index.tsx` | Route | Side «Prosjektoversikt – Pen to Glass» (/prosjekt/$projectId/) | aktiv |
-| V-013 | side | `src/routes/prosjekt.$projectId.manus.tsx` | Route | Side «Manus – Pen to Glass» (/prosjekt/$projectId/manus) | aktiv |
-| V-014 | side | `src/routes/prosjekt.$projectId.montering.tsx` | Route | Side «Montering – Pen to Glass» (/prosjekt/$projectId/montering) | aktiv |
-| V-015 | side | `src/routes/prosjekt.$projectId.rigg.tsx` | Route | Side «Rigg – Pen to Glass» (/prosjekt/$projectId/rigg) | aktiv |
-| V-016 | side | `src/routes/prosjekt.$projectId.scene.tsx` | Route | Side «Sceneeditor – Pen to Glass» (/prosjekt/$projectId/scene) | aktiv |
-| V-017 | side | `src/routes/prosjekt.$projectId.storylab.tsx` | Route | Side /prosjekt/$projectId/storylab | aktiv |
-| V-018 | side | `src/routes/prosjekt.$projectId.tsx` | Route | Side «Prosjekt – Pen to Glass» (/prosjekt/$projectId) | aktiv |
-| V-019 | side | `src/routes/prosjekt.$projectId.utgivelse.tsx` | Route | Side «Utgivelse – Pen to Glass» (/prosjekt/$projectId/utgivelse) | aktiv |
-| V-020 | side | `src/routes/ptg.i.tsx` | Route | Side «Importer film fra After Effects – From Pen to Glass» (/ptg/i) | aktiv |
-| V-021 | side | `src/routes/se.$token.tsx` | Route | Side «Film – Pen to Glass» (/se/$token) | aktiv |
-| V-022 | side | `src/routes/tilbakestill-passord.tsx` | Route | Side «Tilbakestill passord \| Pen to Glass» (/tilbakestill-passord) | aktiv |
+| V-001 | side | `src/routes/admin.tsx` | AdminRoute | Side «Administrasjon – Pen to Glass» (/admin) | aktiv |
+| V-002 | side | `src/routes/delinger.tsx` | DelingerRoute | Side «Mine delinger – From Pen to Glass» (/delinger) | aktiv |
+| V-003 | side | `src/routes/gruppe.$workspaceId.tsx` | WorkspaceRoute | Side «Arbeidsgruppe – Pen to Glass» (/gruppe/$workspaceId) | aktiv |
+| V-004 | side | `src/routes/index.tsx` | Index | Side «From Pen to Glass – Prosjekter» (/) | aktiv |
+| V-005 | side | `src/routes/invitasjon.tsx` | AcceptInvitation | Side «Invitasjon – Pen to Glass» (/invitasjon) | aktiv |
+| V-006 | side | `src/routes/k.$code.tsx` | CopyRoute | Side «Utskrevet figur – Pen to Glass» (/k/$code) | aktiv |
+| V-007 | side | `src/routes/konto.tsx` | AccountRoute | Side «Min konto – Pen to Glass» (/konto) | aktiv |
+| V-008 | side | `src/routes/m.$token.tsx` | MobileRoute | Side «Last opp – Pen to Glass» (/m/$token) | aktiv |
+| V-009 | side | `src/routes/manusutforsker.$projectId.tsx` | ExplorerRoute | Side «Manusutforskeren – Pen to Glass» (/manusutforsker/$projectId) | aktiv |
+| V-010 | side | `src/routes/personvern.tsx` | PrivacyPage | Side «Personvern – Pen to Glass» (/personvern) | aktiv |
+| V-011 | side | `src/routes/prosjekt.$projectId.bibliotek.tsx` | LibraryRoute | Side «Ressursbibliotek – Pen to Glass» (/prosjekt/$projectId/bibliotek) | aktiv |
+| V-012 | side | `src/routes/prosjekt.$projectId.index.tsx` | OverviewRoute | Side «Prosjektoversikt – Pen to Glass» (/prosjekt/$projectId/) | aktiv |
+| V-013 | side | `src/routes/prosjekt.$projectId.manus.tsx` | ScriptRoute | Side «Manus – Pen to Glass» (/prosjekt/$projectId/manus) | aktiv |
+| V-014 | side | `src/routes/prosjekt.$projectId.montering.tsx` | AssemblyRoute | Side «Montering – Pen to Glass» (/prosjekt/$projectId/montering) | aktiv |
+| V-015 | side | `src/routes/prosjekt.$projectId.rigg.tsx` | RigRoute | Side «Rigg – Pen to Glass» (/prosjekt/$projectId/rigg) | aktiv |
+| V-016 | side | `src/routes/prosjekt.$projectId.scene.tsx` | SceneEditorRoute | Side «Sceneeditor – Pen to Glass» (/prosjekt/$projectId/scene) | aktiv |
+| V-017 | side | `src/routes/prosjekt.$projectId.storylab.tsx` | StoryLabRoute | Side /prosjekt/$projectId/storylab | aktiv |
+| V-018 | side | `src/routes/prosjekt.$projectId.tsx` | ProjectLayout | Side «Prosjekt – Pen to Glass» (/prosjekt/$projectId) | aktiv |
+| V-019 | side | `src/routes/prosjekt.$projectId.utgivelse.tsx` | ReleaseRoute | Side «Utgivelse – Pen to Glass» (/prosjekt/$projectId/utgivelse) | aktiv |
+| V-020 | side | `src/routes/ptg.i.tsx` | PtgImportRoute | Side «Importer film fra After Effects – From Pen to Glass» (/ptg/i) | aktiv |
+| V-021 | side | `src/routes/se.$token.tsx` | FilmRoute | Side «Film – Pen to Glass» (/se/$token) | aktiv |
+| V-022 | side | `src/routes/tilbakestill-passord.tsx` | ResetPasswordPage | Side «Tilbakestill passord \| Pen to Glass» (/tilbakestill-passord) | aktiv |
 | V-023 | popup | `src/app/account/CityPicker.tsx` | CityPicker | Popup «Søk etter by» i CityPicker | aktiv |
 | V-024 | popup | `src/app/account/CountryPicker.tsx` | CountryPicker | Popup «Søk etter land» i CountryPicker | aktiv |
 | V-025 | dialog | `src/app/account/use-account.tsx` | CountryGate | Dialog «Hvilket land er du i?» i CountryGate | aktiv |

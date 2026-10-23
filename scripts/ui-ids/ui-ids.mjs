@@ -146,12 +146,13 @@ export function assign(root = ROOT) {
   for (const file of routeFiles(root)) {
     const route = routeIdOf(file);
     routes.add(route);
-    const existing = byRoute.get(route);
-    if (existing) { existing.file = file; existing.status = "aktiv"; continue; }
     const src = readFileSync(join(root, file), "utf8");
+    const component = /component:\s*(\w+)/.exec(src)?.[1] ?? "?";
+    const existing = byRoute.get(route);
+    if (existing) { existing.file = file; existing.component = component; existing.status = "aktiv"; continue; }
     const m = /title:\s*t\("([^"]+)"/.exec(src);
     const title = m ? nbText(m[1]) : null;
-    entries.push({ id: fmt(n++), kind: "side", component: componentAt(src, src.indexOf("component:") + 1 || src.length), file, description: title ? `Side «${title}» (${route})` : `Side ${route}`, route, status: "aktiv" });
+    entries.push({ id: fmt(n++), kind: "side", component, file, description: title ? `Side «${title}» (${route})` : `Side ${route}`, route, status: "aktiv" });
   }
   // Vinduer i koden: sett inn nummer der det mangler
   const files = new Map();
