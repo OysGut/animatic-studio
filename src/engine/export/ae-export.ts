@@ -10,6 +10,8 @@ import { ptgImportUrl, qrMatrixToPng } from "@/core/interchange/titlecard";
 import type { Shot } from "@/core/interchange/types";
 import { cameraReadmeLines, interchangeReadme } from "@/core/interchange/readme";
 import { writeZip, type ZipSink, type ZipProgress } from "./zip";
+import { assertAeSafePaths, planPackageMedia } from "@/core/interchange/media-formats";
+import { convertedMediaFiles, type MediaConverter } from "./media-convert";
 import { t } from "@/core/i18n/keyed";
 
 /** PTG3b: QR-bildet (PNG) for en ikke-hemmelig importlenke. */
@@ -41,6 +43,7 @@ export function aeJsxMessages(): AeJsxMessages {
     missing: `${t("ptg3.ae-missing", {}, "nb")}\n${t("ptg3.ae-missing", {}, "en")}`,
     wrongHost: `${t("ptg3.ae-wrong-host", {}, "nb")}\n\n${t("ptg3.ae-wrong-host", {}, "en")}`,
     saveFailed: `${t("ptg3.ae-save-failed", {}, "nb")}\n\n${t("ptg3.ae-save-failed", {}, "en")}`,
+    importFailed: `${t("ptg3.ae-import-failed", {}, "nb")}\n${t("ptg3.ae-import-failed", {}, "en")}`,
   };
 }
 
@@ -50,14 +53,16 @@ export async function exportAePackage(o: {
   titleCard?: { readonly origin: string } | null;
   urls: Readonly<Record<string, string>>; signal: AbortSignal;
   onProgress?: (p: ZipProgress) => void;
+  /** Bare for tester; standard er nettleserens dekoder. */
+  converter?: MediaConverter;
 }): Promise<{ missing: string[] }> {
-  const { doc, signal } = o;
-  const used = new Set<string>();
-  for (const s of doc.shots) {
-    for (const l of s.layers) { if (l.fileId) used.add(l.fileId); for (const w of l.swaps) if (w.fileId) used.add(w.fileId); }
-    for (const a of s.audio) if (a.fileId) used.add(a.fileId);
-  }
-  const entries = doc.references.filter(r => used.has(r.id)).map(r => ({ path: r.path, mediaPath: r.mediaPath, byteSize: r.byteSize }));
+  const { signal } = o;
+  // Medier AE ikke tåler (WebM, Opus, WebP …) konverteres; skriptet peker på de konverterte filene
+  const plan = planPackageMedia(o.doc, { audio: true });
+  const doc = plan.doc;
+  assertAeSafePaths([...plan.keep.map(r => r.path), ...plan.convert.map(c => c.path)]);
+  const entries = plan.keep.map(r => ({ path: r.path, mediaPath: r.mediaPath, byteSize: r.byteSize }));
+  const failed: string[] = [];
   const tc = o.titleCard ? aeTitleCards(doc) : null;
   const jsx = buildAeJsx(doc, { cameraMode: o.cameraMode, titleCards: tc, messages: aeJsxMessages() });
   const notFound = [t("ptg3.ae-not-found", {}, "nb"), t("ptg3.ae-not-found", {}, "en")];
@@ -90,6 +95,8 @@ export async function exportAePackage(o: {
         ...cameraReadmeLines(doc),
       ].join("\n")),
     };
+    yield* convertedMediaFiles({ convert: plan.convert, urls: o.urls, fps: doc.fps, signal, failed, ...(o.converter ? { converter: o.converter } : {}) });
   }
-  return writeZip(o.sink, entries, o.urls, { extra: files(), signal, ...(o.onProgress ? { onProgress: o.onProgress } : {}) });
+  const r = await writeZip(o.sink, entries, o.urls, { extra: files(), signal, ...(o.onProgress ? { onProgress: o.onProgress } : {}) });
+  return { missing: [...failed, ...r.missing] };
 }
