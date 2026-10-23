@@ -1567,7 +1567,7 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         ...(num(x["step"] ?? 1) > 1 ? { step: num(x["step"]) } : {}),
         ...compositionTiming(x["timing"]),
         // Migrasjon 0102 (SB-1): komposisjonstype og panelfelt (mangler = scene, aktiv, synlig)
-        ...(x["kind"] !== undefined && x["kind"] !== null && x["kind"] !== "scene" ? { kind: str(x["kind"]) } : {}),
+        ...(x["kind"] === "storyboard" ? { kind: "storyboard" as const } : {}),
         ...(x["occurrence_id"] !== undefined ? { occurrenceId: optStr(x["occurrence_id"]) } : {}),
         ...(x["order_key"] !== undefined ? { orderKey: optStr(x["order_key"]) } : {}),
         ...(x["active"] === false ? { active: false } : {}),

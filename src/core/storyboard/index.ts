@@ -278,7 +278,7 @@ export interface StoryboardSeedPlan {
 
 export function planStoryboardSeed(s: ProjectState, productionId: string): StoryboardSeedPlan[] {
   return Object.values(s.occurrences)
-    .filter((o) => !o.removed && o.active !== false && o.productionId === productionId)
+    .filter((o) => o.active !== false && o.productionId === productionId)
     .sort((a, b) => a.orderKey.localeCompare(b.orderKey))
     .filter((o) => storyboardPanelsOf(s, o.id).length === 0)
     .map((o) => ({ occurrenceId: o.id, variantId: o.variantId }));

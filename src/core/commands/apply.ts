@@ -7120,14 +7120,18 @@ function run(
       if (comp.kind !== "storyboard") fail("invalid", tk("sb1.error.not-panel"));
       if (c.durationFrames !== undefined && (!Number.isInteger(c.durationFrames) || c.durationFrames < 0))
         fail("invalid", tk("sb1.error.invalid-panel"));
-      const next: Composition = { ...comp, revision: rev(comp) };
-      if (c.name !== undefined)
-        next.name = compositionFields({ name: c.name, width: comp.width, height: comp.height, durationFrames: comp.durationFrames, background: comp.background }).name;
-      if (c.durationFrames !== undefined) next.durationFrames = c.durationFrames;
-      if (c.active !== undefined) next.active = c.active;
-      if (c.hidden !== undefined) next.hidden = c.hidden;
+      const next: Composition = {
+        ...comp,
+        revision: rev(comp),
+        ...(c.name !== undefined
+          ? { name: compositionFields({ name: c.name, width: comp.width, height: comp.height, durationFrames: comp.durationFrames, background: comp.background }).name }
+          : {}),
+        ...(c.durationFrames !== undefined ? { durationFrames: c.durationFrames } : {}),
+        ...(c.active !== undefined ? { active: c.active } : {}),
+        ...(c.hidden !== undefined ? { hidden: c.hidden } : {}),
+      };
       let panelBlocks = s.panelBlocks;
-      let affected = [comp.id];
+      let affected: string[] = [comp.id];
       if (c.blocks !== undefined) {
         const r = applyPanelBlocks(s, comp, c.blocks);
         panelBlocks = r.panelBlocks;
@@ -7255,7 +7259,7 @@ function run(
             orderKey: comp.orderKey ?? "",
           })),
         },
-        affected: c.panelIds,
+        affected: [...c.panelIds],
       };
     }
     case "SnapshotStoryboardPanel": {
