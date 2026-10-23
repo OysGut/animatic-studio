@@ -1118,7 +1118,11 @@ export function Timeline({
         label={tk("app-scene-editor-timeline.timeline.label.26278c01006b")}
       />
       {/* Transport og verktøy */}
-      <div className="flex min-h-10 shrink-0 flex-wrap items-center gap-x-1.5 gap-y-1 border-b border-border px-2 py-1">
+      <div className="flex min-h-10 shrink-0 flex-wrap items-center gap-x-1.5 gap-y-1 border-b border-border px-2 py-1" data-playing={playback.playing ? "true" : "false"}>
+        {/* N10: avspillingsstatus for skjermlesere; endres bare ved start og stopp, aldri per bilde */}
+        <span className="sr-only" aria-live="polite" data-testid="playback-status">
+          {playback.playing ? tk("n10.playback.playing") : tk("n10.playback.stopped", { timecode: formatTimecode(frameNow(), fps) })}
+        </span>
         <IconButton
           label={tk("app-scene-editor-timeline.timeline.label.94cab46a8c43")}
           onClick={() => playback.setFrame(0)}
@@ -1170,6 +1174,9 @@ export function Timeline({
         </IconButton>
         <span
           className="shrink-0 whitespace-nowrap px-1 font-mono text-[13px] tabular-nums text-text-primary"
+          role="timer"
+          aria-live="off"
+          data-testid="timecode"
           aria-label={tk("app-scene-editor-timeline.timeline.aria-label.3369220b3383")}
         >
           <FrameValue playback={playback}>{(f) => formatTimecode(f, fps)}</FrameValue>
