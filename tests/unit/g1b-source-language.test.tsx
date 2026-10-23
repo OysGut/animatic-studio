@@ -6,7 +6,7 @@ import { describe, expect, it, vi } from "vitest";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { applyCommand, setLanguage, type Command, type ProjectState } from "@/core";
 import { LanguageVersionsDialog } from "@/app/script/LanguageVersionsDialog";
-import { envelope, seedProject } from "../helpers/fixtures";
+import { envelope, seedProject, tid } from "../helpers/fixtures";
 
 function englishProject(): ProjectState {
   const s = seedProject(2).state;
@@ -16,7 +16,7 @@ function englishProject(): ProjectState {
 }
 
 function withNbVersion(s: ProjectState): ProjectState {
-  const r = applyCommand(s, envelope({ type: "AddLanguageVersion", fields: { language: "nb", name: "Norsk", status: "active" } } as unknown as Command));
+  const r = applyCommand(s, envelope({ type: "AddLanguageVersion", versionId: tid(), language: "nb", name: "Norsk" } as unknown as Command));
   if (!r.ok) throw new Error(r.error.message);
   return r.state;
 }
@@ -48,7 +48,7 @@ describe("bytte av kildespråk (G-1b)", () => {
 
   it("bekrefter et konfliktfritt bytte med SetDialogueLanguage-kommandoen", () => {
     setLanguage("nb");
-    const run = vi.fn(() => "ok");
+    const run = vi.fn(() => null);
     renderDialog(englishProject(), run);
     fireEvent.click(screen.getByTestId("source-language-change-open"));
     fireEvent.change(screen.getByTestId("source-language-input"), { target: { value: "ja" } });
@@ -69,6 +69,7 @@ describe("bytte av kildespråk (G-1b)", () => {
     fireEvent.click(screen.getByTestId("source-language-change-open"));
     fireEvent.change(screen.getByTestId("source-language-input"), { target: { value: "ikke en kode!!" } });
     expect((screen.getByTestId("source-language-change-confirm") as HTMLButtonElement).disabled).toBe(true);
-    expect(screen.getByRole("alert")).toBeTruthy();
+    // Feilen vises i tillegg til den faste advarselen (begge har role=alert)
+    expect(screen.getAllByRole("alert").length).toBeGreaterThan(1);
   });
 });

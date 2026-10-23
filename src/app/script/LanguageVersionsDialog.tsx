@@ -110,9 +110,8 @@ export function LanguageVersionsDialog({
                 e.preventDefault();
                 const tag = canonicalLanguageTag(sourceDraft.trim());
                 if (!tag || sourceConflicts > 0) return;
-                const rr = run({ type: "SetDialogueLanguage", target: "project", targetId: state.project.id, language: tag }, t("g1-source-language.change.undo", { language: languageLabel(tag) }));
-                console.log("DBG run result", rr, "draft was", sourceDraft);
-                if (rr) setSourceDraft(null);
+                if (run({ type: "SetDialogueLanguage", target: "project", targetId: state.project.id, language: tag }, t("g1-source-language.change.undo", { language: languageLabel(tag) })))
+                  setSourceDraft(null);
               }}
             >
               <p role="alert" className="text-xs text-status-caution" data-testid="source-language-warning">
