@@ -51,10 +51,12 @@ export function LibraryWorkspace({
   projectId,
   userId,
   initialAssetId = null,
+  initialVersionId = null,
 }: {
   projectId: string;
   userId: string;
   initialAssetId?: string | null;
+  initialVersionId?: string | null;
 }) {
   const query = useProjectState(projectId);
   const members = useMembers(projectId);
@@ -87,6 +89,7 @@ export function LibraryWorkspace({
       isOwner={role === "owner"}
       cmds={cmds}
       initialAssetId={initialAssetId}
+      initialVersionId={initialVersionId}
     />
   );
 }
@@ -102,6 +105,7 @@ function Library({
   isOwner,
   cmds,
   initialAssetId,
+  initialVersionId,
 }: {
   state: ProjectState;
   projectId: string;
@@ -110,6 +114,7 @@ function Library({
   isOwner: boolean;
   cmds: Commands;
   initialAssetId: string | null;
+  initialVersionId: string | null;
 }) {
   const navigate = useNavigate();
   const productions = useMemo(
@@ -695,6 +700,7 @@ function Library({
               cmds={cmds}
               provenance={provenance}
               origin={origin}
+              focusVersionId={asset.id === initialAssetId ? initialVersionId : null}
               jobs={jobs.data?.jobs}
               onGoToScene={(occurrenceId) =>
                 void navigate({
