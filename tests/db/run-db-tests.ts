@@ -8297,6 +8297,222 @@ try {
     assert(row!["global_bundle_number"] === 2, "knippenummeret skal lagres som metadata");
   });
 
+  // ---------- 0099 G-7: apply_changes delt i liten kjerne + registrerte valideringsfunksjoner ----------
+  await test("0099 G-7.1: registeret er komplett, signaturen og rettighetene til apply_changes er uendret", async () => {
+    const rows = (await sql`select table_name::text t, validator::text v, preparer::text p, sort_order s from private.apply_change_validators order by s, v`)
+      .map((r) => `${r["t"] ?? "ALLTID"}|${r["v"]}|${r["p"] ?? ""}|${r["s"]}`);
+    assert(isDeepStrictEqual(rows, [
+      "translation_line_links|private.validate_translation_line_links|private.prepare_translation_line_links|10",
+      "style_harmonizations|private.validate_style_harmonizations|private.prepare_style_harmonizations|20",
+      "style_preferred_references|private.validate_style_preferred_references|private.prepare_style_preferred_references|30",
+      "translation_line_links|private.validate_language_scope||40",
+      "translation_lines|private.validate_language_scope||40",
+      "translations|private.validate_language_scope||40",
+      "ALLTID|private.validate_preferred_reference_unique||50",
+      "mouth_sets|private.validate_mouth_sets||60",
+      "mouth_tracks|private.validate_mouth_tracks||70",
+      "ALLTID|private.validate_active_quality_profile||80",
+    ]), `registeret avviker: ${JSON.stringify(rows)}`);
+    // Alle registrerte funksjoner finnes med riktig signatur
+    for (const fn of ["validate_translation_line_links", "validate_style_harmonizations", "validate_style_preferred_references",
+      "validate_language_scope", "validate_preferred_reference_unique", "validate_mouth_sets", "validate_mouth_tracks", "validate_active_quality_profile"]) {
+      const def = await sql`select pg_get_function_identity_arguments(p.oid) a, p.prosecdef d, p.proconfig c from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='private' and p.proname=${fn}`;
+      assert(def.length === 1 && def[0]!["a"] === "p_project uuid, p_changes jsonb, p_ids uuid[]" && def[0]!["d"] === true, `${fn}: signatur/sikkerhet avviker`);
+      assert((def[0]!["c"] as string[]).includes("search_path="), `${fn}: mangler search_path=''`);
+    }
+    for (const fn of ["prepare_translation_line_links", "prepare_style_harmonizations", "prepare_style_preferred_references"]) {
+      const def = await sql`select pg_get_function_identity_arguments(p.oid) a from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='private' and p.proname=${fn}`;
+      assert(def.length === 1 && def[0]!["a"] === "p_project uuid, p_changes jsonb", `${fn}: signatur avviker`);
+    }
+    // Signaturen og rettighetene til apply_changes er uendret (INV-C2)
+    const g = await sql`select has_function_privilege('anon','public.apply_changes(uuid,uuid,uuid,jsonb,jsonb,jsonb)','EXECUTE') a, has_function_privilege('authenticated','public.apply_changes(uuid,uuid,uuid,jsonb,jsonb,jsonb)','EXECUTE') u, has_function_privilege('service_role','public.apply_changes(uuid,uuid,uuid,jsonb,jsonb,jsonb)','EXECUTE') s, pg_get_function_identity_arguments('public.apply_changes'::regproc) args`;
+    assert(g[0]!["a"] === false && g[0]!["u"] === false && g[0]!["s"] === true, "apply_changes: rettigheter avviker");
+    assert(g[0]!["args"] === "p_project uuid, p_actor uuid, p_command_id uuid, p_command jsonb, p_inverse jsonb, p_changes jsonb", "apply_changes: signaturen avviker");
+    // Kjernen inneholder ikke lenger valideringsreglene, men kaller registeret
+    const body = String((await sql`select pg_get_functiondef('public.apply_changes(uuid,uuid,uuid,jsonb,jsonb,jsonb)'::regprocedure) b`)[0]?.["b"]);
+    for (const msg of ["Invalid line link scope", "Invalid harmonization", "Invalid preferred reference", "Invalid language version scope",
+      "More than one preferred reference", "Invalid mouth set scope", "Invalid mouth track scope", "Invalid active quality profile"]) {
+      assert(!body.includes(msg), `kjernen skal ikke inneholde «${msg}»`);
+    }
+    assert(body.includes("private.apply_change_validators"), "kjernen slår ikke opp i registeret");
+    assert(body.includes("private.table_columns"), "kjernen skal fortsatt bruke table_columns");
+  });
+
+  // Felles testoppsett for valideringene
+  const g7p = String((await as("authenticated", ALICE, async (tx) => (await tx`select public.create_project('G7-prosjekt', 25, 1) id`)[0]!["id"])));
+  const g7q = String((await as("authenticated", ALICE, async (tx) => (await tx`select public.create_project('G7-annet', 25, 1) id`)[0]!["id"])));
+  const g7prod = String((await sql`select id from public.productions where project_id=${g7p} and kind='main'`)[0]!["id"]);
+  const g7mkScene = async () => {
+    const scene = newId(), variant = newId(), block = newId();
+    await sql`insert into public.scenes (id, project_id, origin_production_id) values (${scene},${g7p},${g7prod})`;
+    await sql`insert into public.scene_variants (id, project_id, scene_id) values (${variant},${g7p},${scene})`;
+    await sql`insert into public.script_blocks (id, project_id, variant_id, kind, order_key, text) values (${block},${g7p},${variant},'dialogue','a1','Hei')`;
+    return { scene, variant, block };
+  };
+  const g7mkAsset = async (name: string) => {
+    const asset = newId(), variant = newId();
+    await sql`insert into public.assets (id, project_id, kind, name) values (${asset},${g7p},'character',${name})`;
+    await sql`insert into public.asset_variants (id, project_id, asset_id, name, style) values (${variant},${g7p},${asset},'Animatic','animatic')`;
+    return { asset, variant };
+  };
+  // Kjør oppsett + validering i én transaksjon som alltid rulles tilbake; forvent valideringsfeilen.
+  const g7Expect = async (setup: (tx: postgres.TransactionSql) => Promise<void>, call: string, re: RegExp) => {
+    let msg = "";
+    try {
+      await sql.begin(async (tx) => {
+        await setup(tx);
+        await tx.unsafe(call);
+        throw new Error("__valideringen feilet ikke__");
+      });
+    } catch (e) { msg = String((e as Error).message); }
+    assert(re.test(msg), `forventet ${re}, fikk «${msg}»`);
+  };
+
+  await test("0099 G-7.2: validate_translation_line_links (0064)", async () => {
+    const { variant } = await g7mkScene();
+    const dup = newId();
+    await g7Expect(async (tx) => {
+      await tx`insert into public.translation_line_links (id, project_id, variant_id, language, source_block_ids, target_translation_ids, origin, confidence)
+        values (${dup},${g7p},${variant},'en',${sql.array([newId(), newId()])},${sql.array([newId()])},'rule',0.5)`;
+    }, `select private.validate_translation_line_links('${g7p}'::uuid, '{"inserts":{"translation_line_links":[]}}'::jsonb, '{${dup}}'::uuid[])`, /Invalid line link scope/);
+    // Feil rad i et annet prosjekt blokkerer ikke dette prosjektet
+    await sql`select private.validate_translation_line_links(${g7q}, '{}'::jsonb, ${sql.array([dup])}::uuid[])`;
+  });
+
+  await test("0099 G-7.3: prepare_translation_line_links – bare nye og faktisk endrede rader (0064)", async () => {
+    const { variant } = await g7mkScene();
+    const s0 = [newId()], t0 = [newId()];
+    const link = newId();
+    await sql`insert into public.translation_line_links (id, project_id, variant_id, language, source_block_ids, target_translation_ids, origin, confidence)
+      values (${link},${g7p},${variant},'en',${sql.array(s0)},${sql.array(t0)},'rule',0.5)`;
+    const prep = (changes: unknown) => sql`select private.prepare_translation_line_links(${g7p}, ${sql.json(changes as never)}) ids`;
+    const ids = (r: unknown) => (r as { ids: string[] }[])[0]!.ids;
+    // Ny rad i kallet tas med
+    assert(ids(await prep({ inserts: { translation_line_links: [{ id: newId() }] } })).length === 1, "ny rad skal sjekkes");
+    // Endring med uendrede referanser (avvis/angre) tas ikke med
+    const same = await prep({ updates: { translation_line_links: [{ id: link, variant_id: variant, language: "en", source_block_ids: s0, target_translation_ids: t0 }] } });
+    assert(ids(same).length === 0, "uendrede referanser skal ikke blokkeres");
+    // Endret referanse tas med
+    const changed = await prep({ updates: { translation_line_links: [{ id: link, variant_id: variant, language: "en", source_block_ids: s0, target_translation_ids: [newId()] }] } });
+    assert(isDeepStrictEqual(ids(changed), [link]), "endret referanse skal sjekkes");
+  });
+
+  await test("0099 G-7.4: validate_style_harmonizations (0065)", async () => {
+    const { variant } = await g7mkAsset("G7-harm");
+    const version = newId();
+    await sql`insert into public.asset_versions (id, project_id, variant_id, number, media_path, mime_type, byte_size, sha256) values (${version},${g7q},${(await sql`insert into public.assets (id, project_id, kind, name) values (${newId()},${g7q},'character','Q') returning id`).length > 0 ? version : version,1,${g7q + "/x/" + version + "/a.png"},'image/png',100,${"a".repeat(64)})`;
+    const harm = newId();
+    // Versjonen hører til et annet prosjekt: FK-en godtar den, valideringen skal ikke
+    await g7Expect(async (tx) => {
+      await tx`insert into public.style_harmonizations (id, project_id, version_id, source_version_id, model, use, reference_version_id)
+        values (${harm},${g7p},${version},${version},'test','variant',${version})`;
+    }, `select private.validate_style_harmonizations('${g7p}'::uuid, '{}'::jsonb, '{${harm}}'::uuid[])`, /Invalid harmonization/);
+  });
+
+  await test("0099 G-7.5: validate_style_preferred_references og validate_preferred_reference_unique (0065/REQ-0144)", async () => {
+    const a = await g7mkAsset("G7-pref-a");
+    const b = await g7mkAsset("G7-pref-b");
+    const profile = newId();
+    await sql`insert into public.style_profiles (id, project_id, name, guide) values (${profile},${g7p},'G7-stil','{}'::jsonb)`;
+    // Varianten hører til en annen ressurs: FK-en godtar den, valideringen skal ikke
+    const bad = newId();
+    await g7Expect(async (tx) => {
+      await tx`insert into public.style_preferred_references (id, project_id, asset_id, style_profile_id, variant_id) values (${bad},${g7p},${a.asset},${profile},${b.variant})`;
+    }, `select private.validate_style_preferred_references('${g7p}'::jsonb::text::uuid, '{}'::jsonb, '{${bad}}'::uuid[])`, /Invalid preferred reference/);
+    // REQ-0144: to aktive foretrukne referanser for samme (ressurs, profil) avvises
+    await g7Expect(async (tx) => {
+      await tx`insert into public.style_preferred_references (id, project_id, asset_id, style_profile_id, variant_id) values (${newId()},${g7p},${a.asset},${profile},${a.variant}), (${newId()},${g7p},${a.asset},${profile},${a.variant})`;
+    }, `select private.validate_preferred_reference_unique('${g7p}'::uuid, '{}'::jsonb, '{}'::uuid[])`, /More than one preferred reference/);
+    // REQ-0144 er prosjektvid og registrert uten tabell (kjøres ved hver endring)
+    const reg = await sql`select table_name from private.apply_change_validators where validator = 'private.validate_preferred_reference_unique'::regproc`;
+    assert(reg.length === 1 && reg[0]!["table_name"] === null, "REQ-0144 skal kjøre ved hver endring");
+  });
+
+  await test("0099 G-7.6: validate_language_scope (0066/0067)", async () => {
+    const { block } = await g7mkScene();
+    const lv = newId();
+    await sql`insert into public.language_versions (id, project_id, language, name) values (${lv},${g7p},'de','Tysk')`;
+    const tid = newId();
+    // Oversettelsen er engelsk, men peker på den tyske språkversjonen
+    await g7Expect(async (tx) => {
+      await tx`insert into public.translations (id, project_id, block_id, language, text, language_version_id) values (${tid},${g7p},${block},'en','Hello',${lv})`;
+    }, `select private.validate_language_scope('${g7p}'::uuid, '{"inserts":{"translations":[{"id":"${tid}"}]}}'::jsonb, '{}'::uuid[])`, /Invalid language version scope/);
+    // Konsekvent rad (samme språk som versjonen) godtas
+    await sql.begin(async (tx) => {
+      const ok = newId();
+      await tx`insert into public.translations (id, project_id, block_id, language, text, language_version_id) values (${ok},${g7p},${block},'de','Hallo',${lv})`;
+      await tx`select private.validate_language_scope(${g7p}, ${tx.json({ inserts: { translations: [{ id: ok }] } } as never)}, '{}'::uuid[])`;
+      throw new Error("__rull tilbake__");
+    }).catch(() => {});
+  });
+
+  await test("0099 G-7.7: validate_mouth_sets og validate_mouth_tracks (PTG4)", async () => {
+    const a = await g7mkAsset("G7-munn-a");
+    const b = await g7mkAsset("G7-munn-b");
+    const setId = newId();
+    // Munnsettet peker på en variant som hører til en annen karakter
+    await g7Expect(async (tx) => {
+      await tx`insert into public.mouth_sets (id, project_id, character_id, variants) values (${setId},${g7p},${a.asset},${tx.json({ A: b.variant } as never)})`;
+    }, `select private.validate_mouth_sets('${g7p}'::uuid, '{"inserts":{"mouth_sets":[{"id":"${setId}"}]}}'::jsonb, '{}'::uuid[])`, /Invalid mouth set scope/);
+    // Gyldig munnsett + spor der karakteren ikke samsvarer med settet
+    const goodSet = newId();
+    await sql`insert into public.mouth_sets (id, project_id, character_id, variants) values (${goodSet},${g7p},${a.asset},${sql.json({ A: a.variant } as never)})`;
+    const { variant, block } = await g7mkScene();
+    const occ = newId(), clip = newId(), track = newId();
+    await sql`insert into public.scene_occurrences (id, project_id, production_id, scene_id, variant_id, order_key) select ${occ},${g7p},${g7prod},scene_id,${variant},'b1' from public.scene_variants where id=${variant}`;
+    await sql`insert into public.audio_clips (id, project_id, occurrence_id, kind, asset_id, block_id, offset_ms, length_ms) values (${clip},${g7p},${occ},'dialogue',${a.asset},${block},0,2000)`;
+    await g7Expect(async (tx) => {
+      await tx`insert into public.mouth_tracks (id, project_id, occurrence_id, character_id, set_id, clip_id, block_id, language, spans, source)
+        values (${track},${g7p},${occ},${b.asset},${goodSet},${clip},${block},'nb','[]'::jsonb,'{}'::jsonb)`;
+    }, `select private.validate_mouth_tracks('${g7p}'::uuid, '{"inserts":{"mouth_tracks":[{"id":"${track}"}]}}'::jsonb, '{}'::uuid[])`, /Invalid mouth track scope/);
+  });
+
+  await test("0099 G-7.8: validate_active_quality_profile (M8)", async () => {
+    const qp = String((await sql`select id from public.quality_profiles where project_id=${g7p} limit 1`)[0]!["id"]);
+    // Profilen finnes (FK-en godtar), men er fjernet: valideringen skal avvise
+    await g7Expect(async (tx) => {
+      await tx`update public.quality_profiles set removed = true where id = ${qp}`;
+      await tx`update public.projects set active_quality_profile_id = ${qp} where id = ${g7p}`;
+    }, `select private.validate_active_quality_profile('${g7p}'::uuid, '{}'::jsonb, '{}'::uuid[])`, /Invalid active quality profile/);
+    const reg = await sql`select table_name from private.apply_change_validators where validator = 'private.validate_active_quality_profile'::regproc`;
+    assert(reg.length === 1 && reg[0]!["table_name"] === null, "aktiv kvalitetsprofil skal kjøre ved hver endring");
+  });
+
+  await test("0099 G-7.9: kjernen kaller registrerte valideringer uten å endres (utvidelsespunktet)", async () => {
+    const { variant } = await g7mkScene();
+    let msg = "";
+    try {
+      await sql.begin(async (tx) => {
+        await tx.unsafe("set local role service_role");
+        await tx.unsafe(`create or replace function private.validate_g7_probe(p_project uuid, p_changes jsonb, p_ids uuid[]) returns void
+          language plpgsql security definer set search_path = '' as $$ begin raise exception 'G7-probe' using errcode = '22023'; end $$`);
+        await tx`insert into private.apply_change_validators (table_name, validator, sort_order) values ('script_blocks', 'private.validate_g7_probe'::regproc, 5)`;
+        // En endring som ikke rører script_blocks, skal ikke nå proben
+        await tx`select public.apply_changes(${g7p}, ${ALICE}, ${newId()}, '{"type":"G7Probe"}'::jsonb, null, '{}'::jsonb)`;
+        // En endring som rører script_blocks, skal avvises av proben
+        await tx`select public.apply_changes(${g7p}, ${ALICE}, ${newId()}, '{"type":"G7Probe"}'::jsonb, null,
+          ${tx.json({ inserts: { script_blocks: [{ id: newId(), project_id: g7p, variant_id: variant, kind: "action", order_key: "zz1", text: "x", revision: 1 }] } } as never)})`;
+        throw new Error("__proben ble ikke kalt__");
+      });
+    } catch (e) { msg = String((e as Error).message); }
+    assert(/G7-probe/.test(msg), `kjernen kalte ikke den registrerte valideringen: «${msg}»`);
+    // Transaksjonen er rullet tilbake: proben er borte fra registeret
+    assert((await sql`select 1 from private.apply_change_validators where validator::text = 'private.validate_g7_probe'`).length === 0, "proben skal være rullet tilbake");
+  });
+
+  await test("0099 G-7.10: ende-til-ende – duplikat foretrukket referanse avvises gjennom registeret (REQ-0144)", async () => {
+    const a = await g7mkAsset("G7-e2e");
+    const profile = newId();
+    await sql`insert into public.style_profiles (id, project_id, name, guide) values (${profile},${g7p},'G7-e2e-stil','{}'::jsonb)`;
+    const ref = (id: string) => ({ id, project_id: g7p, asset_id: a.asset, style_profile_id: profile, variant_id: a.variant, revision: 1 });
+    await expectError(
+      as("service_role", null, (tx) => tx`select public.apply_changes(${g7p}, ${ALICE}, ${newId()}, '{"type":"G7Dup"}'::jsonb, null, ${tx.json({ inserts: { style_preferred_references: [ref(newId()), ref(newId())] } } as never)})`),
+      /More than one preferred reference/,
+    );
+    // Én gyldig referanse går gjennom samme vei
+    await as("service_role", null, (tx) => tx`select public.apply_changes(${g7p}, ${ALICE}, ${newId()}, '{"type":"G7Ok"}'::jsonb, null, ${tx.json({ inserts: { style_preferred_references: [ref(newId())] } } as never)})`);
+  });
+
   // ---------- search_path: alle SECURITY DEFINER-funksjoner skal ha search_path='' ----------
   await test("alle SECURITY DEFINER-funksjoner i public/private har search_path=''", async () => {
     const rows = await sql`
