@@ -55,6 +55,6 @@ await h.scenario("ca1", occ.id, "nb", async page => {
 await h.scenario("ca1-en", occ.id, "en", async page => {
   await (async () => { const g = page.getByTestId("scene-track-groups"); await g.waitFor(); if ((await g.getAttribute("data-open")) !== "true") await page.getByTestId("scene-track-groups-toggle").click(); await page.getByTestId("animation-workspace").waitFor(); })();
   h.check((await page.getByTestId("anim-play").getAttribute("aria-label")).includes("Play"), "engelsk avspilling");
-  h.check((await page.getByTestId("scene-track-groups-toggle").getAttribute("aria-label")) === "Collapse animation tracks", "engelsk sporgruppeknapp");
+  h.check((await page.getByTestId("scene-track-groups-toggle").getAttribute("aria-description")) === "Collapse animation tracks", "engelsk sporgruppeknapp");
 });
 await h.finish();
