@@ -9,6 +9,7 @@ import { characterName, mentions } from "./filter";
 
 import { formatHeading, type PaginationScene } from "./paginate";
 import { t, tLocalized } from "@/core/i18n/keyed";
+import { collation } from "../i18n";
 
 export interface SnapshotBlock {
   readonly id: string;

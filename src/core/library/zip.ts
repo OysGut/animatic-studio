@@ -8,6 +8,7 @@ import { ASSET_KIND_PLURAL } from "./index";
 import { versionFileName } from "./file-names";
 
 import { t as tk } from "@/core/i18n/keyed";
+import { collation } from "../i18n";
 
 /** Kategori i zip-filen: en ressurstype, eller «film» for importert film. */
 export type ZipCategory = AssetKind | "film";

@@ -6,6 +6,7 @@ import type { ProjectState } from "../model";
 import { blocksOfVariant, isScriptOccurrence, orderedOccurrences } from "../views";
 import { formatHeading, type Page } from "./paginate";
 import { annotationsByVariant } from "../notes";
+import { collation } from "../i18n";
 
 /** Karakternavn uten tillegg som (O.S.), (V.O.), (CONT'D), (FORTS.). */
 export function characterName(text: string): string {

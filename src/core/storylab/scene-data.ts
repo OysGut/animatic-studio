@@ -8,6 +8,7 @@ import { cleanSpeaker } from "../library/suggest";
 import { assetNames, nameKey } from "../library";
 import { formatHeading } from "../screenplay/paginate";
 import { canHaveStoryProfile } from "./profile";
+import { collation } from "../i18n";
 
 /** Karakterer og dyr (de eneste som kan ha profil), sortert etter navn. */
 export function storyCharacters(s: ProjectState): Asset[] {

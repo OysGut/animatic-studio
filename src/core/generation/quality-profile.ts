@@ -10,6 +10,7 @@
 import type { ProjectState } from "../model";
 import type { EffortLevel, ImageSize } from "./providers";
 import { t } from "@/core/i18n/keyed";
+import { collation } from "../i18n";
 
 /** AI-typene en profil kan velge modell for. */
 export type QualityProfileModelKind = "image" | "video" | "speech" | "sound";

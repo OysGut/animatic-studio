@@ -9,6 +9,7 @@ import type { Asset, ProjectState } from "../model";
 import { framesToSeconds } from "../time";
 import { blocksOfVariant } from "../views";
 import { estimateCostUsd } from "./providers";
+import { collation } from "../i18n";
 
 export interface DialogueLine {
   readonly blockId: string;

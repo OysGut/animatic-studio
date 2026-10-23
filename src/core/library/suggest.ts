@@ -18,6 +18,7 @@ import { characterName, sceneMentions } from "../screenplay/filter";
 import { nounForms, LEXICON_FORMS } from "./lexicon";
 import { classifySuggestion, type Confidence } from "./classify";
 import { t as tk } from "@/core/i18n/keyed";
+import { collation } from "../i18n";
 
 export type SuggestionReason = "speaker" | "named" | "heading" | "object";
 

@@ -19,6 +19,7 @@ import { editableParts, takeLabel } from "../assembly/edit";
 import { filmClips, type FilmClip } from "../assembly/film";
 import type { GenerationJob } from "../generation/cost";
 import { traceOf } from "../generation/trace";
+import { collation } from "../i18n";
 
 export type WorkItemKind = "layer" | "still" | "ai";
 
