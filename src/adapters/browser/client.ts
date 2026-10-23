@@ -38,10 +38,10 @@ export interface BackendResult<T> {
 }
 
 /** G-8: vennlig, oversatt melding når databasen stopper et kall for hyppig (SQLSTATE PTG15), ellers meldingen. */
-export function backendMessage(e: { readonly message: string; readonly code?: string | null }): string {
+export function backendMessage(e: { readonly message: string; readonly code?: string | null | undefined }): string {
   return e.code === "PTG15" ? t("adapters-storage-commands-functions.rate-limited") : e.message;
 }
 
-export function plainError(e: { message: string; code?: string | null } | null | undefined): BackendError | null {
+export function plainError(e: { message: string; code?: string | null | undefined } | null | undefined): BackendError | null {
   return e ? { message: backendMessage(e) } : null;
 }

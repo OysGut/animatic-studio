@@ -28,7 +28,7 @@ export interface WorkspaceProject {
   readonly workspaceId: string | null;
 }
 
-function fail(e: { message: string; code?: string | null } | null): void {
+function fail(e: { message: string; code?: string | null | undefined } | null): void {
   if (e) throw new Error(backendMessage(e));
 }
 
