@@ -3,6 +3,7 @@
  * fjernes, forslag fra manuset godkjennes, endres eller avvises, og egne relasjoner legges til.
  * Relasjonene brukes i karakterkartet. Alt kan angres.
  */
+import { ResizableDialogContent } from "@/app/shared/ResizableDialogContent";
 import { useEffect, useMemo, useState } from "react";
 import { Check, Plus, Trash2, X } from "lucide-react";
 import { RELATION_COLOR, RELATION_KINDS, RELATION_NAME, approvedRelations, newId, relationSuggestions, sortedAssets, type AssetRelation, type ProjectState, type RelationKind } from "@/core";
@@ -160,7 +161,7 @@ export function RelationsDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[85vh] max-w-3xl overflow-y-auto">
+      <ResizableDialogContent sizeKey="relations" className="max-h-[85vh] max-w-3xl overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{t("app-release-relations-dialog.relations-dialog.dialog-title.7981c29a676d")}</DialogTitle>
           <DialogDescription>
@@ -381,7 +382,7 @@ export function RelationsDialog({
             </form>
           </section>
         ) : null}
-      </DialogContent>
+      </ResizableDialogContent>
     </Dialog>
   );
 }

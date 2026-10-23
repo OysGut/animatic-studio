@@ -3,6 +3,7 @@
  * norske automatisk; brukeren ser koblingene, kan velge en annen norsk scene og godkjenner. Ikke-godkjente
  * koblinger lagres som usikre og kan godkjennes senere i inspektøren. Det norske manuset endres ikke.
  */
+import { ResizableDialogContent } from "@/app/shared/ResizableDialogContent";
 import { SceneSelect, mainOccurrenceOfScene } from "@/app/shell/SceneSelect";
 import { AlertTriangle, CheckCircle2, FileUp, Loader2 } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
@@ -237,7 +238,7 @@ export function TranslationImportDialog({
         onOpenChange(o);
       }}
     >
-      <DialogContent className="max-h-[90vh] max-w-[820px] overflow-y-auto border-border bg-surface-2">
+      <ResizableDialogContent sizeKey="translation-import" className="max-h-[90vh] max-w-[820px] overflow-y-auto border-border bg-surface-2">
         <DialogHeader>
           <DialogTitle>
             {t("app-script-translation-import-dialog.import-script", { language: languageWord(language) })}
@@ -374,7 +375,7 @@ export function TranslationImportDialog({
             </Button>
           ) : null}
         </DialogFooter>
-      </DialogContent>
+      </ResizableDialogContent>
     </Dialog>
   );
 }

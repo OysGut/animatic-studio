@@ -3,6 +3,7 @@
  * lastes opp én gang og deles på scenene etter starttider brukeren justerer (med forslag etter scenenes
  * lengde). Hver scene får sin egen versjon (samme fil) med utsnittet sitt, og den tas i bruk.
  */
+import { ResizableDialogContent } from "@/app/shared/ResizableDialogContent";
 import type { ProjectState } from "@/core";
 import { SceneSelect, mainOccurrenceOfScene } from "@/app/shell/SceneSelect";
 import { Film, Loader2, MapPin, Upload } from "lucide-react";
@@ -229,7 +230,7 @@ export function LongFilmImportDialog({
 
   return (
     <Dialog open={open} onOpenChange={(o) => !busy && onOpenChange(o)}>
-      <DialogContent className="max-h-[90vh] max-w-[860px] overflow-y-auto border-border bg-surface-2">
+      <ResizableDialogContent sizeKey="long-film-import" className="max-h-[90vh] max-w-[860px] overflow-y-auto border-border bg-surface-2">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Film className="size-5 text-accent-warm" aria-hidden />{" "}
@@ -403,7 +404,7 @@ export function LongFilmImportDialog({
             {range.length === 1 ? tk("app-assembly-long-film-import-dialog.long-film-import-dialog.button.65dca74acff7") : tk("app-assembly-long-film-import-dialog.long-film-import-dialog.button.4b293f9836fe")}
           </Button>
         </DialogFooter>
-      </DialogContent>
+      </ResizableDialogContent>
     </Dialog>
   );
 }

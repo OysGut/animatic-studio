@@ -3,6 +3,7 @@
  * lyden, og volumpunkter som dras opp og ned (som i After Effects). Klikk på kurven legger til et punkt,
  * dra flytter, dobbeltklikk eller Delete fjerner. Lytt til klippet med kurven.
  */
+import { ResizableDialogContent } from "@/app/shared/ResizableDialogContent";
 import { Pause, Play, Trash2 } from "lucide-react";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { AUDIO_KIND_LABEL, audioVersion, volumeKeyDbAt, type AudioClip, type AudioClipFields, type FilmAudioItem, type ProjectState, type VolumeKey, locale } from "@/core";
@@ -53,7 +54,7 @@ export function AudioClipEditor({
 }) {
   return (
     <Dialog open={open && clip !== null} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-[min(1100px,calc(100vw-32px))] border-border bg-surface-2">
+      <ResizableDialogContent sizeKey="audio-clip-editor" className="max-w-[min(1100px,calc(100vw-32px))] border-border bg-surface-2">
         {clip ? (
           <Editor
             key={clip.id}
@@ -65,7 +66,7 @@ export function AudioClipEditor({
             onChange={onChange}
           />
         ) : null}
-      </DialogContent>
+      </ResizableDialogContent>
     </Dialog>
   );
 }

@@ -3,6 +3,7 @@
  * scenen eller som en ny del etter de andre. Bildet kopieres ikke; versjonen peker på bildefilen i biblioteket.
  * Lengden kan endres etterpå i «Klipp». Alt kan angres som ett steg.
  */
+import { ResizableDialogContent } from "@/app/shared/ResizableDialogContent";
 import { Thumbnail } from "@/app/shared/Thumbnail";
 import { ImageIcon } from "lucide-react";
 import { useMemo, useState } from "react";
@@ -73,7 +74,7 @@ export function StillPickerDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-3xl">
+      <ResizableDialogContent sizeKey="still-picker" className="max-w-3xl">
         <DialogHeader>
           <DialogTitle>{t("app-assembly-still-picker-dialog.still-picker-dialog.dialog-title.28558823f25b")}</DialogTitle>
           <DialogDescription>
@@ -87,7 +88,7 @@ export function StillPickerDialog({
         ) : (
           <ul
             aria-label={t("app-assembly-still-picker-dialog.still-picker-dialog.aria-label.c4b236bfb135")}
-            className="grid max-h-[50vh] grid-cols-4 gap-2 overflow-y-auto"
+            className="grid max-h-[50vh] grid-cols-[repeat(auto-fill,minmax(140px,1fr))] gap-2 overflow-y-auto"
           >
             {list.map((x) => (
               <li key={x.version.id}>
@@ -173,7 +174,7 @@ export function StillPickerDialog({
             {t("app-assembly-still-picker-dialog.still-picker-dialog.button.b8acc1584ae5")}
           </Button>
         </DialogFooter>
-      </DialogContent>
+      </ResizableDialogContent>
     </Dialog>
   );
 }

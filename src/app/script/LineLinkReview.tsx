@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { ResizableDialogContent } from "@/app/shared/ResizableDialogContent";
 import { ScriptLanguageSelect } from "./ScriptLanguageSelect";
 import { useServerFn } from "@tanstack/react-start";
 import { alignTranslationLines } from "@/adapters/ai/line-align.functions";
@@ -39,7 +40,7 @@ export function LineLinkReview({state,variantId,language:initialLanguage,editabl
   const ruleApprovals=allRows.filter(l=>!l.saved && l.confidence >= threshold).map(l=>({linkId:newId(),fields:{variantId,language,sourceBlockIds:l.sourceBlockIds,targetTranslationIds:l.targetTranslationIds,origin:"rule" as const,confidence:l.confidence,reason:l.reason}}));
   return <>
     <Button size="sm" variant="outline" data-testid="line-links-open" onClick={()=>setOpen(true)}>{tk("app-script-line-link-review.line-link-review.button.0244a7caffef")}</Button>
-    <Dialog open={open} onOpenChange={setOpen}><DialogContent data-testid="line-links-dialog" className="max-h-[90vh] max-w-3xl overflow-y-auto border-border bg-surface-2">
+    <Dialog open={open} onOpenChange={setOpen}><ResizableDialogContent sizeKey="line-links" data-testid="line-links-dialog" className="max-h-[90vh] max-w-3xl overflow-y-auto border-border bg-surface-2">
       <DialogHeader><DialogTitle>{tk("app-script-line-link-review.line-link-review.dialog-title.aa204482d1ef")}</DialogTitle></DialogHeader>
       <div className="flex flex-wrap items-center gap-2">
         <ScriptLanguageSelect state={state} value={language} includeNorwegian={false} onChange={(l)=>{setLanguageState(l);setEstimate(null);setProposals([]);setDiscarded(0);setManualSource([]);setManualTarget([]);setAdjusting(null);}} label={tk("ml3-language-versions.links.language")} testId="line-links-language" />
@@ -72,6 +73,6 @@ export function LineLinkReview({state,variantId,language:initialLanguage,editabl
       </fieldset>
       {error?<p role="alert" className="text-xs text-status-danger">{error}</p>:null}
       <DialogFooter><Button variant="ghost" onClick={()=>setOpen(false)}>{tk("app-script-line-link-review.line-link-review.button.310d919f50c9")}</Button></DialogFooter>
-    </DialogContent></Dialog>
+    </ResizableDialogContent></Dialog>
   </>;
 }

@@ -55617,5 +55617,15 @@
     "text": "{label} 추가",
     "sourceHash": "649651269dee5d4efa39eb2bfa080e39c0f08d26d90198bf21d6abe533f5f56c",
     "review": "machine"
+  },
+  "dialog.resize.grip": {
+    "text": "창 크기 조정(드래그 또는 Shift + 화살표 키, 두 번 클릭하면 기본 크기)",
+    "sourceHash": "fab24824a9b6bac686d07dfc4ba5973be46bc4d278bcd64916d63f53baf66abd",
+    "review": "machine"
+  },
+  "dialog.resize.reset": {
+    "text": "기본 크기",
+    "sourceHash": "152b779c74f6d3c8bc5480eb96baf67f3548c89d40cc79a7e3935b71b8c692f9",
+    "review": "machine"
   }
 }

@@ -3,6 +3,7 @@
  * lagre en uforanderlig versjon, se tidligere versjoner, sammenligne og eksportere en versjon slik den var,
  * og gjøre en tidligere versjon gjeldende (KI-27) etter en forhåndsvisning av hva som endres.
  */
+import { ResizableDialogContent } from "@/app/shared/ResizableDialogContent";
 import {
   ArrowLeft,
   Download,
@@ -143,7 +144,7 @@ export function VersionsDialog(props: Props) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[90vh] max-w-[860px] overflow-y-auto border-border bg-surface-2">
+      <ResizableDialogContent sizeKey="script-versions" className="max-h-[90vh] max-w-[860px] overflow-y-auto border-border bg-surface-2">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <History className="size-4" aria-hidden />
@@ -327,7 +328,7 @@ export function VersionsDialog(props: Props) {
             }}
           />
         )}
-      </DialogContent>
+      </ResizableDialogContent>
     </Dialog>
   );
 }

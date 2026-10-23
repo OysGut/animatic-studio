@@ -12,6 +12,7 @@
  * variasjoner …» ved siden av «Lag andre vinkler …», og «Deler …»: del et bilde i egne objekter (f.eks.
  * dørramme og dørblad) med ankerpunkt.
  */
+import { ResizableDialogContent } from "@/app/shared/ResizableDialogContent";
 import {
   Copy,
   Crop,
@@ -356,7 +357,7 @@ export function ImageLightbox({
 
   return (
     <Dialog open={open} onOpenChange={(o) => !busy && onOpenChange(o)}>
-      <DialogContent className="flex h-[min(900px,calc(100vh-48px))] max-w-[min(1400px,calc(100vw-32px))] flex-col border-border bg-surface-2">
+      <ResizableDialogContent sizeKey="image-lightbox" className="flex h-[min(900px,calc(100vh-48px))] max-w-[min(1400px,calc(100vw-32px))] flex-col border-border bg-surface-2">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>
@@ -626,7 +627,7 @@ export function ImageLightbox({
           </div>
           <aside
             aria-label={tk("app-library-image-lightbox.image-lightbox.aria-label.b5ae59f68645")}
-            className="flex w-[340px] shrink-0 flex-col gap-3 overflow-y-auto rounded-sm border border-border bg-surface-1 p-2"
+            className="flex w-[clamp(280px,28%,440px)] shrink-0 flex-col gap-3 overflow-y-auto rounded-sm border border-border bg-surface-1 p-2"
           >
             {tools && canEdit ? (
               <section
@@ -902,7 +903,7 @@ export function ImageLightbox({
             </section>
           </aside>
         </div>
-      </DialogContent>
+      </ResizableDialogContent>
     </Dialog>
   );
 }

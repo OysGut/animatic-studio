@@ -55691,5 +55691,15 @@
     "text": "{label} hinzufügen",
     "sourceHash": "649651269dee5d4efa39eb2bfa080e39c0f08d26d90198bf21d6abe533f5f56c",
     "review": "machine"
+  },
+  "dialog.resize.grip": {
+    "text": "Fenstergröße ändern (ziehen oder Umschalt + Pfeiltasten; Doppelklick für Standardgröße)",
+    "sourceHash": "fab24824a9b6bac686d07dfc4ba5973be46bc4d278bcd64916d63f53baf66abd",
+    "review": "machine"
+  },
+  "dialog.resize.reset": {
+    "text": "Standardgröße",
+    "sourceHash": "152b779c74f6d3c8bc5480eb96baf67f3548c89d40cc79a7e3935b71b8c692f9",
+    "review": "machine"
   }
 }

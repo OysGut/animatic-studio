@@ -2,6 +2,7 @@
  * Sammenlign to bildeversjoner side ved side (mandat 19.7, REQ-0258, REQ-0285, REQ-0318, DEC-0070): for
  * kandidater fra AI eller tidligere og nye versjoner. «Godkjenn» velger versjonen uten å slette den andre.
  */
+import { ResizableDialogContent } from "@/app/shared/ResizableDialogContent";
 import { Thumbnail } from "@/app/shared/Thumbnail";
 import { Check } from "lucide-react";
 import { locale, type AssetVersion } from "@/core";
@@ -36,7 +37,7 @@ export function ImageCompareDialog({
 }) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-6xl">
+      <ResizableDialogContent sizeKey="image-compare" className="max-w-6xl">
         <DialogHeader>
           <DialogTitle>
             {t("app-library-image-compare-dialog.image-compare-dialog.dialog-title.f9e7d3b2bee4")} – {title}
@@ -77,7 +78,7 @@ export function ImageCompareDialog({
             </figure>
           ))}
         </div>
-      </DialogContent>
+      </ResizableDialogContent>
     </Dialog>
   );
 }

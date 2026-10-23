@@ -6,6 +6,7 @@
  * - «Hopp over».
  * Den gamle versjonen slettes aldri, og alt kan angres samlet per fil.
  */
+import { ResizableDialogContent } from "@/app/shared/ResizableDialogContent";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { newId, replaceVersionCommands, reuploadNote, versionFileBase, versionUse, allVersionsOf, type AssetVersion, type ProjectState } from "@/core";
@@ -122,7 +123,7 @@ export function ReuploadDialog({
 
   return (
     <Dialog open onOpenChange={(o) => !o && !busy && onClose()}>
-      <DialogContent className="max-w-2xl">
+      <ResizableDialogContent sizeKey="reupload" className="max-w-2xl">
         <DialogHeader>
           <DialogTitle>
             {items.length === 1
@@ -230,7 +231,7 @@ export function ReuploadDialog({
                 : t("app-library-reupload-dialog.reupload-dialog.button.db13cc4ddbb8")}
           </Button>
         </DialogFooter>
-      </DialogContent>
+      </ResizableDialogContent>
     </Dialog>
   );
 }

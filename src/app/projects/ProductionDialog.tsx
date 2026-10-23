@@ -3,6 +3,7 @@
  * eksisterende produksjon (M7 del 1, DEC-0057, REQ-0353–0355, REQ-0359/0360). Scenene gjenbrukes som
  * referanser til samme scene – hovedfilmen endres ikke.
  */
+import { ResizableDialogContent } from "@/app/shared/ResizableDialogContent";
 import { useMemo, useState } from "react";
 import { PRODUCTION_KIND_LABEL, addScenesCommands, applyCommand, deriveProductionCommands, formatHeading, newId, orderedOccurrences, sortedProductions, type ProductionKind, type ProjectState } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
@@ -167,7 +168,7 @@ export function ProductionDialog({
         onOpenChange(o);
       }}
     >
-      <DialogContent className="max-h-[88vh] max-w-[620px] overflow-y-auto border-border bg-surface-2">
+      <ResizableDialogContent sizeKey="production" className="max-h-[88vh] max-w-[620px] overflow-y-auto border-border bg-surface-2">
         <DialogHeader>
           <DialogTitle>
             {target
@@ -319,7 +320,7 @@ export function ProductionDialog({
           </Button>
           <Button onClick={submit}>{target ? t("app-projects-production-dialog.production-dialog.button.f79dcc02b875") : t("app-projects-production-dialog.production-dialog.button.f40999d89056")}</Button>
         </DialogFooter>
-      </DialogContent>
+      </ResizableDialogContent>
     </Dialog>
   );
 }

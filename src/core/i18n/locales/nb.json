@@ -75605,5 +75605,11 @@
   },
   "attach.picker.pick": {
     "text": "Legg til {label}"
+  },
+  "dialog.resize.grip": {
+    "text": "Endre størrelse på vinduet (dra, eller Shift + piltaster; dobbeltklikk gir standardstørrelse)"
+  },
+  "dialog.resize.reset": {
+    "text": "Standardstørrelse"
   }
 }

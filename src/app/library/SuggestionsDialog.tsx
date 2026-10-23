@@ -3,6 +3,7 @@
  * før brukeren har valgt det. Navn som ligner en eksisterende ressurs, kan legges til som alternativt navn
  * i stedet for som ny ressurs – men bare når brukeren velger det.
  */
+import { ResizableDialogContent } from "@/app/shared/ResizableDialogContent";
 import { requestReanalyze, useAnalysisRows, useAnalysisStatus } from "./entity-analysis-store";
 import { analysisScenes, mergeAnalysis } from "@/core/library/analysis-hash";
 import type { AIClassification } from "@/core/library/classification-prompt";
@@ -255,7 +256,7 @@ export function SuggestionsDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent data-testid="library-suggestions" className="max-h-[90vh] max-w-[720px] overflow-y-auto border-border bg-surface-2">
+      <ResizableDialogContent sizeKey="library-suggestions" data-testid="library-suggestions" className="max-h-[90vh] max-w-[720px] overflow-y-auto border-border bg-surface-2">
         <DialogHeader>
           <DialogTitle>{t("app-library-suggestions-dialog.suggestions-dialog.dialog-title.21b282998039")}</DialogTitle>
           <DialogDescription>
@@ -421,7 +422,7 @@ export function SuggestionsDialog({
             {total === 0 ? t("app-library-suggestions-dialog.suggestions-dialog.button.19b6a4999c76") : t("app-library-suggestions-dialog.suggestions-dialog.button.99116cd19559", { total: String(total) })}
           </Button>
         </div>
-      </DialogContent>
+      </ResizableDialogContent>
     </Dialog>
   );
 }

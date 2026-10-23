@@ -75587,5 +75587,11 @@
   },
   "attach.picker.pick": {
     "text": "Add {label}"
+  },
+  "dialog.resize.grip": {
+    "text": "Resize the window (drag, or Shift + arrow keys; double-click for the default size)"
+  },
+  "dialog.resize.reset": {
+    "text": "Default size"
   }
 }

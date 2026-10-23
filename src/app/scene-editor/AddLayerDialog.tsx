@@ -1,6 +1,7 @@
 /**
  * Legg til lag i 2D-scenen: bilder fra ressursbiblioteket (ett eller flere samtidig) eller en fargeflate.
  */
+import { ResizableDialogContent } from "@/app/shared/ResizableDialogContent";
 import { Thumbnail } from "@/app/shared/Thumbnail";
 import { AssetSymbolIcon } from "@/app/library/AssetSymbolIcon";
 import { Check, Search } from "lucide-react";
@@ -166,7 +167,7 @@ export function AddLayerDialog({
 
   return (
     <Dialog open={open} onOpenChange={close}>
-      <DialogContent className="max-h-[90vh] max-w-[720px] overflow-y-auto border-border bg-surface-2">
+      <ResizableDialogContent sizeKey="add-layer" className="max-h-[90vh] max-w-[720px] overflow-y-auto border-border bg-surface-2">
         <DialogHeader>
           <DialogTitle>{t("app-scene-editor-add-layer-dialog.add-layer-dialog.dialog-title.0b3ef204d70a")}</DialogTitle>
           <DialogDescription>
@@ -246,7 +247,7 @@ export function AddLayerDialog({
                   {t("app-scene-editor-add-layer-dialog.add-layer-dialog.p.6cda4dfbe164")}
                 </p>
               ) : (
-                <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                <ul className="grid grid-cols-[repeat(auto-fill,minmax(150px,1fr))] gap-2">
                   {shown.map((a) => {
                     const on = picked.includes(a.id);
                     const path = covers.get(a.id);
@@ -361,7 +362,7 @@ export function AddLayerDialog({
             <Button onClick={addFill}>{t("app-scene-editor-add-layer-dialog.add-layer-dialog.button.0b9485899d92.2")}</Button>
           )}
         </DialogFooter>
-      </DialogContent>
+      </ResizableDialogContent>
     </Dialog>
   );
 }

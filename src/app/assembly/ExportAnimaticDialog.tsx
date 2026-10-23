@@ -4,6 +4,7 @@
  * Før eksporten vises en kontroll (REQ-0422); man kan eksportere selv om noe mangler (REQ-0423).
  * Eksporten endrer ingenting i prosjektet.
  */
+import { ResizableDialogContent } from "@/app/shared/ResizableDialogContent";
 import { SceneSelect, mainOccurrenceOfScene } from "@/app/shell/SceneSelect";
 import { SceneMark } from "@/app/shell/SceneMark";
 import { AlertTriangle, CheckCircle2, Download, Info } from "lucide-react";
@@ -640,7 +641,7 @@ export function ExportAnimaticDialog({
     <>
     {alphaComposition && alphaOpen ? <AlphaExportDialog state={state} composition={alphaComposition} open={alphaOpen} onOpenChange={setAlphaOpen} /> : null}
     <Dialog open={open && !alphaOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[90dvh] max-w-[640px] overflow-y-auto border-border bg-surface-2">
+      <ResizableDialogContent sizeKey="export-animatic" className="max-h-[90dvh] max-w-[640px] overflow-y-auto border-border bg-surface-2">
         <DialogHeader>
           <DialogTitle>{t("app-assembly-export-animatic-dialog.export-animatic-dialog.dialog-title.f19f9faf7736")}</DialogTitle>
           <DialogDescription>
@@ -1110,7 +1111,7 @@ export function ExportAnimaticDialog({
             {warnings ? t("app-assembly-export-animatic-dialog.export-animatic-dialog.button.93f2ccf9eceb") : t("app-assembly-export-animatic-dialog.export-animatic-dialog.button.24d7c267343a")}
           </Button>
         </DialogFooter>
-      </DialogContent>
+      </ResizableDialogContent>
       {shareSource ? (
         <FilmShareDialog
           open={shareOpen}

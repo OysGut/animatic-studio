@@ -2,6 +2,7 @@
  * Story Lab (SL2): «Lag profil med AI …». Viser kostnad og modell, krever bekreftelse, og viser en
  * forhåndsvisning felt for felt mot dagens profil. Ingenting lagres før brukeren velger det.
  */
+import { ResizableDialogContent } from "@/app/shared/ResizableDialogContent";
 import { useServerFn } from "@tanstack/react-start";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
@@ -84,7 +85,7 @@ export function ProfileGenerateDialog({
 
   return (
     <Dialog open onOpenChange={(o) => (o ? null : onClose())}>
-      <DialogContent className="max-h-[85vh] max-w-2xl overflow-y-auto" data-testid="storylab-generate-dialog">
+      <ResizableDialogContent sizeKey="storylab-profile" className="max-h-[85vh] max-w-2xl overflow-y-auto" data-testid="storylab-generate-dialog">
         <DialogHeader>
           <DialogTitle>{t("app-storylab-profile-generate-dialog.profile-generate-dialog.dialog-title.e1b083b1e142", { name: String(asset.name) })}</DialogTitle>
         </DialogHeader>
@@ -172,7 +173,7 @@ export function ProfileGenerateDialog({
             </div>
           </div>
         )}
-      </DialogContent>
+      </ResizableDialogContent>
     </Dialog>
   );
 }

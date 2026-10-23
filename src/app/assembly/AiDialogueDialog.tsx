@@ -4,6 +4,7 @@
  * karakteren), velger replikker, ser anslått pris og bekrefter. Hver replikk blir en lydressurs koblet til
  * replikken og karakteren; alt kan angres. Opptak og importert dialog røres ikke.
  */
+import { ResizableDialogContent } from "@/app/shared/ResizableDialogContent";
 import { CircleCheck, CircleDashed, Loader2, Mic, Pause, Play } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -297,7 +298,7 @@ export function AiDialogueDialog({
 
   return (
     <Dialog open={open} onOpenChange={(o) => !busy && onOpenChange(o)}>
-      <DialogContent className="max-w-3xl">
+      <ResizableDialogContent sizeKey="ai-dialogue" className="max-w-3xl">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-1.5">
             <Mic className="size-4" aria-hidden />{" "}
@@ -579,7 +580,7 @@ export function AiDialogueDialog({
             </Button>
           ) : null}
         </DialogFooter>
-      </DialogContent>
+      </ResizableDialogContent>
     </Dialog>
   );
 }

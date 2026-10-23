@@ -4,6 +4,7 @@
  * segmentet (godkjent) uten å slette de andre; valget kan angres. Beskrivelse, modell og pris vises fra
  * AI-jobben som laget videoen.
  */
+import { ResizableDialogContent } from "@/app/shared/ResizableDialogContent";
 import { CheckCircle2, CircleHelp, Pause, Play, TriangleAlert } from "lucide-react";
 import { useMemo, useRef, useState } from "react";
 import { qualityDisclaimer, QUALITY_LABEL, chooseAttemptCommands, filmClips, videoQualityChecks, type QualityCheck, formatUsd, locale, newId, videoAttempts, type GenerationJob, type ProjectState, type Take } from "@/core";
@@ -102,7 +103,7 @@ function CompareAiTakesDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-5xl">
+      <ResizableDialogContent sizeKey="compare-takes" className="max-w-5xl">
         <DialogHeader>
           <DialogTitle>
             {attempts.length > 1
@@ -199,7 +200,7 @@ function CompareAiTakesDialog({
             {err}
           </p>
         ) : null}
-      </DialogContent>
+      </ResizableDialogContent>
     </Dialog>
   );
 }

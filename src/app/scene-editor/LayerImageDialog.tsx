@@ -6,6 +6,7 @@
  *
  * Lag uten ressurs (fargeflater) kan kobles til en ressurs fra biblioteket her.
  */
+import { ResizableDialogContent } from "@/app/shared/ResizableDialogContent";
 import { Thumbnail } from "@/app/shared/Thumbnail";
 import { Link } from "@tanstack/react-router";
 import {
@@ -80,7 +81,7 @@ export function LayerImageDialog({
 }) {
   return (
     <Dialog open={open && layer !== null} onOpenChange={onOpenChange}>
-      <DialogContent onCloseAutoFocus={onCloseAutoFocus} className="max-h-[86vh] max-w-[min(1120px,calc(100vw-64px))] overflow-y-auto border-border bg-surface-2">
+      <ResizableDialogContent sizeKey="layer-image" onCloseAutoFocus={onCloseAutoFocus} className="max-h-[86vh] max-w-[min(1120px,calc(100vw-64px))] overflow-y-auto border-border bg-surface-2">
         {layer ? (
           <Body
             state={state}
@@ -94,7 +95,7 @@ export function LayerImageDialog({
             sceneWrite={sceneWrite}
           />
         ) : null}
-      </DialogContent>
+      </ResizableDialogContent>
     </Dialog>
   );
 }

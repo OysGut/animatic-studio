@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { ResizableDialogContent } from "@/app/shared/ResizableDialogContent";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { qualityProfileSnapshot, characterDialogueCoverage, selectedDialogueCounts, estimateCostUsd, formatUsd, newId, existingSpeechWarning, multilingualSpeechWarning, batchTimeEstimate, speechLanguageError, languageTagError, languageLabel, normalizeLanguageTag, DEFAULT_SPEECH_LANGUAGE, type ProjectState, type Asset, type AssetVoice, type Command } from "@/core";
 import { createDialogueBatch, advanceDialogueBatch, resumeDialogueBatch, listDialogueBatches, undoDialogueBatchJob, reconfirmDialogueBatch, dialogueBatchHistory } from "@/adapters/storage/dialogue-batch.functions";
@@ -109,7 +110,7 @@ export function DialogueBatchPanel({ state, asset, projectId, editable, drift = 
   const statusLabel = (status: string) => status === "waiting" ? t("app-library-dialogue-batch-panel.status-label.message.b5dda3bfc7cc") : status === "generating" ? t("app-library-dialogue-batch-panel.status-label.message.457092640c4c") : status === "ready" ? t("app-library-dialogue-batch-panel.status-label.message.42fbee116985") : status === "done" ? t("app-library-dialogue-batch-panel.status-label.message.eb79e9c2781e") : status === "skipped" ? t("app-library-dialogue-batch-panel.status-label.message.70cf34d3aed5") : status === "undone" ? t("app-library-dialogue-batch-panel.status-label.message.c6b034bb50bf") : t("app-library-dialogue-batch-panel.status-label.message.6828d92e3cf5");
   return <>
     <Button data-testid={drift ? "dialogue-drift-open" : "dialogue-batch-open"} size="sm" variant="secondary" disabled={!editable} onClick={() => { setVoice(asset.voice ?? null); setOpen(true); if (drift) setSelected(new Set(characterDialogueCoverage(state, asset.id).flatMap(s => s.lines.filter(l => l.drift).map(l => l.key)))); }}>{drift ? t("app-library-dialogue-batch-panel.dialogue-batch-panel.button.ec605ea6dbe1") : t("app-library-dialogue-batch-panel.dialogue-batch-panel.button.b9a59a117620")}</Button>
-    <Dialog open={open} onOpenChange={value => { if (!busy) setOpen(value); }}><DialogContent data-testid="dialogue-batch-dialog" className="max-h-[90vh] max-w-4xl overflow-y-auto">
+    <Dialog open={open} onOpenChange={value => { if (!busy) setOpen(value); }}><ResizableDialogContent sizeKey="dialogue-batch" data-testid="dialogue-batch-dialog" className="max-h-[90vh] max-w-4xl overflow-y-auto">
       <DialogTitle>{drift ? t("app-library-dialogue-batch-panel.dialogue-batch-panel.dialog-title.c8a21a538ae9", { name: String(asset.name) }) : t("app-library-dialogue-batch-panel.dialogue-batch-panel.dialog-title.eb6809e8aa30", { name: String(asset.name) })}</DialogTitle>
       <QualityProfilePicker state={state} value={quality.choice} disabled={busy} onChange={v => { quality.setChoice(v); setVoice(old => { if (!old) return old; const { modelId: _modelId, ...rest } = old; return rest; }); setLanguageVoices({}); changed(); }} /><QualityProfileBudget error={quality.budgetError} />
       <p className="text-xs text-text-secondary">{t("app-library-dialogue-batch-panel.dialogue-batch-panel.p.79c0af393463", { name: String(state.project.name) })}</p>
@@ -167,6 +168,6 @@ export function DialogueBatchPanel({ state, asset, projectId, editable, drift = 
           <Button size="sm" variant="ghost" disabled={busy} onClick={() => setUndoConfirm(null)}>{t("app-library-dialogue-batch-panel.dialogue-batch-panel.button.a15edbc27cc2.3")}</Button>
         </section> : null}
       </section>; })}
-    </DialogContent></Dialog>
+    </ResizableDialogContent></Dialog>
   </>;
 }

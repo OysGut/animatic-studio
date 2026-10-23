@@ -4,6 +4,7 @@
  * skal unngås og forbildebilder. Brukes i alle bildebeskrivelser. Utkastet kan foreslås fra prosjektet, og
  * forhåndsvisningen viser hvordan en beskrivelse blir.
  */
+import { ResizableDialogContent } from "@/app/shared/ResizableDialogContent";
 import { Thumbnail } from "@/app/shared/Thumbnail";
 import { useImagePromptPreview } from "@/app/library/image-prompt-preview";
 import { useMemo, useState } from "react";
@@ -426,7 +427,7 @@ export function StyleGuideDialog({
     "w-full rounded-sm border border-border-control bg-surface-3 px-2 py-1.5 text-[13px] text-text-primary placeholder:text-text-tertiary disabled:opacity-70";
   return (
     <Dialog open onOpenChange={(o) => !o && onClose()}>
-      <DialogContent className="max-h-[90vh] max-w-5xl overflow-y-auto">
+      <ResizableDialogContent sizeKey="style-guide" className="max-h-[90vh] max-w-5xl overflow-y-auto">
         <DialogHeader>
           <DialogTitle>
             {own
@@ -801,7 +802,7 @@ export function StyleGuideDialog({
           </Button>
           {editable ? <Button onClick={save}>{tk("app-projects-style-guide-section.style-guide-dialog.button.ba969324d6d6")}</Button> : null}
         </DialogFooter>
-      </DialogContent>
+      </ResizableDialogContent>
     </Dialog>
   );
 }

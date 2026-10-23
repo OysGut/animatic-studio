@@ -11,6 +11,7 @@
  * - Anslått pris (USD, og kreditter hos Runway) må bekreftes før noe sendes. Status vises øverst i
  *   toppfeltet mens videoen lages, så brukeren kan jobbe videre.
  */
+import { ResizableDialogContent } from "@/app/shared/ResizableDialogContent";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Thumbnail } from "@/app/shared/Thumbnail";
 import { useQueryClient } from "@tanstack/react-query";
@@ -688,7 +689,7 @@ export function SceneToVideoDialog({
 
   return (
     <Dialog open={open} onOpenChange={(o) => (!working ? onOpenChange(o) : null)}>
-      <DialogContent className="max-h-[92vh] max-w-[800px] overflow-y-auto border-border bg-surface-2">
+      <ResizableDialogContent sizeKey="scene-to-video" className="max-h-[92vh] max-w-[800px] overflow-y-auto border-border bg-surface-2">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <AiGlyph className="size-4" aria-hidden />
@@ -1163,7 +1164,7 @@ export function SceneToVideoDialog({
             </>
           )}
         </DialogFooter>
-      </DialogContent>
+      </ResizableDialogContent>
     </Dialog>
   );
 }

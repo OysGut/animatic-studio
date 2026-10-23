@@ -3,6 +3,7 @@
  * språkversjon sletter ingen oversettelser, og alt kan angres. Språk som bare finnes i eldre oversettelser,
  * vises og kan registreres; kollisjoner («en-us» / «en-US») vises og slås aldri sammen automatisk.
  */
+import { ResizableDialogContent } from "@/app/shared/ResizableDialogContent";
 import { useMemo, useState } from "react";
 import {
   canonicalLanguageTag,
@@ -66,7 +67,7 @@ export function LanguageVersionsDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent data-testid="language-versions-dialog" className="max-h-[90vh] max-w-[640px] overflow-y-auto border-border bg-surface-2">
+      <ResizableDialogContent sizeKey="language-versions" data-testid="language-versions-dialog" className="max-h-[90vh] max-w-[640px] overflow-y-auto border-border bg-surface-2">
         <DialogHeader>
           <DialogTitle>{t("ml3-language-versions.dialog.title")}</DialogTitle>
           <DialogDescription>{t("ml3-language-versions.dialog.description")}</DialogDescription>
@@ -172,7 +173,7 @@ export function LanguageVersionsDialog({
             {t("ml3-language-versions.button.close")}
           </Button>
         </DialogFooter>
-      </DialogContent>
+      </ResizableDialogContent>
     </Dialog>
   );
 }

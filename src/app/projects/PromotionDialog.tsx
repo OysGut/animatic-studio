@@ -4,6 +4,7 @@
  * lyd, timing, ferdig film), og velger selv hva som overføres. Ingenting skjer før «Overfør» trykkes, alt
  * kan angres i ett steg, og godkjent materiale i hovedfilmen byttes bare ut etter en egen bekreftelse.
  */
+import { ResizableDialogContent } from "@/app/shared/ResizableDialogContent";
 import { AlertTriangle, ArrowRight, Check, Info } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { KEEP_ALL, applyCommand, comparePromotion, choiceSize, defaultChoice, formatHeading, mainProduction, newId, newMainVariantCommands, orderedOccurrences, promotionCandidates, promotionCommands, scriptOnlyChoice, transferSceneCommands, blocksOfVariant, type Command, type LineDiff, type PromotionChoice, type PromotionComparison, type ProjectState, locale } from "@/core";
@@ -189,7 +190,7 @@ export function PromotionDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[92vh] max-w-[1040px] overflow-y-auto border-border bg-surface-2">
+      <ResizableDialogContent sizeKey="promotion" className="max-h-[92vh] max-w-[1040px] overflow-y-auto border-border bg-surface-2">
         <DialogHeader>
           <DialogTitle>
             {t("app-projects-promotion-dialog.promotion-dialog.dialog-title.62677a2313dc", { name: String(name) })}
@@ -304,7 +305,7 @@ export function PromotionDialog({
             </>
           ) : null}
         </DialogFooter>
-      </DialogContent>
+      </ResizableDialogContent>
     </Dialog>
   );
 }

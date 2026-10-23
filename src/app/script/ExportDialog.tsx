@@ -2,6 +2,7 @@
  * Manuseksport (mandat 5.2–5.3, REQ-0080–REQ-0088): nummereringsmetode velges hver gang, med forhåndsvisning.
  * Eksporten endrer ingenting i prosjektet (REQ-0085).
  */
+import { ResizableDialogContent } from "@/app/shared/ResizableDialogContent";
 import { Download } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { numbersByOccurrence, exportNumbering, exportNotes, exportPaginationInput, fitTitlePage, formatHeading, placeNotes, paginate, screenplayFountain, tm, TITLE_PAGE_MAX_LINES, exportLanguageDecision, languageLabel, scriptExportFontCheck, scriptExportTexts, docxLanguageTag, type ExportFallbackChoice, type NumberingMethod, type ProjectState, type TranslationStatus } from "@/core";
@@ -255,7 +256,7 @@ export function ExportDialog({
   const radio = "flex items-start gap-2 text-[13px] text-text-primary";
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-[680px] border-border bg-surface-2">
+      <ResizableDialogContent sizeKey="script-export" className="max-w-[680px] border-border bg-surface-2">
         <DialogHeader>
           <DialogTitle>{t("app-script-export-dialog.export-dialog.dialog-title.4798ad21711e")}</DialogTitle>
           <DialogDescription>
@@ -615,7 +616,7 @@ export function ExportDialog({
             {format === "pdf" ? "PDF" : format === "docx" ? "Word" : "Fountain"}
           </Button>
         </DialogFooter>
-      </DialogContent>
+      </ResizableDialogContent>
     </Dialog>
   );
 }

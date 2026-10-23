@@ -6,6 +6,7 @@
  * - Jobber (REQ-0292/0294/0296/0297/0299/0303): alle genereringer med status, feilmelding, resultat og
  *   «Prøv igjen». Fullførte resultater ligger i biblioteket og blir aldri slettet av en ny generering.
  */
+import { ResizableDialogContent } from "@/app/shared/ResizableDialogContent";
 import { TraceDetails } from "./TraceDetails";
 import { Link } from "@tanstack/react-router";
 import {
@@ -571,7 +572,7 @@ function RetryDialog({
   const variant = asset ? (variantsOf(state, asset.id).find((v) => !v.archived) ?? null) : null;
   return (
     <Dialog open={!!job && !!asset} onOpenChange={(o) => !o && onClose()}>
-      <DialogContent className="max-w-[640px] border-border bg-surface-2">
+      <ResizableDialogContent sizeKey="ai-panel" className="max-w-[640px] border-border bg-surface-2">
         <DialogHeader>
           <DialogTitle>
             <AiGlyph className="mr-1 inline size-4" aria-hidden />
@@ -628,7 +629,7 @@ function RetryDialog({
             {tk("app-ai-ai-panel.retry-dialog.button.cd9827760969")}
           </Button>
         </DialogFooter>
-      </DialogContent>
+      </ResizableDialogContent>
     </Dialog>
   );
 }
