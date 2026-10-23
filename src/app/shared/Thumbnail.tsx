@@ -2,10 +2,10 @@
  * Felles miniatyrbilde (plassholderretting del 2): viser alltid hele bildet med egne proporsjoner
  * (object-contain, sentrert) over et nøytralt sjakkmønster for alfa. Aldri object-cover eller strekking.
  */
-import type { ImgHTMLAttributes } from "react";
+import type { ComponentProps } from "react";
 import { cn } from "@/lib/utils";
 
-export type ThumbnailProps = Omit<ImgHTMLAttributes<HTMLImageElement>, "className" | "style"> & {
+export type ThumbnailProps = Omit<ComponentProps<"img">, "className" | "style"> & {
   className?: string;
   /** Sjakkmønster bak bildet (standard: på). */
   checker?: boolean;
