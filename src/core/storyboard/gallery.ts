@@ -7,7 +7,7 @@ import type { Command } from "../commands/types";
 import { layerFieldsOf } from "../composition";
 import { newId } from "../ids";
 import type { Composition, ProjectState, SceneOccurrence } from "../model";
-import { keyBetween } from "../order-key";
+import { keyBetween, keysEvenly } from "../order-key";
 import { blocksOfVariant, orderedOccurrences, sceneNumberOf } from "../views";
 import {
   PRODUCTION_AREAS,
@@ -118,11 +118,7 @@ export function planDuplicatePanel(s: ProjectState, panelId: string): Command[] 
   const p = s.compositions[panelId];
   if (!p || p.kind !== "storyboard" || !p.occurrenceId) return [];
   const id = newId<"composition">();
-  const blocks = panelBlockIds(s, panelId).map((blockId, i) => ({
-    linkId: newId(),
-    blockId: blockId as never,
-    orderKey: keyBetween(i === 0 ? null : String.fromCharCode(97 + Math.min(i, 24)), null).slice(0, 0) + `a${i}`,
-  }));
+  const blocks = anchorRefs(panelBlockIds(s, panelId));
   const cmds: Command[] = [
     {
       type: "AddStoryboardPanel",
@@ -148,7 +144,8 @@ export function planDuplicatePanel(s: ProjectState, panelId: string): Command[] 
 
 /** Forankring for et panel som flyttes til en annen scene: de valgte blokkene i ny variant. */
 export function anchorRefs(blockIds: readonly string[]) {
-  return blockIds.map((blockId, i) => ({ linkId: newId(), blockId: blockId as never, orderKey: `a${i}` }));
+  const keys = keysEvenly(blockIds.length);
+  return blockIds.map((blockId, i) => ({ linkId: newId(), blockId: blockId as never, orderKey: keys[i]! }));
 }
 
 /** Seed-kommandoen for «ett tomt panel per scene» (bare etter brukerens bekreftelse). */
@@ -158,7 +155,7 @@ export function seedCommand(s: ProjectState, productionId: string, plan: readonl
   return {
     type: "SeedStoryboardPanels",
     productionId,
-    panels: plan.slice(0, 1000).map((p) => ({ panelId: newId<"composition">(), occurrenceId: p.occurrenceId, variantId: p.variantId, orderKey: "a0" })),
+    panels: plan.slice(0, 1000).map((p) => ({ panelId: newId<"composition">(), occurrenceId: p.occurrenceId, variantId: p.variantId, orderKey: keyBetween(null, null) })),
   };
 }
 
