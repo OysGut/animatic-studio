@@ -3159,6 +3159,14 @@ try {
     assert(loaded.assetVersions[verId]?.briefVersionId === "b1", "bildets referanse til teksten ble ikke lagret");
     await expectError(sql`update public.asset_versions set brief_version_id = 'b2' where id = ${verId}`, /INV-13/);
     await expectError(sql`update public.assets set brief_versions = '{}'::jsonb where id = ${aId}`, /check/);
+    // Faktaark laget automatisk fra manuset (Øystein 23.10): merket lagres, og en vanlig redigering fjerner det
+    st = await runCommand(st, ALICE, { type: "SetAssetVisualBrief", assetId: aId as never, text: "- Red cap", autoAt: "2026-10-23T02:30:00.000Z" });
+    let auto = await loadState(projectId);
+    assert(auto.assets[aId]?.visualBrief === "- Red cap", "faktaarket ble ikke lagret");
+    assert(Date.parse(auto.assets[aId]?.visualBriefAuto ?? "") === Date.parse("2026-10-23T02:30:00.000Z"), "merket «laget automatisk» ble ikke lagret");
+    st = await runCommand(st, ALICE, { type: "SetAssetVisualBrief", assetId: aId as never, text: "- Red cap, rettet" });
+    auto = await loadState(projectId);
+    assert(auto.assets[aId]?.visualBriefAuto === undefined, "merket ble ikke fjernet ved redigering");
   });
 
   await test("0031 (DEC-0082): notat på produksjonen lagres, leses tilbake og angres", async () => {
