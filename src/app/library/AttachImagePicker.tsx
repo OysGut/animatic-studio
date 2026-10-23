@@ -74,7 +74,7 @@ export function AttachImagePicker({
         </Button>
       </div>
       {shown.length ? (
-        <ul className="grid max-h-60 grid-cols-4 gap-1.5 overflow-y-auto">
+        <ul className="grid max-h-60 grid-cols-[repeat(auto-fill,minmax(96px,1fr))] gap-1.5 overflow-y-auto">
           {shown.map((v, i) => {
             const label = `${v.assetName} – ${v.variantName} v${v.number}`;
             return (

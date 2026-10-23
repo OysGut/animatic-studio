@@ -75587,5 +75587,11 @@
   },
   "attach.picker.pick": {
     "text": "[!! ÁÁdddd {label} !!]"
+  },
+  "dialog.resize.grip": {
+    "text": "[!! RRëëssïïzzëë tthhëë wwïïnnddôôww (ddrráágg, ôôrr SShhïïfftt + áárrrrôôww kkëëyyss; ddôôûûbbllëë-ccllïïcckk ffôôrr tthhëë ddëëffááûûlltt ssïïzzëë) !!]"
+  },
+  "dialog.resize.reset": {
+    "text": "[!! DDëëffááûûlltt ssïïzzëë !!]"
   }
 }
