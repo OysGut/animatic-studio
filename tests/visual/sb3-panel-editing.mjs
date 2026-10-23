@@ -1,9 +1,10 @@
 /** SB-3: bokmål/engelsk, panelverktøy og scenedrag med mockede tjenester, ingen betalte kall. */
+import {VISUAL_SCHEMA_VERSION} from './schema-version.mjs';
 import { harness } from './mts-harness.mjs';
 import {readFileSync} from 'node:fs';
 const fx=JSON.parse(readFileSync(process.argv[3],'utf8'));
 const h=harness('/tmp/browser/sb3');
-h.hooks.rest=(table)=>table==='schema_version'?[{version:104}]:table==='rpc/project_snapshot'?{project:fx.project,log_seq:0,history:'current',tables:[fx.rows]}:undefined;
+h.hooks.rest=(table)=>table==='schema_version'?[{version:VISUAL_SCHEMA_VERSION}]:table==='rpc/project_snapshot'?{project:fx.project,log_seq:0,history:'current',tables:[fx.rows]}:undefined;
 for(const lang of ['nb','en'])await h.scenario(`sb3-${lang}`,fx.occurrenceId,lang,async page=>{
  await page.goto(`${h.base}${h.P}/scene?scene=${fx.occurrenceId}&panel=${fx.panelId}`,{waitUntil:'networkidle'});
  await page.getByTestId('sb3-editor').waitFor({timeout:15000});
