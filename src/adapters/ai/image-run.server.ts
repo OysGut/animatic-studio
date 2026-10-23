@@ -6,7 +6,7 @@
  * kostnaden; her oppdateres den reserverte jobben (ingen ny rad), og resultatet lagres som kvittering i
  * jobbens params før det returneres.
  */
-import { assetFilePath, adaptPromptForModel, effortOf, estimateCostUsd, type ImageSize, imageSizesOf, monthStartUtc, newId, providerModel, stripAttachedSection } from "@/core";
+import { assetFilePath, adaptPromptForModel, effortOf, estimateCostUsd, type ImageSize, imageSizesOf, monthStartUtc, newId, providerModel, stripAttachedSection, withFactSheet, MAX_PROMPT_CHARS } from "@/core";
 import { checkSchema, type AnyClient } from "@/adapters/storage/project-rows";
 import { GATEWAY, gatewayError, referenceImages } from "./gateway";
 import { builtInImageModel, LOVABLE_CUTOUT_MODEL as CUTOUT_MODEL, LOVABLE_IMAGE_MODEL as IMAGE_MODEL } from "@/core";
@@ -68,7 +68,7 @@ export async function runImageGeneration(
 
   const { data: asset } = await admin
     .from("assets")
-    .select("id, kind")
+    .select("id, kind, visual_brief")
     .eq("id", data.assetId)
     .eq("project_id", data.projectId)
     .maybeSingle();
@@ -82,6 +82,12 @@ export async function runImageGeneration(
       ok: false,
       message: t("adapters-ai-image-run-server.message.message.09ccaf585ad5"),
     };
+  // Faktaarket gjelder alltid (Øystein 23.10): mangler det i teksten, legges det til her på serveren
+  {
+    const sheet = (asset as { visual_brief?: string | null }).visual_brief ?? "";
+    if (sheet.trim() && data.operation !== "upscale")
+      data = { ...data, prompt: withFactSheet(data.prompt, sheet, MAX_PROMPT_CHARS) };
+  }
   const refCheck = await referenceImages(admin, data.projectId, data.referencePaths);
   if (!refCheck.ok) return { ok: false, message: refCheck.message };
 

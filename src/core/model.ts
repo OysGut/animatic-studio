@@ -478,6 +478,8 @@ export interface Asset extends Entity<AssetId> {
    * bildebeskrivelsene i stedet for rå manusutdrag. Mangler/tom = ikke laget.
    */
   readonly visualBrief?: string;
+  /** Faktaarket ble laget automatisk fra manuset (ISO-tid, migrasjon 0089); mangler = skrevet/rettet av brukeren. */
+  readonly visualBriefAuto?: string;
   /** Tekstversjoner av brukerens bildebeskrivelse (migrasjon 0089), eldste først. */
   readonly briefVersions?: readonly BriefVersion[];
   /** Sist brukte/redigerte tekstversjon (vises når dialogen åpnes). */

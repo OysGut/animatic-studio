@@ -55,3 +55,56 @@ Ingen funksjoner erstattes. `apply_changes` tar med nye kolonner automatisk. Ser
 
 ## Nye tekster
 `brief.versions.previous`, `.next`, `.counter`, `.save`, `.fromText`. Jeg skrev nb og en selv. de, es, fr, it, ja, ko, pt-BR og ru er maskinoversatt og merket for gjennomlesing. en-XA er generert.
+
+## C. «Skriv med AI» bygger alltid på faktaarket (Øystein 23.10, tillegg)
+
+**Funn som stemte:**
+- `writeImagePrompt(task: "prompt")` sendte bare teksten i feltet og bildene.
+- Den automatiske teksten brukte faktaarket bare når teksten ikke var redigert.
+- Studien (faktaarket) ble bare laget når brukeren trykket selv.
+
+**Ny oppførsel:**
+1. **Studien lages først når faktaarket mangler.** Serveren sjekker selv om ressursen har et faktaark når «Skriv med AI» / «Skriv på nytt med AI» kjøres (figur, rekvisitt, sted og så videre).
+   - Den samme studien som i VisualBriefEditor lages da på serveren. Grunnlaget er manusutdrag fra hovedproduksjonen (opptil 10, med replikker), beskrivelsen, gjeldende versjon og omslagsbildet.
+   - Felles kjernefunksjon: `factSheetStudy`, som editoren nå også bruker.
+2. **Studien lagres med en gang** som faktaark, via `SetAssetVisualBrief` med `autoAt` og apply_changes.
+   - Lagringen er en vanlig kommando som kan angres, og den vises for alle med sanntidsoppdateringen.
+   - Klienten legger steget på angrelisten med `adoptServerHistory`.
+   - Karakterkortet i biblioteket viser «Laget automatisk fra manuset» med dato.
+   - Retter brukeren arket, forsvinner merket. Angring setter tilbake både tekst og merke.
+3. **Faktaarket er alltid med.** Serveren legger det inn som egen seksjon «VISUAL FACT SHEET (authoritative for appearance …)» i kallet til prompt-skriveren, uansett hva som står i feltet. Brukerens tekst kommer etter.
+   - Bildegenereringen gjør det samme: står fakta ikke allerede i teksten, legges arket til på serveren.
+   - Blir det for langt, kortes brukerens tekst, aldri faktaarket.
+   - Oppskalering er unntatt, fordi den ikke bruker tekst.
+4. **Kostnad.** Under knappen står nå at studien kjøres først når faktaarket mangler: ett ekstra tekstkall, også langt rimeligere enn et bilde. Ett trykk godkjenner begge kallene.
+   - Finnes arket, står det at faktaarket alltid brukes.
+   - Ingen andre automatiske kall.
+   - Tekstkall har ingen egen kronepris i appen i dag (de står som «litt kreditter»). Derfor viser linjen ikke et tall.
+5. **Feil.** Feiler studien eller lagringen, skrives ingen tekst. Brukeren får en tydelig melding med knappen «Prøv igjen».
+6. **Sporbarhet.** Studien får egen rad i `generation_jobs` (systemInstruction «visual-brief»).
+   - Prompt-jobben har `params.factSheet = { assetRevision, digest (SHA-256), studyJobId }`.
+   - Serverloggene viser bare feilkoder, aldri prompter.
+7. **Tekstversjoner.** Teksten «Skriv med AI» lager, blir en ny tekstversjon, som før (`saveBrief` etter skrivingen).
+
+**Arkitektur:**
+- Lagringen ligger i `src/adapters/storage/fact-sheet.server.ts`, ikke i `ai/`. Testen for REQ-0326 forbyr AI-koden å skrive prosjektdata direkte. Lagringen følger samme mønster som dialogbatchen.
+- AGENTS.md har fått regel 61.
+
+**Migrasjon 0089 er utvidet** (den er ennå ikke kjørt i Cloud, så den kunne utvides uten ny fil). Endringen legger til én kolonne, ingen funksjoner er nye eller erstattet, og EXPECTED_SCHEMA_VERSION er fortsatt 89:
+- `assets.visual_brief_auto_at timestamptz`, null betyr skrevet eller rettet av brukeren.
+
+**Tester (falsk tekstmodell, ingen betalte kall):** `tests/unit/faktaark-alltid.test.ts` (9).
+- Faktaarket mangler: studien kjøres først og lagres på ressursen. Deretter kjøres prompten med faktaarket. Egen studiejobb og referanse til arkets versjon er sjekket.
+- Faktaarket finnes: ingen ny studie, og arket er med også når feltet er redigert.
+- Studien feiler, eller lagringen feiler: ingen prompt, og brukeren får «Prøv igjen».
+- Kostnadslinjen viser begge kallene.
+- Arket legges til, men aldri to ganger, og det kortes aldri.
+- Merket og angring av det.
+
+**Andre endringer i testene:**
+- `verifisering4-ai-server.test.ts` gir figuren et faktaark og forventer at serveren legger arket til i bildeteksten, slik den nye regelen sier.
+- DB-testen for 0089 sjekker også merket og at det forsvinner ved redigering: 181/0.
+
+**Ikke kjørt:** Den visuelle sjekken på nb og en (at faktaarket vises på karakterkortet etterpå) krever at 0089 er kjørt i Cloud. Den står i TODO.md.
+
+**Nye tekster:** `factSheet.auto.label`, `.cost.study`, `.cost.ready`, `.error.study`, `.error.save`, `.retry`, `.history`. Jeg skrev nb og en selv. de, es, fr, it, ja, ko, pt-BR og ru er maskinoversatt og merket for gjennomlesing.

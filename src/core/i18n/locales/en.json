@@ -75503,5 +75503,26 @@
   },
   "brief.versions.fromText": {
     "text": "Made from the text below"
+  },
+  "factSheet.auto.label": {
+    "text": "Created automatically from the script {date}"
+  },
+  "factSheet.cost.study": {
+    "text": "No fact sheet yet: a study of the script runs first (one extra text call, also far cheaper than an image), then the text is written. One click approves both calls."
+  },
+  "factSheet.cost.ready": {
+    "text": "The fact sheet from the script is always used, in addition to the text in the field."
+  },
+  "factSheet.error.study": {
+    "text": "The fact sheet could not be created from the script, so the text was not written. {message}"
+  },
+  "factSheet.error.save": {
+    "text": "The fact sheet could not be saved on the asset."
+  },
+  "factSheet.retry": {
+    "text": "Try again"
+  },
+  "factSheet.history": {
+    "text": "Fact sheet created from the script ({name})"
   }
 }

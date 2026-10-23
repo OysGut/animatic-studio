@@ -24,6 +24,10 @@ import {
   MAX_PROMPT_CHARS,
   PROMPT_WRITER_SYSTEM,
   SCENE_DESCRIPTION_SYSTEM,
+  promptWithFactSheet,
+  withFactSheet,
+  type Command,
+  type FactSheetRef,
 } from "@/core";
 
 import { checkSchema, type AnyClient } from "@/adapters/storage/project-rows";
@@ -76,8 +80,15 @@ export interface WritePromptInput {
 }
 
 export type WritePromptResult =
-  | { readonly ok: true; readonly prompt: string; readonly model: string; readonly jobId: string }
-  | { readonly ok: false; readonly message: string };
+  | {
+      readonly ok: true;
+      readonly prompt: string;
+      readonly model: string;
+      readonly jobId: string;
+      /** Faktaarket ble laget nå fra manuset og lagret (for angrelisten). */
+      readonly factSheet?: { readonly commandId: string; readonly inverse: Command; readonly affected: readonly string[] };
+    }
+  | { readonly ok: false; readonly message: string; readonly retry?: true };
 
 function validate(d: unknown): WritePromptInput {
   if (!d || typeof d !== "object") throw new Error(t("adapters-ai-write-prompt-functions.validate.message.24c66c979741"));
@@ -227,201 +238,249 @@ export const writeImagePrompt = createServerFn({ method: "POST" })
     );
     if (!refCheck.ok) return { ok: false, message: refCheck.message };
 
-    const hourAgo = new Date(Date.now() - 3600_000).toISOString();
-    const dayAgo = new Date(Date.now() - 86_400_000).toISOString();
-    /** Over grensene? (`extra`: denne jobben er allerede registrert og telles med.) */
-    const overLimit = async (extra: number): Promise<string | null> => {
-      const [{ count: mine }, { count: project }] = await Promise.all([
-        admin
-          .from("generation_jobs")
-          .select("id", { count: "exact", head: true })
-          .eq("created_by", context.userId)
-          .eq("kind", "prompt")
-          .gte("created_at", hourAgo),
-        admin
-          .from("generation_jobs")
-          .select("id", { count: "exact", head: true })
-          .eq("project_id", data.projectId)
-          .eq("kind", "prompt")
-          .gte("created_at", dayAgo),
-      ]);
-      if ((mine ?? 0) - extra >= MAX_PROMPT_JOBS_PER_USER_PER_HOUR)
-        return t("adapters-ai-write-prompt-functions.over-limit.create-server-fn-method-post-middleware-require-supabase-auth-validator-validate-handler.1e3043f207e3", { MAX_PROMPT_JOBS_PER_USER_PER_HOUR: String(MAX_PROMPT_JOBS_PER_USER_PER_HOUR) });
-      if ((project ?? 0) - extra >= MAX_PROMPT_JOBS_PER_PROJECT_PER_DAY)
-        return t("adapters-ai-write-prompt-functions.over-limit.create-server-fn-method-post-middleware-require-supabase-auth-validator-validate-handler.0690a800b7e9", { MAX_PROMPT_JOBS_PER_PROJECT_PER_DAY: String(MAX_PROMPT_JOBS_PER_PROJECT_PER_DAY) });
-      return null;
-    };
-    const before = await overLimit(0);
-    if (before) return { ok: false, message: before };
+    /** Ett kall til språkmodellen med egen rad i generation_jobs. */
+    const runJob = async (job: {
+      readonly task: WriteTask;
+      readonly brief: string;
+      readonly images: readonly { readonly path: string; readonly label: string }[];
+      readonly factSheet?: FactSheetRef;
+    }): Promise<WritePromptResult> => {
+      const jobRefs = await referenceImages(admin, data.projectId, job.images.map((i) => i.path));
+      if (!jobRefs.ok) return { ok: false, message: jobRefs.message };
+      const hourAgo = new Date(Date.now() - 3600_000).toISOString();
+      const dayAgo = new Date(Date.now() - 86_400_000).toISOString();
+      /** Over grensene? (`extra`: denne jobben er allerede registrert og telles med.) */
+      const overLimit = async (extra: number): Promise<string | null> => {
+        const [{ count: mine }, { count: project }] = await Promise.all([
+          admin
+            .from("generation_jobs")
+            .select("id", { count: "exact", head: true })
+            .eq("created_by", context.userId)
+            .eq("kind", "prompt")
+            .gte("created_at", hourAgo),
+          admin
+            .from("generation_jobs")
+            .select("id", { count: "exact", head: true })
+            .eq("project_id", data.projectId)
+            .eq("kind", "prompt")
+            .gte("created_at", dayAgo),
+        ]);
+        if ((mine ?? 0) - extra >= MAX_PROMPT_JOBS_PER_USER_PER_HOUR)
+          return t("adapters-ai-write-prompt-functions.over-limit.create-server-fn-method-post-middleware-require-supabase-auth-validator-validate-handler.1e3043f207e3", { MAX_PROMPT_JOBS_PER_USER_PER_HOUR: String(MAX_PROMPT_JOBS_PER_USER_PER_HOUR) });
+        if ((project ?? 0) - extra >= MAX_PROMPT_JOBS_PER_PROJECT_PER_DAY)
+          return t("adapters-ai-write-prompt-functions.over-limit.create-server-fn-method-post-middleware-require-supabase-auth-validator-validate-handler.0690a800b7e9", { MAX_PROMPT_JOBS_PER_PROJECT_PER_DAY: String(MAX_PROMPT_JOBS_PER_PROJECT_PER_DAY) });
+        return null;
+      };
+      const before = await overLimit(0);
+      if (before) return { ok: false, message: before };
 
-    const override = process.env["ANIMATIC_TEXT_MODEL"];
-    const models: readonly string[] = override ? [override] : TEXT_MODELS;
-    const jobId = newId<"generation_job">();
-    const { error: logErr } = await admin.from("generation_jobs").insert({
-      id: jobId,
-      project_id: data.projectId,
-      kind: "prompt",
-      provider: "lovable",
-      model: models[0]!,
-      prompt: data.brief,
-      asset_id: data.assetId,
-      reference_path: data.images[0]?.path ?? null,
-      reference_paths: data.images.map((i) => i.path),
-      // Sporbarhet (DEC-0072, REQ-0257): systeminstruksen og bildene som ble sendt
-      ...(schema.version >= 24
-        ? {
-            params: {
-              trace: await (
-                await import("./trace.server")
-              ).buildTrace(admin as AnyClient, data.projectId, {
-                systemInstruction:
-                  data.task === "style"
-                    ? "style-analysis"
-                    : data.task === "visual"
-                      ? "visual-brief"
-                      : data.task === "scene"
-                        ? "scene-description"
-                        : "prompt-writer",
-                modelParams: { purpose: data.purpose, images: data.images.length },
-                referencePaths: data.images.map((i) => i.path),
-              }),
-            },
+      const override = process.env["ANIMATIC_TEXT_MODEL"];
+      const models: readonly string[] = override ? [override] : TEXT_MODELS;
+      const jobId = newId<"generation_job">();
+      const { error: logErr } = await admin.from("generation_jobs").insert({
+        id: jobId,
+        project_id: data.projectId,
+        kind: "prompt",
+        provider: "lovable",
+        model: models[0]!,
+        prompt: job.brief,
+        asset_id: data.assetId,
+        reference_path: job.images[0]?.path ?? null,
+        reference_paths: job.images.map((i) => i.path),
+        // Sporbarhet (DEC-0072, REQ-0257): systeminstruksen og bildene som ble sendt
+        ...(schema.version >= 24
+          ? {
+              params: {
+                trace: await (
+                  await import("./trace.server")
+                ).buildTrace(admin as AnyClient, data.projectId, {
+                  systemInstruction:
+                    job.task === "style"
+                      ? "style-analysis"
+                      : job.task === "visual"
+                        ? "visual-brief"
+                        : job.task === "scene"
+                          ? "scene-description"
+                          : "prompt-writer",
+                  modelParams: { purpose: data.purpose, images: job.images.length },
+                  referencePaths: job.images.map((i) => i.path),
+                }),
+                // Faktaarket prompten bygger på (Øystein 23.10): revisjon, digest og studiens jobb, aldri teksten på nytt
+                ...(job.factSheet ? { factSheet: job.factSheet } : {}),
+              },
+            }
+          : {}),
+        status: "running",
+        created_by: context.userId,
+      } as never);
+      if (logErr)
+        return {
+          ok: false,
+          message: t("adapters-ai-write-prompt-functions.message.message.6d99dd724293", { message: String(logErr.message) }),
+        };
+      // Samtidige forespørsler: tell på nytt med denne jobben registrert
+      const after = await overLimit(1);
+      if (after) {
+        await admin.from("generation_jobs").delete().eq("id", jobId);
+        return { ok: false, message: after };
+      }
+      const finish = async (patch: Record<string, unknown>) => {
+        await admin
+          .from("generation_jobs")
+          .update({ ...patch, finished_at: new Date().toISOString() } as never)
+          .eq("id", jobId);
+      };
+
+      try {
+        // Bildene som data-URL-er (tjenesten trenger ikke tilgang til lagringen). Et bilde som ikke kan
+        // hentes eller er for stort, hoppes over, og språkmodellen får vite det.
+        const parts: Record<string, unknown>[] = [];
+        const labels: string[] = [];
+        let total = 0;
+        for (const [n, img] of job.images.entries()) {
+          // Størrelsen er kjent fra biblioteket: store bilder hentes ikke i det hele tatt
+          const known = jobRefs.sizes.get(img.path) ?? Infinity;
+          if (known > MAX_IMAGE_BYTES || total + known > MAX_TOTAL_IMAGE_BYTES) {
+            labels.push(`${img.label} (not shown to you)`);
+            continue;
           }
-        : {}),
-      status: "running",
-      created_by: context.userId,
-    } as never);
-    if (logErr)
-      return {
-        ok: false,
-        message: t("adapters-ai-write-prompt-functions.message.message.6d99dd724293", { message: String(logErr.message) }),
-      };
-    // Samtidige forespørsler: tell på nytt med denne jobben registrert
-    const after = await overLimit(1);
-    if (after) {
-      await admin.from("generation_jobs").delete().eq("id", jobId);
-      return { ok: false, message: after };
-    }
-    const finish = async (patch: Record<string, unknown>) => {
-      await admin
-        .from("generation_jobs")
-        .update({ ...patch, finished_at: new Date().toISOString() } as never)
-        .eq("id", jobId);
+          const { data: blob } = await admin.storage.from(BUCKET).download(img.path);
+          if (!blob || blob.size > MAX_IMAGE_BYTES) {
+            labels.push(`${img.label} (not shown to you)`);
+            continue;
+          }
+          const type = blob.type && blob.type.startsWith("image/") ? blob.type : "image/png";
+          const bytes = new Uint8Array(await blob.arrayBuffer());
+          total += bytes.byteLength;
+          labels.push(img.label);
+          parts.push({ type: "text", text: `Image ${n + 1}:` });
+          parts.push({
+            type: "image_url",
+            image_url: { url: `data:${type};base64,${base64(bytes)}` },
+          });
+        }
+        // Stilanalysen og faktaarket: briefen er brukermeldingen; bilder som ikke kunne vises, nevnes
+        const skipped = labels.filter((l) => l.endsWith("(not shown to you)"));
+        const text =
+          job.task === "prompt"
+            ? promptWriterUserText({ brief: job.brief, purpose: data.purpose, imageLabels: labels })
+            : `${job.brief}${skipped.length ? `\n\nNot shown to you: ${skipped.join("; ")}` : ""}`;
+        const system =
+          job.task === "style"
+            ? STYLE_ANALYSIS_SYSTEM
+            : job.task === "visual"
+              ? VISUAL_BRIEF_SYSTEM
+              : job.task === "scene"
+                ? SCENE_DESCRIPTION_SYSTEM
+                : PROMPT_WRITER_SYSTEM;
+        const headers = {
+          Authorization: `Bearer ${key}`,
+          "Lovable-API-Key": key,
+          "Content-Type": "application/json",
+        };
+        const log: string[] = [];
+        for (const model of models) {
+          const res = await fetch(`${GATEWAY}/chat/completions`, {
+            method: "POST",
+            headers,
+            signal: AbortSignal.timeout(90_000),
+            body: JSON.stringify({
+              model,
+              messages: [
+                { role: "system", content: system },
+                { role: "user", content: [{ type: "text", text }, ...parts] },
+              ],
+            }),
+          });
+          if (!res.ok) {
+            const body = await res.text().catch(() => "");
+            log.push(`${model}: ${res.status} ${body.slice(0, 300)}`);
+            // Ukjent modell hos Lovable: prøv neste. Alt annet (kreditter, innholdsregler …) stopper.
+            if (isUnknownModelError(res.status, body)) continue;
+            await finish({ status: "failed", model, error: log.join("\n").slice(0, 2000) });
+            return { ok: false, message: gatewayError(res.status, body) };
+          }
+          const raw = messageText(await res.json());
+          const written =
+            job.task === "visual"
+              ? cleanVisualBrief(raw)
+              : job.task === "scene"
+                ? raw
+                    .trim()
+                    .replace(/^```\w*\n?|```$/g, "")
+                    .trim()
+                    .slice(0, 2000) || null
+                : job.task === "style"
+                  ? raw.trim().slice(0, 12000) || null
+                  : cleanWrittenPrompt(raw);
+          if (!written) {
+            await finish({
+              status: "failed",
+              model,
+              error: t("adapters-ai-write-prompt-functions.error.error.1a7750bd2314"),
+            });
+            return {
+              ok: false,
+              message: t("adapters-ai-write-prompt-functions.message.message.830de55e747f"),
+            };
+          }
+          // i18n-ignore: serverlogg for utvikleren
+          // Bare modell og status i serverloggen: leverandørens svartekst kan gjenta prompten (Ø-11)
+          if (log.length) console.warn("[writeImagePrompt] modeller hoppet over:", log.map((l) => l.split(" ").slice(0, 2).join(" ")).join(" | "));
+          await finish({ status: "done", model, result_text: written });
+          return { ok: true, prompt: written, model, jobId };
+        }
+        await finish({ status: "failed", error: log.join("\n").slice(0, 2000) });
+        return {
+          ok: false,
+          message: t("adapters-ai-write-prompt-functions.message.message.0012d8d8fe9d"),
+        };
+      } catch (e) {
+        const message = (e as Error).message || t("adapters-ai-write-prompt-functions.message.create-server-fn-method-post-middleware-require-supabase-auth-validator-validate-handler.a8b89351ac49");
+        await finish({ status: "failed", error: message.slice(0, 2000) });
+        return {
+          ok: false,
+          message:
+            (e as Error).name === "TimeoutError"
+              ? t("adapters-ai-write-prompt-functions.message.message.5ae5eeb17079")
+              : t("adapters-ai-write-prompt-functions.message.message.6494594d3f6e", { message: String(message) }),
+        };
+      }
     };
 
-    try {
-      // Bildene som data-URL-er (tjenesten trenger ikke tilgang til lagringen). Et bilde som ikke kan
-      // hentes eller er for stort, hoppes over, og språkmodellen får vite det.
-      const parts: Record<string, unknown>[] = [];
-      const labels: string[] = [];
-      let total = 0;
-      for (const [n, img] of data.images.entries()) {
-        // Størrelsen er kjent fra biblioteket: store bilder hentes ikke i det hele tatt
-        const known = refCheck.sizes.get(img.path) ?? Infinity;
-        if (known > MAX_IMAGE_BYTES || total + known > MAX_TOTAL_IMAGE_BYTES) {
-          labels.push(`${img.label} (not shown to you)`);
-          continue;
-        }
-        const { data: blob } = await admin.storage.from(BUCKET).download(img.path);
-        if (!blob || blob.size > MAX_IMAGE_BYTES) {
-          labels.push(`${img.label} (not shown to you)`);
-          continue;
-        }
-        const type = blob.type && blob.type.startsWith("image/") ? blob.type : "image/png";
-        const bytes = new Uint8Array(await blob.arrayBuffer());
-        total += bytes.byteLength;
-        labels.push(img.label);
-        parts.push({ type: "text", text: `Image ${n + 1}:` });
-        parts.push({
-          type: "image_url",
-          image_url: { url: `data:${type};base64,${base64(bytes)}` },
-        });
-      }
-      // Stilanalysen og faktaarket: briefen er brukermeldingen; bilder som ikke kunne vises, nevnes
-      const skipped = labels.filter((l) => l.endsWith("(not shown to you)"));
-      const text =
-        data.task === "prompt"
-          ? promptWriterUserText({ brief: data.brief, purpose: data.purpose, imageLabels: labels })
-          : `${data.brief}${skipped.length ? `\n\nNot shown to you: ${skipped.join("; ")}` : ""}`;
-      const system =
-        data.task === "style"
-          ? STYLE_ANALYSIS_SYSTEM
-          : data.task === "visual"
-            ? VISUAL_BRIEF_SYSTEM
-            : data.task === "scene"
-              ? SCENE_DESCRIPTION_SYSTEM
-              : PROMPT_WRITER_SYSTEM;
-      const headers = {
-        Authorization: `Bearer ${key}`,
-        "Lovable-API-Key": key,
-        "Content-Type": "application/json",
-      };
-      const log: string[] = [];
-      for (const model of models) {
-        const res = await fetch(`${GATEWAY}/chat/completions`, {
-          method: "POST",
-          headers,
-          signal: AbortSignal.timeout(90_000),
-          body: JSON.stringify({
-            model,
-            messages: [
-              { role: "system", content: system },
-              { role: "user", content: [{ type: "text", text }, ...parts] },
-            ],
-          }),
-        });
-        if (!res.ok) {
-          const body = await res.text().catch(() => "");
-          log.push(`${model}: ${res.status} ${body.slice(0, 300)}`);
-          // Ukjent modell hos Lovable: prøv neste. Alt annet (kreditter, innholdsregler …) stopper.
-          if (isUnknownModelError(res.status, body)) continue;
-          await finish({ status: "failed", model, error: log.join("\n").slice(0, 2000) });
-          return { ok: false, message: gatewayError(res.status, body) };
-        }
-        const raw = messageText(await res.json());
-        const written =
-          data.task === "visual"
-            ? cleanVisualBrief(raw)
-            : data.task === "scene"
-              ? raw
-                  .trim()
-                  .replace(/^```\w*\n?|```$/g, "")
-                  .trim()
-                  .slice(0, 2000) || null
-              : data.task === "style"
-                ? raw.trim().slice(0, 12000) || null
-                : cleanWrittenPrompt(raw);
-        if (!written) {
-          await finish({
-            status: "failed",
-            model,
-            error: t("adapters-ai-write-prompt-functions.error.error.1a7750bd2314"),
-          });
-          return {
-            ok: false,
-            message: t("adapters-ai-write-prompt-functions.message.message.830de55e747f"),
-          };
-        }
-        // i18n-ignore: serverlogg for utvikleren
-        // Bare modell og status i serverloggen: leverandørens svartekst kan gjenta prompten (Ø-11)
-        if (log.length) console.warn("[writeImagePrompt] modeller hoppet over:", log.map((l) => l.split(" ").slice(0, 2).join(" ")).join(" | "));
-        await finish({ status: "done", model, result_text: written });
-        return { ok: true, prompt: written, model, jobId };
-      }
-      await finish({ status: "failed", error: log.join("\n").slice(0, 2000) });
-      return {
-        ok: false,
-        message: t("adapters-ai-write-prompt-functions.message.message.0012d8d8fe9d"),
-      };
-    } catch (e) {
-      const message = (e as Error).message || t("adapters-ai-write-prompt-functions.message.create-server-fn-method-post-middleware-require-supabase-auth-validator-validate-handler.a8b89351ac49");
-      await finish({ status: "failed", error: message.slice(0, 2000) });
-      return {
-        ok: false,
-        message:
-          (e as Error).name === "TimeoutError"
-            ? t("adapters-ai-write-prompt-functions.message.message.5ae5eeb17079")
-            : t("adapters-ai-write-prompt-functions.message.message.6494594d3f6e", { message: String(message) }),
-      };
-    }
+    // Faktaarket brukes alltid når AI skriver bildeteksten for en ressurs (Øystein 23.10)
+    if (data.task !== "prompt" || !data.assetId)
+      return runJob({ task: data.task, brief: data.brief, images: data.images });
+    const { loadFactSheetSubject, saveFactSheet, sha256Hex } = await import("@/adapters/storage/fact-sheet.server");
+    const assetId = data.assetId;
+    const subject = await loadFactSheetSubject(admin, data.projectId, assetId);
+    if (!subject)
+      return { ok: false, message: t("adapters-ai-write-prompt-functions.message.message.13c801507797") };
+    const out = await promptWithFactSheet({
+      existing: subject.sheet
+        ? { text: subject.sheet, ref: { assetRevision: subject.revision, digest: await sha256Hex(subject.sheet) } }
+        : null,
+      study: async () => {
+        if (!subject.study) return { ok: false, message: t("factSheet.error.save") };
+        const r = await runJob({ task: "visual", brief: subject.study.text, images: subject.study.images });
+        return r.ok ? { ok: true, text: r.prompt, jobId: r.jobId } : { ok: false, message: r.message };
+      },
+      save: async (text) => {
+        const r = await saveFactSheet(admin, data.projectId, context.userId, assetId, text);
+        return r.ok
+          ? { ok: true, ref: { assetRevision: r.revision, digest: await sha256Hex(text) }, saved: r.saved }
+          : r;
+      },
+      write: (sheet, ref) =>
+        runJob({
+          task: "prompt",
+          brief: withFactSheet(data.brief, sheet, MAX_PROMPT_CHARS),
+          images: data.images,
+          factSheet: ref,
+        }),
+    });
+    if (!out.ok)
+      return { ok: false, retry: true, message: t("factSheet.error.study", { message: out.message }) };
+    if (!out.result.ok) return out.result;
+    return { ...out.result, ...(out.saved ? { factSheet: out.saved } : {}) };
   });

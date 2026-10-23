@@ -304,4 +304,5 @@ B-087: REQ-0879–REQ-0895 (Rigg & 2D-utskrift, A1–A17) og REQ-0896–REQ-0915
 
 - [ ] Visuell sjekk av karaktertekst og synlige resultater på nb og en (krever at 0089 er kjørt i Cloud).
 - [ ] Lerretet: nye lag plasseres i bildets midtpunkt; ved zoom eller flytting bort fra midten bør de plasseres innenfor gjeldende visning (visningen må gjøres tilgjengelig for dialogene).
-- [ ] Claude: kjør migrasjon 0089 i Cloud (tekstversjoner).
+- [ ] Claude: kjør migrasjon 0089 i Cloud (tekstversjoner og `assets.visual_brief_auto_at` for faktaark laget automatisk).
+- [ ] Visuell sjekk på nb og en: faktaarket med «Laget automatisk fra manuset» vises på karakterkortet etter «Skriv med AI» (krever 0089 i Cloud).

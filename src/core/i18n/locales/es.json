@@ -55625,5 +55625,40 @@
     "text": "Creado a partir del texto de abajo",
     "sourceHash": "d787cb32abcbd828b73103417c1b1752ef796a23781bd5e5192a56397178ba4f",
     "review": "machine"
+  },
+  "factSheet.auto.label": {
+    "text": "Creado automáticamente a partir del guion {date}",
+    "sourceHash": "50dab74b2e7368e778dec500eb56bbb73421dac67f91bd5bfa30bb6c0503e814",
+    "review": "machine"
+  },
+  "factSheet.cost.study": {
+    "text": "Aún no hay ficha visual: primero se hace un estudio del guion (una llamada de texto adicional, también mucho más barata que una imagen) y luego se escribe el texto. Un clic aprueba ambas llamadas.",
+    "sourceHash": "dc1ebf1109ec05d4e1c15d825e8ebbff763554316a7bf5b58004809a90e3ed6c",
+    "review": "machine"
+  },
+  "factSheet.cost.ready": {
+    "text": "La ficha visual del guion se usa siempre, además del texto del campo.",
+    "sourceHash": "c6119bb61a3db1e0f71a945a999205c869829c98cc81d3a89eeccf3bbd5f6776",
+    "review": "machine"
+  },
+  "factSheet.error.study": {
+    "text": "No se pudo crear la ficha visual a partir del guion, así que no se escribió el texto. {message}",
+    "sourceHash": "e787f2a90e9b3f360300aa340f4d506bba548578fc48bd7d27a25ec35e330c4f",
+    "review": "machine"
+  },
+  "factSheet.error.save": {
+    "text": "No se pudo guardar la ficha visual en el recurso.",
+    "sourceHash": "fc6b40dd0b5013f101584156c84f4c2b137538b06a5e8163a207779e70c358bd",
+    "review": "machine"
+  },
+  "factSheet.retry": {
+    "text": "Reintentar",
+    "sourceHash": "d9e949c5c342cf66a13e8b0c74f61da560c11f6357a5a910ff650880c0e98647",
+    "review": "machine"
+  },
+  "factSheet.history": {
+    "text": "Ficha visual creada a partir del guion ({name})",
+    "sourceHash": "c4840be19e58aadc64429d2043adb7aa9806b851453722dddce9763ec476fdc2",
+    "review": "machine"
   }
 }

@@ -298,6 +298,8 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         removed: a.removed === true,
         // Migrasjon 0030 (DEC-0080)
         visual_brief: a.visualBrief ?? "",
+        // Migrasjon 0089: null når faktaarket er skrevet eller rettet av brukeren (apply_changes tar bare kjente kolonner)
+        visual_brief_auto_at: a.visualBriefAuto ?? null,
         // Migrasjon 0089: tekstversjoner skrives bare når ressursen har dem (eldre databaser uten kolonnen)
         ...(a.briefVersions !== undefined
           ? { brief_versions: a.briefVersions, active_brief_id: a.activeBriefId ?? null }
@@ -1403,6 +1405,10 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         ...(x["removed"] === true ? { removed: true } : {}),
         ...(typeof x["visual_brief"] === "string" && x["visual_brief"]
           ? { visualBrief: x["visual_brief"] }
+          : {}),
+        ...(typeof x["visual_brief"] === "string" && x["visual_brief"] && x["visual_brief_auto_at"] &&
+        !Number.isNaN(new Date(x["visual_brief_auto_at"] as string).getTime())
+          ? { visualBriefAuto: new Date(x["visual_brief_auto_at"] as string).toISOString() }
           : {}),
         ...(Array.isArray(json(x["brief_versions"])) && (json(x["brief_versions"]) as unknown[]).length > 0 &&
         !briefVersionsError(json(x["brief_versions"]), typeof x["active_brief_id"] === "string" ? x["active_brief_id"] : null)

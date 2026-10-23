@@ -10573,6 +10573,62 @@
       "en": {
         "text": "Made from the text below"
       }
+    },
+    "factSheet.auto.label": {
+      "nb": {
+        "text": "Laget automatisk fra manuset {date}"
+      },
+      "en": {
+        "text": "Created automatically from the script {date}"
+      }
+    },
+    "factSheet.cost.study": {
+      "nb": {
+        "text": "Faktaarket mangler: først lages en studie av manuset (ett ekstra tekstkall, også langt rimeligere enn et bilde), deretter skrives teksten. Ett trykk godkjenner begge kallene."
+      },
+      "en": {
+        "text": "No fact sheet yet: a study of the script runs first (one extra text call, also far cheaper than an image), then the text is written. One click approves both calls."
+      }
+    },
+    "factSheet.cost.ready": {
+      "nb": {
+        "text": "Faktaarket fra manuset brukes alltid, i tillegg til teksten i feltet."
+      },
+      "en": {
+        "text": "The fact sheet from the script is always used, in addition to the text in the field."
+      }
+    },
+    "factSheet.error.study": {
+      "nb": {
+        "text": "Faktaarket kunne ikke lages fra manuset, så teksten ble ikke skrevet. {message}"
+      },
+      "en": {
+        "text": "The fact sheet could not be created from the script, so the text was not written. {message}"
+      }
+    },
+    "factSheet.error.save": {
+      "nb": {
+        "text": "Faktaarket kunne ikke lagres på ressursen."
+      },
+      "en": {
+        "text": "The fact sheet could not be saved on the asset."
+      }
+    },
+    "factSheet.retry": {
+      "nb": {
+        "text": "Prøv igjen"
+      },
+      "en": {
+        "text": "Try again"
+      }
+    },
+    "factSheet.history": {
+      "nb": {
+        "text": "Faktaark laget fra manuset ({name})"
+      },
+      "en": {
+        "text": "Fact sheet created from the script ({name})"
+      }
     }
   }
 }

@@ -55477,5 +55477,40 @@
     "text": "下のテキストから作成",
     "sourceHash": "d787cb32abcbd828b73103417c1b1752ef796a23781bd5e5192a56397178ba4f",
     "review": "machine"
+  },
+  "factSheet.auto.label": {
+    "text": "脚本から自動作成 {date}",
+    "sourceHash": "50dab74b2e7368e778dec500eb56bbb73421dac67f91bd5bfa30bb6c0503e814",
+    "review": "machine"
+  },
+  "factSheet.cost.study": {
+    "text": "ビジュアルシートがまだありません。まず脚本の分析を行い（追加のテキスト呼び出し1回、画像よりはるかに安価）、その後テキストを作成します。1回のクリックで両方の呼び出しを承認します。",
+    "sourceHash": "dc1ebf1109ec05d4e1c15d825e8ebbff763554316a7bf5b58004809a90e3ed6c",
+    "review": "machine"
+  },
+  "factSheet.cost.ready": {
+    "text": "脚本のビジュアルシートは、入力欄のテキストに加えて常に使用されます。",
+    "sourceHash": "c6119bb61a3db1e0f71a945a999205c869829c98cc81d3a89eeccf3bbd5f6776",
+    "review": "machine"
+  },
+  "factSheet.error.study": {
+    "text": "脚本からビジュアルシートを作成できなかったため、テキストは作成されませんでした。{message}",
+    "sourceHash": "e787f2a90e9b3f360300aa340f4d506bba548578fc48bd7d27a25ec35e330c4f",
+    "review": "machine"
+  },
+  "factSheet.error.save": {
+    "text": "ビジュアルシートをアセットに保存できませんでした。",
+    "sourceHash": "fc6b40dd0b5013f101584156c84f4c2b137538b06a5e8163a207779e70c358bd",
+    "review": "machine"
+  },
+  "factSheet.retry": {
+    "text": "再試行",
+    "sourceHash": "d9e949c5c342cf66a13e8b0c74f61da560c11f6357a5a910ff650880c0e98647",
+    "review": "machine"
+  },
+  "factSheet.history": {
+    "text": "脚本からビジュアルシートを作成（{name}）",
+    "sourceHash": "c4840be19e58aadc64429d2043adb7aa9806b851453722dddce9763ec476fdc2",
+    "review": "machine"
   }
 }

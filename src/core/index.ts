@@ -47,6 +47,7 @@ export * from "./generation/scene-prompt";
 export * from "./generation/style";
 export * from "./generation/image-prompt";
 export * from "./generation/prompt-writer";
+export * from "./generation/fact-sheet";
 export * from "./generation/providers";
 export * from "./generation/video";
 export * from "./generation/sound";

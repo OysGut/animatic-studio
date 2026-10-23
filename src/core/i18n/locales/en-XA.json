@@ -75503,5 +75503,26 @@
   },
   "brief.versions.fromText": {
     "text": "[!! MMááddëë ffrrôômm tthhëë ttëëxxtt bbëëllôôww !!]"
+  },
+  "factSheet.auto.label": {
+    "text": "[!! CCrrëëááttëëdd ááüüttôômmááttïïccáállllyy ffrrôômm tthhëë ssccrrïïpptt {date} !!]"
+  },
+  "factSheet.cost.study": {
+    "text": "[!! NNôô ffáácctt sshhëëëëtt yyëëtt: áá ssttüüddyy ôôff tthhëë ssccrrïïpptt rrüünnss ffïïrrsstt (ôônnëë ëëxxttrráá ttëëxxtt ccáállll, áállssôô ffáárr cchhëëááppëërr tthháánn áánn ïïmmáággëë), tthhëënn tthhëë ttëëxxtt ïïss wwrrïïttttëënn. ÔÔnnëë ccllïïcckk áápppprrôôvvëëss bbôôtthh ccáállllss. !!]"
+  },
+  "factSheet.cost.ready": {
+    "text": "[!! TThhëë ffáácctt sshhëëëëtt ffrrôômm tthhëë ssccrrïïpptt ïïss áállwwááyyss üüssëëdd, ïïnn ááddddïïttïïôônn ttôô tthhëë ttëëxxtt ïïnn tthhëë ffïïëëlldd. !!]"
+  },
+  "factSheet.error.study": {
+    "text": "[!! TThhëë ffáácctt sshhëëëëtt ccôôüülldd nnôôtt bbëë ccrrëëááttëëdd ffrrôômm tthhëë ssccrrïïpptt, ssôô tthhëë ttëëxxtt wwááss nnôôtt wwrrïïttttëënn. {message} !!]"
+  },
+  "factSheet.error.save": {
+    "text": "[!! TThhëë ffáácctt sshhëëëëtt ccôôüülldd nnôôtt bbëë ssáávvëëdd ôônn tthhëë áássssëëtt. !!]"
+  },
+  "factSheet.retry": {
+    "text": "[!! TTrryy áággááïïnn !!]"
+  },
+  "factSheet.history": {
+    "text": "[!! FFáácctt sshhëëëëtt ccrrëëááttëëdd ffrrôômm tthhëë ssccrrïïpptt ({name}) !!]"
   }
 }

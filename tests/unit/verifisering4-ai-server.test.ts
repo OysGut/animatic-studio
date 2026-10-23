@@ -54,7 +54,7 @@ function project(jobs: Record<string, unknown>[] = []): FakeDb {
         { project_id: P, user_id: EDITOR, role: "editor", removed_at: null },
         { project_id: P, user_id: VIEWER, role: "viewer", removed_at: null },
       ],
-      assets: [{ id: ASSET, project_id: P, kind: "character" }],
+      assets: [{ id: ASSET, project_id: P, kind: "character", visual_brief: "- Maja er sju år", revision: 3 }],
       asset_versions: [
         { project_id: P, media_path: REF1, mime_type: "image/png", byte_size: 3 },
         { project_id: P, media_path: REF2, mime_type: "image/png", byte_size: 3 },
@@ -194,7 +194,8 @@ describe("REQ-0565 – AI-bilder gjennom Lovable AI Gateway (simulert)", () => {
     expect(sent).toHaveLength(1);
     expect(sent[0]!.url).toBe("https://ai.gateway.lovable.dev/v1/images/edits");
     expect(sent[0]!.headers["Authorization"]).toBe(`Bearer ${KEY}`);
-    expect(sent[0]!.form!.get("prompt")).toBe(input().prompt);
+    // Faktaarket legges alltid til av serveren når teksten mangler det (Øystein 23.10)
+    expect(sent[0]!.form!.get("prompt")).toBe(`VISUAL FACT SHEET (authoritative for appearance; the text after it may refine details but never contradict or remove these facts):\n- Maja er sju år\n\n${input().prompt}`);
     expect(sent[0]!.form!.get("image")).toBeInstanceOf(File);
     // Loggen
     const [job] = jobsOf(db);
@@ -202,7 +203,7 @@ describe("REQ-0565 – AI-bilder gjennom Lovable AI Gateway (simulert)", () => {
       kind: "image",
       provider: "lovable",
       model: "openai/gpt-image-2.5-sunburst",
-      prompt: input().prompt,
+      prompt: String(sent[0]!.form!.get("prompt")),
       asset_id: ASSET,
       reference_path: REF1,
       status: "done",

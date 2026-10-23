@@ -55625,5 +55625,40 @@
     "text": "Creato dal testo qui sotto",
     "sourceHash": "d787cb32abcbd828b73103417c1b1752ef796a23781bd5e5192a56397178ba4f",
     "review": "machine"
+  },
+  "factSheet.auto.label": {
+    "text": "Creato automaticamente dalla sceneggiatura {date}",
+    "sourceHash": "50dab74b2e7368e778dec500eb56bbb73421dac67f91bd5bfa30bb6c0503e814",
+    "review": "machine"
+  },
+  "factSheet.cost.study": {
+    "text": "Nessuna scheda visiva: prima viene eseguito uno studio della sceneggiatura (una chiamata di testo in più, anch’essa molto più economica di un’immagine), poi viene scritto il testo. Un clic approva entrambe le chiamate.",
+    "sourceHash": "dc1ebf1109ec05d4e1c15d825e8ebbff763554316a7bf5b58004809a90e3ed6c",
+    "review": "machine"
+  },
+  "factSheet.cost.ready": {
+    "text": "La scheda visiva della sceneggiatura viene sempre usata, oltre al testo nel campo.",
+    "sourceHash": "c6119bb61a3db1e0f71a945a999205c869829c98cc81d3a89eeccf3bbd5f6776",
+    "review": "machine"
+  },
+  "factSheet.error.study": {
+    "text": "Non è stato possibile creare la scheda visiva dalla sceneggiatura, quindi il testo non è stato scritto. {message}",
+    "sourceHash": "e787f2a90e9b3f360300aa340f4d506bba548578fc48bd7d27a25ec35e330c4f",
+    "review": "machine"
+  },
+  "factSheet.error.save": {
+    "text": "Non è stato possibile salvare la scheda visiva sulla risorsa.",
+    "sourceHash": "fc6b40dd0b5013f101584156c84f4c2b137538b06a5e8163a207779e70c358bd",
+    "review": "machine"
+  },
+  "factSheet.retry": {
+    "text": "Riprova",
+    "sourceHash": "d9e949c5c342cf66a13e8b0c74f61da560c11f6357a5a910ff650880c0e98647",
+    "review": "machine"
+  },
+  "factSheet.history": {
+    "text": "Scheda visiva creata dalla sceneggiatura ({name})",
+    "sourceHash": "c4840be19e58aadc64429d2043adb7aa9806b851453722dddce9763ec476fdc2",
+    "review": "machine"
   }
 }
