@@ -7,6 +7,7 @@ import { LanguageSwitch, useLanguage } from "@/app/i18n/language";
 import { fetchProjectLock } from "@/adapters/browser/account";
 import { ScriptExplorer } from "@/app/script-explorer/ScriptExplorer";
 import { validateExplorerSearch } from "@/app/script-explorer/explorer-state";
+import { usePopupGeometry } from "@/app/script-explorer/popup-geometry";
 import { t } from "@/core/i18n/keyed";
 
 export const Route = createFileRoute("/manusutforsker/$projectId")({
@@ -26,6 +27,7 @@ function ExplorerRoute() {
   const { projectId } = Route.useParams();
   const search = Route.useSearch();
   const session = useSession();
+  usePopupGeometry(session.status === "signed-in");
   const lock = useQuery({ queryKey: ["project-lock", projectId], enabled: session.status === "signed-in", queryFn: () => fetchProjectLock(projectId), staleTime: 60_000 });
   if (session.status === "loading") return <div className="min-h-screen bg-bg-app" aria-busy />;
   if (session.status === "signed-out") return <AuthScreen />;
