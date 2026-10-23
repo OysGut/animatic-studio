@@ -8,7 +8,7 @@ Autoritativ kilde for krav-ID-er. Mandatkrav er utledet fra `MASTER_SPECIFICATIO
 - Antall krav: **924**
 - Prioritet: P0: 147, P1: 569, P2: 169, P3: 39
 - Opprinnelse: mandat: 520, brukerbeslutning: 397, teknisk-anbefaling: 7
-- Status: Verifisert: 814, Ikke startet: 63, Implementert – ikke verifisert: 46, Utgått: 1
+- Status: Verifisert: 823, Ikke startet: 63, Implementert – ikke verifisert: 37, Utgått: 1
 
 ## Prioritetsdefinisjoner
 - **P0** Kritisk – ufravikelig prinsipp/systeminvariant. Gjelder fra første kodelinje som berører området, også når selve funksjonen bygges i en senere fase (feltet `phase`).
@@ -10481,10 +10481,11 @@ spornavn er karakternavn
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - spornavn er karakternavn
 - **Tester:**
+  - tests/unit/n11-scene-audio.test.tsx
   - tests/visual/dv3-dialogue-editor.mjs
   - tests/unit/dv3-dv4.test.ts
   - tests/invariants/dialogue-lossless.test.ts
@@ -10691,7 +10692,7 @@ velge ElevenLabs-stemme når integrasjonen finnes
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - velge ElevenLabs-stemme når integrasjonen finnes
 - **Tester:**
@@ -10753,10 +10754,11 @@ brukeren velger scener og replikker
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - brukeren velger scener og replikker
 - **Tester:**
+  - tests/unit/n11-dialogue-batch.test.tsx
   - tests/unit/dv5-dv6.test.ts
   - tests/invariants/dialogue-lossless.test.ts
   - tests/db/run-db-tests.ts
@@ -10881,7 +10883,7 @@ automatisk plassering i riktig replikk og scene
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - automatisk plassering i riktig replikk og scene
 - **Tester:**
@@ -11009,10 +11011,11 @@ brukeren kan velge samlet generering med advarsel
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - brukeren kan velge samlet generering med advarsel
 - **Tester:**
+  - tests/unit/n11-dialogue-batch.test.tsx
   - tests/unit/dv5-dv6.test.ts
   - tests/invariants/dialogue-lossless.test.ts
   - tests/db/run-db-tests.ts
@@ -11041,10 +11044,11 @@ brukeren velger innhold og estimater per språkjobb
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - brukeren velger innhold og estimater per språkjobb
 - **Tester:**
+  - tests/unit/n11-dialogue-batch.test.tsx
   - tests/unit/dv5-dv6.test.ts
   - tests/invariants/dialogue-lossless.test.ts
   - tests/db/run-db-tests.ts
@@ -11249,7 +11253,7 @@ handlingen ligger i Asset Library
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - handlingen ligger i Asset Library
 - **Tester:**
@@ -11281,7 +11285,7 @@ brukeren velger replikker
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - brukeren velger replikker
 - **Tester:**
@@ -11297,7 +11301,7 @@ språk og kostnad vises før generering
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - språk og kostnad vises før generering
 - **Tester:**
