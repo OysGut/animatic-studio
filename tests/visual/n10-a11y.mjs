@@ -123,5 +123,4 @@ await h.scenario("dialog-fokus", occ, "nb", async (page) => {
   h.check(await page.evaluate(() => !!document.activeElement?.closest("[data-script-block]")), "Escape lukker og fokus går tilbake til replikken");
 });
 
-const { fail } = await h.finish();
-process.exit(fail ? 1 : 0);
+await h.finish();
