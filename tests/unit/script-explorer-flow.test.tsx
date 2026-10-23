@@ -6,6 +6,12 @@ import { seedProject } from "../helpers/fixtures";
 import { ScriptExplorer } from "@/app/script-explorer/ScriptExplorer";
 
 const harness = vi.hoisted(() => ({ state: null as unknown, occurrenceId: "", editable: true, sent: [] as unknown[], run: vi.fn() }));
+// Visningsvalg (nettleser + konto) erstattes med et minnelager i testene
+const uiStore = vi.hoisted(() => new Map<string, unknown>());
+vi.mock("@/app/account/ui-prefs", async () => {
+  const React = await import("react");
+  return { useUiPref: <T,>(key: string, fallback: T) => { const [v, setV] = React.useState<T>(uiStore.has(key) ? (uiStore.get(key) as T) : fallback); return [v, (n: T) => { uiStore.set(key, n); setV(n); }]; } };
+});
 vi.mock("@/app/project/use-project", () => ({
   useProjectState: () => ({ data: harness.state, isLoading: false, isError: false }),
   useMembers: () => ({ data: [{ user_id: "user", role: harness.editable ? "editor" : "viewer" }], isLoading: false, isError: false }),
@@ -50,12 +56,15 @@ describe("script explorer user flow", () => {
   });
   it("creates only an AddAnnotations note on a selected block without changing the original script", async () => {
     const { state, first } = setup();
-    await screen.findByTestId("script-explorer-note");
+    await screen.findByTestId("script-explorer-search");
+    // Notatpanelet vises først når noe er valgt (scenen har ingen notater ennå)
+    expect(screen.queryByTestId("script-explorer-note")).toBeNull();
     const block = blocksOfVariant(state, first.variantId).find((b) => b.kind === "action");
     if (!block) throw new Error("missing action");
     const line = document.querySelector(`[data-block="${block.id}"]`);
     if (!line) throw new Error("missing rendered line");
     fireEvent.click(line);
+    await screen.findByTestId("script-explorer-note");
     fireEvent.click(screen.getByRole("button", { name: "Legg til notat" }));
     fireEvent.change(within(screen.getByTestId("script-explorer-note")).getByRole("textbox"), { target: { value: "Notat om handlingen" } });
     fireEvent.click(screen.getByRole("button", { name: "Lagre notat" }));

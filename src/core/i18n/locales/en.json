@@ -75674,5 +75674,89 @@
   },
   "ml3-language-versions.select.source": {
     "text": "{label} – script (source)"
+  },
+  "script-explorer2.window.snap-left": {
+    "text": "Snap to left half"
+  },
+  "script-explorer2.window.snap-right": {
+    "text": "Snap to right half"
+  },
+  "script-explorer2.window.maximize": {
+    "text": "Maximize"
+  },
+  "script-explorer2.window.restore": {
+    "text": "Restore size"
+  },
+  "script-explorer2.open.group": {
+    "text": "Open in"
+  },
+  "script-explorer2.open.script": {
+    "text": "Script"
+  },
+  "script-explorer2.open.assembly": {
+    "text": "Assembly"
+  },
+  "script-explorer2.open.assembly-aria": {
+    "text": "Open in the assembly with the playhead at the scene"
+  },
+  "script-explorer2.open.scene": {
+    "text": "Scene editor"
+  },
+  "script-explorer2.open.scene-aria": {
+    "text": "Open the scene in the scene editor"
+  },
+  "script-explorer2.open.dialogue": {
+    "text": "Line and audio"
+  },
+  "script-explorer2.open.dialogue-aria": {
+    "text": "Open the selected line in the dialogue and audio window"
+  },
+  "script-explorer2.open.dialogue-none": {
+    "text": "Select a line in the script first"
+  },
+  "script-explorer2.open.storylab": {
+    "text": "Story Lab"
+  },
+  "script-explorer2.open.storylab-aria": {
+    "text": "Open Story Lab at this scene"
+  },
+  "script-explorer2.chips.label": {
+    "text": "Characters, props and locations in the scene"
+  },
+  "script-explorer2.chip.menu": {
+    "text": "Options for {name}"
+  },
+  "script-explorer2.menu.library": {
+    "text": "Open in the library"
+  },
+  "script-explorer2.menu.filter": {
+    "text": "Filter the explorer by this"
+  },
+  "script-explorer2.menu.next": {
+    "text": "Next appearance"
+  },
+  "script-explorer2.menu.prev": {
+    "text": "Previous appearance"
+  },
+  "script-explorer2.menu.first": {
+    "text": "First appearance"
+  },
+  "script-explorer2.menu.all": {
+    "text": "All scenes with {name}"
+  },
+  "script-explorer2.menu.scene": {
+    "text": "Scene {number}"
+  },
+  "script-explorer2.notes.toggle": {
+    "text": "Notes ({count})"
+  },
+  "script-explorer2.notes.marks": {
+    "text": "Note marks in the text"
+  },
+  "script-explorer2.panes.hits": {
+    "text": "Resize the results"
+  },
+  "script-explorer2.panes.side": {
+    "text": "Resize the side panel"
   }
 }

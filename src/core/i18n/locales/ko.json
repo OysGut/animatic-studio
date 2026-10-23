@@ -55762,5 +55762,145 @@
     "text": "노르웨이어는 메인 대본이므로 번역되지 않습니다",
     "sourceHash": "cd74ef93f879d93e0a7527dddaf25f9f3385e3eb7fc084e149ca17a83a6ab660",
     "review": "user"
+  },
+  "script-explorer2.window.snap-left": {
+    "text": "왼쪽 절반에 고정",
+    "sourceHash": "191566ce8c0faf5d55ac5ade9b320ac1062e71afe7094ba29a2b121391ad10b4",
+    "review": "machine"
+  },
+  "script-explorer2.window.snap-right": {
+    "text": "오른쪽 절반에 고정",
+    "sourceHash": "82909df04d1286289f82cf48fd16469054c2f07bc041e61cb1592ebf93d449f8",
+    "review": "machine"
+  },
+  "script-explorer2.window.maximize": {
+    "text": "최대화",
+    "sourceHash": "dbe0f8aabee19fa83a77ec3809e82cb27f61a08713461d8a3447c5a31c0f9ee4",
+    "review": "machine"
+  },
+  "script-explorer2.window.restore": {
+    "text": "크기 복원",
+    "sourceHash": "0a5a8eadae06bcd223aa44e94f188773e81b6bfb21e30517d7ff48d9667da5ce",
+    "review": "machine"
+  },
+  "script-explorer2.open.group": {
+    "text": "열기",
+    "sourceHash": "341372f6fe78cce3954000ed10a67c9c40732d102ea1c3d4aec227bbdf989638",
+    "review": "machine"
+  },
+  "script-explorer2.open.script": {
+    "text": "대본",
+    "sourceHash": "b66ef7e1052a98fa58235776665284ae3510d514598b707f7908277d30330ea4",
+    "review": "machine"
+  },
+  "script-explorer2.open.assembly": {
+    "text": "어셈블리",
+    "sourceHash": "0a2d37cb3b5b81d5568bf2094ae56d8840d933e7330851dfcd4d30b9602a4fd0",
+    "review": "machine"
+  },
+  "script-explorer2.open.assembly-aria": {
+    "text": "재생 헤드를 장면에 두고 어셈블리에서 열기",
+    "sourceHash": "dd49d461dcce95a6a2b6c53e24b9ca739c9139ca7a9477b7a006b4fb13440103",
+    "review": "machine"
+  },
+  "script-explorer2.open.scene": {
+    "text": "장면 편집기",
+    "sourceHash": "03077a29db29ea03fa5e6415f26f05e0eeda24aec398fc1ccffc3e907cd24fe0",
+    "review": "machine"
+  },
+  "script-explorer2.open.scene-aria": {
+    "text": "장면 편집기에서 장면 열기",
+    "sourceHash": "a9d4642b47bc19e7200019c3026d6073d07d4f82a79a89de054b9edd89e2c0ef",
+    "review": "machine"
+  },
+  "script-explorer2.open.dialogue": {
+    "text": "대사와 오디오",
+    "sourceHash": "ffebc86fefe5ac132c390d942d09585987c86a00f268b69c2f70c497578bb001",
+    "review": "machine"
+  },
+  "script-explorer2.open.dialogue-aria": {
+    "text": "선택한 대사를 대화 및 오디오 창에서 열기",
+    "sourceHash": "d19ca5b8d69d2487635c4409795b5d9eb0bafd01d3b698338d722d2988e7866a",
+    "review": "machine"
+  },
+  "script-explorer2.open.dialogue-none": {
+    "text": "먼저 대본에서 대사를 선택하세요",
+    "sourceHash": "91a9abc168da428c7fee76c2b1141517c1db0a711638d9b7408fc4f354a8fb41",
+    "review": "machine"
+  },
+  "script-explorer2.open.storylab": {
+    "text": "Story Lab",
+    "sourceHash": "cb7a56cd612f799ea95b81d85a7d4012a15b8ba06d70a43aa2059d0345ba8129",
+    "review": "machine"
+  },
+  "script-explorer2.open.storylab-aria": {
+    "text": "이 장면에서 Story Lab 열기",
+    "sourceHash": "a324e84b0cf1861a08e6eef99202af7e8926e755b0f5fcd49cbe3d40c6880dd1",
+    "review": "machine"
+  },
+  "script-explorer2.chips.label": {
+    "text": "장면의 캐릭터, 소품, 장소",
+    "sourceHash": "9684c4a6eb9dc8fcf0c2c9891f4f781ebf236b8f3be626777a234859b280603a",
+    "review": "machine"
+  },
+  "script-explorer2.chip.menu": {
+    "text": "{name} 옵션",
+    "sourceHash": "0d75d2108380932daf2f711d4cc56562685dbd5fcc459853c6e0bb9d9fe1c5f5",
+    "review": "machine"
+  },
+  "script-explorer2.menu.library": {
+    "text": "라이브러리에서 열기",
+    "sourceHash": "db7a462543202f798d595a04ec43999a440cc1def231ad92e840ad365580c291",
+    "review": "machine"
+  },
+  "script-explorer2.menu.filter": {
+    "text": "이 항목으로 탐색기 필터링",
+    "sourceHash": "6d6603ce7acc03f0b2df0edc0199535ed3fb9ce59d0b04acfe3d08b45fb8bf4e",
+    "review": "machine"
+  },
+  "script-explorer2.menu.next": {
+    "text": "다음 등장",
+    "sourceHash": "e13c2188498944fd5fad1938c5eefc4a37c1b501c888f164b89b66183408b67f",
+    "review": "machine"
+  },
+  "script-explorer2.menu.prev": {
+    "text": "이전 등장",
+    "sourceHash": "d228a4d5ffe8f92e272d72b74bfba3fcf6341f56a4c1819513cf133907939331",
+    "review": "machine"
+  },
+  "script-explorer2.menu.first": {
+    "text": "첫 등장",
+    "sourceHash": "3075c72d76ef5510ecb50db37bbfb3d4ac28e98de8bc86b86939c98c7de6acec",
+    "review": "machine"
+  },
+  "script-explorer2.menu.all": {
+    "text": "{name}이(가) 나오는 모든 장면",
+    "sourceHash": "c5a697872182160390b760d220e4f2b09db03ca3fd1839d6fdf20430127bea2b",
+    "review": "machine"
+  },
+  "script-explorer2.menu.scene": {
+    "text": "장면 {number}",
+    "sourceHash": "98446133fa354fe6ebbb6691fdbb6a9ec78f6cca20b4a3093500976b6622a815",
+    "review": "machine"
+  },
+  "script-explorer2.notes.toggle": {
+    "text": "메모 ({count})",
+    "sourceHash": "adc96831908a1767634aaa5e4b743dbf4185349bc660bf91803aa4f53d203c2a",
+    "review": "machine"
+  },
+  "script-explorer2.notes.marks": {
+    "text": "본문의 메모 표시",
+    "sourceHash": "17728c50ca3917c3cfd28115d4550573695b095a343d090ec09716578e847a09",
+    "review": "machine"
+  },
+  "script-explorer2.panes.hits": {
+    "text": "결과 너비 변경",
+    "sourceHash": "2f7838af0b2c171b893705a2b8b3b37c23cf026182ab793737f965cce1e66138",
+    "review": "machine"
+  },
+  "script-explorer2.panes.side": {
+    "text": "측면 패널 너비 변경",
+    "sourceHash": "233acf6d578376478a4d51ecd2212c85f619e069e39b36cac3dddbff44f3969a",
+    "review": "machine"
   }
 }

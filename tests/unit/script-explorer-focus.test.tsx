@@ -3,6 +3,12 @@ import { act, cleanup, fireEvent, render, screen } from "@testing-library/react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ScriptExplorerPanel } from "@/app/script-explorer/ScriptExplorerPanel";
 
+// Visningsvalg (nettleser + konto) erstattes med et minnelager i testene
+const uiStore = vi.hoisted(() => new Map<string, unknown>());
+vi.mock("@/app/account/ui-prefs", async () => {
+  const React = await import("react");
+  return { useUiPref: <T,>(key: string, fallback: T) => { const [v, setV] = React.useState<T>(uiStore.has(key) ? (uiStore.get(key) as T) : fallback); return [v, (n: T) => { uiStore.set(key, n); setV(n); }]; } };
+});
 vi.mock("@/app/auth/use-session", () => ({ useSession: () => ({ status: "signed-in", session: { user: { id: "user", email: "" } } }) }));
 vi.mock("@/app/shell/pane-size", () => ({ useStoredNumber: () => [null, vi.fn()] }));
 vi.mock("@/app/shell/current-scene", () => ({ sourceWindowId: () => "source" }));

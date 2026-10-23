@@ -75674,5 +75674,89 @@
   },
   "ml3-language-versions.select.source": {
     "text": "[!! {label} – ssccrrïïpptt (ssôôüürrccëë) !!]"
+  },
+  "script-explorer2.window.snap-left": {
+    "text": "[!! SSnnáápp ttôô llëëfftt hháállff !!]"
+  },
+  "script-explorer2.window.snap-right": {
+    "text": "[!! SSnnáápp ttôô rrïïgghhtt hháállff !!]"
+  },
+  "script-explorer2.window.maximize": {
+    "text": "[!! MMááxxïïmmïïzzëë !!]"
+  },
+  "script-explorer2.window.restore": {
+    "text": "[!! RRëëssttôôrrëë ssïïzzëë !!]"
+  },
+  "script-explorer2.open.group": {
+    "text": "[!! ÔÔppëënn ïïnn !!]"
+  },
+  "script-explorer2.open.script": {
+    "text": "[!! SSccrrïïpptt !!]"
+  },
+  "script-explorer2.open.assembly": {
+    "text": "[!! ÁÁssssëëmmbbllyy !!]"
+  },
+  "script-explorer2.open.assembly-aria": {
+    "text": "[!! ÔÔppëënn ïïnn tthhëë áássssëëmmbbllyy wwïïtthh tthhëë ppllááyyhhëëáádd áátt tthhëë ssccëënnëë !!]"
+  },
+  "script-explorer2.open.scene": {
+    "text": "[!! SSccëënnëë ëëddïïttôôrr !!]"
+  },
+  "script-explorer2.open.scene-aria": {
+    "text": "[!! ÔÔppëënn tthhëë ssccëënnëë ïïnn tthhëë ssccëënnëë ëëddïïttôôrr !!]"
+  },
+  "script-explorer2.open.dialogue": {
+    "text": "[!! LLïïnnëë áánndd ááüüddïïôô !!]"
+  },
+  "script-explorer2.open.dialogue-aria": {
+    "text": "[!! ÔÔppëënn tthhëë ssëëllëëccttëëdd llïïnnëë ïïnn tthhëë ddïïáállôôggüüëë áánndd ááüüddïïôô wwïïnnddôôww !!]"
+  },
+  "script-explorer2.open.dialogue-none": {
+    "text": "[!! SSëëllëëcctt áá llïïnnëë ïïnn tthhëë ssccrrïïpptt ffïïrrsstt !!]"
+  },
+  "script-explorer2.open.storylab": {
+    "text": "[!! SSttôôrryy LLáább !!]"
+  },
+  "script-explorer2.open.storylab-aria": {
+    "text": "[!! ÔÔppëënn SSttôôrryy LLáább áátt tthhïïss ssccëënnëë !!]"
+  },
+  "script-explorer2.chips.label": {
+    "text": "[!! CChháárrááccttëërrss, pprrôôppss áánndd llôôccááttïïôônnss ïïnn tthhëë ssccëënnëë !!]"
+  },
+  "script-explorer2.chip.menu": {
+    "text": "[!! ÔÔppttïïôônnss ffôôrr {name} !!]"
+  },
+  "script-explorer2.menu.library": {
+    "text": "[!! ÔÔppëënn ïïnn tthhëë llïïbbrráárryy !!]"
+  },
+  "script-explorer2.menu.filter": {
+    "text": "[!! FFïïllttëërr tthhëë ëëxxppllôôrrëërr bbyy tthhïïss !!]"
+  },
+  "script-explorer2.menu.next": {
+    "text": "[!! NNëëxxtt ááppppëëáárráánnccëë !!]"
+  },
+  "script-explorer2.menu.prev": {
+    "text": "[!! PPrrëëvvïïôôüüss ááppppëëáárráánnccëë !!]"
+  },
+  "script-explorer2.menu.first": {
+    "text": "[!! FFïïrrsstt ááppppëëáárráánnccëë !!]"
+  },
+  "script-explorer2.menu.all": {
+    "text": "[!! ÁÁllll ssccëënnëëss wwïïtthh {name} !!]"
+  },
+  "script-explorer2.menu.scene": {
+    "text": "[!! SSccëënnëë {number} !!]"
+  },
+  "script-explorer2.notes.toggle": {
+    "text": "[!! NNôôttëëss ({count}) !!]"
+  },
+  "script-explorer2.notes.marks": {
+    "text": "[!! NNôôttëë mmáárrkkss ïïnn tthhëë ttëëxxtt !!]"
+  },
+  "script-explorer2.panes.hits": {
+    "text": "[!! RRëëssïïzzëë tthhëë rrëëssüüllttss !!]"
+  },
+  "script-explorer2.panes.side": {
+    "text": "[!! RRëëssïïzzëë tthhëë ssïïddëë ppáánnëëll !!]"
   }
 }

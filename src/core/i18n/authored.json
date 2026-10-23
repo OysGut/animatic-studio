@@ -11031,6 +11031,258 @@
       "en": {
         "text": "{label} – script (source)"
       }
+    },
+    "script-explorer2.window.snap-left": {
+      "replaces": [],
+      "nb": {
+        "text": "Fest til venstre halvdel"
+      },
+      "en": {
+        "text": "Snap to left half"
+      }
+    },
+    "script-explorer2.window.snap-right": {
+      "replaces": [],
+      "nb": {
+        "text": "Fest til høyre halvdel"
+      },
+      "en": {
+        "text": "Snap to right half"
+      }
+    },
+    "script-explorer2.window.maximize": {
+      "replaces": [],
+      "nb": {
+        "text": "Maksimer"
+      },
+      "en": {
+        "text": "Maximize"
+      }
+    },
+    "script-explorer2.window.restore": {
+      "replaces": [],
+      "nb": {
+        "text": "Gjenopprett størrelsen"
+      },
+      "en": {
+        "text": "Restore size"
+      }
+    },
+    "script-explorer2.open.group": {
+      "replaces": [],
+      "nb": {
+        "text": "Åpne i"
+      },
+      "en": {
+        "text": "Open in"
+      }
+    },
+    "script-explorer2.open.script": {
+      "replaces": [],
+      "nb": {
+        "text": "Manus"
+      },
+      "en": {
+        "text": "Script"
+      }
+    },
+    "script-explorer2.open.assembly": {
+      "replaces": [],
+      "nb": {
+        "text": "Montering"
+      },
+      "en": {
+        "text": "Assembly"
+      }
+    },
+    "script-explorer2.open.assembly-aria": {
+      "replaces": [],
+      "nb": {
+        "text": "Åpne i monteringen med avspillingshodet på scenen"
+      },
+      "en": {
+        "text": "Open in the assembly with the playhead at the scene"
+      }
+    },
+    "script-explorer2.open.scene": {
+      "replaces": [],
+      "nb": {
+        "text": "Sceneeditor"
+      },
+      "en": {
+        "text": "Scene editor"
+      }
+    },
+    "script-explorer2.open.scene-aria": {
+      "replaces": [],
+      "nb": {
+        "text": "Åpne scenen i sceneeditoren"
+      },
+      "en": {
+        "text": "Open the scene in the scene editor"
+      }
+    },
+    "script-explorer2.open.dialogue": {
+      "replaces": [],
+      "nb": {
+        "text": "Replikk og lyd"
+      },
+      "en": {
+        "text": "Line and audio"
+      }
+    },
+    "script-explorer2.open.dialogue-aria": {
+      "replaces": [],
+      "nb": {
+        "text": "Åpne den valgte replikken i dialog- og lydvinduet"
+      },
+      "en": {
+        "text": "Open the selected line in the dialogue and audio window"
+      }
+    },
+    "script-explorer2.open.dialogue-none": {
+      "replaces": [],
+      "nb": {
+        "text": "Velg en replikk i manuset først"
+      },
+      "en": {
+        "text": "Select a line in the script first"
+      }
+    },
+    "script-explorer2.open.storylab": {
+      "replaces": [],
+      "nb": {
+        "text": "Story Lab"
+      },
+      "en": {
+        "text": "Story Lab"
+      }
+    },
+    "script-explorer2.open.storylab-aria": {
+      "replaces": [],
+      "nb": {
+        "text": "Åpne Story Lab ved denne scenen"
+      },
+      "en": {
+        "text": "Open Story Lab at this scene"
+      }
+    },
+    "script-explorer2.chips.label": {
+      "replaces": [],
+      "nb": {
+        "text": "Karakterer, rekvisitter og steder i scenen"
+      },
+      "en": {
+        "text": "Characters, props and locations in the scene"
+      }
+    },
+    "script-explorer2.chip.menu": {
+      "replaces": [],
+      "nb": {
+        "text": "Valg for {name}"
+      },
+      "en": {
+        "text": "Options for {name}"
+      }
+    },
+    "script-explorer2.menu.library": {
+      "replaces": [],
+      "nb": {
+        "text": "Åpne i biblioteket"
+      },
+      "en": {
+        "text": "Open in the library"
+      }
+    },
+    "script-explorer2.menu.filter": {
+      "replaces": [],
+      "nb": {
+        "text": "Filtrer utforskeren på denne"
+      },
+      "en": {
+        "text": "Filter the explorer by this"
+      }
+    },
+    "script-explorer2.menu.next": {
+      "replaces": [],
+      "nb": {
+        "text": "Neste opptreden"
+      },
+      "en": {
+        "text": "Next appearance"
+      }
+    },
+    "script-explorer2.menu.prev": {
+      "replaces": [],
+      "nb": {
+        "text": "Forrige opptreden"
+      },
+      "en": {
+        "text": "Previous appearance"
+      }
+    },
+    "script-explorer2.menu.first": {
+      "replaces": [],
+      "nb": {
+        "text": "Første opptreden"
+      },
+      "en": {
+        "text": "First appearance"
+      }
+    },
+    "script-explorer2.menu.all": {
+      "replaces": [],
+      "nb": {
+        "text": "Alle scener med {name}"
+      },
+      "en": {
+        "text": "All scenes with {name}"
+      }
+    },
+    "script-explorer2.menu.scene": {
+      "replaces": [],
+      "nb": {
+        "text": "Scene {number}"
+      },
+      "en": {
+        "text": "Scene {number}"
+      }
+    },
+    "script-explorer2.notes.toggle": {
+      "replaces": [],
+      "nb": {
+        "text": "Notater ({count})"
+      },
+      "en": {
+        "text": "Notes ({count})"
+      }
+    },
+    "script-explorer2.notes.marks": {
+      "replaces": [],
+      "nb": {
+        "text": "Notatmerker i teksten"
+      },
+      "en": {
+        "text": "Note marks in the text"
+      }
+    },
+    "script-explorer2.panes.hits": {
+      "replaces": [],
+      "nb": {
+        "text": "Endre bredden på treffene"
+      },
+      "en": {
+        "text": "Resize the results"
+      }
+    },
+    "script-explorer2.panes.side": {
+      "replaces": [],
+      "nb": {
+        "text": "Endre bredden på sidepanelet"
+      },
+      "en": {
+        "text": "Resize the side panel"
+      }
     }
   }
 }

@@ -75692,5 +75692,89 @@
   },
   "ml3-language-versions.select.source": {
     "text": "{label} – manus (kilde)"
+  },
+  "script-explorer2.window.snap-left": {
+    "text": "Fest til venstre halvdel"
+  },
+  "script-explorer2.window.snap-right": {
+    "text": "Fest til høyre halvdel"
+  },
+  "script-explorer2.window.maximize": {
+    "text": "Maksimer"
+  },
+  "script-explorer2.window.restore": {
+    "text": "Gjenopprett størrelsen"
+  },
+  "script-explorer2.open.group": {
+    "text": "Åpne i"
+  },
+  "script-explorer2.open.script": {
+    "text": "Manus"
+  },
+  "script-explorer2.open.assembly": {
+    "text": "Montering"
+  },
+  "script-explorer2.open.assembly-aria": {
+    "text": "Åpne i monteringen med avspillingshodet på scenen"
+  },
+  "script-explorer2.open.scene": {
+    "text": "Sceneeditor"
+  },
+  "script-explorer2.open.scene-aria": {
+    "text": "Åpne scenen i sceneeditoren"
+  },
+  "script-explorer2.open.dialogue": {
+    "text": "Replikk og lyd"
+  },
+  "script-explorer2.open.dialogue-aria": {
+    "text": "Åpne den valgte replikken i dialog- og lydvinduet"
+  },
+  "script-explorer2.open.dialogue-none": {
+    "text": "Velg en replikk i manuset først"
+  },
+  "script-explorer2.open.storylab": {
+    "text": "Story Lab"
+  },
+  "script-explorer2.open.storylab-aria": {
+    "text": "Åpne Story Lab ved denne scenen"
+  },
+  "script-explorer2.chips.label": {
+    "text": "Karakterer, rekvisitter og steder i scenen"
+  },
+  "script-explorer2.chip.menu": {
+    "text": "Valg for {name}"
+  },
+  "script-explorer2.menu.library": {
+    "text": "Åpne i biblioteket"
+  },
+  "script-explorer2.menu.filter": {
+    "text": "Filtrer utforskeren på denne"
+  },
+  "script-explorer2.menu.next": {
+    "text": "Neste opptreden"
+  },
+  "script-explorer2.menu.prev": {
+    "text": "Forrige opptreden"
+  },
+  "script-explorer2.menu.first": {
+    "text": "Første opptreden"
+  },
+  "script-explorer2.menu.all": {
+    "text": "Alle scener med {name}"
+  },
+  "script-explorer2.menu.scene": {
+    "text": "Scene {number}"
+  },
+  "script-explorer2.notes.toggle": {
+    "text": "Notater ({count})"
+  },
+  "script-explorer2.notes.marks": {
+    "text": "Notatmerker i teksten"
+  },
+  "script-explorer2.panes.hits": {
+    "text": "Endre bredden på treffene"
+  },
+  "script-explorer2.panes.side": {
+    "text": "Endre bredden på sidepanelet"
   }
 }
