@@ -78,12 +78,14 @@ describe("G-6 lokal karaktertilstand og innhenting", () => {
 
 describe("G-6 pkt 4: sikkerhetskopi med snapshot av globale ressurser", () => {
   it("finner globale kilder og tar snapshot med i filen", () => {
-    const rows = {
+    const base: Record<string, unknown> = {
       project: { id: "p" },
       productions: [{ id: "m", kind: "main" }],
       assets: [{ id: "a1", source_global_asset_id: "g2" }, { id: "a2", source_global_asset_id: null }],
       asset_versions: [{ id: "v1", source_global_asset_id: "g1" }, { id: "v2", source_global_asset_id: "g2" }],
-    } as never;
+    };
+    // Øvrige tabeller er tomme
+    const rows = new Proxy(base, { get: (t, k: string) => (k in t ? t[k] : []) }) as never;
     expect(globalAssetIdsOf(rows)).toEqual(["g1", "g2"]);
     const snap = [{ globalAssetId: "g2", name: "Mira", kind: "character", description: "", bundle: { number: 3 } }];
     const b = makeBackup({ rows, scriptVersions: [], importedDocuments: [], changeLog: [], generationJobs: [], schemaVersion: 101, createdAt: "2026-10-23T00:00:00Z", include: new Set(), globalSnapshot: snap });
