@@ -623,8 +623,8 @@ function StatusBadges({ statuses }: { statuses: Readonly<Record<ProductionArea, 
   return (
     <span className="flex gap-0.5" data-testid="sb-status">
       {PRODUCTION_AREAS.map((a) => (
-        <span key={a} className={"rounded px-1 font-mono text-[10px] " + STATUS_CLASS[statuses[a]]} title={`${AREA_KEY[a]}: ${tk(STATUS_KEY[statuses[a]])}`}
-          aria-label={`${AREA_KEY[a]}: ${tk(STATUS_KEY[statuses[a]])}`} data-area={a} data-status={statuses[a]}>
+        <span key={a} className={"rounded px-1 font-mono text-[10px] " + STATUS_CLASS[statuses[a]]} title={`${AREA_KEY[a]}: ${STATUS_KEY[statuses[a]]}`}
+          aria-label={`${AREA_KEY[a]}: ${STATUS_KEY[statuses[a]]}`} data-area={a} data-status={statuses[a]}>
           {AREA_SHORT_KEY[a]}
         </span>
       ))}
