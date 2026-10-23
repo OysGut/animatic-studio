@@ -294,7 +294,7 @@ export function CompactLanguageSwitch() {
   const pick = (tag: UiLang) => { void chooseLanguage(tag); close(true); };
   const code = "rounded-sm px-1.5 py-0.5 text-xs font-medium tracking-wide";
   return (
-    <div ref={root} data-testid="language-compact" className="flex max-w-[60vw] flex-wrap items-center justify-end gap-0.5">
+    <div ref={root} data-testid="language-compact" className="flex max-w-full flex-wrap items-center justify-end gap-0.5">
       <button
         ref={toggle}
         type="button"

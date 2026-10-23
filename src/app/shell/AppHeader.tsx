@@ -40,7 +40,7 @@ export function AppHeader({ email, trail }: AppHeaderProps) {
     return () => window.removeEventListener("keydown", onKey);
   }, [params.projectId]);
   return (
-    <header className="flex h-10 shrink-0 items-center gap-3 border-b border-border bg-surface-1 px-4">
+    <header className="flex min-h-10 shrink-0 flex-wrap items-center gap-x-3 gap-y-1 border-b border-border bg-surface-1 px-4">
       <Link
         to="/"
         className="text-[13px] font-semibold tracking-[0.02em] text-text-primary hover:text-accent-brand"
