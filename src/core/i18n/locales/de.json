@@ -56526,5 +56526,60 @@
     "text": "Standard",
     "sourceHash": "b2b170c58448d7dd71c7771551b4a97da0576898863152094ec7a3aca0fd7ab0",
     "review": "machine"
+  },
+  "sb1.schema": {
+    "text": "Der Datenbank fehlt die Storyboard-Grundlage. Führen Sie zuerst Migration 0102 aus.",
+    "sourceHash": "078f7cdc4d9f300451348c9b1e484e8c2e48ee698596ff1f532c0660ab1fadc3",
+    "review": "machine"
+  },
+  "sb1.error.invalid-panel": {
+    "text": "Ungültiges Storyboard-Panel.",
+    "sourceHash": "726952fe18273812a442e7de53a94fdb445fd2af121be82134e4c7682715122c",
+    "review": "machine"
+  },
+  "sb1.error.not-panel": {
+    "text": "Die Komposition ist kein Storyboard-Panel.",
+    "sourceHash": "74c96f8f2b98f5865a4eec9d894dd1bcc8d5838574ea7100390c66ff5c1d4ad4",
+    "review": "machine"
+  },
+  "sb1.error.blocks-variant": {
+    "text": "Die Blöcke gehören nicht zur Variante der Szene.",
+    "sourceHash": "a3bdc4a1da8f7d985fc620226f8354dc3f2038fc68e739ba3727c1cb65e7e435",
+    "review": "machine"
+  },
+  "sb1.error.invalid-status": {
+    "text": "Ungültiger Produktionsstatus.",
+    "sourceHash": "146908adb79f37c1e98827c9b0f9b5337c193df10bebbe924938dab2663437e6",
+    "review": "machine"
+  },
+  "sb1.error.not-approved": {
+    "text": "Das Panel muss genehmigt sein, bevor eine neue Revision begonnen werden kann.",
+    "sourceHash": "97e5014b6cec425e5f271eba618cef25d22371df325b22f9290261be2f704c4c",
+    "review": "machine"
+  },
+  "sb1.error.invalid-layer": {
+    "text": "Ungültige Storyboard-Ebene.",
+    "sourceHash": "27744f3416892fe012fa354c1eaab489ad6fc2872e72c56b0316eb697f070da1",
+    "review": "machine"
+  },
+  "sb1.error.layer-kind": {
+    "text": "Dieser Ebenentyp ist nur in Storyboard-Panels erlaubt.",
+    "sourceHash": "983bd8a5846ce72c32a6510a6bfd3ee4d682e8f2824664c1cef5decf1df638e0",
+    "review": "machine"
+  },
+  "sb1.layer-note": {
+    "text": "Notiz",
+    "sourceHash": "a14c6d6baf5bf0d6aa41ef9f8f07b6d8e7f4ac0bbf031612699b57a1195f506a",
+    "review": "machine"
+  },
+  "sb1.layer-arrow": {
+    "text": "Pfeil",
+    "sourceHash": "56055a29b3ff86d5c3f21401b33146af5a5bcb7267d7509a7562006eeb728c6d",
+    "review": "machine"
+  },
+  "sb1.layer-camera-mark": {
+    "text": "Kameramarkierung",
+    "sourceHash": "1012cf412fcaac614e7bc72c99cb5328ac91145360a26f07d180d3513cce9d65",
+    "review": "machine"
   }
 }

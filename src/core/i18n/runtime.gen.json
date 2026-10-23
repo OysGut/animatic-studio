@@ -33571,6 +33571,39 @@
     "routes-se-token.title.title.daa9a7b91a74": {
       "text": "Film – Pen to Glass"
     },
+    "sb1.error.blocks-variant": {
+      "text": "Blokkene hører ikke til scenens variant."
+    },
+    "sb1.error.invalid-layer": {
+      "text": "Ugyldig storyboardlag."
+    },
+    "sb1.error.invalid-panel": {
+      "text": "Ugyldig storyboardpanel."
+    },
+    "sb1.error.invalid-status": {
+      "text": "Ugyldig produksjonsstatus."
+    },
+    "sb1.error.layer-kind": {
+      "text": "Lagtypen er bare tillatt i storyboardpaneler."
+    },
+    "sb1.error.not-approved": {
+      "text": "Panelet må være godkjent før en ny revisjon kan startes."
+    },
+    "sb1.error.not-panel": {
+      "text": "Komposisjonen er ikke et storyboardpanel."
+    },
+    "sb1.layer-arrow": {
+      "text": "Pil"
+    },
+    "sb1.layer-camera-mark": {
+      "text": "Kameramerke"
+    },
+    "sb1.layer-note": {
+      "text": "Lapp"
+    },
+    "sb1.schema": {
+      "text": "Databasen mangler storyboardgrunnmuren. Kjør migrasjon 0102 først."
+    },
     "script-explorer2.chip.menu": {
       "text": "Valg for {name}"
     },
@@ -67281,6 +67314,39 @@
     },
     "routes-se-token.title.title.daa9a7b91a74": {
       "text": "Film – Pen to Glass"
+    },
+    "sb1.error.blocks-variant": {
+      "text": "The blocks do not belong to the scene's variant."
+    },
+    "sb1.error.invalid-layer": {
+      "text": "Invalid storyboard layer."
+    },
+    "sb1.error.invalid-panel": {
+      "text": "Invalid storyboard panel."
+    },
+    "sb1.error.invalid-status": {
+      "text": "Invalid production status."
+    },
+    "sb1.error.layer-kind": {
+      "text": "The layer kind is only allowed in storyboard panels."
+    },
+    "sb1.error.not-approved": {
+      "text": "The panel must be approved before a new revision can start."
+    },
+    "sb1.error.not-panel": {
+      "text": "The composition is not a storyboard panel."
+    },
+    "sb1.layer-arrow": {
+      "text": "Arrow"
+    },
+    "sb1.layer-camera-mark": {
+      "text": "Camera mark"
+    },
+    "sb1.layer-note": {
+      "text": "Note"
+    },
+    "sb1.schema": {
+      "text": "The database is missing the storyboard foundation. Run migration 0102 first."
     },
     "script-explorer2.chip.menu": {
       "text": "Options for {name}"

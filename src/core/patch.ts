@@ -409,6 +409,12 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         step: c.step ?? 1,
         // Migrasjon 0042 (SV1): alltid med, så en tilbakestilling lagres
         timing: c.timing ?? EMPTY_TIMING,
+        // Migrasjon 0102 (SB-1): komposisjonstype og panelfelt (ignoreres før migrasjonen er kjørt)
+        kind: c.kind ?? "scene",
+        occurrence_id: c.occurrenceId ?? null,
+        order_key: c.orderKey ?? null,
+        active: c.active ?? true,
+        hidden: c.hidden ?? false,
       };
     }
     case "layers": {
@@ -457,6 +463,10 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         // Migrasjon 0071 (B-087): platen laget ligger på i scenens rigg, med dybde i mm
         rig_plate_id: l.rigPlateId ?? null,
         rig_plate_depth_mm: l.rigPlateDepthMm ?? 0,
+        // Migrasjon 0102 (SB-1): lapp, pil og kameramerke (bare storyboardlag)
+        note: l.note ?? null,
+        arrow: l.arrow ?? null,
+        camera_mark: l.cameraMark ?? null,
         removed: l.removed,
       };
     }
@@ -526,6 +536,22 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
     case "noteFlags": {
       const f = e as unknown as NoteFlag;
       return { ...base, target_kind: f.targetKind, target_id: f.targetId, text: f.text, enabled: f.enabled, edited_by: f.editedBy ?? null, edited_at: f.editedAt ?? null, removed: f.removed };
+    }
+    case "panelBlocks": {
+      const p = e as unknown as import("./storyboard").PanelBlockLink;
+      return { ...base, panel_id: p.panelId, block_id: p.blockId, order_key: p.orderKey, removed: p.removed };
+    }
+    case "productionStatuses": {
+      const p = e as unknown as import("./storyboard").ProductionStatusRow;
+      return { ...base, area: p.area, occurrence_id: p.occurrenceId, composition_id: p.compositionId, status: p.status, removed: p.removed };
+    }
+    case "productionStatusEvents": {
+      const p = e as unknown as import("./storyboard").ProductionStatusEvent;
+      return { ...base, status_id: p.statusId, area: p.area, occurrence_id: p.occurrenceId, composition_id: p.compositionId, status: p.status, removed: p.removed };
+    }
+    case "panelSnapshots": {
+      const p = e as unknown as import("./storyboard").PanelSnapshot;
+      return { ...base, panel_id: p.panelId, panel_revision: p.panelRevision, snapshot: p.snapshot, removed: p.removed };
     }
     case "qualityProfiles": {
       const q = e as unknown as QualityProfile;
@@ -862,6 +888,10 @@ export const TABLE_ORDER: readonly string[] = [
   "translation_line_links",
   "style_harmonizations",
   "style_preferred_references",
+  "storyboard_panel_blocks",
+  "production_statuses",
+  "production_status_events",
+  "storyboard_panel_snapshots",
 ];
 
 export function diffStates(before: ProjectState, after: ProjectState): ChangeSet {
@@ -1017,6 +1047,11 @@ export interface ProjectRows {
   readonly print_job_elements?: readonly Row[];
   readonly rig_templates?: readonly Row[];
   readonly rig_setups?: readonly Row[];
+  /** SB-1 storyboard (migrasjon 0102). Tomt hvis migrasjonen ikke er kjørt ennå. */
+  readonly storyboard_panel_blocks?: readonly Row[];
+  readonly production_statuses?: readonly Row[];
+  readonly production_status_events?: readonly Row[];
+  readonly storyboard_panel_snapshots?: readonly Row[];
 }
 
 const str = (v: unknown) => String(v);
@@ -1531,6 +1566,12 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         ...compositionProducedFrom(x["produced_from"]),
         ...(num(x["step"] ?? 1) > 1 ? { step: num(x["step"]) } : {}),
         ...compositionTiming(x["timing"]),
+        // Migrasjon 0102 (SB-1): komposisjonstype og panelfelt (mangler = scene, aktiv, synlig)
+        ...(x["kind"] === "storyboard" ? { kind: "storyboard" as const } : {}),
+        ...(x["occurrence_id"] !== undefined ? { occurrenceId: optStr(x["occurrence_id"]) as never } : {}),
+        ...(x["order_key"] !== undefined ? { orderKey: optStr(x["order_key"]) } : {}),
+        ...(x["active"] === false ? { active: false } : {}),
+        ...(x["hidden"] === true ? { hidden: true } : {}),
       })),
     ),
     layers: byId(
@@ -1571,6 +1612,10 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         ...(json(x["text_spec"]) ? { text: json(x["text_spec"]) as never } : {}),
         ...(json(x["shape"]) ? { shape: json(x["shape"]) as never } : {}),
         ...(json(x["effects"]) ? { effects: json(x["effects"]) as never } : {}),
+        // Migrasjon 0102 (SB-1): lapp, pil og kameramerke
+        ...(json(x["note"]) ? { note: json(x["note"]) as never } : {}),
+        ...(json(x["arrow"]) ? { arrow: json(x["arrow"]) as never } : {}),
+        ...(json(x["camera_mark"]) ? { cameraMark: json(x["camera_mark"]) as never } : {}),
         ...(typeof x["template_instance_id"] === "string" && typeof x["template_key"] === "string"
           ? {
               template: {
@@ -1752,6 +1797,11 @@ export function stateFromRows(r: ProjectRows): ProjectState {
     printJobElements: byId((r.print_job_elements ?? []).map((x): import("./print/job/commands").StoredPrintJobElement => ({ id:str(x["id"]), revision:num(x["revision"]), jobId:str(x["job_id"]), position:num(x["position"]), layerId:str(x["layer_id"]), versionId:str(x["version_id"]), sceneId:str(x["scene_id"]), frame:num(x["frame"]), maskId:optStr(x["mask_id"]) ?? null, copies:num(x["copies"]), note:str(x["note"] ?? ""), upArrow:x["up_arrow"]===true, removed:x["removed"]===true }))),
     rigTemplates: byId((r.rig_templates ?? []).map((x): import("./rig/multiplane").RigTemplate => ({id:str(x["id"]) as never,revision:num(x["revision"]),name:str(x["name"] ?? ""),spec:(json(x["spec"]) ?? {}) as never,removed:x["removed"]===true}))),
     rigSetups: byId((r.rig_setups ?? []).map((x): import("./rig/multiplane").RigSetup => ({id:str(x["id"]) as never,revision:num(x["revision"]),sceneId:optStr(x["scene_id"]) as never,templateId:optStr(x["template_id"]) as never,name:str(x["name"] ?? ""),spec:(json(x["spec"]) ?? {}) as never,removed:x["removed"]===true}))),
+    // SB-1 (migrasjon 0102): storyboardgrunnmur
+    panelBlocks: byId((r.storyboard_panel_blocks ?? []).map((x): import("./storyboard").PanelBlockLink => ({id:str(x["id"]),revision:num(x["revision"]),panelId:str(x["panel_id"]) as never,blockId:str(x["block_id"]) as never,orderKey:str(x["order_key"]),removed:x["removed"]===true}))),
+    productionStatuses: byId((r.production_statuses ?? []).map((x): import("./storyboard").ProductionStatusRow => ({id:str(x["id"]),revision:num(x["revision"]),area:str(x["area"]) as never,occurrenceId:optStr(x["occurrence_id"]) as never,compositionId:optStr(x["composition_id"]) as never,status:str(x["status"]) as never,removed:x["removed"]===true}))),
+    productionStatusEvents: byId((r.production_status_events ?? []).map((x): import("./storyboard").ProductionStatusEvent => ({id:str(x["id"]),revision:num(x["revision"]),statusId:str(x["status_id"]),area:str(x["area"]) as never,occurrenceId:optStr(x["occurrence_id"]) as never,compositionId:optStr(x["composition_id"]) as never,status:str(x["status"]) as never,removed:x["removed"]===true}))),
+    panelSnapshots: byId((r.storyboard_panel_snapshots ?? []).map((x): import("./storyboard").PanelSnapshot => ({id:str(x["id"]),revision:num(x["revision"]),panelId:str(x["panel_id"]) as never,panelRevision:num(x["panel_revision"]),snapshot:(json(x["snapshot"]) ?? {}) as never,removed:x["removed"]===true}))),
     translations: byId(
       (r.translations ?? []).map((x) => ({
         id: str(x["id"]) as never,

@@ -12330,6 +12330,94 @@
       "en": {
         "text": "default"
       }
+    },
+    "sb1.schema": {
+      "nb": {
+        "text": "Databasen mangler storyboardgrunnmuren. Kjør migrasjon 0102 først."
+      },
+      "en": {
+        "text": "The database is missing the storyboard foundation. Run migration 0102 first."
+      }
+    },
+    "sb1.error.invalid-panel": {
+      "nb": {
+        "text": "Ugyldig storyboardpanel."
+      },
+      "en": {
+        "text": "Invalid storyboard panel."
+      }
+    },
+    "sb1.error.not-panel": {
+      "nb": {
+        "text": "Komposisjonen er ikke et storyboardpanel."
+      },
+      "en": {
+        "text": "The composition is not a storyboard panel."
+      }
+    },
+    "sb1.error.blocks-variant": {
+      "nb": {
+        "text": "Blokkene hører ikke til scenens variant."
+      },
+      "en": {
+        "text": "The blocks do not belong to the scene's variant."
+      }
+    },
+    "sb1.error.invalid-status": {
+      "nb": {
+        "text": "Ugyldig produksjonsstatus."
+      },
+      "en": {
+        "text": "Invalid production status."
+      }
+    },
+    "sb1.error.not-approved": {
+      "nb": {
+        "text": "Panelet må være godkjent før en ny revisjon kan startes."
+      },
+      "en": {
+        "text": "The panel must be approved before a new revision can start."
+      }
+    },
+    "sb1.error.invalid-layer": {
+      "nb": {
+        "text": "Ugyldig storyboardlag."
+      },
+      "en": {
+        "text": "Invalid storyboard layer."
+      }
+    },
+    "sb1.error.layer-kind": {
+      "nb": {
+        "text": "Lagtypen er bare tillatt i storyboardpaneler."
+      },
+      "en": {
+        "text": "The layer kind is only allowed in storyboard panels."
+      }
+    },
+    "sb1.layer-note": {
+      "nb": {
+        "text": "Lapp"
+      },
+      "en": {
+        "text": "Note"
+      }
+    },
+    "sb1.layer-arrow": {
+      "nb": {
+        "text": "Pil"
+      },
+      "en": {
+        "text": "Arrow"
+      }
+    },
+    "sb1.layer-camera-mark": {
+      "nb": {
+        "text": "Kameramerke"
+      },
+      "en": {
+        "text": "Camera mark"
+      }
     }
   }
 }

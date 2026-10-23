@@ -76124,5 +76124,38 @@
   },
   "g6-inherit.source.default": {
     "text": "[!! ddëëffááüülltt !!]"
+  },
+  "sb1.schema": {
+    "text": "[!! TThhëë ddááttáábbáássëë ïïss mmïïssssïïnngg tthhëë ssttôôrryybbôôáárrdd ffôôüünnddááttïïôônn. RRüünn mmïïggrrááttïïôônn 0102 ffïïrrsstt. !!]"
+  },
+  "sb1.error.invalid-panel": {
+    "text": "[!! ÏÏnnvváállïïdd ssttôôrryybbôôáárrdd ppáánnëëll. !!]"
+  },
+  "sb1.error.not-panel": {
+    "text": "[!! TThhëë ccôômmppôôssïïttïïôônn ïïss nnôôtt áá ssttôôrryybbôôáárrdd ppáánnëëll. !!]"
+  },
+  "sb1.error.blocks-variant": {
+    "text": "[!! TThhëë bbllôôcckkss ddôô nnôôtt bbëëllôônngg ttôô tthhëë ssccëënnëë'ss vváárrïïáánntt. !!]"
+  },
+  "sb1.error.invalid-status": {
+    "text": "[!! ÏÏnnvváállïïdd pprrôôddüüccttïïôônn ssttááttüüss. !!]"
+  },
+  "sb1.error.not-approved": {
+    "text": "[!! TThhëë ppáánnëëll mmüüsstt bbëë áápppprrôôvvëëdd bbëëffôôrrëë áá nnëëww rrëëvvïïssïïôônn ccáánn ssttáárrtt. !!]"
+  },
+  "sb1.error.invalid-layer": {
+    "text": "[!! ÏÏnnvváállïïdd ssttôôrryybbôôáárrdd llááyyëërr. !!]"
+  },
+  "sb1.error.layer-kind": {
+    "text": "[!! TThhëë llááyyëërr kkïïnndd ïïss ôônnllyy áállllôôwwëëdd ïïnn ssttôôrryybbôôáárrdd ppáánnëëllss. !!]"
+  },
+  "sb1.layer-note": {
+    "text": "[!! NNôôttëë !!]"
+  },
+  "sb1.layer-arrow": {
+    "text": "[!! ÁÁrrrrôôww !!]"
+  },
+  "sb1.layer-camera-mark": {
+    "text": "[!! CCáámmëërráá mmáárrkk !!]"
   }
 }

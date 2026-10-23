@@ -680,7 +680,11 @@ export type LayerKind =
   /** Side (MTS MT6, migrasjon 0050): en side i en tittel- eller tekstscene. Oppfører seg som en gruppe
    * (lagene i den følger dens bevegelse og synlighet), med `activeRange` som synlighetsintervall og
    * `pageTransition` som overgangen inn i siden. */
-  | "page";
+  | "page"
+  /** SB-1 (migrasjon 0102): lapp, pil og kameramerke. Bare tillatt i storyboardkomposisjoner. */
+  | "note"
+  | "arrow"
+  | "camera_mark";
 
 /** Plassering av et lag i scenen. Posisjon er midtpunktet i scenens koordinater (piksler). */
 export interface LayerTransform {
@@ -833,6 +837,18 @@ export interface Composition extends Entity<CompositionId> {
   readonly camera: CompositionCamera;
   readonly removed: boolean;
   /**
+   * Komposisjonstype (SB-1, migrasjon 0102): «scene» er dagens 2D-scene, «storyboard» er et panel.
+   * Mangler = «scene» (rader fra før 0102).
+   */
+  readonly kind?: import("./storyboard").CompositionKind;
+  /** Sceneforekomsten panelet hører til (bare storyboard). Mangler = scene-komposisjon. */
+  readonly occurrenceId?: OccurrenceId | null;
+  /** Panelrekkefølgen innen scenen (bare storyboard). */
+  readonly orderKey?: string | null;
+  /** Aktiv/deaktivert og skjult (SB-1; mangler = aktiv og synlig). Brukes bare av storyboardpaneler. */
+  readonly active?: boolean;
+  readonly hidden?: boolean;
+  /**
    * Manusblokkenes revisjoner 2D-scenen er laget fra eller sist kontrollert mot (DEC-0054). Mangler eller
    * tomt = ukjent (laget før kontrollen fantes); da flagges ingen avvik.
    */
@@ -905,6 +921,12 @@ export interface CompositionLayer extends Entity<LayerId> {
   readonly template?: import("./typography/types").TemplateSlotRef | null;
   /** Overgangen inn i siden (bare sidelag, MTS MT6, migrasjon 0050). Mangler = kutt. */
   readonly pageTransition?: Transition | null;
+  /** Lapp (SB-1, migrasjon 0102). Bare lagtypen «note» i storyboardkomposisjoner. */
+  readonly note?: import("./storyboard").PanelNoteSpec | null;
+  /** Pil (SB-1). Bare lagtypen «arrow» i storyboardkomposisjoner. */
+  readonly arrow?: import("./storyboard").ArrowSpec | null;
+  /** Kameramerke (SB-1). Bare lagtypen «camera_mark» i storyboardkomposisjoner. */
+  readonly cameraMark?: import("./storyboard").CameraMarkSpec | null;
   readonly removed: boolean;
 }
 
@@ -1012,6 +1034,11 @@ export interface ProjectState {
   readonly printJobElements?: Readonly<Record<string, import("./print/job/commands").StoredPrintJobElement>>;
   readonly rigTemplates: Readonly<Record<string, import("./rig/multiplane").RigTemplate>>;
   readonly rigSetups: Readonly<Record<string, import("./rig/multiplane").RigSetup>>;
+  /** SB-1 (migrasjon 0102): panelenes forankring i manusblokker, statusspor med historikk og bevarte panelrevisjoner. */
+  readonly panelBlocks: Readonly<Record<string, import("./storyboard").PanelBlockLink>>;
+  readonly productionStatuses: Readonly<Record<string, import("./storyboard").ProductionStatusRow>>;
+  readonly productionStatusEvents: Readonly<Record<string, import("./storyboard").ProductionStatusEvent>>;
+  readonly panelSnapshots: Readonly<Record<string, import("./storyboard").PanelSnapshot>>;
   readonly project: Project;
   readonly productions: Readonly<Record<string, Production>>;
   readonly scenes: Readonly<Record<string, Scene>>;
@@ -1457,6 +1484,10 @@ export const COLLECTION_TABLES = {
   printJobElements: "print_job_elements",
   rigTemplates: "rig_templates",
   rigSetups: "rig_setups",
+  panelBlocks: "storyboard_panel_blocks",
+  productionStatuses: "production_statuses",
+  productionStatusEvents: "production_status_events",
+  panelSnapshots: "storyboard_panel_snapshots",
 } as const;
 
 export type CollectionName = keyof typeof COLLECTION_TABLES;
@@ -1512,6 +1543,10 @@ export function emptyProjectState(project: Project): ProjectState {
     printJobElements: {},
     rigTemplates: {},
     rigSetups: {},
+    panelBlocks: {},
+    productionStatuses: {},
+    productionStatusEvents: {},
+    panelSnapshots: {},
   };
 }
 

@@ -155,6 +155,10 @@ async function loadState(projectId: string): Promise<ProjectState> {
     style_harmonizations: await q("style_harmonizations"),
     style_preferred_references: await q("style_preferred_references"),
     language_versions: await q("language_versions"),
+    storyboard_panel_blocks: await q("storyboard_panel_blocks"),
+    production_statuses: await q("production_statuses"),
+    production_status_events: await q("production_status_events"),
+    storyboard_panel_snapshots: await q("storyboard_panel_snapshots"),
   };
   return stateFromRows(rows);
 }
@@ -8312,10 +8316,16 @@ try {
       "mouth_sets|private.validate_mouth_sets||60",
       "mouth_tracks|private.validate_mouth_tracks||70",
       "ALLTID|private.validate_active_quality_profile||80",
+      "compositions|private.validate_storyboard_panels||90",
+      "composition_layers|private.validate_storyboard_layer_kinds||91",
+      "storyboard_panel_blocks|private.validate_storyboard_panel_blocks||92",
+      "production_statuses|private.validate_production_statuses||93",
+      "production_status_events|private.validate_production_statuses||94",
     ]), `registeret avviker: ${JSON.stringify(rows)}`);
     // Alle registrerte funksjoner finnes med riktig signatur
     for (const fn of ["validate_translation_line_links", "validate_style_harmonizations", "validate_style_preferred_references",
-      "validate_language_scope", "validate_preferred_reference_unique", "validate_mouth_sets", "validate_mouth_tracks", "validate_active_quality_profile"]) {
+      "validate_language_scope", "validate_preferred_reference_unique", "validate_mouth_sets", "validate_mouth_tracks", "validate_active_quality_profile",
+      "validate_storyboard_panels", "validate_storyboard_layer_kinds", "validate_storyboard_panel_blocks", "validate_production_statuses"]) {
       const def = await sql`select pg_get_function_identity_arguments(p.oid) a, p.prosecdef d, p.proconfig c from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='private' and p.proname=${fn}`;
       assert(def.length === 1 && def[0]!["a"] === "p_project uuid, p_changes jsonb, p_ids uuid[]" && def[0]!["d"] === true, `${fn}: signatur/sikkerhet avviker`);
       assert((def[0]!["c"] as string[]).includes('search_path=""'), `${fn}: mangler search_path=''`);
@@ -8647,6 +8657,156 @@ try {
     await expectError(as("authenticated", ADM, (tx) => tx`select public.admin_set_rate_limit_rule('ai', 0, 500, 900)`), "22023");
     await expectError(as("authenticated", ADM, (tx) => tx`select public.admin_set_rate_limit_rule('finnes_ikke', 60, 1, 1)`), "22023");
     await sql`update private.rate_limit_rules set per_key = 400, per_ip = 800 where scope = 'ai'`;
+  });
+
+  // ---------- 0102 SB-1: storyboardgrunnmur ----------
+  const sbApply = (project: string, changes: unknown) =>
+    as("service_role", null, (tx) =>
+      tx`select public.apply_changes(${project}, ${ALICE}, ${newId()}, ${sql.json({ type: "Sb1Test" } as never)}, ${sql.json({} as never)}, ${sql.json(changes as never)})`);
+  const sbSetup = await (async () => {
+    const { scene, variant, block } = await g7mkScene();
+    const occurrence = newId();
+    await sql`insert into public.scene_occurrences (id, project_id, production_id, scene_id, variant_id, order_key)
+      values (${occurrence},${g7p},${g7prod},${scene},${variant},'a1')`;
+    return { scene, variant, block, occurrence };
+  })();
+
+  await test("0102 SB-1.1: panel er en komposisjon med kind storyboard, knyttet til forekomst og variant", async () => {
+    const { variant, block, occurrence } = sbSetup;
+    const panel = newId();
+    // Ugyldig: forekomsten peker på en annen variant enn panelet
+    const otherVariant = newId();
+    await sql`insert into public.scene_variants (id, project_id, scene_id) values (${otherVariant},${g7p},${sbSetup.scene})`;
+    await expectError(sbApply(g7p, { inserts: { compositions: [
+      { id: panel, project_id: g7p, variant_id: otherVariant, kind: "storyboard", occurrence_id: occurrence, order_key: "a1", revision: 1 }] } }), "22023");
+    // Ugyldig: scene-komposisjon med panelfelt
+    await expectError(sbApply(g7p, { inserts: { compositions: [
+      { id: newId(), project_id: g7p, variant_id: variant, kind: "scene", occurrence_id: occurrence, order_key: "a1", revision: 1 }] } }), "23514");
+    // Gyldig panel med forankring til blokken i samme variant
+    const link = newId();
+    const res = await sbApply(g7p, { inserts: {
+      compositions: [{ id: panel, project_id: g7p, variant_id: variant, kind: "storyboard", occurrence_id: occurrence, order_key: "a1", revision: 1 }],
+      storyboard_panel_blocks: [{ id: link, project_id: g7p, panel_id: panel, block_id: block, order_key: "a1", revision: 1 }],
+    } });
+    assert(res.length === 1, "panelet ble ikke lagret");
+    // Unikhetsregelen «én aktiv komposisjon per variant» gjelder fortsatt bare 2D-scener
+    await sbApply(g7p, { inserts: { compositions: [
+      { id: newId(), project_id: g7p, variant_id: variant, kind: "storyboard", occurrence_id: occurrence, order_key: "a2", revision: 1 }] } });
+    await expectError(sbApply(g7p, { inserts: { compositions: [
+      { id: newId(), project_id: g7p, variant_id: variant, kind: "scene", revision: 1 },
+      { id: newId(), project_id: g7p, variant_id: variant, kind: "scene", revision: 1 }] } }), "23505");
+  });
+
+  await test("0102 SB-1.2: note/arrow/camera_mark bare i storyboardkomposisjoner, med riktig felt", async () => {
+    const { variant, occurrence } = sbSetup;
+    const panel = newId(), sceneComp = newId();
+    await sbApply(g7p, { inserts: { compositions: [
+      { id: panel, project_id: g7p, variant_id: variant, kind: "storyboard", occurrence_id: occurrence, order_key: "a3", revision: 1 },
+      { id: sceneComp, project_id: g7p, variant_id: variant, kind: "scene", revision: 1 }] } });
+    const noteSpec = { noteType: "visual", text: "Husk skygge", color: "#ffcc00", x: 0.1, y: 0.2, w: 0.3, h: 0.2, anchor: { kind: "free" }, handled: false };
+    const layer = (kind: string, comp: string, extra: Record<string, unknown> = {}) => ({
+      id: newId(), project_id: g7p, composition_id: comp, order_key: "a1", kind, width: 10, height: 10,
+      transform: { x: 0, y: 0, sx: 1, sy: 1, r: 0 }, keyframes: [], revision: 1, ...extra });
+    // Notat i storyboardpanelet går gjennom
+    await sbApply(g7p, { inserts: { composition_layers: [layer("note", panel, { note: noteSpec })] } });
+    // Notat i en vanlig 2D-scene avvises
+    await expectError(sbApply(g7p, { inserts: { composition_layers: [layer("note", sceneComp, { note: noteSpec })] } }), "22023");
+    // Notatlag uten note-felt avvises
+    await expectError(sbApply(g7p, { inserts: { composition_layers: [layer("note", panel)] } }), "22023");
+    // note-felt på et annet lag avvises
+    await expectError(sbApply(g7p, { inserts: { composition_layers: [layer("arrow", panel, { note: noteSpec, arrow: { points: [{ x: 0, y: 0 }, { x: 1, y: 1 }], form: "straight", thickness: 2, color: "#ffffff", category: "character" } })] } }), "22023");
+  });
+
+  await test("0102 SB-1.3: blokkforankring krever blokk i samme prosjekt og variant; RLS som resten", async () => {
+    const { block, occurrence, variant } = sbSetup;
+    const panel = newId();
+    await sbApply(g7p, { inserts: { compositions: [
+      { id: panel, project_id: g7p, variant_id: variant, kind: "storyboard", occurrence_id: occurrence, order_key: "a4", revision: 1 }] } });
+    // Blokk som ikke finnes (eller er i et annet prosjekt), avvises
+    await expectError(sbApply(g7p, { inserts: { storyboard_panel_blocks: [
+      { id: newId(), project_id: g7p, panel_id: panel, block_id: newId(), order_key: "a1", revision: 1 }] } }), "22023");
+    // Blokk i en annen variant enn panelet avvises
+    const otherVariant = newId(), otherBlock = newId();
+    await sql`insert into public.scene_variants (id, project_id, scene_id) values (${otherVariant},${g7p},${sbSetup.scene})`;
+    await sql`insert into public.script_blocks (id, project_id, variant_id, kind, order_key, text) values (${otherBlock},${g7p},${otherVariant},'dialogue','a1','Hei')`;
+    await expectError(sbApply(g7p, { inserts: { storyboard_panel_blocks: [
+      { id: newId(), project_id: g7p, panel_id: panel, block_id: otherBlock, order_key: "a1", revision: 1 }] } }), "22023");
+    // Gyldig forankring; medlem leser, ikke-medlem ser ingenting, direkte skriving er avslått
+    await sbApply(g7p, { inserts: { storyboard_panel_blocks: [
+      { id: newId(), project_id: g7p, panel_id: panel, block_id: block, order_key: "a1", revision: 1 }] } });
+    const own = await as("authenticated", ALICE, (tx) => tx`select id from public.storyboard_panel_blocks where project_id = ${g7p}`);
+    assert(own.length === 2, "medlemmet ser ikke forankringene");
+    const other = await as("authenticated", CAROL, (tx) => tx`select id from public.storyboard_panel_blocks where project_id = ${g7p}`);
+    assert(other.length === 0, "ikke-medlem ser forankringer");
+    await expectError(as("authenticated", ALICE, (tx) =>
+      tx`insert into public.storyboard_panel_blocks (id, project_id, panel_id, block_id, order_key) values (${newId()},${g7p},${panel},${block},'a2')`), "42501");
+  });
+
+  await test("0102 SB-1.4: statusspor per fagområde med historikk – tidligere godkjenninger bevares", async () => {
+    const { occurrence, variant } = sbSetup;
+    const panel = newId();
+    await sbApply(g7p, { inserts: { compositions: [
+      { id: panel, project_id: g7p, variant_id: variant, kind: "storyboard", occurrence_id: occurrence, order_key: "a5", revision: 1 }] } });
+    const status = newId();
+    // Gyldig: status på panelet + første historikkrad
+    await sbApply(g7p, { inserts: {
+      production_statuses: [{ id: status, project_id: g7p, area: "storyboard", composition_id: panel, status: "in_progress", revision: 1 }],
+      production_status_events: [{ id: newId(), project_id: g7p, status_id: status, area: "storyboard", composition_id: panel, status: "in_progress", revision: 1 }],
+    } });
+    // Godkjenning: statusraden oppdateres, historikken vokser (godkjenningen bevares)
+    await sbApply(g7p, {
+      updates: { production_statuses: [{ id: status, status: "done", revision: 2, expected_revision: 1 }] },
+      inserts: { production_status_events: [{ id: newId(), project_id: g7p, status_id: status, area: "storyboard", composition_id: panel, status: "done", revision: 1 }] },
+    });
+    // Ny redigering etter godkjenning: panelets revisjon lagres som øyeblikksbilde før arbeidet fortsetter
+    await sbApply(g7p, {
+      inserts: {
+        storyboard_panel_snapshots: [{ id: newId(), project_id: g7p, panel_id: panel, panel_revision: 1, snapshot: { panel: { name: "" }, layers: [], blocks: [] }, revision: 1 }],
+        production_status_events: [{ id: newId(), project_id: g7p, status_id: status, area: "storyboard", composition_id: panel, status: "changes_requested", revision: 1 }],
+      },
+      updates: { production_statuses: [{ id: status, status: "changes_requested", revision: 3, expected_revision: 2 }] },
+    });
+    const events = await sql`select status from public.production_status_events where status_id = ${status} order by created_at, id`;
+    assert(isDeepStrictEqual(events.map((e) => e["status"]), ["in_progress", "done", "changes_requested"]), "historikken er ikke bevart");
+    // Én aktiv status per fagområde og mål
+    await expectError(sbApply(g7p, { inserts: { production_statuses: [
+      { id: newId(), project_id: g7p, area: "storyboard", composition_id: panel, status: "review", revision: 1 }] } }), "23505");
+    // Målet må finnes i prosjektet; panelmål må være et storyboardpanel
+    await expectError(sbApply(g7p, { inserts: { production_statuses: [
+      { id: newId(), project_id: g7p, area: "storyboard", occurrence_id: newId(), status: "review", revision: 1 }] } }), "22023");
+    await expectError(sbApply(g7p, { inserts: { production_status_events: [
+      { id: newId(), project_id: g7p, status_id: newId(), area: "storyboard", composition_id: panel, status: "review", revision: 1 }] } }), "22023");
+  });
+
+  await test("0102 SB-1.5: øyeblikksbilde og sletting tar med storyboardtabellene", async () => {
+    const p = String((await as("authenticated", ALICE, async (tx) => (await tx`select public.create_project('SB1-slett', 25, 1) id`)[0]!["id"])));
+    const prod = String((await sql`select id from public.productions where project_id=${p} and kind='main'`)[0]!["id"]);
+    const scene = newId(), variant = newId(), block = newId(), occurrence = newId(), panel = newId();
+    await sql`insert into public.scenes (id, project_id, origin_production_id) values (${scene},${p},${prod})`;
+    await sql`insert into public.scene_variants (id, project_id, scene_id) values (${variant},${p},${scene})`;
+    await sql`insert into public.script_blocks (id, project_id, variant_id, kind, order_key, text) values (${block},${p},${variant},'dialogue','a1','Hei')`;
+    await sql`insert into public.scene_occurrences (id, project_id, production_id, scene_id, variant_id, order_key) values (${occurrence},${p},${prod},${scene},${variant},'a1')`;
+    await sbApply(p, { inserts: {
+      compositions: [{ id: panel, project_id: p, variant_id: variant, kind: "storyboard", occurrence_id: occurrence, order_key: "a1", revision: 1 }],
+      storyboard_panel_blocks: [{ id: newId(), project_id: p, panel_id: panel, block_id: block, order_key: "a1", revision: 1 }],
+      production_statuses: [{ id: newId(), project_id: p, area: "storyboard", composition_id: panel, status: "done", revision: 1 }],
+      storyboard_panel_snapshots: [{ id: newId(), project_id: p, panel_id: panel, panel_revision: 1, snapshot: { panel: {}, layers: [], blocks: [] }, revision: 1 }],
+    } });
+    // project_snapshot tar med alle fire tabellene (G-2-innlasting)
+    const snap = await as("authenticated", ALICE, (tx) => tx`select public.project_snapshot(${p}) s`);
+    const tables = (snap[0]!["s"] as { tables: Record<string, unknown>[] }).tables[1]!;
+    for (const t of ["storyboard_panel_blocks", "production_statuses", "production_status_events", "storyboard_panel_snapshots"])
+      assert(Array.isArray(tables[t]), `project_snapshot mangler ${t}`);
+    assert((tables["storyboard_panel_blocks"] as unknown[]).length === 1, "forankringen mangler i øyeblikksbildet");
+    // delete_project sletter alt uten fremmednøkkelbrudd
+    await as("service_role", null, (tx) => tx`select public.delete_project(${p}, ${ALICE})`);
+    const left = await sql`select
+      (select count(*) from public.storyboard_panel_blocks where project_id=${p}) +
+      (select count(*) from public.production_statuses where project_id=${p}) +
+      (select count(*) from public.production_status_events where project_id=${p}) +
+      (select count(*) from public.storyboard_panel_snapshots where project_id=${p}) n`;
+    assert(Number(left[0]!["n"]) === 0, "storyboardrader ble igjen etter sletting");
+    await as("service_role", null, (tx) => tx`select public.purge_project_assets(${p}, ${ALICE})`);
   });
 
   // ---------- search_path: alle SECURITY DEFINER-funksjoner skal ha search_path='' ----------

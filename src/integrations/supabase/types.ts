@@ -7058,6 +7058,15 @@ export type Database = {
         Returns: undefined
       }
       admin_list_features: { Args: never; Returns: Json }
+      admin_rate_limit_rules: {
+        Args: never
+        Returns: {
+          per_ip: number
+          per_key: number
+          scope: string
+          window_seconds: number
+        }[]
+      }
       admin_registration_settings: { Args: never; Returns: Json }
       admin_report_queue: { Args: never; Returns: Json }
       admin_review_showcase_item: {
@@ -7075,6 +7084,15 @@ export type Database = {
       admin_set_feature_testers: {
         Args: { p_key: string; p_users: string[] }
         Returns: number
+      }
+      admin_set_rate_limit_rule: {
+        Args: {
+          p_per_ip: number
+          p_per_key: number
+          p_scope: string
+          p_window_seconds: number
+        }
+        Returns: undefined
       }
       admin_set_showcase_approval: {
         Args: { p_required: boolean }
