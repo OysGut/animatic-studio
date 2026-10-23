@@ -8202,7 +8202,7 @@ try {
     const mouths = [{ system: "rhubarb", variants: { A: "closed" } }];
     // Leser (member) kan ikke publisere
     await expectError(
-      as("authenticated", CAROL, (tx) => tx`select public.global_publish_character_bundle(${ga}, ${voice}::jsonb, ${JSON.stringify(briefs)}::jsonb, 'b1', ${JSON.stringify(mouths)}::jsonb, null, '{}', '')`),
+      as("authenticated", CAROL, (tx) => tx`select public.global_publish_character_bundle(${ga}, ${tx.json(voice as never)}, ${tx.json(briefs as never)}, 'b1', ${tx.json(mouths as never)}, null, '{}', '')`),
       "42501",
     );
     // Godkjent versjon må tilhøre karakteren
@@ -8212,7 +8212,7 @@ try {
     );
     // Redaktør publiserer nummer 1 og 2 i rekkefølge
     const n1 = await as("authenticated", BOB, async (tx) =>
-      (await tx`select public.global_publish_character_bundle(${ga}, ${JSON.stringify(voice)}::jsonb, ${JSON.stringify(briefs)}::jsonb, 'b1', ${JSON.stringify(mouths)}::jsonb, ${JSON.stringify({ plates: [] })}::jsonb, ${`{${v1}}`}::uuid[], 'første') as n`)[0]!["n"],
+      (await tx`select public.global_publish_character_bundle(${ga}, ${tx.json(voice as never)}, ${tx.json(briefs as never)}, 'b1', ${tx.json(mouths as never)}, ${tx.json({ plates: [] } as never)}, ${`{${v1}}`}::uuid[], 'første') as n`)[0]!["n"],
     );
     assert(n1 === 1, "første knippe skal være nummer 1");
     const n2 = await as("authenticated", BOB, async (tx) =>
@@ -8253,7 +8253,7 @@ try {
       "42501",
     );
     const p1 = await as("authenticated", BOB, async (tx) =>
-      (await tx`select public.workspace_save_profile(${ws}, null, 'style', 'Gruppestil', ${JSON.stringify({ guide: "akvarell" })}::jsonb, true, 0) as id`)[0]!["id"] as string,
+      (await tx`select public.workspace_save_profile(${ws}, null, 'style', 'Gruppestil', ${tx.json({ guide: "akvarell" } as never)}, true, 0) as id`)[0]!["id"] as string,
     );
     const p2 = await as("authenticated", BOB, async (tx) =>
       (await tx`select public.workspace_save_profile(${ws}, null, 'style', 'Alternativ', '{}'::jsonb, true, 0) as id`)[0]!["id"] as string,
@@ -8286,8 +8286,8 @@ try {
     );
     const assetId = crypto.randomUUID();
     const change = { inserts: { assets: [{ id: assetId, project_id: p, revision: 1, kind: "character", name: "Mor", global_bundle_number: 2 }] } };
-    await as("authenticated", ALICE, (tx) =>
-      tx`select public.apply_changes(${p}, ${ALICE}, ${crypto.randomUUID()}, '{}'::jsonb, '{}'::jsonb, ${JSON.stringify(change)}::jsonb)`);
+    await as("service_role", null, (tx) =>
+      tx`select public.apply_changes(${p}, ${ALICE}, ${crypto.randomUUID()}, '{}'::jsonb, '{}'::jsonb, ${tx.json(change as never)})`);
     const [row] = await sql`select global_bundle_number from public.assets where id = ${assetId}`;
     assert(row!["global_bundle_number"] === 2, "knippenummeret skal lagres som metadata");
   });
