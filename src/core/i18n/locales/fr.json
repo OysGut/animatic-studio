@@ -56175,5 +56175,10 @@
     "text": "Trop de téléversements au cours de la dernière heure. Patientez un instant et réessayez.",
     "sourceHash": "7ba8fa68f3b4275c6558d6798807706cefc0ed84cb152277da5d89282108a06e",
     "review": "machine"
+  },
+  "adapters-storage-commands-functions.rate-limited": {
+    "text": "Trop de requêtes en peu de temps. Patientez un instant et réessayez.",
+    "sourceHash": "6a27047e94b3d56be828003659dde8dd01798fc58cc9358d0f67357738e71114",
+    "review": "machine"
   }
 }

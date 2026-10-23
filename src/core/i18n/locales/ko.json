@@ -56027,5 +56027,10 @@
     "text": "지난 1시간 동안 업로드가 너무 많습니다. 잠시 후 다시 시도하세요.",
     "sourceHash": "7ba8fa68f3b4275c6558d6798807706cefc0ed84cb152277da5d89282108a06e",
     "review": "machine"
+  },
+  "adapters-storage-commands-functions.rate-limited": {
+    "text": "짧은 시간에 요청이 너무 많습니다. 잠시 기다린 후 다시 시도하세요.",
+    "sourceHash": "6a27047e94b3d56be828003659dde8dd01798fc58cc9358d0f67357738e71114",
+    "review": "machine"
   }
 }
