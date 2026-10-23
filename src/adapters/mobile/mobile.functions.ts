@@ -39,7 +39,9 @@ function missingSchema(message: string): boolean {
 const SCHEMA_MESSAGE = t("adapters-mobile-mobile-functions.schema-message.message.9443d2639538");
 
 /** Feilmeldingene fra databasen på norsk og engelsk. */
-function dbMessage(message: string): string {
+function dbMessage(message: string, code?: string): string {
+  if (code === "PTG13") return t("adapters-mobile-mobile-functions.db-message.quota-storage");
+  if (code === "PTG14") return t("adapters-mobile-mobile-functions.db-message.quota-uploads");
   if (missingSchema(message)) return SCHEMA_MESSAGE;
   if (/utløpt eller tilbakekalt/.test(message))
     return t("adapters-mobile-mobile-functions.db-message.message.089685f21124");
@@ -366,7 +368,7 @@ export const mobileUploadTicket = createServerFn({ method: "POST" })
       p_file_name: data.fileName,
       p_contributor: data.contributor,
     });
-    if (error) return { ok: false, message: dbMessage(error.message) };
+    if (error) return { ok: false, message: dbMessage(error.message, error.code ?? undefined) };
     const r = row as { status?: string; path?: string } | null;
     if (r?.status === "done") return { ok: true, message: "", path: r.path ?? path, done: true };
     const { data: up, error: upErr } = await db.storage
@@ -456,7 +458,7 @@ export const mobileConfirmUpload = createServerFn({ method: "POST" })
       return { ok: false, message: problem };
     }
     const { error } = await confirm(true, p.size, null);
-    if (error) return { ok: false, message: dbMessage(error.message) };
+    if (error) return { ok: false, message: dbMessage(error.message, error.code ?? undefined) };
     return { ok: true, message: "" };
   });
 
@@ -518,6 +520,6 @@ export const mobileShareLink = createServerFn({ method: "POST" })
       max_files: SHARED_MAX_FILES,
       max_bytes: SHARED_MAX_BYTES,
     } as never);
-    if (error) return { ok: false, message: dbMessage(error.message) };
+    if (error) return { ok: false, message: dbMessage(error.message, error.code ?? undefined) };
     return { ok: true, message: "", token, expiresAt };
   });

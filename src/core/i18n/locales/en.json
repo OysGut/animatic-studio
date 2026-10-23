@@ -75851,5 +75851,23 @@
   },
   "google.account.method-email": {
     "text": "Email and password"
+  },
+  "adapters-storage-commands-functions.quota-projects": {
+    "text": "The project limit has been reached. Delete a project or contact the administrator to raise the limit."
+  },
+  "adapters-storage-commands-functions.quota-change-log": {
+    "text": "The change log is full. Contact the administrator to raise the limit."
+  },
+  "adapters-storage-commands-functions.quota-storage": {
+    "text": "The storage quota has been reached. Delete files you no longer need, or contact the administrator to raise the limit."
+  },
+  "adapters-storage-commands-functions.quota-uploads": {
+    "text": "Too many uploads in the last hour. Wait a moment and try again."
+  },
+  "adapters-mobile-mobile-functions.db-message.quota-storage": {
+    "text": "The storage quota has been reached. Delete files you no longer need, or contact the administrator to raise the limit."
+  },
+  "adapters-mobile-mobile-functions.db-message.quota-uploads": {
+    "text": "Too many uploads in the last hour. Wait a moment and try again."
   }
 }

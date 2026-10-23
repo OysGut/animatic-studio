@@ -11602,6 +11602,54 @@
       "en": {
         "text": "Email and password"
       }
+    },
+    "adapters-storage-commands-functions.quota-projects": {
+      "nb": {
+        "text": "Grensen for antall prosjekter er nådd. Slett et prosjekt eller kontakt administrator for å øke grensen."
+      },
+      "en": {
+        "text": "The project limit has been reached. Delete a project or contact the administrator to raise the limit."
+      }
+    },
+    "adapters-storage-commands-functions.quota-change-log": {
+      "nb": {
+        "text": "Endringsloggen er full. Kontakt administrator for å øke grensen."
+      },
+      "en": {
+        "text": "The change log is full. Contact the administrator to raise the limit."
+      }
+    },
+    "adapters-storage-commands-functions.quota-storage": {
+      "nb": {
+        "text": "Lagringskvoten er nådd. Slett filer du ikke trenger, eller kontakt administrator for å øke grensen."
+      },
+      "en": {
+        "text": "The storage quota has been reached. Delete files you no longer need, or contact the administrator to raise the limit."
+      }
+    },
+    "adapters-storage-commands-functions.quota-uploads": {
+      "nb": {
+        "text": "For mange opplastinger den siste timen. Vent litt og prøv igjen."
+      },
+      "en": {
+        "text": "Too many uploads in the last hour. Wait a moment and try again."
+      }
+    },
+    "adapters-mobile-mobile-functions.db-message.quota-storage": {
+      "nb": {
+        "text": "Lagringskvoten er nådd. Slett filer du ikke trenger, eller kontakt administrator for å øke grensen."
+      },
+      "en": {
+        "text": "The storage quota has been reached. Delete files you no longer need, or contact the administrator to raise the limit."
+      }
+    },
+    "adapters-mobile-mobile-functions.db-message.quota-uploads": {
+      "nb": {
+        "text": "For mange opplastinger den siste timen. Vent litt og prøv igjen."
+      },
+      "en": {
+        "text": "Too many uploads in the last hour. Wait a moment and try again."
+      }
     }
   }
 }

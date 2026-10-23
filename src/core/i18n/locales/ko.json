@@ -55997,5 +55997,35 @@
     "text": "이메일과 비밀번호",
     "sourceHash": "bccbb358370012347775af1442b85d4e99c24ceaabf1f91ec66038af47b8531f",
     "review": "machine"
+  },
+  "adapters-storage-commands-functions.quota-projects": {
+    "text": "프로젝트 한도에 도달했습니다. 프로젝트를 삭제하거나 관리자에게 문의하여 한도를 늘리세요.",
+    "sourceHash": "67d432953fcd0343e721c3518ca8cc88faf91ff5e20a04ad93ac4888b3793055",
+    "review": "machine"
+  },
+  "adapters-storage-commands-functions.quota-change-log": {
+    "text": "변경 로그가 가득 찼습니다. 관리자에게 문의하여 한도를 늘리세요.",
+    "sourceHash": "a9df3da7101bcceff687700a927b912ed74c1105a92ae1b06b39626c5ce30577",
+    "review": "machine"
+  },
+  "adapters-storage-commands-functions.quota-storage": {
+    "text": "저장소 한도에 도달했습니다. 더 이상 필요 없는 파일을 삭제하거나 관리자에게 문의하여 한도를 늘리세요.",
+    "sourceHash": "51f8ccd57f60b987193bc6652497a5299c597159e46b59d048c4fa12f4c0cbd3",
+    "review": "machine"
+  },
+  "adapters-storage-commands-functions.quota-uploads": {
+    "text": "지난 1시간 동안 업로드가 너무 많습니다. 잠시 후 다시 시도하세요.",
+    "sourceHash": "7ba8fa68f3b4275c6558d6798807706cefc0ed84cb152277da5d89282108a06e",
+    "review": "machine"
+  },
+  "adapters-mobile-mobile-functions.db-message.quota-storage": {
+    "text": "저장소 한도에 도달했습니다. 더 이상 필요 없는 파일을 삭제하거나 관리자에게 문의하여 한도를 늘리세요.",
+    "sourceHash": "51f8ccd57f60b987193bc6652497a5299c597159e46b59d048c4fa12f4c0cbd3",
+    "review": "machine"
+  },
+  "adapters-mobile-mobile-functions.db-message.quota-uploads": {
+    "text": "지난 1시간 동안 업로드가 너무 많습니다. 잠시 후 다시 시도하세요.",
+    "sourceHash": "7ba8fa68f3b4275c6558d6798807706cefc0ed84cb152277da5d89282108a06e",
+    "review": "machine"
   }
 }

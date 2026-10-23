@@ -64,6 +64,17 @@ export function applyChangesErrorMessage(
   return null;
 }
 
+/** G-5: vennlig, oversatt melding for kvotefeil fra databasen (SQLSTATE PTG11–PTG14), ellers null. */
+export function quotaErrorMessage(
+  error: { readonly code?: string | null; readonly message?: string | null },
+): { readonly code: string; readonly message: string } | null {
+  if (error.code === "PTG11") return { code: "quota", message: tk("adapters-storage-commands-functions.quota-projects") };
+  if (error.code === "PTG12") return { code: "quota", message: tk("adapters-storage-commands-functions.quota-change-log") };
+  if (error.code === "PTG13") return { code: "quota", message: tk("adapters-storage-commands-functions.quota-storage") };
+  if (error.code === "PTG14") return { code: "quota", message: tk("adapters-storage-commands-functions.quota-uploads") };
+  return null;
+}
+
 export type RunCommandResult =
   | {
       readonly ok: true;
@@ -1039,6 +1050,8 @@ export const runCommand = createServerFn({ method: "POST" })
     if (error) {
       const known = applyChangesErrorMessage(data.command, error);
       if (known) return { ok: false, ...known };
+      const quota = quotaErrorMessage(error);
+      if (quota) return { ok: false, ...quota };
       if (error.code === "23505") {
         // Enten et nytt forsøk av en kommando som allerede er lagret (idempotent), eller to samtidige
         // endringer som ville gitt samme plass i rekkefølgen.

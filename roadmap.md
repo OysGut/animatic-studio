@@ -1,5 +1,12 @@
 # Veikart
 
+## G-5 vekst og misbruk (23.10.2026)
+- [ ] 1. change_log-oppbevaring: 90 dager / 20 000 endringer, komprimering til øyeblikksbilder, project_seq/synk bevart, cron eller admin-knapp
+- [ ] 2. Kvoter per arbeidsgruppe/bruker: lagring, prosjekter, change_log-rader, opplastinger/time; admin-styrt, servertvang, oversatte meldinger
+- [ ] 3. film_shares.token: bare hash/digest, kryptering for QR-gjenvisning med nøkkelversjon
+- [ ] 4. Tak på jsonb-kolonner (95 stk): liste per kolonne + test for nye kolonner
+- [ ] Rapport docs/development/G5_VEKST_REPORT.md; migrasjon 0097; tsc/vitest/DB grønne
+
 ## G-4 skriftsystemer (23.10.2026)
 - [ ] 1. RTL: dir=auto på brukertekst, logisk CSS, manusvisning/PDF speilet + shaping, tekstlag, tester ar/he
 - [x] 2. Søk: 0096 unaccent+pg_trgm, indekser, CJK, admin_find_users, kjerne-fold NFKC, måling 50k blokker
