@@ -180,5 +180,13 @@ Eksakt liste for G-1 frem til denne delrapporten, gruppert med kort formål:
 **Gjenstår (ikke levert):**
 - Punkt 5: fontene er ikke koblet til manus-PDF, plakat eller presentasjon ennå. Manus-PDF er en egen PDF-skriver med Courier; plan er jsPDF-vei med Noto når teksten har tegn utenfor WinAnsi. Begrensning: jsPDF former ikke devanagari/thai, og arabisk krever egen høyre-til-venstre-behandling.
 - Plakat/presentasjon for alle språk (Øysteins valg): krever at `LocalizedText` blir et språkkart, at `Poster.language` blir BCP-47, og at sperren `language in ('nb','en')` på `posters` fjernes i 0091.
-- Oversettelsesassistentens målspråk (Øysteins valg: fra språkversjonene, forhåndsvalgt grensesnittspråket).
 - 3-rest (arkitekturtest nb/no, sceneoverskrift-nøkkelord per språk), 6 (rundtur), 7 (brukerflyt), 8 (check_kb), full Vitest og DB-tester.
+
+## G-1b – rettinger etter Claudes vitest (2026-10-23)
+
+- Oversettelsesassistenten har ikke lenger engelsk som fast mål. `AssistRequest.targetLanguage` er påkrevd for «translate», valideres som BCP-47 og kan aldri være kildespråket. Forhåndsvalget er grensesnittspråket når det ikke er kildespråket, ellers første språkversjon (`defaultTranslateTarget`). Forslag, konfliktsjekk og lagret oversettelse bruker målspråket. Tre gamle tekster er avløst av nye nøkler (`replaces`), med oversettelse til alle språk (maskinoversatt: fr, es, ru, ja, pt-BR, de, it, ko).
+- `scene-to-video.test.ts`: sjekker nå «original language» og at «Norwegian» ikke står i prompten.
+- `t2-script-assist.test.ts`: snapshot med fast engelsk er fjernet; testen sjekker japansk og engelsk mål, avvisning uten mål og med kildespråket som mål, og forhåndsvalget.
+- `verifisering4-redaksjon-ui.test.ts` (REQ-0053): importknappen er sperret til språket er bekreftet; testen sjekker forslaget, bekrefter og kontrollerer deretter byte-identisk original og kontrollsum som før. Ingen getContext-feil i denne filen.
+- `fountain.test.ts`: `.fdx` gjenkjennes nå som format (G-1b).
+- Resultat: tsc 0; full vitest 2729 bestått, 0 feilet (10 hoppet over som før); DB-tester 182 bestått, 0 feilet (med 0091); i18n-sjekk grønn.
