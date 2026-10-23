@@ -56180,5 +56180,20 @@
     "text": "Muitas solicitações em pouco tempo. Aguarde um momento e tente novamente.",
     "sourceHash": "6a27047e94b3d56be828003659dde8dd01798fc58cc9358d0f67357738e71114",
     "review": "machine"
+  },
+  "g9-demo.open": {
+    "text": "Abrir o projeto de exemplo",
+    "sourceHash": "a6361adfb50c97cea21af06ce955fa5ace5bef5d3272903d1f98954f039e3978",
+    "review": "machine"
+  },
+  "g9-demo.opening": {
+    "text": "Criando o projeto de exemplo…",
+    "sourceHash": "d2f0dbc9ded04d7a845be79c2a027ce63505bf5911c1ac039faa096e48744d8e",
+    "review": "machine"
+  },
+  "g9-demo.failed": {
+    "text": "Não foi possível criar o projeto de exemplo: {message}",
+    "sourceHash": "c09f17ddaa186d6213f4c308ef73b71ad576b946801aa29d2e435ed5b6bb0595",
+    "review": "machine"
   }
 }

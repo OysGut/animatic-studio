@@ -75890,5 +75890,14 @@
   },
   "adapters-storage-commands-functions.rate-limited": {
     "text": "For mange forespørsler på kort tid. Vent litt og prøv igjen."
+  },
+  "g9-demo.open": {
+    "text": "Åpne eksempelprosjektet"
+  },
+  "g9-demo.opening": {
+    "text": "Lager eksempelprosjektet …"
+  },
+  "g9-demo.failed": {
+    "text": "Eksempelprosjektet kunne ikke lages: {message}"
   }
 }

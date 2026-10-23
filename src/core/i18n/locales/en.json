@@ -75872,5 +75872,14 @@
   },
   "adapters-storage-commands-functions.rate-limited": {
     "text": "Too many requests in a short time. Wait a moment and try again."
+  },
+  "g9-demo.open": {
+    "text": "Open the example project"
+  },
+  "g9-demo.opening": {
+    "text": "Creating the example project…"
+  },
+  "g9-demo.failed": {
+    "text": "The example project could not be created: {message}"
   }
 }

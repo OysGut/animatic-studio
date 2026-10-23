@@ -64,3 +64,5 @@
 - [x] 3. Tilgang: RLS bare for arbeidsgruppemedlemmer; roller eier/redaktør/leser; RLS-tester grønne
 - [x] 4. Backup: innhentede knipper materialiseres som prosjektrader i BACKUP_STATE_TABLES; rundtur-testet
 - [~] Rapport docs/development/G6_GJENBRUK_REPORT.md skrevet; tsc 0, DB 201/0, fokuserte vitest 18/0 — full vitest og i18n gjenstår; 0098 ikke kjørt i Cloud
+
+- [x] G-9 Eksempelprosjekt på flere språk (rapport: docs/development/G9_DEMO_REPORT.md; ende-til-ende mot Cloud ikke kjørt)

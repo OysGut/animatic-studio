@@ -19,6 +19,8 @@ const EXCEPTIONS: readonly { file: string; contains: string; why: string }[] = [
   { file: "src/test/setup.ts", contains: "setLanguage('nb')", why: "Testoppsett: katalogens forfatterspråk i jsdom-tester." },
   { file: "src/core/storylab/line-check.ts", contains: '"no"', why: "Engelsk svarverdi (yes/partly/no), ikke et språk." },
   { file: "src/core/screenplay/export-fonts.ts", contains: 'language === "nb" ? "nb-NO"', why: "Word kjenner bokmål bare med region; andre språk skrives uendret." },
+  { file: "src/core/demo/story.ts", contains: 'DEMO_LANGUAGES = ["en", "ja", "es", "nb"]', why: "G-9: eksempelprosjektet finnes på fire språk; norsk er ett av dem, engelsk er kilde og reserve." },
+  { file: "src/core/demo/plan.ts", contains: 'base === "no" ? "nb"', why: "G-9: nettleserens «no» velger den norske eksempelversjonen." },
   { file: "src/core/generation/style-analysis.ts", contains: 'j["nb"]', why: "Leser eldre svarform fra modellen; nye svar bruker «local»." },
 ];
 
