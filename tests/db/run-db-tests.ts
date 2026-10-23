@@ -6059,7 +6059,7 @@ try {
       const g = await sql`select has_table_privilege('anon',${`public.${table}`},'SELECT') as anon,has_table_privilege('authenticated',${`public.${table}`},'SELECT') as read,has_table_privilege('authenticated',${`public.${table}`},'INSERT') as ins,has_table_privilege('authenticated',${`public.${table}`},'DELETE') as del,has_table_privilege('service_role',${`public.${table}`},'INSERT') as service`;
       assert(g[0]?.["anon"] === false && g[0]?.["read"] === true && g[0]?.["ins"] === false && g[0]?.["del"] === false && g[0]?.["service"] === true, `${table}: grants avviker`);
     }
-    const body = String((await sql`select pg_get_functiondef('public.apply_changes(uuid,uuid,uuid,jsonb,jsonb,jsonb)'::regprocedure) as b`)[0]?.["b"]);
+    const body = await applyChangesTableOrder();
     assert(body.includes("'dialogue_reviews','note_flags'") && body.includes("'note_flags','dialogue_reviews','animation_patterns'"), "apply_changes kjenner ikke de nye tabellene i riktig rekkefølge");
     for (const fn of ["delete_project(uuid,uuid)", "purge_project_assets(uuid,uuid)"]) {
       const b = String((await sql`select pg_get_functiondef(${`public.${fn}`}::regprocedure) as b`)[0]?.["b"]);
@@ -6110,7 +6110,7 @@ try {
     assert(g[0]?.["anon"] === false && g[0]?.["read"] === true && g[0]?.["ins"] === false && g[0]?.["del"] === false && g[0]?.["service"] === true, "quality_profiles: grants avviker");
     const col = await sql`select 1 from information_schema.columns where table_schema='public' and table_name='projects' and column_name='active_quality_profile_id'`;
     assert(col.length === 1, "projects.active_quality_profile_id mangler");
-    const body = String((await sql`select pg_get_functiondef('public.apply_changes(uuid,uuid,uuid,jsonb,jsonb,jsonb)'::regprocedure) as b`)[0]?.["b"]);
+    const body = await applyChangesTableOrder();
     assert(body.includes("'dialogue_reviews','note_flags','quality_profiles'"), "apply_changes kjenner ikke quality_profiles");
     assert(body.includes("'quality_profiles','note_flags'"), "apply_changes sletter ikke profiler først");
     assert(body.includes("active_quality_profile_id"), "apply_changes oppdaterer ikke aktiv profil");
@@ -6212,7 +6212,7 @@ try {
       const body=String((await sql`select pg_get_functiondef(${`public.${fn}`}::regprocedure) b`)[0]?.["b"]);
       assert(body.indexOf("delete from public.translation_line_links")<body.indexOf("delete from public.translations"),"line links must delete before translations");
     }
-    const body=String((await sql`select pg_get_functiondef('public.apply_changes(uuid,uuid,uuid,jsonb,jsonb,jsonb)'::regprocedure) b`)[0]?.["b"]);
+    const body=await applyChangesTableOrder();
     assert(body.includes("'translation_line_links'") && body.includes("'translation_lines'"),"apply_changes kjenner ikke linjetabellene");
     const vbody=String((await sql`select pg_get_functiondef('private.validate_translation_line_links(uuid,jsonb,uuid[])'::regprocedure) b`)[0]?.["b"]);
     const pbody=String((await sql`select pg_get_functiondef('private.prepare_translation_line_links(uuid,jsonb)'::regprocedure) b`)[0]?.["b"]);
@@ -6330,7 +6330,7 @@ try {
       const body=String((await sql`select pg_get_functiondef(${`public.${name}(uuid,uuid)`}::regprocedure) b`)[0]?.["b"]);
       assert(body.indexOf("delete from public.translations")>0 && body.indexOf("delete from public.translations")<body.indexOf("delete from public.language_versions") && (name==="delete_project" || body.indexOf("delete from public.language_versions")<body.indexOf("delete from public.projects")),`${name}: language versions must delete after translations (and before the project row)`);
     }
-    const ac=String((await sql`select pg_get_functiondef('public.apply_changes(uuid,uuid,uuid,jsonb,jsonb,jsonb)'::regprocedure) b`)[0]?.["b"]);
+    const ac=await applyChangesTableOrder();
     assert(ac.indexOf("'language_versions','translations'")>0 && ac.includes("'translations','language_versions'"),"apply_changes lacks language versions");
     const lac=String((await sql`select pg_get_functiondef('private.validate_language_scope(uuid,jsonb,uuid[])'::regprocedure) b`)[0]?.["b"]);
     assert(lac.includes("Invalid language version scope"),"language scope validation absent");
@@ -6442,7 +6442,7 @@ try {
       assert(body.indexOf("delete from public.style_harmonizations")<body.indexOf("delete from public.style_profiles"),"harmonizations must delete before style profiles");
       assert(body.includes("delete from public.harmonize_batches"),"harmonize batches not deleted");
     }
-    const applyBody=String((await sql`select pg_get_functiondef('public.apply_changes(uuid,uuid,uuid,jsonb,jsonb,jsonb)'::regprocedure) b`)[0]?.["b"]);
+    const applyBody=await applyChangesTableOrder();
     assert(applyBody.includes("'style_harmonizations'") && applyBody.includes("'style_preferred_references'"),"new tables missing from apply_changes");
     const harmBody=String((await sql`select pg_get_functiondef('private.validate_style_harmonizations(uuid,jsonb,uuid[])'::regprocedure) b`)[0]?.["b"]);
     const prefBody=String((await sql`select pg_get_functiondef('private.validate_preferred_reference_unique(uuid,jsonb,uuid[])'::regprocedure) b`)[0]?.["b"]);
@@ -6621,7 +6621,7 @@ try {
       assert(!grants.some((r) => r.g === "anon"), `${tbl}: ikke anon`);
     }
     // apply_changes kjenner tabellene, og riggene slettes før scenene og prosjektraden
-    const ac = String((await sql`select pg_get_functiondef('public.apply_changes(uuid,uuid,uuid,jsonb,jsonb,jsonb)'::regprocedure) b`)[0]?.["b"]);
+    const ac = await applyChangesTableOrder();
     assert(ac.includes("rig_templates") && ac.includes("rig_setups"), "apply_changes kjenner riggtabellene");
     assert(ac.indexOf("'rig_setups'") < ac.indexOf("'scenes','rig_templates'") && ac.indexOf("'rig_templates','productions'") > 0, "sletterekkefølgen");
     const dp = String((await sql`select pg_get_functiondef('public.delete_project(uuid,uuid)'::regprocedure) b`)[0]?.["b"]);
