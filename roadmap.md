@@ -41,3 +41,10 @@
 - [x] 8. Kravoversikter: check_kb grønn (PyYAML eller JS-variant)
 - [x] Rapport: oppdater docs/development/G1_SPRAKNOYTRAL_REPORT.md
 - [ ] Full vitest + i18n + DB-tester grønne
+
+## G-6 gjenbruk på tvers av prosjekter (23.10.2026)
+- [ ] 1. Globale karakterer: løft karakter (stemmeprofil, faktaark m/tekstversjoner, munnsett, rigg, godkjente bildeversjoner) til arbeidsgruppen; bruk i flere prosjekter; ta inn endringer som nye versjoner; ingen automatisk oppdatering; lokale overstyringer bevares
+- [ ] 2. Stilprofiler, kvalitetsprofiler, fonter og maler på arbeidsgruppen, arvet via resolveSettings med lokale overstyringer
+- [ ] 3. Tilgang: kun arbeidsgruppemedlemmer; roller eier/redaktør/leser; RLS-tester
+- [ ] 4. Backup/eksport inkluderer globale ressurser som snapshot
+- [ ] Rapport docs/development/G6_GJENBRUK_REPORT.md; migrasjon 0098; tsc 0, full vitest, DB-tester, i18n, search_path=''
