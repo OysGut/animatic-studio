@@ -30,6 +30,7 @@ import { ContinuityPanel } from "./ContinuityPanel";
 import { ApproveImpactDialog } from "./ApproveImpactDialog";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { SaveToGlobalButton } from "@/app/global/SaveToGlobalButton";
+import { CharacterBundleControls } from "@/app/global/CharacterBundleControls";
 import { VersionRights } from "@/app/community/VersionRights";
 import { ASSET_KIND_LABEL, ASSET_KINDS, ASSET_MIME_TYPES, USAGE_LABEL, VISUAL_STYLES, allAssetUsage, assetVersionImpact, contentSyncByScene, contentSyncText, provenanceDetail, provenanceLabel, formatHeading, hasContinuity, newId, variantsOf, versionsOf, versionFromFileName, type Asset, type AssetFields, type AssetNameKind, type AssetVariant, type AssetVersion, type GenerationJob, type ProjectState, type SceneContentSync, type VersionOrigin, type VersionProvenance, type VisualStyle, workingImageMaxSide, assetUsageCounts, locale } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
@@ -389,6 +390,7 @@ export function AssetDetail(props: Props) {
                 </Button>
               ) : null}
               {editable ? <SaveToGlobalButton projectId={props.projectId} asset={asset} /> : null}
+              {editable ? <CharacterBundleControls projectId={props.projectId} state={state} asset={asset} cmds={cmds} /> : null}
               <Button
                 size="sm"
                 variant="ghost"

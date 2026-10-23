@@ -75881,5 +75881,248 @@
   },
   "g9-demo.failed": {
     "text": "[!! TThhëë ëëxxáámmppllëë pprrôôjjëëcctt ccôôüülldd nnôôtt bbëë ccrrëëááttëëdd: {message} !!]"
+  },
+  "g5-admin.cancel": {
+    "text": "[!! CCáánnccëëll !!]"
+  },
+  "g5-admin.failed": {
+    "text": "[!! TThháátt ddïïddnn'tt wwôôrrkk. TTrryy áággááïïnn. !!]"
+  },
+  "g5-admin.save": {
+    "text": "[!! SSáávvëë !!]"
+  },
+  "g5-admin.saved": {
+    "text": "[!! SSáávvëëdd. !!]"
+  },
+  "g5-admin.unavailable": {
+    "text": "[!! NNôôtt áávvááïïlláábbllëë yyëëtt (tthhëë ddááttáábbáássëë hhááss nnôôtt bbëëëënn üüppddááttëëdd). !!]"
+  },
+  "g5-admin.log.title": {
+    "text": "[!! CChháánnggëë llôôgg !!]"
+  },
+  "g5-admin.log.note": {
+    "text": "[!! FFüüllll hhïïssttôôrryy ïïss kkëëpptt ffôôrr áá nnüümmbbëërr ôôff ddááyyss ôôrr cchháánnggëëss ppëërr pprrôôjjëëcctt. ÔÔllddëërr cchháánnggëëss áárrëë ccllëëáánnëëdd üüpp ôônnccëë áá ddááyy bbyy tthhëë bbáácckkggrrôôüünndd jjôôbb, ôôrr nnôôww wwïïtthh tthhëë bbüüttttôônn. !!]"
+  },
+  "g5-admin.log.total": {
+    "text": "[!! {rows} cchháánnggëëss ïïnn {projects} pprrôôjjëëccttss !!]"
+  },
+  "g5-admin.log.project": {
+    "text": "[!! PPrrôôjjëëcctt !!]"
+  },
+  "g5-admin.log.rows": {
+    "text": "[!! CChháánnggëëss !!]"
+  },
+  "g5-admin.log.size": {
+    "text": "[!! SSïïzzëë !!]"
+  },
+  "g5-admin.log.days": {
+    "text": "[!! DDááyyss ôôff ffüüllll hhïïssttôôrryy !!]"
+  },
+  "g5-admin.log.max-rows": {
+    "text": "[!! CChháánnggëëss ppëërr pprrôôjjëëcctt !!]"
+  },
+  "g5-admin.log.prune": {
+    "text": "[!! CCllëëáánn üüpp nnôôww !!]"
+  },
+  "g5-admin.log.pruned": {
+    "text": "[!! CCllëëáánnëëdd üüpp. CChháánnggëëss rrëëmmôôvvëëdd: {count}. !!]"
+  },
+  "g5-admin.log.invalid": {
+    "text": "[!! DDááyyss mmüüsstt bbëë 1–3650 áánndd cchháánnggëëss 100–10,000,000. !!]"
+  },
+  "g5-admin.quota.title": {
+    "text": "[!! QQüüôôttááss !!]"
+  },
+  "g5-admin.quota.note": {
+    "text": "[!! LLïïmmïïttss ppëërr wwôôrrkkssppááccëë, ôôrr ppëërr üüssëërr ffôôrr pprrôôjjëëccttss wwïïtthhôôüütt áá wwôôrrkkssppááccëë. ÁÁnn ëëmmppttyy ffïïëëlldd mmëëáánnss nnôô llïïmmïïtt. TThhëë ddááttáábbáássëë ëënnffôôrrccëëss tthhëë llïïmmïïttss. !!]"
+  },
+  "g5-admin.quota.none": {
+    "text": "[!! NNôô qqüüôôttááss hháávvëë bbëëëënn ssëëtt. !!]"
+  },
+  "g5-admin.quota.find-user": {
+    "text": "[!! FFïïnndd üüssëërr (ëëmmááïïll ôôrr nnáámmëë) !!]"
+  },
+  "g5-admin.quota.search": {
+    "text": "[!! SSëëáárrcchh !!]"
+  },
+  "g5-admin.quota.workspace-id": {
+    "text": "[!! WWôôrrkkssppááccëë ÏÏDD !!]"
+  },
+  "g5-admin.quota.add-workspace": {
+    "text": "[!! NNëëww qqüüôôttáá ffôôrr tthhëë wwôôrrkkssppááccëë !!]"
+  },
+  "g5-admin.quota.add-user": {
+    "text": "[!! NNëëww qqüüôôttáá ffôôrr {user} !!]"
+  },
+  "g5-admin.quota.workspace": {
+    "text": "[!! WWôôrrkkssppááccëë: {name} !!]"
+  },
+  "g5-admin.quota.user": {
+    "text": "[!! ÜÜssëërr: {name} !!]"
+  },
+  "g5-admin.quota.storage": {
+    "text": "[!! SSttôôrráággëë (GGBB) !!]"
+  },
+  "g5-admin.quota.projects": {
+    "text": "[!! PPrrôôjjëëccttss !!]"
+  },
+  "g5-admin.quota.log-rows": {
+    "text": "[!! CChháánnggëëss ïïnn tthhëë llôôgg !!]"
+  },
+  "g5-admin.quota.uploads": {
+    "text": "[!! ÜÜppllôôááddss ppëërr hhôôüürr !!]"
+  },
+  "g5-admin.quota.unlimited": {
+    "text": "[!! NNôô llïïmmïïtt !!]"
+  },
+  "g5-admin.quota.used": {
+    "text": "[!! ÜÜssëëdd: {used} !!]"
+  },
+  "g5-admin.quota.remove": {
+    "text": "[!! RRëëmmôôvvëë qqüüôôttáá !!]"
+  },
+  "g5-admin.quota.invalid": {
+    "text": "[!! ÜÜssëë wwhhôôllëë nnüümmbbëërrss (ssttôôrráággëë mmááyy hháávvëë ddëëccïïmmáállss), ôôrr llëëáávvëë tthhëë ffïïëëlldd ëëmmppttyy. !!]"
+  },
+  "g5-admin.rate.title": {
+    "text": "[!! RRááttëë llïïmmïïttss !!]"
+  },
+  "g5-admin.rate.note": {
+    "text": "[!! HHôôww mmáánnyy rrëëqqüüëëssttss áárrëë áállllôôwwëëdd ïïnn áá ttïïmmëë wwïïnnddôôww, ppëërr üüssëërr ôôrr ëëmmááïïll áánndd ppëërr ÏÏPP ááddddrrëëssss. ÁÁbbôôvvëë tthhëë llïïmmïïtt tthhëë üüssëërr ssëëëëss “TTôôôô mmáánnyy rrëëqqüüëëssttss ïïnn áá sshhôôrrtt ttïïmmëë”. !!]"
+  },
+  "g5-admin.rate.window": {
+    "text": "[!! WWïïnnddôôww (ssëëccôônnddss) !!]"
+  },
+  "g5-admin.rate.per-key": {
+    "text": "[!! PPëërr üüssëërr/ëëmmááïïll !!]"
+  },
+  "g5-admin.rate.per-ip": {
+    "text": "[!! PPëërr ÏÏPP !!]"
+  },
+  "g6-bundle.publish": {
+    "text": "[!! PPüübbllïïsshh cchháárrááccttëërr bbüünnddllëë !!]"
+  },
+  "g6-bundle.published": {
+    "text": "[!! BBüünnddllëë nnôô. {number} hhááss bbëëëënn ppüübbllïïsshhëëdd ttôô tthhëë wwôôrrkkssppááccëë. !!]"
+  },
+  "g6-bundle.pull": {
+    "text": "[!! GGëëtt üüppddááttëë (nnôô. {number}) !!]"
+  },
+  "g6-bundle.pull-label": {
+    "text": "[!! GGëëtt cchháárrááccttëërr bbüünnddllëë ffôôrr {name} !!]"
+  },
+  "g6-bundle.pulled": {
+    "text": "[!! BBüünnddllëë nnôô. {number} hhááss bbëëëënn bbrrôôüügghhtt ïïnn. YYôôüü ccáánn üünnddôô ïïtt ïïnn ôônnëë ssttëëpp. !!]"
+  },
+  "g6-bundle.plan-title": {
+    "text": "[!! GGëëtt bbüünnddllëë nnôô. {number} ffôôrr {name} !!]"
+  },
+  "g6-bundle.plan-note": {
+    "text": "[!! TThhïïss ïïss bbrrôôüügghhtt ïïnn ffïïëëlldd bbyy ffïïëëlldd. FFïïëëllddss yyôôüü hháávvëë cchháánnggëëdd yyôôüürrssëëllff ïïnn tthhëë pprrôôjjëëcctt áárrëë kkëëpptt. NNôôtthhïïnngg ïïss ááppppllïïëëdd üünnttïïll yyôôüü ccôônnffïïrrmm. !!]"
+  },
+  "g6-bundle.cancel": {
+    "text": "[!! CCáánnccëëll !!]"
+  },
+  "g6-bundle.confirm": {
+    "text": "[!! BBrrïïnngg ïïnn !!]"
+  },
+  "g6-bundle.apply": {
+    "text": "[!! ÜÜppddááttëëdd !!]"
+  },
+  "g6-bundle.keep": {
+    "text": "[!! KKëëpptt !!]"
+  },
+  "g6-bundle.nothing": {
+    "text": "[!! NNôôtthhïïnngg ttôô bbrrïïnngg ïïnn: tthhëë pprrôôjjëëcctt áállrrëëááddyy hhááss tthhïïss, ôôrr yyôôüü hháávvëë cchháánnggëëdd ëëvvëërryytthhïïnngg yyôôüürrssëëllff. !!]"
+  },
+  "g6-bundle.field.voice": {
+    "text": "[!! VVôôïïccëë pprrôôffïïllëë !!]"
+  },
+  "g6-bundle.field.briefs": {
+    "text": "[!! TTëëxxtt vvëërrssïïôônnss ïïnn tthhëë ffáácctt sshhëëëëtt !!]"
+  },
+  "g6-bundle.briefs-added": {
+    "text": "[!! ÁÁddddëëdd: {count} !!]"
+  },
+  "g6-bundle.field.active-brief": {
+    "text": "[!! ÁÁccttïïvvëë ttëëxxtt vvëërrssïïôônn !!]"
+  },
+  "g6-bundle.field.mouth": {
+    "text": "[!! MMôôüütthh ssëëtt ({set}) !!]"
+  },
+  "g6-bundle.field.rig": {
+    "text": "[!! RRïïgg !!]"
+  },
+  "g6-profiles.title": {
+    "text": "[!! PPrrôôffïïllëëss ffôôrr tthhëë pprrôôjjëëccttss !!]"
+  },
+  "g6-profiles.note": {
+    "text": "[!! PPrrôôjjëëccttss ïïnn tthhëë wwôôrrkkssppááccëë ïïnnhhëërrïïtt tthhëë ddëëffááüülltt pprrôôffïïllëë ôôff ëëáácchh ttyyppëë wwhhëënn tthhëëyy hháávvëë nnôônnëë ôôff tthhëëïïrr ôôwwnn. ÁÁ pprrôôffïïllëë ïïnn tthhëë pprrôôjjëëcctt áállwwááyyss ttáákkëëss pprrëëccëëddëënnccëë. !!]"
+  },
+  "g6-profiles.unavailable": {
+    "text": "[!! TThhëë pprrôôffïïllëëss ccôôüülldd nnôôtt bbëë llôôááddëëdd. !!]"
+  },
+  "g6-profiles.kind.style": {
+    "text": "[!! SSttyyllëë pprrôôffïïllëëss !!]"
+  },
+  "g6-profiles.kind.quality": {
+    "text": "[!! QQüüáállïïttyy pprrôôffïïllëëss !!]"
+  },
+  "g6-profiles.kind.font": {
+    "text": "[!! FFôônnttss !!]"
+  },
+  "g6-profiles.kind.template": {
+    "text": "[!! TTëëmmppllááttëëss !!]"
+  },
+  "g6-profiles.none": {
+    "text": "[!! NNôônnëë yyëëtt. !!]"
+  },
+  "g6-profiles.default": {
+    "text": "[!! DDëëffááüülltt !!]"
+  },
+  "g6-profiles.make-default": {
+    "text": "[!! MMáákkëë ddëëffááüülltt !!]"
+  },
+  "g6-profiles.archive": {
+    "text": "[!! ÁÁrrcchhïïvvëë !!]"
+  },
+  "g6-profiles.new-name": {
+    "text": "[!! NNáámmëë ôôff nnëëww pprrôôffïïllëë ({kind}) !!]"
+  },
+  "g6-profiles.add": {
+    "text": "[!! ÁÁdddd !!]"
+  },
+  "g6-inherit.title": {
+    "text": "[!! ÏÏnnhhëërrïïttëëdd ffrrôômm tthhëë wwôôrrkkssppááccëë {name} !!]"
+  },
+  "g6-inherit.none": {
+    "text": "[!! NNôônnëë !!]"
+  },
+  "g6-inherit.paper": {
+    "text": "[!! PPááppëërr !!]"
+  },
+  "g6-inherit.currency": {
+    "text": "[!! CCüürrrrëënnccyy !!]"
+  },
+  "g6-inherit.time-zone": {
+    "text": "[!! TTïïmmëë zzôônnëë !!]"
+  },
+  "g6-inherit.units": {
+    "text": "[!! ÜÜnnïïttss !!]"
+  },
+  "g6-inherit.source.project": {
+    "text": "[!! ffrrôômm tthhëë pprrôôjjëëcctt !!]"
+  },
+  "g6-inherit.source.workspace": {
+    "text": "[!! ffrrôômm tthhëë wwôôrrkkssppááccëë !!]"
+  },
+  "g6-inherit.source.user": {
+    "text": "[!! ffrrôômm tthhëë üüssëërr !!]"
+  },
+  "g6-inherit.source.country": {
+    "text": "[!! ffrrôômm tthhëë ccôôüünnttrryy !!]"
+  },
+  "g6-inherit.source.default": {
+    "text": "[!! ddëëffááüülltt !!]"
   }
 }

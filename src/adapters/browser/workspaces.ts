@@ -63,6 +63,14 @@ export async function getWorkspace(id: string): Promise<{ id: string; name: stri
   return (data as { id: string; name: string } | null) ?? null;
 }
 
+/** G-6 del 2: gruppens innstillinger (0094) – rå verdier; kjernen tolker dem med settingLevelFrom. */
+export async function getWorkspaceSettings(id: string): Promise<{ settings: unknown; timeZone: string | null } | null> {
+  const { data, error } = await db.from("workspaces").select("settings, time_zone").eq("id", id).maybeSingle();
+  fail(error);
+  const r = data as { settings?: unknown; time_zone?: string | null } | null;
+  return r ? { settings: r.settings ?? {}, timeZone: r.time_zone ?? null } : null;
+}
+
 export async function listWorkspaceMembers(id: string): Promise<WorkspaceMember[]> {
   const { data, error } = await db.rpc("list_workspace_members", { p_workspace: id });
   fail(error);

@@ -2,6 +2,7 @@
  * Adminsiden for én arbeidsgruppe (GP1): navn, medlemmer og roller, invitasjoner og koblede prosjekter.
  * Databasen håndhever rettighetene; siden viser bare valgene rollen har (workspaceRights).
  */
+import { WorkspaceProfilesCard } from "./WorkspaceProfilesCard";
 import { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -328,6 +329,8 @@ export function WorkspacePage({ workspaceId, myId }: { workspaceId: string; myId
           </div>
         ) : null}
       </Card>
+
+      {ws.data ? <WorkspaceProfilesCard workspaceId={workspaceId} canEdit={rights.publish} /> : null}
 
       {msg ? (
         <p role="alert" className="text-xs text-status-danger">

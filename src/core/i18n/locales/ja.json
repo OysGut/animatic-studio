@@ -56047,5 +56047,410 @@
     "text": "サンプルプロジェクトを作成できませんでした：{message}",
     "sourceHash": "c09f17ddaa186d6213f4c308ef73b71ad576b946801aa29d2e435ed5b6bb0595",
     "review": "machine"
+  },
+  "g5-admin.cancel": {
+    "text": "キャンセル",
+    "sourceHash": "a69ea29ae854ab93e4967572b360e5a50e1c854ae20c4ae9b47ee3b1368bab86",
+    "review": "machine"
+  },
+  "g5-admin.failed": {
+    "text": "失敗しました。もう一度お試しください。",
+    "sourceHash": "3b189b08b96063cf0e016bd2374fea6f0d7c476603d0f9d8a9b3b475cd1cc54a",
+    "review": "machine"
+  },
+  "g5-admin.save": {
+    "text": "保存",
+    "sourceHash": "17313c395ac9f722f10ded2a46d31ffa3f63252c66b890b61a904160c55f034b",
+    "review": "machine"
+  },
+  "g5-admin.saved": {
+    "text": "保存しました。",
+    "sourceHash": "3c71ad6a1439d84fa2541c465c65b07e51a6ffb7a3ddec4eae9b46f6f61bcf9b",
+    "review": "machine"
+  },
+  "g5-admin.unavailable": {
+    "text": "まだ利用できません（データベースが更新されていません）。",
+    "sourceHash": "6cff3356d8e6e1a4f47040e0b00cca989eaf40a5c3c5bb6fcca73ef22e430194",
+    "review": "machine"
+  },
+  "g5-admin.log.title": {
+    "text": "変更履歴",
+    "sourceHash": "830347903705f5259598b35e7eb933af03954cd2f0d8f9d198032245b9ebbd51",
+    "review": "machine"
+  },
+  "g5-admin.log.note": {
+    "text": "完全な履歴は、プロジェクトごとに一定の日数または変更数だけ保持されます。古い変更はバックグラウンド処理で1日1回、またはボタンで今すぐ整理されます。",
+    "sourceHash": "59033bbb5e179e670c3fe7e3d35a7e7b2efd524456d685497e02307b3d81b255",
+    "review": "machine"
+  },
+  "g5-admin.log.total": {
+    "text": "{projects} 件のプロジェクトで {rows} 件の変更",
+    "sourceHash": "6fdef809e7b4984ec75ea9143acbd89ac43794a41c4441131c1e3b7343a463a3",
+    "review": "machine"
+  },
+  "g5-admin.log.project": {
+    "text": "プロジェクト",
+    "sourceHash": "30a6bf7d10a859379d1cdfbc84ffe8c4a5a7e5333aa51b9fcdf05f4febd04e7c",
+    "review": "machine"
+  },
+  "g5-admin.log.rows": {
+    "text": "変更数",
+    "sourceHash": "35bf303de03bfd59d1e03b510f846576d53cd8d487db08ae57930869998cac21",
+    "review": "machine"
+  },
+  "g5-admin.log.size": {
+    "text": "サイズ",
+    "sourceHash": "bce24aa59585e608ae5f0944d704b1dc7447844e334351b537e6cefd02980c2a",
+    "review": "machine"
+  },
+  "g5-admin.log.days": {
+    "text": "完全な履歴の日数",
+    "sourceHash": "7092aeb4953f060ff6e4a6fcf3fc14539e7b45c93d5de4dd7368fc787b3d0dfb",
+    "review": "machine"
+  },
+  "g5-admin.log.max-rows": {
+    "text": "プロジェクトあたりの変更数",
+    "sourceHash": "d692a89bde05c5ef09b9500adf5d08a83a948a1852534919c225ff9a99c07651",
+    "review": "machine"
+  },
+  "g5-admin.log.prune": {
+    "text": "今すぐ整理",
+    "sourceHash": "190365dd962c1275411ba41fdf83dbcd4d5a50f66d2dda49e59f2acf333b023f",
+    "review": "machine"
+  },
+  "g5-admin.log.pruned": {
+    "text": "整理しました。削除した変更：{count}。",
+    "sourceHash": "d218ea02321c5ac781995e0ecc31e4f9de12a126a5985264532d036066460305",
+    "review": "machine"
+  },
+  "g5-admin.log.invalid": {
+    "text": "日数は1～3650、変更数は100～10,000,000にしてください。",
+    "sourceHash": "7134380fb194d80b941123507b12ee6c09165a03493ea69a128d40439160b098",
+    "review": "machine"
+  },
+  "g5-admin.quota.title": {
+    "text": "クォータ",
+    "sourceHash": "8bb529c01851fee3b677e9273f05eee721e3a50755a7e27f1ab48fb59ded2c71",
+    "review": "machine"
+  },
+  "g5-admin.quota.note": {
+    "text": "ワークスペースごと、またはワークスペースのないプロジェクトではユーザーごとの上限です。空欄は上限なしです。上限はデータベースで適用されます。",
+    "sourceHash": "d592e2ee7d35ae285e4fd804c30ca2b7896ff4c57f48dc46d59104aa66182c7d",
+    "review": "machine"
+  },
+  "g5-admin.quota.none": {
+    "text": "クォータは設定されていません。",
+    "sourceHash": "48a5ce751c7711814b59fb022864c5f23adb37ade8e3a88df9413d217709ce74",
+    "review": "machine"
+  },
+  "g5-admin.quota.find-user": {
+    "text": "ユーザーを検索（メールまたは名前）",
+    "sourceHash": "4079392716d683af63e8041685b14c61f7617dd8f77380663d66e34eee7e50be",
+    "review": "machine"
+  },
+  "g5-admin.quota.search": {
+    "text": "検索",
+    "sourceHash": "3641a2a35a693d8fabba97ad986236c104083c5702e9d22fb045a162831c0ca3",
+    "review": "machine"
+  },
+  "g5-admin.quota.workspace-id": {
+    "text": "ワークスペースID",
+    "sourceHash": "f9f7037b5b1704669c5816c18d0f631db5799635841c48ee7141e8a4ce96e720",
+    "review": "machine"
+  },
+  "g5-admin.quota.add-workspace": {
+    "text": "ワークスペースの新しいクォータ",
+    "sourceHash": "ff3b4b9fc1986ebf2b772a9bdd8243ef4686400497234179f9880da08b28d158",
+    "review": "machine"
+  },
+  "g5-admin.quota.add-user": {
+    "text": "{user} の新しいクォータ",
+    "sourceHash": "cb565ae8187a9d874e67ea242f7b8fe357461b8c68a07a42a5d2c98607bfdb5f",
+    "review": "machine"
+  },
+  "g5-admin.quota.workspace": {
+    "text": "ワークスペース：{name}",
+    "sourceHash": "29bfe1b70cf492f2fb59da3d6936c438e726c2d564d9fb639e0b94cf411a5107",
+    "review": "machine"
+  },
+  "g5-admin.quota.user": {
+    "text": "ユーザー：{name}",
+    "sourceHash": "cd6805e2b615ff487f8bf1bfaddb09a3fbf635d1c34ca3707e4ccaa3eb2eb1d2",
+    "review": "machine"
+  },
+  "g5-admin.quota.storage": {
+    "text": "ストレージ（GB）",
+    "sourceHash": "a3ee546997bd416fda691bd23dc6e5c3adeae74fe0ef6c90778f145aa866b6cf",
+    "review": "machine"
+  },
+  "g5-admin.quota.projects": {
+    "text": "プロジェクト",
+    "sourceHash": "513e9e0230036e63b5b18f0af45eef3aea153b2787a1940823d773598ae3604d",
+    "review": "machine"
+  },
+  "g5-admin.quota.log-rows": {
+    "text": "履歴の変更数",
+    "sourceHash": "ace87df66a14eaafd8d685ea73a88d87a5d26dc854e14ff7b9dffc99babf7f81",
+    "review": "machine"
+  },
+  "g5-admin.quota.uploads": {
+    "text": "1時間あたりのアップロード",
+    "sourceHash": "9113be3018be6560699b5255b5bf3141620b01876d07f03fa3f4ff68d47b6324",
+    "review": "machine"
+  },
+  "g5-admin.quota.unlimited": {
+    "text": "上限なし",
+    "sourceHash": "56117b40b2d6949246bed2f0a21cb1c2c192375068e3cc38440091c3d20074c6",
+    "review": "machine"
+  },
+  "g5-admin.quota.used": {
+    "text": "使用量：{used}",
+    "sourceHash": "7a9473533d6d047a306cad4fb2aa699705020ad85d642bd07424fca358d9c889",
+    "review": "machine"
+  },
+  "g5-admin.quota.remove": {
+    "text": "クォータを削除",
+    "sourceHash": "60a076acc4c77047f531736582bcd6fd4eeb6cdd1e6d0a3ff4b304c86d70a6ff",
+    "review": "machine"
+  },
+  "g5-admin.quota.invalid": {
+    "text": "整数を入力してください（ストレージは小数可）。または空欄のままにしてください。",
+    "sourceHash": "8413abde15ce062b67a627207168563cbc7bdd526e05bbf2b6f4e8402881133a",
+    "review": "machine"
+  },
+  "g5-admin.rate.title": {
+    "text": "レート制限",
+    "sourceHash": "0541d3523113990c5382a425135db4c90df266bad94e1d3c3e4d615830704a65",
+    "review": "machine"
+  },
+  "g5-admin.rate.note": {
+    "text": "時間枠内に許可されるリクエスト数（ユーザーまたはメールごと、IPアドレスごと）。上限を超えると「短時間にリクエストが多すぎます」と表示されます。",
+    "sourceHash": "e680c41a8d511807578e8d90dffcc72e4bcc025ec78695290284d9269069c2d3",
+    "review": "machine"
+  },
+  "g5-admin.rate.window": {
+    "text": "時間枠（秒）",
+    "sourceHash": "fd966e78a4b9b5b4cdb4cd9cb2429a1c70a7e15172bd8952e9c5804454a4d10f",
+    "review": "machine"
+  },
+  "g5-admin.rate.per-key": {
+    "text": "ユーザー/メールごと",
+    "sourceHash": "2482bfeeb689b77c67a720103762194076ace0ff787e679edca90ac03430612a",
+    "review": "machine"
+  },
+  "g5-admin.rate.per-ip": {
+    "text": "IPごと",
+    "sourceHash": "e76249ca9eee6c64f901505968a1fa4af246cbd405e7c6243df228418e42379d",
+    "review": "machine"
+  },
+  "g6-bundle.publish": {
+    "text": "キャラクターバンドルを公開",
+    "sourceHash": "6ae90658f09f2245fb2a4f2b3247220955f98fc58bc02ff0eef240d8e71cb086",
+    "review": "machine"
+  },
+  "g6-bundle.published": {
+    "text": "バンドル No.{number} をワークスペースに公開しました。",
+    "sourceHash": "da1d27a866c4bb89a7d6abab5e33006d180b62881033f74687bb8ec5c8189652",
+    "review": "machine"
+  },
+  "g6-bundle.pull": {
+    "text": "更新を取得（No.{number}）",
+    "sourceHash": "faf77c8f7498945b117213a5b03bc03a8ee972543f67c25089a32f5867cae0bd",
+    "review": "machine"
+  },
+  "g6-bundle.pull-label": {
+    "text": "{name} のキャラクターバンドルを取得",
+    "sourceHash": "e37b0c6a2db3d8e5774fe3fa30b9f8d1230c66e0491cad983de7270f022b6b89",
+    "review": "machine"
+  },
+  "g6-bundle.pulled": {
+    "text": "バンドル No.{number} を取り込みました。1回で元に戻せます。",
+    "sourceHash": "8be77ddecab6d15749cadf2bf9f35151d1742cb58812d84bd93cc1f98657ad1e",
+    "review": "machine"
+  },
+  "g6-bundle.plan-title": {
+    "text": "{name} のバンドル No.{number} を取得",
+    "sourceHash": "b7070c5295cc302d57c8e5e448338b1507c2040a081932b287ed90ceccd9a94e",
+    "review": "machine"
+  },
+  "g6-bundle.plan-note": {
+    "text": "項目ごとに取り込みます。プロジェクトで自分で変更した項目はそのまま残ります。確認するまで何も適用されません。",
+    "sourceHash": "6aab2abf30c20274b1d7a760e2b2790985a502b782cd8ef60bb376fb19023ccf",
+    "review": "machine"
+  },
+  "g6-bundle.cancel": {
+    "text": "キャンセル",
+    "sourceHash": "a69ea29ae854ab93e4967572b360e5a50e1c854ae20c4ae9b47ee3b1368bab86",
+    "review": "machine"
+  },
+  "g6-bundle.confirm": {
+    "text": "取り込む",
+    "sourceHash": "b3580378b96d997e45ed88316143b37dc3c794dcc366312fada951d0c60f9e95",
+    "review": "machine"
+  },
+  "g6-bundle.apply": {
+    "text": "更新",
+    "sourceHash": "258bc008d1c6d6b420f507b8b5fe8a776ae48557311ff9f1e9c89758156a37c4",
+    "review": "machine"
+  },
+  "g6-bundle.keep": {
+    "text": "維持",
+    "sourceHash": "f719c3ae4223dcf28b860d21f04f55c4e71f5c83bf45dd7e4b8c0653a8629724",
+    "review": "machine"
+  },
+  "g6-bundle.nothing": {
+    "text": "取り込むものはありません。プロジェクトにすでにあるか、すべて自分で変更済みです。",
+    "sourceHash": "a3c184dd2aa3d4e0fbace4ad902c2eae887e59b8ec0c1f86b5728f6ef54c5589",
+    "review": "machine"
+  },
+  "g6-bundle.field.voice": {
+    "text": "音声プロファイル",
+    "sourceHash": "e559405f0b6d2a538bd2ae4bbfa5430070d1b8891a688af844ba53f48a964ddb",
+    "review": "machine"
+  },
+  "g6-bundle.field.briefs": {
+    "text": "設定資料のテキスト版",
+    "sourceHash": "772f219305aaa05cfe2be6ab4590bd30c2307d794e1bad351a08cd7f986aef22",
+    "review": "machine"
+  },
+  "g6-bundle.briefs-added": {
+    "text": "追加：{count}",
+    "sourceHash": "f3b09cff6218594c92943ff39c9440c69e464f1e14c1fa58009f36cc3d961287",
+    "review": "machine"
+  },
+  "g6-bundle.field.active-brief": {
+    "text": "有効なテキスト版",
+    "sourceHash": "2ff9141ebe2a5254a52b76332780277e57218b7546ed0378d0b89eb4011a345b",
+    "review": "machine"
+  },
+  "g6-bundle.field.mouth": {
+    "text": "口セット（{set}）",
+    "sourceHash": "c9edd053e26be4c67de2e5334723117a0327f426a8cba372320ae1029b56ab61",
+    "review": "machine"
+  },
+  "g6-bundle.field.rig": {
+    "text": "リグ",
+    "sourceHash": "707954a580ae7cf789542f60028229c8c2ad27e81e90fa6f8ac2396dc6ec2fb3",
+    "review": "machine"
+  },
+  "g6-profiles.title": {
+    "text": "プロジェクト用プロファイル",
+    "sourceHash": "c4fc6a28e44592dad6976699d21e4a7607b00847e34748c1119d17ec0e56df55",
+    "review": "machine"
+  },
+  "g6-profiles.note": {
+    "text": "ワークスペースのプロジェクトは、独自のものがない場合、各種類の既定プロファイルを継承します。プロジェクトのプロファイルが常に優先されます。",
+    "sourceHash": "e700e97944be7a3ac203ac72a97f3815cbc613955400d6b7eb39a82275f8e4ef",
+    "review": "machine"
+  },
+  "g6-profiles.unavailable": {
+    "text": "プロファイルを読み込めませんでした。",
+    "sourceHash": "7bcdce0248247ec1785976979049e8dbb7ed9da497b7a0d2cf66cb50c15c15f3",
+    "review": "machine"
+  },
+  "g6-profiles.kind.style": {
+    "text": "スタイルプロファイル",
+    "sourceHash": "7eff22d8c9a8a054b72846d2d40fa0d849d76f86bee8ce617eb58de2b9309ed7",
+    "review": "machine"
+  },
+  "g6-profiles.kind.quality": {
+    "text": "品質プロファイル",
+    "sourceHash": "87b89cef8695a160e75c042948b70273e4466b720fde64a85455899689521f44",
+    "review": "machine"
+  },
+  "g6-profiles.kind.font": {
+    "text": "フォント",
+    "sourceHash": "8a8e447257ce7717ec9e7a9c74c608b6f8a01ac57d6e72245ea6269280f4c237",
+    "review": "machine"
+  },
+  "g6-profiles.kind.template": {
+    "text": "テンプレート",
+    "sourceHash": "9b8dc065fa0a43595565ef436c18d53cc45a3a009c16bdd2707324d19acd5b73",
+    "review": "machine"
+  },
+  "g6-profiles.none": {
+    "text": "まだありません。",
+    "sourceHash": "c30be7719d4c2275b5f746289d3fec9746d496ed2eb666136e9a21b09d3fdb29",
+    "review": "machine"
+  },
+  "g6-profiles.default": {
+    "text": "既定",
+    "sourceHash": "5cc4dcfe4fe17fcd6524a7b87a6118c45fa3d4d993e80a0a8696221c6acfb31d",
+    "review": "machine"
+  },
+  "g6-profiles.make-default": {
+    "text": "既定にする",
+    "sourceHash": "ea0079b54fd57690bedc9b6d595217c46a414389e2eb9c2c5b0b3063f0856b32",
+    "review": "machine"
+  },
+  "g6-profiles.archive": {
+    "text": "アーカイブ",
+    "sourceHash": "a56810ef81765a0b1b81e10632028404b4ab5724e156fc7f97d652fecf411c7f",
+    "review": "machine"
+  },
+  "g6-profiles.new-name": {
+    "text": "新しいプロファイル名（{kind}）",
+    "sourceHash": "629f00ba26295be94a333a8ca173cccdc00ffa68d02f6433cbfccec9032ab2ef",
+    "review": "machine"
+  },
+  "g6-profiles.add": {
+    "text": "追加",
+    "sourceHash": "9b9a04a34fdd529a28d54944b018c52e0b64f769ae4e32491134c6cb6545c560",
+    "review": "machine"
+  },
+  "g6-inherit.title": {
+    "text": "ワークスペース {name} から継承",
+    "sourceHash": "64e8707f457fb340c53523d86642c8efa46e7fd627556c39ec6bdbe593190085",
+    "review": "machine"
+  },
+  "g6-inherit.none": {
+    "text": "なし",
+    "sourceHash": "6e07e3236427b510acb548930a9081072383f48353eefb0d621ccfcf857dd111",
+    "review": "machine"
+  },
+  "g6-inherit.paper": {
+    "text": "用紙",
+    "sourceHash": "7cc43a0c22a81a389b785292954479d19511ce375e445f66a49919cb1bc54137",
+    "review": "machine"
+  },
+  "g6-inherit.currency": {
+    "text": "通貨",
+    "sourceHash": "72f98211e6c0f6aca69a1a031c158dc1984386231852f729aaadc9f663564073",
+    "review": "machine"
+  },
+  "g6-inherit.time-zone": {
+    "text": "タイムゾーン",
+    "sourceHash": "8394931a97d82ab7ca8619402a879c8b53164d5861403712937196807b651b47",
+    "review": "machine"
+  },
+  "g6-inherit.units": {
+    "text": "単位",
+    "sourceHash": "b114193cbbe7e62da20ff3d4ec5db1d2f918e0943c0508f60f5568a1ad90d00b",
+    "review": "machine"
+  },
+  "g6-inherit.source.project": {
+    "text": "プロジェクトから",
+    "sourceHash": "fafc8b2408b12ef6327cedf6cb12a6865bc875de56e68ab73fbd567185d5db5d",
+    "review": "machine"
+  },
+  "g6-inherit.source.workspace": {
+    "text": "ワークスペースから",
+    "sourceHash": "b3e4e579b231d4080b507ad31d46864502c96909b14f0e168f1b58988327a4b5",
+    "review": "machine"
+  },
+  "g6-inherit.source.user": {
+    "text": "ユーザーから",
+    "sourceHash": "c7c2324ce5059e2df1935625226e1acfb5934254f34f6f70788ca8bfe9afd595",
+    "review": "machine"
+  },
+  "g6-inherit.source.country": {
+    "text": "国から",
+    "sourceHash": "8bb0919f25494384eeacb253dd271d73249b2be8a01c1addd53c75a3ee2bd290",
+    "review": "machine"
+  },
+  "g6-inherit.source.default": {
+    "text": "既定",
+    "sourceHash": "b2b170c58448d7dd71c7771551b4a97da0576898863152094ec7a3aca0fd7ab0",
+    "review": "machine"
   }
 }

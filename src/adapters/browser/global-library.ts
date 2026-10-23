@@ -6,6 +6,8 @@
 import type { FontSpec } from "@/core/typography/project-fonts";
 import { isGlobalKind, type GlobalAsset, type GlobalAssetBundle, type GlobalKind, type GlobalVariant, type GlobalVersion, type VisualStyle, type TemplateDefinition } from "@/core";
 import type { GlobalAnimationSpec } from "@/core/animation/global-rig";
+import { globalAssetIdsOf, type GlobalSnapshotEntry } from "@/core/backup";
+import type { ProjectRows, Row as CoreRow } from "@/core";
 import { parseCharacterBundle, type CharacterBundle } from "@/core/global/character-bundle";
 import type { WorkspaceProfile } from "@/core/global/workspace-profiles";
 import { browserClient, db } from "./client";
@@ -321,4 +323,26 @@ export async function saveWorkspaceProfile(
 export async function archiveWorkspaceProfile(profileId: string, archived: boolean): Promise<void> {
   const { error } = await db.rpc("workspace_archive_profile", { p_profile: profileId, p_archived: archived });
   fail(error);
+}
+
+/**
+ * G-6 pkt 4: øyeblikksbilde av globale ressurser prosjektet bruker. Leses med brukerens egen tilgang (RLS):
+ * mangler tilgangen til arbeidsgruppen, utelates ressursen – prosjektet er uansett selvstendig.
+ */
+export async function loadGlobalSnapshot(rows: ProjectRows): Promise<GlobalSnapshotEntry[]> {
+  const ids = globalAssetIdsOf(rows);
+  if (!ids.length) return [];
+  const { data } = await db.from("global_assets").select("id, name, kind, description").in("id", ids);
+  const out: GlobalSnapshotEntry[] = [];
+  for (const g of (data ?? []) as CoreRow[]) {
+    const id = String(g["id"]);
+    const kind = String(g["kind"] ?? "");
+    let bundle: unknown = null;
+    if (kind === "character" || kind === "animal") {
+      const r = await db.rpc("global_character_bundle" as never, { p_global_asset: id, p_number: null } as never);
+      bundle = r.error ? null : (r.data ?? null);
+    }
+    out.push({ globalAssetId: id, name: String(g["name"] ?? ""), kind, description: String(g["description"] ?? ""), bundle });
+  }
+  return out;
 }

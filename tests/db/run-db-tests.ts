@@ -8582,6 +8582,44 @@ try {
     await sql`delete from private.rate_limit_hits`;
   });
 
+  // ---------- 0101: LIKE-escaping og admin for hastighetsgrenser ----------
+  await test("0101 G-4/G-8: % og _ i søketekst er vanlige tegn i search_script_blocks og admin_find_users", async () => {
+    assert(String((await sql`select private.like_escape('a%b_c\\d') v`)[0]!["v"]) === "a\\%b\\_c\\\\d", "like_escape escaper \\, % og _");
+    const pid = String((await as("authenticated", ALICE, (tx) => tx`select public.create_project('Escape', 25, 1, 'nb') id`))[0]!["id"]);
+    const prod = String((await sql`select id from public.productions where project_id=${pid} and kind='main'`)[0]!["id"]);
+    const scene = String((await sql`insert into public.scenes (id, project_id, origin_production_id) values (gen_random_uuid(), ${pid}, ${prod}) returning id`)[0]!["id"]);
+    const variant = String((await sql`insert into public.scene_variants (id, project_id, scene_id) values (gen_random_uuid(), ${pid}, ${scene}) returning id`)[0]!["id"]);
+    await sql`insert into public.script_blocks (id, project_id, variant_id, kind, order_key, language, text) values (gen_random_uuid(), ${pid}, ${variant}, 'action', 'k1', 'nb', '50% rabatt'), (gen_random_uuid(), ${pid}, ${variant}, 'action', 'k2', 'nb', 'fil_navn'), (gen_random_uuid(), ${pid}, ${variant}, 'action', 'k3', 'nb', 'filXnavn og 50 kroner')`;
+    const count = async (q: string) => Number((await as("authenticated", ALICE, (tx) => tx`select count(*) n from public.search_script_blocks(${pid}, ${q}, 10)`))[0]!["n"]);
+    assert((await count("%")) === 1, "«%» skal bare treffe teksten med prosenttegn");
+    assert((await count("fil_navn")) === 1, "«_» skal ikke være jokertegn");
+    assert((await count("50%")) === 1, "«50%» treffer bare «50% rabatt»");
+    const ADM = "55555555-5555-7555-8555-555555555555";
+    await sql`insert into auth.users (id, email) values (${ADM}, 'admin@example.no') on conflict do nothing`;
+    await sql`insert into auth.users (id, email) values ('77777777-7777-7777-8777-777777777777', 'ab_cd@example.no'), ('88888888-8888-7888-8888-888888888888', 'abxcd@example.no') on conflict do nothing`;
+    await sql`insert into public.app_admins (user_id) values (${ADM}) on conflict do nothing`;
+    const u1 = await as("authenticated", ADM, (tx) => tx`select * from public.admin_find_users('ab_cd')`);
+    assert(u1.length === 1 && u1[0]!["email"] === "ab_cd@example.no", `«_» i admin-søk skal ikke matche «abxcd»: ${u1.length}`);
+    const u2 = await as("authenticated", ADM, (tx) => tx`select * from public.admin_find_users('%%%')`);
+    assert(u2.length === 0, "«%%%» skal ikke gi alle brukere");
+    await as("service_role", null, (tx) => tx`select public.delete_project(${pid}, ${ALICE})`);
+  });
+
+  await test("0101 G-8: administrator leser og justerer hastighetsgrenser; andre avvises", async () => {
+    const ADM = "55555555-5555-7555-8555-555555555555";
+    await expectError(as("authenticated", ALICE, (tx) => tx`select * from public.admin_rate_limit_rules()`), "42501");
+    await expectError(as("authenticated", ALICE, (tx) => tx`select public.admin_set_rate_limit_rule('ai', 600, 1, 1)`), "42501");
+    await expectError(as("anon", null, (tx) => tx`select * from public.admin_rate_limit_rules()`), /permission denied/);
+    const rules = await as("authenticated", ADM, (tx) => tx`select * from public.admin_rate_limit_rules()`);
+    assert(rules.some((r) => r["scope"] === "ai" && Number(r["per_key"]) === 400), "ai-taket er 400");
+    await as("authenticated", ADM, (tx) => tx`select public.admin_set_rate_limit_rule('ai', 600, 500, 900)`);
+    const ai = (await sql`select per_key, per_ip from private.rate_limit_rules where scope = 'ai'`)[0]!;
+    assert(Number(ai["per_key"]) === 500 && Number(ai["per_ip"]) === 900, "taket er endret");
+    await expectError(as("authenticated", ADM, (tx) => tx`select public.admin_set_rate_limit_rule('ai', 0, 500, 900)`), "22023");
+    await expectError(as("authenticated", ADM, (tx) => tx`select public.admin_set_rate_limit_rule('finnes_ikke', 60, 1, 1)`), "22023");
+    await sql`update private.rate_limit_rules set per_key = 400, per_ip = 800 where scope = 'ai'`;
+  });
+
   // ---------- search_path: alle SECURITY DEFINER-funksjoner skal ha search_path='' ----------
   await test("alle SECURITY DEFINER-funksjoner i public/private har search_path=''", async () => {
     const rows = await sql`

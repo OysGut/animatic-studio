@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { InheritedSettingsSection } from "./InheritedSettingsSection";
 import { Link } from "@tanstack/react-router";
 import { Camera, FileText, Send } from "lucide-react";
 import { useState, type FormEvent } from "react";
@@ -99,6 +100,9 @@ export function ProjectOverview({ projectId, userId }: { projectId: string; user
 
           {/* Kvalitetsprofiler (M8, REQ-0854–0862) */}
           <QualityProfilesSection state={s} projectId={projectId} userId={userId} editable={canEdit(myRole)} />
+
+          {/* G-6 del 2: arv fra arbeidsgruppen (profiler og innstillinger) */}
+          <InheritedSettingsSection state={s} projectId={projectId} />
 
           <section aria-labelledby="prod-title" className="mt-8">
             <h2 id="prod-title" className="mb-2 text-base font-semibold text-text-primary">

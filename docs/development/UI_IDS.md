@@ -167,3 +167,4 @@ Merket nederst i hvert vindu viser «V-nnn · commit». Slå opp nummeret her.
 | V-160 | panel | `src/app/scene-editor/DialogueVersions.tsx` | DialogueVersions | Flytende panel i DialogueVersions | aktiv |
 | V-161 | panel | `src/app/scene-editor/GenerateDialogue.tsx` | GenerateDialogue | Flytende panel «Koble karakter til replikken» i GenerateDialogue | aktiv |
 | V-162 | panel | `src/app/scene-editor/LayerImageDialog.tsx` | DeleteVersionConfirm | Flytende panel «Valgt» i DeleteVersionConfirm | aktiv |
+| V-163 | dialog | `src/app/global/CharacterBundleControls.tsx` | CharacterBundleControls | Dialog i CharacterBundleControls | aktiv |

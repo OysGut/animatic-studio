@@ -295,3 +295,21 @@ export function planCharacterPullCommands(
   });
   return commands;
 }
+
+/**
+ * G-6 del 2: den lokale karakterens knippefelt, i samme form som knippet (munnsett med variantnavn), så
+ * planCharacterPull sammenligner likt med likt. Null når ressursen ikke er en karakter.
+ */
+export function localCharacterState(state: ProjectState, assetId: AssetId): LocalCharacterState | null {
+  const asset = state.assets[assetId];
+  const b = characterBundleFromAsset(state, assetId);
+  if (!asset || !b) return null;
+  return {
+    voice: b.voice,
+    briefVersions: b.briefVersions,
+    ...(b.activeBriefId ? { activeBriefId: b.activeBriefId } : {}),
+    mouthSets: b.mouthSets,
+    rigSetup: null,
+    ...(asset.globalBundleNumber !== undefined ? { globalBundleNumber: asset.globalBundleNumber } : {}),
+  };
+}

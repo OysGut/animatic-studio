@@ -75881,5 +75881,248 @@
   },
   "g9-demo.failed": {
     "text": "The example project could not be created: {message}"
+  },
+  "g5-admin.cancel": {
+    "text": "Cancel"
+  },
+  "g5-admin.failed": {
+    "text": "That didn't work. Try again."
+  },
+  "g5-admin.save": {
+    "text": "Save"
+  },
+  "g5-admin.saved": {
+    "text": "Saved."
+  },
+  "g5-admin.unavailable": {
+    "text": "Not available yet (the database has not been updated)."
+  },
+  "g5-admin.log.title": {
+    "text": "Change log"
+  },
+  "g5-admin.log.note": {
+    "text": "Full history is kept for a number of days or changes per project. Older changes are cleaned up once a day by the background job, or now with the button."
+  },
+  "g5-admin.log.total": {
+    "text": "{rows} changes in {projects} projects"
+  },
+  "g5-admin.log.project": {
+    "text": "Project"
+  },
+  "g5-admin.log.rows": {
+    "text": "Changes"
+  },
+  "g5-admin.log.size": {
+    "text": "Size"
+  },
+  "g5-admin.log.days": {
+    "text": "Days of full history"
+  },
+  "g5-admin.log.max-rows": {
+    "text": "Changes per project"
+  },
+  "g5-admin.log.prune": {
+    "text": "Clean up now"
+  },
+  "g5-admin.log.pruned": {
+    "text": "Cleaned up. Changes removed: {count}."
+  },
+  "g5-admin.log.invalid": {
+    "text": "Days must be 1–3650 and changes 100–10,000,000."
+  },
+  "g5-admin.quota.title": {
+    "text": "Quotas"
+  },
+  "g5-admin.quota.note": {
+    "text": "Limits per workspace, or per user for projects without a workspace. An empty field means no limit. The database enforces the limits."
+  },
+  "g5-admin.quota.none": {
+    "text": "No quotas have been set."
+  },
+  "g5-admin.quota.find-user": {
+    "text": "Find user (email or name)"
+  },
+  "g5-admin.quota.search": {
+    "text": "Search"
+  },
+  "g5-admin.quota.workspace-id": {
+    "text": "Workspace ID"
+  },
+  "g5-admin.quota.add-workspace": {
+    "text": "New quota for the workspace"
+  },
+  "g5-admin.quota.add-user": {
+    "text": "New quota for {user}"
+  },
+  "g5-admin.quota.workspace": {
+    "text": "Workspace: {name}"
+  },
+  "g5-admin.quota.user": {
+    "text": "User: {name}"
+  },
+  "g5-admin.quota.storage": {
+    "text": "Storage (GB)"
+  },
+  "g5-admin.quota.projects": {
+    "text": "Projects"
+  },
+  "g5-admin.quota.log-rows": {
+    "text": "Changes in the log"
+  },
+  "g5-admin.quota.uploads": {
+    "text": "Uploads per hour"
+  },
+  "g5-admin.quota.unlimited": {
+    "text": "No limit"
+  },
+  "g5-admin.quota.used": {
+    "text": "Used: {used}"
+  },
+  "g5-admin.quota.remove": {
+    "text": "Remove quota"
+  },
+  "g5-admin.quota.invalid": {
+    "text": "Use whole numbers (storage may have decimals), or leave the field empty."
+  },
+  "g5-admin.rate.title": {
+    "text": "Rate limits"
+  },
+  "g5-admin.rate.note": {
+    "text": "How many requests are allowed in a time window, per user or email and per IP address. Above the limit the user sees “Too many requests in a short time”."
+  },
+  "g5-admin.rate.window": {
+    "text": "Window (seconds)"
+  },
+  "g5-admin.rate.per-key": {
+    "text": "Per user/email"
+  },
+  "g5-admin.rate.per-ip": {
+    "text": "Per IP"
+  },
+  "g6-bundle.publish": {
+    "text": "Publish character bundle"
+  },
+  "g6-bundle.published": {
+    "text": "Bundle no. {number} has been published to the workspace."
+  },
+  "g6-bundle.pull": {
+    "text": "Get update (no. {number})"
+  },
+  "g6-bundle.pull-label": {
+    "text": "Get character bundle for {name}"
+  },
+  "g6-bundle.pulled": {
+    "text": "Bundle no. {number} has been brought in. You can undo it in one step."
+  },
+  "g6-bundle.plan-title": {
+    "text": "Get bundle no. {number} for {name}"
+  },
+  "g6-bundle.plan-note": {
+    "text": "This is brought in field by field. Fields you have changed yourself in the project are kept. Nothing is applied until you confirm."
+  },
+  "g6-bundle.cancel": {
+    "text": "Cancel"
+  },
+  "g6-bundle.confirm": {
+    "text": "Bring in"
+  },
+  "g6-bundle.apply": {
+    "text": "Updated"
+  },
+  "g6-bundle.keep": {
+    "text": "Kept"
+  },
+  "g6-bundle.nothing": {
+    "text": "Nothing to bring in: the project already has this, or you have changed everything yourself."
+  },
+  "g6-bundle.field.voice": {
+    "text": "Voice profile"
+  },
+  "g6-bundle.field.briefs": {
+    "text": "Text versions in the fact sheet"
+  },
+  "g6-bundle.briefs-added": {
+    "text": "Added: {count}"
+  },
+  "g6-bundle.field.active-brief": {
+    "text": "Active text version"
+  },
+  "g6-bundle.field.mouth": {
+    "text": "Mouth set ({set})"
+  },
+  "g6-bundle.field.rig": {
+    "text": "Rig"
+  },
+  "g6-profiles.title": {
+    "text": "Profiles for the projects"
+  },
+  "g6-profiles.note": {
+    "text": "Projects in the workspace inherit the default profile of each type when they have none of their own. A profile in the project always takes precedence."
+  },
+  "g6-profiles.unavailable": {
+    "text": "The profiles could not be loaded."
+  },
+  "g6-profiles.kind.style": {
+    "text": "Style profiles"
+  },
+  "g6-profiles.kind.quality": {
+    "text": "Quality profiles"
+  },
+  "g6-profiles.kind.font": {
+    "text": "Fonts"
+  },
+  "g6-profiles.kind.template": {
+    "text": "Templates"
+  },
+  "g6-profiles.none": {
+    "text": "None yet."
+  },
+  "g6-profiles.default": {
+    "text": "Default"
+  },
+  "g6-profiles.make-default": {
+    "text": "Make default"
+  },
+  "g6-profiles.archive": {
+    "text": "Archive"
+  },
+  "g6-profiles.new-name": {
+    "text": "Name of new profile ({kind})"
+  },
+  "g6-profiles.add": {
+    "text": "Add"
+  },
+  "g6-inherit.title": {
+    "text": "Inherited from the workspace {name}"
+  },
+  "g6-inherit.none": {
+    "text": "None"
+  },
+  "g6-inherit.paper": {
+    "text": "Paper"
+  },
+  "g6-inherit.currency": {
+    "text": "Currency"
+  },
+  "g6-inherit.time-zone": {
+    "text": "Time zone"
+  },
+  "g6-inherit.units": {
+    "text": "Units"
+  },
+  "g6-inherit.source.project": {
+    "text": "from the project"
+  },
+  "g6-inherit.source.workspace": {
+    "text": "from the workspace"
+  },
+  "g6-inherit.source.user": {
+    "text": "from the user"
+  },
+  "g6-inherit.source.country": {
+    "text": "from the country"
+  },
+  "g6-inherit.source.default": {
+    "text": "default"
   }
 }

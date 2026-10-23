@@ -129,6 +129,34 @@ export interface BackupData {
   readonly tables: Readonly<Record<string, readonly Row[]>>;
   readonly history: Readonly<Record<string, readonly Row[]>>;
   readonly files: readonly BackupFile[];
+  /**
+   * G-6 pkt 4: øyeblikksbilde av de globale ressursene prosjektet bruker (navn, type og siste karakterknippe),
+   * så prosjektet kan gjenopprettes og forstås alene. Bare til orientering, som history: prosjektradene og
+   * filene er allerede prosjektets egne kopier, og gjenopprettingen skriver aldri til arbeidsgruppen.
+   */
+  readonly globalSnapshot?: readonly GlobalSnapshotEntry[];
+}
+
+export interface GlobalSnapshotEntry {
+  readonly globalAssetId: string;
+  readonly name: string;
+  readonly kind: string;
+  readonly description: string;
+  /** Siste karakterknippe (rå, som lagret i arbeidsgruppen); null for andre ressurser. */
+  readonly bundle: unknown;
+}
+
+/** De globale ressursene prosjektet bruker: ressurser og versjoner med kilde i arbeidsgruppen. */
+export function globalAssetIdsOf(rows: ProjectRows): string[] {
+  const ids = new Set<string>();
+  const r = rows as unknown as Record<string, Row[] | undefined>;
+  for (const t of ["assets", "asset_versions"]) {
+    for (const row of r[t] ?? []) {
+      const id = row["source_global_asset_id"];
+      if (typeof id === "string" && id) ids.add(id);
+    }
+  }
+  return [...ids].sort();
 }
 
 export interface BackupInput {
@@ -141,6 +169,8 @@ export interface BackupInput {
   readonly createdAt: string;
   /** Kategorier av mediefiler som skal tas med i zip-filen. */
   readonly include: ReadonlySet<BackupFileCategory>;
+  /** G-6 pkt 4: øyeblikksbilde av globale ressurser (utelatt = ingen). */
+  readonly globalSnapshot?: readonly GlobalSnapshotEntry[];
 }
 
 const s = (v: unknown) => (v === null || v === undefined ? "" : String(v));
@@ -243,6 +273,7 @@ export function makeBackup(input: BackupInput): BackupData {
     tables,
     history: { change_log: input.changeLog, generation_jobs: input.generationJobs },
     files: backupFiles(rows, input.importedDocuments, input.include),
+    ...(input.globalSnapshot?.length ? { globalSnapshot: input.globalSnapshot } : {}),
   };
 }
 
@@ -276,6 +307,8 @@ export function parseBackup(raw: unknown, maxSchemaVersion: number): BackupData 
     throw new Error(
       tk("core-backup-index.parse-backup.message.6037216b6002"),
     );
+  if (b.globalSnapshot !== undefined && !Array.isArray(b.globalSnapshot))
+    throw new Error(tk("core-backup-index.parse-backup.message.970e50bda852"));
   const mains = (b.tables["productions"] ?? []).filter((p) => p["kind"] === "main");
   if (mains.length !== 1)
     throw new Error(

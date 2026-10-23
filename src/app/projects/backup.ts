@@ -2,6 +2,8 @@
  * Sikkerhetskopi i nettleseren (DEC-0049): hente alt som skal med, lage zip-filen, og gjenopprette fra en
  * zip-fil til et nytt prosjekt (filene lastes opp her, dataene skrives av serverfunksjonen restoreBackup).
  */
+import type { GlobalSnapshotEntry } from "@/core/backup";
+import { loadGlobalSnapshot } from "@/adapters/browser/global-library";
 import { BACKUP_JSON, BACKUP_MAX_JSON_BYTES, BACKUP_README, backupIdMap, backupReadme, makeBackup, parseBackup, restoreFiles, validateBackup, type BackupData, type BackupFileCategory, type ProjectRows, type Row } from "@/core";
 import { EXPECTED_SCHEMA_VERSION } from "@/adapters/storage/project-rows";
 import { restoreBackup } from "@/adapters/storage/backup.functions";
@@ -24,7 +26,9 @@ export interface BackupSource {
   readonly changeLog: readonly Row[];
   readonly generationJobs: readonly Row[];
   readonly schemaVersion: number;
+  readonly globalSnapshot?: readonly GlobalSnapshotEntry[];
 }
+
 
 /** Alt prosjektet består av (det brukeren har lesetilgang til). */
 export async function loadBackupSource(projectId: string): Promise<BackupSource> {
@@ -37,8 +41,10 @@ export async function loadBackupSource(projectId: string): Promise<BackupSource>
       fetchTable("generation_jobs", projectId),
       fetchSchemaStatus(),
     ]);
+  const globalSnapshot = await loadGlobalSnapshot(rows).catch(() => []);
   return {
     rows,
+    globalSnapshot,
     scriptVersions,
     importedDocuments,
     changeLog,
