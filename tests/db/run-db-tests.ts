@@ -155,6 +155,10 @@ async function loadState(projectId: string): Promise<ProjectState> {
     style_harmonizations: await q("style_harmonizations"),
     style_preferred_references: await q("style_preferred_references"),
     language_versions: await q("language_versions"),
+    storyboard_panel_blocks: await q("storyboard_panel_blocks"),
+    production_statuses: await q("production_statuses"),
+    production_status_events: await q("production_status_events"),
+    storyboard_panel_snapshots: await q("storyboard_panel_snapshots"),
   };
   return stateFromRows(rows);
 }
