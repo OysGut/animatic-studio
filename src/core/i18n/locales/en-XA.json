@@ -75529,10 +75529,10 @@
     "text": "[!! DDôôüübbllëë-ccllïïcckk ttôô ôôppëënn tthhëë ssccëënnëë !!]"
   },
   "attach.hint": {
-    "text": "[!! RRëëccôômmmmëënnddëëdd: 1–3 ssttyyllëë rrëëffëërrëënnccëëss. MMôôrrëë ïïmmáággëëss ôôffttëënn ggïïvvëë llëëssss ccôônnssïïssttëënntt rrëëssûûllttss áánndd ccôôsstt mmôôrrëë. !!]"
+    "text": "[!! RRëëccôômmmmëënnddëëdd: 1–3 ssttyyllëë rrëëffëërrëënnccëëss. MMôôrrëë ïïmmáággëëss ôôffttëënn ggïïvvëë llëëssss ccôônnssïïssttëënntt rrëëssüüllttss áánndd ccôôsstt mmôôrrëë. !!]"
   },
   "attach.identityOff": {
-    "text": "[!! WWïïtthhôôûûtt tthhëë ccûûrrrrëënntt ïïmmáággëë, tthhëë ááppppëëáárráánnccëë mmááyy cchháánnggëë. !!]"
+    "text": "[!! WWïïtthhôôüütt tthhëë ccüürrrrëënntt ïïmmáággëë, tthhëë ááppppëëáárráánnccëë mmááyy cchháánnggëë. !!]"
   },
   "attach.limit": {
     "text": "[!! TThhïïss mmôôddëëll’ss llïïmmïïtt ïïss rrëëáácchhëëdd: {max} ïïmmáággëëss. !!]"
@@ -75541,31 +75541,31 @@
     "text": "[!!  (ôôvvëërr tthhëë llïïmmïïtt, nnôôtt ssëënntt) !!]"
   },
   "attach.add": {
-    "text": "[!! áádddd ïïmmáággëë … !!]"
+    "text": "[!! ÁÁdddd ïïmmáággëë … !!]"
   },
   "attach.remove": {
     "text": "[!! RRëëmmôôvvëë !!]"
   },
   "attach.role.same": {
-    "text": "[!!  – ssáámmëë ffïïggûûrrëë/ôôbbjjëëcctt !!]"
+    "text": "[!!  – ssáámmëë ffïïggüürrëë/ôôbbjjëëcctt !!]"
   },
   "attach.include": {
     "text": "[!! SSëënndd áállôônngg: {label} !!]"
   },
   "attach.cost.label": {
-    "text": "[!! ïïmmáággëëss ssëënntt áállôônngg !!]"
+    "text": "[!! ÏÏmmáággëëss ssëënntt áállôônngg !!]"
   },
   "attach.cost.value": {
     "text": "[!! {count} ôôff áátt mmôôsstt {max} (mmôôrrëë ïïmmáággëëss ccáánn cchháánnggëë tthhëë pprrïïccëë) !!]"
   },
   "attach.picker.title": {
-    "text": "[!! áádddd ïïmmáággëë !!]"
+    "text": "[!! ÁÁdddd ïïmmáággëë !!]"
   },
   "attach.picker.search": {
     "text": "[!! SSëëáárrcchh ïïmmáággëëss !!]"
   },
   "attach.picker.allKinds": {
-    "text": "[!! áállll ttyyppëëss !!]"
+    "text": "[!! ÁÁllll ttyyppëëss !!]"
   },
   "attach.picker.kind": {
     "text": "[!! TTyyppëë !!]"
@@ -75577,7 +75577,7 @@
     "text": "[!! SSttyyllëë ôônnllyy !!]"
   },
   "attach.picker.roleSame": {
-    "text": "[!! SSáámmëë ffïïggûûrrëë/ôôbbjjëëcctt !!]"
+    "text": "[!! SSáámmëë ffïïggüürrëë/ôôbbjjëëcctt !!]"
   },
   "attach.picker.empty": {
     "text": "[!! NNôô áápppprrôôvvëëdd ïïmmáággëëss mmááttcchh. !!]"
@@ -75586,6 +75586,6 @@
     "text": "[!! CCllôôssëë !!]"
   },
   "attach.picker.pick": {
-    "text": "[!! áádddd {label} !!]"
+    "text": "[!! ÁÁdddd {label} !!]"
   }
 }
