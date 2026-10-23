@@ -8318,7 +8318,7 @@ try {
       "validate_language_scope", "validate_preferred_reference_unique", "validate_mouth_sets", "validate_mouth_tracks", "validate_active_quality_profile"]) {
       const def = await sql`select pg_get_function_identity_arguments(p.oid) a, p.prosecdef d, p.proconfig c from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='private' and p.proname=${fn}`;
       assert(def.length === 1 && def[0]!["a"] === "p_project uuid, p_changes jsonb, p_ids uuid[]" && def[0]!["d"] === true, `${fn}: signatur/sikkerhet avviker`);
-      assert((def[0]!["c"] as string[]).includes("search_path="), `${fn}: mangler search_path=''`);
+      assert((def[0]!["c"] as string[]).includes('search_path=""'), `${fn}: mangler search_path=''`);
     }
     for (const fn of ["prepare_translation_line_links", "prepare_style_harmonizations", "prepare_style_preferred_references"]) {
       const def = await sql`select pg_get_function_identity_arguments(p.oid) a from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='private' and p.proname=${fn}`;
@@ -8483,9 +8483,11 @@ try {
     let msg = "";
     try {
       await sql.begin(async (tx) => {
-        await tx.unsafe("set local role service_role");
+        // Probefunksjonen opprettes som eier (nye valideringer lages i en migrasjon);
+        // serverrollen skal bare kunne registrere den i registeret.
         await tx.unsafe(`create or replace function private.validate_g7_probe(p_project uuid, p_changes jsonb, p_ids uuid[]) returns void
           language plpgsql security definer set search_path = '' as $$ begin raise exception 'G7-probe' using errcode = '22023'; end $$`);
+        await tx.unsafe("set local role service_role");
         await tx`insert into private.apply_change_validators (table_name, validator, sort_order) values ('script_blocks', 'private.validate_g7_probe'::regproc, 5)`;
         // En endring som ikke rører script_blocks, skal ikke nå proben
         await tx`select public.apply_changes(${g7p}, ${ALICE}, ${newId()}, '{"type":"G7Probe"}'::jsonb, null, '{}'::jsonb)`;
