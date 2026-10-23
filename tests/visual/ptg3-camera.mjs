@@ -65,6 +65,7 @@ await h.scenario(`ptg3-${lang}`, occ.id, lang, async page => {
   // After Effects-pakken i begge kameramodus
   for (const mode of ["ae", "parallax"]) {
     await page.getByTestId("ptg-camera-mode").selectOption(mode);
+    h.check(await page.getByTestId("ptg-camera-mode-fbx").inputValue() === mode, `${lang}: kameramodus i FBX-kortet følger AE-kortet (${mode})`);
     const dl = page.waitForEvent("download", { timeout: 60000 });
     await page.getByTestId("ptg-export-ae").click();
     const path = `${h.out}/${lang}-ae-${mode}.zip`; await (await dl).saveAs(path);
