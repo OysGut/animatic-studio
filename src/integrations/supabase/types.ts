@@ -1008,6 +1008,7 @@ export type Database = {
           id: string
           inverse: Json | null
           project_id: string
+          project_seq: number | null
           scene_ids: string[] | null
           seq: number
         }
@@ -1020,6 +1021,7 @@ export type Database = {
           id: string
           inverse?: Json | null
           project_id: string
+          project_seq?: number | null
           scene_ids?: string[] | null
           seq?: never
         }
@@ -1032,6 +1034,7 @@ export type Database = {
           id?: string
           inverse?: Json | null
           project_id?: string
+          project_seq?: number | null
           scene_ids?: string[] | null
           seq?: never
         }
@@ -7312,6 +7315,10 @@ export type Database = {
         }[]
       }
       project_lock_info: { Args: { p_project: string }; Returns: Json }
+      project_snapshot: {
+        Args: { p_full_history?: boolean; p_project: string }
+        Returns: Json
+      }
       public_profile: { Args: { p_handle: string }; Returns: Json }
       publication_for_me: { Args: { p_id: string }; Returns: Json }
       purge_project_assets: {
