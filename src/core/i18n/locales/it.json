@@ -55855,5 +55855,25 @@
     "text": "Forme della bocca per fotogramma per animatori e laboratorio rig.",
     "sourceHash": "5171a7213230676184f6461d6d6b712fed2f0771e520925a6438caf527fca5fd",
     "review": "machine"
+  },
+  "ptg3.ae-missing": {
+    "text": "Questi file mancano accanto a bygg.jsx, quindi la costruzione si interrompe:",
+    "sourceHash": "28b6792a4adc701e98a312ae2111d7440319b66dd3bb16846001f53fcc6959a4",
+    "review": "machine"
+  },
+  "ptg3.ae-save-failed": {
+    "text": "Il progetto è stato costruito ma non è stato possibile salvarlo. Attiva Preferences > Scripting & Expressions > «Allow Scripts to Write Files and Access Network» ed esegui di nuovo lo script.",
+    "sourceHash": "dc7a6ad39901dae5d1459ad03cfe91ea423b826b576e2076de329175d0ca5342",
+    "review": "machine"
+  },
+  "ptg3.ae-not-found": {
+    "text": "Adobe After Effects non trovato. Apri After Effects, scegli File > Scripts > Run Script File e seleziona bygg.jsx in questa cartella.",
+    "sourceHash": "02abe0dbac8a2f294779195c01bda4a1ecab3b0344f81856db87a16e8d11262b",
+    "review": "machine"
+  },
+  "ptg3.readme-ae-open": {
+    "text": "Tre modi per aprire il pacchetto: 1) Decomprimi lo ZIP e fai doppio clic su «Åpne i After Effects (Windows).bat» o «Åpne i After Effects (Mac).command». 2) Oppure apri After Effects e scegli File > Scripts > Run Script File e bygg.jsx. 3) Lo script salva il progetto come {value1} nella stessa cartella; in seguito puoi aprire quel file con un doppio clic. Per salvare deve essere attivo «Allow Scripts to Write Files and Access Network» in Preferences > Scripting & Expressions. Le transizioni tra scene e i livelli di testo non vengono ricreati. Non possiamo creare direttamente il file .aep perché il formato è chiuso; per questo lo script lo costruisce dentro After Effects.",
+    "sourceHash": "68a7b29c58647ce9f0b9a077b1c1c66a17311760af1162937d2337d6df84069b",
+    "review": "machine"
   }
 }

@@ -75659,5 +75659,17 @@
   },
   "ptg.card.mouth.desc": {
     "text": "Munnformer per bilde for animatører og riggverksted."
+  },
+  "ptg3.ae-missing": {
+    "text": "Disse filene mangler ved siden av bygg.jsx, så byggingen stopper:"
+  },
+  "ptg3.ae-save-failed": {
+    "text": "Prosjektet er bygget, men kunne ikke lagres. Slå på Preferences > Scripting & Expressions > «Allow Scripts to Write Files and Access Network», og kjør skriptet på nytt."
+  },
+  "ptg3.ae-not-found": {
+    "text": "Fant ikke Adobe After Effects. Åpne After Effects selv og velg File > Scripts > Run Script File, og velg bygg.jsx i denne mappen."
+  },
+  "ptg3.readme-ae-open": {
+    "text": "Tre måter å åpne pakken på: 1) Pakk ut ZIP-filen og dobbeltklikk «Åpne i After Effects (Windows).bat» eller «Åpne i After Effects (Mac).command». 2) Eller åpne After Effects og velg File > Scripts > Run Script File og bygg.jsx. 3) Skriptet lagrer prosjektet som {value1} i samme mappe; etterpå kan du dobbeltklikke den filen direkte. For lagringen må «Allow Scripts to Write Files and Access Network» være slått på i Preferences > Scripting & Expressions. Overganger mellom scener og tekstlag gjenskapes ikke. Vi kan ikke lage .aep-filen direkte, fordi formatet er lukket; derfor bygger skriptet den inne i After Effects."
   }
 }
