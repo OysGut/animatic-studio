@@ -26,7 +26,7 @@ Kortversjonen († = detaljer i `docs/development/AGENTS_DETAILS.md`):
 11. Recognition classifies librarySuggestions; AI reviews candidates only, and confirmed commands create assets.
 12. Only recognition and translation alignment (B-047/B-048) bypass the text-AI entry point via server-only service AI (built-in model, no open proxy).
 13. User quotas exclude these two service tasks; service quotas count only built-in service tasks. Visual suites share one schema constant.
-14. RetimeScene uses pure plans and revision checks in one undo; word-gap previews reuse their in-memory audio in saves.
+14. RetimeScene: pure plans, revision checks, one undo; word-gap previews reuse in-memory audio.
 16. Workspaces (GP1) change only via security-definer functions; linking a project never grants access, so project RLS stays the only permission source.
 17. The global library (GP2) is written via security-definer functions; using an asset copies its files once per global version, so projects never depend on workspace membership.
 18. Carry-over (GP3): pure planCarryOver, one undo group, never the source 2D scene.†
@@ -83,5 +83,5 @@ Kortversjonen († = detaljer i `docs/development/AGENTS_DETAILS.md`):
 67. Punkter under SPERRET i TODO.md skal ikke implementeres eller forberedes, verken helt eller delvis, før Øystein uttrykkelig ber om det.
 68. A migration file is locked once Claude reports it run in Cloud or it predates the published EXPECTED_SCHEMA_VERSION; changes go in a new file (next number), and if in doubt, make a new file. MD5s in tests/fixtures/migration-hashes.json (checked by migration-hashes.test.ts) guard locked bytes; Claude updates them after each Cloud run.
 69. Google sign-in: managed Lovable OAuth, redirect_uri = site root, sanitized same-origin return path; registration rules live only in auth.users triggers (0092).
-70. G-2: browsers open projects via project_snapshot (current text revision; full history merged after) and apply foreign change_log commands locally in project_seq order, fetching only gaps; full reload is a logged last resort. RLS uses private.my_project_ids(), never per-row membership calls.
+70. G-2: browsers load via project_snapshot (history merged after) and apply foreign change_log commands in project_seq order, fetching gaps; full reload is a logged last resort. RLS uses private.my_project_ids().
 
