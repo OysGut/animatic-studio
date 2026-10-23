@@ -204,7 +204,7 @@ export const SceneAssetsPanel = memo(function SceneAssetsPanel({
                       ? "border-accent-brand ring-1 ring-accent-brand/60 "
                       : plan
                         ? "border-accent-warm ring-2 ring-accent-warm "
-                        : "border-border opacity-80 ") +
+                        : "border-border ") +
                     (draggable ? "cursor-grab active:cursor-grabbing" : "")
                   }
                 >
@@ -349,7 +349,7 @@ export const SceneAssetsPanel = memo(function SceneAssetsPanel({
                   <button
                     type="button"
                     onClick={() => setAdding([x])}
-                    aria-label={t("app-scene-editor-scene-assets-panel.scene-assets-panel.aria-label.7de2fa32ce9f", { name: String(x.name) })}
+                    aria-description={t("app-scene-editor-scene-assets-panel.scene-assets-panel.aria-label.7de2fa32ce9f", { name: String(x.name) })}
                     title={t("app-scene-editor-scene-assets-panel.scene-assets-panel.title.c66cc4a70eec")}
                     className="inline-flex items-center gap-1 self-start rounded-sm px-0.5 text-[11px] text-text-secondary hover:bg-surface-3 hover:text-text-primary"
                   >

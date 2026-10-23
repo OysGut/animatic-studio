@@ -253,6 +253,7 @@ export const SceneScriptPanel = memo(function SceneScriptPanel({
               {notes ? (
                 <span
                   className="absolute -right-2.5 top-0 text-note"
+                  role="img"
                   aria-label={tk("app-scene-editor-scene-script-panel.scene-script-panel.aria-label.f8c627eda4f7", { notes: String(notes) })}
                 >
                   <MessageSquare className="size-2.5" aria-hidden />

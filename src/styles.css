@@ -175,7 +175,7 @@
   --border-control: oklch(0.562 0.017 264.4);
   --text-primary: oklch(0.928 0.004 271.4);
   --text-secondary: oklch(0.763 0.011 261.8);
-  --text-tertiary: oklch(0.662 0.015 262.4);
+  --text-tertiary: oklch(0.7 0.015 262.4);
   --text-disabled: oklch(0.495 0.016 262.3);
   --accent-fg: oklch(0.183 0.014 213);
   --focus-ring: oklch(0.817 0.083 206.4);
@@ -186,7 +186,7 @@
   --status-discrepancy: oklch(0.742 0.144 54.4);
   --status-uncertain: oklch(0.797 0.134 84.3);
   /* Flyttet siden siste lagrede versjon (REQ-0533) */
-  --status-moved: oklch(0.74 0.12 300);
+  --status-moved: oklch(0.78 0.11 300);
   /* Scenefarger (B-118): mellomlyse og mettede, så de synes på lys og mørk bakgrunn */
   --scene-red: oklch(0.63 0.21 27);
   --scene-orange: oklch(0.72 0.17 55);
