@@ -8085,21 +8085,21 @@ try {
     await as("service_role", null, (tx) => tx`
       insert into public.change_log (id, project_id, actor, command_type, command, affected_ids)
       select gen_random_uuid(), ${pid}, ${ALICE}, 'TestCmd', '{}'::jsonb, array[]::uuid[]
-      from generate_series(1, 110)`);
+      from generate_series(1, 210)`);
     // Dater radene med seq <= 110 tilbake (beskyttelsen slås midlertidig av – kun i test)
     await sql`alter table public.change_log disable trigger change_log_immutable`;
     await sql`update public.change_log set created_at = pg_catalog.now() - interval '100 days'
-              where project_id = ${pid} and project_seq <= 110`;
+              where project_id = ${pid} and project_seq <= 210`;
     await sql`alter table public.change_log enable trigger change_log_immutable`;
-    await sql`update public.service_settings set change_log_retention_days = 90, change_log_max_rows = 10 where id`;
+    await sql`update public.service_settings set change_log_retention_days = 90, change_log_max_rows = 100 where id`;
     // Vanlig bruker får ikke rydde
     await expectError(as("authenticated", ALICE, (tx) => tx`select public.prune_change_logs()`), /42501|administrator/i);
     const res = await as("service_role", null, (tx) => tx`select * from public.prune_change_logs()`);
     const mine = res.filter((r) => String(r["project_id"]) === pid);
-    assert(mine.length === 1 && Number(mine[0]!["removed"]) === 101, `ryddet ${JSON.stringify(mine)}`);
+    assert(mine.length === 1 && Number(mine[0]!["removed"]) === 111, `ryddet ${JSON.stringify(mine)}`);
     const left = await sql`select count(*) n, min(project_seq) mn, max(project_seq) mx from public.change_log where project_id = ${pid}`;
-    assert(Number(left[0]!["n"]) === 10, `igjen: ${String(left[0]!["n"])}`);
-    assert(Number(left[0]!["mn"]) === 102 && Number(left[0]!["mx"]) === 111, "gjenstående sekvenser skal være sammenhengende 102..111");
+    assert(Number(left[0]!["n"]) === 100, `igjen: ${String(left[0]!["n"])}`);
+    assert(Number(left[0]!["mn"]) === 112 && Number(left[0]!["mx"]) === 211, "gjenstående sekvenser skal være sammenhengende 112..211");
     // Uten godkjent rydding er sletting fortsatt forbudt (INV-13)
     await expectError(as("service_role", null, (tx) => tx`delete from public.change_log where project_id = ${pid}`), /INV-13/);
     await sql`update public.service_settings set change_log_retention_days = 90, change_log_max_rows = 20000 where id`;
@@ -8120,20 +8120,20 @@ try {
     await as("authenticated", CAROL, (tx) => tx`select public.admin_set_usage_quota(null, ${G5USER}, null, 1, 100, null)`);
     // Prosjektkvote: første går, andre stoppes
     const pid = String((await as("authenticated", G5USER, (tx) => tx`select public.create_project('G5 kvote', 25, 1, 'nb') id`))[0]!["id"]);
-    await expectError(as("authenticated", G5USER, (tx) => tx`select public.create_project('G5 kvote 2', 25, 1, 'nb')`), /PTG11/);
+    await expectError(as("authenticated", G5USER, (tx) => tx`select public.create_project('G5 kvote 2', 25, 1, 'nb')`), 'PTG11');
     // Endringsloggkvote: 100 rader er taket
     await expectError(
       as("service_role", null, (tx) => tx`
         insert into public.change_log (id, project_id, actor, command_type, command, affected_ids)
         select gen_random_uuid(), ${pid}, ${G5USER}, 'TestCmd', '{}'::jsonb, array[]::uuid[]
         from generate_series(1, 200)`),
-      /PTG12/,
+      'PTG12',
     );
     const n = Number((await sql`select count(*) n from public.change_log where project_id = ${pid}`)[0]!["n"]);
     assert(n === 1, `radantallet skulle være 1 (transaksjonen rulles tilbake), var ${n}`);
     // Lagringskvote
     await as("authenticated", CAROL, (tx) => tx`select public.admin_set_usage_quota(null, ${G5USER}, 1000::bigint, null, null, null)`);
-    await expectError(as("service_role", null, (tx) => tx`select private.check_quota_upload(${pid}, 2000)`), /PTG13/);
+    await expectError(as("service_role", null, (tx) => tx`select private.check_quota_upload(${pid}, 2000)`), 'PTG13');
     await as("service_role", null, (tx) => tx`select private.check_quota_upload(${pid}, 500)`);
     // Admin ser kvoten med brukstall
     const rows = await as("authenticated", CAROL, (tx) => tx`select * from public.admin_usage_quotas()`);
