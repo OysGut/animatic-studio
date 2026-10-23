@@ -5,6 +5,9 @@ Ikke foreslå, ikke start og ikke bygg dette før Øystein uttrykkelig ber om de
 - Eget test- og produksjonsmiljø (Øystein 23.10.2026): en egen testkopi av prosjektet med egen database, der databaseendringer kjøres først. Mellomtrinnet er funksjonsbryterne (av, beta og på). Til da er forhåndsvisningen test og pentoglass.com produksjon, og Claude prøver migrasjoner på en lokal kopi før de kjøres i Cloud.
 
 
+## N11 – gjenstående akseptansekontroller
+- REQ-0757, 0760, 0762, 0781, 0783, 0805, 0806, 0121, 0143, 0401, 0402, 0571, 0699, 0704, 0708, 0709 og 0839 er fortsatt ikke fullverifisert. Se N11_REPORT.md for manglende kontroller, testdata og produktavklaring. Ingen ny funksjonalitet skal bygges for å få tester grønne.
+
 ## B-116 – delt klipp
 - Delt klipp via server-generert kort eksport (≤15 s), med målt varighet og MIME. Til da deles scener bare som stillbilde, og 0087 avviser video.
 

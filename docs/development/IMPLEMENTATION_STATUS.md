@@ -1,5 +1,10 @@
 # Implementeringsstatus – Animatic Studio
 
+## N11 – 23.10.2026, delvis levert
+- Ni krav verifisert: REQ-0764, 0778, 0782, 0790, 0798, 0800, 0813, 0815 og 0816. Bare testet akseptanse er registrert; ingen Cloud-verifikasjon påstått.
+- Paneltest og utkastets plassholderrefit er rettet. Full Vitest 2708/0 og språk-/kravkontroll OK; automatisk typekontroll OK.
+- 17 N6-restkrav mangler fortsatt målrettet test eller nødvendig avklaring. N11 er ikke fullt ferdig; se N11_REPORT.md.
+
 ## V1 – status lik virkelighet – 21.10.2026
 - 42 av 55 P0/P1-krav med oppført test satt til Verifisert etter kjøring (3 P0: REQ-0022, 0145, 0503; 39 P1). 13 beholdt status med begrunnelse i history (se V1_REPORT.md).
 - Kravregister nå: 878 krav – 708 Verifisert, 112 Implementert – ikke verifisert, 13 Under arbeid, 45 Ikke startet. P0: 135/6/1/5, P1: 402/95/12/34.
