@@ -75648,6 +75648,9 @@
   "ptg3.ae-save-failed": {
     "text": "[!! TThhëë pprrôôjjëëcctt wwááss bbüüïïlltt bbüütt ccôôüülldd nnôôtt bbëë ssáávvëëdd. TTüürrnn ôônn PPrrëëffëërrëënnccëëss > SSccrrïïppttïïnngg & ËËxxpprrëëssssïïôônnss > “ÁÁllllôôww SSccrrïïppttss ttôô WWrrïïttëë FFïïllëëss áánndd ÁÁccccëëssss NNëëttwwôôrrkk” áánndd rrüünn tthhëë ssccrrïïpptt áággááïïnn. !!]"
   },
+  "ptg3.ae-import-failed": {
+    "text": "[!! ÁÁffttëërr ËËffffëëccttss ccôôüülldd nnôôtt ïïmmppôôrrtt tthhëëssëë ffïïllëëss. TThhëë llááyyëërrss ggôôtt ggrrëëyy ppllááccëëhhôôllddëërrss wwïïtthh tthhëë ssáámmëë nnáámmëë, ssôô ssttrrüüccttüürrëë áánndd kkëëyyffrráámmëëss áárrëë bbüüïïlltt: !!]"
+  },
   "ptg3.ae-not-found": {
     "text": "[!! CCôôüülldd nnôôtt ffïïnndd ÁÁddôôbbëë ÁÁffttëërr ËËffffëëccttss. ÔÔppëënn ÁÁffttëërr ËËffffëëccttss yyôôüürrssëëllff, cchhôôôôssëë FFïïllëë > SSccrrïïppttss > RRüünn SSccrrïïpptt FFïïllëë áánndd ppïïcckk bbyygggg-ááffttëërr-ëëffffëëccttss.jjssxx ïïnn tthhïïss ffôôllddëërr. !!]"
   },

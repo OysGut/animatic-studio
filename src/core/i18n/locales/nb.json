@@ -75666,6 +75666,9 @@
   "ptg3.ae-save-failed": {
     "text": "Prosjektet er bygget, men kunne ikke lagres. Slå på Preferences > Scripting & Expressions > «Allow Scripts to Write Files and Access Network», og kjør skriptet på nytt."
   },
+  "ptg3.ae-import-failed": {
+    "text": "After Effects kunne ikke importere disse filene. Lagene fikk grå plassholdere med samme navn, så strukturen og nøkkelbildene er bygget:"
+  },
   "ptg3.ae-not-found": {
     "text": "Fant ikke Adobe After Effects. Åpne After Effects selv og velg File > Scripts > Run Script File, og velg bygg-after-effects.jsx i denne mappen."
   },

@@ -15,6 +15,8 @@ export interface FileRef {
   readonly path: string;
   readonly mimeType: string;
   readonly byteSize: number;
+  /** Satt når mediet er konvertert til PNG-sekvens (media-formats.ts): `path` er første bilde, `pattern` bruker %05d. */
+  readonly sequence?: { readonly pattern: string };
 }
 export interface LayerTrack {
   readonly id: string;

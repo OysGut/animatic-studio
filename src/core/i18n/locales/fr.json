@@ -55866,6 +55866,11 @@
     "sourceHash": "dc7a6ad39901dae5d1459ad03cfe91ea423b826b576e2076de329175d0ca5342",
     "review": "machine"
   },
+  "ptg3.ae-import-failed": {
+    "text": "After Effects n’a pas pu importer ces fichiers. Les calques ont reçu des espaces réservés gris du même nom ; la structure et les images clés sont donc créées :",
+    "sourceHash": "c6dbe1f6aae8804939a8d276aa445612dc9f8945d41146d7ae7992b270f775a9",
+    "review": "machine"
+  },
   "ptg3.ae-not-found": {
     "text": "Adobe After Effects est introuvable. Ouvrez After Effects, choisissez File > Scripts > Run Script File et sélectionnez bygg-after-effects.jsx dans ce dossier.",
     "sourceHash": "2e4a0557224bd6026312550e43d2ce73a860ca621c33a98ca869dbdb7b6a137e",

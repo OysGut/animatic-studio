@@ -70,8 +70,10 @@ export function compositingLayers(doc: InterchangeDoc, shot: Shot) {
 const curve = <T extends { frame: number }>(frames: readonly T[], value: (sample: T) => number): string =>
   `{curve ${frames.map(f => `x${f.frame} ${n(value(f))}`).join(' ')}}`;
 
-function mediaPath(doc: InterchangeDoc, layer: LayerTrack): string {
-  const path = doc.references.find(r => r.id === layer.fileId)?.path;
+/** Nuke leser PNG-sekvenser med %05d-mønster; Fusion Loader tar første bilde og finner resten selv. */
+function mediaPath(doc: InterchangeDoc, layer: LayerTrack, tool: 'nuke' | 'fusion' = 'fusion'): string {
+  const ref = doc.references.find(r => r.id === layer.fileId);
+  const path = ref?.sequence && tool === 'nuke' ? ref.sequence.pattern : ref?.path;
   return path ? `../${path}` : '';
 }
 
@@ -82,7 +84,7 @@ export function nukeScript(doc: InterchangeDoc, shot: Shot): string {
   for (const [i, item] of layers.entries()) {
     const f = item.frames;
     // i18n-ignore: Nuke Read node syntax; last/label are file-format identifiers.
-    out.push(`Read {\n file ${quote(mediaPath(doc, item.layer))}\n first 0\n last ${Math.max(0, shot.lengthFrames - 1)}\n name Read_${i + 1}\n label ${quote(item.layer.source.name)}\n}`, `set read_${i} [stack 0]`);
+    out.push(`Read {\n file ${quote(mediaPath(doc, item.layer, 'nuke'))}\n first 0\n last ${Math.max(0, shot.lengthFrames - 1)}\n name Read_${i + 1}\n label ${quote(item.layer.source.name)}\n}`, `set read_${i} [stack 0]`);
     out.push(`Multiply {\n value ${curve(f, s => s.opacity)}\n name Opacity_${i + 1}\n}`);
     if (shot.camera) {
       out.push(`Card2 {\n inputs 1\n translate {${curve(f, s => s.x)} ${curve(f, s => s.y)} ${curve(f, s => s.z)}}\n rotate {0 0 ${curve(f, s => s.rotation)}}\n scaling {${curve(f, s => s.width / 2)} ${curve(f, s => s.height / 2)} 1}\n image_aspect false\n name ${item.name}\n}`);

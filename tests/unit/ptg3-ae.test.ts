@@ -260,7 +260,7 @@ describe("PTG3 «dobbeltklikk og åpne» (Øystein 23.10)", () => {
   it("alle importFile-kall går via ptgImport med basemappen fra $.fileName", () => {
     expect(jsx).toContain("new File($.fileName).parent.fsName");
     const calls = jsx.split("\n").filter(l => l.includes("importFile("));
-    expect(calls).toEqual(["  return app.project.importFile(new ImportOptions(f));"]);
+    expect(calls).toEqual(["    var it = app.project.importFile(io);"]);
     expect(jsx).not.toMatch(/new File\("media\//);
     const r = runOpen({});
     expect(r.current).toBe("/pakke");

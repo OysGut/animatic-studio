@@ -75648,6 +75648,9 @@
   "ptg3.ae-save-failed": {
     "text": "The project was built but could not be saved. Turn on Preferences > Scripting & Expressions > “Allow Scripts to Write Files and Access Network” and run the script again."
   },
+  "ptg3.ae-import-failed": {
+    "text": "After Effects could not import these files. The layers got grey placeholders with the same name, so structure and keyframes are built:"
+  },
   "ptg3.ae-not-found": {
     "text": "Could not find Adobe After Effects. Open After Effects yourself, choose File > Scripts > Run Script File and pick bygg-after-effects.jsx in this folder."
   },
