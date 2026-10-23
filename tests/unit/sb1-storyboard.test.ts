@@ -4,16 +4,20 @@
 import { describe, expect, it } from "vitest";
 import {
   applyCommand,
+  backupIdMap,
+  defaultLayerFields,
+  diffStates,
+  emptyProjectState,
   makeBackup,
   orderedOccurrences,
   panelBlockIds,
-  parseBackup,
   planStoryboardSeed,
   productionStatusHistoryOf,
   productionStatusOf,
   restoredState,
   storyboardPanelsOf,
   type Command,
+  type ProjectRows,
   type ProjectState,
 } from "@/core";
 import { envelope, mustApply, seedProject, tid } from "../helpers/fixtures";
@@ -94,15 +98,16 @@ describe("SB-1 paneler", () => {
     const mv = undoRedo(st, { type: "MoveStoryboardPanel", panelId, orderKey: "b" });
     expect(mv.done.compositions[panelId]!.orderKey).toBe("b");
     expect(mv.undone.compositions[panelId]!.orderKey).toBe("a");
+    const panelIdS = panelId as string;
     const blocks2 = Object.values(st.blocks).filter((b) => b.variantId === occ2.variantId && !b.removed);
     const to = undoRedo(st, {
       type: "MoveStoryboardPanelToScene", panelId, occurrenceId: occ2.id, variantId: occ2.variantId, orderKey: "a",
       blocks: [{ linkId: tid(), blockId: blocks2[0]!.id, orderKey: "a" }],
     });
     expect(to.done.compositions[panelId]!.occurrenceId).toBe(occ2.id);
-    expect(panelBlockIds(to.done, panelId)).toEqual([blocks2[0]!.id]);
+    expect(panelBlockIds(to.done, panelIdS as never)).toEqual([blocks2[0]!.id]);
     expect(to.undone.compositions[panelId]!.occurrenceId).toBe(occ.id);
-    expect(panelBlockIds(to.undone, panelId)).toEqual([blocks[0]!.id]);
+    expect(panelBlockIds(to.undone, panelIdS as never)).toEqual([blocks[0]!.id]);
   });
   it("fjern og gjeninnfør (removed, ikke slettet)", () => {
     const { s, occ } = setup();
@@ -156,7 +161,7 @@ describe("SB-1 statusspor", () => {
     const base = { type: "SetProductionStatus", statusId: tid(), eventId: tid(), area: "storyboard", status: "done" } as const;
     expect(applyCommand(s, envelope({ ...base, occurrenceId: occ.id, compositionId: tid() })).ok).toBe(false);
     expect(applyCommand(s, envelope(base)).ok).toBe(false);
-    expect(applyCommand(s, envelope({ ...base, occurrenceId: occ.id, status: "ferdig" })).ok).toBe(false);
+    expect(applyCommand(s, envelope({ ...base, occurrenceId: occ.id, status: "ferdig" as never })).ok).toBe(false);
   });
 });
 
@@ -176,10 +181,11 @@ describe("SB-1 bevarte revisjoner", () => {
     });
     st = mustApply(st, {
       type: "AddLayers", layers: [{
-        layerId: tid(), compositionId: panelId, fields: {
-          kind: "note", name: "Lapp", width: 100, height: 100,
+        layerId: tid(), compositionId: panelId,
+        fields: defaultLayerFields(st, st.compositions[panelId]!, {
+          kind: "note", name: "Lapp",
           note: { noteType: "visual", text: "Husk skygge", color: "#ffcc00", handled: false, anchor: null },
-        },
+        }),
       }],
     });
     const r = undoRedo(st, { type: "SnapshotStoryboardPanel", panelId, snapshotId: tid() });
@@ -201,7 +207,7 @@ describe("SB-1 storyboardlag", () => {
     const note = { noteType: "direction" as const, text: "x", color: "#ffcc00", handled: false, anchor: null };
     const mk = (compositionId: string): Command => ({
       type: "AddLayers",
-      layers: [{ layerId: tid(), compositionId, fields: { kind: "note", name: "", width: 10, height: 10, note } }],
+      layers: [{ layerId: tid(), compositionId, fields: defaultLayerFields(st, st.compositions[compositionId]!, { kind: "note", note }) }],
     });
     if (sceneComp) expect(applyCommand(st, envelope(mk(sceneComp.id))).ok).toBe(false);
     const r = undoRedo(st, mk(panelId));
@@ -211,12 +217,12 @@ describe("SB-1 storyboardlag", () => {
     // Ugyldig spesifikasjon avvises (farge må være #rrggbb)
     expect(applyCommand(st, envelope({
       type: "AddLayers",
-      layers: [{ layerId: tid(), compositionId: panelId, fields: { kind: "note", name: "", width: 10, height: 10, note: { ...note, color: "gul" } } }],
+      layers: [{ layerId: tid(), compositionId: panelId, fields: defaultLayerFields(st, st.compositions[panelId]!, { kind: "note", note: { ...note, color: "gul" } }) }],
     })).ok).toBe(false);
     // note-felt på en vanlig lagtype avvises
     expect(applyCommand(st, envelope({
       type: "AddLayers",
-      layers: [{ layerId: tid(), compositionId: panelId, fields: { kind: "other", name: "", width: 10, height: 10, fill: "#101114", note } }],
+      layers: [{ layerId: tid(), compositionId: panelId, fields: defaultLayerFields(st, st.compositions[panelId]!, { kind: "other", fill: "#101114", note }) }],
     })).ok).toBe(false);
   });
 });
@@ -229,13 +235,26 @@ describe("SB-1 sikkerhetskopi", () => {
       type: "SetProductionStatus", statusId: tid(), eventId: tid(), area: "storyboard", compositionId: panelId, status: "done",
     });
     const st3 = mustApply(st2, { type: "SnapshotStoryboardPanel", panelId, snapshotId: tid() });
-    const backup = makeBackup(st3, "full");
-    const parsed = parseBackup(JSON.stringify(backup));
-    expect(parsed.ok).toBe(true);
-    if (!parsed.ok) return;
-    const restored = restoredState(st3, parsed.backup);
-    expect(restored.compositions[panelId]!.kind).toBe("storyboard");
+    const patch = diffStates(emptyProjectState(st3.project), st3);
+    const rows = { project: st3.project, ...patch.inserts, script_block_revisions: patch.blockRevisions } as unknown as ProjectRows;
+    const backup = makeBackup({
+      rows, scriptVersions: [], importedDocuments: [], changeLog: [], generationJobs: [],
+      schemaVersion: 102, createdAt: "2026-10-23T00:00:00Z", include: new Set(),
+    });
+    expect(backup.tables["storyboard_panel_blocks"]?.length).toBe(1);
+    expect(backup.tables["production_statuses"]?.length).toBe(1);
+    expect(backup.tables["storyboard_panel_snapshots"]?.length).toBe(1);
+    // Gjenoppretting i et tomt prosjekt tar med panel, status og øyeblikksbilde
+    const map = await backupIdMap(backup, tid() as never, tid() as never);
+    const main = Object.values(st3.productions).find((p) => p.kind === "main")!;
+    const newMain = tid();
+    const restored = restoredState(backup, map, {
+      ...emptyProjectState({ ...st3.project, id: tid() as never }),
+      productions: { [newMain]: { ...main, id: newMain as never } },
+    }, tid() as never);
+    expect(Object.values(restored.compositions).some((c) => c.kind === "storyboard")).toBe(true);
     expect(Object.keys(restored.panelSnapshots).length).toBe(1);
-    expect(productionStatusOf(restored, "storyboard", { compositionId: panelId as never })!.status).toBe("done");
+    expect(Object.keys(restored.productionStatuses).length).toBe(1);
+    expect(Object.keys(restored.panelBlocks).length).toBe(1);
   });
 });
