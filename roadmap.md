@@ -2,7 +2,7 @@
 
 ## Dokumentasjon og kontrolltest: låste migrasjoner (23.10.2026)
 - [x] Låseregel i AGENTS.md og MD5-liste for migrasjoner til og med 0089; ingen migrasjoner eller Cloud-data endret
-- [ ] Kjør kontrolltesten
+- [x] Kontrolltesten bestått: 90 tester (89 filhasher og komplett filliste)
 
 ## Dokumentasjon: SPERRET-listen (23.10.2026)
 - [x] SPERRET-seksjon øverst i TODO.md og henvisning i AGENTS.md (regel 67); ingen kode
