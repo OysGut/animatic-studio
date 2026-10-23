@@ -1,7 +1,8 @@
 /** SB-3: immutable panel metadata, locked numbering and explicit arrow-to-path plans. */
 import type { Command } from "../commands/types";
 import type { Composition, ProjectState } from "../model";
-import { applyMatrix, layersOf, matrixOf, compositionOfVariant } from "../composition/render";
+import { applyMatrix, modelMatrix, compositionOfVariant } from "../composition/render";
+import { layerFieldsOf } from "../composition";
 import { storyboardPanelsOf } from "./index";
 
 export const SHOT_TYPES = ["ECU", "CU", "MCU", "MS", "MWS", "WS", "EWS", "OTS", "POV", "two-shot"] as const;
@@ -76,9 +77,9 @@ export function planArrowPath(s: ProjectState, arrowId: string, targetId: string
   const panel = s.compositions[arrow.compositionId];
   const scene = panel ? compositionOfVariant(s, panel.variantId) : null;
   if (panel?.kind !== "storyboard" || !scene || target.compositionId !== scene.id) return null;
-  const points = arrow.arrow.points.map(p => ({ ...p, ...applyMatrix(matrixOf(arrow.transform), p.x, p.y) }));
-  return { type: "UpdateSceneDraft", compositionId: scene.id, fields: { name: scene.name, width: scene.width, height: scene.height, durationFrames: scene.durationFrames, background: scene.background }, camera: scene.camera,
-    layers: layersOf(s, scene.id).map(l => ({ ...l, layerId: l.id, ...(l.id === target.id ? { path: { points, startFrame: 0, endFrame: Math.max(1, scene.durationFrames - 1), easeOut: 0, easeIn: 0, tempo: [] } } : {}) })) };
+  if (!panel.occurrenceId) return null;
+  const points = arrow.arrow.points.map(p => ({ ...p, ...applyMatrix(modelMatrix(arrow.transform), p.x, p.y) }));
+  return { type: "UpdateSceneDraft", occurrenceId: panel.occurrenceId, compositionId: scene.id, steps: [{ type: "UpdateLayers", layers: [{ layerId: target.id, fields: { ...layerFieldsOf(target), path: { points, startFrame: 0, endFrame: Math.max(1, scene.durationFrames - 1), easeOut: 0, easeIn: 0, tempo: [] } } }] }] };
 }
 export function storyboardShotRows(s: ProjectState, productionId: string): Readonly<Record<string, string | number>>[] {
   return Object.values(s.occurrences).filter(o => o.productionId === productionId && o.active).sort((a,b) => a.orderKey.localeCompare(b.orderKey)).flatMap(o => storyboardPanelsOf(s, o.id).filter(p => p.active !== false).map(p => {
