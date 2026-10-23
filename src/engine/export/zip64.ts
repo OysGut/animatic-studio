@@ -2,7 +2,11 @@
 const MAX32 = 0xffffffffn;
 const text = new TextEncoder();
 function record(size: number) { const bytes = new Uint8Array(size); return { bytes, view: new DataView(bytes.buffer) }; }
-export interface ZipDirectoryEntry { readonly name: string; readonly size: bigint; readonly offset: bigint; readonly crc: number }
+export interface ZipDirectoryEntry {
+  readonly name: string; readonly size: bigint; readonly offset: bigint; readonly crc: number;
+  /** Unix-filmodus (f.eks. 0o100755 for en kjørbar fil); settes i sentralkatalogen med «laget på Unix». */
+  readonly unixMode?: number;
+}
 export function zipLocalHeader(name: string): Uint8Array {
   const n = text.encode(name);
   const { bytes, view: v } = record(30 + n.length + 20);
@@ -20,10 +24,11 @@ export function zipDescriptor(crc: number, size: bigint): Uint8Array {
 export function zipCentralHeader(e: ZipDirectoryEntry): Uint8Array {
   const n = text.encode(e.name);
   const { bytes, view: v } = record(46 + n.length + 28);
-  v.setUint32(0, 0x02014b50, true); v.setUint16(4, 45, true); v.setUint16(6, 45, true);
+  v.setUint32(0, 0x02014b50, true); v.setUint16(4, e.unixMode ? (3 << 8) | 45 : 45, true); v.setUint16(6, 45, true);
   v.setUint16(8, 0x808, true); v.setUint16(14, 0x21, true); v.setUint32(16, e.crc, true);
   v.setUint32(20, 0xffffffff, true); v.setUint32(24, 0xffffffff, true);
   v.setUint16(28, n.length, true); v.setUint16(30, 28, true); v.setUint32(42, 0xffffffff, true);
+  if (e.unixMode) v.setUint32(38, (e.unixMode << 16) >>> 0, true);
   bytes.set(n, 46); const at = 46 + n.length;
   v.setUint16(at, 1, true); v.setUint16(at + 2, 24, true);
   v.setBigUint64(at + 4, e.size, true); v.setBigUint64(at + 12, e.size, true); v.setBigUint64(at + 20, e.offset, true);
