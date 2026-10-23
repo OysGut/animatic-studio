@@ -6121,7 +6121,7 @@ try {
     const body = await applyChangesTableOrder();
     assert(body.includes("'dialogue_reviews','note_flags','quality_profiles'"), "apply_changes kjenner ikke quality_profiles");
     assert(body.includes("'quality_profiles','note_flags'"), "apply_changes sletter ikke profiler først");
-    assert(body.includes("active_quality_profile_id"), "apply_changes oppdaterer ikke aktiv profil");
+    assert(String((await sql`select pg_get_functiondef('public.apply_changes(uuid,uuid,uuid,jsonb,jsonb,jsonb)'::regprocedure) b`)[0]?.["b"]).includes("active_quality_profile_id"), "apply_changes oppdaterer ikke aktiv profil");
     for (const fn of ["delete_project(uuid,uuid)", "purge_project_assets(uuid,uuid)"]) {
       const b = String((await sql`select pg_get_functiondef(${`public.${fn}`}::regprocedure) as b`)[0]?.["b"]);
       assert(b.indexOf("quality_profiles") < b.indexOf("delete from public.dialogue_versions"), `${fn}: rydder ikke profilene`);
