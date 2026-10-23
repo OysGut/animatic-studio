@@ -55940,6 +55940,11 @@
     "sourceHash": "dc7a6ad39901dae5d1459ad03cfe91ea423b826b576e2076de329175d0ca5342",
     "review": "machine"
   },
+  "ptg3.ae-import-failed": {
+    "text": "After Effects не смог импортировать эти файлы. Слои получили серые заглушки с тем же именем, поэтому структура и ключевые кадры созданы:",
+    "sourceHash": "c6dbe1f6aae8804939a8d276aa445612dc9f8945d41146d7ae7992b270f775a9",
+    "review": "machine"
+  },
   "ptg3.ae-not-found": {
     "text": "Adobe After Effects не найден. Откройте After Effects, выберите File > Scripts > Run Script File и укажите bygg-after-effects.jsx в этой папке.",
     "sourceHash": "2e4a0557224bd6026312550e43d2ce73a860ca621c33a98ca869dbdb7b6a137e",

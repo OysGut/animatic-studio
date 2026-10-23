@@ -55866,6 +55866,11 @@
     "sourceHash": "dc7a6ad39901dae5d1459ad03cfe91ea423b826b576e2076de329175d0ca5342",
     "review": "machine"
   },
+  "ptg3.ae-import-failed": {
+    "text": "After Effects no pudo importar estos archivos. Las capas recibieron marcadores grises con el mismo nombre, así que la estructura y los fotogramas clave se han creado:",
+    "sourceHash": "c6dbe1f6aae8804939a8d276aa445612dc9f8945d41146d7ae7992b270f775a9",
+    "review": "machine"
+  },
   "ptg3.ae-not-found": {
     "text": "No se encontró Adobe After Effects. Abre After Effects, elige File > Scripts > Run Script File y selecciona bygg-after-effects.jsx en esta carpeta.",
     "sourceHash": "2e4a0557224bd6026312550e43d2ce73a860ca621c33a98ca869dbdb7b6a137e",

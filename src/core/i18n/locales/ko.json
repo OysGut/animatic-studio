@@ -55718,6 +55718,11 @@
     "sourceHash": "dc7a6ad39901dae5d1459ad03cfe91ea423b826b576e2076de329175d0ca5342",
     "review": "machine"
   },
+  "ptg3.ae-import-failed": {
+    "text": "After Effects에서 이 파일을 가져올 수 없었습니다. 레이어에는 같은 이름의 회색 자리 표시자가 들어가 구조와 키프레임은 만들어졌습니다:",
+    "sourceHash": "c6dbe1f6aae8804939a8d276aa445612dc9f8945d41146d7ae7992b270f775a9",
+    "review": "machine"
+  },
   "ptg3.ae-not-found": {
     "text": "Adobe After Effects를 찾을 수 없습니다. After Effects를 직접 열고 File > Scripts > Run Script File에서 이 폴더의 bygg-after-effects.jsx를 선택하세요.",
     "sourceHash": "2e4a0557224bd6026312550e43d2ce73a860ca621c33a98ca869dbdb7b6a137e",
