@@ -5,7 +5,7 @@ import { t as tk } from "@/core/i18n/keyed";
 export type Confidence = "high" | "medium" | "low";
 export interface EntityClassification { kind: EntityKind; confidence: Confidence; evidence: string }
 export interface ClassificationCandidate { name: string; speaker?: boolean; heading?: boolean; contexts?: readonly string[] }
-const words = (s: string): string[] => s.toLocaleLowerCase("nb").match(/[\p{L}]+/gu) ?? [];
+const words = (s: string): string[] => s.toLocaleLowerCase("und").match(/[\p{L}]+/gu) ?? [];
 export function classifySuggestion(candidate: ClassificationCandidate): EntityClassification {
   const result = (kind: EntityKind, confidence: Confidence, evidence: string): EntityClassification => ({ kind, confidence, evidence });
   const nameWords = words(candidate.name);

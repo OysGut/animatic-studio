@@ -797,7 +797,7 @@ export function scriptMentions(
       for (const sentence of b.text.replace(/\s+/g, " ").split(/(?<=[.!?…])\s+/)) {
         const t = sentence.trim();
         if (!t || !re.test(t)) continue;
-        const key = t.toLocaleLowerCase("nb");
+        const key = t.toLocaleLowerCase("und");
         if (seen.has(key)) continue;
         const cut = t.length > 300 ? `${t.slice(0, 297)}…` : t;
         if (total + cut.length > maxChars) return out;
@@ -916,7 +916,7 @@ export function buildVariationPrompt(
   if (opts.family === "compact") {
     const lines = [
       `Edit ${src}: ${b.subject.name} (${noun}).`,
-      `Change only this (the user's words, may be Norwegian): "${what}".`,
+      `Change only this (the user's words, may be in another language): "${what}".`,
       "Keep exactly the same: identity, design, proportions, colours, materials, line quality, drawing style, camera angle, framing and scale.",
       style.length ? `Style: match ${imagesText(style)} (style only).` : "",
       briefStyleLine(b) ? `Style: ${briefStyleLine(b)}.` : "",
@@ -941,7 +941,7 @@ export function buildVariationPrompt(
   }
   const out = [
     `Make a variation of ${b.subject.name}, ${KIND_TEXT[b.subject.kind]} in a 2D animated film, using ${src} as the original.`,
-    `The only thing that should be different (the user's own words, may be in Norwegian): "${what}". Make this change clearly and naturally for this subject.`,
+    `The only thing that should be different (the user's own words, may be in another language): "${what}". Make this change clearly and naturally for this subject.`,
     "Keep everything else exactly as in the original: the same subject and identity, design, proportions, colours, materials, line quality, drawing style, level of detail, camera angle, framing and scale. Do not add anything else and do not redesign it.",
     style.length
       ? `Match the drawing style of ${imagesText(style)} (style references only; do not copy their subjects).`
@@ -978,7 +978,7 @@ export function buildPartPrompt(
   if (family === "compact")
     return {
       prompt: [
-        `From ${src} (${b.subject.name}), draw only this part as a separate piece: "${name}" (the user's words, may be Norwegian).${restText}`,
+        `From ${src} (${b.subject.name}), draw only this part as a separate piece: "${name}" (the user's words, may be in another language).${restText}`,
         "Same drawing style, colours, proportions, camera angle and scale as the original; the part complete and whole, including what is hidden behind other parts in the original.",
         style.length ? `Style: match ${imagesText(style)} (style only).` : "",
         briefStyleLine(b) ? `Style: ${briefStyleLine(b)}.` : "",
@@ -1000,7 +1000,7 @@ export function buildPartPrompt(
     };
   return {
     prompt: [
-      `Using ${src} of ${b.subject.name} as the reference, draw only one part of it as a separate piece for cut-out animation: "${name}" (the user's own words, may be in Norwegian).${restText}`,
+      `Using ${src} of ${b.subject.name} as the reference, draw only one part of it as a separate piece for cut-out animation: "${name}" (the user's own words, may be in another language).${restText}`,
       "Draw the part complete and whole – including anything that is hidden behind other parts in the original – seen from the same camera angle, with the same drawing style, colours, materials, proportions and scale as in the original, so it fits exactly back into place.",
       style.length
         ? `Match the drawing style of ${imagesText(style)} (style references only; do not copy their subjects).`

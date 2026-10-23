@@ -80,7 +80,7 @@ function hasLetter(s: string): boolean {
 /** Store bokstaver (parentetiske tillegg som «(V.O.)» eller «(on the radio)» teller ikke). */
 function isUpperName(s: string): boolean {
   const name = s.replace(/\([^)]*\)/g, "").trim();
-  return name.length > 0 && hasLetter(name) && name === name.toLocaleUpperCase("nb");
+  return name.length > 0 && hasLetter(name) && name === name.toLocaleUpperCase("und");
 }
 
 type LineClass =

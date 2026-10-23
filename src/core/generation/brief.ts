@@ -275,7 +275,7 @@ function keepText(b: ImageBrief): string {
 function factsText(b: ImageBrief): string {
   const f = b.subject.facts.map((x) => sentence(cap(x))).join(" ");
   const notes = b.subject.notes.length
-    ? `Visual details from the screenplay (Norwegian, use only what describes how ${b.subject.name} looks): ${b.subject.notes.map((n) => `"${n}"`).join(" ")}`
+    ? `Visual details from the screenplay (in the screenplay's original language, use only what describes how ${b.subject.name} looks): ${b.subject.notes.map((n) => `"${n}"`).join(" ")}`
     : "";
   return join(
     f,
@@ -304,7 +304,7 @@ function renderNarrative(b: ImageBrief): string {
         factsText(b),
         b.setting ? sentence(b.setting) : "",
         b.moodExcerpt
-          ? `For mood only – do not draw the characters (screenplay excerpt, Norwegian): "${b.moodExcerpt}"`
+          ? `For mood only – do not draw the characters (screenplay excerpt, original language): "${b.moodExcerpt}"`
           : "",
       ),
     );
@@ -365,7 +365,7 @@ function renderCompact(b: ImageBrief): { prompt: string; negative: string } {
     `Subject: ${b.subject.name}${b.subject.facts.length ? `, ${b.subject.facts.map((f) => f.replace(/\.$/, "")).join("; ")}` : ""}${b.subject.appearance ? `; ${b.subject.appearance}` : ""}.`,
   );
   if (!b.subject.facts.length && b.subject.notes.length)
-    lines.push(`Details (Norwegian screenplay): ${b.subject.notes.slice(0, 3).join(" ")}`);
+    lines.push(`Details (screenplay, original language): ${b.subject.notes.slice(0, 3).join(" ")}`);
   if (b.task === "sheet")
     lines.push(
       `Layout: turnaround sheet, ${b.views.length} views in one row, left to right: ${b.views

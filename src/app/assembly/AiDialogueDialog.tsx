@@ -9,7 +9,7 @@ import { ResizableDialogContent } from "@/app/shared/ResizableDialogContent";
 import { CircleCheck, CircleDashed, Loader2, Mic, Pause, Play } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { costBreakdown, type FilmClip, formatUsd, locale, newId, type ProjectState, providerInfo, providerModel, sceneDialogueLines, speechCostUsd, SPEECH_MODEL, catalogSettings, isModelEnabled, tm, audioVersion, voiceUsers } from "@/core";
+import { costBreakdown, type FilmClip, formatUsd, locale, newId, type ProjectState, providerInfo, providerModel, sceneDialogueLines, speechCostUsd, speechLanguageOf, SPEECH_MODEL, catalogSettings, isModelEnabled, tm, audioVersion, voiceUsers } from "@/core";
 import { generateSpeech, listVoices } from "@/adapters/ai/speech.functions";
 import type { Commands } from "@/app/project/use-commands";
 import { aiJobsKey } from "@/app/ai/use-ai-jobs";
@@ -160,11 +160,14 @@ export function AiDialogueDialog({
         tk("app-assembly-ai-dialogue-dialog.run-all.set-busy.c66b6321c670", { value1: String(n + 1), length: String(runnable.length) }),
       );
       try {
+        // G-1: språket følger replikken (prosjektets kildespråk som siste ledd), aldri en fast standard
+        const lineLanguage = speechLanguageOf(state, clip.occurrenceId, l.blockId, l.character!.id);
         const r = await generateSpeech({
           data: {
             projectId,
             blockId: l.blockId,
             voiceId: l.character!.voice!.voiceId,
+            language: lineLanguage,
             approved: true,
           },
         });
@@ -220,7 +223,7 @@ export function AiDialogueDialog({
           },
           {
             type: "AddAudioClips",
-            dialogueMeta: { source: "ai", provider: "elevenlabs", voiceId: l.character?.voice?.voiceId ?? null, modelId: SPEECH_MODEL, settings: { language: "no" }, scriptRevision: r.scriptRevision, parentVersionId: null },
+            dialogueMeta: { source: "ai", provider: "elevenlabs", voiceId: l.character?.voice?.voiceId ?? null, modelId: SPEECH_MODEL, settings: { language: lineLanguage }, scriptRevision: r.scriptRevision, parentVersionId: null },
             clips: [
               {
                 clipId: dialogueClipId,

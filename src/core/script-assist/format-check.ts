@@ -24,7 +24,7 @@ export function formatLine(kind: BlockKind, text: string): { text: string; rules
     t = quoted;
   }
   if (kind === "character") {
-    const up = t.replace(/:\s*$/, "").toLocaleUpperCase("nb");
+    const up = t.replace(/:\s*$/, "").toLocaleUpperCase("und");
     if (up !== t) {
       rules.push("character_caps");
       t = up;
@@ -57,8 +57,8 @@ export function formatHeadingFix(h: SceneHeading): SceneHeading {
   const ie = h.intExt.trim().toUpperCase();
   return {
     intExt: INT_EXT[ie] ?? (h.intExt.trim() ? ie : h.intExt),
-    location: h.location.replace(/\s{2,}/g, " ").trim().toLocaleUpperCase("nb"),
-    time: h.time.replace(/\s{2,}/g, " ").trim().toLocaleUpperCase("nb"),
+    location: h.location.replace(/\s{2,}/g, " ").trim().toLocaleUpperCase("und"),
+    time: h.time.replace(/\s{2,}/g, " ").trim().toLocaleUpperCase("und"),
   };
 }
 

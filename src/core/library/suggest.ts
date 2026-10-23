@@ -18,6 +18,7 @@ import { characterName, sceneMentions } from "../screenplay/filter";
 import { nounForms, LEXICON_FORMS } from "./lexicon";
 import { classifySuggestion, type Confidence } from "./classify";
 import { t as tk } from "@/core/i18n/keyed";
+import { collation } from "../i18n";
 
 export type SuggestionReason = "speaker" | "named" | "heading" | "object";
 
@@ -112,8 +113,8 @@ export function similarName(candidate: string, existing: string): boolean {
   return false;
 }
 
-const upper = (s: string) => s.toLocaleUpperCase("nb");
-const lower = (s: string) => s.toLocaleLowerCase("nb");
+const upper = (s: string) => s.toLocaleUpperCase("und");
+const lower = (s: string) => s.toLocaleLowerCase("und");
 
 function assetKeys(a: Pick<Asset, "name" | "names">): string[] {
   return [a.name, ...a.names.map((n) => n.name)].map(characterName).filter(Boolean);
@@ -471,7 +472,7 @@ class Tally {
   sourcesOf(name: string): SuggestionSource[] {
     return [...(this.sources.get(name) ?? [])]
       .map(([n, src]) => ({ name: n, scenes: src.scenes.size, note: src.note }))
-      .sort((a, b) => b.scenes - a.scenes || a.name.localeCompare(b.name, "nb"));
+      .sort((a, b) => b.scenes - a.scenes || a.name.localeCompare(b.name, collation()));
   }
 }
 
@@ -500,7 +501,7 @@ function findSimilar(
 /** Slår sammen sjeldne navn som nesten staves likt som et hyppigere navn («LAURIT» → «LAURITS»). */
 function mergeTypos(t: Tally, known: ReadonlySet<string>, minLength = 4): void {
   const names = [...t.scenes.keys()].sort(
-    (a, b) => t.scenes.get(b)!.size - t.scenes.get(a)!.size || a.localeCompare(b, "nb"),
+    (a, b) => t.scenes.get(b)!.size - t.scenes.get(a)!.size || a.localeCompare(b, collation()),
   );
   for (let i = names.length - 1; i >= 0; i--) {
     const n = names[i]!;
@@ -608,7 +609,7 @@ function namedSuggestions(
       sceneNumbers: numbersOf(scenes, idx),
     });
   }
-  return out.sort((a, b) => b.scenes - a.scenes || a.name.localeCompare(b.name, "nb"));
+  return out.sort((a, b) => b.scenes - a.scenes || a.name.localeCompare(b.name, collation()));
 }
 
 function locationSuggestions(scenes: readonly Scene[], all: readonly Asset[]): LibrarySuggestion[] {
@@ -661,7 +662,7 @@ function locationSuggestions(scenes: readonly Scene[], all: readonly Asset[]): L
       sceneNumbers: numbersOf(scenes, idx),
     });
   }
-  return out.sort((a, b) => b.scenes - a.scenes || a.name.localeCompare(b.name, "nb"));
+  return out.sort((a, b) => b.scenes - a.scenes || a.name.localeCompare(b.name, collation()));
 }
 
 /** Minste antall scener et objekt må finnes i for å bli foreslått. */
@@ -725,7 +726,7 @@ function objectSuggestions(
     });
   }
   return out
-    .sort((a, b) => b.scenes - a.scenes || a.name.localeCompare(b.name, "nb"))
+    .sort((a, b) => b.scenes - a.scenes || a.name.localeCompare(b.name, collation()))
     .slice(0, OBJECT_MAX);
 }
 

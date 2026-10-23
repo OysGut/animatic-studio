@@ -10,6 +10,7 @@
 import type { ProjectState } from "../model";
 import type { EffortLevel, ImageSize } from "./providers";
 import { t } from "@/core/i18n/keyed";
+import { collation } from "../i18n";
 
 /** AI-typene en profil kan velge modell for. */
 export type QualityProfileModelKind = "image" | "video" | "speech" | "sound";
@@ -153,7 +154,7 @@ export function qualityProfilesOf(
 ): readonly QualityProfile[] {
   return Object.values(s.qualityProfiles ?? {})
     .filter((p) => !p.removed)
-    .sort((a, b) => a.name.localeCompare(b.name, "nb") || a.id.localeCompare(b.id));
+    .sort((a, b) => a.name.localeCompare(b.name, collation()) || a.id.localeCompare(b.id));
 }
 
 /**

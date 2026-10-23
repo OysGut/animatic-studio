@@ -5,7 +5,8 @@
 import { ResizableDialogContent } from "@/app/shared/ResizableDialogContent";
 import { AlertTriangle, CheckCircle2, FileUp, Loader2 } from "lucide-react";
 import { useRef, useState } from "react";
-import { locale, newId, orderedOccurrences, planImport, planImportNotes, tm, type Command, type ProductionId, type ProjectState } from "@/core";
+import { languageLabel, languageTagError, locale, newId, normalizeLanguageTag, orderedOccurrences, planImport, planImportNotes, sourceLanguageOf, tm, type Command, type ProductionId, type ProjectState } from "@/core";
+import { LanguageTagInput } from "@/app/shared/LanguageTagInput";
 import { savedTitlePage, titlePageCommand } from "@/core/commands/export-settings";
 import {
   SCREENPLAY_ACCEPT,
@@ -80,6 +81,9 @@ export function ImportDialog({
   const [step, setStep] = useState<Step>({ kind: "choose" });
   const [retrying, setRetrying] = useState(false);
   const [includeContinuation, setIncludeContinuation] = useState(true);
+  // G-1b: brukeren bekrefter filens språk før import (forslag fra metadata/skriftsystem)
+  const [fileLanguage, setFileLanguage] = useState("");
+  const [languageConfirmed, setLanguageConfirmed] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const existing = orderedOccurrences(state, productionId).length;
   const production = state.productions[productionId];
@@ -101,6 +105,8 @@ export function ImportDialog({
       let previous: string | null = null;
       const createdAt = await findPreviousImport(projectId, read.sha256);
       if (createdAt) previous = new Date(createdAt).toLocaleDateString(locale());
+      setFileLanguage(read.languageHint?.language ?? sourceLanguageOf(state));
+      setLanguageConfirmed(false);
       setStep({ kind: "preview", file, read, previous });
     } catch (e) {
       setStep({ kind: "error", message: (e as Error).message });
@@ -178,7 +184,7 @@ export function ImportDialog({
           format: read.format,
           pageCount: read.parsed.pageCount,
           byteSize: read.bytes.byteLength,
-          language: "nb",
+          language: normalizeLanguageTag(fileLanguage.trim()) || sourceLanguageOf(state),
           changeId: res.commandId,
         }),
       });
@@ -285,6 +291,14 @@ export function ImportDialog({
             step={step}
             includeContinuation={includeContinuation}
             setIncludeContinuation={setIncludeContinuation}
+            fileLanguage={fileLanguage}
+            setFileLanguage={(v) => {
+              setFileLanguage(v);
+              setLanguageConfirmed(false);
+            }}
+            languageConfirmed={languageConfirmed}
+            setLanguageConfirmed={setLanguageConfirmed}
+            projectSource={sourceLanguageOf(state)}
           />
         ) : null}
 
@@ -366,7 +380,11 @@ export function ImportDialog({
               <Button variant="ghost" onClick={() => setStep({ kind: "choose" })}>
                 {t("app-script-import-dialog.import-dialog.button.9697f3b03d0e")}
               </Button>
-              <Button onClick={() => void doImport(step.file, step.read)}>
+              <Button
+                data-testid="import-confirm"
+                disabled={!languageConfirmed || Boolean(languageTagError(fileLanguage.trim()))}
+                onClick={() => void doImport(step.file, step.read)}
+              >
                 {t("app-script-import-dialog.import-dialog.button.ab8bf2ee3d96")}{" "}
                 {
                   step.read.parsed.scenes.filter((s) => includeContinuation || !s.isContinuation)
@@ -392,10 +410,20 @@ function Preview({
   step,
   includeContinuation,
   setIncludeContinuation,
+  fileLanguage,
+  setFileLanguage,
+  languageConfirmed,
+  setLanguageConfirmed,
+  projectSource,
 }: {
   step: Extract<Step, { kind: "preview" }>;
   includeContinuation: boolean;
   setIncludeContinuation: (v: boolean) => void;
+  fileLanguage: string;
+  setFileLanguage: (v: string) => void;
+  languageConfirmed: boolean;
+  setLanguageConfirmed: (v: boolean) => void;
+  projectSource: string;
 }) {
   const p = step.read.parsed;
   const hasContinuation = p.scenes.some((s) => s.isContinuation);
@@ -441,6 +469,38 @@ function Preview({
           </>
         ) : null}
       </dl>
+      <div className="flex flex-col gap-1 border border-border bg-surface-1 p-2">
+        <label className="flex flex-wrap items-center gap-2 text-xs text-text-secondary">
+          {t("g1-source-language.import.label")}
+          <LanguageTagInput
+            value={fileLanguage}
+            onChange={setFileLanguage}
+            label={t("g1-source-language.import.label")}
+            testId="import-language"
+            className="h-7 w-36 bg-surface-3"
+          />
+          {step.read.languageHint ? (
+            <span className="text-text-tertiary" data-testid="import-language-suggestion">
+              {t("g1-source-language.import.suggestion", { language: languageLabel(step.read.languageHint.language) })}
+            </span>
+          ) : null}
+        </label>
+        {normalizeLanguageTag(fileLanguage.trim()).toLowerCase() !== normalizeLanguageTag(projectSource).toLowerCase() ? (
+          <p role="note" className="text-xs text-status-caution" data-testid="import-language-mismatch">
+            {t("g1-source-language.import.mismatch", { language: languageLabel(projectSource) })}
+          </p>
+        ) : null}
+        <label className="flex items-start gap-2 text-xs text-text-secondary">
+          <input
+            type="checkbox"
+            data-testid="import-language-confirm"
+            checked={languageConfirmed}
+            onChange={(e) => setLanguageConfirmed(e.target.checked)}
+            className="mt-0.5"
+          />
+          {t("g1-source-language.import.confirm-hint")}
+        </label>
+      </div>
       {step.previous ? (
         <p className="flex items-start gap-2 text-xs text-status-uncertain">
           <AlertTriangle className="mt-px size-3.5 shrink-0" aria-hidden />

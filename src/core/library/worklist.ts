@@ -19,6 +19,7 @@ import { editableParts, takeLabel } from "../assembly/edit";
 import { filmClips, type FilmClip } from "../assembly/film";
 import type { GenerationJob } from "../generation/cost";
 import { traceOf } from "../generation/trace";
+import { collation } from "../i18n";
 
 export type WorkItemKind = "layer" | "still" | "ai";
 
@@ -170,7 +171,7 @@ export function assetWorklist(
     }
   }
   const at = (x: WorkItem) => (x.occurrenceId ? (order.get(x.occurrenceId) ?? 1e9) : 1e9);
-  return out.sort((a, b) => at(a) - at(b) || a.label.localeCompare(b.label, "nb"));
+  return out.sort((a, b) => at(a) - at(b) || a.label.localeCompare(b.label, collation()));
 }
 
 /** «Behold»: posten er gått gjennom mot den nye versjonen og forsvinner fra listen til neste versjon. */

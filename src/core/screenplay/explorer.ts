@@ -30,7 +30,7 @@ export function explorerContext(state: ProjectState, occurrenceId: string, block
 }
 export function explorerGroups(state: ProjectState, productionId: string, filter: SceneFilter, kind?: "dialogue" | "heading"): ExplorerGroup[] {
   const query = filter.text?.trim() ?? "";
-  const lower = query.toLocaleLowerCase("nb");
+  const lower = query.toLocaleLowerCase("und");
   const asset = filter.assetId ? state.assets[filter.assetId] : undefined;
   const names = asset ? assetNames(asset) : filter.characterNames ?? (filter.character ? [filter.character] : []);
   // Character mentions include other speakers' dialogue, while the legacy character filter also
@@ -49,22 +49,22 @@ export function explorerGroups(state: ProjectState, productionId: string, filter
       blocks.some((b) => b.kind !== "character" && mentions(b.text, characterName(name))));
     if (filter.character && !participates && !mentioned) continue;
     if (asset && !library?.has(occurrence.id) && !mentioned && !participates &&
-      !names.some((name) => [formatHeading(variant.heading), ...blocks.map((b) => b.text)].some((text) => text.toLocaleLowerCase("nb").includes(name.toLocaleLowerCase("nb"))))) continue;
+      !names.some((name) => [formatHeading(variant.heading), ...blocks.map((b) => b.text)].some((text) => text.toLocaleLowerCase("und").includes(name.toLocaleLowerCase("und"))))) continue;
     const kinds = existingHits.get(occurrence.id) ?? [];
     if (query && kind && !kinds.includes(kind)) continue;
     const heading = formatHeading(variant.heading);
     const hits: ExplorerHit[] = [];
     const add = (blockId: string | null, hitKind: HitKind, text: string, term: string) => hits.push({ occurrenceId: occurrence.id, blockId, kind: hitKind, text, query: term });
-    if ((!kind || kind === "heading") && (query ? heading.toLocaleLowerCase("nb").includes(lower) : !names.length || names.some((name) => heading.toLocaleLowerCase("nb").includes(name.toLocaleLowerCase("nb"))))) add(null, "heading", heading, query || names.find((name) => heading.toLocaleLowerCase("nb").includes(name.toLocaleLowerCase("nb"))) || "");
+    if ((!kind || kind === "heading") && (query ? heading.toLocaleLowerCase("und").includes(lower) : !names.length || names.some((name) => heading.toLocaleLowerCase("und").includes(name.toLocaleLowerCase("und"))))) add(null, "heading", heading, query || names.find((name) => heading.toLocaleLowerCase("und").includes(name.toLocaleLowerCase("und"))) || "");
     for (const block of blocks) {
       if (kind && block.kind !== kind) continue;
-      const term = query || names.find((name) => block.text.toLocaleLowerCase("nb").includes(name.toLocaleLowerCase("nb"))) || "";
-      if (!term || !block.text.toLocaleLowerCase("nb").includes(term.toLocaleLowerCase("nb"))) continue;
+      const term = query || names.find((name) => block.text.toLocaleLowerCase("und").includes(name.toLocaleLowerCase("und"))) || "";
+      if (!term || !block.text.toLocaleLowerCase("und").includes(term.toLocaleLowerCase("und"))) continue;
       const hitKind: HitKind = block.kind === "action" || block.kind === "dialogue" || block.kind === "character" || block.kind === "parenthetical" || block.kind === "transition" ? block.kind : "other";
       add(block.id, hitKind, block.text, term);
     }
     if (query && !kind) {
-      for (const note of annotationsOfVariant(state, variant.id)) if (note.text.toLocaleLowerCase("nb").includes(lower)) add(note.blockId, "note", note.text, query);
+      for (const note of annotationsOfVariant(state, variant.id)) if (note.text.toLocaleLowerCase("und").includes(lower)) add(note.blockId, "note", note.text, query);
       if ((occurrence.productionNumber ?? "").includes(query)) add(null, "number", occurrence.productionNumber ?? "", query);
     }
     if (!hits.length && !query) add(null, "heading", heading, "");

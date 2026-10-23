@@ -9,6 +9,7 @@ import { characterName, mentions } from "./filter";
 
 import { formatHeading, type PaginationScene } from "./paginate";
 import { t, tLocalized } from "@/core/i18n/keyed";
+import { collation } from "../i18n";
 
 export interface SnapshotBlock {
   readonly id: string;
@@ -207,7 +208,7 @@ function escapeRe(s: string): string {
 
 /** Ord som begynner med navnet, uansett store/små bokstaver («vase» treffer «vasen»); flere ord i sammenheng. */
 function hasWordPrefix(text: string, name: string): boolean {
-  const key = name.toLocaleLowerCase("nb").trim();
+  const key = name.toLocaleLowerCase("und").trim();
   if (key.length < 2) return false;
   const re = new RegExp(`(^|[^\\p{L}\\p{N}])${escapeRe(key)}`, "iu");
   return re.test(text);
@@ -229,7 +230,7 @@ function setChange(
   before: ReadonlySet<string>,
   after: ReadonlySet<string>,
 ): { added: string[]; removed: string[] } {
-  const sort = (xs: string[]) => xs.sort((x, y) => x.localeCompare(y, "nb"));
+  const sort = (xs: string[]) => xs.sort((x, y) => x.localeCompare(y, collation()));
   return {
     added: sort([...after].filter((x) => !before.has(x))),
     removed: sort([...before].filter((x) => !after.has(x))),

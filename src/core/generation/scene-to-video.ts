@@ -413,7 +413,7 @@ export function sceneDescriptionUserText(
           )
           .join("\n")}`
       : "",
-    `SCREENPLAY (Norwegian, the scene in full):\n${script}`,
+    `SCREENPLAY (in the film's original language, the scene in full):\n${script}`,
     draft.trim() ? `DRAFT MADE FROM THE SCREENPLAY (improve it):\n${draft.trim()}` : "",
   ]
     .filter(Boolean)
@@ -515,7 +515,7 @@ export function buildSceneVideoPrompt(
     if (action.length)
       part(
         4,
-        `What happens in this part (screenplay in Norwegian — ${video} decides where and when):`,
+        `What happens in this part (screenplay in its original language — ${video} decides where and when):`,
         ...action.map((b) => `- ${b.text.trim()}`),
       );
   }

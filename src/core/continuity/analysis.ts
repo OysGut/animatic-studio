@@ -201,14 +201,14 @@ export function continuityAnalysis(s0: ProjectState, productionId: string): Find
   for (const a of assets) {
     if (a.kind !== "object") continue;
     const stems = assetNames(a)
-      .map((n) => n.toLocaleLowerCase("nb").trim())
+      .map((n) => n.toLocaleLowerCase("und").trim())
       .filter((n) => n.length >= 3 && !n.includes(" "));
     if (stems.length === 0) continue;
     let first: { o: Occ; b: ScriptBlock; word: string; definite: boolean } | null = null;
     for (const o of active) {
       for (const b of blocks(o)) {
         if (b.kind !== "action") continue;
-        const words = b.text.toLocaleLowerCase("nb").match(/[\p{L}]+/gu) ?? [];
+        const words = b.text.toLocaleLowerCase("und").match(/[\p{L}]+/gu) ?? [];
         for (let i = 0; i < words.length && !first; i++) {
           const w = words[i]!;
           const stem = stems.find((x) => w === x || (w.startsWith(x) && w.length - x.length <= 3));
@@ -522,7 +522,7 @@ export function continuityAnalysis(s0: ProjectState, productionId: string): Find
 function stemOf(word: string, a: Asset): string {
   return (
     assetNames(a)
-      .map((n) => n.toLocaleLowerCase("nb").trim())
+      .map((n) => n.toLocaleLowerCase("und").trim())
       .find((n) => word.startsWith(n)) ?? a.name
   );
 }

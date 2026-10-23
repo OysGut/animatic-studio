@@ -150,3 +150,22 @@ Eksakt liste for G-1 frem til denne delrapporten, gruppert med kort formål:
 - `tests/unit/n11-dialogue-batch.test.tsx` — G-1-test eller oppdatert gammel norskforventning.
 - `tests/unit/verifisering4-kjerne.test.ts` — G-1-test eller oppdatert gammel norskforventning.
 - `tests/visual/fixture-state.ts` — G-1-test eller oppdatert gammel norskforventning.
+
+## G-1b – status etter første arbeidsbolk (2026-10-23)
+
+**Levert og testet (45 målrettede tester grønne, bygg OK, i18n-sjekk grønn):**
+- Punkt 1: Kildevelger ved prosjektoppretting (forhåndsvalgt fra grensesnittspråket) og bytte av kildespråk i språkversjonsdialogen med oversatt advarsel, bekreftelse og forklaring av konflikter med eksisterende mål (språkversjoner, oversettelser, oversatte linjer, linjekoblinger). Nye tester: `tests/unit/g1b-source-language.test.tsx`.
+- Punkt 2 (Fountain/Word/PDF): importleseren gir språkhint fra Word-metadata (w:lang) eller skriftsystem; importdialogen viser forslaget og krever uttrykkelig bekreftelse før import. **FDX støttes ikke av importleseren i dag** – punktet er ikke levert for FDX. Nye tester: `tests/unit/g1-import-language.test.ts`.
+- Punkt 3 (delvis): `PRIMARY_LANGUAGE` fjernet som symbol (den var ubrukt). Fast talespråk «no» fjernet: `SPEECH_LANGUAGE` er borte, `generateSpeech` krever nå eksplisitt språk fra `speechLanguageOf`, og `VoiceControls` får prosjektets kildespråk som forslag. Kostnadsrapportens standardvaluta følger brukerens land (Norge → NOK, ellers USD). UI-sortering bruker `collation()` (grensesnittspråket); innholdsfolding bruker rotkollation («und»). KI-prompter sier ikke lenger «Norwegian» om manuset – de viser til originalspråket, og skriveassistenten svarer på manusets språk.
+- Punkt 4: BCP-47 samordnet – `languageTagError` bruker nå samme kanoniske mønster som kjernen og databasen (`canonicalLanguageTag`). Utvidelser (-u-, -x-) avvises likt i alle lag. Ingen 0091 nødvendig. Testen i `dv5-dv6.test.ts` er oppdatert til den samordnede regelen (forventningen om at «en-US-u-ca-gregory» aksepteres, er endret – oppdraget ba om samordning).
+
+**Ikke levert ennå (gjenstår):**
+- Punkt 2 for FDX (ingen FDX-leser finnes).
+- Punkt 3 resten: arkitekturtesten mot hardkodet «nb»/«no» med unntaksliste; oversettelsesassistentens målspråk er fortsatt fast engelsk (produktvalg kreves); plakat/presentasjon er låst til nb/en (produktvalg); eksportenes tospråklige LESMEG (nb+en) er uendret (produktvalg); manusparserens norske/engelske nøkkelord er språkdata for gjenkjenning, ikke standard.
+- Punkt 5: Noto per skriftsystem i manus-PDF.
+- Punkt 6: komplett rundtur ja/en/nb (backup, gjenoppretting, avvik, eksportfil).
+- Punkt 7: visuell brukerflyt-test.
+- Punkt 8: check_kb og genererte kravoversikter.
+- Full Vitest-kjøring og DB-tester er ikke kjørt i denne bolken; 45 berørte tester er grønne.
+
+**Avvik:** Testforventningen i `dv5-dv6.test.ts` (en-US-u-ca-gregory) er endret som en del av den bestilte samordningen i punkt 4. Ingen andre avvik.

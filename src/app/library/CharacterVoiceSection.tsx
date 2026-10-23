@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { type Asset, type AssetVoice, type ProjectState } from "@/core";
+import { sourceLanguageOf, type Asset, type AssetVoice, type ProjectState } from "@/core";
 import { PanelHeader } from "@/app/shell/workspace-chrome";
 import { VoiceControls } from "@/app/audio/VoiceControls";
 import { Button } from "@/components/ui/button";
@@ -14,7 +14,7 @@ export function CharacterVoiceSection({ state, asset, projectId, cmds, editable 
   const versions = Object.values(state.dialogueVersions).filter(v => !v.removed && state.audioClips[v.clipId]?.characterAssetId === asset.id);
   return <section data-testid="character-voice-section" className="border-t border-border py-4">
     <PanelHeader title={t("app-library-character-voice-section.character-voice-section.title.bddbec8177e9")} />
-    <VoiceControls projectId={projectId} value={voice} onChange={setVoice} disabled={!editable} />
+    <VoiceControls projectId={projectId} value={voice} onChange={setVoice} disabled={!editable} defaultLanguage={sourceLanguageOf(state)} />
     <div className="mt-3 flex items-center gap-2">
       <Button data-testid="voice-save-default" size="sm" disabled={!editable || JSON.stringify(voice) === JSON.stringify(asset.voice ?? null)} onClick={() => setError(cmds.run({ type: "SetAssetVoice", assetId: asset.id, voice }, t("app-library-character-voice-section.character-voice-section.cmds-run.df5114228c2c")))}>{t("app-library-character-voice-section.character-voice-section.button.4cc97e574deb")}</Button>
       <Button variant="ghost" size="sm" asChild><a href="https://elevenlabs.io/app/voice-lab" target="_blank" rel="noopener noreferrer">{t("app-library-character-voice-section.character-voice-section.a.b1da0744e448")}</a></Button>

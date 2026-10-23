@@ -14,6 +14,8 @@ import { knowledgeAt } from "../storylab/facts";
 import { profileAt } from "../storylab/stages";
 import { profileText } from "../storylab/prompts";
 import { formatHeading } from "../screenplay";
+import { sourceLanguageOf } from "../dialogue/languages";
+import { englishLanguageName } from "../translation/language-tags";
 import { t as tk } from "@/core/i18n/keyed";
 
 export type AssistKind = "rewrite" | "next_line" | "scene" | "polish" | "translate";
@@ -76,9 +78,12 @@ export function assistRequestError(r: unknown): string | null {
   return null;
 }
 
-/** Hovedmanuset er på norsk bokmål (REQ-0331); oversettelsesutkastet på engelsk. */
-export function replyLanguage(kind: AssistKind): string {
-  return kind === "translate" ? "English" : "Norwegian Bokmål"; // i18n-ignore: promptspråk
+/**
+ * G-1: nyskriving skjer på manusets eget språk. Oversettelsesutkastet går foreløpig alltid til engelsk
+ * (målspråket er ikke parameterisert ennå – se G1_SPRAKNOYTRAL_REPORT.md).
+ */
+export function replyLanguage(kind: AssistKind, manuscriptLanguage: string): string {
+  return kind === "translate" ? "English" : englishLanguageName(manuscriptLanguage); // i18n-ignore: promptspråk
 }
 
 const KIND_LABEL: Record<BlockKind, string> = {
@@ -169,7 +174,7 @@ function editPrompt(s: ProjectState, r: AssistRequest, picked: ScriptBlock[], ta
   const ctx = blocks.slice(Math.max(0, first - ASSIST_CONTEXT_BLOCKS), last + 1 + ASSIST_CONTEXT_BLOCKS);
   const occ = s.occurrences[r.occurrenceId!]!;
   const excerpt = tail(ctx.map((b) => line(b, refOf.get(b.id))), MAX_ASSIST_EXCERPT_CHARS);
-  const lang = replyLanguage(r.kind);
+  const lang = replyLanguage(r.kind, sourceLanguageOf(s));
   return {
     system: [
       "You are a professional screenwriting assistant for an animated feature film.",
@@ -227,7 +232,7 @@ function nextLinePrompt(s: ProjectState, r: AssistRequest): AssistPrompt | strin
       "You are a professional screenwriting assistant for an animated feature film.",
       `Write the next line of dialogue for ${asset.name.toUpperCase()}, continuing the scene naturally.`,
       "The character only knows what is listed under KNOWLEDGE. Never let the line reveal or rely on anything else.",
-      `Write the line in ${replyLanguage("next_line")}.`,
+      `Write the line in ${replyLanguage("next_line", sourceLanguageOf(s))}.`,
       STYLE_RULE,
       `${JSON_RULE} Format: {"parenthetical": string or null, "line": "..."}`,
     ].join("\n"),
@@ -280,7 +285,7 @@ function scenePrompt(s: ProjectState, r: AssistRequest): AssistPrompt | string {
       "You are a professional screenwriter for an animated feature film.",
       "Draft one new scene from the brief: a scene heading, action and dialogue.",
       "Characters only know what is listed for them. Never reveal anything else.",
-      `Write the scene in ${replyLanguage("scene")}. Character names in CHARACTER lines are in capitals.`,
+      `Write the scene in ${replyLanguage("scene", sourceLanguageOf(s))}. Character names in CHARACTER lines are in capitals.`,
       STYLE_RULE,
       `${JSON_RULE} Format: {"heading":{"intExt":"INT.","location":"...","time":"..."},"blocks":[{"kind":"action|character|parenthetical|dialogue|transition","text":"..."}]}`,
     ].join("\n"),
@@ -339,7 +344,7 @@ export function buildAssistPrompt(
       s,
       { ...r, blockIds: picked.map((b) => b.id) },
       picked,
-      "Translate the marked lines from Norwegian to English for the English version of the film. Keep CHARACTER names unchanged.",
+      `Translate the marked lines from ${englishLanguageName(sourceLanguageOf(s))} to English for the English version of the film. Keep CHARACTER names unchanged.`,
     );
   } else if (r.kind === "next_line") p = nextLinePrompt(s, r);
   else p = scenePrompt(s, r);

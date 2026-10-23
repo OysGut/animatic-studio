@@ -41,7 +41,7 @@ import type { Rational } from "./time";
 import type { DurationAssumptions } from "./screenplay/duration";
 import type { StoryProfile, StoryProfilePatch } from "./storylab/profile";
 
-export const PRIMARY_LANGUAGE = "und"; // Legacy compatibility marker, not a source language
+// G-1: PRIMARY_LANGUAGE ("und") er fjernet som symbol; kilden er alltid sourceLanguageOf(state).
 
 export type ProductionKind =
   "main" | "spinoff" | "short" | "trailer" | "teaser" | "pitch" | "pilot" | "alternative" | "other";

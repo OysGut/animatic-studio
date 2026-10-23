@@ -1,5 +1,5 @@
 /** Shared speech execution. Batch workers reuse the same authorization, quotas and provider contract. */
-import { assetFilePath, type AssetMedia, SPEECH_LANGUAGE, SPEECH_MODEL, effortOf, estimateCostUsd, isUuid, newId, parseQualityProfileMeta, providerModel, type QualityProfileSnapshot, speechSettingsError, speechLanguageError, providerLanguageCode, type SpeechSettings, type SpeechModel } from "@/core";
+import { assetFilePath, type AssetMedia, SPEECH_MODEL, effortOf, estimateCostUsd, isUuid, newId, parseQualityProfileMeta, providerModel, type QualityProfileSnapshot, speechSettingsError, speechLanguageError, providerLanguageCode, type SpeechSettings, type SpeechModel } from "@/core";
 import { checkSchema, type AnyClient } from "@/adapters/storage/project-rows";
 import type { SpeechResult } from "./speech.functions";
 import { t } from "@/core/i18n/keyed";

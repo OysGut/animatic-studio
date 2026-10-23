@@ -1,5 +1,5 @@
 /**
- * ML3 (B-049): legg til, gi nytt navn til og fjern språkversjoner. Norsk er alltid kilden. Å fjerne en
+ * ML3 (B-049): legg til, gi nytt navn til og fjern språkversjoner. Manusets eget språk er kilden (G-1). Å fjerne en
  * språkversjon sletter ingen oversettelser, og alt kan angres. Språk som bare finnes i eldre oversettelser,
  * vises og kan registreres; kollisjoner («en-us» / «en-US») vises og slås aldri sammen automatisk.
  */
@@ -8,6 +8,8 @@ import { useMemo, useState } from "react";
 import {
   canonicalLanguageTag,
   languageLabel,
+  languageTagError,
+  normalizeLanguageTag,
   sourceLanguageOf,
   languageTagCollisions,
   newId,
@@ -16,6 +18,7 @@ import {
   type LanguageVersion,
   type ProjectState,
 } from "@/core";
+import { LanguageTagInput } from "@/app/shared/LanguageTagInput";
 import type { Commands } from "@/app/project/use-commands";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -40,6 +43,22 @@ export function LanguageVersionsDialog({
   const [language, setLanguage] = useState("");
   const [name, setName] = useState("");
   const [error, setError] = useState<string | null>(null);
+  // G-1b: bytte av kildespråk krever bekreftelse; konflikter med eksisterende mål forklares
+  const [sourceDraft, setSourceDraft] = useState<string | null>(null);
+  const source = sourceLanguageOf(state);
+  const sourceConflicts = useMemo(() => {
+    if (sourceDraft === null) return 0;
+    const tag = sourceDraft.trim();
+    if (!tag || languageTagError(tag)) return 0;
+    const low = normalizeLanguageTag(tag).toLowerCase();
+    if (low === source.toLowerCase()) return 0;
+    let n = 0;
+    for (const v of Object.values(state.languageVersions ?? {})) if (!v.removed && v.language.toLowerCase() === low) n++;
+    for (const v of Object.values(state.translations ?? {})) if (!v.removed && v.language.toLowerCase() === low) n++;
+    for (const v of Object.values(state.translationLines ?? {})) if (!v.removed && v.language.toLowerCase() === low) n++;
+    for (const v of Object.values(state.translationLineLinks ?? {})) if (!v.removed && v.language.toLowerCase() === low) n++;
+    return n;
+  }, [sourceDraft, source, state]);
   const [names, setNames] = useState<Record<string, string>>({});
   const options = useMemo(() => scriptLanguageOptions(state), [state]);
   const all = Object.values(state.languageVersions ?? {});
@@ -73,6 +92,58 @@ export function LanguageVersionsDialog({
           <DialogTitle>{t("ml3-language-versions.dialog.title")}</DialogTitle>
           <DialogDescription>{t("ml3-language-versions.dialog.description", { language: languageLabel(sourceLanguageOf(state)) })}</DialogDescription>
         </DialogHeader>
+
+        <section className="space-y-2" data-testid="source-language-section">
+          <h3 className="text-xs font-medium text-text-secondary">{t("g1-source-language.field.label")}</h3>
+          <p className="text-xs text-text-primary" data-testid="source-language-current">
+            {t("g1-source-language.current", { language: `${languageLabel(source)}` })}
+          </p>
+          {editable && sourceDraft === null ? (
+            <Button size="sm" variant="outline" data-testid="source-language-change-open" onClick={() => setSourceDraft(source)}>
+              {t("g1-source-language.change.button")}
+            </Button>
+          ) : null}
+          {sourceDraft !== null ? (
+            <form
+              className="flex flex-col gap-2 rounded-sm border border-status-caution p-2"
+              onSubmit={(e) => {
+                e.preventDefault();
+                const tag = canonicalLanguageTag(sourceDraft.trim());
+                if (!tag || sourceConflicts > 0) return;
+                if (run({ type: "SetDialogueLanguage", target: "project", targetId: state.project.id, language: tag }, t("g1-source-language.change.undo", { language: languageLabel(tag) })))
+                  setSourceDraft(null);
+              }}
+            >
+              <p role="alert" className="text-xs text-status-caution" data-testid="source-language-warning">
+                {t("g1-source-language.change.warning")}
+              </p>
+              <LanguageTagInput
+                value={sourceDraft}
+                onChange={setSourceDraft}
+                label={t("g1-source-language.change.new-label")}
+                testId="source-language-input"
+              />
+              {sourceConflicts > 0 ? (
+                <p role="alert" className="text-xs text-status-danger" data-testid="source-language-conflict">
+                  {t("g1-source-language.change.conflict", { language: normalizeLanguageTag(sourceDraft.trim()), count: String(sourceConflicts) })}
+                </p>
+              ) : null}
+              <div className="flex gap-2">
+                <Button
+                  type="submit"
+                  size="sm"
+                  data-testid="source-language-change-confirm"
+                  disabled={Boolean(languageTagError(sourceDraft.trim())) || sourceConflicts > 0 || normalizeLanguageTag(sourceDraft.trim()).toLowerCase() === source.toLowerCase()}
+                >
+                  {t("g1-source-language.change.confirm")}
+                </Button>
+                <Button type="button" size="sm" variant="ghost" data-testid="source-language-change-cancel" onClick={() => setSourceDraft(null)}>
+                  {t("g1-source-language.change.cancel")}
+                </Button>
+              </div>
+            </form>
+          ) : null}
+        </section>
 
         <section className="space-y-2">
           <h3 className="text-xs font-medium text-text-secondary">{t("ml3-language-versions.label.registered")}</h3>

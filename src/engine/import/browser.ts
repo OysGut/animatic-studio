@@ -4,6 +4,8 @@
  * Originalfilen leses bare; den lastes opp uendret (mandat 4.2). pdf.js og arbeideren lastes først når de trengs.
  */
 import { parseFountain, parseScreenplayLines, type ParsedScreenplay } from "@/core/screenplay";
+import { scriptLanguageHint } from "@/core/screenplay/import-language";
+import { canonicalLanguageTag } from "@/core/translation/language-tags";
 import type { ImportedNote } from "@/core/notes";
 
 import { t } from "@/core/i18n/keyed";
@@ -17,6 +19,12 @@ export interface ReadScreenplay {
   readonly format: ScreenplayFileFormat;
   /** Notater i filen (Word-kommentarer, PDF-merknader eller Fountain-notater [[…]]) – gjenopprettes ved import (DEC-0031). */
   readonly notes: readonly ImportedNote[];
+  /**
+   * G-1b: hint om filens språk fra metadata (Word) eller skriftsystemet i teksten.
+   * Alltid et usikkert forslag – brukeren bekrefter. Null når ingenting skiller seg ut
+   * (for eksempel latinsk tekst); da foreslår brukerflaten prosjektets kildespråk.
+   */
+  readonly languageHint: { readonly language: string; readonly basis: "metadata" | "script" } | null;
 }
 
 export type ScreenplayFileFormat = "pdf" | "docx" | "fountain";
@@ -86,21 +94,25 @@ export async function readScreenplayFile(file: File): Promise<ReadScreenplay> {
   const bytes = new Uint8Array(await file.arrayBuffer());
   const sha256 = await sha256Hex(bytes);
   if (format === "fountain") {
-    const { parsed, notes } = parseFountain(decodeFountain(bytes));
+    const text = decodeFountain(bytes);
+    const { parsed, notes } = parseFountain(text);
     if (!parsed.scenes.some((sc) => sc.elements.length > 0 || !sc.isContinuation))
       throw new Error(
         t("engine-import-browser.read-screenplay-file.message.be31e7cdbed8"),
       );
-    return { parsed, bytes, sha256, format, notes };
+    const hint = scriptLanguageHint(text);
+    return { parsed, bytes, sha256, format, notes, languageHint: hint ? { language: hint, basis: "script" } : null };
   }
   let lines;
   let notes: ImportedNote[];
+  let metadataLanguage: string | null = null;
   if (format === "pdf") {
     const { pdfToLinesAndNotes } = await import("./pdf-lines");
     // pdf.js kan overta bufferen; gi den en kopi så originalen er urørt for opplasting
     ({ lines, notes } = await pdfToLinesAndNotes(bytes.slice(), loadPdfJs as never));
   } else {
-    const { docxToLinesAndNotes } = await import("./docx-lines");
+    const { docxLanguage, docxToLinesAndNotes } = await import("./docx-lines");
+    metadataLanguage = docxLanguage(bytes);
     ({ lines, notes } = docxToLinesAndNotes(bytes));
   }
   if (lines.length === 0) {
@@ -110,7 +122,16 @@ export async function readScreenplayFile(file: File): Promise<ReadScreenplay> {
         : t("engine-import-browser.read-screenplay-file.message.dc9ed1cb5144"),
     );
   }
-  return { parsed: parseScreenplayLines(lines, { format }), bytes, sha256, format, notes };
+  const meta = metadataLanguage ? canonicalLanguageTag(metadataLanguage) : null;
+  const hint = meta ?? scriptLanguageHint(lines.map((l) => l.text).join("\n"));
+  return {
+    parsed: parseScreenplayLines(lines, { format }),
+    bytes,
+    sha256,
+    format,
+    notes,
+    languageHint: hint ? { language: hint, basis: meta ? "metadata" : "script" } : null,
+  };
 }
 
 /** Lagringsnøkkel for originalen: <prosjekt>/<sha256>/<trygt filnavn> (DEC-0020 pkt. 4). */

@@ -187,7 +187,7 @@ export function relationSuggestions(s: ProjectState, productionId: string): Rela
       // Familieord i navnet («BESTEMOR ANNE»): familie med den som er mest sammen med henne
       if (!kind) {
         const famName = [a, b].find((x) =>
-          assetNames(x).some((n) => KEYWORDS[0]!.re.test(n.toLocaleLowerCase("nb"))),
+          assetNames(x).some((n) => KEYWORDS[0]!.re.test(n.toLocaleLowerCase("und"))),
         );
         if (famName) kind = "family";
       }

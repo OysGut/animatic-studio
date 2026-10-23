@@ -1,7 +1,7 @@
 // i18n-ignore-file – multilingual lexical data, not UI copy
 export type EntityKind = "character" | "animal" | "object" | "location" | "environment" | "sound";
 export function nounForms(word: string): string[] {
-  const w = word.toLocaleLowerCase("nb");
+  const w = word.toLocaleLowerCase("und");
   const forms = [w, `${w}en`, `${w}et`, `${w}a`, `${w}er`, `${w}ene`, `${w}ane`, `${w}s`, `${w}es`];
   if (w.endsWith("e")) forms.push(`${w}n`, `${w}t`, `${w.slice(0, -1)}a`, `${w}r`, `${w}ne`);
   if (w.endsWith("y")) forms.push(`${w.slice(0, -1)}ies`);

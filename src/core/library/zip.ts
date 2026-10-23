@@ -8,6 +8,7 @@ import { ASSET_KIND_PLURAL } from "./index";
 import { versionFileName } from "./file-names";
 
 import { t as tk } from "@/core/i18n/keyed";
+import { collation } from "../i18n";
 
 /** Kategori i zip-filen: en ressurstype, eller «film» for importert film. */
 export type ZipCategory = AssetKind | "film";
@@ -79,11 +80,11 @@ export function zipEntries(s: ProjectState): ZipEntry[] {
       }
     }
   };
-  const assets = Object.values(s.assets).sort((a, b) => a.name.localeCompare(b.name, "nb"));
+  const assets = Object.values(s.assets).sort((a, b) => a.name.localeCompare(b.name, collation()));
   for (const a of assets) {
     const variants = Object.values(s.assetVariants)
       .filter((v) => v.assetId === a.id)
-      .sort((x, y) => x.name.localeCompare(y.name, "nb"));
+      .sort((x, y) => x.name.localeCompare(y.name, collation()));
     for (const v of variants) {
       const versions = Object.values(s.assetVersions)
         .filter((x) => x.variantId === v.id)
@@ -120,7 +121,7 @@ export function zipEntries(s: ProjectState): ZipEntry[] {
   }
   const order = new Map(ZIP_CATEGORY_ORDER.map((c, i) => [c, i]));
   return out.sort(
-    (x, y) => order.get(x.category)! - order.get(y.category)! || x.path.localeCompare(y.path, "nb"),
+    (x, y) => order.get(x.category)! - order.get(y.category)! || x.path.localeCompare(y.path, collation()),
   );
 }
 

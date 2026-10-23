@@ -133,7 +133,7 @@ export function ruleLipsync(
     const word = wordAt(ms);
     let viseme: Viseme = "X";
     if (e > 0.02 && word) {
-      const t = word.text.toLocaleLowerCase("nb");
+      const t = word.text.toLocaleLowerCase("und");
       const ch = t[Math.min(t.length - 1, Math.floor(((ms - (word.startMs ?? 0)) / Math.max(1, (word.endMs ?? 0) - (word.startMs ?? 0))) * t.length))] ?? "";
       if (/[pbm]/.test(ch)) viseme = "A";
       else if (/[fv]/.test(ch)) viseme = "G";

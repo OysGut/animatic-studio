@@ -76,7 +76,7 @@ export function scenesNeedingAnalysis(
   return scenes.filter((sc) => byScene.get(sc.sceneId) !== sc.hash).map((sc) => sc.sceneId);
 }
 
-const fold = (x: string) => x.normalize("NFC").toLocaleLowerCase("nb");
+const fold = (x: string) => x.normalize("NFC").toLocaleLowerCase("und");
 
 /** Forslagene som nevnes i en scenetekst (navn eller alternativ skrivemåte). */
 export function candidatesInScene(

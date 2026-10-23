@@ -8,12 +8,13 @@ import { cleanSpeaker } from "../library/suggest";
 import { assetNames, nameKey } from "../library";
 import { formatHeading } from "../screenplay/paginate";
 import { canHaveStoryProfile } from "./profile";
+import { collation } from "../i18n";
 
 /** Karakterer og dyr (de eneste som kan ha profil), sortert etter navn. */
 export function storyCharacters(s: ProjectState): Asset[] {
   return Object.values(s.assets)
     .filter((a) => canHaveStoryProfile(a.kind) && !a.archived && !(a as { removed?: boolean }).removed)
-    .sort((a, b) => a.name.localeCompare(b.name, "nb"));
+    .sort((a, b) => a.name.localeCompare(b.name, collation()));
 }
 
 /** Karakterens replikker i hovedfilmen (talernavn mot ressursens navn og alternative navn). */

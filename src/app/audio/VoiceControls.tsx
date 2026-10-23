@@ -1,18 +1,20 @@
 import { useQuery } from "@tanstack/react-query";
-import { SPEECH_MODEL, SPEECH_LANGUAGE, type AssetVoice, type SpeechSettings, speechLanguageError, normalizeLanguageTag, languageLabel } from "@/core";
+import { SPEECH_MODEL, DEFAULT_SPEECH_LANGUAGE, type AssetVoice, type SpeechSettings, speechLanguageError, normalizeLanguageTag, languageLabel } from "@/core";
 import { listVoices, listSpeechModels } from "@/adapters/ai/speech.functions";
 import { Button } from "@/components/ui/button";
 import { t } from "@/core/i18n/keyed";
 
-export function VoiceControls({ projectId, value, onChange, disabled = false }: {
+export function VoiceControls({ projectId, value, onChange, disabled = false, defaultLanguage }: {
   projectId: string; value: AssetVoice | null; onChange: (voice: AssetVoice | null) => void; disabled?: boolean;
+  /** G-1: foreslått språk når stemmen ikke har noe ennå – vanligvis prosjektets kildespråk. */
+  defaultLanguage?: string;
 }) {
   const voices = useQuery({ queryKey: ["speech-voices", projectId], queryFn: () => listVoices({ data: { projectId } }), staleTime: 300_000 });
   const models = useQuery({ queryKey: ["speech-models", projectId], queryFn: () => listSpeechModels({ data: { projectId } }), staleTime: 300_000 });
   const vs = voices.data?.ok ? voices.data.voices ?? [] : [];
   const ms = models.data?.ok ? models.data.models ?? [] : [];
   const modelId = value?.modelId ?? SPEECH_MODEL;
-  const language = normalizeLanguageTag(value?.language ?? SPEECH_LANGUAGE);
+  const language = normalizeLanguageTag(value?.language ?? defaultLanguage ?? DEFAULT_SPEECH_LANGUAGE);
   const model = ms.find(m => m.modelId === modelId);
   const set = (patch: Partial<AssetVoice>) => { if (value) onChange({ ...value, ...patch }); };
   const settings = value?.settings ?? {};

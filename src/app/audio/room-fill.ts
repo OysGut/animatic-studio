@@ -3,7 +3,7 @@
  * per opptak) og fyller pausene i komposisjonen. Kjernen (`src/core/audio/roomtone.ts`) gjør selve arbeidet; her
  * kobles den til AudioBuffer og prosjektets romlydressurser.
  */
-import { ROOM_TONE_TAG, audioTakeLabel, compositionToSource, fillPauseGaps, findRoomTone, newId, pauseGaps, segmentRole, soundTakes, wholeFileCandidate, type AlignmentSource, type AudioComposition, type PauseGap, type ProjectState, type RoomCandidate, type RoomSource, type WordAlignment } from "@/core";
+import { collation, ROOM_TONE_TAG, audioTakeLabel, compositionToSource, fillPauseGaps, findRoomTone, newId, pauseGaps, segmentRole, soundTakes, wholeFileCandidate, type AlignmentSource, type AudioComposition, type PauseGap, type ProjectState, type RoomCandidate, type RoomSource, type WordAlignment } from "@/core";
 import { t as tk } from "@/core/i18n/keyed";
 
 const segId = () => newId<"audio_segment">();
@@ -54,7 +54,7 @@ export function roomToneFiles(s: ProjectState): { versionId: string; label: stri
       if (!s.assetVersions[t.versionId]?.composition && t.durationMs)
         out.push({ versionId: t.versionId, label: `${a.name} · ${audioTakeLabel(t.number)}` });
   }
-  return out.sort((x, y) => x.label.localeCompare(y.label, "nb"));
+  return out.sort((x, y) => x.label.localeCompare(y.label, collation()));
 }
 
 /**
