@@ -84,11 +84,10 @@ export function sceneDialogueLines(s: ProjectState, clip: FilmClip): DialogueLin
 
 /**
  * Talemodellen. «Flerspråklig v2» kan ikke norsk og leste norsk som dansk (funnet av Mars 2026-10-13);
- * Eleven v3 har norsk, og språket settes eksplisitt med `SPEECH_LANGUAGE`.
+ * Eleven v3 dekker mange språk, og språket settes alltid eksplisitt fra speechLanguageOf (G-1:
+ * prosjektets kildespråk, aldri en fast standard).
  */
 export const SPEECH_MODEL = "eleven_v3";
-/** Hovedmanuset er alltid norsk bokmål (ISO 639-1). */
-export const SPEECH_LANGUAGE = "no";
 
 /** Anslått pris for å lese inn replikkene (USD), eller null når prisen er ukjent. */
 export function speechCostUsd(lines: readonly { readonly text: string }[]): number | null {

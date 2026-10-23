@@ -6,7 +6,7 @@
  */
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { assetFilePath, type AssetMedia, SPEECH_LANGUAGE, SPEECH_MODEL, effortOf, estimateCostUsd, isUuid, newId, parseQualityProfileMeta, providerModel, speechSettingsError, speechLanguageError, type SpeechSettings, type SpeechModel, languageTagError } from "@/core";
+import { assetFilePath, type AssetMedia, SPEECH_MODEL, effortOf, estimateCostUsd, isUuid, newId, parseQualityProfileMeta, providerModel, speechSettingsError, speechLanguageError, type SpeechSettings, type SpeechModel, languageTagError } from "@/core";
 import { checkSchema, type AnyClient } from "@/adapters/storage/project-rows";
 import { t } from "@/core/i18n/keyed";
 
@@ -99,7 +99,8 @@ export const generateSpeech = createServerFn({ method: "POST" })
     if (x["approved"] !== true)
       throw new Error(t("adapters-ai-speech-functions.generate-speech.create-server-fn-method-post-middleware-require-supabase-auth-validator.4f4515f49dd9"));
     const model = x["modelId"] ?? SPEECH_MODEL;
-    const language = x["language"] ?? SPEECH_LANGUAGE;
+    // G-1: språket er påkrevd – det kommer fra speechLanguageOf i appen, aldri en fast standard
+    const language = x["language"];
     const settings = x["settings"] ?? {};
     if (typeof model !== "string" || !/^[A-Za-z0-9_-]{1,100}$/.test(model) || typeof language !== "string" || languageTagError(language))
       throw new Error(t("adapters-ai-speech-functions.generate-speech.create-server-fn-method-post-middleware-require-supabase-auth-validator.70945565c22c"));
