@@ -8818,22 +8818,18 @@ try {
   });
 
   // ---------- 0103: tabellrekkefølgen i apply_changes ligger i et register ----------
-  await test("0103: apply_changes har ingen hardkodet tabelliste; registeret har alle 55 tabeller med foreldre før barn", async () => {
+  await test("0103: apply_changes har ingen hardkodet tabelliste; registeret har alle 55 tabeller i samme rekkefølge som 0102", async () => {
     const src = String((await sql`select pg_get_functiondef('public.apply_changes(uuid,uuid,uuid,jsonb,jsonb,jsonb)'::regprocedure) d`)[0]!["d"]);
     assert(!src.includes("'storyboard_panel_snapshots'") && !src.includes("'productions','rig_templates'"), "kjernen har fortsatt hardkodet tabelliste");
     assert(src.includes("private.apply_change_tables"), "kjernen leser ikke registeret");
     const rows = await sql`select table_name, insert_order, delete_order from private.apply_change_tables`;
     assert(rows.length === 55, `forventet 55 registrerte tabeller, fikk ${rows.length}`);
-    const ord = new Map(rows.map((r) => [String(r["table_name"]), r]));
-    // Alle fremmednøkler mellom registrerte tabeller: forelder settes inn før barnet og slettes etter
-    const fks = await sql`select distinct c.conrelid::regclass::text child, c.confrelid::regclass::text parent
-      from pg_constraint c where c.contype='f' and c.conrelid <> c.confrelid`;
-    for (const fk of fks) {
-      const ch = ord.get(String(fk["child"]).replace(/^public\./, "")), pa = ord.get(String(fk["parent"]).replace(/^public\./, ""));
-      if (!ch || !pa) continue;
-      assert(Number(pa["insert_order"]) < Number(ch["insert_order"]), `${String(fk["parent"])} settes inn etter ${String(fk["child"])}`);
-      assert(Number(pa["delete_order"]) > Number(ch["delete_order"]), `${String(fk["parent"])} slettes før ${String(fk["child"])}`);
-    }
+    // Nøyaktig samme rekkefølge som de hardkodede listene i 0102 (lik oppførsel)
+    const ins0102 = ['productions', 'rig_templates', 'scenes', 'rig_setups', 'scene_variants', 'script_blocks', 'scene_occurrences', 'production_segments', 'takes', 'assets', 'asset_variants', 'asset_versions', 'animation_rigs', 'animation_rig_versions', 'script_annotations', 'compositions', 'template_instances', 'credit_participants', 'credit_sequences', 'composition_layers', 'measure_sets', 'print_jobs', 'print_job_elements', 'animation_uses', 'audio_clips', 'dialogue_versions', 'clip_parts', 'time_links', 'generation_prompts', 'continuity_events', 'language_versions', 'translations', 'asset_relations', 'posters', 'style_profiles', 'story_profiles', 'story_profile_stages', 'story_facts', 'story_canvas_nodes', 'story_canvas_edges', 'lipsync_results', 'animation_patterns', 'dialogue_reviews', 'note_flags', 'quality_profiles', 'translation_lines', 'translation_line_links', 'style_harmonizations', 'style_preferred_references', 'mouth_sets', 'mouth_tracks', 'storyboard_panel_blocks', 'production_statuses', 'production_status_events', 'storyboard_panel_snapshots'];
+    const del0102 = ['storyboard_panel_snapshots', 'storyboard_panel_blocks', 'production_status_events', 'production_statuses', 'mouth_tracks', 'mouth_sets', 'style_preferred_references', 'style_harmonizations', 'translation_line_links', 'translation_lines', 'quality_profiles', 'note_flags', 'dialogue_reviews', 'animation_patterns', 'lipsync_results', 'dialogue_versions', 'story_canvas_edges', 'story_canvas_nodes', 'story_facts', 'story_profile_stages', 'story_profiles', 'style_profiles', 'posters', 'asset_relations', 'translations', 'language_versions', 'continuity_events', 'generation_prompts', 'time_links', 'clip_parts', 'audio_clips', 'animation_uses', 'print_job_elements', 'print_jobs', 'measure_sets', 'composition_layers', 'credit_sequences', 'credit_participants', 'template_instances', 'compositions', 'script_annotations', 'animation_rig_versions', 'animation_rigs', 'asset_versions', 'asset_variants', 'assets', 'takes', 'production_segments', 'scene_occurrences', 'script_blocks', 'scene_variants', 'rig_setups', 'scenes', 'rig_templates', 'productions'];
+    const sorted = (k: string) => [...rows].sort((x, y) => Number(x[k]) - Number(y[k])).map((r) => String(r["table_name"]));
+    assert(JSON.stringify(sorted("insert_order")) === JSON.stringify(ins0102), "innsettingsrekkefølgen avviker fra 0102");
+    assert(JSON.stringify(sorted("delete_order")) === JSON.stringify(del0102), "sletterekkefølgen avviker fra 0102");
   });
   await test("0103: ukjent tabell avvises fortsatt med 22023; insert og angre-sletting virker via registeret", async () => {
     let code = "";
