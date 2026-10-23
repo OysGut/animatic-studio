@@ -360,3 +360,4 @@
 - [x] Resultater i synet: versjonsstriper bryter linjen, lenken ruller resultatet inn i synet.
 - [ ] Plassering av nye lag innenfor gjeldende lerretsvisning.
 - [x] Stilforbilder (Øystein 23.10): brukeren velger bort og legger til bilder, grense per modell (STILFORBILDER_REPORT.md). Visuell sjekk venter på 0089 i Cloud.
+- [x] Store dialoger kan endres i størrelse og huskes (Øystein 23.10, DIALOGSTORRELSE_REPORT.md).
