@@ -8319,8 +8319,8 @@ try {
       "compositions|private.validate_storyboard_panels||90",
       "composition_layers|private.validate_storyboard_layer_kinds||91",
       "storyboard_panel_blocks|private.validate_storyboard_panel_blocks||92",
-      "production_status_events|private.validate_production_statuses||94",
       "production_statuses|private.validate_production_statuses||93",
+      "production_status_events|private.validate_production_statuses||94",
     ]), `registeret avviker: ${JSON.stringify(rows)}`);
     // Alle registrerte funksjoner finnes med riktig signatur
     for (const fn of ["validate_translation_line_links", "validate_style_harmonizations", "validate_style_preferred_references",
@@ -8695,7 +8695,6 @@ try {
     await expectError(sbApply(g7p, { inserts: { compositions: [
       { id: newId(), project_id: g7p, variant_id, kind: "scene", revision: 1 },
       { id: newId(), project_id: g7p, variant_id, kind: "scene", revision: 1 }] } }), "23505");
-    return panel;
   });
 
   await test("0102 SB-1.2: note/arrow/camera_mark bare i storyboardkomposisjoner, med riktig felt", async () => {
