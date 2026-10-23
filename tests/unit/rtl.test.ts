@@ -10,7 +10,7 @@ describe("dirOf (G-4)", () => {
   it("latinsk, CJK og tall først er ltr", () => {
     expect(dirOf("Hello")).toBe("ltr");
     expect(dirOf("映画")).toBe("ltr");
-    expect(dirOf("123 مرحبا")).toBe("ltr");
+    expect(dirOf("123 مرحبا")).toBe("rtl"); // tall er svake tegn (UAX #9 P2)
     expect(dirOf("")).toBe("ltr");
   });
   it("blandet tekst følger det første sterke tegnet", () => {
