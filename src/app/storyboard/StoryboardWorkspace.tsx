@@ -32,7 +32,7 @@ import {
   type ProductionStatusValue,
   type ProjectState,
 } from "@/core";
-import { t as tk } from "@/core/i18n/keyed";
+import { t as tk, tLocalized } from "@/core/i18n/keyed";
 import { useLanguage } from "@/app/i18n/language";
 import { canEdit, useMembers, useProjectState } from "@/app/project/use-project";
 import { useCommands, type Commands } from "@/app/project/use-commands";
@@ -58,27 +58,27 @@ import {
   type GalleryShowKey,
 } from "./gallery-prefs";
 
-const AREA_KEY: Record<ProductionArea, string> = {
+const AREA_KEY = tLocalized<ProductionArea>({
   script: "sb2.area.script",
   storyboard: "sb2.area.storyboard",
   animation: "sb2.area.animation",
   sound: "sb2.area.sound",
   film: "sb2.area.film",
-};
-const AREA_SHORT_KEY: Record<ProductionArea, string> = {
+});
+const AREA_SHORT_KEY = tLocalized<ProductionArea>({
   script: "sb2.area-short.script",
   storyboard: "sb2.area-short.storyboard",
   animation: "sb2.area-short.animation",
   sound: "sb2.area-short.sound",
   film: "sb2.area-short.film",
-};
-const STATUS_KEY: Record<ProductionStatusValue, string> = {
+});
+const STATUS_KEY = tLocalized<ProductionStatusValue>({
   not_started: "sb2.status.not-started",
   in_progress: "sb2.status.in-progress",
   review: "sb2.status.review",
   changes_requested: "sb2.status.changes-requested",
   done: "sb2.status.done",
-};
+});
 const STATUS_CLASS: Record<ProductionStatusValue, string> = {
   not_started: "bg-status-neutral-bg text-status-neutral",
   in_progress: "bg-status-running-bg text-status-running",
@@ -86,7 +86,7 @@ const STATUS_CLASS: Record<ProductionStatusValue, string> = {
   changes_requested: "bg-status-danger-bg text-status-danger",
   done: "bg-status-success-bg text-status-success",
 };
-const SHOW_KEY: Record<GalleryShowKey, string> = {
+const SHOW_KEY = tLocalized<GalleryShowKey>({
   name: "sb2.show.name",
   number: "sb2.show.number",
   dialogue: "sb2.show.dialogue",
@@ -94,7 +94,7 @@ const SHOW_KEY: Record<GalleryShowKey, string> = {
   notes: "sb2.show.notes",
   timing: "sb2.show.timing",
   status: "sb2.show.status",
-};
+});
 
 const HEADER_H = 44;
 const GAP = 12;
@@ -414,7 +414,7 @@ export function Gallery({
           {GALLERY_SHOW_KEYS.map((k) => (
             <label key={k} className="flex items-center gap-1">
               <input type="checkbox" checked={prefs.show[k]} onChange={(e) => set({ show: { ...prefs.show, [k]: e.target.checked } })} data-testid={`sb-show-${k}`} />
-              {tk(SHOW_KEY[k])}
+              {SHOW_KEY[k]}
             </label>
           ))}
           <label className="flex items-center gap-1">
@@ -427,11 +427,11 @@ export function Gallery({
           <select className={ctl} value={prefs.filterArea ?? ""} data-testid="sb-filter-area" aria-label={tk("sb2.filter-area")}
             onChange={(e) => set({ filterArea: (e.target.value || null) as ProductionArea | null, filterStatus: e.target.value ? prefs.filterStatus ?? "not_started" : null })}>
             <option value="">{tk("sb2.filter-none")}</option>
-            {PRODUCTION_AREAS.map((a) => <option key={a} value={a}>{tk(AREA_KEY[a])}</option>)}
+            {PRODUCTION_AREAS.map((a) => <option key={a} value={a}>{AREA_KEY[a]}</option>)}
           </select>
           <select className={ctl} value={prefs.filterStatus ?? ""} disabled={!prefs.filterArea} data-testid="sb-filter-status" aria-label={tk("sb2.filter-status")}
             onChange={(e) => set({ filterStatus: (e.target.value || null) as ProductionStatusValue | null })}>
-            {PRODUCTION_STATUSES.map((s) => <option key={s} value={s}>{tk(STATUS_KEY[s])}</option>)}
+            {PRODUCTION_STATUSES.map((s) => <option key={s} value={s}>{STATUS_KEY[s]}</option>)}
           </select>
         </label>
         <Button variant="ghost" size="sm" onClick={jumpToScript} data-testid="sb-jump-script"><FileText /> {tk("sb2.jump-script")}</Button>
@@ -454,10 +454,10 @@ export function Gallery({
             <Button size="sm" variant="ghost" onClick={() => { setMoveTarget(""); setMoveOpen(true); }} data-testid="sb-move-scene"><MoveRight /> {tk("sb2.move-to-scene")}</Button>
             {PRODUCTION_AREAS.map((a) => (
               <label key={a} className="flex items-center gap-1 text-text-secondary">
-                {tk(AREA_SHORT_KEY[a])}
-                <select className={ctl} value={sel.statuses[a]} aria-label={tk("sb2.status-of", { area: tk(AREA_KEY[a]) })} data-testid={`sb-status-${a}`}
+                {AREA_SHORT_KEY[a]}
+                <select className={ctl} value={sel.statuses[a]} aria-label={tk("sb2.status-of", { area: AREA_KEY[a] })} data-testid={`sb-status-${a}`}
                   onChange={(e) => setStatus(a, e.target.value as ProductionStatusValue, { compositionId: sel.panel.id })}>
-                  {PRODUCTION_STATUSES.map((s) => <option key={s} value={s}>{tk(STATUS_KEY[s])}</option>)}
+                  {PRODUCTION_STATUSES.map((s) => <option key={s} value={s}>{STATUS_KEY[s]}</option>)}
                 </select>
               </label>
             ))}
@@ -623,9 +623,9 @@ function StatusBadges({ statuses }: { statuses: Readonly<Record<ProductionArea, 
   return (
     <span className="flex gap-0.5" data-testid="sb-status">
       {PRODUCTION_AREAS.map((a) => (
-        <span key={a} className={"rounded px-1 font-mono text-[10px] " + STATUS_CLASS[statuses[a]]} title={`${tk(AREA_KEY[a])}: ${tk(STATUS_KEY[statuses[a]])}`}
-          aria-label={`${tk(AREA_KEY[a])}: ${tk(STATUS_KEY[statuses[a]])}`} data-area={a} data-status={statuses[a]}>
-          {tk(AREA_SHORT_KEY[a])}
+        <span key={a} className={"rounded px-1 font-mono text-[10px] " + STATUS_CLASS[statuses[a]]} title={`${AREA_KEY[a]}: ${tk(STATUS_KEY[statuses[a]])}`}
+          aria-label={`${AREA_KEY[a]}: ${tk(STATUS_KEY[statuses[a]])}`} data-area={a} data-status={statuses[a]}>
+          {AREA_SHORT_KEY[a]}
         </span>
       ))}
     </span>

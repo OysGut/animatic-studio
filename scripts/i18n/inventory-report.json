@@ -6,8 +6,8 @@
   "literalPairs": 8664,
   "templatePairs": 1272,
   "dynamicPairs": 18,
-  "references": 11629,
-  "candidates": 37365,
+  "references": 11642,
+  "candidates": 37400,
   "conflicts": [
     {
       "kind": "parameter-contract",

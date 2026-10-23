@@ -33607,6 +33607,36 @@
     "sb2.add": {
       "text": "Nytt panel"
     },
+    "sb2.area-short.animation": {
+      "text": "A"
+    },
+    "sb2.area-short.film": {
+      "text": "F"
+    },
+    "sb2.area-short.script": {
+      "text": "M"
+    },
+    "sb2.area-short.sound": {
+      "text": "L"
+    },
+    "sb2.area-short.storyboard": {
+      "text": "SB"
+    },
+    "sb2.area.animation": {
+      "text": "Animasjon"
+    },
+    "sb2.area.film": {
+      "text": "Film"
+    },
+    "sb2.area.script": {
+      "text": "Manus"
+    },
+    "sb2.area.sound": {
+      "text": "Lyd"
+    },
+    "sb2.area.storyboard": {
+      "text": "Storyboard"
+    },
     "sb2.cancel": {
       "text": "Avbryt"
     },
@@ -33751,8 +33781,44 @@
     "sb2.show-panel": {
       "text": "Vis"
     },
+    "sb2.show.dialogue": {
+      "text": "Dialog"
+    },
+    "sb2.show.name": {
+      "text": "Navn"
+    },
+    "sb2.show.notes": {
+      "text": "Notater"
+    },
+    "sb2.show.number": {
+      "text": "Nummer"
+    },
+    "sb2.show.script": {
+      "text": "Manustekst"
+    },
+    "sb2.show.status": {
+      "text": "Status"
+    },
+    "sb2.show.timing": {
+      "text": "Timing"
+    },
     "sb2.status-of": {
       "text": "Status for {area}"
+    },
+    "sb2.status.changes-requested": {
+      "text": "Endringer ønskes"
+    },
+    "sb2.status.done": {
+      "text": "Ferdig"
+    },
+    "sb2.status.in-progress": {
+      "text": "Under arbeid"
+    },
+    "sb2.status.not-started": {
+      "text": "Ikke startet"
+    },
+    "sb2.status.review": {
+      "text": "Klar for gjennomgang"
     },
     "sb2.text-view": {
       "text": "Tekstvisning"
@@ -67555,6 +67621,36 @@
     "sb2.add": {
       "text": "New panel"
     },
+    "sb2.area-short.animation": {
+      "text": "A"
+    },
+    "sb2.area-short.film": {
+      "text": "F"
+    },
+    "sb2.area-short.script": {
+      "text": "S"
+    },
+    "sb2.area-short.sound": {
+      "text": "Snd"
+    },
+    "sb2.area-short.storyboard": {
+      "text": "SB"
+    },
+    "sb2.area.animation": {
+      "text": "Animation"
+    },
+    "sb2.area.film": {
+      "text": "Film"
+    },
+    "sb2.area.script": {
+      "text": "Script"
+    },
+    "sb2.area.sound": {
+      "text": "Sound"
+    },
+    "sb2.area.storyboard": {
+      "text": "Storyboard"
+    },
     "sb2.cancel": {
       "text": "Cancel"
     },
@@ -67699,8 +67795,44 @@
     "sb2.show-panel": {
       "text": "Show"
     },
+    "sb2.show.dialogue": {
+      "text": "Dialogue"
+    },
+    "sb2.show.name": {
+      "text": "Name"
+    },
+    "sb2.show.notes": {
+      "text": "Notes"
+    },
+    "sb2.show.number": {
+      "text": "Number"
+    },
+    "sb2.show.script": {
+      "text": "Script text"
+    },
+    "sb2.show.status": {
+      "text": "Status"
+    },
+    "sb2.show.timing": {
+      "text": "Timing"
+    },
     "sb2.status-of": {
       "text": "Status for {area}"
+    },
+    "sb2.status.changes-requested": {
+      "text": "Changes requested"
+    },
+    "sb2.status.done": {
+      "text": "Done"
+    },
+    "sb2.status.in-progress": {
+      "text": "In progress"
+    },
+    "sb2.status.not-started": {
+      "text": "Not started"
+    },
+    "sb2.status.review": {
+      "text": "Ready for review"
     },
     "sb2.text-view": {
       "text": "Text view"

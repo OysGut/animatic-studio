@@ -10,6 +10,7 @@ import {
   applyCommand,
   buildGallery,
   gridStep,
+  keysEvenly,
   orderedOccurrences,
   planDuplicatePanel,
   storyboardPanelsOf,
@@ -39,11 +40,8 @@ const { Gallery } = await import("@/app/storyboard/StoryboardWorkspace");
 function withPanels(s: ProjectState, perScene: number): ProjectState {
   let st = s;
   for (const o of Object.values(s.occurrences)) {
-    let key = "a";
-    for (let i = 0; i < perScene; i++) {
+    for (const key of keysEvenly(perScene))
       st = mustApply(st, { type: "AddStoryboardPanel", panelId: tid(), occurrenceId: o.id, variantId: o.variantId, orderKey: key });
-      key = key + "V";
-    }
   }
   return st;
 }
