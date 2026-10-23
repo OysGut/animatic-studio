@@ -1,5 +1,10 @@
 # Veikart
 
+## Manusutforsker – stålkontroll (23.10.2026)
+- [x] Leveranse 1 (punkt 1–3): vindu med åtte grep, maksimer/fest, lagret plass (panel og popup), dra-skiller, notatknapp og -merker, «Åpne i»-rad, ressursbrikker og navnemeny
+- [ ] Skjermbilder i rapporten – venter på hvilken konto forhåndsvisningen skal logges inn med
+- [ ] Leveranse 2 (punkt 4 a–i): sceneoversikt, hurtigtaster og «?»-hjelp, historikk og smulespor, hopp, filtre, minikart, kopier lenke, side om side (kildespråk), bokmerker
+
 ## N3 – rester (natt 22.–23.10.2026)
 - [x] Ustabil b107-språktest: eksplisitt ventegrense for første lasting av ekte katalog; global-library består med tvunget nb
 - [x] B-098: lisens fra innebygd tabell generert fra METADATA.pb (google/fonts)
