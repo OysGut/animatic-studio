@@ -223,7 +223,7 @@ export function planDemoProject(o: DemoPlanOptions): Command[] {
     const order = keysEvenly(layers.length);
     commands.push({
       type: "AddLayers",
-      layers: layers.map((fields, n) => ({ layerId: mk<"layer">(), compositionId, orderKey: order[n]!, fields })),
+      layers: layers.map((fields, n) => ({ layerId: mk<"composition_layer">(), compositionId, orderKey: order[n]!, fields })),
     });
   });
 
