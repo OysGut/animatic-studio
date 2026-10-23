@@ -11,20 +11,20 @@
 -- =====================================================================================
 
 create or replace function private.user_time_zone(p_user uuid) returns text
-  language sql stable security definer set search_path = public, pg_catalog
+  language sql stable security definer set search_path = ''
 as $$ select coalesce(
     (select pr.time_zone from public.profiles pr
       where pr.user_id = p_user and private.is_iana_time_zone(pr.time_zone)),
     'UTC') $$;
 
-create or replace function private.user_period_start(p_user uuid, p_unit text, p_at timestamptz default now())
+create or replace function private.user_period_start(p_user uuid, p_unit text, p_at timestamptz default pg_catalog.now())
   returns timestamptz
-  language plpgsql stable security definer set search_path = public, pg_catalog
+  language plpgsql stable security definer set search_path = ''
 as $$
 declare v_tz text := private.user_time_zone(p_user);
 begin
   if p_unit not in ('day', 'month') then raise exception 'budget_period_unit'; end if;
-  return date_trunc(p_unit, p_at at time zone v_tz) at time zone v_tz;
+  return pg_catalog.date_trunc(p_unit, p_at at time zone v_tz) at time zone v_tz;
 end $$;
 
 revoke all on function private.user_time_zone(uuid) from public, anon;
@@ -33,28 +33,28 @@ grant execute on function private.user_time_zone(uuid) to service_role;
 grant execute on function private.user_period_start(uuid, text, timestamptz) to service_role;
 
 create or replace function public.project_period_start(p_project uuid, p_unit text) returns timestamptz
-  language sql stable security definer set search_path = public, pg_catalog
-as $$ select private.budget_period_start(p_project, p_unit, now()) $$;
+  language sql stable security definer set search_path = ''
+as $$ select private.budget_period_start(p_project, p_unit, pg_catalog.now()) $$;
 revoke all on function public.project_period_start(uuid, text) from public, anon;
 grant execute on function public.project_period_start(uuid, text) to authenticated, service_role;
 
 create or replace function public.user_period_start(p_user uuid, p_unit text) returns timestamptz
-  language plpgsql stable security definer set search_path = public, pg_catalog
+  language plpgsql stable security definer set search_path = ''
 as $$
 begin
   if auth.uid() is not null and auth.uid() <> p_user then raise exception 'not_self' using errcode = '42501'; end if;
-  return private.user_period_start(p_user, p_unit, now());
+  return private.user_period_start(p_user, p_unit, pg_catalog.now());
 end $$;
 revoke all on function public.user_period_start(uuid, text) from public, anon;
 grant execute on function public.user_period_start(uuid, text) to authenticated, service_role;
 
 -- Lokal dato for periodestarten (ai_spend.month er en date i brukerens tidssone).
 create or replace function public.user_period_start_date(p_user uuid, p_unit text) returns date
-  language plpgsql stable security definer set search_path = public, pg_catalog
+  language plpgsql stable security definer set search_path = ''
 as $$
 begin
   if auth.uid() is not null and auth.uid() <> p_user then raise exception 'not_self' using errcode = '42501'; end if;
-  return date_trunc(p_unit, now() at time zone private.user_time_zone(p_user))::date;
+  return pg_catalog.date_trunc(p_unit, pg_catalog.now() at time zone private.user_time_zone(p_user))::date;
 end $$;
 revoke all on function public.user_period_start_date(uuid, text) from public, anon;
 grant execute on function public.user_period_start_date(uuid, text) to authenticated, service_role;
