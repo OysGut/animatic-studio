@@ -329,9 +329,12 @@ export async function loadProjectRows(db: AnyClient, projectId: string): Promise
   };
 }
 
-/** Hele prosjekttilstanden med full historikk (serveren og andre som må ha alt). Ett kall når 0093 er kjørt. */
+/**
+ * Hele prosjekttilstanden med full historikk (serveren og andre som må ha alt). Sidevis med keyset og tabellene
+ * parallelt: på serveren (Worker med begrenset minne) unngås ett stort JSON-svar i tillegg til radene.
+ */
 export async function loadProjectState(db: AnyClient, projectId: string): Promise<ProjectState> {
-  return stateFromRows((await loadProjectSnapshot(db, projectId, { withLogSeq: false })).rows);
+  return stateFromRows(await loadProjectRows(db, projectId));
 }
 
 export type SchemaStatus =
