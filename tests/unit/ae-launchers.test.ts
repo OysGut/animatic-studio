@@ -81,9 +81,11 @@ describe("PTG3 skriptnavn og rekkefølge (Øystein 23.10)", () => {
     const nb = t("ptg3.readme-ae-other-app", {}, "nb"); const en = t("ptg3.readme-ae-other-app", {}, "en");
     expect(nb).toContain("Audition"); expect(nb).toContain("Åpne med"); expect(nb).toContain("Vis info");
     expect(en).toContain("Audition"); expect(en).toContain("Open With"); expect(en).toContain("Get Info");
-    for (const k of ["ptg3.readme-ae", "ptg3.readme-ae-open", "ptg3.ae-not-found"]) {
-      expect(t(k, { value1: "X.aep" }, "nb")).not.toMatch(/bygg\.jsx/);
-      expect(t(k, { value1: "X.aep" }, "en")).not.toMatch(/bygg\.jsx/);
+    for (const l of ["nb", "en"] as const) {
+      for (const s of [t("ptg3.readme-ae", {}, l), t("ptg3.ae-not-found", {}, l), t("ptg3.readme-ae-open", { value1: "X.aep" }, l)]) {
+        expect(s).toContain("bygg-after-effects.jsx");
+        expect(s).not.toMatch(/(^|[^-])bygg\.jsx/);
+      }
     }
   });
 });
