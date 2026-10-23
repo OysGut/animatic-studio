@@ -27,6 +27,7 @@ export const HEADING_KEYWORDS: readonly HeadingKeywordSet[] = [
   { language: "nl", words: ["BIN./BUI.", "BIN.", "BUI.", "INT.", "EXT."] },
   { language: "pl", words: ["WN./PL.", "WN.", "PL.", "INT.", "EXT."] },
   { language: "ru", words: ["ИНТ./НАТ.", "ИНТ.", "НАТ.", "ИНТЕРЬЕР.", "НАТУРА."] },
+  // i18n-ignore: manusets formatord (sceneoverskrift), oversettes ikke
   { language: "ja", words: ["○", "◯", "屋内.", "屋外."] },
   { language: "zh", words: ["内景/外景", "内景", "外景", "內景", "外景."] },
   { language: "ko", words: ["실내.", "실외.", "내부.", "외부."] },
