@@ -1,0 +1,2 @@
+- Panel editing stores metadata through core/storyboard/editing-commands and ordinary layer commands; approved panels remain read-only until a grouped snapshot/status command preserves the approval.
+- Shared renderFrame/drawFrame renders panel graphics so editing and subsequent exports use the same appearance; overlay guides are view-only.
