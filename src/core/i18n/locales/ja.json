@@ -53812,8 +53812,8 @@
     "review": "machine"
   },
   "ptg3.readme-ae": {
-    "text": "After Effects を開き、File > Scripts > Run Script File を選んで、このフォルダーから bygg.jsx を実行します。スクリプトはショットごとのコンポジションと、レイヤー、キーフレーム、画像切り替え、マスク、オーディオを含むメインコンポジションを作成します。シーン間のトランジションは含まれません。テキストレイヤーは再作成されません。",
-    "sourceHash": "a59acf40a6874c00ae5fa771104398edc097bea8db3e884a2c5bb6c9a06df334",
+    "text": "After Effects を開き、File > Scripts > Run Script File を選んで、このフォルダーから bygg-after-effects.jsx を実行します。スクリプトはショットごとのコンポジションと、レイヤー、キーフレーム、画像切り替え、マスク、オーディオを含むメインコンポジションを作成します。シーン間のトランジションは含まれません。テキストレイヤーは再作成されません。",
+    "sourceHash": "83945bae974af3ce9b4b9357daef3811823b595345d5abcb9002675bbf8532a8",
     "review": "machine"
   },
   "ptg3.readme-camera": {
@@ -55709,8 +55709,8 @@
     "review": "machine"
   },
   "ptg3.ae-missing": {
-    "text": "bygg.jsx と同じ場所に次のファイルがないため、構築を中止します：",
-    "sourceHash": "28b6792a4adc701e98a312ae2111d7440319b66dd3bb16846001f53fcc6959a4",
+    "text": "bygg-after-effects.jsx と同じ場所に次のファイルがないため、構築を中止します：",
+    "sourceHash": "da34c06c6bf3b3bc9c2fc0baaae04d792d87a337831d25dd4648ae1d3aa33524",
     "review": "machine"
   },
   "ptg3.ae-save-failed": {
@@ -55719,13 +55719,13 @@
     "review": "machine"
   },
   "ptg3.ae-not-found": {
-    "text": "Adobe After Effects が見つかりません。After Effects を開き、File > Scripts > Run Script File を選んで、このフォルダーの bygg.jsx を選択してください。",
-    "sourceHash": "02abe0dbac8a2f294779195c01bda4a1ecab3b0344f81856db87a16e8d11262b",
+    "text": "Adobe After Effects が見つかりません。After Effects を開き、File > Scripts > Run Script File を選んで、このフォルダーの bygg-after-effects.jsx を選択してください。",
+    "sourceHash": "2e4a0557224bd6026312550e43d2ce73a860ca621c33a98ca869dbdb7b6a137e",
     "review": "machine"
   },
   "ptg3.readme-ae-open": {
-    "text": "パッケージを開く方法は3つあります：1) ZIP を展開し、「Åpne i After Effects (Windows).bat」または「Åpne i After Effects (Mac).command」をダブルクリックする。2) または After Effects を開き、File > Scripts > Run Script File で bygg.jsx を選ぶ。3) スクリプトはプロジェクトを同じフォルダーに {value1} として保存するので、以後はそのファイルを直接ダブルクリックできます。保存には Preferences > Scripting & Expressions の「Allow Scripts to Write Files and Access Network」をオンにする必要があります。シーン間のトランジションとテキストレイヤーは再現されません。.aep 形式は非公開のため直接作成できず、スクリプトが After Effects 内で構築します。",
-    "sourceHash": "68a7b29c58647ce9f0b9a077b1c1c66a17311760af1162937d2337d6df84069b",
+    "text": "パッケージを開く方法は3つあります：1) ZIP を展開し、「Åpne i After Effects (Windows).bat」または「Åpne i After Effects (Mac).command」をダブルクリックする。2) または After Effects を開き、File > Scripts > Run Script File で bygg-after-effects.jsx を選ぶ。3) スクリプトはプロジェクトを同じフォルダーに {value1} として保存するので、以後はそのファイルを直接ダブルクリックできます。保存には Preferences > Scripting & Expressions の「Allow Scripts to Write Files and Access Network」をオンにする必要があります。シーン間のトランジションとテキストレイヤーは再現されません。.aep 形式は非公開のため直接作成できず、スクリプトが After Effects 内で構築します。",
+    "sourceHash": "d13925d644fdf152d5266ee188be1a4de3709e96b806e2b49af90e7ddfb049d2",
     "review": "machine"
   }
 }

@@ -1,5 +1,5 @@
 /**
- * PTG3 (B-102 §4, PTG-F1): After Effects-pakke – `bygg.jsx` (ES3) pluss mediene skuddene bruker.
+ * PTG3 (B-102 §4, PTG-F1): After Effects-pakke – `bygg-after-effects.jsx` (ES3) pluss mediene skuddene bruker.
  * Scriptet bygger én komp per skudd og en hovedkomp i After Effects. Eksportøren regner ikke ut
  * tid, kamera eller navn selv; alt leses fra InterchangeDoc. Virker uten AI.
  */
@@ -35,7 +35,7 @@ export function aeTitleCards(doc: InterchangeDoc): AeTitleCards {
   };
 }
 
-/** Varslene i bygg.jsx på norsk og engelsk (skriptet kjøres utenfor appen). */
+/** Varslene i bygg-after-effects.jsx på norsk og engelsk (skriptet kjøres utenfor appen). */
 export function aeJsxMessages(): AeJsxMessages {
   return {
     missing: `${t("ptg3.ae-missing", {}, "nb")}\n${t("ptg3.ae-missing", {}, "en")}`,
@@ -63,7 +63,7 @@ export async function exportAePackage(o: {
   const enc = new TextEncoder();
   const origin = o.titleCard?.origin ?? "";
   async function* files() {
-    yield { path: "bygg.jsx", data: enc.encode(jsx) };
+    yield { path: "bygg-after-effects.jsx", data: enc.encode(jsx) };
     yield { path: AE_LAUNCHER_WINDOWS, data: enc.encode(aeWindowsLauncher(notFound)) };
     yield { path: AE_LAUNCHER_MAC, data: enc.encode(aeMacLauncher(notFound)), unixMode: AE_LAUNCHER_MAC_MODE };
     if (tc) for (const s of doc.shots) {

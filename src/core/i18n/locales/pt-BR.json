@@ -53956,8 +53956,8 @@
     "review": "machine"
   },
   "ptg3.readme-ae": {
-    "text": "Abra o After Effects, escolha File > Scripts > Run Script File e execute bygg.jsx nesta pasta. O script cria uma composição por tomada e uma composição principal com camadas, quadros-chave, trocas de imagem, máscaras e áudio. Transições entre cenas não estão incluídas. Camadas de texto não são recriadas.",
-    "sourceHash": "a59acf40a6874c00ae5fa771104398edc097bea8db3e884a2c5bb6c9a06df334",
+    "text": "Abra o After Effects, escolha File > Scripts > Run Script File e execute bygg-after-effects.jsx nesta pasta. O script cria uma composição por tomada e uma composição principal com camadas, quadros-chave, trocas de imagem, máscaras e áudio. Transições entre cenas não estão incluídas. Camadas de texto não são recriadas.",
+    "sourceHash": "83945bae974af3ce9b4b9357daef3811823b595345d5abcb9002675bbf8532a8",
     "review": "machine"
   },
   "ptg3.readme-camera": {
@@ -55857,8 +55857,8 @@
     "review": "machine"
   },
   "ptg3.ae-missing": {
-    "text": "Estes arquivos estão faltando ao lado de bygg.jsx, então a montagem para:",
-    "sourceHash": "28b6792a4adc701e98a312ae2111d7440319b66dd3bb16846001f53fcc6959a4",
+    "text": "Estes arquivos estão faltando ao lado de bygg-after-effects.jsx, então a montagem para:",
+    "sourceHash": "da34c06c6bf3b3bc9c2fc0baaae04d792d87a337831d25dd4648ae1d3aa33524",
     "review": "machine"
   },
   "ptg3.ae-save-failed": {
@@ -55867,13 +55867,13 @@
     "review": "machine"
   },
   "ptg3.ae-not-found": {
-    "text": "Adobe After Effects não foi encontrado. Abra o After Effects, escolha File > Scripts > Run Script File e selecione bygg.jsx nesta pasta.",
-    "sourceHash": "02abe0dbac8a2f294779195c01bda4a1ecab3b0344f81856db87a16e8d11262b",
+    "text": "Adobe After Effects não foi encontrado. Abra o After Effects, escolha File > Scripts > Run Script File e selecione bygg-after-effects.jsx nesta pasta.",
+    "sourceHash": "2e4a0557224bd6026312550e43d2ce73a860ca621c33a98ca869dbdb7b6a137e",
     "review": "machine"
   },
   "ptg3.readme-ae-open": {
-    "text": "Três formas de abrir o pacote: 1) Descompacte o ZIP e clique duas vezes em “Åpne i After Effects (Windows).bat” ou “Åpne i After Effects (Mac).command”. 2) Ou abra o After Effects e escolha File > Scripts > Run Script File e bygg.jsx. 3) O script salva o projeto como {value1} na mesma pasta; depois você pode clicar duas vezes nesse arquivo diretamente. Para salvar, “Allow Scripts to Write Files and Access Network” precisa estar ativado em Preferences > Scripting & Expressions. Transições entre cenas e camadas de texto não são recriadas. Não podemos criar o arquivo .aep diretamente porque o formato é fechado; por isso o script o monta dentro do After Effects.",
-    "sourceHash": "68a7b29c58647ce9f0b9a077b1c1c66a17311760af1162937d2337d6df84069b",
+    "text": "Três formas de abrir o pacote: 1) Descompacte o ZIP e clique duas vezes em “Åpne i After Effects (Windows).bat” ou “Åpne i After Effects (Mac).command”. 2) Ou abra o After Effects e escolha File > Scripts > Run Script File e bygg-after-effects.jsx. 3) O script salva o projeto como {value1} na mesma pasta; depois você pode clicar duas vezes nesse arquivo diretamente. Para salvar, “Allow Scripts to Write Files and Access Network” precisa estar ativado em Preferences > Scripting & Expressions. Transições entre cenas e camadas de texto não são recriadas. Não podemos criar o arquivo .aep diretamente porque o formato é fechado; por isso o script o monta dentro do After Effects.",
+    "sourceHash": "d13925d644fdf152d5266ee188be1a4de3709e96b806e2b49af90e7ddfb049d2",
     "review": "machine"
   }
 }

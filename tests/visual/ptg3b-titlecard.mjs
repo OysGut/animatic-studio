@@ -30,7 +30,7 @@ await h.scenario(`ptg3b-${lang}`, occ.id, lang, async page => {
     return unzipSync(readFileSync(path));
   }
   const withCard = await exportAe("with-card");
-  const jsx = new TextDecoder().decode(withCard["bygg.jsx"]);
+  const jsx = new TextDecoder().decode(withCard["bygg-after-effects.jsx"]);
   const qrs = Object.keys(withCard).filter(n => n.startsWith("tittelkort/") && n.endsWith("_qr.png"));
   h.check(qrs.length > 0, `${lang}: QR-bilde per skudd i pakken`);
   h.check(jsx.includes("_TITLE") && jsx.includes("_RENDER") && jsx.includes("displayStartTime = -1"), `${lang}: tittelkort i egen komp foran skuddet, −1 s`);
@@ -39,7 +39,7 @@ await h.scenario(`ptg3b-${lang}`, occ.id, lang, async page => {
   h.check(readme.includes("00:00:00:00"), `${lang}: LESMEG forklarer at tidskoden ikke forskyves`);
   await page.getByTestId("ptg-title-card").uncheck();
   const noCard = await exportAe("no-card");
-  const jsx2 = new TextDecoder().decode(noCard["bygg.jsx"]);
+  const jsx2 = new TextDecoder().decode(noCard["bygg-after-effects.jsx"]);
   h.check(!jsx2.includes("_TITLE") && !Object.keys(noCard).some(n => n.startsWith("tittelkort/")), `${lang}: kan slås av`);
   await page.getByTestId("ptg-export-section").screenshot({ path: `${h.out}/${lang}-section.png` });
 

@@ -1,6 +1,6 @@
 /**
  * PTG3 «dobbeltklikk og åpne»: startfiler i After Effects-pakken. Rene tekster uten nettleser-API.
- * Windows: .bat som finner AfterFX.exe og kjører `AfterFX.exe -r "<full sti>\bygg.jsx"`.
+ * Windows: .bat som finner AfterFX.exe og kjører `AfterFX.exe -r "<full sti>\bygg-after-effects.jsx"`.
  * Mac: .command (kjørbar via unix-modus i ZIP-en) som finner nyeste «Adobe After Effects 20xx» og kjører
  * skriptet med osascript og `DoScriptFile`.
  */
@@ -27,7 +27,7 @@ export function aeWindowsLauncher(notFound: readonly string[]): string {
     "@echo off",
     "chcp 65001 >nul",
     "setlocal",
-    'set "JSX=%~dp0bygg.jsx"',
+    'set "JSX=%~dp0bygg-after-effects.jsx"',
     'set "AE="',
     'if defined PTG_AFTERFX if exist "%PTG_AFTERFX%" set "AE=%PTG_AFTERFX%"',
     `if not defined AE for /L %%Y in (${NEWEST},-1,${OLDEST}) do if not defined AE if exist "%ProgramFiles%\\Adobe\\Adobe After Effects %%Y\\Support Files\\AfterFX.exe" set "AE=%ProgramFiles%\\Adobe\\Adobe After Effects %%Y\\Support Files\\AfterFX.exe"`,
@@ -50,7 +50,7 @@ export function aeMacLauncher(notFound: readonly string[]): string {
   return [
     "#!/bin/bash",
     'DIR="$(cd "$(dirname "$0")" && pwd)"',
-    'JSX="$DIR/bygg.jsx"',
+    'JSX="$DIR/bygg-after-effects.jsx"',
     'APP="${PTG_AFTERFX_APP:-}"',
     'if [ -z "$APP" ]; then',
     '  APP="$(ls -d "/Applications/Adobe After Effects 20"*/"Adobe After Effects 20"*.app 2>/dev/null | sort | tail -n 1)"',

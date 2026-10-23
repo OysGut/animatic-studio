@@ -9,7 +9,7 @@ describe("PTG3 startfiler", () => {
   it("Windows: finner AfterFX.exe via miljøvariabel eller nyeste 20xx-mappe og kjører -r med full sti", () => {
     const bat = aeWindowsLauncher(notFound);
     expect(AE_LAUNCHER_WINDOWS).toBe("Åpne i After Effects (Windows).bat");
-    expect(bat).toContain('set "JSX=%~dp0bygg.jsx"');
+    expect(bat).toContain('set "JSX=%~dp0bygg-after-effects.jsx"');
     expect(bat).toContain("PTG_AFTERFX");
     expect(bat).toMatch(/for \/L %%Y in \(2035,-1,2018\)/);
     expect(bat).toContain("Adobe After Effects %%Y\\Support Files\\AfterFX.exe");
@@ -32,7 +32,7 @@ describe("PTG3 startfiler", () => {
   it("Mac-startfilen får unix-modus 0755 i sentralkatalogen", async () => {
     const chunks: Uint8Array[] = [];
     await writeZip({ write: async b => { chunks.push(b); }, close: async () => {}, abort: async () => {} }, [], {}, {
-      extra: [{ path: AE_LAUNCHER_MAC, data: new TextEncoder().encode(aeMacLauncher(notFound)), unixMode: AE_LAUNCHER_MAC_MODE }, { path: "bygg.jsx", data: new TextEncoder().encode("//") }],
+      extra: [{ path: AE_LAUNCHER_MAC, data: new TextEncoder().encode(aeMacLauncher(notFound)), unixMode: AE_LAUNCHER_MAC_MODE }, { path: "bygg-after-effects.jsx", data: new TextEncoder().encode("//") }],
     });
     const all = new Uint8Array(chunks.reduce((n, c) => n + c.length, 0)); let o = 0; for (const c of chunks) { all.set(c, o); o += c.length; }
     // Finn sentralkatalogpostene og les «laget av» og eksterne attributter
@@ -44,7 +44,7 @@ describe("PTG3 startfiler", () => {
     }
     expect(found[AE_LAUNCHER_MAC]!.madeBy >> 8).toBe(3);
     expect((found[AE_LAUNCHER_MAC]!.ext >>> 16) & 0o777).toBe(0o755);
-    expect(found["bygg.jsx"]!.ext).toBe(0);
+    expect(found["bygg-after-effects.jsx"]!.ext).toBe(0);
   });
 
   it("LESMEG forklarer de tre veiene, .aep-navnet og hva som ikke gjenskapes, på nb og en", () => {

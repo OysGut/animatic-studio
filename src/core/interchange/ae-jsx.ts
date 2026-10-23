@@ -1,5 +1,5 @@
 /**
- * PTG3 (B-102 §4, PTG-F1): After Effects-pakken bygges som et ExtendScript (ES3) `bygg.jsx` som
+ * PTG3 (B-102 §4, PTG-F1): After Effects-pakken bygges som et ExtendScript (ES3) `bygg-after-effects.jsx` som
  * gjenskaper filmen: én komposisjon per skudd og en hovedkomposisjon, lag med transformasjoner og
  * nøkkelbilder, myking KeyframeEase(0, influence × 100), baner som romlige tangenter fra samme
  * spline som transformAt, bildeskifter som sekvens i en underkomposisjon, grupper som null-foreldre,
@@ -309,21 +309,21 @@ function emitTitleCard(out: string[], doc: InterchangeDoc, name: string, lenFram
 }
 
 /**
- * Hele bygg.jsx (ES3). `doc.references` gir fil-ID → relativ sti i pakken; bare media som brukes importeres.
+ * Hele bygg-after-effects.jsx (ES3). `doc.references` gir fil-ID → relativ sti i pakken; bare media som brukes importeres.
  */
-/** Varsler i bygg.jsx (begge språk settes inn av eksportøren; standard er engelsk). */
+/** Varsler i bygg-after-effects.jsx (begge språk settes inn av eksportøren; standard er engelsk). */
 export interface AeJsxMessages {
-  /** Vises over listen med filer som mangler ved siden av bygg.jsx; bygget stopper. */
+  /** Vises over listen med filer som mangler ved siden av bygg-after-effects.jsx; bygget stopper. */
   readonly missing: string;
   /** Vises når prosjektet ikke kan lagres som .aep (skriptrettigheter av); bygget beholdes. */
   readonly saveFailed: string;
 }
 export const AE_JSX_DEFAULT_MESSAGES: AeJsxMessages = {
-  missing: "These files are missing next to bygg.jsx, so the build stops:",
+  missing: "These files are missing next to bygg-after-effects.jsx, so the build stops:",
   saveFailed: "The project was built but could not be saved. Turn on Preferences > Scripting & Expressions > \"Allow Scripts to Write Files and Access Network\" and run the script again.",
 };
 
-/** Filnavnet bygg.jsx lagrer prosjektet som, i pakkemappen. */
+/** Filnavnet bygg-after-effects.jsx lagrer prosjektet som, i pakkemappen. */
 export const aeProjectFileName = (doc: InterchangeDoc): string => `${doc.project.code}.aep`;
 
 export function buildAeJsx(doc: InterchangeDoc, o: { readonly cameraMode: AeCameraMode; readonly titleCards?: AeTitleCards | null; readonly messages?: AeJsxMessages }): string {
@@ -336,7 +336,7 @@ export function buildAeJsx(doc: InterchangeDoc, o: { readonly cameraMode: AeCame
     for (const a of s.audio) if (a.fileId) used.add(a.fileId);
   }
   const out: string[] = [
-    "// bygg.jsx - From Pen to Glass (PTG3). ES3/ExtendScript. Run in After Effects from the package folder.",
+    "// bygg-after-effects.jsx - From Pen to Glass (PTG3). ES3/ExtendScript. Run in After Effects from the package folder.",
     "// Transitions between scenes are out of scope (PTG-F1). Text and unfinished layers are not recreated.",
     "function ptgNokkler(p, tider, verdier, inn, ut, hold) {",
     "  var i;",

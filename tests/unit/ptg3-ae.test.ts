@@ -1,5 +1,5 @@
 /**
- * PTG3 gyldne AE-tester (B-102 §4, PTG-F1): bygg.jsx må være gyldig ES3 og bygge den forventede
+ * PTG3 gyldne AE-tester (B-102 §4, PTG-F1): bygg-after-effects.jsx må være gyldig ES3 og bygge den forventede
  * prosjektstrukturen når det kjøres mot en mock av After Effects sitt objektmodell.
  */
 import { describe, expect, it } from "vitest";
@@ -124,7 +124,7 @@ function runJsx(script: string) {
   return { log, comps };
 }
 
-describe("PTG3 After Effects bygg.jsx", () => {
+describe("PTG3 After Effects bygg-after-effects.jsx", () => {
   const jsxAe = buildAeJsx(doc, { cameraMode: "ae" });
   const jsxPar = buildAeJsx(doc, { cameraMode: "parallax" });
 
@@ -249,7 +249,7 @@ describe("PTG3 «dobbeltklikk og åpne» (Øystein 23.10)", () => {
     const fn = new Function("app", "File", "Folder", "$", "alert", "ImportOptions", "KeyframeEase", "KeyframeInterpolationType", "TrackMatteType", "ParagraphJustification", jsx);
     let threw = false;
     try {
-      fn(app, File, FolderStatic, { fileName: "/pakke/bygg.jsx" }, (s: string) => alerts.push(s), class { constructor(public file: File) {} }, class {}, { LINEAR: 1, HOLD: 2 }, { ALPHA: 1, ALPHA_INVERTED: 2 }, { CENTER_JUSTIFY: 1 });
+      fn(app, File, FolderStatic, { fileName: "/pakke/bygg-after-effects.jsx" }, (s: string) => alerts.push(s), class { constructor(public file: File) {} }, class {}, { LINEAR: 1, HOLD: 2 }, { ALPHA: 1, ALPHA_INVERTED: 2 }, { CENTER_JUSTIFY: 1 });
     } catch { threw = true; }
     return { imports, alerts, saved, current, threw };
   }

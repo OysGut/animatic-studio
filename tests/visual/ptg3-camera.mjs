@@ -71,9 +71,9 @@ await h.scenario(`ptg3-${lang}`, occ.id, lang, async page => {
     const path = `${h.out}/${lang}-ae-${mode}.zip`; await (await dl).saveAs(path);
     await page.waitForFunction(() => !document.querySelector('[data-testid="ptg-export-ae"]').disabled);
     const zip = unzipSync(readFileSync(path));
-    h.check(!!zip["bygg.jsx"], `${lang}/ae-${mode}: bygg.jsx i pakken`);
+    h.check(!!zip["bygg-after-effects.jsx"], `${lang}/ae-${mode}: bygg-after-effects.jsx i pakken`);
     h.check(!!zip["LESMEG.txt"], `${lang}/ae-${mode}: LESMEG.txt i pakken`);
-    const jsx = new TextDecoder().decode(zip["bygg.jsx"]);
+    const jsx = new TextDecoder().decode(zip["bygg-after-effects.jsx"]);
     h.check(jsx.includes("app.project.items.addComp"), `${lang}/ae-${mode}: komposisjoner bygges`);
     h.check(!/\b(let|const)\s/.test(jsx) && !jsx.includes("=>"), `${lang}/ae-${mode}: ren ES3`);
     h.check(mode === "ae" ? jsx.includes("addCamera") : !jsx.includes("addCamera"), `${lang}/ae-${mode}: kameramodus følges`);
@@ -82,7 +82,7 @@ await h.scenario(`ptg3-${lang}`, occ.id, lang, async page => {
     const readme = new TextDecoder().decode(zip["LESMEG.txt"]);
     h.check(readme.split("\n").some(l => l.startsWith("- ") && l.includes(rigShotPrefix)), `${lang}/ae-${mode}: LESMEG nevner skudd uten rigg`);
     h.check(!readme.includes("null i PTG1") && !readme.includes("null in PTG1"), `${lang}/ae-${mode}: LESMEG sier ikke lenger «null i PTG1»`);
-    h.check(readme.includes("bygg.jsx"), `${lang}/ae-${mode}: LESMEG forklarer kjøringen`);
+    h.check(readme.includes("bygg-after-effects.jsx"), `${lang}/ae-${mode}: LESMEG forklarer kjøringen`);
   }
   await section.screenshot({ path: `${h.out}/${lang}-section.png` });
 });
