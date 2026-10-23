@@ -8312,10 +8312,16 @@ try {
       "mouth_sets|private.validate_mouth_sets||60",
       "mouth_tracks|private.validate_mouth_tracks||70",
       "ALLTID|private.validate_active_quality_profile||80",
+      "compositions|private.validate_storyboard_panels||90",
+      "composition_layers|private.validate_storyboard_layer_kinds||91",
+      "storyboard_panel_blocks|private.validate_storyboard_panel_blocks||92",
+      "production_status_events|private.validate_production_statuses||94",
+      "production_statuses|private.validate_production_statuses||93",
     ]), `registeret avviker: ${JSON.stringify(rows)}`);
     // Alle registrerte funksjoner finnes med riktig signatur
     for (const fn of ["validate_translation_line_links", "validate_style_harmonizations", "validate_style_preferred_references",
-      "validate_language_scope", "validate_preferred_reference_unique", "validate_mouth_sets", "validate_mouth_tracks", "validate_active_quality_profile"]) {
+      "validate_language_scope", "validate_preferred_reference_unique", "validate_mouth_sets", "validate_mouth_tracks", "validate_active_quality_profile",
+      "validate_storyboard_panels", "validate_storyboard_layer_kinds", "validate_storyboard_panel_blocks", "validate_production_statuses"]) {
       const def = await sql`select pg_get_function_identity_arguments(p.oid) a, p.prosecdef d, p.proconfig c from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='private' and p.proname=${fn}`;
       assert(def.length === 1 && def[0]!["a"] === "p_project uuid, p_changes jsonb, p_ids uuid[]" && def[0]!["d"] === true, `${fn}: signatur/sikkerhet avviker`);
       assert((def[0]!["c"] as string[]).includes('search_path=""'), `${fn}: mangler search_path=''`);
