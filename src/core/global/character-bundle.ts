@@ -8,7 +8,8 @@
  * lokale verdien er uendret siden forrige innhenting (eller mangler), oppdateres; et felt brukeren har
  * endret selv (lokal overstyring), bevares og meldes som «beholdt». Plattformnøytralt, ingen sideeffekter.
  */
-import type { Asset, AssetId, AssetVoice, BriefVersion, ProjectState } from "../model";
+import type { Asset, AssetVoice, BriefVersion, ProjectState } from "../model";
+import type { AssetId } from "../ids";
 import type { Command } from "../commands/types";
 import { newId } from "../ids";
 import { assetVoiceError } from "../dialogue/voice";
@@ -210,7 +211,7 @@ export function characterBundleFromAsset(
       variants: Object.fromEntries(
         Object.entries(ms.variants).map(([shape, variantId]) => [
           shape,
-          variantId ? (variantName.get(variantId) ?? null) : null,
+          variantId ? (variantName.get(variantId as never) ?? null) : null,
         ]),
       ),
     }));
@@ -270,7 +271,7 @@ export function planCharacterPullCommands(
     commands.push({
       type: "SaveMouthSet",
       set: {
-        id: existing?.id ?? newId("mouth_sets"),
+        id: existing?.id ?? newId<"mouth_sets">(),
         revision: 0,
         characterId: assetId,
         system: m.system,
