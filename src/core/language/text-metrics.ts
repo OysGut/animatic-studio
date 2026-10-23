@@ -5,7 +5,9 @@
  * sammensatte tegn (grafemer). Finnes ikke Segmenter, brukes mellomrom som reserve.
  * Plattformnøytral: Intl er en del av ECMAScript, ikke et nettleser-API.
  */
-import { primarySubtag } from "./bcp47-lite";
+function primarySubtag(tag: string): string {
+  return tag.split(/[-_]/)[0]!.toLowerCase();
+}
 
 type Granularity = "word" | "grapheme";
 
