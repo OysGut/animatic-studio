@@ -31,7 +31,7 @@ as $$
   select coalesce(
     (select w.time_zone from public.projects p join public.workspaces w on w.id = p.workspace_id
       where p.id = p_project and private.is_iana_time_zone(w.time_zone)),
-    (select pr.time_zone from public.projects p join public.profiles pr on pr.id = p.created_by
+    (select pr.time_zone from public.projects p join public.profiles pr on pr.user_id = p.created_by
       where p.id = p_project and private.is_iana_time_zone(pr.time_zone)),
     'UTC')
 $$;
@@ -63,7 +63,8 @@ begin
   if p_time_zone is not null and not private.is_iana_time_zone(p_time_zone) then
     raise exception 'invalid_time_zone';
   end if;
-  update public.profiles set time_zone = p_time_zone where id = auth.uid();
+  insert into public.profiles (user_id, time_zone) values (auth.uid(), p_time_zone)
+    on conflict (user_id) do update set time_zone = excluded.time_zone, updated_at = now();
 end $$;
 revoke all on function public.set_my_time_zone(text) from public;
 grant execute on function public.set_my_time_zone(text) to authenticated;
