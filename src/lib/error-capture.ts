@@ -15,6 +15,22 @@ function record(error: unknown) {
 const CAUSE_DEPTH_LIMIT = 5;
 const DESCRIPTION_LENGTH_LIMIT = 8_000;
 
+// G-8: hemmeligheter skal aldri nå loggene. Bearer-/JWT-tokens, Supabase- og leverandørnøkler og
+// nøkkel-/token-parametere i adresser maskeres før noe skrives.
+const SECRET_PATTERNS: readonly [RegExp, string][] = [
+  [/\b(Bearer|Basic)\s+[A-Za-z0-9._~+/=-]{8,}/gi, "$1 [skjult]"],
+  [/\beyJ[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}/g, "[skjult-jwt]"],
+  [/\b(sb_secret_|sb_publishable_|sk-ant-|sk-proj-|sk-|xi-|AIza|ghp_|github_pat_|whsec_|rk_live_|sk_live_|sk_test_)[A-Za-z0-9_-]{8,}/g, "$1[skjult]"],
+  [/([?&#](?:key|api_key|apikey|token|access_token|refresh_token|secret|signature|sig|code)=)[^&#\s"']+/gi, "$1[skjult]"],
+  [/("(?:password|secret|token|access_token|refresh_token|api_key|apiKey|apikey|authorization|ciphertext)"\s*:\s*")[^"]*"/gi, '$1[skjult]"'],
+];
+
+export function redactSecrets(text: string): string {
+  let out = text;
+  for (const [re, rep] of SECRET_PATTERNS) out = out.replace(re, rep);
+  return out;
+}
+
 export function describeError(error: unknown): string {
   const parts: string[] = [];
   let current: unknown = error;
@@ -28,7 +44,7 @@ export function describeError(error: unknown): string {
     parts.push(`${label}${current.stack ?? `${current.name}: ${current.message}`}${status}`);
     current = current.cause;
   }
-  return parts.join("\n").slice(0, DESCRIPTION_LENGTH_LIMIT);
+  return redactSecrets(parts.join("\n")).slice(0, DESCRIPTION_LENGTH_LIMIT);
 }
 
 function describeStatus(error: Error): string {
@@ -60,6 +76,7 @@ export function initializeErrorCapture(): void {
   const originalConsoleError = console.error.bind(console);
   console.error = (...args: unknown[]) => {
     const expanded = args.map((arg) => {
+      if (typeof arg === "string") return redactSecrets(arg);
       if (!isErrorLike(arg)) return arg;
       record(arg);
       return describeError(arg);

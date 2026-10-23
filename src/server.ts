@@ -42,13 +42,23 @@ function isH3SwallowedErrorBody(body: string): boolean {
   }
 }
 
+// G-8: svar fra serverfunksjoner og API-ruter kan inneholde personlige data og skal aldri bufres.
+export function withNoStore(request: Request, response: Response): Response {
+  const path = new URL(request.url).pathname;
+  const dynamic = path.startsWith("/_serverFn") || path.startsWith("/api/") || path.startsWith("/se/");
+  if (!dynamic) return response;
+  const headers = new Headers(response.headers);
+  headers.set("cache-control", "private, no-store");
+  return new Response(response.body, { status: response.status, statusText: response.statusText, headers });
+}
+
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
     initializeErrorCapture();
     try {
       const handler = await getServerEntry();
       const response = await handler.fetch(request, env, ctx);
-      return await normalizeCatastrophicSsrResponse(response);
+      return withNoStore(request, await normalizeCatastrophicSsrResponse(response));
     } catch (error) {
       console.error(error);
       return new Response(renderErrorPage(), {
