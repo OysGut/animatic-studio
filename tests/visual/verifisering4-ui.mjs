@@ -416,7 +416,8 @@ async function openPage(path, viewport = { width: 1440, height: 900 }) {
       // N5: teller React-commits og rendrede komponenter per navn mens window.__countOn er sann
       window.__commits = 0; window.__renders = {};
       const seen = new WeakSet();
-      const walk = (f) => {
+      const OWNERS = new Set(["Stage", "SceneScriptPanel", "LayerInspector", "Timeline", "Editor", "NeighbourScenes", "PreviewWindow", "RecordAudioDialog", "SceneTrackGroups", "VariantTracks", "MouthTrack", "CompositionInspector"]);
+      const walk = (f, owner = "?") => {
         for (let n = f; n; n = n.sibling) {
           const ty = n.type;
           const fresh = (o) => o !== null && typeof o === "object" && !seen.has(o);
@@ -426,8 +427,11 @@ async function openPage(path, viewport = { width: 1440, height: 900 }) {
           if (ty && typeof ty !== "string" && rendered && window.__countOn) {
             const name = ty.displayName || ty.name || ty.type?.displayName || ty.type?.name || ty.render?.name;
             if (name) window.__renders[name] = (window.__renders[name] ?? 0) + 1;
+            // N8: knapper telles også per nærmeste kjente forelder, så vi ser hvem som tegner dem
+            if (name === "Button") window.__renders[`Button@${owner}`] = (window.__renders[`Button@${owner}`] ?? 0) + 1;
           }
-          if (n.child) walk(n.child);
+          const nm = ty && typeof ty !== "string" ? (ty.displayName || ty.name) : null;
+          if (n.child) walk(n.child, nm && OWNERS.has(nm) ? nm : owner);
         }
       };
       window.__REACT_DEVTOOLS_GLOBAL_HOOK__ = {
@@ -1100,6 +1104,9 @@ async function testPlayback() {
     check("REQ-0210", "tunge paneler tegnes ikke på nytt per bilde (N5, tak 0,2 per bilde)", HEAVY.every((n) => perFrame(n) <= 0.2), HEAVY.map((n) => `${n} ${perFrame(n).toFixed(2)}`).join(" · "));
     // N5: lukkede dialogvinduer tegnes ikke per bilde (før: 10,2 Dialog per bilde, etter: 3,2)
     check("REQ-0210", "lukkede dialogvinduer tegnes ikke på nytt per bilde (N5, tak 4 per bilde)", perFrame("Dialog") <= 4, `Dialog ${perFrame("Dialog").toFixed(2)} per bilde · lange oppgaver ${diag.long.length}`);
+    // N8: arbeidsflaten (Editor), tidslinjen med SpacingRow og knappene abonnerer ikke på bildet
+    const N8 = ["Editor", "Timeline", "SpacingRow", "Button", "IconButton", "ToolbarButton"];
+    check("REQ-0210", "arbeidsflaten, tidslinjen, SpacingRow og knappene tegnes ikke per bilde (N8, tak 0,2 per bilde)", N8.every((n) => perFrame(n) <= 0.2), N8.map((n) => `${n} ${perFrame(n).toFixed(2)}`).join(" · "));
     console.log("  N2-diag", JSON.stringify({ ...diag, log: undefined }));
     console.log("  N2-tc", JSON.stringify(diag.log.map((x) => [Math.round(x.t), x.a === null ? null : +x.a.toFixed(3), x.tc.slice(0, 11)])));
     await shot(page, "v4-08-sceneeditor-avspilling");

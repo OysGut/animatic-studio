@@ -9,7 +9,7 @@ import type { ProjectState } from "@/core";
 import { clampAnimationWindow, followWindowLength, formatAnimationTime } from "@/core/animation/time-format";
 import { t } from "@/core/i18n/keyed";
 import { useUiPref } from "@/app/account/ui-prefs";
-import type { Playback } from "../use-playback";
+import { FrameValue, useFrame, type Playback } from "../use-playback";
 import { AnimTimeline } from "./AnimTimeline";
 import { TimeNavigator, type AnimWindow } from "./TimeNavigator";
 import type { AnimationRange } from "./PlayRange";
@@ -32,6 +32,9 @@ export function SceneTrackGroups({ title, state, duration, playback, range, onRa
   onOpenChange?: (open: boolean) => void;
 }) {
   const [prefs, setPrefs] = useUiPref("sceneEditor.trackGroups", DEFAULT_TRACK_GROUP_PREFS, isTrackGroupPrefs);
+  // N8: knappene tegnes bare når de bytter mellom aktiv og sperret, ikke per bilde
+  const atStart = useFrame(playback, (f) => f === 0);
+  const atEnd = useFrame(playback, (f) => f >= duration - 1);
   const [closedFor, setClosedFor] = useState<string | null | undefined>(undefined);
   const auto = prefs.autoExpand && selectedLayerId !== null && closedFor !== selectedLayerId;
   const [forced, setForced] = useState(forceOpen);
@@ -80,11 +83,11 @@ export function SceneTrackGroups({ title, state, duration, playback, range, onRa
         </span>
         {open ? (
           <div className="flex items-center gap-1">
-            <IconButton data-testid="anim-frame-back" label={t("app-scene-editor-animation-animation-workspace.animation-workspace.label.df43697a1025")} shortcut="←" disabled={playback.frame === 0} onClick={() => { playback.pause(); playback.setFrame(playback.frame - 1); }}><ChevronLeft /></IconButton>
+            <IconButton data-testid="anim-frame-back" label={t("app-scene-editor-animation-animation-workspace.animation-workspace.label.df43697a1025")} shortcut="←" disabled={atStart} onClick={() => { playback.pause(); playback.setFrame(playback.frame - 1); }}><ChevronLeft /></IconButton>
             <IconButton data-testid="anim-play" label={playback.playing ? t("app-scene-editor-animation-animation-workspace.animation-workspace.label.ca107ae99658") : t("app-scene-editor-animation-animation-workspace.animation-workspace.label.8feb5edbec92")} shortcut="Space" onClick={playback.toggle}>{playback.playing ? <Square /> : <Play />}</IconButton>
-            <IconButton data-testid="anim-frame-forward" label={t("app-scene-editor-animation-animation-workspace.animation-workspace.label.b439d9e489fa")} shortcut="→" disabled={playback.frame >= duration - 1} onClick={() => { playback.pause(); playback.setFrame(playback.frame + 1); }}><ChevronRight /></IconButton>
+            <IconButton data-testid="anim-frame-forward" label={t("app-scene-editor-animation-animation-workspace.animation-workspace.label.b439d9e489fa")} shortcut="→" disabled={atEnd} onClick={() => { playback.pause(); playback.setFrame(playback.frame + 1); }}><ChevronRight /></IconButton>
             <IconButton data-testid="anim-loop" label={t("app-scene-editor-animation-animation-workspace.animation-workspace.label.10fb270d5b3f")} active={playback.loop} onClick={() => playback.setLoop(!playback.loop)}><Repeat /></IconButton>
-            <output data-testid="anim-time" className="font-mono text-xs text-text-primary">{formatAnimationTime(playback.frame, state.project.fps)}</output>
+            <output data-testid="anim-time" className="font-mono text-xs text-text-primary"><FrameValue playback={playback}>{(f) => formatAnimationTime(f, state.project.fps)}</FrameValue></output>
             <input data-testid="anim-zoom" type="range" aria-label={t("app-scene-editor-animation-animation-workspace.animation-workspace.aria-label.b94421a53d76")} min={1} max={duration} value={view.span} onChange={(e) => setWin(clampAnimationWindow(view.from, Number(e.target.value), duration))} className="w-24 accent-accent-brand" />
             {tools}
           </div>

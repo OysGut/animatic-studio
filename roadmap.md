@@ -319,7 +319,7 @@
 - [x] Ytelsesregresjon: n5-frame-frozen.test.tsx og tak i verifisering4-ui; maks avvik 122/111 → 43/62 ms
 - [x] AssetVoice.provider leverandøruavhengig; REQ-0269 Verifisert
 - [x] «Angre hele jobben» hopper over resultater angret fra angrelisten (uten migrasjon)
-- [ ] Videre ytelse: tidslinjen, tegnetrinnet og knappene tegnes fortsatt per bilde
+- [x] Videre ytelse: bildelager i N8 (se N8_REPORT.md)
 
 ## N6: Verifiseringsrunde 2
 - [x] 30 krav flyttet til Verifisert (64 → 34), nye kontroller for D2 og D5 i dv3-dialogue-editor
@@ -329,3 +329,9 @@
 - [x] roadmap/TODO avstemt mot Cloud versjon 88; åpne punkter samlet i TODO.md
 - [x] KNOWN_ISSUES: KI-57, KI-128, KI-203 lukket, KI-46 delvis
 - [x] 12 krav «Under arbeid» → «Implementert – ikke verifisert»; rapport N7_REPORT.md
+
+## N8: Bildelager i sceneeditoren
+- [x] Bildet i eget lager; Editor/Timeline/SpacingRow/knapper 0,01–0,18 per bilde (før 1,0–12,2)
+- [x] n8-frame-store.test.tsx og N8-tak i verifisering4-ui (61/61 to ganger)
+- [x] REQ-0804/0807/0808/0814: ingen avvik (Verifisert i N6)
+- [ ] scene-panels-ui feiler 12/25 både før og etter (teknisk gjeld)

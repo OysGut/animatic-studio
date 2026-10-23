@@ -5,7 +5,7 @@
  * Med `clock` (REQ-0210, N2) følger bildet lydklokken når lyd spilles, så bilde og lyd ikke får hver sin
  * startforsinkelse. Uten lyd (klokken gir null) brukes performance.now som før.
  */
-import { useCallback, useEffect, useRef, useState } from "react";
+import { createElement, Fragment, useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
 import type { Rational } from "@/core";
 
 export interface Playback {
@@ -17,6 +17,49 @@ export interface Playback {
   pause: () => void;
   toggle: () => void;
   setLoop: (on: boolean) => void;
+  /** N8: gjeldende bilde som liten store; bare delene som abonnerer, tegnes på nytt per bilde. */
+  readonly store: FrameStore;
+}
+
+/** N8: lite lager for gjeldende bilde (abonnement med selector, se useFrame/FrameValue). */
+export interface FrameStore {
+  get: () => number;
+  set: (f: number | ((old: number) => number)) => void;
+  subscribe: (fn: () => void) => () => void;
+}
+
+export function createFrameStore(initial = 0): FrameStore {
+  let v = initial;
+  const subs = new Set<() => void>();
+  return {
+    get: () => v,
+    set: (f) => {
+      const n = typeof f === "function" ? f(v) : f;
+      if (n === v) return;
+      v = n;
+      for (const s of [...subs]) s();
+    },
+    subscribe: (fn) => { subs.add(fn); return () => { subs.delete(fn); }; },
+  };
+}
+
+/** Abonnerer på bildet (eller en verdi avledet av det); komponenten tegnes bare når verdien endres. */
+export function useFrame(p: { readonly store: FrameStore }): number;
+export function useFrame<T>(p: { readonly store: FrameStore }, select: (f: number) => T): T;
+export function useFrame<T>(p: { readonly store: FrameStore }, select?: (f: number) => T): T | number {
+  const { store } = p;
+  const get = () => (select ? select(store.get()) : store.get());
+  return useSyncExternalStore(store.subscribe, get, get);
+}
+
+/** Render-prop som abonnerer på bildet, så foreldrekomponenten slipper å tegnes per bilde. */
+export function FrameValue<T = number>({ playback, select, children }: {
+  playback: { readonly store: FrameStore };
+  select?: (f: number) => T;
+  children: (v: T) => ReactNode;
+}) {
+  const v = useFrame(playback, select ?? ((f: number) => f as unknown as T));
+  return createElement(Fragment, null, children(v));
 }
 
 /** Området som spilles: første og siste bilde (inkludert), innenfor varigheten. */
@@ -30,7 +73,25 @@ export function playRange(
   return { first, last: Math.min(end, Math.max(first, Math.round(range.to))) };
 }
 
+/** Som usePlaybackStore, men komponenten abonnerer på bildet (tegnes per bilde). */
 export function usePlayback(
+  durationFrames: number,
+  fps: Rational,
+  initialLoop = true,
+  range?: { readonly from: number; readonly to: number } | null,
+  clock?: { readonly current: (() => number | null) | null },
+): Playback {
+  const p = usePlaybackStore(durationFrames, fps, initialLoop, range, clock);
+  const frame = useFrame(p);
+  // Nytt objekt per bilde, som før N8, så barn som sammenligner props fortsatt får bildet
+  return useMemo(() => ({ ...p, frame }), [p, frame]);
+}
+
+/**
+ * N8: avspilling uten abonnement. `frame` leses fra lageret når den brukes (riktig i tilbakekall),
+ * men komponenten tegnes ikke på nytt når bildet endres; bruk useFrame/FrameValue der bildet vises.
+ */
+export function usePlaybackStore(
   durationFrames: number,
   fps: Rational,
   initialLoop = true,
@@ -38,14 +99,13 @@ export function usePlayback(
   /** Avspillingshodet i sekunder etter lydklokken, eller null når ingen lyd spilles. */
   clock?: { readonly current: (() => number | null) | null },
 ): Playback {
-  const [frame, setFrameState] = useState(0);
+  const [store] = useState(() => createFrameStore(0));
+  const setFrameState = store.set;
   const [playing, setPlaying] = useState(false);
   const [loop, setLoop] = useState(initialLoop);
   const { first, last: rangeLast } = playRange(durationFrames, range);
   const last = Math.max(0, durationFrames - 1);
   const start = useRef<{ t: number; frame: number } | null>(null);
-  const frameRef = useRef(0);
-  frameRef.current = frame;
 
   const setFrame = useCallback(
     (f: number) => {
@@ -59,7 +119,7 @@ export function usePlayback(
   // Hold bildet innenfor varigheten når den endres
   useEffect(() => {
     setFrameState((f) => Math.min(f, last));
-  }, [last]);
+  }, [last, setFrameState]);
 
   useEffect(() => {
     if (!playing) {
@@ -68,7 +128,7 @@ export function usePlayback(
     }
     let raf = 0;
     const perMs = fps.num / fps.den / 1000;
-    const cur = frameRef.current;
+    const cur = store.get();
     const from = cur >= rangeLast || cur < first ? first : cur;
     start.current = { t: performance.now(), frame: from };
     setFrameState(from);
@@ -97,10 +157,13 @@ export function usePlayback(
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [playing, first, rangeLast, loop, fps.num, fps.den, clock]);
+  }, [playing, first, rangeLast, loop, fps.num, fps.den, clock, store]);
 
   const play = useCallback(() => setPlaying(true), []);
   const pause = useCallback(() => setPlaying(false), []);
   const toggle = useCallback(() => setPlaying((p) => !p), []);
-  return { frame, playing, loop, setFrame, play, pause, toggle, setLoop };
+  return useMemo(
+    () => ({ get frame() { return store.get(); }, playing, loop, setFrame, play, pause, toggle, setLoop, store }),
+    [store, playing, loop, setFrame, play, pause, toggle],
+  );
 }
