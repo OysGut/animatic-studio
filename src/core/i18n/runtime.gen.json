@@ -27921,6 +27921,9 @@
     "core-commands-apply.translation-fields-of.fail.90cb0f0670c0": {
       "text": "Ugyldig status"
     },
+    "core-commands-apply.translation-fields-of.fail.b8697ac1dfc3": {
+      "text": "Norsk er hovedmanuset og oversettes ikke"
+    },
     "core-commands-apply.translation-fields-of.fail.eb653dd6de37": {
       "text": "Ugyldig oversettelse"
     },
@@ -61226,6 +61229,9 @@
     },
     "core-commands-apply.translation-fields-of.fail.90cb0f0670c0": {
       "text": "Invalid status"
+    },
+    "core-commands-apply.translation-fields-of.fail.b8697ac1dfc3": {
+      "text": "Norwegian is the main script and is not translated"
     },
     "core-commands-apply.translation-fields-of.fail.eb653dd6de37": {
       "text": "Invalid translation"
