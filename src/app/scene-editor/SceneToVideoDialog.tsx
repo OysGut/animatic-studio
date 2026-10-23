@@ -12,6 +12,7 @@
  *   toppfeltet mens videoen lages, så brukeren kan jobbe videre.
  */
 import { useEffect, useMemo, useRef, useState } from "react";
+import { Thumbnail } from "@/app/shared/Thumbnail";
 import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import {
@@ -1008,11 +1009,9 @@ export function SceneToVideoDialog({
                         />
                         <span className="flex size-7 shrink-0 items-center justify-center overflow-hidden rounded-sm bg-surface-3">
                           {thumbs.data?.[background.imagePath] ? (
-                            <img
+                            <Thumbnail
                               src={thumbs.data[background.imagePath]}
-                              alt=""
-                              className="size-full object-cover"
-                            />
+                              />
                           ) : null}
                         </span>
                         <span className="min-w-0 flex-1 truncate text-text-primary">
@@ -1047,7 +1046,7 @@ export function SceneToVideoDialog({
                           />
                           <span className="flex size-7 shrink-0 items-center justify-center overflow-hidden rounded-sm bg-surface-3">
                             {url ? (
-                              <img src={url} alt="" className="size-full object-cover" />
+                              <Thumbnail src={url} />
                             ) : null}
                           </span>
                           <span className="min-w-0 flex-1 truncate text-text-primary">

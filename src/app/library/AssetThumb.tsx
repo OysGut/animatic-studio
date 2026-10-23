@@ -7,6 +7,7 @@ import { Music, UserRound, PawPrint, Package, Mountain } from "lucide-react";
 import { coverVersion, versionImagePath, type ProjectState } from "@/core";
 import { cn } from "@/lib/utils";
 import { useImageUrls } from "./asset-images";
+import { Thumbnail } from "@/app/shared/Thumbnail";
 
 /** Midlertidige lenker til forsidebildene for ressursene (assetId → URL). */
 export function useAssetCovers(state: ProjectState, assetIds: readonly string[]) {
@@ -71,9 +72,8 @@ export function AssetThumb({
         </span>
       ) : null}
       {showImage ? (
-        <img
+        <Thumbnail
           src={url}
-          alt=""
           loading="lazy"
           ref={(img) => {
             // Bildet kan være ferdig (eller feilet) før React kobler på hendelsene
@@ -81,7 +81,7 @@ export function AssetThumb({
           }}
           onLoad={() => setLoad("ok")}
           onError={() => setLoad("error")}
-          className={cn("size-full object-cover", load === "ok" ? "" : "absolute inset-0 opacity-0")}
+          className={cn(load === "ok" ? "" : "absolute inset-0 opacity-0")}
         />
       ) : null}
     </span>

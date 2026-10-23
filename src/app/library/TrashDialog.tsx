@@ -4,6 +4,7 @@
  * slettes for godt før bruken er fjernet.
  */
 import { ArchiveRestore, Loader2, Trash2 } from "lucide-react";
+import { Thumbnail } from "@/app/shared/Thumbnail";
 import { useMemo, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { ASSET_KIND_LABEL, assetUsageCounts, coverVersion, trashContents, tm, type ProjectState } from "@/core";
@@ -143,11 +144,9 @@ export function TrashDialog({
                       <li key={a.id} className={row}>
                         <span className={thumb}>
                           {v && urls[v.mediaPath] ? (
-                            <img
+                            <Thumbnail
                               src={urls[v.mediaPath]}
-                              alt=""
-                              className="size-full object-cover"
-                            />
+                              />
                           ) : (
                             <AssetSymbolIcon state={state} assetId={a.id} className="size-7" />
                           )}
@@ -206,11 +205,9 @@ export function TrashDialog({
                       <li key={version.id} className={row}>
                         <span className={thumb}>
                           {urls[version.mediaPath] ? (
-                            <img
+                            <Thumbnail
                               src={urls[version.mediaPath]}
-                              alt=""
-                              className="size-full object-cover"
-                            />
+                              />
                           ) : (
                             <AssetSymbolIcon state={state} assetId={asset.id} className="size-7" />
                           )}

@@ -5,6 +5,7 @@
  * lenke» med telefonens egen deling. Bidragsytere ser bare sine egne filer.
  */
 import {
+import { Thumbnail } from "@/app/shared/Thumbnail";
   Camera,
   Check,
   Film,
@@ -417,7 +418,7 @@ function QueueTile({ it, onRetry }: { it: QueueItem; onRetry: (id: string) => vo
     >
       <div className="flex aspect-square items-center justify-center overflow-hidden rounded-md bg-surface-3">
         {url ? (
-          <img src={url} alt="" className="size-full object-cover" />
+          <Thumbnail src={url} />
         ) : (
           <Film className="size-6 text-text-tertiary" aria-hidden />
         )}
