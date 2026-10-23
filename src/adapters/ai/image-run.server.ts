@@ -6,7 +6,7 @@
  * kostnaden; her oppdateres den reserverte jobben (ingen ny rad), og resultatet lagres som kvittering i
  * jobbens params før det returneres.
  */
-import { assetFilePath, adaptPromptForModel, effortOf, estimateCostUsd, type ImageSize, imageSizesOf, monthStartUtc, newId, providerModel, stripAttachedSection, withFactSheet, MAX_PROMPT_CHARS } from "@/core";
+import { assetFilePath, adaptPromptForModel, effortOf, estimateCostUsd, type ImageSize, imageSizesOf, newId, providerModel, stripAttachedSection, withFactSheet, MAX_PROMPT_CHARS } from "@/core";
 import { checkSchema, type AnyClient } from "@/adapters/storage/project-rows";
 import { GATEWAY, gatewayError, referenceImages } from "./gateway";
 import { builtInImageModel, LOVABLE_CUTOUT_MODEL as CUTOUT_MODEL, LOVABLE_IMAGE_MODEL as IMAGE_MODEL } from "@/core";
