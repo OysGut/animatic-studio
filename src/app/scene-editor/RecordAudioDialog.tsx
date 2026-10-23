@@ -339,7 +339,12 @@ export function RecordAudioDialog({
 
   return (
     <Dialog open={open} onOpenChange={(o) => !busy && onOpenChange(o)}>
-      <DialogContent className="max-h-[90vh] max-w-[860px] overflow-y-auto border-border bg-surface-2" data-testid="record-audio-dialog">
+      <DialogContent className="max-h-[90vh] max-w-[860px] overflow-y-auto border-border bg-surface-2" data-testid="record-audio-dialog"
+        onCloseAutoFocus={(e) => {
+          // N10: fokus tilbake til replikken i manuspanelet når dialogen ble åpnet derfra
+          const el = initialBlockId ? document.querySelector<HTMLElement>(`[data-testid="scene-script"] [data-script-block="${CSS.escape(initialBlockId)}"]`) : null;
+          if (el) { e.preventDefault(); el.focus(); }
+        }}>
         <DialogHeader>
           <DialogTitle>{tk("app-scene-editor-record-audio-dialog.record-audio-dialog.dialog-title.98648fefb495")}</DialogTitle>
           <DialogDescription>
