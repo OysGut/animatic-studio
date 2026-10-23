@@ -14,18 +14,18 @@ export const Route = createFileRoute("/prosjekt/$projectId/bibliotek")({
     { property: "og:type", content: "website" }, // i18n-ignore: metakode
     { name: "twitter:card", content: "summary" }, // i18n-ignore: metakode
   ] }),
-  /** ?asset=<ressurs-ID> åpner biblioteket med ressursen valgt (f.eks. fra sceneeditoren). */
-  validateSearch: (s: Record<string, unknown>): { asset?: string } =>
-    typeof s["asset"] === "string" && /^[0-9a-f-]{36}$/i.test(s["asset"])
-      ? { asset: s["asset"] }
-      : {},
+  /** ?asset=<ressurs-ID> åpner biblioteket med ressursen valgt; &version=<ID> ruller resultatet inn i synet. */
+  validateSearch: (s: Record<string, unknown>): { asset?: string; version?: string } => {
+    const uuid = (v: unknown): v is string => typeof v === "string" && /^[0-9a-f-]{36}$/i.test(v);
+    return uuid(s["asset"]) ? { asset: s["asset"], ...(uuid(s["version"]) ? { version: s["version"] } : {}) } : {};
+  },
   component: LibraryRoute,
 });
 
 function LibraryRoute() {
   useLanguage(); // ML2a: tegnes på nytt ved språkbytte uten remontering
   const { projectId } = Route.useParams();
-  const { asset } = Route.useSearch();
+  const { asset, version } = Route.useSearch();
   const session = useSession();
   if (session.status !== "signed-in") return null;
   return (
@@ -33,6 +33,7 @@ function LibraryRoute() {
       projectId={projectId}
       userId={session.session.user.id}
       initialAssetId={asset ?? null}
+      initialVersionId={version ?? null}
     />
   );
 }
