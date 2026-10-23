@@ -175,3 +175,25 @@ export function gridStep(index: number, count: number, columns: number, key: str
   else return index;
   return Math.max(0, Math.min(count - 1, index + d));
 }
+
+export interface PanelLines {
+  readonly dialogue: readonly { readonly speaker: string; readonly text: string }[];
+  readonly script: readonly string[];
+}
+
+/** Dialog og manustekst til et kort: panelets forankrede blokker, ellers hele scenens blokker. */
+export function panelLines(s: ProjectState, variantId: string, blockIds: readonly string[]): PanelLines {
+  const all = blocksOfVariant(s, variantId);
+  const set = new Set(blockIds);
+  const blocks = blockIds.length > 0 ? all.filter((b) => set.has(b.id)) : all;
+  const dialogue: { speaker: string; text: string }[] = [];
+  const script: string[] = [];
+  let speaker = "";
+  for (const b of all) {
+    if (b.kind === "character") speaker = b.text;
+    if (!blocks.includes(b)) continue;
+    if (b.kind === "dialogue") dialogue.push({ speaker, text: b.text });
+    else if (b.kind === "action") script.push(b.text);
+  }
+  return { dialogue, script };
+}
