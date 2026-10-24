@@ -26,6 +26,6 @@ export const writeSketchSession=createServerFn({method:"POST"}).inputValidator((
   const {loadProjectState}=await import("@/adapters/storage/project-rows");const {applyCommand,diffStates,layerFieldsOf}=await import("@/core");const state=await loadProjectState(db,s.projectId);const layer=state.layers[s.layerId];if(!layer?.sketch)throw fail();
   let strokes=layer.sketch.strokes.filter(st=>!data.eraseIds?.includes(st.id));if(data.stroke&&!strokes.some(st=>st.id===data.stroke.id))strokes=[...strokes,data.stroke];const sketch={...layer.sketch,role:data.role??layer.sketch.role,strokes};if(!sketchValid(sketch))throw new Error(t("sb8.limit"));
   const command:import("@/core").Command={type:"UpdateLayers",layers:[{layerId:layer.id,fields:{...layerFieldsOf(layer),sketch}}]};const result=applyCommand(state,{id:data.requestId as never,actor:s.actor,at:new Date().toISOString(),command});if(!result.ok)throw fail();
-  const changes=diffStates(state,result.state);const rows=changes.updates?.["composition_layers"];if(rows?.[0])rows[0]={...rows[0],expected_revision:layer.revision};
+  const diff=diffStates(state,result.state);const changes={...diff,updates:{...diff.updates,composition_layers:diff.updates?.["composition_layers"]?.map(row=>({...row,expected_revision:layer.revision}))??[]}};
   const {error}=await db.rpc("sketch_session_apply",{p_hash:hash,p_id:data.requestId,p_command:command,p_inverse:result.inverse,p_changes:changes});if(error)throw fail();return sketch;
 });

@@ -8897,6 +8897,10 @@ try {
     const panel=newId(),layer=newId();await sbApply(g7p,{inserts:{compositions:[{id:panel,project_id:g7p,variant_id:sbSetup.variant,kind:'storyboard',occurrence_id:sbSetup.occurrence,order_key:'zzz2',revision:1}],composition_layers:[{id:layer,project_id:g7p,composition_id:panel,kind:'sketch',width:1920,height:1080,transform:{x:960,y:540,scaleX:1,scaleY:1,rotation:0,opacity:1},order_key:'a1',sketch:{version:1,role:'rough',strokes:[]},revision:1}]}});
     const hash='8'.repeat(64);const session=await as('service_role',null,tx=>tx`select public.sketch_session_create(${g7p},${panel},${layer},${ALICE},${hash}) id`);const id=String(session[0]?.['id']);
     assert(!!(await as('service_role',null,tx=>tx`select public.sketch_session_lookup(${hash}) s`))[0]?.['s'],'valid capability denied');
+    const command={type:'UpdateLayers',layers:[{layerId:layer,fields:{sketch:{version:1,role:'clean',strokes:[]}}}]};
+    const changes={updates:{composition_layers:[{id:layer,expected_revision:1,revision:2,sketch:{version:1,role:'clean',strokes:[]}}]}};
+    await as('service_role',null,tx=>tx`select public.sketch_session_apply(${hash},${newId()},${tx.json(command)},${tx.json(command)},${tx.json(changes)})`);
+    await expectError(as('service_role',null,tx=>tx`select public.sketch_session_apply(${hash},${newId()},${tx.json(command)},${tx.json(command)},${tx.json(changes)})`),'40001');
     await expectError(as('authenticated',ALICE,tx=>tx`select * from public.sketch_sessions`),'42501');
     await expectError(as('service_role',null,tx=>tx`select public.sketch_session_create(${g7p},${newId()},${layer},${ALICE},${'7'.repeat(64)})`),'23503');
     await sql`update public.sketch_sessions set expires_at=now()-interval '1 second' where id=${id}`;

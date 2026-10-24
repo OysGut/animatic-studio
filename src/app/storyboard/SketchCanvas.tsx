@@ -33,7 +33,7 @@ export function SketchCanvas({width,height,spec,save,disabled=false,palette=[],b
   const finish=(e:React.PointerEvent<HTMLCanvasElement>,cancel=false)=>{if(pointer.current!==e.pointerId)return;pointer.current=null;penActive.current=false;if(!cancel&&!pan&&live.current){let nextSpec:SketchSpec|null;if(tool==="erase"&&eraseMode==="stroke"){const samples=pending.current;nextSpec={...spec,strokes:spec.strokes.filter(st=>!unpackSamples(st.points).some(p=>samples.some(s=>Math.hypot(s.x-p.x,s.y-p.y)<size)))};}else nextSpec=appendStroke(spec,live.current);if(nextSpec)save(nextSpec);else setError(t("sb8.limit"));}live.current=null;pending.current=[];schedule();};
   const exportPng=()=>{const el=canvas.current;if(!el)return;el.toBlob(blob=>{if(!blob)return;const url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="sketch.png";a.click();URL.revokeObjectURL(url);},"image/png");};
   const layers=useRef<HTMLCanvasElement>(null);
-  const paths=[backdrop,previous,next].flatMap(f=>f?.items.flatMap(i=>i.version?[versionImagePath(i.version,"display")]:[])??[]);
+  const paths=[backdrop,previous,next].flatMap(f=>f?.items.flatMap(i=>i.version?[versionImagePath(i.version,"preview")]:[])??[]);
   const urls=useImageUrls(paths).data;
   const [images,setImages]=useState<ReadonlyMap<string,ImageSource>>(new Map());
   useEffect(()=>{let active=true;void Promise.all(Object.entries(urls??{}).map(([path,url])=>new Promise<[string,ImageSource]|null>(resolve=>{const image=new Image();image.crossOrigin="anonymous";image.onload=()=>resolve([path,image]);image.onerror=()=>resolve(null);image.src=url;}))).then(rows=>{if(active)setImages(new Map(rows.filter((r):r is [string,ImageSource]=>r!==null)));});return()=>{active=false;};},[urls]);
