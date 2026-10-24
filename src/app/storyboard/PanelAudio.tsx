@@ -41,7 +41,7 @@ export function PanelAudio({ projectId, state, panel, cmds, allowed, save }: { p
     if (!allowed || busy || row.kind !== "audio" || row.asset_version_id) return;
     setBusy(true); setError(null);
     try {
-      if (!(await claimMobileImport(row.id))) return;
+      if (!(await claimMobileImport(row.id))) throw new Error(t("sb2.load-error"));
       const media = await audioMediaFromStoredFile(row.path, row.mime_type);
       if (!media.durationMs) throw new Error(t("sb2.load-error"));
       const assetId = newId<"asset">(), variantId = newId<"asset_variant">(), versionId = newId<"asset_version">(), group = newId();
