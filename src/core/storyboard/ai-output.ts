@@ -6,8 +6,9 @@ import { panelAspect } from "./ai";
 
 export function panelOutputPlan(panel: Composition, mask: string, model: ProviderModel) {
   const ratio = panelAspect(panel, mask);
-  const supported = model.panelAi?.aspects ?? ["1:1", "2:3", "3:2", "16:9"];
-  const aspect = [...supported].sort((a, b) => Math.abs(Math.log(panelAspect(panel, a) / ratio)) - Math.abs(Math.log(panelAspect(panel, b) / ratio)))[0] ?? "1:1";
+  const supported = model.panelAi?.aspects ?? ["1:1", "2:3", "3:2"];
+  const aspectRatio = (value: string) => { const [w, h] = value.split(":").map(Number); return w && h ? w / h : 1; };
+  const aspect = [...supported].sort((a, b) => Math.abs(Math.log(aspectRatio(a) / ratio)) - Math.abs(Math.log(aspectRatio(b) / ratio)))[0] ?? "1:1";
   // Exact rational dimensions, not a rounded prompt hint. Multiples of 16 for native OpenAI sizes.
   const rational = mask === "project" ? [panel.width, panel.height] : mask.includes(":") ? mask.split(":").map(Number) : [Math.round(ratio * 100), 100];
   const gcd = (a: number, b: number): number => b ? gcd(b, a % b) : a;
@@ -16,7 +17,7 @@ export function panelOutputPlan(panel: Composition, mask: string, model: Provide
   const k = Math.ceil(Math.sqrt(655360 / (unitW * unitH)) / 16) * 16;
   const width = unitW * k, height = unitH * k;
   const custom = model.panelAi?.customSize === true && ratio >= 1 / 3 && ratio <= 3 && Math.max(width, height) <= 3840 && width * height <= 8294400;
-  const native = custom || Math.abs(panelAspect(panel, aspect) - ratio) < 1e-9;
+  const native = custom || Math.abs(aspectRatio(aspect) - ratio) < 1e-9;
   return { ratio, aspect, width, height, custom, native, adaptation: native ? "native" as const : "contain" as const };
 }
 
