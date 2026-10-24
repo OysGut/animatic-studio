@@ -9063,6 +9063,26 @@ try {
     assert((await sql`select hash from private.connector_pending where hash in (${h('1d')},${h('1e')})`).map(r=>r['hash']).join()===h('1e'),'pending cleanup');
     assert((await sql`select hash from private.connector_used_refresh where hash in (${h('1f')},${h('2a')})`).map(r=>r['hash']).join()===h('2a'),'refresh cleanup');
   });
+  await test("0111 C-2: plugin løser konflikt for sesjonsbrukeren (bare service_role, ikke choose_incoming, revisjon/rolle)", async () => {
+    const h=(c:string)=>c.repeat(64).slice(0,64);
+    const tr=newId();
+    await sql`insert into public.connector_transfers(id,project_id,sender,idempotency_key,fingerprint,file_name,byte_size,sha256,asset_id,variant_id) values(${tr},${g7p},${ALICE},${'c2'.repeat(10)},'f','a.psd',10,${h('7')},${newId()},${newId()})`;
+    const mk=async()=>(await sql`insert into public.connector_conflicts(project_id,transfer_id,variant_id,incoming_version_id) values(${g7p},${tr},${newId()},${newId()}) returning id`)[0]?.['id'];
+    const cid=await mk();
+    await expectError(as("authenticated",ALICE,tx=>tx`select public.connector_resolve_conflict_for(${ALICE},${g7p},${cid},'keep_both',1)`),'42501');
+    const call=async(user:string,project:string,id:string,choice:string,rev:number)=>(await as("service_role",ALICE,tx=>tx`select public.connector_resolve_conflict_for(${user},${project},${id},${choice},${rev}) r`))[0]?.['r'];
+    assert(await call(ALICE,g7p,cid,'choose_incoming',1)==='choice','choose_incoming must stay in the app');
+    assert(await call(CAROL,g7p,cid,'keep_both',1)==='forbidden','nonmember resolved');
+    assert(await call(ALICE,newId(),cid,'keep_both',1)==='not_found','wrong project resolved');
+    assert(await call(ALICE,g7p,cid,'keep_both',2)==='stale','wrong revision resolved');
+    assert(await call(ALICE,g7p,cid,'keep_both',1)==='ok','resolve failed');
+    assert(await call(ALICE,g7p,cid,'keep_both',1)==='stale','resolved twice');
+    const row=(await sql`select choice,status,resolved_by from public.connector_conflicts where id=${cid}`)[0];
+    assert(row?.['choice']==='keep_both'&&row?.['status']==='resolved'&&row?.['resolved_by']===ALICE,'stored');
+    const rj=await mk();
+    assert(await call(ALICE,g7p,rj,'reject',1)==='ok','reject');
+    assert((await sql`select status from public.connector_transfers where id=${tr}`)[0]?.['status']==='rejected','transfer not rejected');
+  });
   await test("alle SECURITY DEFINER-funksjoner i public/private har search_path=''", async () => {
     const rows = await sql`
       select n.nspname as ns, p.proname as name
