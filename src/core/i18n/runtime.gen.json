@@ -34405,6 +34405,90 @@
     "sb5.untitled-panel": {
       "text": "Panel uten navn"
     },
+    "sb6.action": {
+      "text": "Handling"
+    },
+    "sb6.arrow": {
+      "text": "Piler"
+    },
+    "sb6.camera": {
+      "text": "Kamera"
+    },
+    "sb6.camera-mark": {
+      "text": "Kameramerker"
+    },
+    "sb6.dialogue": {
+      "text": "Dialog"
+    },
+    "sb6.duration": {
+      "text": "Varighet (sekunder)"
+    },
+    "sb6.fields": {
+      "text": "Felt"
+    },
+    "sb6.frames": {
+      "text": "Varighet (bilder)"
+    },
+    "sb6.landscape": {
+      "text": "Liggende"
+    },
+    "sb6.layers": {
+      "text": "Lag"
+    },
+    "sb6.movement": {
+      "text": "Bevegelse"
+    },
+    "sb6.note": {
+      "text": "Lapper"
+    },
+    "sb6.notes": {
+      "text": "Notater"
+    },
+    "sb6.orientation": {
+      "text": "Retning"
+    },
+    "sb6.panel": {
+      "text": "Panelnummer"
+    },
+    "sb6.paper": {
+      "text": "Papirformat"
+    },
+    "sb6.per-page": {
+      "text": "Paneler per side"
+    },
+    "sb6.pitch": {
+      "text": "Pitch"
+    },
+    "sb6.portrait": {
+      "text": "Stående"
+    },
+    "sb6.print": {
+      "text": "Utskrift"
+    },
+    "sb6.scene": {
+      "text": "Scene"
+    },
+    "sb6.shot": {
+      "text": "Skudd"
+    },
+    "sb6.shotlist": {
+      "text": "Skuddliste"
+    },
+    "sb6.sound": {
+      "text": "Lyd"
+    },
+    "sb6.status": {
+      "text": "Status per fagområde"
+    },
+    "sb6.timecode": {
+      "text": "Tidskode"
+    },
+    "sb6.title": {
+      "text": "Storyboardutskrift"
+    },
+    "sb6.version": {
+      "text": "Versjon"
+    },
     "sb7.accept": {
       "text": "Bekreft og bruk"
     },
@@ -69162,6 +69246,90 @@
     },
     "sb5.untitled-panel": {
       "text": "Untitled panel"
+    },
+    "sb6.action": {
+      "text": "Action"
+    },
+    "sb6.arrow": {
+      "text": "Arrows"
+    },
+    "sb6.camera": {
+      "text": "Camera"
+    },
+    "sb6.camera-mark": {
+      "text": "Camera marks"
+    },
+    "sb6.dialogue": {
+      "text": "Dialogue"
+    },
+    "sb6.duration": {
+      "text": "Duration (seconds)"
+    },
+    "sb6.fields": {
+      "text": "Fields"
+    },
+    "sb6.frames": {
+      "text": "Duration (frames)"
+    },
+    "sb6.landscape": {
+      "text": "Landscape"
+    },
+    "sb6.layers": {
+      "text": "Layers"
+    },
+    "sb6.movement": {
+      "text": "Movement"
+    },
+    "sb6.note": {
+      "text": "Notes layers"
+    },
+    "sb6.notes": {
+      "text": "Notes"
+    },
+    "sb6.orientation": {
+      "text": "Orientation"
+    },
+    "sb6.panel": {
+      "text": "Panel number"
+    },
+    "sb6.paper": {
+      "text": "Paper size"
+    },
+    "sb6.per-page": {
+      "text": "Panels per page"
+    },
+    "sb6.pitch": {
+      "text": "Pitch"
+    },
+    "sb6.portrait": {
+      "text": "Portrait"
+    },
+    "sb6.print": {
+      "text": "Print"
+    },
+    "sb6.scene": {
+      "text": "Scene"
+    },
+    "sb6.shot": {
+      "text": "Shot"
+    },
+    "sb6.shotlist": {
+      "text": "Shot list"
+    },
+    "sb6.sound": {
+      "text": "Sound"
+    },
+    "sb6.status": {
+      "text": "Status by discipline"
+    },
+    "sb6.timecode": {
+      "text": "Timecode"
+    },
+    "sb6.title": {
+      "text": "Storyboard documents"
+    },
+    "sb6.version": {
+      "text": "Version"
     },
     "sb7.accept": {
       "text": "Confirm and use"

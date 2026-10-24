@@ -77171,5 +77171,89 @@
   },
   "sb7.recover": {
     "text": "[!! RRëëccôôvvëërr ccáánnddïïddááttëë ffrrôômm rrëëccëëïïpptt !!]"
+  },
+  "sb6.title": {
+    "text": "[!! SSttôôrryybbôôáárrdd ddôôccüümmëënnttss !!]"
+  },
+  "sb6.print": {
+    "text": "[!! PPrrïïnntt !!]"
+  },
+  "sb6.pitch": {
+    "text": "[!! PPïïttcchh !!]"
+  },
+  "sb6.shotlist": {
+    "text": "[!! SShhôôtt llïïsstt !!]"
+  },
+  "sb6.paper": {
+    "text": "[!! PPááppëërr ssïïzzëë !!]"
+  },
+  "sb6.orientation": {
+    "text": "[!! ÔÔrrïïëënnttááttïïôônn !!]"
+  },
+  "sb6.portrait": {
+    "text": "[!! PPôôrrttrrááïïtt !!]"
+  },
+  "sb6.landscape": {
+    "text": "[!! LLáánnddssccááppëë !!]"
+  },
+  "sb6.per-page": {
+    "text": "[!! PPáánnëëllss ppëërr ppáággëë !!]"
+  },
+  "sb6.version": {
+    "text": "[!! VVëërrssïïôônn !!]"
+  },
+  "sb6.fields": {
+    "text": "[!! FFïïëëllddss !!]"
+  },
+  "sb6.layers": {
+    "text": "[!! LLááyyëërrss !!]"
+  },
+  "sb6.panel": {
+    "text": "[!! PPáánnëëll nnüümmbbëërr !!]"
+  },
+  "sb6.scene": {
+    "text": "[!! SSccëënnëë !!]"
+  },
+  "sb6.shot": {
+    "text": "[!! SShhôôtt !!]"
+  },
+  "sb6.duration": {
+    "text": "[!! DDüürrááttïïôônn (ssëëccôônnddss) !!]"
+  },
+  "sb6.dialogue": {
+    "text": "[!! DDïïáállôôggüüëë !!]"
+  },
+  "sb6.action": {
+    "text": "[!! ÁÁccttïïôônn !!]"
+  },
+  "sb6.camera": {
+    "text": "[!! CCáámmëërráá !!]"
+  },
+  "sb6.movement": {
+    "text": "[!! MMôôvvëëmmëënntt !!]"
+  },
+  "sb6.sound": {
+    "text": "[!! SSôôüünndd !!]"
+  },
+  "sb6.notes": {
+    "text": "[!! NNôôttëëss !!]"
+  },
+  "sb6.status": {
+    "text": "[!! SSttááttüüss bbyy ddïïssccïïppllïïnnëë !!]"
+  },
+  "sb6.frames": {
+    "text": "[!! DDüürrááttïïôônn (ffrráámmëëss) !!]"
+  },
+  "sb6.timecode": {
+    "text": "[!! TTïïmmëëccôôddëë !!]"
+  },
+  "sb6.note": {
+    "text": "[!! NNôôttëëss llááyyëërrss !!]"
+  },
+  "sb6.arrow": {
+    "text": "[!! ÁÁrrrrôôwwss !!]"
+  },
+  "sb6.camera-mark": {
+    "text": "[!! CCáámmëërráá mmáárrkkss !!]"
   }
 }

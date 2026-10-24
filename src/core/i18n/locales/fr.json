@@ -58345,5 +58345,145 @@
     "text": "Récupérer le candidat depuis le reçu",
     "sourceHash": "2993861b3bfb12c0686a2daa9e16e5c19c1c27ed8a05981f9524ffb5b202ab67",
     "review": "machine"
+  },
+  "sb6.title": {
+    "text": "Documents de storyboard",
+    "sourceHash": "ea035d1706de822ae73310a8d2e60e8eec0c3f7bae777c7d37a8f519f640b176",
+    "review": "machine"
+  },
+  "sb6.print": {
+    "text": "Impression",
+    "sourceHash": "c816dffddca333a0250fe4af4f3135d3025a261100477d0d66097b427eae0574",
+    "review": "machine"
+  },
+  "sb6.pitch": {
+    "text": "Présentation",
+    "sourceHash": "f9a5d83d9de06eb911ca6daf127ebfa68240385e68445cd08969e2e912e1073b",
+    "review": "machine"
+  },
+  "sb6.shotlist": {
+    "text": "Liste des plans",
+    "sourceHash": "7d2e187ed88a6c32ac1f32523c3cf56ff5554ea165e3dae67bf0ea68d864a69e",
+    "review": "machine"
+  },
+  "sb6.paper": {
+    "text": "Format du papier",
+    "sourceHash": "eaa3ad8630dbbebc84713f6a10842d37ad0bdd38162f5c7524788cb245f03729",
+    "review": "machine"
+  },
+  "sb6.orientation": {
+    "text": "Orientation",
+    "sourceHash": "0d13f27697972576c4bf7aa8c1a38b2f23f02d5741fdc32f163542427e6c7208",
+    "review": "machine"
+  },
+  "sb6.portrait": {
+    "text": "Portrait",
+    "sourceHash": "565bd6953b13ebfb7a0700deda9d1641b7e5371af4679029f8fb6a8f1e842cde",
+    "review": "machine"
+  },
+  "sb6.landscape": {
+    "text": "Paysage",
+    "sourceHash": "dc60d5192caad10ea2b241f7d3347f7c6d0b5b2fd17baeeecfe6e4f0ba2a006e",
+    "review": "machine"
+  },
+  "sb6.per-page": {
+    "text": "Panneaux par page",
+    "sourceHash": "c54547bb237a2fc06ba77a4f756edfeab0cddb68ca6f0858002e270a85f83e72",
+    "review": "machine"
+  },
+  "sb6.version": {
+    "text": "Version",
+    "sourceHash": "f522f35be03bc32fb065910647c12ab169dc422bc0d661fd8bed271dcb036b96",
+    "review": "machine"
+  },
+  "sb6.fields": {
+    "text": "Champs",
+    "sourceHash": "919dbd8865f153c360085dfd51ae654a81f3142234f0cfe04e91cd44bc94398b",
+    "review": "machine"
+  },
+  "sb6.layers": {
+    "text": "Calques",
+    "sourceHash": "96c5cd64d83640d54a9be8f2141b82be537d2c6f8266ebee12e2b1382bca6bb2",
+    "review": "machine"
+  },
+  "sb6.panel": {
+    "text": "Numéro du panneau",
+    "sourceHash": "de7d954923ec1816d4288e71e862060508b8840f1f0af6f2c5e08a49b2572d27",
+    "review": "machine"
+  },
+  "sb6.scene": {
+    "text": "Scène",
+    "sourceHash": "8e78c9759cd21e214716a22af84715427ca71b525a20d44da165b454e15e7fac",
+    "review": "machine"
+  },
+  "sb6.shot": {
+    "text": "Plan",
+    "sourceHash": "2a8dfa2541ce1630e1bd82ab35db2742717fc88ffff5ee3c38d27041659bc982",
+    "review": "machine"
+  },
+  "sb6.duration": {
+    "text": "Durée (secondes)",
+    "sourceHash": "85cde504395ad453b85988952850940a5bfc3d2880a805cde9ddd088e4222f7a",
+    "review": "machine"
+  },
+  "sb6.dialogue": {
+    "text": "Dialogue",
+    "sourceHash": "d74f5425eb9a0ab831a15a4fbfeaf912fc4c959eecea292514df0aeffc73bb92",
+    "review": "machine"
+  },
+  "sb6.action": {
+    "text": "Action",
+    "sourceHash": "c511f75d7319d2d785bdd0ab6a1a82143b9750a56875623e96ae2d046a656e2b",
+    "review": "machine"
+  },
+  "sb6.camera": {
+    "text": "Caméra",
+    "sourceHash": "23cd5636b2217b19ed45cbb51a2421768c22a3f57720e4e5231af05d5aec03b9",
+    "review": "machine"
+  },
+  "sb6.movement": {
+    "text": "Mouvement",
+    "sourceHash": "4745cbf4d6dbae2114a6d2e2becf8f6880eeb051d4b85a341e95d7194bc59704",
+    "review": "machine"
+  },
+  "sb6.sound": {
+    "text": "Son",
+    "sourceHash": "cf9ed75c62e6c4e4a5dc698f04d5080b4d55550169dbbbfcde332f5d14e7b4f3",
+    "review": "machine"
+  },
+  "sb6.notes": {
+    "text": "Notes",
+    "sourceHash": "066c61b12326fabc5e195c15c5170d23909cadafaaa99d8ca22f9c9c5068d6ad",
+    "review": "machine"
+  },
+  "sb6.status": {
+    "text": "Statut par discipline",
+    "sourceHash": "95e96c0c7430995d4d537d0f3d0ebebb0f548f962fe3b07e4d92fcfb77e81e72",
+    "review": "machine"
+  },
+  "sb6.frames": {
+    "text": "Durée (images)",
+    "sourceHash": "28c4ba40437d0ceeb8541c993e4e3f23349203bfd65b4ecbcfae7026a120aa0a",
+    "review": "machine"
+  },
+  "sb6.timecode": {
+    "text": "Code temporel",
+    "sourceHash": "fbfb8d0b35684e11aecfd9589411a05f3f34cf18d5e08b09bd0004791a0b22bb",
+    "review": "machine"
+  },
+  "sb6.note": {
+    "text": "Calques de notes",
+    "sourceHash": "9c4cd5e68f2d8c42f065137e5fa4f198883fb8de6f54eda470977c21bcc5a307",
+    "review": "machine"
+  },
+  "sb6.arrow": {
+    "text": "Flèches",
+    "sourceHash": "abb790346f655815bf51d72e227f8e228b4b8bab90deb71f7468bbbfe74c9485",
+    "review": "machine"
+  },
+  "sb6.camera-mark": {
+    "text": "Repères caméra",
+    "sourceHash": "b1185d637e48929d2c461dac51457a1c5c843ac37f2624e65986ed62bddf161d",
+    "review": "machine"
   }
 }
