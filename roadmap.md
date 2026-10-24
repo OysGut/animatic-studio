@@ -172,3 +172,4 @@
 - [x] Mobil-QR/C-1 direkte til skissevalget; rasterisert komposisjonsgrunnlag med grupper og kamerautsnitt
 - [x] Leverandøruavhengig bilde-E2E med falsk bildekjører, gjenoppretting fra kvitteringer og samlet angring av serverlagrede kandidater
 - [x] Tilleggsforslag med varig jobbtilknytning, bekreftet kamerageometri og fullt scenemanus for dekning
+- 24.10 kl. 14.30: prøve av lagring etter driftsforstyrrelse (Claude).
