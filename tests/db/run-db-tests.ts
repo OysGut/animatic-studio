@@ -9054,7 +9054,7 @@ try {
     await as("authenticated",ALICE,tx=>tx`select public.connector_approve_code(${g7p},'ptg.blender','http://[::1]:9000/cb',${ch},array['project:read'],${h('0d')})`);
     await expectError(as("authenticated",ALICE,tx=>tx`select public.connector_approve_code(${g7p},'ptg.generic-loopback','ptg-photoshop://cb',${ch},array['project:read'],${h('0e')})`),'22023');
     await expectError(as("service_role",ALICE,tx=>tx`select public.connector_create_device(${h('0f')},'BCDF-GHJQ','ptg.unknown',array['project:read'],now()+interval '10 minutes')`),'22023');
-    assert((await sql`select count(*)::int n from private.connector_clients`)[0]?.['n']===7,'client list size');
+    assert((await sql`select count(*)::int n from private.connector_clients`)[0]?.['n']===8,'client list size (7 fra 0111 + Storyboard Pro fra 0113)');
     // 6. Cleanup removes expired pending rows and used refresh hashes older than 90 days; keeps newer ones.
     await sql`insert into private.connector_pending(hash,kind,user_code,client_id,scopes,expires_at) values(${h('1d')},'device','BCDF-GHJR','ptg.krita',array['project:read'],now()-interval '1 minute'),(${h('1e')},'device','BCDF-GHJS','ptg.krita',array['project:read'],now()+interval '10 minutes')`;
     await sql`insert into private.connector_used_refresh(hash,session_id,used_at) values(${h('1f')},${live},now()-interval '91 days'),(${h('2a')},${live},now()-interval '1 day')`;
