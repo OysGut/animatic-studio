@@ -22,8 +22,8 @@ interface Candidate { versionId: string; media: AssetMedia; trace: unknown; asse
 export function PanelAi({ state, panel, cmds, editable, mask }: { state: ProjectState; panel: Composition; cmds: Commands; editable: boolean; mask: StoryboardAiRequest["mask"] }) {
   const available = useProjectProviders(state.project.id);
   const ids = new Set((available.data?.providers ?? []).filter(id => id !== "lovable"));
-  const imageChoices = providersFor("image", ids).flatMap(p => p.models.map(m => ({ key: `${p.provider.id}|${m.id}`, provider: p.provider.id, model: m })));
-  const textChoices = providersFor("text", ids).flatMap(p => p.models.map(m => ({ key: `${p.provider.id}|${m.id}`, provider: p.provider.id, model: m })));
+  const imageChoices = providersFor("image", ids).filter(p => p.provider.id !== "lovable").flatMap(p => p.models.map(m => ({ key: `${p.provider.id}|${m.id}`, provider: p.provider.id, model: m })));
+  const textChoices = providersFor("text", ids).filter(p => p.provider.id !== "lovable").flatMap(p => p.models.map(m => ({ key: `${p.provider.id}|${m.id}`, provider: p.provider.id, model: m })));
   const [pick, setPick] = useState(""); const [textPick, setTextPick] = useState("");
   const choice = imageChoices.find(c => c.key === pick) ?? imageChoices[0];
   const textChoice = textChoices.find(c => c.key === textPick) ?? textChoices[0];

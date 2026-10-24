@@ -39,7 +39,7 @@ export async function rasterPanelInput(s: ProjectState, panel: Composition, basi
   try {
     const canvas = document.createElement("canvas"); canvas.width = panel.width; canvas.height = panel.height;
     const ctx = canvas.getContext("2d"); if (!ctx) throw Error(t("sb7.unavailable"));
-    drawFrame(ctx, frame, { images, placeholders: false });
+    drawFrame(ctx, frame, { images, placeholders: false, view: [1, 0, 0, 1, panel.width / 2, panel.height / 2] });
     return await saveImage(s, panel, await blobOf(canvas), cmds, { kind: "storyboard-structure", basis, layerId, panelRevision: panel.revision, layers: Object.values(s.layers).filter(l => l.compositionId === panel.id && !l.removed).map(l => [l.id, l.revision]) });
   } finally { for (const image of images.values()) if ("close" in image) (image as ImageBitmap).close(); }
 }

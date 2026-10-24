@@ -5,9 +5,11 @@ import { panelCandidateLayer } from "@/core/storyboard/ai";
 import { t } from "@/core/i18n/keyed";
 export async function saveStoryboardCandidate(db: AnyClient, projectId: string, userId: string, panelId: string, assetId: string, versionId: string, media: import("@/core").AssetMedia, trace: unknown) {
   let state = await loadProjectState(db, projectId);
-  const variant = Object.values(state.assetVariants).find(v => v.assetId === assetId);
+  const variant = Object.values(state.assetVariants).find(v => v.assetId === assetId && !v.removed);
   const panel = state.compositions[panelId];
-  if (!variant || !panel) throw Error(t("sb7.stale"));
+  if (!variant || !panel || panel.removed || panel.kind !== "storyboard" || state.assets[assetId]?.removed) throw Error(t("sb7.stale"));
+  const existing = state.assetVersions[versionId];
+  if (existing && (existing.removed || existing.variantId !== variant.id || existing.mediaPath !== media.path)) throw Error(t("sb7.stale"));
   const commands: Command[] = [];
   if (!state.assetVersions[versionId]) commands.push({ type: "AddAssetVersion", versionId: versionId as never, variantId: variant.id, media, note: JSON.stringify(trace) });
   if (!Object.values(state.layers).some(l => !l.removed && l.compositionId === panelId && l.versionId === versionId)) commands.push(panelCandidateLayer(state, panel, assetId, variant.id, versionId));
