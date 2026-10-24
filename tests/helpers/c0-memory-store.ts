@@ -93,6 +93,14 @@ export function memoryStore(state: ProjectState, opts: { now: () => number; rate
       Object.assign(c, { status: choice === "reject" ? "rejected" : "resolved", choice, revision: revision + 1 });
       return "ok";
     },
+    async savePremiereReturn(r) {
+      const prev = sbproReturns.find(x => x.projectId === r.projectId && x.hash === r.hash);
+      if (prev) return { returnId: prev.id, replayed: true };
+      const id = `00000000-0000-4000-8000-${String(++n).padStart(12, "0")}`;
+      sbproReturns.push({ id, projectId: r.projectId, hash: r.hash, userId: r.userId });
+      for (const e of r.edits) premiereProposals.push({ id: `00000000-0000-4000-a000-${String(++n).padStart(12, "0")}`, returnId: id, edit: e, conflict: r.conflicts.includes(e.panelId), status: "open" });
+      return { returnId: id, replayed: false };
+    },
     async saveSbproReturn(r) {
       const prev = sbproReturns.find(x => x.projectId === r.projectId && x.hash === r.hash);
       if (prev) return { returnId: prev.id, replayed: true, uploads: sbproCandidates.filter(c => c.returnId === prev.id && c.status === "awaiting_file").map(c => ({ candidateId: c.id, key: c.key, sha256: c.image!.sha256, byteSize: c.image!.byteSize })) };
@@ -113,7 +121,7 @@ export function memoryStore(state: ProjectState, opts: { now: () => number; rate
     },
   };
   return {
-    store, sbproReturns, sbproCandidates,
+    store, sbproReturns, sbproCandidates, premiereProposals,
     get state() { return s; },
     files, sessions, transfers, chunks,
     /** Det nettlesersiden (connector_approve_code) gjør etter brukerens godkjenning. */
