@@ -22,6 +22,7 @@ import { Route as MTokenRouteImport } from './routes/m.$token'
 import { Route as ManusutforskerProjectIdRouteImport } from './routes/manusutforsker.$projectId'
 import { Route as ProsjektProjectIdRouteImport } from './routes/prosjekt.$projectId'
 import { Route as PtgIRouteImport } from './routes/ptg.i'
+import { Route as ReviewTokenRouteImport } from './routes/review.$token'
 import { Route as SeTokenRouteImport } from './routes/se.$token'
 import { Route as ProsjektProjectIdIndexRouteImport } from './routes/prosjekt.$projectId.index'
 import { Route as ProsjektProjectIdBibliotekRouteImport } from './routes/prosjekt.$projectId.bibliotek'
@@ -98,6 +99,11 @@ const ProsjektProjectIdRoute = ProsjektProjectIdRouteImport.update({
 const PtgIRoute = PtgIRouteImport.update({
   id: '/ptg/i',
   path: '/ptg/i',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReviewTokenRoute = ReviewTokenRouteImport.update({
+  id: '/review/$token',
+  path: '/review/$token',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SeTokenRoute = SeTokenRouteImport.update({
@@ -181,6 +187,7 @@ export interface FileRoutesByFullPath {
   '/manusutforsker/$projectId': typeof ManusutforskerProjectIdRoute
   '/prosjekt/$projectId': typeof ProsjektProjectIdRouteWithChildren
   '/ptg/i': typeof PtgIRoute
+  '/review/$token': typeof ReviewTokenRoute
   '/se/$token': typeof SeTokenRoute
   '/prosjekt/$projectId/bibliotek': typeof ProsjektProjectIdBibliotekRoute
   '/prosjekt/$projectId/manus': typeof ProsjektProjectIdManusRoute
@@ -207,6 +214,7 @@ export interface FileRoutesByTo {
   '/m/$token': typeof MTokenRoute
   '/manusutforsker/$projectId': typeof ManusutforskerProjectIdRoute
   '/ptg/i': typeof PtgIRoute
+  '/review/$token': typeof ReviewTokenRoute
   '/se/$token': typeof SeTokenRoute
   '/prosjekt/$projectId/bibliotek': typeof ProsjektProjectIdBibliotekRoute
   '/prosjekt/$projectId/manus': typeof ProsjektProjectIdManusRoute
@@ -235,6 +243,7 @@ export interface FileRoutesById {
   '/manusutforsker/$projectId': typeof ManusutforskerProjectIdRoute
   '/prosjekt/$projectId': typeof ProsjektProjectIdRouteWithChildren
   '/ptg/i': typeof PtgIRoute
+  '/review/$token': typeof ReviewTokenRoute
   '/se/$token': typeof SeTokenRoute
   '/prosjekt/$projectId/bibliotek': typeof ProsjektProjectIdBibliotekRoute
   '/prosjekt/$projectId/manus': typeof ProsjektProjectIdManusRoute
@@ -264,6 +273,7 @@ export interface FileRouteTypes {
     | '/manusutforsker/$projectId'
     | '/prosjekt/$projectId'
     | '/ptg/i'
+    | '/review/$token'
     | '/se/$token'
     | '/prosjekt/$projectId/bibliotek'
     | '/prosjekt/$projectId/manus'
@@ -290,6 +300,7 @@ export interface FileRouteTypes {
     | '/m/$token'
     | '/manusutforsker/$projectId'
     | '/ptg/i'
+    | '/review/$token'
     | '/se/$token'
     | '/prosjekt/$projectId/bibliotek'
     | '/prosjekt/$projectId/manus'
@@ -317,6 +328,7 @@ export interface FileRouteTypes {
     | '/manusutforsker/$projectId'
     | '/prosjekt/$projectId'
     | '/ptg/i'
+    | '/review/$token'
     | '/se/$token'
     | '/prosjekt/$projectId/bibliotek'
     | '/prosjekt/$projectId/manus'
@@ -345,6 +357,7 @@ export interface RootRouteChildren {
   ManusutforskerProjectIdRoute: typeof ManusutforskerProjectIdRoute
   ProsjektProjectIdRoute: typeof ProsjektProjectIdRouteWithChildren
   PtgIRoute: typeof PtgIRoute
+  ReviewTokenRoute: typeof ReviewTokenRoute
   SeTokenRoute: typeof SeTokenRoute
   ApiPublicCronAiJobsRoute: typeof ApiPublicCronAiJobsRoute
 }
@@ -440,6 +453,13 @@ declare module '@tanstack/react-router' {
       path: '/ptg/i'
       fullPath: '/ptg/i'
       preLoaderRoute: typeof PtgIRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/review/$token': {
+      id: '/review/$token'
+      path: '/review/$token'
+      fullPath: '/review/$token'
+      preLoaderRoute: typeof ReviewTokenRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/se/$token': {
@@ -572,6 +592,7 @@ const rootRouteChildren: RootRouteChildren = {
   ManusutforskerProjectIdRoute: ManusutforskerProjectIdRoute,
   ProsjektProjectIdRoute: ProsjektProjectIdRouteWithChildren,
   PtgIRoute: PtgIRoute,
+  ReviewTokenRoute: ReviewTokenRoute,
   SeTokenRoute: SeTokenRoute,
   ApiPublicCronAiJobsRoute: ApiPublicCronAiJobsRoute,
 }

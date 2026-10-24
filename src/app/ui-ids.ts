@@ -189,6 +189,10 @@ export const UI_IDS: readonly UiIdEntry[] = [
   {"id":"V-172","kind":"side","component":"StoryboardRefRoute","file":"src/routes/prosjekt.$projectId.storyboardref.tsx","description":"Side /prosjekt/$projectId/storyboardref","route":"/prosjekt/$projectId/storyboardref","status":"aktiv"},
   {"id":"V-173","kind":"dialog","component":"SceneSetupDialog","file":"src/app/scene-editor/SceneSetupDialog.tsx","description":"Dialog i SceneSetupDialog","status":"aktiv"},
   {"id":"V-174","kind":"dialog","component":"StoryboardReferencePanel","file":"src/app/scene-editor/StoryboardReferencePanel.tsx","description":"Dialog i StoryboardReferencePanel","status":"aktiv"},
+  {"id":"V-175","kind":"side","component":"ReviewRoute","file":"src/routes/review.$token.tsx","description":"Side /review/$token","route":"/review/$token","status":"aktiv"},
+  {"id":"V-176","kind":"panel","component":"StoryboardReviewPage","file":"src/app/share/StoryboardReviewPage.tsx","description":"Flytende panel i StoryboardReviewPage","status":"aktiv"},
+  {"id":"V-177","kind":"dialog","component":"StoryboardReview","file":"src/app/storyboard/StoryboardReview.tsx","description":"Dialog i StoryboardReview","status":"aktiv"},
+  {"id":"V-178","kind":"dialog","component":"StoryboardReview","file":"src/app/storyboard/StoryboardReview.tsx","description":"Dialog i StoryboardReview","status":"aktiv"},
 ];
 
 const BY_ID = new Map(UI_IDS.map((e) => [e.id, e]));

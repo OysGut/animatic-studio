@@ -8925,6 +8925,37 @@ try {
     }
     await expectError(sbApply(g7p,{updates:{compositions:[{id:panel,expected_revision:2,revision:3,storyboard:details}]}}),'P0409');
   });
+  await test("0108 SB10: service capability scope, expiry, revoke, feedback and RLS", async () => {
+    const share=newId(),hash="a".repeat(64), key="p1";
+    await sql`insert into public.storyboard_shares(id,project_id,created_by,token_hash,expires_at,title,manifest,video_key,fps,ready,allow_approval) values(${share},${g7p},${ALICE},${hash},now()+interval '1 day','Review',${sql.json([{key,panelId:newId()}])},${g7p+'/reviews/'+share+'/film.mp4'},24,true,true)`;
+    const lookup=async()=>as("service_role",ALICE,tx=>tx`select public.storyboard_review_lookup(${hash}) value`);
+    assert(!!(await lookup())[0]?.['value'],'ready share not found');
+    const frozenPath=g7p+'/reviews/'+share+'/p1.png';
+    assert((await as('authenticated',ALICE,tx=>tx`select public.storyboard_review_path_writable(${frozenPath}) v`))[0]?.['v']===false,'finalized review path writable');
+    assert((await as('authenticated',ALICE,tx=>tx`select public.storyboard_review_path_writable(${g7p+'/unrelated.png'}) v`))[0]?.['v']===true,'unrelated path blocked');
+    assert((await sql`select count(*) n from pg_policies where schemaname='storage' and policyname like 'sb10_frozen_review_%' and permissive='RESTRICTIVE'`)[0]?.['n']==='3','missing restrictive policies');
+    await expectError(as("anon",ALICE,tx=>tx`select public.storyboard_review_lookup(${hash})`),'42501');
+    await expectError(as("authenticated",ALICE,tx=>tx`select token_hash from public.storyboard_shares where id=${share}`),'42501');
+    assert((await as("authenticated",CAROL,tx=>tx`select id from public.storyboard_feedback where share_id=${share}`)).length===0,'nonmember feedback leak');
+    const comment=(target:string,text='Review',decision='approved',x:number|null=.25,y:number|null=.75)=>as("service_role",ALICE,tx=>tx`select public.storyboard_review_comment(${hash},${target},'Guest','',${text},${decision},${x},${y})`);
+    await comment(key);
+    assert((await sql`select guest_email,decision,pin_x from public.storyboard_feedback where share_id=${share}`)[0]?.['guest_email']===null,'unprovided email stored');
+    await expectError(comment('p2'),'P0001');
+    await expectError(comment(key,'<b>HTML</b>'),'23514');
+    await expectError(comment(key,'x'.repeat(4001)),'23514');
+    await expectError(comment(key,'Pin','none',1.5,.5),'23514');
+    await sql`update public.storyboard_shares set allow_approval=false where id=${share}`;
+    await expectError(comment(key,'','approved'),'P0001');
+    await sql`update public.storyboard_shares set revoked=true where id=${share}`;
+    assert((await lookup())[0]?.['value']===null,'revoked share still readable');await expectError(comment(key),'P0001');
+    await sql`update public.storyboard_shares set revoked=false,expires_at=now()-interval '1 second' where id=${share}`;
+    assert((await lookup())[0]?.['value']===null,'expired share readable');
+    await sql`update public.storyboard_shares set expires_at=now()+interval '1 day' where id=${share}`;
+    await sql`update private.rate_limit_rules set per_key=2 where scope='storyboard_review'`;
+    await sql`delete from private.rate_limit_hits where scope='storyboard_review'`;
+    await comment(key,'One','none');await comment(key,'Two','none');await expectError(comment(key,'Three','none'),'PTG15');
+    await sql`update private.rate_limit_rules set per_key=120 where scope='storyboard_review'`;
+  });
   await test("alle SECURITY DEFINER-funksjoner i public/private har search_path=''", async () => {
     const rows = await sql`
       select n.nspname as ns, p.proname as name

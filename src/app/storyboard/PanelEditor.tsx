@@ -1,3 +1,4 @@
+import { StoryboardReview } from "./StoryboardReview";
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { ArrowLeft, ArrowRight, ArrowUp, ArrowDown, Copy, Eye, EyeOff, Lock, Unlock, Plus, Undo2, Redo2, MousePointer2, MoveUpRight, Minus, Type, Square, StickyNote, Scan, HelpCircle, Check, Trash2 } from "lucide-react";
@@ -125,6 +126,7 @@ export function PanelEditor({ state, panel, editable, cmds, projectId }: { state
       <Button size="icon" variant="ghost" aria-label={t("sb3.undo")} disabled={!cmds.canUndo} onClick={()=>cmds.undo()}><Undo2/></Button>
       <Button size="icon" variant="ghost" aria-label={t("sb3.redo")} disabled={!cmds.canRedo} onClick={()=>cmds.redo()}><Redo2/></Button>
       {status?.status === "done" && !snapshot ? <Button size="sm" disabled={!editable} onClick={editApproved} data-testid="sb3-edit-approved">{t("sb3.edit-approved")}</Button> : null}
+      <StoryboardReview state={state} projectId={projectId} productionId={productionId} cmds={cmds} editable={editable} panelId={panel.id} />
       <select className={ctl+" ms-auto max-w-48"} value={snapshotId} onChange={e=>{showSnapshot(e.target.value);select(null);}} aria-label={t("sb3.revisions")} data-testid="sb3-revisions"><option value="">{t("sb3.current")}</option>{snapshots.map(s=><option key={s.id} value={s.id}>{t("sb3.revision",{number:String(s.panelRevision)})}</option>)}</select>
       <Button size="icon" variant="ghost" aria-label={t("sb3.help")} onClick={()=>showHelp(true)}><HelpCircle/></Button>
     </header>

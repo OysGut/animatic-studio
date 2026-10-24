@@ -338,3 +338,9 @@ B-087: REQ-0879–REQ-0895 (Rigg & 2D-utskrift, A1–A17) og REQ-0896–REQ-0915
 - [ ] Visuell sjekk på nb og en: listen «Sendes med til bildemodellen» med avkrysning, «Legg til bilde …», hint/advarsel og grense (krever 0089 i Cloud).
 - [ ] Bekreft grensen for antall inndatabilder for de innebygde bildemodellene (i dag ukjent, 6 brukes) og for Seedream 4.5 hos fal (satt til 10).
 - [ ] Visuell sjekk av dialogstørrelse på nb og en, bred og smal (krever innlogget testkonto i forhåndsvisningen).
+
+## SB-10 – kontroll før kundedeling
+- [ ] Claude: kjør 0108 og DB-suiten; Lovable har skrevet, men ikke kjørt dem.
+- [ ] Claude: verifiser de nye restriktive storage-policyene i 0108 før kundedeling.
+- [ ] Verifiser samlet revisjonsutvalg i UI med virkelige delinger etter 0108.
+- [ ] Verifiser virkelig delingsopprettelse, eksport/finalisering og teamets svar/oppgave/statusadopsjon ende-til-ende. Se SB10_REPORT.md.

@@ -77342,5 +77342,158 @@
   },
   "sb9.reason": {
     "text": "Reason"
+  },
+  "sb10.error": {
+    "text": "The review could not be opened or saved."
+  },
+  "sb10.rate": {
+    "text": "Too many requests. Try again later."
+  },
+  "sb10.cancel": {
+    "text": "Cancel"
+  },
+  "sb10.title": {
+    "text": "Storyboard review"
+  },
+  "sb10.description": {
+    "text": "Private review of shared storyboard panels."
+  },
+  "sb10.unavailable": {
+    "text": "This link is unavailable, expired or requires a password."
+  },
+  "sb10.password": {
+    "text": "Password (optional)"
+  },
+  "sb10.open": {
+    "text": "Open"
+  },
+  "sb10.playback": {
+    "text": "Playback"
+  },
+  "sb10.panels": {
+    "text": "Panels"
+  },
+  "sb10.pin": {
+    "text": "Place comment pin"
+  },
+  "sb10.name": {
+    "text": "Name"
+  },
+  "sb10.email": {
+    "text": "Email (optional)"
+  },
+  "sb10.comment": {
+    "text": "Comment"
+  },
+  "sb10.decision": {
+    "text": "Decision"
+  },
+  "sb10.none": {
+    "text": "No status"
+  },
+  "sb10.approved": {
+    "text": "Approved"
+  },
+  "sb10.changes": {
+    "text": "Changes requested"
+  },
+  "sb10.send": {
+    "text": "Send"
+  },
+  "sb10.resolved": {
+    "text": "Resolved"
+  },
+  "sb10.compare": {
+    "text": "Compare revisions"
+  },
+  "sb10.current": {
+    "text": "Current"
+  },
+  "sb10.before": {
+    "text": "Before"
+  },
+  "sb10.after": {
+    "text": "After"
+  },
+  "sb10.mode": {
+    "text": "View"
+  },
+  "sb10.side": {
+    "text": "Side by side"
+  },
+  "sb10.overlay": {
+    "text": "Overlay"
+  },
+  "sb10.difference": {
+    "text": "Difference"
+  },
+  "sb10.new": {
+    "text": "New"
+  },
+  "sb10.removed": {
+    "text": "Removed"
+  },
+  "sb10.same": {
+    "text": "Unchanged"
+  },
+  "sb10.changed": {
+    "text": "Changed"
+  },
+  "sb10.revision": {
+    "text": "Revision"
+  },
+  "sb10.review": {
+    "text": "Client and team"
+  },
+  "sb10.share": {
+    "text": "Share storyboard"
+  },
+  "sb10.expires": {
+    "text": "Expiry date"
+  },
+  "sb10.comments": {
+    "text": "Allow comments"
+  },
+  "sb10.approval": {
+    "text": "Allow approval"
+  },
+  "sb10.create": {
+    "text": "Create review link"
+  },
+  "sb10.link": {
+    "text": "Review link"
+  },
+  "sb10.copy": {
+    "text": "Copy"
+  },
+  "sb10.revoked": {
+    "text": "Revoked"
+  },
+  "sb10.revoke": {
+    "text": "Revoke"
+  },
+  "sb10.feedback": {
+    "text": "Feedback"
+  },
+  "sb10.reply": {
+    "text": "Reply"
+  },
+  "sb10.reopen": {
+    "text": "Reopen"
+  },
+  "sb10.resolve": {
+    "text": "Resolve"
+  },
+  "sb10.task": {
+    "text": "Link to task"
+  },
+  "sb10.apply": {
+    "text": "Use as status"
+  },
+  "sb10.confirm": {
+    "text": "Change storyboard status based on this decision?"
+  },
+  "sb10.team": {
+    "text": "Team"
   }
 }

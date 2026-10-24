@@ -179,3 +179,7 @@ Merket nederst i hvert vindu viser «V-nnn · commit». Slå opp nummeret her.
 | V-172 | side | `src/routes/prosjekt.$projectId.storyboardref.tsx` | StoryboardRefRoute | Side /prosjekt/$projectId/storyboardref | aktiv |
 | V-173 | dialog | `src/app/scene-editor/SceneSetupDialog.tsx` | SceneSetupDialog | Dialog i SceneSetupDialog | aktiv |
 | V-174 | dialog | `src/app/scene-editor/StoryboardReferencePanel.tsx` | StoryboardReferencePanel | Dialog i StoryboardReferencePanel | aktiv |
+| V-175 | side | `src/routes/review.$token.tsx` | ReviewRoute | Side /review/$token | aktiv |
+| V-176 | panel | `src/app/share/StoryboardReviewPage.tsx` | StoryboardReviewPage | Flytende panel i StoryboardReviewPage | aktiv |
+| V-177 | dialog | `src/app/storyboard/StoryboardReview.tsx` | StoryboardReview | Dialog i StoryboardReview | aktiv |
+| V-178 | dialog | `src/app/storyboard/StoryboardReview.tsx` | StoryboardReview | Dialog i StoryboardReview | aktiv |

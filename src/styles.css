@@ -415,3 +415,5 @@ html.lang-pending body {
   background-image: conic-gradient(var(--surface-2) 25%, transparent 0 50%, var(--surface-2) 0 75%, transparent 0);
   background-size: 8px 8px;
 }
+
+.review-difference { mix-blend-mode: difference; }

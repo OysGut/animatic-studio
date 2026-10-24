@@ -58482,5 +58482,260 @@
     "text": "理由",
     "sourceHash": "226d6efbe32332067b8c8a69519ae2e583df164e02b4d433ef20d372a8642c5c",
     "review": "machine"
+  },
+  "sb10.error": {
+    "text": "レビューを開くか保存できませんでした。",
+    "sourceHash": "547a181b6562fdb981663727cfdd0a6bf61c25c2603631913d403a69e0aa8825",
+    "review": "machine"
+  },
+  "sb10.rate": {
+    "text": "リクエストが多すぎます。後で再試行してください。",
+    "sourceHash": "cf52aeec3dc0b41ba925e339bbda7037ce81d6222d301c732dc6b5ba31ae0e9a",
+    "review": "machine"
+  },
+  "sb10.cancel": {
+    "text": "キャンセル",
+    "sourceHash": "a69ea29ae854ab93e4967572b360e5a50e1c854ae20c4ae9b47ee3b1368bab86",
+    "review": "machine"
+  },
+  "sb10.title": {
+    "text": "ストーリーボードレビュー",
+    "sourceHash": "c4456cfb07b4a23db3f22b1838a2932f77eae0da1f801413c4c2569a39c61f6e",
+    "review": "machine"
+  },
+  "sb10.description": {
+    "text": "共有パネルの非公開レビュー。",
+    "sourceHash": "4fa1727be5b2c6b61df117d8cec6229cc22011c1998d5a667a70bd1a25626c04",
+    "review": "machine"
+  },
+  "sb10.unavailable": {
+    "text": "リンクが無効、期限切れ、またはパスワードが必要です。",
+    "sourceHash": "a8dd724b2a9410c5314a2988c5c75df8a5f16a1e69c6c00fee7163f004ce1cfa",
+    "review": "machine"
+  },
+  "sb10.password": {
+    "text": "パスワード（任意）",
+    "sourceHash": "466906c49b59b26bdb5d196183fa87c0a06c9ea358e58c8f7093262a55323062",
+    "review": "machine"
+  },
+  "sb10.open": {
+    "text": "開く",
+    "sourceHash": "8a0118d34ad287b3b1a23e190ac2e51d66dd70807322e44a7c92c52b59a95be9",
+    "review": "machine"
+  },
+  "sb10.playback": {
+    "text": "再生",
+    "sourceHash": "f635dccaf5521b2ccd663bd3012f1f145c73ad5d9cf41b375b2468112bf07a32",
+    "review": "machine"
+  },
+  "sb10.panels": {
+    "text": "パネル",
+    "sourceHash": "5f2a91bca0b4ecda79dbe99f805fd08233f8412d5dda8c2220dcb99eb2376a9d",
+    "review": "machine"
+  },
+  "sb10.pin": {
+    "text": "コメントピンを配置",
+    "sourceHash": "263440242175ca1e6019c9b8d8b58e13d725880a33a306477409f43a7b14f654",
+    "review": "machine"
+  },
+  "sb10.name": {
+    "text": "名前",
+    "sourceHash": "9bf37575be11ab4b0c7ef52ccf313a51e7e6fb47d740cbe82ec6302a31753ec1",
+    "review": "machine"
+  },
+  "sb10.email": {
+    "text": "メール（任意）",
+    "sourceHash": "9334c2172695ca24a600a50e85dca1fcb997646edf485dc0492e21d441c2f351",
+    "review": "machine"
+  },
+  "sb10.comment": {
+    "text": "コメント",
+    "sourceHash": "6feb3d78e6c88501f8065ccad48127c35b149d1a1493ca5ee8452a243114edeb",
+    "review": "machine"
+  },
+  "sb10.decision": {
+    "text": "判定",
+    "sourceHash": "b635334a7262972a86976da1ea3dca0095d753e8e29c83a55354db74b1384a8c",
+    "review": "machine"
+  },
+  "sb10.none": {
+    "text": "ステータスなし",
+    "sourceHash": "991e67df024919b5225f2e65ff51e0ec78c20183001498636c955913b6e56af3",
+    "review": "machine"
+  },
+  "sb10.approved": {
+    "text": "承認済み",
+    "sourceHash": "4e2e9aabb013a5b255ba34f58e88b4a4d31be0fdcbe6839209cd046896989044",
+    "review": "machine"
+  },
+  "sb10.changes": {
+    "text": "変更希望",
+    "sourceHash": "0bf58a41657d1608117966a44f8fe17f00e24aa937d90559ef8c4a6e0d302cbd",
+    "review": "machine"
+  },
+  "sb10.send": {
+    "text": "送信",
+    "sourceHash": "6bd516c15fdd9ceef4747e74666a131b62fd8f788a3b5a24215a35edf00c8f28",
+    "review": "machine"
+  },
+  "sb10.resolved": {
+    "text": "解決済み",
+    "sourceHash": "df8020365093f69d988701aea90831c218fe2e6ed288aaa6896a37dcded02cb7",
+    "review": "machine"
+  },
+  "sb10.compare": {
+    "text": "改訂を比較",
+    "sourceHash": "4b62f3da8aca74f13f2f070a70292b99c0d55ab8ee856c28ae96af5b0026065d",
+    "review": "machine"
+  },
+  "sb10.current": {
+    "text": "現在",
+    "sourceHash": "316fa7e87da82e360a048b90aa2a29cf9c0a1ddc1dc6bbda3f9e1c81df16caa3",
+    "review": "machine"
+  },
+  "sb10.before": {
+    "text": "前",
+    "sourceHash": "bffa46169cccc0c107b5bef443128f9541850e97704ff8e2510302e609796917",
+    "review": "machine"
+  },
+  "sb10.after": {
+    "text": "後",
+    "sourceHash": "12edd15ca33cf7d5564428d1a880258518fb848013566224e9b5b4c699415f0e",
+    "review": "machine"
+  },
+  "sb10.mode": {
+    "text": "表示",
+    "sourceHash": "0599eb0e4858f487215c785979bf7d0f8ea0d8370f34c351dd7f9fd1c43f43a9",
+    "review": "machine"
+  },
+  "sb10.side": {
+    "text": "並べて表示",
+    "sourceHash": "ba38cfb87220ac9e5af2a4e96cffcfec88610cc0455c503647ab6ad9581a24aa",
+    "review": "machine"
+  },
+  "sb10.overlay": {
+    "text": "重ね合わせ",
+    "sourceHash": "c8a3337a74b190ba3ca51225c6600f6c283ce74120a57dc54cc4c6b9e99840ea",
+    "review": "machine"
+  },
+  "sb10.difference": {
+    "text": "差分",
+    "sourceHash": "bbdad4132d5f8f1e0b68f69dff1f9e0abb779ef3c09cd95f0d9150c121a4c983",
+    "review": "machine"
+  },
+  "sb10.new": {
+    "text": "新規",
+    "sourceHash": "24b5c8a0ee2983041e46dd9d103c04c8211bc69d0be19531aaf2a16791463769",
+    "review": "machine"
+  },
+  "sb10.removed": {
+    "text": "削除",
+    "sourceHash": "a79c9253ddb75403d3390a3276ee4f632e4ab43b1f1aa6c9c81ea41173bcbddb",
+    "review": "machine"
+  },
+  "sb10.same": {
+    "text": "変更なし",
+    "sourceHash": "df849e3dccc2bd48010aaae96f12fd01cd3fa804639773a0361752212494c41a",
+    "review": "machine"
+  },
+  "sb10.changed": {
+    "text": "変更あり",
+    "sourceHash": "fb398b87229bbbdd598cd2cd4cfa4673f677e7eb020b4699ceca7bb5dd502f9c",
+    "review": "machine"
+  },
+  "sb10.revision": {
+    "text": "改訂",
+    "sourceHash": "00e650de198adeee075daf409d958cfad3b23b81d82ae6bdb1e438a699d7800b",
+    "review": "machine"
+  },
+  "sb10.review": {
+    "text": "クライアントとチーム",
+    "sourceHash": "b27f7c746101d67c691d5773b464a2bd434bb15a6a103a1351e20eb16d8c2667",
+    "review": "machine"
+  },
+  "sb10.share": {
+    "text": "ストーリーボードを共有",
+    "sourceHash": "915f76f836d560d245cb1430c936f9688eece204763dc053f9f08803b90035f3",
+    "review": "machine"
+  },
+  "sb10.expires": {
+    "text": "有効期限",
+    "sourceHash": "5b5b611d909be5d5c4db5490c6e42e15a0ae2841b41fbe9ec14b1c9620279d8e",
+    "review": "machine"
+  },
+  "sb10.comments": {
+    "text": "コメントを許可",
+    "sourceHash": "d39c717d7df931fb74aa8e7953e8d47b9cb0eb5c4c07336bd80a38d520cec8ee",
+    "review": "machine"
+  },
+  "sb10.approval": {
+    "text": "承認を許可",
+    "sourceHash": "df1216a17fb05fc579b4d4636264c201a2696c25ae967feae7f4302ff75d83ef",
+    "review": "machine"
+  },
+  "sb10.create": {
+    "text": "リンクを作成",
+    "sourceHash": "44caa0a9b547d41e79710d97fdb5f5c3d5f625d46944f68e93fa92d4f373f193",
+    "review": "machine"
+  },
+  "sb10.link": {
+    "text": "レビューリンク",
+    "sourceHash": "2645208e4b111970d95d1048122c30ebf570c992e5cf146f62fa2791f72ec7c4",
+    "review": "machine"
+  },
+  "sb10.copy": {
+    "text": "コピー",
+    "sourceHash": "28f0d84af76c937074d1d12f90f5f905ac596fa4846e49c6c4edc16b801c8934",
+    "review": "machine"
+  },
+  "sb10.revoked": {
+    "text": "取り消し済み",
+    "sourceHash": "d982f401302277fa4df57ba17639640f1b30a3d2c9e8aeedb17d8a4f28d39782",
+    "review": "machine"
+  },
+  "sb10.revoke": {
+    "text": "取り消す",
+    "sourceHash": "60bc56e28eba63cf51496e93e4fa45d7a8c0f7e7fa2db8e92e1217627b61c0e8",
+    "review": "machine"
+  },
+  "sb10.feedback": {
+    "text": "フィードバック",
+    "sourceHash": "e4b447c61778ffa9ed5576bbbcaa917c6768766ceb5c036566c7ff13cef58a12",
+    "review": "machine"
+  },
+  "sb10.reply": {
+    "text": "返信",
+    "sourceHash": "758331c627086df9ac71be67e3e24c4adae05c8399eee950c83b891a17093e03",
+    "review": "machine"
+  },
+  "sb10.reopen": {
+    "text": "再開",
+    "sourceHash": "7dc551115f7a3faa767891a75d065a1b78c09e0487ad86dfc03e2bfd0656b74a",
+    "review": "machine"
+  },
+  "sb10.resolve": {
+    "text": "解決",
+    "sourceHash": "4cb293b791cf871180cece6463f7ebe93fa2b405529ecd8a02db55fc02d83f7f",
+    "review": "machine"
+  },
+  "sb10.task": {
+    "text": "タスクに関連付け",
+    "sourceHash": "e8ccf774cdaae43922328ca113bb84d6119e248249326e50d83665adcd2a2d65",
+    "review": "machine"
+  },
+  "sb10.apply": {
+    "text": "ステータスに反映",
+    "sourceHash": "e90190a865aeabd768aa0b760ad78bd65e669180f55dc8331042dbd22cb5b1f0",
+    "review": "machine"
+  },
+  "sb10.confirm": {
+    "text": "この判定に基づいてステータスを変更しますか？",
+    "sourceHash": "9ce0f9ff8f0362d4ad4f7499af6bdfd7f73fe1333f9baabccf45294f9bb02295",
+    "review": "machine"
+  },
+  "sb10.team": {
+    "text": "チーム",
+    "sourceHash": "bb1f3f53234364d0395f8ba2a0768351280532acc381f9a324b5aa33135ff8da",
+    "review": "machine"
   }
 }

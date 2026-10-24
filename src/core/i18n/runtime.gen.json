@@ -33604,6 +33604,159 @@
     "sb1.schema": {
       "text": "Databasen mangler storyboardgrunnmuren. Kjør migrasjon 0102 først."
     },
+    "sb10.after": {
+      "text": "Etter"
+    },
+    "sb10.apply": {
+      "text": "Ta i bruk som status"
+    },
+    "sb10.approval": {
+      "text": "Tillat godkjenning"
+    },
+    "sb10.approved": {
+      "text": "Godkjent"
+    },
+    "sb10.before": {
+      "text": "Før"
+    },
+    "sb10.cancel": {
+      "text": "Avbryt"
+    },
+    "sb10.changed": {
+      "text": "Endret"
+    },
+    "sb10.changes": {
+      "text": "Endring ønsket"
+    },
+    "sb10.comment": {
+      "text": "Kommentar"
+    },
+    "sb10.comments": {
+      "text": "Tillat kommentarer"
+    },
+    "sb10.compare": {
+      "text": "Sammenlign revisjoner"
+    },
+    "sb10.confirm": {
+      "text": "Endre storyboardstatus etter denne vurderingen?"
+    },
+    "sb10.copy": {
+      "text": "Kopier"
+    },
+    "sb10.create": {
+      "text": "Opprett delingslenke"
+    },
+    "sb10.current": {
+      "text": "Gjeldende"
+    },
+    "sb10.decision": {
+      "text": "Vurdering"
+    },
+    "sb10.description": {
+      "text": "Privat gjennomgang av delte storyboardpaneler."
+    },
+    "sb10.difference": {
+      "text": "Differanse"
+    },
+    "sb10.email": {
+      "text": "E-post (valgfritt)"
+    },
+    "sb10.error": {
+      "text": "Gjennomgangen kunne ikke åpnes eller lagres."
+    },
+    "sb10.expires": {
+      "text": "Utløpsdato"
+    },
+    "sb10.feedback": {
+      "text": "Tilbakemeldinger"
+    },
+    "sb10.link": {
+      "text": "Delingslenke"
+    },
+    "sb10.mode": {
+      "text": "Visning"
+    },
+    "sb10.name": {
+      "text": "Navn"
+    },
+    "sb10.new": {
+      "text": "Nytt"
+    },
+    "sb10.none": {
+      "text": "Ingen status"
+    },
+    "sb10.open": {
+      "text": "Åpne"
+    },
+    "sb10.overlay": {
+      "text": "Overlegg"
+    },
+    "sb10.panels": {
+      "text": "Paneler"
+    },
+    "sb10.password": {
+      "text": "Passord (valgfritt)"
+    },
+    "sb10.pin": {
+      "text": "Plasser kommentarnål"
+    },
+    "sb10.playback": {
+      "text": "Avspilling"
+    },
+    "sb10.rate": {
+      "text": "For mange forespørsler. Prøv igjen senere."
+    },
+    "sb10.removed": {
+      "text": "Fjernet"
+    },
+    "sb10.reopen": {
+      "text": "Gjenåpne"
+    },
+    "sb10.reply": {
+      "text": "Svar"
+    },
+    "sb10.resolve": {
+      "text": "Løs"
+    },
+    "sb10.resolved": {
+      "text": "Løst"
+    },
+    "sb10.review": {
+      "text": "Kunde og team"
+    },
+    "sb10.revision": {
+      "text": "Revisjon"
+    },
+    "sb10.revoke": {
+      "text": "Trekk tilbake"
+    },
+    "sb10.revoked": {
+      "text": "Tilbakekalt"
+    },
+    "sb10.same": {
+      "text": "Uendret"
+    },
+    "sb10.send": {
+      "text": "Send"
+    },
+    "sb10.share": {
+      "text": "Del storyboard"
+    },
+    "sb10.side": {
+      "text": "Side om side"
+    },
+    "sb10.task": {
+      "text": "Koble til oppgave"
+    },
+    "sb10.team": {
+      "text": "Team"
+    },
+    "sb10.title": {
+      "text": "Storyboardgjennomgang"
+    },
+    "sb10.unavailable": {
+      "text": "Lenken er utilgjengelig, utløpt eller krever passord."
+    },
     "sb2.add": {
       "text": "Nytt panel"
     },
@@ -68532,6 +68685,159 @@
     },
     "sb1.schema": {
       "text": "The database is missing the storyboard foundation. Run migration 0102 first."
+    },
+    "sb10.after": {
+      "text": "After"
+    },
+    "sb10.apply": {
+      "text": "Use as status"
+    },
+    "sb10.approval": {
+      "text": "Allow approval"
+    },
+    "sb10.approved": {
+      "text": "Approved"
+    },
+    "sb10.before": {
+      "text": "Before"
+    },
+    "sb10.cancel": {
+      "text": "Cancel"
+    },
+    "sb10.changed": {
+      "text": "Changed"
+    },
+    "sb10.changes": {
+      "text": "Changes requested"
+    },
+    "sb10.comment": {
+      "text": "Comment"
+    },
+    "sb10.comments": {
+      "text": "Allow comments"
+    },
+    "sb10.compare": {
+      "text": "Compare revisions"
+    },
+    "sb10.confirm": {
+      "text": "Change storyboard status based on this decision?"
+    },
+    "sb10.copy": {
+      "text": "Copy"
+    },
+    "sb10.create": {
+      "text": "Create review link"
+    },
+    "sb10.current": {
+      "text": "Current"
+    },
+    "sb10.decision": {
+      "text": "Decision"
+    },
+    "sb10.description": {
+      "text": "Private review of shared storyboard panels."
+    },
+    "sb10.difference": {
+      "text": "Difference"
+    },
+    "sb10.email": {
+      "text": "Email (optional)"
+    },
+    "sb10.error": {
+      "text": "The review could not be opened or saved."
+    },
+    "sb10.expires": {
+      "text": "Expiry date"
+    },
+    "sb10.feedback": {
+      "text": "Feedback"
+    },
+    "sb10.link": {
+      "text": "Review link"
+    },
+    "sb10.mode": {
+      "text": "View"
+    },
+    "sb10.name": {
+      "text": "Name"
+    },
+    "sb10.new": {
+      "text": "New"
+    },
+    "sb10.none": {
+      "text": "No status"
+    },
+    "sb10.open": {
+      "text": "Open"
+    },
+    "sb10.overlay": {
+      "text": "Overlay"
+    },
+    "sb10.panels": {
+      "text": "Panels"
+    },
+    "sb10.password": {
+      "text": "Password (optional)"
+    },
+    "sb10.pin": {
+      "text": "Place comment pin"
+    },
+    "sb10.playback": {
+      "text": "Playback"
+    },
+    "sb10.rate": {
+      "text": "Too many requests. Try again later."
+    },
+    "sb10.removed": {
+      "text": "Removed"
+    },
+    "sb10.reopen": {
+      "text": "Reopen"
+    },
+    "sb10.reply": {
+      "text": "Reply"
+    },
+    "sb10.resolve": {
+      "text": "Resolve"
+    },
+    "sb10.resolved": {
+      "text": "Resolved"
+    },
+    "sb10.review": {
+      "text": "Client and team"
+    },
+    "sb10.revision": {
+      "text": "Revision"
+    },
+    "sb10.revoke": {
+      "text": "Revoke"
+    },
+    "sb10.revoked": {
+      "text": "Revoked"
+    },
+    "sb10.same": {
+      "text": "Unchanged"
+    },
+    "sb10.send": {
+      "text": "Send"
+    },
+    "sb10.share": {
+      "text": "Share storyboard"
+    },
+    "sb10.side": {
+      "text": "Side by side"
+    },
+    "sb10.task": {
+      "text": "Link to task"
+    },
+    "sb10.team": {
+      "text": "Team"
+    },
+    "sb10.title": {
+      "text": "Storyboard review"
+    },
+    "sb10.unavailable": {
+      "text": "This link is unavailable, expired or requires a password."
     },
     "sb2.add": {
       "text": "New panel"
