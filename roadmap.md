@@ -1,5 +1,19 @@
 # Veikart
 
+## C-2 – Photoshop-plugin (UXP) (bygget, ikke verifisert i Photoshop)
+- [x] 0107–0109 låst med MD5; 0109 satt tilbake til Cloud-versjonen, rettingene flyttet til 0111 (ikke kjørt)
+- [x] plugins/photoshop: manifest v5, Photoshop 27+, nettverk bare til pentoglass.com, tokens i secureStorage
+- [x] Innlogging med PKCE i systemnettleseren (eget skjema ptg-photoshop:// + innliming), enhetsflyt som reserve
+- [x] Panel med prosjekt, ressurs, versjon, scener, storyboardpaneler, notater og dokumentstatus
+- [x] «Åpne fra Pen to Glass» med SHA-256-kontroll og executeAsModal; kobling til revisjonsgrunnlaget huskes
+- [x] «Send tilbake»: PSD med lag/alfa/fargeprofil; kandidatversjon med revisjonsgrunnlag; konflikt med tre valg
+- [x] API: nedlasting av versjonsfil og konfliktvalg for plugins (0111), beskrevet i OpenAPI
+- [x] Pakking til .ccx, README nb/en, Marketplace-utkast (ikke sendt)
+- [x] Tester med falsk Photoshop/UXP (19), DB 236/0, full Vitest grønn, test:ssr 8/8
+- [ ] Prøving i ekte Photoshop etter sjekklisten i C2_REPORT.md (Øystein/tester)
+- [ ] PSD som egen versjon i prosjektet (krever Øysteins valg; i dag sendes flat PNG når PSD avvises)
+- [ ] 0111 i Cloud (Claude)
+
 ## C-1 – Universell filvei «Send til …» og returside (bygget i kode; DB, Cloud og nettlesertest gjenstår)
 - [x] «Send til …» på ressurs, storyboardpanel, lydklipp og scene, med ærlig beskrivelse av hva mottakeren får
 - [x] PSD med lag (navn, synlighet, opasitet, alfa), PNG, SVG (bare ut), WAV/BWF med tidskode/scene/ressurs-ID, OTIO; manifest v1 og ZIP

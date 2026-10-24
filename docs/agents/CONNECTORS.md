@@ -7,3 +7,4 @@
 5. Connector tables (0109) are integration logs written by service-role code and security-definer RPCs, not `apply_changes` tables; members read via `my_project_ids()`.
 6. Every endpoint is in `docs/api/openapi-v1.json`; `tests/unit/c0-connectors.test.ts` fails on undocumented routes. All plugins use `packages/ptg-connector-sdk`, which imports only `src/core/connectors`.
 7. Adapters declare capabilities in `ADAPTERS`; the UI offers only what works and otherwise «Eksporter for …».
+8. Plugins live in `plugins/<host>/` and touch the host only through one injected `Host` module (Photoshop: `plugins/photoshop/src/host.ts`), so all behaviour is tested against fake host modules without the real program.

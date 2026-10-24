@@ -313,8 +313,10 @@ B-087: REQ-0879–REQ-0895 (Rigg & 2D-utskrift, A1–A17) og REQ-0896–REQ-0915
 - Prosesskravene REQ-0450–0530 og språkvask av engelsk (KI-198) og maskinoversatte språk.
 - Personvernerklæring og juridisk gjennomgang (KI-214); region/databehandleravtale.
 - Delt klipp (B-116) som egen sak.
+- C-2 PSD som versjon: prosjektmodellen tillater bare PNG/JPEG/WebP/GIF som bildeversjon (`ASSET_MIME_TYPES`, sjekk i `asset_versions` fra 0004 og filtypene til lagringsbøtta «assets»). Photoshop-pluginen sender derfor en flat PNG når PSD avvises, og lagene blir bare liggende lokalt. Skal PSD lagres som egen versjon (original + PNG-forhåndsvisning, slik C-1 forutsetter)? Det krever en ny migrasjon for typesjekken, endring av bøttas filtyper og at miniatyrer bruker forhåndsvisningen. Det samme rammer C-1s PSD-retur (originalen som egen versjon), som ikke er prøvd mot Cloud.
 
 ### Krever ekstern prøving
+- C-2 Photoshop-plugin: bygget, ikke verifisert i Photoshop. Sjekklisten står i `docs/development/C2_REPORT.md` (installasjon, innlogging, åpne, endre lag, send tilbake, konflikt, tilbaketrekking) på macOS og Windows med Photoshop 27+.
 - Lukket fane mot ekte bakgrunnsjobb: REQ-0291, REQ-0293, REQ-0504.
 - Ekte telefoner og opptak: REQ-0685, REQ-0687, REQ-0689, REQ-0711, KI-235, KI-239, KI-245, KI-248.
 - Menneskelig vurdering av harmoniserte bilder: REQ-0139. VP9 med alfa i ekte nettleser: REQ-0839.
