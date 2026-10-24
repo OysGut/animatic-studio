@@ -78113,5 +78113,77 @@
   },
   "c5.limit.unverified": {
     "text": "Bygget, ikke verifisert i Storyboard Pro."
+  },
+  "c3.open": {
+    "text": "Premiere Pro"
+  },
+  "c3.title": {
+    "text": "Adobe Premiere Pro"
+  },
+  "c3.intro": {
+    "text": "Send storyboardet til Premiere som sekvens, og hent klipperytmen tilbake som forslag du godtar eller avviser per panel."
+  },
+  "c3.download.info": {
+    "text": "Pakken inneholder {count} paneler, {audio} lydklipp, sekvensen som FCP XML og OTIO, og markører med panelenes ID-er."
+  },
+  "c3.download": {
+    "text": "Last ned sekvenspakke"
+  },
+  "c3.progress": {
+    "text": "Lager panel {done} av {total} …"
+  },
+  "c3.download.done": {
+    "text": "Pakken med {count} paneler er lastet ned. Pakk den ut og åpne den fra Pen to Glass-panelet i Premiere."
+  },
+  "c3.login-info": {
+    "text": "Premiere-panelet logger inn via nettleseren. Du godkjenner tilgangen her i Pen to Glass, og kan trekke den tilbake under Konto."
+  },
+  "c3.proposals": {
+    "text": "Forslag fra Premiere"
+  },
+  "c3.rule": {
+    "text": "Bare rekkefølge innenfor scenen og varighet kan godtas. Scener, scenenumre og manus endres aldri."
+  },
+  "c3.none": {
+    "text": "Ingen åpne forslag. Send sekvensen tilbake fra Premiere-panelet."
+  },
+  "c3.col.current": {
+    "text": "Nå"
+  },
+  "c3.col.premiere": {
+    "text": "Fra Premiere"
+  },
+  "c3.col.choice": {
+    "text": "Valg"
+  },
+  "c3.position": {
+    "text": "Plass {n}"
+  },
+  "c3.duration": {
+    "text": "{tc} ({frames} bilder)"
+  },
+  "c3.moved-scene": {
+    "text": "Ligger i scene {scene} i Premiere. Scenen endres ikke; bare varigheten kan godtas."
+  },
+  "c3.conflict": {
+    "text": "Endret siden eksport"
+  },
+  "c3.accept": {
+    "text": "Godta"
+  },
+  "c3.reject": {
+    "text": "Avvis"
+  },
+  "c3.accepted": {
+    "text": "Forslaget er tatt i bruk. Du kan angre det."
+  },
+  "c3.rejected": {
+    "text": "Forslaget er avvist. Ingenting er endret."
+  },
+  "c3.stale": {
+    "text": "Panelet er endret siden forslaget. Send sekvensen på nytt fra Premiere."
+  },
+  "c3.error": {
+    "text": "Det gikk ikke. Prøv igjen."
   }
 }

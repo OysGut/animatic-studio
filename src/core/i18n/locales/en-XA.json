@@ -78095,5 +78095,77 @@
   },
   "c5.limit.unverified": {
     "text": "[!! BBüüïïlltt, nnôôtt vvëërrïïffïïëëdd ïïnn SSttôôrryybbôôáárrdd PPrrôô. !!]"
+  },
+  "c3.open": {
+    "text": "[!! PPrrëëmmïïëërrëë PPrrôô !!]"
+  },
+  "c3.title": {
+    "text": "[!! ÁÁddôôbbëë PPrrëëmmïïëërrëë PPrrôô !!]"
+  },
+  "c3.intro": {
+    "text": "[!! SSëënndd tthhëë ssttôôrryybbôôáárrdd ttôô PPrrëëmmïïëërrëë ááss áá ssëëqqüüëënnccëë, áánndd bbrrïïnngg tthhëë ëëddïïtt bbáácckk ááss ssüüggggëëssttïïôônnss yyôôüü ááccccëëpptt ôôrr rrëëjjëëcctt ppáánnëëll bbyy ppáánnëëll. !!]"
+  },
+  "c3.download.info": {
+    "text": "[!! TThhëë ppáácckkáággëë ccôônnttááïïnnss {count} ppáánnëëllss, {audio} ááüüddïïôô ccllïïppss, tthhëë ssëëqqüüëënnccëë ááss FFCCPP XXMMLL áánndd ÔÔTTÏÏÔÔ, áánndd mmáárrkkëërrss wwïïtthh tthhëë ppáánnëëll ÏÏDDss. !!]"
+  },
+  "c3.download": {
+    "text": "[!! DDôôwwnnllôôáádd ssëëqqüüëënnccëë ppáácckkáággëë !!]"
+  },
+  "c3.progress": {
+    "text": "[!! PPrrëëppáárrïïnngg ppáánnëëll {done} ôôff {total} … !!]"
+  },
+  "c3.download.done": {
+    "text": "[!! TThhëë ppáácckkáággëë wwïïtthh {count} ppáánnëëllss hhááss bbëëëënn ddôôwwnnllôôááddëëdd. ÜÜnnzzïïpp ïïtt áánndd ôôppëënn ïïtt ffrrôômm tthhëë PPëënn ttôô GGlláássss ppáánnëëll ïïnn PPrrëëmmïïëërrëë. !!]"
+  },
+  "c3.login-info": {
+    "text": "[!! TThhëë PPrrëëmmïïëërrëë ppáánnëëll ssïïggnnss ïïnn tthhrrôôüügghh yyôôüürr bbrrôôwwssëërr. YYôôüü áápppprrôôvvëë ááccccëëssss hhëërrëë ïïnn PPëënn ttôô GGlláássss áánndd ccáánn rrëëvvôôkkëë ïïtt üünnddëërr ÁÁccccôôüünntt. !!]"
+  },
+  "c3.proposals": {
+    "text": "[!! SSüüggggëëssttïïôônnss ffrrôômm PPrrëëmmïïëërrëë !!]"
+  },
+  "c3.rule": {
+    "text": "[!! ÔÔnnllyy ôôrrddëërr wwïïtthhïïnn áá ssccëënnëë áánndd ddüürrááttïïôônn ccáánn bbëë ááccccëëppttëëdd. SSccëënnëëss, ssccëënnëë nnüümmbbëërrss áánndd tthhëë ssccrrïïpptt nnëëvvëërr cchháánnggëë. !!]"
+  },
+  "c3.none": {
+    "text": "[!! NNôô ôôppëënn ssüüggggëëssttïïôônnss. SSëënndd tthhëë ssëëqqüüëënnccëë bbáácckk ffrrôômm tthhëë PPrrëëmmïïëërrëë ppáánnëëll. !!]"
+  },
+  "c3.col.current": {
+    "text": "[!! NNôôww !!]"
+  },
+  "c3.col.premiere": {
+    "text": "[!! FFrrôômm PPrrëëmmïïëërrëë !!]"
+  },
+  "c3.col.choice": {
+    "text": "[!! CChhôôïïccëë !!]"
+  },
+  "c3.position": {
+    "text": "[!! PPôôssïïttïïôônn {n} !!]"
+  },
+  "c3.duration": {
+    "text": "[!! {tc} ({frames} ffrráámmëëss) !!]"
+  },
+  "c3.moved-scene": {
+    "text": "[!! SSïïttss ïïnn ssccëënnëë {scene} ïïnn PPrrëëmmïïëërrëë. TThhëë ssccëënnëë ddôôëëss nnôôtt cchháánnggëë; ôônnllyy tthhëë ddüürrááttïïôônn ccáánn bbëë ááccccëëppttëëdd. !!]"
+  },
+  "c3.conflict": {
+    "text": "[!! CChháánnggëëdd ssïïnnccëë ëëxxppôôrrtt !!]"
+  },
+  "c3.accept": {
+    "text": "[!! ÁÁccccëëpptt !!]"
+  },
+  "c3.reject": {
+    "text": "[!! RRëëjjëëcctt !!]"
+  },
+  "c3.accepted": {
+    "text": "[!! TThhëë ssüüggggëëssttïïôônn hhááss bbëëëënn ááppppllïïëëdd. YYôôüü ccáánn üünnddôô ïïtt. !!]"
+  },
+  "c3.rejected": {
+    "text": "[!! TThhëë ssüüggggëëssttïïôônn hhááss bbëëëënn rrëëjjëëccttëëdd. NNôôtthhïïnngg hhááss cchháánnggëëdd. !!]"
+  },
+  "c3.stale": {
+    "text": "[!! TThhëë ppáánnëëll hhááss cchháánnggëëdd ssïïnnccëë tthhëë ssüüggggëëssttïïôônn. SSëënndd tthhëë ssëëqqüüëënnccëë áággááïïnn ffrrôômm PPrrëëmmïïëërrëë. !!]"
+  },
+  "c3.error": {
+    "text": "[!! TThháátt ddïïdd nnôôtt wwôôrrkk. PPllëëáássëë ttrryy áággááïïnn. !!]"
   }
 }
