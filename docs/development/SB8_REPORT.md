@@ -17,7 +17,7 @@ Tegnelag, verktøy og mobilside er implementert. Lokal migrasjon **0106_sb8_sket
 
 ## Verifikasjon
 
-- Full Vitest kjøres på nytt etter siste endring; resultat oppdateres nedenfor.
+- Full Vitest: **2 937 bestått, 0 feilet, 10 eksisterende hoppet over**, 368 testfiler bestått / 2 eksisterende hoppet over. Siste kjøring `bunx vitest run --maxWorkers=4` tok 274 sekunder. Ubegrenset parallellkjøring ga tidsavbrudd i i18n-kontrollen og ytelsestesten for 2 000 paneler; færre arbeidere løste ressurskonflikten uten endrede tester, terskler eller utelatelser.
 - Lokal DB-suite: **230 bestått, 0 feilet**, inkludert ekte capability-lagring og avvisning av utdaterte revisjoner, utløp, revokering, feil panel og direkte authenticated-lesing.
 - Visuell suite: **20 bestått, 0 feilet**, nb/en, desktop 1280 × 1800 og mobil 390 × 844. Ett penneløft lagrer ett strøk, raster har synlige piksler, visningstransformer skriver ikke, ingen vannrett side-overflyt. Mobilside med falske serverfunksjoner tester lagring, angre, gjør om og fyll. Skjermbilder inspisert; mobilbredden bruker nå hele tegneleren, ikke ressurslisten.
 - Språk: authored nb/en og alle registrerte oversettelser. fr/es/ru/ja/pt-BR/de/it/ko er maskinoversatt og merket for gjennomlesing. Inventaret regenerert.
@@ -46,4 +46,4 @@ Tegnelag, verktøy og mobilside er implementert. Lokal migrasjon **0106_sb8_sket
 
 ## Sluttkontroll
 
-Avventer siste fullkjøring nedenfor; ingen migrasjon er kjørt i Cloud av Lovable.
+Full Vitest 2 937/0/10; lokal DB 230/0; språkvalidering og releasekontroll bestått. Preview-loggen 04:12:51 UTC viser `build OK` med automatisk typekontroll. Ingen migrasjon er kjørt i Cloud av Lovable. Fysiske iPad-prøver og ekte Cloud-QR-flyt er fremdeles ikke verifisert.
