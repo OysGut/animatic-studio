@@ -1,12 +1,13 @@
 # Veikart
 
-## SB-6 – Utskrift, pitch og skuddliste (pågår)
-- [ ] Nye kort i eksisterende ExportAnimaticDialog, felles bildekildevalg
-- [ ] PDF 3/6/9, pitch, fem papirformater, feltvalg, topp/bunntekst, Noto/RTL
-- [ ] CSV med BOM og XLSX med typede kolonner, én rad per panel
-- [ ] Tegnelag og valg av note/arrow/camera_mark
-- [ ] Bitvis eksport med fremdrift/avbryt, 500-paneltest, visuelt nb/en desktop/mobil
-- [ ] Full Vitest/DB/i18n og rapport SB6_REPORT.md; ikke publiser
+## SB-6 – Utskrift, pitch og skuddliste (bygget; separate kontroller gjenstår)
+- [x] Nye kort i eksisterende ExportAnimaticDialog, felles bildekildevalg
+- [x] PDF 3/6/9, pitch, fem papirformater, feltvalg, topp/bunntekst, Noto/RTL
+- [x] CSV med BOM og XLSX med typede kolonner, én rad per panel
+- [x] Tegnelag og valg av note/arrow/camera_mark (fire rasterprøver)
+- [x] Bitvis eksport med fremdrift/avbryt, faktisk 500-panel-PDF-avbryt, visuelt nb/en desktop/mobil 40/0
+- [x] Full Vitest 2987/0/10, i18n/kunnskapskontroll og rapport SB6_REPORT.md; ikke publisert
+- [ ] Separat tsc og DB-suite: Claude kjører; Lovable-miljøet forbyr manuelle typekontroller og migrasjoner, og lokal DB mangler skjema
 
 ## SB-8 – Tegning i appen (pågår)
 - [x] Storyboard-only sketch-lag, delta-komprimerte vektorstrøk, trykk/tilt/tid og størrelsesvalidering
