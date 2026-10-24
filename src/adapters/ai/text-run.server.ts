@@ -245,7 +245,7 @@ export async function runTextGeneration(
           status: "failed",
           model: r.model.slice(0, 100),
           cost_usd: 0,
-          error: r.message.slice(0, 2000),
+          error: baseParams.storyboard ? "storyboard_provider_error" : r.message.slice(0, 2000),
           params: { ...baseParams, estimatedUsd: estimate, ...r.details },
         });
         return { ok: false, message: r.message, ...(r.truncated ? { truncated: true } : {}) };
@@ -288,7 +288,7 @@ export async function runTextGeneration(
     const raw = (e as Error).message || tk("adapters-ai-text-run-server.raw.message.28ecf6141d74");
     const message = scrubSecret(raw, secret);
     // Avvist kall: ingen kostnad hos leverandøren
-    await finish({ status: "failed", cost_usd: 0, error: message.slice(0, 2000),
+    await finish({ status: "failed", cost_usd: 0, error: baseParams.storyboard ? "storyboard_provider_error" : message.slice(0, 2000),
       params: { ...baseParams, estimatedUsd: estimate, ...(e instanceof ProviderError ? e.details : {}) },
     });
     return {
