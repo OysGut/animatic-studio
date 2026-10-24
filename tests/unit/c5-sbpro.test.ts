@@ -301,41 +301,35 @@ describe("innlogging og opplasting mot falskt API", () => {
     expect((await run("POST", path, auth, JSON.stringify(r.ret))).status).toBe(401);
   });
 
-  it("skriptets innlogging og opplasting (synkron vert) mot falsk server", async () => {
+  it("skriptets innlogging, fornyelse og opplasting mot en synkron falsk server", () => {
     const r = roundtrip(f => { f.panels[1]!.duration = 30; });
-    const a = api(r);
-    // Forhåndsgodkjenn: verten avventer svaret før skriptet leser det (curl er synkront).
-    const sync = (method: string, url: string, headers: Record<string, string>, body: string | null, file?: string) => {
-      const res = a.http(method, url, headers, body, file);
-      return res;
+    const P = r.P, host = r.h.host as Record<string, any>;
+    let polls = 0, access = "ptg_access_one", puts: string[] = [], posted: any = null, refreshed = 0;
+    host.http = (method: string, url: string, headers: Record<string, string>, body: string | null, file?: string) => {
+      const u = new URL(url).pathname;
+      if (u === "/api/v1/oauth/device") { expect(body).toContain("client_id=ptg.toonboom-sbpro"); return { status: 200, body: JSON.stringify({ device_code: "ptg_device_x", user_code: "ABCD-EFGH", verification_uri: "https://ptg.test/koble", expires_in: 600, interval: 5 }) }; }
+      if (u === "/api/v1/oauth/token" && body!.includes("device_code")) return ++polls < 3 ? { status: 400, body: '{"error":"authorization_pending"}' } : { status: 200, body: JSON.stringify({ access_token: access, refresh_token: "ptg_refresh_one", expires_in: 900, project_id: r.s.project.id }) };
+      if (u === "/api/v1/oauth/token" && body!.includes("refresh_token")) { refreshed++; access = "ptg_access_two"; return { status: 200, body: JSON.stringify({ access_token: access, refresh_token: "ptg_refresh_two", expires_in: 900 }) }; }
+      if (headers["Authorization"] === "Bearer ptg_access_one" && !refreshed) return { status: 401, body: '{"error":"invalid_token"}' };
+      if (method === "POST" && u.endsWith("/sbpro/returns")) { posted = JSON.parse(body!); const it = posted.items[1]; return { status: 201, body: JSON.stringify({ returnId: "r1", candidates: 5, conflicts: 0, conform: { lossless: true, reasons: [] }, uploads: [{ candidateId: "c1", key: it.id, sha256: it.files[0].sha256, byteSize: 64 }, { candidateId: "c2", key: it.id, sha256: "0".repeat(64), byteSize: 64 }] }) }; }
+      if (method === "PUT") { puts.push(`${u}|${file}`); return { status: 200, body: "{}" }; }
+      return { status: 404, body: "{}" };
     };
-    // Kjør innlogging i to trinn: først enhetskode, så godkjenning, så token.
-    const host = { ...r.h.host, http: sync };
-    let approved = false;
-    host.sleep = () => { /* ventetid */ };
-    host.message = () => { /* koden vises */ };
-    const P = r.P;
-    // Siden handleren er asynkron, kjører vi skriptet med en vert som har ferdige svar (forhåndshentet).
-    const devRes = await (async () => { const x = a.http("POST", "https://ptg.test/api/v1/oauth/device", { "Content-Type": "application/x-www-form-urlencoded" }, "client_id=ptg.toonboom-sbpro&scope=" + encodeURIComponent(P.SCOPES)); await Promise.all(a.pending); return { status: x.status, body: x.body }; })();
-    const dev = JSON.parse(devRes.body);
-    a.mem.approveDevice(dev.user_code, r.s.project.id, "11111111-1111-4111-8111-111111111111"); approved = true;
-    const tokRes = await (async () => { const x = a.http("POST", "https://ptg.test/api/v1/oauth/token", { "Content-Type": "application/x-www-form-urlencoded" }, `grant_type=${encodeURIComponent("urn:ietf:params:oauth:grant-type:device_code")}&device_code=${dev.device_code}&client_id=ptg.toonboom-sbpro`); await Promise.all(a.pending); return { status: x.status, body: x.body }; })();
-    const t = JSON.parse(tokRes.body);
-    host.saveSession({ baseUrl: "https://ptg.test", accessToken: t.access_token, refreshToken: t.refresh_token, projectId: t.project_id, expiresAt: host.now() + t.expires_in * 1000 });
-    expect(approved).toBe(true);
-    // Opplasting: verten svarer synkront fra en ferdig kø av svar.
-    const answered: { status: number; body: string }[] = [];
-    const replay = (method: string, url: string, headers: Record<string, string>, body: string | null, file?: string) => {
-      const x = a.http(method, url, headers, body, file);
-      answered.push(x); return x;
-    };
-    host.http = replay;
-    let err: unknown = null;
-    try { P.upload(host, r.ret, "/out"); } catch (e) { err = e; }
-    await Promise.all(a.pending);
-    // Første kall (POST retur) er nå besvart; skriptet så status 0 synkront og stoppet trygt uten å bruke noe.
-    expect(String((err as Error)?.message ?? "")).toMatch(/http_0|^$/);
-    expect(answered[0]!.status).toBe(201);
-    expect(a.mem.state).toBe(r.s);
+    const s1 = P.login(host, "https://ptg.test");
+    expect(polls).toBe(3); expect(s1.accessToken).toBe("ptg_access_one");
+    expect(r.h.messages[0]).toContain("ABCD-EFGH");
+    const res = P.upload(host, r.ret, "/out");
+    expect(refreshed).toBe(1);
+    expect(res.returnId).toBe("r1");
+    expect(posted.adapter.id).toBe("toonboom-sbpro");
+    expect(puts).toEqual([`/api/v1/projects/${r.s.project.id}/sbpro/returns/r1/images/c1|/out/${r.ret.items[1].files[0].path}`]); // feil sha sendes ikke
+    expect(JSON.stringify(r.h.session)).not.toContain("ptg_access_one");
+    P.logout(host);
+    expect(r.h.session).toBeNull();
+  });
+  it("avviser opplasting til et annet prosjekt enn innloggingen", () => {
+    const r = roundtrip(), host = r.h.host as Record<string, any>;
+    host.saveSession({ baseUrl: "https://ptg.test", accessToken: "a", refreshToken: "b", projectId: "annet", expiresAt: Date.now() + 1e9 });
+    expect(() => r.P.upload(host, r.ret, "/out")).toThrow("wrong_project");
   });
 });
