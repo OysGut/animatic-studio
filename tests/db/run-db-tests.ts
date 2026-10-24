@@ -8934,6 +8934,8 @@ try {
     assert((await as('authenticated',ALICE,tx=>tx`select public.storyboard_review_path_writable(${frozenPath}) v`))[0]?.['v']===false,'finalized review path writable');
     assert((await as('authenticated',ALICE,tx=>tx`select public.storyboard_review_path_writable(${g7p+'/unrelated.png'}) v`))[0]?.['v']===true,'unrelated path blocked');
     assert((await sql`select count(*) n from pg_policies where schemaname='storage' and policyname like 'sb10_frozen_review_%' and permissive='RESTRICTIVE'`)[0]?.['n']==='3','missing restrictive policies');
+    // Emulated storage: 0002 and 0004 now create their storage policies too.
+    assert((await sql`select count(*) n from pg_policies where schemaname='storage' and policyname in('sources_read','sources_insert','assets_read','assets_insert')`)[0]?.['n']==='4','0002/0004 storage policies missing');
     await expectError(as("anon",ALICE,tx=>tx`select public.storyboard_review_lookup(${hash})`),'42501');
     await expectError(as("authenticated",ALICE,tx=>tx`select token_hash from public.storyboard_shares where id=${share}`),'42501');
     assert((await as("authenticated",CAROL,tx=>tx`select id from public.storyboard_feedback where share_id=${share}`)).length===0,'nonmember feedback leak');
