@@ -47,12 +47,14 @@ function harness() {
   mem.files.set(media(v1, b1).path, b1); mem.files.set(media(v2, b2).path, b2);
   const fetchFn = (async (input: RequestInfo | URL, init?: RequestInit) => handleApiV1(new Request(String(input), init), { store: mem.store, now: () => now, random, ip: "203.0.113.17" })) as typeof fetch;
 
-  // Falsk CEP + ExtendScript-modell over host.jsx-funksjonene.
-  const files = new Map<string, string>();
+  // Falsk CEP (filer som bytes) + ExtendScript-modell over host.jsx-funksjonene.
+  const files = new Map<string, Uint8Array>();
+  const enc = new TextEncoder(), dec = new TextDecoder();
+  const text = (p: string) => dec.decode(files.get(p)!);
+  const putText = (p: string, t: string) => { files.set(p, enc.encode(t)); };
   const calls = { urls: [] as string[], scripts: [] as string[] };
   type Doc = { path: string; svg: IllustratorDoc; xmp: string | null; dpi: number; savedAi: string | null; edit: number };
   const app = { docs: [] as Doc[], active: null as Doc | null };
-  const arg = (s: string) => JSON.parse(s);
   const csi: CSInterfaceLike = {
     evalScript(script, cb) {
       calls.scripts.push(script);
@@ -60,12 +62,12 @@ function harness() {
       const args = m[2] ? JSON.parse(`[${m[2]}]`) as unknown[] : [];
       const a = app.active;
       switch (m[1]) {
-        case "ptgOpenSvg": { const p = args[0] as string; if (!files.has(p)) return cb?.("err:missing"); const d: Doc = { path: p, svg: readIllustratorSvg(files.get(p)!), xmp: null, dpi: args[1] as number, savedAi: null, edit: 0 }; app.docs.push(d); app.active = d; return cb?.("ok"); }
-        case "ptgSaveAi": if (!a) return cb?.("err:nodoc"); a.savedAi = args[0] as string; files.set(a.savedAi, "%PDF-1.6 AI"); return cb?.("ok");
+        case "ptgOpenSvg": { const p = args[0] as string; if (!files.has(p)) return cb?.("err:missing"); const d: Doc = { path: p, svg: readIllustratorSvg(text(p)), xmp: null, dpi: args[1] as number, savedAi: null, edit: 0 }; app.docs.push(d); app.active = d; return cb?.("ok"); }
+        case "ptgSaveAi": if (!a) return cb?.("err:nodoc"); a.savedAi = args[0] as string; putText(a.savedAi, "%PDF-1.6 AI"); return cb?.("ok");
         case "ptgWriteLink": if (!a) return cb?.("err:nodoc"); a.xmp = args[0] as string; return cb?.("ok");
         case "ptgReadLink": return cb?.(a?.xmp ? "link:" + a.xmp : "none");
         case "ptgDocInfo": return cb?.(a ? `doc:${a.path.split("/").pop()}|${a.svg.width}|${a.svg.height}|${a.svg.layers.length}` : "none");
-        case "ptgExportPng": { if (!a) return cb?.("err:nodoc"); files.set(args[0] as string, toBase64(png(args[1] as number, args[2] as number, 10 + a.edit))); return cb?.("ok"); }
+        case "ptgExportPng": { if (!a) return cb?.("err:nodoc"); files.set(args[0] as string, png(args[1] as number, args[2] as number, 10 + a.edit)); return cb?.("ok"); }
       }
       cb?.("EvalScript error.");
     },
@@ -74,23 +76,16 @@ function harness() {
     getHostEnvironment() { return { appVersion: "29.0.0", appUILocale: "nb_NO" }; },
   };
   const fs: CepFsLike = {
-    readFile(path, enc) { if (!files.has(path)) return { err: 3, data: "" }; const v = files.get(path)!; return { err: 0, data: enc === "Base64" && !isB64(v) ? toBase64(new TextEncoder().encode(v)) : v }; },
-    writeFile(path, data, enc) { files.set(path, enc === "Base64" ? data : "\u0000T" + data); return { err: 0 }; },
+    readFile(path, e) { const v = files.get(path); return v ? { err: 0, data: e === "Base64" ? toBase64(v) : dec.decode(v) } : { err: 3, data: "" }; },
+    writeFile(path, data, e) { files.set(path, e === "Base64" ? fromBase64(data) : enc.encode(data)); return { err: 0 }; },
     deleteFile(path) { files.delete(path); return { err: 0 }; },
     makedir() { return { err: 0 }; },
     showOpenDialogEx() { return { err: 0, data: ["/Users/x/Pakke"] }; },
   };
-  // Tekst lagres med et prefiks så modellen vet hva som er Base64.
-  const isB64 = (v: string) => !v.startsWith("\u0000T");
-  const text = (p: string) => files.get(p)!.slice(2);
-  const realFs: CepFsLike = { ...fs, readFile(path, enc) { if (!files.has(path)) return { err: 3, data: "" }; const v = files.get(path)!; return { err: 0, data: isB64(v) ? v : enc === "Base64" ? toBase64(new TextEncoder().encode(v.slice(2))) : v.slice(2) }; } };
-  const host = cepHost(csi, realFs, { fetch: fetchFn, random });
-  // ptgOpenSvg leser SVG-teksten direkte fra filmodellen.
-  const origEval = csi.evalScript.bind(csi);
-  csi.evalScript = (script, cb) => { const m = /^ptgOpenSvg\((".*?"),/.exec(script); if (m) { const p = JSON.parse(m[1]!); if (files.has(p) && !isB64(files.get(p)!)) { const t = text(p); files.set(p + "#text", t); } } origEval(script.replace(/^ptgOpenSvg\((".*?")/, (_, q) => `ptgOpenSvg(${JSON.stringify(JSON.parse(q) + "#text")}`), cb); };
+  const host = cepHost(csi, fs, { fetch: fetchFn, random });
   const sdk = new PtgConnector({ baseUrl: "https://ptg.test", clientId: CLIENT_ID, fetch: fetchFn, random, tokens: fileTokenStore(host, TOKEN_FILE), now: () => now, sleep: async ms => { now += ms; } });
   const plugin = new IllustratorPlugin(host, cepIllustrator(host.evalScript), "https://ptg.test", sdk);
-  return { plugin, mem, files, text, calls, app, sdk, assetId, variantId, v1, v2, b1, projectId: s.project.id as string, state: s, putText: (p: string, t: string) => files.set(p, "\u0000T" + t) };
+  return { plugin, mem, files, text, calls, app, sdk, assetId, variantId, v1, v2, b1, projectId: s.project.id as string, state: s, putText };
 }
 async function signIn(h: ReturnType<typeof harness>) {
   await h.plugin.beginSignIn();
