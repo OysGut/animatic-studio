@@ -214,7 +214,7 @@ describe("C-6 panelet mot falsk CEP/ExtendScript og falskt API", () => {
     // Brukeren redigerer i Audition og gir filen et nytt navn: koblingen går likevel på ID.
     const musicFile = ex.files.find(f => f.includes("_music_"))!;
     const edited = fromBase64(h.cep.files.get(`/Users/x/Lyd/${musicFile}`)!);
-    edited[edited.length - 2] ^= 0x7f;
+    edited[edited.length - 2] = edited[edited.length - 2]! ^ 0x7f;
     h.cep.files.set("/Users/x/Ny/helt_annet_navn.wav", toBase64(edited));
     const approvedBefore = h.mem.state.assetVariants[h.variantId]!.approvedVersionId;
     await h.plugin.sendBack(["/Users/x/Ny/helt_annet_navn.wav"]);
