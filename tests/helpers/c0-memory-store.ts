@@ -24,7 +24,7 @@ export function memoryStore(state: ProjectState, opts: { now: () => number; rate
   const sbproCandidates: (SbproCandidate & { id: string; returnId: string; status: string; mediaPath: string | null })[] = [];
   const premiereProposals: { id: string; returnId: string; edit: PremiereEdit; conflict: boolean; status: string }[] = [];
   let n = 0;
-  const view = (x: Session) => ({ id: x.id, projectId: x.projectId, userId: x.userId, scopes: x.scopes, expiresAt: x.accessExpiresAt, revokedAt: x.revokedAt });
+  const view = (x: Session) => ({ id: x.id, projectId: x.projectId, userId: x.userId, clientId: x.clientId, scopes: x.scopes, expiresAt: x.accessExpiresAt, revokedAt: x.revokedAt });
   const store: ConnectorStore = {
     async rateLimit(scope, keys) {
       const limit = opts.rateLimit ?? 1000;
@@ -68,8 +68,9 @@ export function memoryStore(state: ProjectState, opts: { now: () => number; rate
     async putChunk(id, i, b) { const m = chunks.get(id) ?? new Map(); m.set(i, b); chunks.set(id, m); },
     async chunkIndexes(id) { return [...(chunks.get(id)?.keys() ?? [])].sort((a, b) => a - b); },
     async readChunk(id, i) { return chunks.get(id)!.get(i)!; },
-    // Falsk signert URL: peker tilbake på den vanlige bit-endepunktet, så SDK-testen øver hele flyten.
-    async signChunk(id, i) { const t = transfers.get(id); return t ? { url: `/api/v1/projects/${t.projectId}/transfers/${id}/chunks/${i}` } : null; },
+    // Falsk signert URL: egen «lagrings»-sti som testens fetch avfanger og skriver rett til bitlageret,
+    // akkurat som en ekte signert URL skriver rett til fil-lagringen (uten Bearer-token).
+    async signChunk(id, i) { const t = transfers.get(id); return t ? { url: `/fake-storage/${id}/part-${i}` } : null; },
     async createPanelCandidate(t, file, actor) {
       const versionId = `00000000-0000-4000-9000-${String(++n).padStart(12, "0")}`;
       const path = `${t.projectId}/${t.assetId}/${versionId}/${t.fileName}`;

@@ -76,7 +76,7 @@ describe("C-0 kjerne", () => {
     expect(makeUserCode(random(8))).toMatch(/^[BCDFGHJKLMNPQRSTVWXZ]{4}-[BCDFGHJKLMNPQRSTVWXZ]{4}$/);
   });
   it("sesjon: utløp, tilbaketrekking, prosjekt og scope", () => {
-    const row = { id: "s", projectId: "p", userId: "u", scopes: ["assets:read"], expiresAt: "2026-10-24T09:00:00Z", revokedAt: null };
+    const row = { id: "s", projectId: "p", userId: "u", clientId: "ptg.photoshop", scopes: ["assets:read"], expiresAt: "2026-10-24T09:00:00Z", revokedAt: null };
     const now = Date.parse("2026-10-24T08:00:00Z");
     expect(checkSession(row, now, { scope: "assets:read", projectId: "p" })).toEqual({ ok: true });
     expect(checkSession(row, Date.parse("2026-10-24T09:00:00Z"), { scope: "assets:read" })).toEqual({ ok: false, reason: "expired" });

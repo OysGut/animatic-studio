@@ -28,8 +28,19 @@ export async function cloudConnectorStore(): Promise<ConnectorStore> {
       const { data, error } = await db.from("connector_sessions").insert({ project_id: s.projectId, user_id: s.userId, client_id: s.clientId, scopes: s.scopes, access_hash: s.accessHash, refresh_hash: s.refreshHash, access_expires_at: s.accessExpiresAt, refresh_expires_at: s.refreshExpiresAt }).select("id").single();
       if (error) throw error; return String(data["id"]);
     },
-    async sessionByAccess(hash) { return await rpc("connector_session_by_access", { p_hash: hash }); },
-    async rotateRefresh(old, n) { return await rpc("connector_rotate_refresh", { p_old: old, p_access: n.accessHash, p_refresh: n.refreshHash, p_access_exp: n.accessExpiresAt, p_refresh_exp: n.refreshExpiresAt }); },
+    // RPC-ene fra 0109 er låst og returnerer ikke client_id; den hentes med et eget oppslag.
+    async sessionByAccess(hash) {
+      const row = await rpc("connector_session_by_access", { p_hash: hash });
+      if (!row) return null;
+      const c = await db.from("connector_sessions").select("client_id").eq("id", row["id"]).maybeSingle();
+      return { ...row, clientId: c.data?.["client_id"] ?? "" };
+    },
+    async rotateRefresh(old, n) {
+      const row = await rpc("connector_rotate_refresh", { p_old: old, p_access: n.accessHash, p_refresh: n.refreshHash, p_access_exp: n.accessExpiresAt, p_refresh_exp: n.refreshExpiresAt });
+      if (!row) return null;
+      const c = await db.from("connector_sessions").select("client_id").eq("id", row["id"]).maybeSingle();
+      return { ...row, clientId: c.data?.["client_id"] ?? "" };
+    },
     async createDevice(d) { await rpc("connector_create_device", { p_hash: d.deviceHash, p_user_code: d.userCode, p_client: d.clientId, p_scopes: d.scopes, p_expires: d.expiresAt }); },
     async pollDevice(hash) { return await rpc("connector_poll_device", { p_hash: hash }); },
     async revokeByToken(hash) { await rpc("connector_revoke_token", { p_hash: hash }); },
