@@ -8,6 +8,37 @@ import { describe, expect, it } from "vitest";
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
 import ts from "typescript";
+import { existsSync } from "node:fs";
+import { dirname } from "node:path";
+
+/** Funksjonsdeklarasjoner heises og er trygge å kalle ved lasting; alt annet (const, class, let) er ikke. */
+const hoistCache = new Map<string, Set<string>>();
+function resolveModule(spec: string, from: string): string | null {
+  const base = spec.startsWith("@/") ? join(ROOT, "src", spec.slice(2)) : join(dirname(from), spec);
+  for (const c of [base + ".ts", base + ".tsx", join(base, "index.ts")]) if (existsSync(c)) return c;
+  return null;
+}
+function hoistedFunctions(file: string, seen = new Set<string>()): Set<string> {
+  const hit = hoistCache.get(file);
+  if (hit) return hit;
+  const out = new Set<string>();
+  if (seen.has(file)) return out;
+  seen.add(file);
+  const sf = ts.createSourceFile(file, readFileSync(file, "utf8"), ts.ScriptTarget.Latest, true);
+  for (const st of sf.statements) {
+    if (ts.isFunctionDeclaration(st) && st.name && st.modifiers?.some((m) => m.kind === ts.SyntaxKind.ExportKeyword)) out.add(st.name.text);
+    if (ts.isExportDeclaration(st) && st.moduleSpecifier) {
+      const target = resolveModule((st.moduleSpecifier as ts.StringLiteral).text, file);
+      if (!target) continue;
+      const inner = hoistedFunctions(target, seen);
+      if (!st.exportClause) inner.forEach((n) => out.add(n));
+      else if (ts.isNamedExports(st.exportClause))
+        for (const el of st.exportClause.elements) if (inner.has((el.propertyName ?? el.name).text)) out.add(el.name.text);
+    }
+  }
+  hoistCache.set(file, out);
+  return out;
+}
 
 const ROOT = process.cwd();
 const DIRS = ["src/app", "src/engine", "src/adapters", "src/routes", "src/components", "src/lib", "src/hooks"];
@@ -38,7 +69,10 @@ export function eagerCoreReads(source: string, fileName = "x.ts"): string[] {
     if (c.name) core.add(c.name.text);
     const nb = c.namedBindings;
     if (nb && ts.isNamespaceImport(nb)) core.add(nb.name.text);
-    if (nb && ts.isNamedImports(nb)) for (const el of nb.elements) if (!el.isTypeOnly) core.add(el.name.text);
+    const target = fileName.startsWith("/") ? resolveModule(spec, fileName) : null;
+    const safe = target ? hoistedFunctions(target) : new Set<string>();
+    if (nb && ts.isNamedImports(nb))
+      for (const el of nb.elements) if (!el.isTypeOnly && !safe.has((el.propertyName ?? el.name).text)) core.add(el.name.text);
   }
   if (!core.size) return [];
   const hits: string[] = [];
