@@ -1,6 +1,7 @@
 // @vitest-environment node
 /** C-0 Creative Connectors: kjerne, API v1 mot falsk lagring, SDK mot falsk server og OpenAPI. Ingen nettverk. */
 import { readFileSync } from "node:fs";
+import { createHash } from "node:crypto";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { emptyProjectState, FPS_25, type ProjectState } from "@/core";
@@ -52,12 +53,18 @@ async function pkceLogin(h: ReturnType<typeof harness>, scope = "project:read ma
 }
 
 describe("C-0 kjerne", () => {
-  it("SHA-256 og PKCE følger standardvektorene (FIPS 180-4, RFC 7636 B)", () => {
+  it("SHA-256 og PKCE S256 stemmer med referansen (FIPS 180-4, RFC 7636)", () => {
     expect(sha256Hex("abc")).toBe("ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad");
     expect(sha256Hex("")).toBe("e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855");
-    expect(pkceChallenge("dBjftJeZ4CVP-mJ92K1qnFZEe8bE87D1cRCaixVNhOU")).toBe("E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM");
-    expect(pkceMatches("dBjftJeZ4CVP-mJ92K1qnFZEe8bE87D1cRCaixVNhOU", "E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM")).toBe(true);
-    expect(pkceMatches("dBjftJeZ4CVP-mJ92K1qnFZEe8bE87D1cRCaixVNhOV", "E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM")).toBe(false);
+    for (let i = 0; i < 20; i++) {
+      const bytes = random(300 + i * 37);
+      expect(sha256Hex(bytes)).toBe(createHash("sha256").update(bytes).digest("hex"));
+      const verifier = Buffer.from(random(32)).toString("base64url");
+      const challenge = createHash("sha256").update(verifier).digest("base64url");
+      expect(pkceChallenge(verifier)).toBe(challenge);
+      expect(pkceMatches(verifier, challenge)).toBe(true);
+      expect(pkceMatches(verifier.slice(0, -1) + (verifier.endsWith("A") ? "B" : "A"), challenge)).toBe(false);
+    }
     expect(pkceMatches("short", "E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM")).toBe(false);
   });
   it("token: bare hash lagres, prefiks bestemmer type, brukerkode uten forvekslbare tegn", () => {

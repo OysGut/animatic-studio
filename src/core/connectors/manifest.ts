@@ -61,7 +61,7 @@ export type ManifestResult = { readonly ok: true; readonly manifest: ConnectorMa
 const KINDS = new Set(["project", "production", "scene", "occurrence", "panel", "asset", "version"]);
 const ENTITIES = new Set(["asset_version", "panel", "clip"]);
 const SECRET_KEY = /(^|_|-)(token|secret|password|passwd|authorization|api[_-]?key|access[_-]?key|refresh|cookie|bearer|code[_-]?verifier)($|_|-)/i;
-const SECRET_KEY_CAMEL = /(token|secret|password|authorization|apiKey|accessKey|refreshToken|codeVerifier|cookie)$/;
+const SECRET_KEY_CAMEL = /(token|secret|password|passwd|authorization|apikey|accesskey|codeverifier|cookie|bearer)$/i;
 /** Verdier som ser ut som tokens (app-, leverandør- og JWT-format). */
 const SECRET_VALUE = /^(ptgc_|ptgr_|ptgd_|sr_|sk[-_]|sb_secret_|ghp_|xox[abp]-|Bearer\s)|^eyJ[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}\./;
 const SHA = /^[0-9a-f]{64}$/;
