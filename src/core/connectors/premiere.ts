@@ -14,7 +14,7 @@ import { keyBetween } from "../order-key";
 import { storyboardPanelsOf } from "../storyboard";
 import { panelDetails } from "../storyboard/editing";
 import { storyboardTempAudioItems, storyboardTimeline } from "../storyboard/playback";
-import { framesToSeconds, secondsToFrames } from "../time";
+import { secondsToFrames } from "../time";
 import type { PremiereAudioClip, PremiereAudioTrack, PremiereReturn, PremiereSequence } from "./premiere-sequence";
 
 const TRACK_OF: Record<string, PremiereAudioTrack> = { dialogue: "dialogue", narration: "dialogue", music: "music", sfx: "effects", ambience: "effects" };
@@ -65,7 +65,6 @@ export function buildPremiereSequence(s: ProjectState, productionId: string, lan
     audioVersions: [...versions.values()],
   };
 }
-void framesToSeconds;
 
 /** Forslag for ett panel. Bare det som er endret er med. */
 export interface PremiereEdit {
