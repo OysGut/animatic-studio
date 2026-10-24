@@ -10,6 +10,7 @@ import {
   Sha256, buildProjectManifest, checkIntake, checkReserve, checkSession, chunkCount, expectedChunkSize, idempotentReplay,
   makeToken, makeUserCode, mimeForExtension, missingChunks, parseScopes, pkceMatches, reserveFingerprint, sha256Hex, tokenHash, tokenKind, toHex,
   planSbproReturn, readSbproReturn, planPremiereProposal, readPremiereReturn, type PremiereEdit, SBPRO_MAX_IMAGE_BYTES, MAX_MANIFEST_BYTES, type SbproCandidate, auditionPlan, blenderCameraPlan,
+  usesDirectUpload, signedChunkCount, expectedSignedChunkSize, reserveTargetPanel, planPanelReturn, checkLink, checkNote, LINKS_MAX_PER_PROJECT, NOTES_MAX_PER_PROJECT,
   type ConnectorScope, type ConnectorSessionRow, type ReserveRequest, type TransferStatus,
 } from "@/core/connectors";
 
@@ -17,6 +18,8 @@ export interface StoredTransfer {
   readonly id: string; readonly projectId: string; readonly sessionId: string; readonly idempotencyKey: string; readonly fingerprint: string;
   readonly fileName: string; readonly byteSize: number; readonly sha256: string; readonly assetId: string; readonly variantId: string;
   readonly baseVersionId: string | null; status: TransferStatus; candidateVersionId: string | null; conflictId: string | null;
+  /** Panelmål (C-7): skjult kandidat i et storyboardpanel. assetId/variantId er da genererte ID-er for den nye ressursen. */
+  readonly panelId: string | null; readonly panelRevision: number | null;
 }
 export interface ConnectorStore {
   rateLimit(scope: string, keys: string[]): Promise<boolean>;
@@ -36,6 +39,16 @@ export interface ConnectorStore {
   putChunk(transferId: string, index: number, bytes: Uint8Array): Promise<void>;
   chunkIndexes(transferId: string): Promise<number[]>;
   readChunk(transferId: string, index: number): Promise<Uint8Array>;
+  /** Direkte opplasting (>64 MiB): signert URL for bit `index` (16 MiB-biter). Klienten PUT-er rett til lagringen. */
+  signChunk(transferId: string, index: number): Promise<{ url: string; headers?: Record<string, string> } | null>;
+  /** Panelmål (C-7): lagrer filen og legger inn ressurs + versjon + skjult kandidatlag via apply_changes. */
+  createPanelCandidate(t: StoredTransfer, file: { bytes: Uint8Array[]; mimeType: string; sha256: string }, actor: string): Promise<{ versionId: string; conflictId: string | null }>;
+  /** connector_links: ekstern ID (fra klienten) ↔ prosjektentitet, per prosjekt og klient. */
+  listLinks(projectId: string, clientId: string, entity?: string, entityId?: string): Promise<{ id: string; entity: string; entityId: string; externalId: string; revision: number }[]>;
+  putLink(projectId: string, clientId: string, userId: string, l: { entity: string; entityId: string; externalId: string }): Promise<{ id: string; revision: number } | "limit">;
+  removeLink(projectId: string, clientId: string, entity: string, externalId: string): Promise<"ok" | "not_found">;
+  /** notes:write: et notatflagg på et prosjektobjekt, som sesjonsbrukeren (angrebar kommando i appen). */
+  addNote(projectId: string, userId: string, n: { targetKind: string; targetId: string; text: string }): Promise<{ id: string } | "limit" | "target">;
   /** Lagrer filen og legger kandidaten inn via apply_changes (AddAssetVersion, aldri godkjenning). */
   createCandidate(t: StoredTransfer, file: { bytes: Uint8Array[]; mimeType: string; sha256: string }, actor: string): Promise<{ versionId: string; conflictId: string | null }>;
   setTransferStatus(id: string, status: TransferStatus): Promise<void>;
@@ -135,9 +148,15 @@ async function authed(req: Request, d: ApiDeps, scope: ConnectorScope, projectId
   return row!;
 }
 
+const transferChunks = (byteSize: number) => usesDirectUpload(byteSize) ? signedChunkCount(byteSize) : chunkCount(byteSize);
+const transferMissing = (byteSize: number, received: readonly number[]) => {
+  const have = new Set(received);
+  return Array.from({ length: transferChunks(byteSize) }, (_, i) => i).filter(i => !have.has(i));
+};
 const publicTransfer = (t: StoredTransfer, received: number[]) => ({
-  id: t.id, status: t.status, fileName: t.fileName, byteSize: t.byteSize, sha256: t.sha256, chunkCount: chunkCount(t.byteSize),
-  missingChunks: missingChunks(t.byteSize, received), candidateVersionId: t.candidateVersionId, conflictId: t.conflictId,
+  id: t.id, status: t.status, fileName: t.fileName, byteSize: t.byteSize, sha256: t.sha256, chunkCount: transferChunks(t.byteSize),
+  missingChunks: transferMissing(t.byteSize, received), candidateVersionId: t.candidateVersionId, conflictId: t.conflictId,
+  panelId: t.panelId, direct: usesDirectUpload(t.byteSize),
 });
 
 export async function handleApiV1(req: Request, d: ApiDeps): Promise<Response> {
