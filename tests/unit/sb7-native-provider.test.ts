@@ -1,0 +1,5 @@
+// @vitest-environment node
+import { afterEach, expect, it, vi } from "vitest";
+import { ADAPTERS } from "@/adapters/ai/providers.server";
+afterEach(()=>vi.unstubAllGlobals());
+it("fake OpenAI edit receives exact size and native PNG mask with sketch image",async()=>{const request=vi.fn(async(_url:unknown,init:RequestInit)=>{const form=init.body as FormData;expect(form.get("size")).toBe("864x1536");expect(form.get("mask")).toBeInstanceOf(Blob);expect(form.get("image")).toBeInstanceOf(Blob);return new Response(JSON.stringify({data:[{b64_json:"aGVsbG8="}]}),{status:200,headers:{"content-type":"application/json"}});});vi.stubGlobal("fetch",request);const image=new Blob(["fake"],{type:"image/png"});const r=await ADAPTERS["openai"].image({key:"fake-key",model:"gpt-image-2.5-sunburst",prompt:"fake fixture",references:[image],purpose:"background",dimensions:{width:864,height:1536},mask:image});expect(r.bytes.length).toBe(5);expect(request).toHaveBeenCalledTimes(1);});
