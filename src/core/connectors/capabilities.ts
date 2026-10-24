@@ -19,6 +19,8 @@ export const ADAPTERS: readonly AdapterDescriptor[] = [
   { id: "adobe-after-effects-legacy", name: "Adobe After Effects", capabilities: ["read", "layers", "timeline"], exportFallback: "ae" },
   { id: "procreate-handoff", name: "Procreate", capabilities: ["read", "write"], exportFallback: "png" },
   { id: "daw-roundtrip", name: "DAW", capabilities: ["read", "write", "audio", "timeline"], exportFallback: "wav" },
+  // C-4: Boords API (beta, betalt plan). Lese/skrive frames (action/sound/dialogue + bilde) og kommentarer.
+  { id: "boords-api", name: "Boords", capabilities: ["read", "write", "notes"], exportFallback: "pdf" },
   { id: "storyboard-interchange", name: "Storyboard Pro / OTIO", capabilities: ["read", "timeline", "notes"], exportFallback: "otio" },
 ];
 
@@ -30,3 +32,6 @@ export function offerFor(adapter: AdapterDescriptor, wanted: Capability): Action
 }
 export const validDescriptor = (a: AdapterDescriptor): boolean =>
   /^[a-z0-9-]{3,64}$/.test(a.id) && a.capabilities.length > 0 && a.capabilities.every(c => (CAPABILITIES as readonly string[]).includes(c)) && new Set(a.capabilities).size === a.capabilities.length;
+
+/** C-4: det Boords-koblingen ikke kan, vist ærlig i innstillingene (i18n-nøkler under c4.limit.*). */
+export const BOORDS_LIMITS = ["paid-plan", "beta", "no-layers", "no-audio", "no-timeline", "no-etag", "partial-webhooks", "no-auto-apply"] as const;

@@ -9083,6 +9083,26 @@ try {
     assert(await call(ALICE,g7p,rj,'reject',1)==='ok','reject');
     assert((await sql`select status from public.connector_transfers where id=${tr}`)[0]?.['status']==='rejected','transfer not rejected');
   });
+  await test("0112 C-4 Boords: chiffer skjult, RLS, idempotente webhooks, kandidatvalg", async () => {
+    const h=(c:string)=>c.repeat(64).slice(0,64), cid=newId();
+    await sql`insert into public.boords_connections(id,owner_kind,user_id,ciphertext,iv,key_hint) values(${cid},'user',${ALICE},${'x'.repeat(32)},${'y'.repeat(16)},'…1234')`;
+    await expectError(as("authenticated",ALICE,tx=>tx`select ciphertext from public.boords_connections`),'42501');
+    assert((await as("authenticated",ALICE,tx=>tx`select key_hint from public.boords_connections where id=${cid}`)).length===1,'owner cannot read own row');
+    assert((await as("authenticated",BOB,tx=>tx`select key_hint from public.boords_connections where id=${cid}`)).length===0,'other user reads connection');
+    await expectError(as("authenticated",ALICE,tx=>tx`insert into public.boords_connections(id,owner_kind,user_id,ciphertext,iv,key_hint) values(${newId()},'user',${ALICE},${'x'.repeat(32)},${'y'.repeat(16)},'h')`),'42501');
+    await expectError(as("authenticated",ALICE,tx=>tx`select public.boords_webhook_once(${cid},'e1')`),'42501');
+    assert((await as("service_role",null,tx=>tx`select public.boords_webhook_once(${cid},'e1') v`))[0]?.['v']===true,'first event');
+    assert((await as("service_role",null,tx=>tx`select public.boords_webhook_once(${cid},'e1') v`))[0]?.['v']===false,'duplicate accepted');
+    const link=(await sql`insert into public.connector_links(project_id,client_id,external_id,entity,entity_id,created_by) values(${g7p},'boords','f1','panel',${newId()},${ALICE}) returning id`)[0]?.['id'];
+    const cand=(await sql`insert into public.boords_candidates(project_id,link_id,panel_id,frame_id,kind,incoming,incoming_hash) values(${g7p},${link},${newId()},'f1','text','{"action":"x"}',${h('a')}) returning id`)[0]?.['id'];
+    await expectError(sql`insert into public.boords_candidates(project_id,link_id,panel_id,frame_id,kind,incoming,incoming_hash) values(${g7p},${link},${newId()},'f1','text','{}',${h('a')})`,'23505');
+    assert((await as("authenticated",BOB,tx=>tx`select public.boords_resolve_candidate(${cand},'keep_both',1) r`))[0]?.['r']==='forbidden','nonmember resolved');
+    assert((await as("authenticated",ALICE,tx=>tx`select public.boords_resolve_candidate(${cand},'choose_incoming',2) r`))[0]?.['r']==='stale','stale revision');
+    assert((await as("authenticated",ALICE,tx=>tx`select public.boords_resolve_candidate(${cand},'choose_incoming',1) r`))[0]?.['r']==='ok','resolve');
+    assert((await sql`select status,choice from public.boords_candidates where id=${cand}`)[0]?.['choice']==='choose_incoming','stored');
+    await sql`update public.boords_webhook_events set received_at=now()-interval '8 days'`;
+    assert(Number((await as("service_role",null,tx=>tx`select public.boords_cleanup() n`))[0]?.['n'])>=1,'cleanup');
+  });
   await test("alle SECURITY DEFINER-funksjoner i public/private har search_path=''", async () => {
     const rows = await sql`
       select n.nspname as ns, p.proname as name

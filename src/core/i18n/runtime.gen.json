@@ -25265,6 +25265,183 @@
     "c1.status.returned": {
       "text": "Returnert, venter på godkjenning"
     },
+    "c4.can": {
+      "text": "Koblingen kan: {list}."
+    },
+    "c4.cand.conflict": {
+      "text": "endret begge steder"
+    },
+    "c4.cand.image": {
+      "text": "Nytt bilde fra Boords. «Bruk innkommende» legger det i biblioteket uten å endre panelet."
+    },
+    "c4.cand.intro": {
+      "text": "Ingenting er brukt ennå. Velg hva du vil gjøre med hvert forslag."
+    },
+    "c4.cand.panel": {
+      "text": "Panel {panel}"
+    },
+    "c4.cand.title": {
+      "text": "Forslag fra Boords"
+    },
+    "c4.cap.notes": {
+      "text": "kommentarer begge veier"
+    },
+    "c4.cap.read": {
+      "text": "hente endringer"
+    },
+    "c4.cap.write": {
+      "text": "sende paneler med tekst og bilde"
+    },
+    "c4.comments.in": {
+      "text": "Fra Boords"
+    },
+    "c4.comments.out": {
+      "text": "Til Boords"
+    },
+    "c4.comments.title": {
+      "text": "Kommentarer med Boords"
+    },
+    "c4.error": {
+      "text": "Boords-koblingen virket ikke. Prøv igjen."
+    },
+    "c4.error.owner": {
+      "text": "Bare eieren av arbeidsgruppen kan legge inn nøkkelen."
+    },
+    "c4.error.rate": {
+      "text": "For mange forsøk. Vent litt og prøv igjen."
+    },
+    "c4.error.rejected": {
+      "text": "Boords godtok ikke nøkkelen. Sjekk at den er riktig og at planen har API-tilgang."
+    },
+    "c4.image-name": {
+      "text": "Bilde fra Boords"
+    },
+    "c4.incoming": {
+      "text": "Bruk endring fra Boords"
+    },
+    "c4.intro": {
+      "text": "Send storyboardpaneler til Boords og hent endringer og kommentarer tilbake. Endringer fra Boords blir forslag du velger selv om du vil bruke."
+    },
+    "c4.key": {
+      "text": "Boords-API-nøkkel"
+    },
+    "c4.key-safety": {
+      "text": "Nøkkelen lagres kryptert og vises aldri igjen. Du ser bare de fire siste tegnene."
+    },
+    "c4.label": {
+      "text": "Navn (valgfritt)"
+    },
+    "c4.last-sync": {
+      "text": "sist hentet {date}"
+    },
+    "c4.limit.beta": {
+      "text": "API-et er i beta og kan endre seg."
+    },
+    "c4.limit.no-audio": {
+      "text": "Ingen lyd sendes."
+    },
+    "c4.limit.no-auto-apply": {
+      "text": "Ingenting fra Boords tas i bruk uten at du velger det."
+    },
+    "c4.limit.no-etag": {
+      "text": "Boords har ikke versjonskontroll i API-et, så Pen to Glass sammenligner selv og viser konflikter."
+    },
+    "c4.limit.no-layers": {
+      "text": "Ingen lag: Boords får et flatt bilde per panel."
+    },
+    "c4.limit.no-timeline": {
+      "text": "Ingen tidslinje eller varighet."
+    },
+    "c4.limit.paid-plan": {
+      "text": "Krever betalt Boords-plan."
+    },
+    "c4.limit.partial-webhooks": {
+      "text": "Bare noen endringer i Boords varsles straks; resten hentes jevnlig."
+    },
+    "c4.owner": {
+      "text": "Hvem nøkkelen gjelder for"
+    },
+    "c4.owner.user": {
+      "text": "Meg"
+    },
+    "c4.owner.workspace": {
+      "text": "Arbeidsgruppe"
+    },
+    "c4.owner.workspace-named": {
+      "text": "Arbeidsgruppe: {name}"
+    },
+    "c4.paid-plan": {
+      "text": "Boords-API-et er i beta og krever en betalt Boords-plan."
+    },
+    "c4.pull.button": {
+      "text": "Hent endringer"
+    },
+    "c4.pull.done": {
+      "text": "Hentet: {candidates} forslag ({conflicts} konflikter) og {comments} kommentarer."
+    },
+    "c4.remove": {
+      "text": "Fjern"
+    },
+    "c4.removed": {
+      "text": "Nøkkelen er fjernet."
+    },
+    "c4.save": {
+      "text": "Lagre nøkkel"
+    },
+    "c4.saved.ok": {
+      "text": "Nøkkelen virker og er lagret."
+    },
+    "c4.saved.untested": {
+      "text": "Nøkkelen er lagret, men Boords svarte ikke. Den prøves ved første sending."
+    },
+    "c4.send.button": {
+      "text": "Send til Boords"
+    },
+    "c4.send.connection": {
+      "text": "Nøkkel"
+    },
+    "c4.send.done": {
+      "text": "Sendt: {created} nye og {updated} oppdaterte paneler."
+    },
+    "c4.send.fields": {
+      "text": "{count} paneler sendes med feltene {fields} og bilde."
+    },
+    "c4.send.intro": {
+      "text": "Panelene i denne produksjonen sendes med tekst og bilde. Endringer fra Boords hentes som forslag."
+    },
+    "c4.send.no-connection": {
+      "text": "Du har ingen Boords-nøkkel ennå."
+    },
+    "c4.send.open": {
+      "text": "Boords"
+    },
+    "c4.send.title": {
+      "text": "Send til Boords"
+    },
+    "c4.send.to-account": {
+      "text": "Legg den inn på kontosiden."
+    },
+    "c4.status.failed": {
+      "text": "Virker ikke"
+    },
+    "c4.status.ok": {
+      "text": "Virker"
+    },
+    "c4.status.untested": {
+      "text": "Ikke prøvd"
+    },
+    "c4.title": {
+      "text": "Boords"
+    },
+    "c4.webhook-none": {
+      "text": "Ingen webhook: endringer hentes jevnlig."
+    },
+    "c4.webhook-secret": {
+      "text": "Webhook-hemmelighet fra Boords (valgfri)"
+    },
+    "c4.webhook-url": {
+      "text": "Lim inn denne adressen som webhook i Boords:"
+    },
     "components-ui-dialog.dialog-content.span.4e9257a0bdea": {
       "text": "Lukk"
     },
@@ -60652,6 +60829,183 @@
     },
     "c1.status.returned": {
       "text": "Returned, awaiting approval"
+    },
+    "c4.can": {
+      "text": "The connection can: {list}."
+    },
+    "c4.cand.conflict": {
+      "text": "changed in both places"
+    },
+    "c4.cand.image": {
+      "text": "New image from Boords. “Use incoming” adds it to the library without changing the panel."
+    },
+    "c4.cand.intro": {
+      "text": "Nothing has been used yet. Choose what to do with each suggestion."
+    },
+    "c4.cand.panel": {
+      "text": "Panel {panel}"
+    },
+    "c4.cand.title": {
+      "text": "Suggestions from Boords"
+    },
+    "c4.cap.notes": {
+      "text": "comments both ways"
+    },
+    "c4.cap.read": {
+      "text": "fetch changes"
+    },
+    "c4.cap.write": {
+      "text": "send panels with text and image"
+    },
+    "c4.comments.in": {
+      "text": "From Boords"
+    },
+    "c4.comments.out": {
+      "text": "To Boords"
+    },
+    "c4.comments.title": {
+      "text": "Comments with Boords"
+    },
+    "c4.error": {
+      "text": "The Boords connection did not work. Try again."
+    },
+    "c4.error.owner": {
+      "text": "Only the workspace owner can add the key."
+    },
+    "c4.error.rate": {
+      "text": "Too many attempts. Wait a little and try again."
+    },
+    "c4.error.rejected": {
+      "text": "Boords did not accept the key. Check that it is correct and that the plan has API access."
+    },
+    "c4.image-name": {
+      "text": "Image from Boords"
+    },
+    "c4.incoming": {
+      "text": "Use change from Boords"
+    },
+    "c4.intro": {
+      "text": "Send storyboard panels to Boords and bring changes and comments back. Changes from Boords become suggestions you decide whether to use."
+    },
+    "c4.key": {
+      "text": "Boords API key"
+    },
+    "c4.key-safety": {
+      "text": "The key is stored encrypted and never shown again. You only see the last four characters."
+    },
+    "c4.label": {
+      "text": "Name (optional)"
+    },
+    "c4.last-sync": {
+      "text": "last fetched {date}"
+    },
+    "c4.limit.beta": {
+      "text": "The API is in beta and may change."
+    },
+    "c4.limit.no-audio": {
+      "text": "No audio is sent."
+    },
+    "c4.limit.no-auto-apply": {
+      "text": "Nothing from Boords is used unless you choose it."
+    },
+    "c4.limit.no-etag": {
+      "text": "Boords has no version check in its API, so Pen to Glass compares itself and shows conflicts."
+    },
+    "c4.limit.no-layers": {
+      "text": "No layers: Boords gets one flat image per panel."
+    },
+    "c4.limit.no-timeline": {
+      "text": "No timeline or durations."
+    },
+    "c4.limit.paid-plan": {
+      "text": "Requires a paid Boords plan."
+    },
+    "c4.limit.partial-webhooks": {
+      "text": "Only some changes in Boords are notified right away; the rest are fetched regularly."
+    },
+    "c4.owner": {
+      "text": "Who the key is for"
+    },
+    "c4.owner.user": {
+      "text": "Me"
+    },
+    "c4.owner.workspace": {
+      "text": "Workspace"
+    },
+    "c4.owner.workspace-named": {
+      "text": "Workspace: {name}"
+    },
+    "c4.paid-plan": {
+      "text": "The Boords API is in beta and requires a paid Boords plan."
+    },
+    "c4.pull.button": {
+      "text": "Fetch changes"
+    },
+    "c4.pull.done": {
+      "text": "Fetched: {candidates} suggestions ({conflicts} conflicts) and {comments} comments."
+    },
+    "c4.remove": {
+      "text": "Remove"
+    },
+    "c4.removed": {
+      "text": "The key has been removed."
+    },
+    "c4.save": {
+      "text": "Save key"
+    },
+    "c4.saved.ok": {
+      "text": "The key works and has been saved."
+    },
+    "c4.saved.untested": {
+      "text": "The key has been saved, but Boords did not answer. It will be tried on the first send."
+    },
+    "c4.send.button": {
+      "text": "Send to Boords"
+    },
+    "c4.send.connection": {
+      "text": "Key"
+    },
+    "c4.send.done": {
+      "text": "Sent: {created} new and {updated} updated panels."
+    },
+    "c4.send.fields": {
+      "text": "{count} panels are sent with the fields {fields} and an image."
+    },
+    "c4.send.intro": {
+      "text": "The panels in this production are sent with text and image. Changes from Boords are fetched as suggestions."
+    },
+    "c4.send.no-connection": {
+      "text": "You have no Boords key yet."
+    },
+    "c4.send.open": {
+      "text": "Boords"
+    },
+    "c4.send.title": {
+      "text": "Send to Boords"
+    },
+    "c4.send.to-account": {
+      "text": "Add it on the account page."
+    },
+    "c4.status.failed": {
+      "text": "Not working"
+    },
+    "c4.status.ok": {
+      "text": "Working"
+    },
+    "c4.status.untested": {
+      "text": "Not tried"
+    },
+    "c4.title": {
+      "text": "Boords"
+    },
+    "c4.webhook-none": {
+      "text": "No webhook: changes are fetched regularly."
+    },
+    "c4.webhook-secret": {
+      "text": "Webhook secret from Boords (optional)"
+    },
+    "c4.webhook-url": {
+      "text": "Paste this address as the webhook in Boords:"
     },
     "components-ui-dialog.dialog-content.span.4e9257a0bdea": {
       "text": "Close"

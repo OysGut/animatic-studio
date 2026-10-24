@@ -1,5 +1,20 @@
 # Veikart
 
+## C-4 – Boords-kobling (API) (bygget, ikke prøvd mot ekte Boords)
+- [x] 0112 (skrevet, ikke kjørt): tilkoblinger per bruker/arbeidsgruppe, kryptert nøkkel + webhook-hemmelighet, kolonnetilgang uten chiffer
+- [x] Innstillinger på kontosiden: egen nøkkel, betalt plan, kan/kan ikke, webhook-adresse, fjerning
+- [x] Send til Boords fra storyboardet: action/sound/dialogue, panelets rasterisering, manifest-ID + connector_links
+- [x] Hent med updated_since (cron + «Hent endringer») og webhook med HMAC, tidsvindu og idempotens
+- [x] Endringer blir kandidater; fire C-0-valg; «Bruk innkommende» = angrebar kommando; konflikt når begge sider er endret
+- [x] Kommentarer begge veier; SB-10-tilbakemeldinger sendes én gang
+- [x] Kø 120/min, 429 + Retry-After, tilbakeoff
+- [x] Kapabilitetsmodell + begrensninger
+- [x] Tester: 19 enhet, 1 DB, visuell nb/en 16/0; full Vitest 3116/0/10, DB 236/0, test:ssr 8/8
+- [ ] Endepunkter, feltnavn og signaturformat bekreftet mot ekte Boords-beta (krever betalt plan)
+- [ ] Bilde fra Boords plasseres i panelet (i dag: blir bibliotekbilde ved «Bruk innkommende»)
+- [ ] Kommentarer fra Boords vist i SB-10-teamoversikten (i dag: i Boords-vinduet)
+- [ ] 0112 kjøres i Cloud (Claude)
+
 ## C-2 – Photoshop-plugin (UXP) (bygget, ikke verifisert i Photoshop)
 - [x] 0107–0109 låst med MD5; 0109 satt tilbake til Cloud-versjonen, rettingene flyttet til 0111 (ikke kjørt)
 - [x] plugins/photoshop: manifest v5, Photoshop 27+, nettverk bare til pentoglass.com, tokens i secureStorage

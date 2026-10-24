@@ -71,7 +71,7 @@ export class Sha256 {
   }
 }
 
-const utf8 = (s: string): Uint8Array => {
+export const utf8 = (s: string): Uint8Array => {
   const out: number[] = [];
   for (const ch of s) {
     let c = ch.codePointAt(0)!;

@@ -77801,5 +77801,182 @@
   },
   "c0.consent.paste-back-copied": {
     "text": "[!! TThhëë ááddddrrëëssss hhááss bbëëëënn ccôôppïïëëdd. !!]"
+  },
+  "c4.title": {
+    "text": "[!! BBôôôôrrddss !!]"
+  },
+  "c4.intro": {
+    "text": "[!! SSëënndd ssttôôrryybbôôáárrdd ppáánnëëllss ttôô BBôôôôrrddss áánndd bbrrïïnngg cchháánnggëëss áánndd ccôômmmmëënnttss bbáácckk. CChháánnggëëss ffrrôômm BBôôôôrrddss bbëëccôômmëë ssüüggggëëssttïïôônnss yyôôüü ddëëccïïddëë wwhhëëtthhëërr ttôô üüssëë. !!]"
+  },
+  "c4.paid-plan": {
+    "text": "[!! TThhëë BBôôôôrrddss ÁÁPPÏÏ ïïss ïïnn bbëëttáá áánndd rrëëqqüüïïrrëëss áá ppááïïdd BBôôôôrrddss pplláánn. !!]"
+  },
+  "c4.can": {
+    "text": "[!! TThhëë ccôônnnnëëccttïïôônn ccáánn: {list}. !!]"
+  },
+  "c4.cap.read": {
+    "text": "[!! ffëëttcchh cchháánnggëëss !!]"
+  },
+  "c4.cap.write": {
+    "text": "[!! ssëënndd ppáánnëëllss wwïïtthh ttëëxxtt áánndd ïïmmáággëë !!]"
+  },
+  "c4.cap.notes": {
+    "text": "[!! ccôômmmmëënnttss bbôôtthh wwááyyss !!]"
+  },
+  "c4.limit.paid-plan": {
+    "text": "[!! RRëëqqüüïïrrëëss áá ppááïïdd BBôôôôrrddss pplláánn. !!]"
+  },
+  "c4.limit.beta": {
+    "text": "[!! TThhëë ÁÁPPÏÏ ïïss ïïnn bbëëttáá áánndd mmááyy cchháánnggëë. !!]"
+  },
+  "c4.limit.no-layers": {
+    "text": "[!! NNôô llááyyëërrss: BBôôôôrrddss ggëëttss ôônnëë fflláátt ïïmmáággëë ppëërr ppáánnëëll. !!]"
+  },
+  "c4.limit.no-audio": {
+    "text": "[!! NNôô ááüüddïïôô ïïss ssëënntt. !!]"
+  },
+  "c4.limit.no-timeline": {
+    "text": "[!! NNôô ttïïmmëëllïïnnëë ôôrr ddüürrááttïïôônnss. !!]"
+  },
+  "c4.limit.no-etag": {
+    "text": "[!! BBôôôôrrddss hhááss nnôô vvëërrssïïôônn cchhëëcckk ïïnn ïïttss ÁÁPPÏÏ, ssôô PPëënn ttôô GGlláássss ccôômmppáárrëëss ïïttssëëllff áánndd sshhôôwwss ccôônnffllïïccttss. !!]"
+  },
+  "c4.limit.partial-webhooks": {
+    "text": "[!! ÔÔnnllyy ssôômmëë cchháánnggëëss ïïnn BBôôôôrrddss áárrëë nnôôttïïffïïëëdd rrïïgghhtt ááwwááyy; tthhëë rrëësstt áárrëë ffëëttcchhëëdd rrëëggüülláárrllyy. !!]"
+  },
+  "c4.limit.no-auto-apply": {
+    "text": "[!! NNôôtthhïïnngg ffrrôômm BBôôôôrrddss ïïss üüssëëdd üünnllëëssss yyôôüü cchhôôôôssëë ïïtt. !!]"
+  },
+  "c4.owner": {
+    "text": "[!! WWhhôô tthhëë kkëëyy ïïss ffôôrr !!]"
+  },
+  "c4.owner.user": {
+    "text": "[!! MMëë !!]"
+  },
+  "c4.owner.workspace": {
+    "text": "[!! WWôôrrkkssppááccëë !!]"
+  },
+  "c4.owner.workspace-named": {
+    "text": "[!! WWôôrrkkssppááccëë: {name} !!]"
+  },
+  "c4.key": {
+    "text": "[!! BBôôôôrrddss ÁÁPPÏÏ kkëëyy !!]"
+  },
+  "c4.webhook-secret": {
+    "text": "[!! WWëëbbhhôôôôkk ssëëccrrëëtt ffrrôômm BBôôôôrrddss (ôôppttïïôônnááll) !!]"
+  },
+  "c4.label": {
+    "text": "[!! NNáámmëë (ôôppttïïôônnááll) !!]"
+  },
+  "c4.key-safety": {
+    "text": "[!! TThhëë kkëëyy ïïss ssttôôrrëëdd ëënnccrryyppttëëdd áánndd nnëëvvëërr sshhôôwwnn áággááïïnn. YYôôüü ôônnllyy ssëëëë tthhëë lláásstt ffôôüürr cchháárrááccttëërrss. !!]"
+  },
+  "c4.save": {
+    "text": "[!! SSáávvëë kkëëyy !!]"
+  },
+  "c4.remove": {
+    "text": "[!! RRëëmmôôvvëë !!]"
+  },
+  "c4.removed": {
+    "text": "[!! TThhëë kkëëyy hhááss bbëëëënn rrëëmmôôvvëëdd. !!]"
+  },
+  "c4.saved.ok": {
+    "text": "[!! TThhëë kkëëyy wwôôrrkkss áánndd hhááss bbëëëënn ssáávvëëdd. !!]"
+  },
+  "c4.saved.untested": {
+    "text": "[!! TThhëë kkëëyy hhááss bbëëëënn ssáávvëëdd, bbüütt BBôôôôrrddss ddïïdd nnôôtt áánnsswwëërr. ÏÏtt wwïïllll bbëë ttrrïïëëdd ôônn tthhëë ffïïrrsstt ssëënndd. !!]"
+  },
+  "c4.status.ok": {
+    "text": "[!! WWôôrrkkïïnngg !!]"
+  },
+  "c4.status.failed": {
+    "text": "[!! NNôôtt wwôôrrkkïïnngg !!]"
+  },
+  "c4.status.untested": {
+    "text": "[!! NNôôtt ttrrïïëëdd !!]"
+  },
+  "c4.last-sync": {
+    "text": "[!! lláásstt ffëëttcchhëëdd {date} !!]"
+  },
+  "c4.webhook-url": {
+    "text": "[!! PPáássttëë tthhïïss ááddddrrëëssss ááss tthhëë wwëëbbhhôôôôkk ïïnn BBôôôôrrddss: !!]"
+  },
+  "c4.webhook-none": {
+    "text": "[!! NNôô wwëëbbhhôôôôkk: cchháánnggëëss áárrëë ffëëttcchhëëdd rrëëggüülláárrllyy. !!]"
+  },
+  "c4.error": {
+    "text": "[!! TThhëë BBôôôôrrddss ccôônnnnëëccttïïôônn ddïïdd nnôôtt wwôôrrkk. TTrryy áággááïïnn. !!]"
+  },
+  "c4.error.owner": {
+    "text": "[!! ÔÔnnllyy tthhëë wwôôrrkkssppááccëë ôôwwnnëërr ccáánn áádddd tthhëë kkëëyy. !!]"
+  },
+  "c4.error.rate": {
+    "text": "[!! TTôôôô mmáánnyy ááttttëëmmppttss. WWááïïtt áá llïïttttllëë áánndd ttrryy áággááïïnn. !!]"
+  },
+  "c4.error.rejected": {
+    "text": "[!! BBôôôôrrddss ddïïdd nnôôtt ááccccëëpptt tthhëë kkëëyy. CChhëëcckk tthháátt ïïtt ïïss ccôôrrrrëëcctt áánndd tthháátt tthhëë pplláánn hhááss ÁÁPPÏÏ ááccccëëssss. !!]"
+  },
+  "c4.send.open": {
+    "text": "[!! BBôôôôrrddss !!]"
+  },
+  "c4.send.title": {
+    "text": "[!! SSëënndd ttôô BBôôôôrrddss !!]"
+  },
+  "c4.send.intro": {
+    "text": "[!! TThhëë ppáánnëëllss ïïnn tthhïïss pprrôôddüüccttïïôônn áárrëë ssëënntt wwïïtthh ttëëxxtt áánndd ïïmmáággëë. CChháánnggëëss ffrrôômm BBôôôôrrddss áárrëë ffëëttcchhëëdd ááss ssüüggggëëssttïïôônnss. !!]"
+  },
+  "c4.send.no-connection": {
+    "text": "[!! YYôôüü hháávvëë nnôô BBôôôôrrddss kkëëyy yyëëtt. !!]"
+  },
+  "c4.send.to-account": {
+    "text": "[!! ÁÁdddd ïïtt ôônn tthhëë ááccccôôüünntt ppáággëë. !!]"
+  },
+  "c4.send.connection": {
+    "text": "[!! KKëëyy !!]"
+  },
+  "c4.send.fields": {
+    "text": "[!! {count} ppáánnëëllss áárrëë ssëënntt wwïïtthh tthhëë ffïïëëllddss {fields} áánndd áánn ïïmmáággëë. !!]"
+  },
+  "c4.send.button": {
+    "text": "[!! SSëënndd ttôô BBôôôôrrddss !!]"
+  },
+  "c4.send.done": {
+    "text": "[!! SSëënntt: {created} nnëëww áánndd {updated} üüppddááttëëdd ppáánnëëllss. !!]"
+  },
+  "c4.pull.button": {
+    "text": "[!! FFëëttcchh cchháánnggëëss !!]"
+  },
+  "c4.pull.done": {
+    "text": "[!! FFëëttcchhëëdd: {candidates} ssüüggggëëssttïïôônnss ({conflicts} ccôônnffllïïccttss) áánndd {comments} ccôômmmmëënnttss. !!]"
+  },
+  "c4.cand.title": {
+    "text": "[!! SSüüggggëëssttïïôônnss ffrrôômm BBôôôôrrddss !!]"
+  },
+  "c4.cand.intro": {
+    "text": "[!! NNôôtthhïïnngg hhááss bbëëëënn üüssëëdd yyëëtt. CChhôôôôssëë wwhháátt ttôô ddôô wwïïtthh ëëáácchh ssüüggggëëssttïïôônn. !!]"
+  },
+  "c4.cand.panel": {
+    "text": "[!! PPáánnëëll {panel} !!]"
+  },
+  "c4.cand.conflict": {
+    "text": "[!! cchháánnggëëdd ïïnn bbôôtthh ppllááccëëss !!]"
+  },
+  "c4.cand.image": {
+    "text": "[!! NNëëww ïïmmáággëë ffrrôômm BBôôôôrrddss. “ÜÜssëë ïïnnccôômmïïnngg” ááddddss ïïtt ttôô tthhëë llïïbbrráárryy wwïïtthhôôüütt cchháánnggïïnngg tthhëë ppáánnëëll. !!]"
+  },
+  "c4.image-name": {
+    "text": "[!! ÏÏmmáággëë ffrrôômm BBôôôôrrddss !!]"
+  },
+  "c4.incoming": {
+    "text": "[!! ÜÜssëë cchháánnggëë ffrrôômm BBôôôôrrddss !!]"
+  },
+  "c4.comments.title": {
+    "text": "[!! CCôômmmmëënnttss wwïïtthh BBôôôôrrddss !!]"
+  },
+  "c4.comments.in": {
+    "text": "[!! FFrrôômm BBôôôôrrddss !!]"
+  },
+  "c4.comments.out": {
+    "text": "[!! TTôô BBôôôôrrddss !!]"
   }
 }

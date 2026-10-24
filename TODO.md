@@ -5,6 +5,11 @@ Ikke foreslå, ikke start og ikke bygg dette før Øystein uttrykkelig ber om de
 - Eget test- og produksjonsmiljø (Øystein 23.10.2026): en egen testkopi av prosjektet med egen database, der databaseendringer kjøres først. Mellomtrinnet er funksjonsbryterne (av, beta og på). Til da er forhåndsvisningen test og pentoglass.com produksjon, og Claude prøver migrasjoner på en lokal kopi før de kjøres i Cloud.
 
 
+## C-4 Boords – sikkerhet og gjenstående (24.10.2026)
+- Bekreft mot ekte Boords-beta: endepunktene i `BOORDS_ENDPOINTS`, feltnavn (action/sound/dialogue/image_url/updated_at) og webhook-headere/signaturformat (`x-boords-signature`, `x-boords-timestamp`, `x-boords-event-id`, HMAC over `timestamp.body`). Antatt, ikke dokumentert i detalj.
+- Fartsgrensen 120/min holdes per serverinstans; flere instanser kan til sammen overskride den (429 håndteres med tilbakeoff).
+- Bilder fra Boords lastes ned fra adressen Boords oppgir (bare https, maks 20 MB); vertsliste mangler til domenet er kjent.
+
 ## G-2 skala (23.10.2026)
 - [ ] Claude: kjør 0093 i Cloud (se G2_SKALA_REPORT.md) og oppdater migration-hashes.json.
 - [ ] Mål åpning i Cloud: øyeblikksbildet (project_snapshot) mot tidsavbruddet for innloggede brukere; reserven er sidevis lesing.

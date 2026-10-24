@@ -1,4 +1,5 @@
 import { StoryboardReview } from "./StoryboardReview";
+import { BoordsSendButton } from "./BoordsSend";
 /**
  * SB-2: storyboardgalleriet. Hele filmen i fortellerrekkefølge per produksjon (samme ordnede forekomster
  * som manus og montering), panelene gruppert per scene. Alle endringer er SB-1-kommandoer via runCommand,
@@ -416,6 +417,7 @@ export function Gallery({
     <div className="flex h-full min-h-0 flex-col" data-testid="storyboard-workspace">
       {/* Verktøylinje */}
       <StoryboardReview state={state} projectId={projectId} productionId={productionId} cmds={cmds} editable={editable} />
+      <BoordsSendButton state={state} projectId={projectId} productionId={productionId} cmds={cmds} editable={editable} />
       <div className="flex flex-wrap items-center gap-2 border-b border-border bg-surface-1 px-4 py-2" role="toolbar" aria-label={tk("sb2.toolbar")}>
         <label className="flex items-center gap-1 text-[13px] text-text-secondary">
           {tk("sb2.production")}

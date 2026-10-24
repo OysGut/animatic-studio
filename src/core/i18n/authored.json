@@ -16802,6 +16802,478 @@
       "en": {
         "text": "The address has been copied."
       }
+    },
+    "c4.title": {
+      "nb": {
+        "text": "Boords"
+      },
+      "en": {
+        "text": "Boords"
+      }
+    },
+    "c4.intro": {
+      "nb": {
+        "text": "Send storyboardpaneler til Boords og hent endringer og kommentarer tilbake. Endringer fra Boords blir forslag du velger selv om du vil bruke."
+      },
+      "en": {
+        "text": "Send storyboard panels to Boords and bring changes and comments back. Changes from Boords become suggestions you decide whether to use."
+      }
+    },
+    "c4.paid-plan": {
+      "nb": {
+        "text": "Boords-API-et er i beta og krever en betalt Boords-plan."
+      },
+      "en": {
+        "text": "The Boords API is in beta and requires a paid Boords plan."
+      }
+    },
+    "c4.can": {
+      "nb": {
+        "text": "Koblingen kan: {list}."
+      },
+      "en": {
+        "text": "The connection can: {list}."
+      }
+    },
+    "c4.cap.read": {
+      "nb": {
+        "text": "hente endringer"
+      },
+      "en": {
+        "text": "fetch changes"
+      }
+    },
+    "c4.cap.write": {
+      "nb": {
+        "text": "sende paneler med tekst og bilde"
+      },
+      "en": {
+        "text": "send panels with text and image"
+      }
+    },
+    "c4.cap.notes": {
+      "nb": {
+        "text": "kommentarer begge veier"
+      },
+      "en": {
+        "text": "comments both ways"
+      }
+    },
+    "c4.limit.paid-plan": {
+      "nb": {
+        "text": "Krever betalt Boords-plan."
+      },
+      "en": {
+        "text": "Requires a paid Boords plan."
+      }
+    },
+    "c4.limit.beta": {
+      "nb": {
+        "text": "API-et er i beta og kan endre seg."
+      },
+      "en": {
+        "text": "The API is in beta and may change."
+      }
+    },
+    "c4.limit.no-layers": {
+      "nb": {
+        "text": "Ingen lag: Boords får et flatt bilde per panel."
+      },
+      "en": {
+        "text": "No layers: Boords gets one flat image per panel."
+      }
+    },
+    "c4.limit.no-audio": {
+      "nb": {
+        "text": "Ingen lyd sendes."
+      },
+      "en": {
+        "text": "No audio is sent."
+      }
+    },
+    "c4.limit.no-timeline": {
+      "nb": {
+        "text": "Ingen tidslinje eller varighet."
+      },
+      "en": {
+        "text": "No timeline or durations."
+      }
+    },
+    "c4.limit.no-etag": {
+      "nb": {
+        "text": "Boords har ikke versjonskontroll i API-et, så Pen to Glass sammenligner selv og viser konflikter."
+      },
+      "en": {
+        "text": "Boords has no version check in its API, so Pen to Glass compares itself and shows conflicts."
+      }
+    },
+    "c4.limit.partial-webhooks": {
+      "nb": {
+        "text": "Bare noen endringer i Boords varsles straks; resten hentes jevnlig."
+      },
+      "en": {
+        "text": "Only some changes in Boords are notified right away; the rest are fetched regularly."
+      }
+    },
+    "c4.limit.no-auto-apply": {
+      "nb": {
+        "text": "Ingenting fra Boords tas i bruk uten at du velger det."
+      },
+      "en": {
+        "text": "Nothing from Boords is used unless you choose it."
+      }
+    },
+    "c4.owner": {
+      "nb": {
+        "text": "Hvem nøkkelen gjelder for"
+      },
+      "en": {
+        "text": "Who the key is for"
+      }
+    },
+    "c4.owner.user": {
+      "nb": {
+        "text": "Meg"
+      },
+      "en": {
+        "text": "Me"
+      }
+    },
+    "c4.owner.workspace": {
+      "nb": {
+        "text": "Arbeidsgruppe"
+      },
+      "en": {
+        "text": "Workspace"
+      }
+    },
+    "c4.owner.workspace-named": {
+      "nb": {
+        "text": "Arbeidsgruppe: {name}"
+      },
+      "en": {
+        "text": "Workspace: {name}"
+      }
+    },
+    "c4.key": {
+      "nb": {
+        "text": "Boords-API-nøkkel"
+      },
+      "en": {
+        "text": "Boords API key"
+      }
+    },
+    "c4.webhook-secret": {
+      "nb": {
+        "text": "Webhook-hemmelighet fra Boords (valgfri)"
+      },
+      "en": {
+        "text": "Webhook secret from Boords (optional)"
+      }
+    },
+    "c4.label": {
+      "nb": {
+        "text": "Navn (valgfritt)"
+      },
+      "en": {
+        "text": "Name (optional)"
+      }
+    },
+    "c4.key-safety": {
+      "nb": {
+        "text": "Nøkkelen lagres kryptert og vises aldri igjen. Du ser bare de fire siste tegnene."
+      },
+      "en": {
+        "text": "The key is stored encrypted and never shown again. You only see the last four characters."
+      }
+    },
+    "c4.save": {
+      "nb": {
+        "text": "Lagre nøkkel"
+      },
+      "en": {
+        "text": "Save key"
+      }
+    },
+    "c4.remove": {
+      "nb": {
+        "text": "Fjern"
+      },
+      "en": {
+        "text": "Remove"
+      }
+    },
+    "c4.removed": {
+      "nb": {
+        "text": "Nøkkelen er fjernet."
+      },
+      "en": {
+        "text": "The key has been removed."
+      }
+    },
+    "c4.saved.ok": {
+      "nb": {
+        "text": "Nøkkelen virker og er lagret."
+      },
+      "en": {
+        "text": "The key works and has been saved."
+      }
+    },
+    "c4.saved.untested": {
+      "nb": {
+        "text": "Nøkkelen er lagret, men Boords svarte ikke. Den prøves ved første sending."
+      },
+      "en": {
+        "text": "The key has been saved, but Boords did not answer. It will be tried on the first send."
+      }
+    },
+    "c4.status.ok": {
+      "nb": {
+        "text": "Virker"
+      },
+      "en": {
+        "text": "Working"
+      }
+    },
+    "c4.status.failed": {
+      "nb": {
+        "text": "Virker ikke"
+      },
+      "en": {
+        "text": "Not working"
+      }
+    },
+    "c4.status.untested": {
+      "nb": {
+        "text": "Ikke prøvd"
+      },
+      "en": {
+        "text": "Not tried"
+      }
+    },
+    "c4.last-sync": {
+      "nb": {
+        "text": "sist hentet {date}"
+      },
+      "en": {
+        "text": "last fetched {date}"
+      }
+    },
+    "c4.webhook-url": {
+      "nb": {
+        "text": "Lim inn denne adressen som webhook i Boords:"
+      },
+      "en": {
+        "text": "Paste this address as the webhook in Boords:"
+      }
+    },
+    "c4.webhook-none": {
+      "nb": {
+        "text": "Ingen webhook: endringer hentes jevnlig."
+      },
+      "en": {
+        "text": "No webhook: changes are fetched regularly."
+      }
+    },
+    "c4.error": {
+      "nb": {
+        "text": "Boords-koblingen virket ikke. Prøv igjen."
+      },
+      "en": {
+        "text": "The Boords connection did not work. Try again."
+      }
+    },
+    "c4.error.owner": {
+      "nb": {
+        "text": "Bare eieren av arbeidsgruppen kan legge inn nøkkelen."
+      },
+      "en": {
+        "text": "Only the workspace owner can add the key."
+      }
+    },
+    "c4.error.rate": {
+      "nb": {
+        "text": "For mange forsøk. Vent litt og prøv igjen."
+      },
+      "en": {
+        "text": "Too many attempts. Wait a little and try again."
+      }
+    },
+    "c4.error.rejected": {
+      "nb": {
+        "text": "Boords godtok ikke nøkkelen. Sjekk at den er riktig og at planen har API-tilgang."
+      },
+      "en": {
+        "text": "Boords did not accept the key. Check that it is correct and that the plan has API access."
+      }
+    },
+    "c4.send.open": {
+      "nb": {
+        "text": "Boords"
+      },
+      "en": {
+        "text": "Boords"
+      }
+    },
+    "c4.send.title": {
+      "nb": {
+        "text": "Send til Boords"
+      },
+      "en": {
+        "text": "Send to Boords"
+      }
+    },
+    "c4.send.intro": {
+      "nb": {
+        "text": "Panelene i denne produksjonen sendes med tekst og bilde. Endringer fra Boords hentes som forslag."
+      },
+      "en": {
+        "text": "The panels in this production are sent with text and image. Changes from Boords are fetched as suggestions."
+      }
+    },
+    "c4.send.no-connection": {
+      "nb": {
+        "text": "Du har ingen Boords-nøkkel ennå."
+      },
+      "en": {
+        "text": "You have no Boords key yet."
+      }
+    },
+    "c4.send.to-account": {
+      "nb": {
+        "text": "Legg den inn på kontosiden."
+      },
+      "en": {
+        "text": "Add it on the account page."
+      }
+    },
+    "c4.send.connection": {
+      "nb": {
+        "text": "Nøkkel"
+      },
+      "en": {
+        "text": "Key"
+      }
+    },
+    "c4.send.fields": {
+      "nb": {
+        "text": "{count} paneler sendes med feltene {fields} og bilde."
+      },
+      "en": {
+        "text": "{count} panels are sent with the fields {fields} and an image."
+      }
+    },
+    "c4.send.button": {
+      "nb": {
+        "text": "Send til Boords"
+      },
+      "en": {
+        "text": "Send to Boords"
+      }
+    },
+    "c4.send.done": {
+      "nb": {
+        "text": "Sendt: {created} nye og {updated} oppdaterte paneler."
+      },
+      "en": {
+        "text": "Sent: {created} new and {updated} updated panels."
+      }
+    },
+    "c4.pull.button": {
+      "nb": {
+        "text": "Hent endringer"
+      },
+      "en": {
+        "text": "Fetch changes"
+      }
+    },
+    "c4.pull.done": {
+      "nb": {
+        "text": "Hentet: {candidates} forslag ({conflicts} konflikter) og {comments} kommentarer."
+      },
+      "en": {
+        "text": "Fetched: {candidates} suggestions ({conflicts} conflicts) and {comments} comments."
+      }
+    },
+    "c4.cand.title": {
+      "nb": {
+        "text": "Forslag fra Boords"
+      },
+      "en": {
+        "text": "Suggestions from Boords"
+      }
+    },
+    "c4.cand.intro": {
+      "nb": {
+        "text": "Ingenting er brukt ennå. Velg hva du vil gjøre med hvert forslag."
+      },
+      "en": {
+        "text": "Nothing has been used yet. Choose what to do with each suggestion."
+      }
+    },
+    "c4.cand.panel": {
+      "nb": {
+        "text": "Panel {panel}"
+      },
+      "en": {
+        "text": "Panel {panel}"
+      }
+    },
+    "c4.cand.conflict": {
+      "nb": {
+        "text": "endret begge steder"
+      },
+      "en": {
+        "text": "changed in both places"
+      }
+    },
+    "c4.cand.image": {
+      "nb": {
+        "text": "Nytt bilde fra Boords. «Bruk innkommende» legger det i biblioteket uten å endre panelet."
+      },
+      "en": {
+        "text": "New image from Boords. “Use incoming” adds it to the library without changing the panel."
+      }
+    },
+    "c4.image-name": {
+      "nb": {
+        "text": "Bilde fra Boords"
+      },
+      "en": {
+        "text": "Image from Boords"
+      }
+    },
+    "c4.incoming": {
+      "nb": {
+        "text": "Bruk endring fra Boords"
+      },
+      "en": {
+        "text": "Use change from Boords"
+      }
+    },
+    "c4.comments.title": {
+      "nb": {
+        "text": "Kommentarer med Boords"
+      },
+      "en": {
+        "text": "Comments with Boords"
+      }
+    },
+    "c4.comments.in": {
+      "nb": {
+        "text": "Fra Boords"
+      },
+      "en": {
+        "text": "From Boords"
+      }
+    },
+    "c4.comments.out": {
+      "nb": {
+        "text": "Til Boords"
+      },
+      "en": {
+        "text": "To Boords"
+      }
     }
   }
 }

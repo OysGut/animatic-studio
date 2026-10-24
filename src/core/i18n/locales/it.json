@@ -59395,5 +59395,300 @@
     "text": "L’indirizzo è stato copiato.",
     "sourceHash": "244a0f12127d2ea21ba27c88e240e713aa18d23b9561bcf146c97d03a6ef44cb",
     "review": "machine"
+  },
+  "c4.title": {
+    "text": "Boords",
+    "sourceHash": "29c8f641ae31f0d63c5b0a42eb301cc2849274a0fbfe031cf503ef2331ec6b56",
+    "review": "machine"
+  },
+  "c4.intro": {
+    "text": "Invia i pannelli dello storyboard a Boords e riporta indietro modifiche e commenti. Le modifiche da Boords diventano proposte che decidi tu se usare.",
+    "sourceHash": "8eae32c9083d8eaf3a9e857aa00c83d2cc6c8223f4536348839a29803122408b",
+    "review": "machine"
+  },
+  "c4.paid-plan": {
+    "text": "L’API di Boords è in beta e richiede un piano Boords a pagamento.",
+    "sourceHash": "7938bcfd222b05ef22d1af354d633f60910a6a3b4b2d77da79227ae9a2b18275",
+    "review": "machine"
+  },
+  "c4.can": {
+    "text": "Il collegamento può: {list}.",
+    "sourceHash": "8e479a4230731aef4270dec90aed368f74bb5783e56165445f3ea2c65caf3a4d",
+    "review": "machine"
+  },
+  "c4.cap.read": {
+    "text": "recuperare le modifiche",
+    "sourceHash": "0c0e144194419c32feded875c6f917b774581f382171260bf5eacf7c68917a1f",
+    "review": "machine"
+  },
+  "c4.cap.write": {
+    "text": "inviare pannelli con testo e immagine",
+    "sourceHash": "a08937a335f05c3cbedd28105c659868c94afba96a85f17eb8bfda134386bfb9",
+    "review": "machine"
+  },
+  "c4.cap.notes": {
+    "text": "commenti in entrambe le direzioni",
+    "sourceHash": "3ad08c451e66b7090e5eb4598e35d90ca2c4195b4f92aba78a8f7cb36cd31de2",
+    "review": "machine"
+  },
+  "c4.limit.paid-plan": {
+    "text": "Richiede un piano Boords a pagamento.",
+    "sourceHash": "4597f4ce5ae51ed19c4aeafb1fecc1f2bedd15ec108ca1b62a5285cd7d4fed3c",
+    "review": "machine"
+  },
+  "c4.limit.beta": {
+    "text": "L’API è in beta e può cambiare.",
+    "sourceHash": "5a1f232a36f4072f55911b8e943378389e21907ff3e9ff26a4cad0545eb41e75",
+    "review": "machine"
+  },
+  "c4.limit.no-layers": {
+    "text": "Nessun livello: Boords riceve un’immagine piatta per pannello.",
+    "sourceHash": "4665169486e75c2975b931322fa4f440627298a8196635f52f549cdf2ddd4fb9",
+    "review": "machine"
+  },
+  "c4.limit.no-audio": {
+    "text": "Nessun audio viene inviato.",
+    "sourceHash": "3b34224f28bcbecb5b636a9321da002be45ac74bc3569683b8ad7a42dfd8fdfa",
+    "review": "machine"
+  },
+  "c4.limit.no-timeline": {
+    "text": "Nessuna timeline né durate.",
+    "sourceHash": "8ee71c50174a265778ab0ef31ab10272421841f3d622b680eb1e3372c13d6c61",
+    "review": "machine"
+  },
+  "c4.limit.no-etag": {
+    "text": "Boords non ha un controllo di versione nell’API, quindi Pen to Glass confronta da sé e mostra i conflitti.",
+    "sourceHash": "571f3b1f77c5dab80abb64811641ccebdd35a66cf3dd9d0dac5bacdfc989d254",
+    "review": "machine"
+  },
+  "c4.limit.partial-webhooks": {
+    "text": "Solo alcune modifiche in Boords vengono notificate subito; le altre vengono recuperate regolarmente.",
+    "sourceHash": "5a4319e739f213e108ff18fa07c8a245a5ba326854f358399d6918441ff9b5fc",
+    "review": "machine"
+  },
+  "c4.limit.no-auto-apply": {
+    "text": "Nulla da Boords viene usato senza che tu lo scelga.",
+    "sourceHash": "7e050e8ea229390207f426d7197c504dd9fb3337bc6e7e657757ffe7cdee4031",
+    "review": "machine"
+  },
+  "c4.owner": {
+    "text": "Per chi vale la chiave",
+    "sourceHash": "b0738ef5dcd21489517b2381d6cd68c1337759cf79a0be182e0d305cbcc93443",
+    "review": "machine"
+  },
+  "c4.owner.user": {
+    "text": "Io",
+    "sourceHash": "fd5271fea473d5029e09bf8a67d2a2579ea85d731e7a96ecf5a35a5ea3b2b4f5",
+    "review": "machine"
+  },
+  "c4.owner.workspace": {
+    "text": "Area di lavoro",
+    "sourceHash": "d5bbbb47c91051efabc1f2cf61b71b1ddff1904f1236a5de1fc88fbbc76fbbf2",
+    "review": "machine"
+  },
+  "c4.owner.workspace-named": {
+    "text": "Area di lavoro: {name}",
+    "sourceHash": "29bfe1b70cf492f2fb59da3d6936c438e726c2d564d9fb639e0b94cf411a5107",
+    "review": "machine"
+  },
+  "c4.key": {
+    "text": "Chiave API di Boords",
+    "sourceHash": "a49c816abdba7b6c64a9fafb85f1c2d08edb77c48a74a41fe5232d3e90d50594",
+    "review": "machine"
+  },
+  "c4.webhook-secret": {
+    "text": "Segreto webhook di Boords (facoltativo)",
+    "sourceHash": "8ffe319e27e8b199126f3cb47ff4b6706ab4a59118fc273e6ada72cebfb52b91",
+    "review": "machine"
+  },
+  "c4.label": {
+    "text": "Nome (facoltativo)",
+    "sourceHash": "9941dcfc46d47685313a902436c5bb5032f33b30019ca7bbfe01e41385591ec9",
+    "review": "machine"
+  },
+  "c4.key-safety": {
+    "text": "La chiave viene salvata cifrata e non viene più mostrata. Vedi solo gli ultimi quattro caratteri.",
+    "sourceHash": "a3ec9d9413ff8565d4e2676e2ab043460cf5119be3c7340f6830e2b91bac4523",
+    "review": "machine"
+  },
+  "c4.save": {
+    "text": "Salva chiave",
+    "sourceHash": "329015d4915f5bcb539c96d460d161eef15ec159fbde9ba3901782a44bde2489",
+    "review": "machine"
+  },
+  "c4.remove": {
+    "text": "Rimuovi",
+    "sourceHash": "efa41f7dcba0d2f5b5c7ee29c270d50f2ecd3e8f65636f8336ca5ba934612a15",
+    "review": "machine"
+  },
+  "c4.removed": {
+    "text": "La chiave è stata rimossa.",
+    "sourceHash": "21af91025291eb96ffe7078b60e9755d1f001f8d14bf4bea0f7ce6b9ce5dc30e",
+    "review": "machine"
+  },
+  "c4.saved.ok": {
+    "text": "La chiave funziona ed è stata salvata.",
+    "sourceHash": "9a9731cb8053c4cd76c7bdbc8dcd92b7438615d1015487000163c28551faff15",
+    "review": "machine"
+  },
+  "c4.saved.untested": {
+    "text": "La chiave è stata salvata, ma Boords non ha risposto. Verrà provata al primo invio.",
+    "sourceHash": "5b5a64428684d937549048ba439626a93c40357cea5a3c2fba9b644e416c75d3",
+    "review": "machine"
+  },
+  "c4.status.ok": {
+    "text": "Funziona",
+    "sourceHash": "d011094c7e2c23a6a4b2c816b45bbbdb5e5d9cbdfc3ece9f0ec6a71c871639e4",
+    "review": "machine"
+  },
+  "c4.status.failed": {
+    "text": "Non funziona",
+    "sourceHash": "3478201257d919b5628ff7c73ad7fa40699e045c031a01150887a91dba481b23",
+    "review": "machine"
+  },
+  "c4.status.untested": {
+    "text": "Non provata",
+    "sourceHash": "6cb5d4af9a67a276d44de52ca12d1092fb1d2b20c39aefa520741d1cb3bdea12",
+    "review": "machine"
+  },
+  "c4.last-sync": {
+    "text": "ultimo recupero {date}",
+    "sourceHash": "3c1f2b5c5197996fea67a5d58845deac9a914c6cfcf80c706e39a3bf84419431",
+    "review": "machine"
+  },
+  "c4.webhook-url": {
+    "text": "Incolla questo indirizzo come webhook in Boords:",
+    "sourceHash": "6efe1e12fc25c49c951db6f3d765055077c2a83901a813ce90a9a5e717bc39bf",
+    "review": "machine"
+  },
+  "c4.webhook-none": {
+    "text": "Nessun webhook: le modifiche vengono recuperate regolarmente.",
+    "sourceHash": "9c78b86a57a65e4693c3c0608f6e7a309866ee897dfa4cd0cb61f966987360ad",
+    "review": "machine"
+  },
+  "c4.error": {
+    "text": "Il collegamento a Boords non ha funzionato. Riprova.",
+    "sourceHash": "6d44c07e3994f982aa71d173da19b919d7b032bbe11e3b24554bf4a373709302",
+    "review": "machine"
+  },
+  "c4.error.owner": {
+    "text": "Solo il proprietario dell’area di lavoro può aggiungere la chiave.",
+    "sourceHash": "888aedde93eeba30a90a1cef973ddb2c3d14dc257afc8f40a8e07c8e6b78db91",
+    "review": "machine"
+  },
+  "c4.error.rate": {
+    "text": "Troppi tentativi. Attendi un po’ e riprova.",
+    "sourceHash": "7476a4f862591d853b9e331bdea175dbb1ae865c88ff29e928d83b093bd0b145",
+    "review": "machine"
+  },
+  "c4.error.rejected": {
+    "text": "Boords non ha accettato la chiave. Verifica che sia corretta e che il piano abbia accesso all’API.",
+    "sourceHash": "d1c3f6b30cfa09959a77236e823eb5daec9fd6108afa3cea8bae84e116803ef2",
+    "review": "machine"
+  },
+  "c4.send.open": {
+    "text": "Boords",
+    "sourceHash": "29c8f641ae31f0d63c5b0a42eb301cc2849274a0fbfe031cf503ef2331ec6b56",
+    "review": "machine"
+  },
+  "c4.send.title": {
+    "text": "Invia a Boords",
+    "sourceHash": "7b5c584918930c7d76fbf8526bcc400060ed19a9c379fc53503dbda0040ee381",
+    "review": "machine"
+  },
+  "c4.send.intro": {
+    "text": "I pannelli di questa produzione vengono inviati con testo e immagine. Le modifiche da Boords arrivano come proposte.",
+    "sourceHash": "354abbe6d0351b40ff14f68d4e90d463b9607196e1b1ee10852e720c119677d3",
+    "review": "machine"
+  },
+  "c4.send.no-connection": {
+    "text": "Non hai ancora una chiave Boords.",
+    "sourceHash": "83e36b54d2b04f8d5a4bb676e5a149bc68f85feb276f8a7879a5050c935446ac",
+    "review": "machine"
+  },
+  "c4.send.to-account": {
+    "text": "Aggiungila nella pagina dell’account.",
+    "sourceHash": "a9be65f25e9a7fb966c49e45eeb328197e84b52a81faf58be5fa5ff7e2816b86",
+    "review": "machine"
+  },
+  "c4.send.connection": {
+    "text": "Chiave",
+    "sourceHash": "025607c28d917f56e44a947af7a8dd58b22df13a8f7e90e48ea8ef13f665c8da",
+    "review": "machine"
+  },
+  "c4.send.fields": {
+    "text": "Vengono inviati {count} pannelli con i campi {fields} e un’immagine.",
+    "sourceHash": "604c8aed2a0467232e6aaef298986901add5afb77de79b222718563d64532380",
+    "review": "machine"
+  },
+  "c4.send.button": {
+    "text": "Invia a Boords",
+    "sourceHash": "7b5c584918930c7d76fbf8526bcc400060ed19a9c379fc53503dbda0040ee381",
+    "review": "machine"
+  },
+  "c4.send.done": {
+    "text": "Inviato: {created} pannelli nuovi e {updated} aggiornati.",
+    "sourceHash": "05dd3a423cbb1752b06ca9e20353cbf961c40cb5bab45d33c35e8c41116a5582",
+    "review": "machine"
+  },
+  "c4.pull.button": {
+    "text": "Recupera modifiche",
+    "sourceHash": "5e91ff3de2bbb3d6b56c6b1d9f89c45cbe8b62294e27853eeb5362b3983c6033",
+    "review": "machine"
+  },
+  "c4.pull.done": {
+    "text": "Recuperato: {candidates} proposte ({conflicts} conflitti) e {comments} commenti.",
+    "sourceHash": "7aee83e85acd7689d59acf065c7589d4bf54c7bb887218866c8d015b1b2d7115",
+    "review": "machine"
+  },
+  "c4.cand.title": {
+    "text": "Proposte da Boords",
+    "sourceHash": "5010f3331321b3ec0ec54313834a58befba0e9c19eb5bcc890c3abc13282f87e",
+    "review": "machine"
+  },
+  "c4.cand.intro": {
+    "text": "Non è stato ancora usato nulla. Scegli cosa fare con ogni proposta.",
+    "sourceHash": "d0a00ec6023f505382343c3d91f795cc3f8941e3d560c488ffe9552e9706ba7f",
+    "review": "machine"
+  },
+  "c4.cand.panel": {
+    "text": "Pannello {panel}",
+    "sourceHash": "5fbff919d1874f9bc3744d8e9e77faf519b449c6179fdc938c3dc88d5c2bce5b",
+    "review": "machine"
+  },
+  "c4.cand.conflict": {
+    "text": "modificato in entrambi i posti",
+    "sourceHash": "930e87c87060a2b8f6ecae67952ecd3a7f2997b8784230df6b90fc9b9ff3a43d",
+    "review": "machine"
+  },
+  "c4.cand.image": {
+    "text": "Nuova immagine da Boords. «Usa quella in arrivo» la aggiunge alla libreria senza cambiare il pannello.",
+    "sourceHash": "a572ca5c3d75c93f3988773e65dd4c1935cdc5e2649977d5f2ddc592d5be4c62",
+    "review": "machine"
+  },
+  "c4.image-name": {
+    "text": "Immagine da Boords",
+    "sourceHash": "cd0757d3edd39363e98d1b91039549b7d55bedc33262e87f858956e0472164e4",
+    "review": "machine"
+  },
+  "c4.incoming": {
+    "text": "Usa la modifica da Boords",
+    "sourceHash": "5920d3ddadfbf79df9ea8ac3e2d5377f453b0e702e4648206d55baceaaa5b983",
+    "review": "machine"
+  },
+  "c4.comments.title": {
+    "text": "Commenti con Boords",
+    "sourceHash": "75aec57f6360a3f4831e9ee64adbaf29194b4ca619eb8ee2909ad8b0eacca44b",
+    "review": "machine"
+  },
+  "c4.comments.in": {
+    "text": "Da Boords",
+    "sourceHash": "39f3e52428af892d326d9a14d6ad94ed98805efd86da46d399954deb3a6fc1ea",
+    "review": "machine"
+  },
+  "c4.comments.out": {
+    "text": "A Boords",
+    "sourceHash": "3e9d06443213c06113be05052fff7aea62df529de590397b3b0a9b2d214df687",
+    "review": "machine"
   }
 }

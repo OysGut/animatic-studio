@@ -144,7 +144,7 @@ export function inventorySource(source, file = 'src/example.tsx') {
       const excluded = keyArgument || ts.isImportDeclaration(parent) || ts.isExportDeclaration(parent) || ts.isLiteralTypeNode(parent) || ((ts.isPropertyAssignment(parent) || ts.isPropertySignature(parent)) && parent.name === node) || ts.isElementAccessExpression(parent);
       if (!excluded) {
         const text = ts.isJsxText(node) ? node.text : textOf(node, sf).text;
-        if (text?.trim()) candidates.push({ ...location(node), kind: ts.isJsxText(node) ? 'jsx-text' : 'literal-candidate', text, raw: node.getText(sf), ignored: /i18n-ignore/.test(source.split('\n').slice(Math.max(0, location(node).line - 2), location(node).line).join('\n')) });
+        if (text?.trim()) candidates.push({ ...location(node), kind: ts.isJsxText(node) ? 'jsx-text' : 'literal-candidate', text, ...(node.getText(sf) !== JSON.stringify(text) ? { raw: node.getText(sf) } : {}), ignored: /i18n-ignore/.test(source.split('\n').slice(Math.max(0, location(node).line - 2), location(node).line).join('\n')) });
       }
     }
     ts.forEachChild(node, literals);
