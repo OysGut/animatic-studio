@@ -3,8 +3,9 @@
  * It says honestly what the receiver gets, builds the file with the hand-off marker and Manifest v1,
  * downloads a ZIP and shows the return QR/link (short-lived token, stored only as hash on the server).
  */
-import { useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
+import { useContext, useState } from "react";
+import { QueryClientContext, useQueryClient } from "@tanstack/react-query";
+import { useSchemaAtLeast } from "@/app/shell/use-schema";
 import { useServerFn } from "@tanstack/react-start";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -135,7 +136,14 @@ export function SendToDialog({ open, onOpenChange, state, target }: { open: bool
   );
 }
 
-export function SendToButton({ state, target, disabled }: { state: ProjectState; target: SendTarget; disabled?: boolean }) {
+/** Shown only when the database has the C-1 tables (0110) and inside the app's query client. */
+export function SendToButton(props: { state: ProjectState; target: SendTarget; disabled?: boolean }) {
+  return useContext(QueryClientContext) ? <SendToGate {...props} /> : null;
+}
+function SendToGate(props: { state: ProjectState; target: SendTarget; disabled?: boolean }) {
+  return useSchemaAtLeast(110) ? <SendToLive {...props} /> : null;
+}
+function SendToLive({ state, target, disabled }: { state: ProjectState; target: SendTarget; disabled?: boolean }) {
   const [open, setOpen] = useState(false);
   return (
     <>
