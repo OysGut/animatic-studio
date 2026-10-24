@@ -105,6 +105,6 @@
 - [x] Kamerabevegelse fra kameramerke (start/slutt-ramme)
 - [x] Midlertidig lyd per panel (opptak/QR/opplasting), aldri blandet inn uten bekreftelse
 - [ ] Felles posisjon og hurtigtast bygget; storyboard→scene nb/en og kjerne verifisert. Full femflate-/tilbake-/replikk-E2E gjenstår.
-- [x] Tester + rapport docs/development/SB4_REPORT.md: DB 228/0, nettleser nb/en 18/0, alle språk grønne; endelig full Vitest føres i rapporten. 0105 bare lokalt.
+- [x] Tester + rapport docs/development/SB4_REPORT.md: DB 228/0, nettleser nb/en 18/0, alle språk grønne; endelig full Vitest 2913/0/10. 0105 bare lokalt.
 - [x] Presisering (Øystein): eksport via eksisterende ExportAnimaticDialog/«Til produksjonen», valg «Bildekilde: animasjon / film / storyboardpaneler», én felles bildekilde-adapter; SB-4 = kildevalg + filmeksport (MP4/ProRes/PNG); tester: rekkefølge/timing/lyd, uendret med animasjon som kilde
 - [ ] SB-6: utskrift/pitch (3/6/9 per side) og CSV/XLSX som nye kort i samme eksportvindu

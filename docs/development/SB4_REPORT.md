@@ -21,7 +21,7 @@
 
 ## Verifisering
 - Lokal full DB-suite: **228 bestått, 0 feilet** med migrasjoner til 0105; før endring 227/0. Ingen Cloud-data endret.
-- Full Vitest før siste små endringer: **2911 bestått, 0 feilet, 10 eksisterende hoppet over**. Endelig full kjøring rapporteres nedenfor etter avslutning.
+- Endelig full Vitest etter siste endring: **2913 bestått, 0 feilet, 10 eksisterende hoppet over**, 364 testfiler bestått, 2 hoppet over.
 - Målrettet posisjon/backup/galleri/avspilling: **49 bestått, 0 feilet**; ytterligere to konkrete tester er lagt til for posisjonsbuss og backup.
 - Nettleser nb/en med syntetiske prosjektdata og mockede tjenester: **18 bestått, 0 feilet**, ingen kjørefeil. Scrubbing, pause/spill, arbeidsflatebytte med panel, timing og eksplisitt lydbruk prøvd.
 - Automatisk typekontroll/forhåndsvisning: build OK, ingen typefeil i siste signal.
@@ -36,4 +36,16 @@
 - Ingen publisering og ingen betalte AI-kall.
 
 ## Endrede filer
-Se listen nedenfor for denne leveransen. Genererte språkinventarfiler er med fordi nye/endrede referanser skal kontrolleres i samme endring.
+- `AGENTS.md`: kort regel om scenelokal posisjon og N8 innenfor bytegrensen.
+- `src/app/shell/active-scene-bus.ts`, `current-scene.ts`, `use-position-playback.ts`, `ProjectNav.tsx`: delt posisjon, tidsoppdatering og veksling.
+- `src/app/script/ScriptWorkspace.tsx`, `src/app/assembly/AssemblyWorkspace.tsx`, `src/app/scene-editor/SceneEditorWorkspace.tsx`, `src/app/script-explorer/ScriptExplorer.tsx`: posisjonsgjenbruk i arbeidsflatene.
+- `src/app/shortcuts/shortcut-list.ts`: veksling i hurtigtastoversikten.
+- `src/app/storyboard/GalleryPlayback.tsx`, `StoryboardWorkspace.tsx`, `StoryboardFilm.tsx`, `PanelAudio.tsx`, `PanelEditor.tsx`: galleriavspilling, stille scrubbing, timing og midlertidig lyd; mobilutkast knyttes til opprettet ressurs.
+- `src/core/storyboard/position.ts`, `temp-audio.ts`, `playback.ts`: ren posisjon, timing og eksplisitt lydplan.
+- `src/core/backup/index.ts`: kontroll av midlertidige lydreferanser.
+- `db/migrations/0105_sb4_temp_audio_safety.sql`, `src/adapters/storage/project-rows.ts`, `tests/visual/schema-version.mjs`: validator, purgevern og versjon 105.
+- `tests/db/run-db-tests.ts`: validerings-, purge- og rettighetstester.
+- `tests/unit/sb4-playback.test.ts`, `sb2-storyboard-gallery.test.tsx`, `active-scene-bus.test.ts`, `backup.test.ts`: konkret logikk og regresjoner.
+- `tests/visual/make-sb4-fixture.ts`, `sb4-playback.mjs`: syntetisk nb/en-flyt uten betalte kall.
+- `src/core/i18n/authored.json` og tilhørende genererte språk-/inventarkataloger: alle nye tekster i alle registrerte språk.
+- `roadmap.md`, `docs/development/SB4_REPORT.md`: ærlig status og resultater.
