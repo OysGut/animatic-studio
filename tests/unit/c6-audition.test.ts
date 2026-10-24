@@ -292,8 +292,8 @@ describe("C-6 manifest, pakking, tekster og klient", () => {
   });
   it("klienten ptg.audition og redirect er registrert; kapabiliteter viser lyd og tidslinje", () => {
     expect(clientKnown(AUDITION_CLIENT_ID)).toBe(true);
-    expect(redirectAllowed(AUDITION_CLIENT_ID, REDIRECT_URI)).toBe(true);
-    expect(redirectAllowed(AUDITION_CLIENT_ID, "https://evil.example/cb")).toBe(false);
+    expect(redirectAllowed(REDIRECT_URI, AUDITION_CLIENT_ID)).toBe(true);
+    expect(redirectAllowed("https://evil.example/cb", AUDITION_CLIENT_ID)).toBe(false);
     expect(ADAPTERS.find(a => a.id === "adobe-audition-cep")?.capabilities).toEqual(expect.arrayContaining(["audio", "timeline", "write"]));
   });
   it("README på nb og en med PlayerDebugMode og «bygget, ikke verifisert»", () => {
