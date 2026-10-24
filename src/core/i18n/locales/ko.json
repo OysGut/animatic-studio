@@ -59857,5 +59857,25 @@
     "text": "실패했습니다. 다시 시도하세요.",
     "sourceHash": "7a753b3c4814ad89538705e5bbf573676df703cef65d7d6cf49c2eb2bae5974f",
     "review": "machine"
+  },
+  "notes-panel.show-resolved": {
+    "text": "해결된 메모 표시",
+    "sourceHash": "fe4e4441271f78e61f68bf388c27ec44df14e0766ac10af4ce36d0525e0282ce",
+    "review": "machine"
+  },
+  "notes-panel.hide-resolved": {
+    "text": "해결된 메모 숨기기",
+    "sourceHash": "bd1c1a4c1b2fe25d2d537ceb9360fa02e871e0513daaf1ba0f59d6cff089d730",
+    "review": "machine"
+  },
+  "ai-cleanup.total": {
+    "text": "합계 {size}",
+    "sourceHash": "80e0119609f412480e896c0239ad2cde58013a829540696cabacee5d91312421",
+    "review": "machine"
+  },
+  "ai-cleanup.select-file": {
+    "text": "{name} 선택",
+    "sourceHash": "9a0a105f82ddc1b997bba2801f24fc67fcbd5bb4e015025fd00d06b4f8f445c5",
+    "review": "machine"
   }
 }
