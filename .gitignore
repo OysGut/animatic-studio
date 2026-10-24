@@ -55,3 +55,4 @@ dist-ssr
 __pycache__/
 
 .overforing/
+plugins/photoshop/dist/
