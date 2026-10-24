@@ -817,6 +817,23 @@ export function ExportAnimaticDialog({
             ) : null}
           </fieldset>
 
+          <fieldset className="flex flex-col gap-2 rounded-sm border border-border bg-surface-1 p-3" disabled={busy} data-testid="export-image-source">
+            <legend className={legend}>{t("sb4.export.image-source")}</legend>
+            {(["animation", "film", "storyboard"] as const).map((src) => (
+              <label key={src} className={radio}>
+                <input
+                  type="radio"
+                  name="imageSource"
+                  checked={imageSource === src}
+                  onChange={() => setImageSource(src)}
+                  className="mt-1"
+                  data-testid={`export-source-${src}`}
+                />
+                <span>{t(`sb4.export.source-${src}`)}</span>
+              </label>
+            ))}
+          </fieldset>
+
           <fieldset className="flex flex-col gap-2 rounded-sm border border-border bg-surface-1 p-3" disabled={busy}>
             <legend className={legend}>{t("app-assembly-export-animatic-dialog.export-animatic-dialog.legend.5aedb80937f3")}</legend>
             <label className={radio}>
