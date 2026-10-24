@@ -24,6 +24,7 @@ import { Route as ProsjektProjectIdRouteImport } from './routes/prosjekt.$projec
 import { Route as PtgIRouteImport } from './routes/ptg.i'
 import { Route as ReviewTokenRouteImport } from './routes/review.$token'
 import { Route as SeTokenRouteImport } from './routes/se.$token'
+import { Route as ApiV1SplatRouteImport } from './routes/api/v1/$'
 import { Route as ProsjektProjectIdIndexRouteImport } from './routes/prosjekt.$projectId.index'
 import { Route as ProsjektProjectIdBibliotekRouteImport } from './routes/prosjekt.$projectId.bibliotek'
 import { Route as ProsjektProjectIdManusRouteImport } from './routes/prosjekt.$projectId.manus'
@@ -111,6 +112,11 @@ const SeTokenRoute = SeTokenRouteImport.update({
   path: '/se/$token',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiV1SplatRoute = ApiV1SplatRouteImport.update({
+  id: '/api/v1/$',
+  path: '/api/v1/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProsjektProjectIdIndexRoute = ProsjektProjectIdIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -189,6 +195,7 @@ export interface FileRoutesByFullPath {
   '/ptg/i': typeof PtgIRoute
   '/review/$token': typeof ReviewTokenRoute
   '/se/$token': typeof SeTokenRoute
+  '/api/v1/$': typeof ApiV1SplatRoute
   '/prosjekt/$projectId/bibliotek': typeof ProsjektProjectIdBibliotekRoute
   '/prosjekt/$projectId/manus': typeof ProsjektProjectIdManusRoute
   '/prosjekt/$projectId/montering': typeof ProsjektProjectIdMonteringRoute
@@ -216,6 +223,7 @@ export interface FileRoutesByTo {
   '/ptg/i': typeof PtgIRoute
   '/review/$token': typeof ReviewTokenRoute
   '/se/$token': typeof SeTokenRoute
+  '/api/v1/$': typeof ApiV1SplatRoute
   '/prosjekt/$projectId/bibliotek': typeof ProsjektProjectIdBibliotekRoute
   '/prosjekt/$projectId/manus': typeof ProsjektProjectIdManusRoute
   '/prosjekt/$projectId/montering': typeof ProsjektProjectIdMonteringRoute
@@ -245,6 +253,7 @@ export interface FileRoutesById {
   '/ptg/i': typeof PtgIRoute
   '/review/$token': typeof ReviewTokenRoute
   '/se/$token': typeof SeTokenRoute
+  '/api/v1/$': typeof ApiV1SplatRoute
   '/prosjekt/$projectId/bibliotek': typeof ProsjektProjectIdBibliotekRoute
   '/prosjekt/$projectId/manus': typeof ProsjektProjectIdManusRoute
   '/prosjekt/$projectId/montering': typeof ProsjektProjectIdMonteringRoute
@@ -275,6 +284,7 @@ export interface FileRouteTypes {
     | '/ptg/i'
     | '/review/$token'
     | '/se/$token'
+    | '/api/v1/$'
     | '/prosjekt/$projectId/bibliotek'
     | '/prosjekt/$projectId/manus'
     | '/prosjekt/$projectId/montering'
@@ -302,6 +312,7 @@ export interface FileRouteTypes {
     | '/ptg/i'
     | '/review/$token'
     | '/se/$token'
+    | '/api/v1/$'
     | '/prosjekt/$projectId/bibliotek'
     | '/prosjekt/$projectId/manus'
     | '/prosjekt/$projectId/montering'
@@ -330,6 +341,7 @@ export interface FileRouteTypes {
     | '/ptg/i'
     | '/review/$token'
     | '/se/$token'
+    | '/api/v1/$'
     | '/prosjekt/$projectId/bibliotek'
     | '/prosjekt/$projectId/manus'
     | '/prosjekt/$projectId/montering'
@@ -359,6 +371,7 @@ export interface RootRouteChildren {
   PtgIRoute: typeof PtgIRoute
   ReviewTokenRoute: typeof ReviewTokenRoute
   SeTokenRoute: typeof SeTokenRoute
+  ApiV1SplatRoute: typeof ApiV1SplatRoute
   ApiPublicCronAiJobsRoute: typeof ApiPublicCronAiJobsRoute
 }
 
@@ -467,6 +480,13 @@ declare module '@tanstack/react-router' {
       path: '/se/$token'
       fullPath: '/se/$token'
       preLoaderRoute: typeof SeTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/v1/$': {
+      id: '/api/v1/$'
+      path: '/api/v1/$'
+      fullPath: '/api/v1/$'
+      preLoaderRoute: typeof ApiV1SplatRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/prosjekt/$projectId/': {
@@ -594,6 +614,7 @@ const rootRouteChildren: RootRouteChildren = {
   PtgIRoute: PtgIRoute,
   ReviewTokenRoute: ReviewTokenRoute,
   SeTokenRoute: SeTokenRoute,
+  ApiV1SplatRoute: ApiV1SplatRoute,
   ApiPublicCronAiJobsRoute: ApiPublicCronAiJobsRoute,
 }
 export const routeTree = rootRouteImport
