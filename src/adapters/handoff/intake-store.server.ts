@@ -3,6 +3,7 @@
  * candidates go through apply_changes as the acting editor (role check there).
  */
 import { diffStates } from "@/core";
+import { encodePngWith, pngRaw, readPsd } from "@/core/handoff";
 import { loadProjectState, type AnyClient } from "@/adapters/storage/project-rows";
 import { applyLocally, type HandoffRecord, type HandoffStore, type ReturnTransfer } from "./intake";
 
@@ -47,6 +48,15 @@ export async function cloudHandoffStore(): Promise<HandoffStore & { db: AnyClien
     async removeChunks(t) { const n = Math.ceil(t.byteSize / (4 * 1024 * 1024)); await db.storage.from("assets").remove(Array.from({ length: n }, (_, i) => chunkPath(t, i))); },
     async loadState(projectId) { return loadProjectState(db, projectId); },
     async uploadFile(path, parts, mimeType) { const up = await db.storage.from("assets").upload(path, new Blob(parts as BlobPart[], { type: mimeType }), { contentType: mimeType, upsert: false }); if (up.error) throw up.error; },
+    async previewFromPsd(bytes, marker) {
+      try {
+        const doc = readPsd(bytes);
+        if (!doc.composite) return null;
+        const raw = pngRaw(doc.width, doc.height, doc.composite);
+        const z = new Uint8Array(await new Response(new Blob([raw as BlobPart]).stream().pipeThrough(new CompressionStream("deflate"))).arrayBuffer());
+        return { png: encodePngWith(doc.width, doc.height, doc.composite, { "ptg:handoff": marker }, () => z), width: doc.width, height: doc.height };
+      } catch { return null; }
+    },
     async applyCommands(projectId, actor, state, commands) {
       let s = state;
       for (const command of commands) {
