@@ -9,6 +9,7 @@ import {
   DEFAULT_COMPOSITION,
   applyCommand,
   defaultLayerFields,
+  textLayerFields,
   filmClips,
   orderedOccurrences,
   planSceneSetup,
@@ -105,8 +106,8 @@ describe("SB-5 planSceneSetup", () => {
     s = addPanelLayer(s, p.panelId, { kind: "note", fill: null, note: { text: "regi", color: "#ffffff", noteType: "direction", handled: false, anchor: null } }).s;
     s = addPanelLayer(s, p.panelId, { kind: "arrow", fill: null, arrow: { points: [{ x: 0, y: 0, smooth: false }, { x: 10, y: 10, smooth: false }], form: "straight", thickness: 2, color: "#ffffff", category: "character", layerId: null } }).s;
     s = addPanelLayer(s, p.panelId, { kind: "camera_mark", fill: null, cameraMark: { frame: { x: 100, y: 100, width: 400, height: 300 }, zoom: 2, pan: { x: 0, y: 0 }, tilt: 0 } }).s;
-    s = addPanelLayer(s, p.panelId, { kind: "shape", fill: "#ffffff" }).s;
-    s = addPanelLayer(s, p.panelId, { kind: "text", fill: null }).s;
+    s = addPanelLayer(s, p.panelId, { kind: "other", fill: "#ffffff", shape: { type: "rect", radius: 0, stroke: null } }).s;
+    s = addPanelLayer(s, p.panelId, textLayerFields(s.compositions[p.panelId]!, "Instruction", "Text")).s;
 
     const plan = planSceneSetup(s, filmClips(s, mainId), occurrenceId, p.panelId);
     expect(plan.ok).toBe(true);

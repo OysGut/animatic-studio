@@ -64,7 +64,7 @@ export function planSceneSetup(
     return { ok: false, reason: "no_panel" };
 
   const all = layersOf(s, panel.id);
-  const included = new Set(all.filter((l) => l.kind === "image" && l.assetId).map((l) => l.id as string));
+  const included = new Set(all.filter((l) => l.assetId && !l.shape && !l.text && !l.note && !l.arrow && !l.cameraMark).map((l) => l.id as string));
   // Ta bare med grupper i ressurslagenes foreldrelinje, ikke tomme instruksjonsgrupper.
   for (const layer of all) {
     if (!included.has(layer.id)) continue;

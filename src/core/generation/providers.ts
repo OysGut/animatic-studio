@@ -53,6 +53,8 @@ export interface ProviderModel {
    * `MAX_ATTACHED_IMAGES` (Øystein 23.10).
    */
   readonly maxInputImages?: number;
+  /** Explicit storyboard controls; absent capabilities are never advertised as native support. */
+  readonly panelAi?: { readonly mask?: boolean; readonly sketch?: boolean };
   /** Kan lage gjennomsiktig bakgrunn (frilagte figurer). */
   readonly transparent?: boolean;
   /** Innsatsnivået modellen passer best til (mandat 19.3, DEC-0070). */
