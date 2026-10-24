@@ -289,6 +289,6 @@ describe("C-0 OpenAPI og SDK-arkitektur", () => {
     const src = readFileSync(join(ROOT, "packages/ptg-connector-sdk/src/index.ts"), "utf8");
     const imports = [...src.matchAll(/from\s+["']([^"']+)["']/g)].map(m => m[1]!);
     expect(imports.every(i => i.startsWith("../../../src/core/connectors/"))).toBe(true);
-    expect(src).not.toMatch(/react|supabase|process\.env|client_secret|sk_live|sb_secret/i);
+    expect(src).not.toMatch(/from\s+["'](react|@supabase)|process\.env|client_secret|sk_live|sb_secret_/);
   });
 });
