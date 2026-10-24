@@ -60,13 +60,13 @@ export function StoryboardFilm({
   /** Panelet under avspillingshodet, også etter at spilleren lukkes (fokus følger panelet). */
   readonly onCurrentPanel?: (panelId: string | null) => void;
 }) {
-  const filmLang = useFilmLanguage(projectId);
+  const [filmLang] = useFilmLanguage(projectId);
   const fps = state.project.fps;
-  const view = useMemo(() => languageState(state, filmLang.value.dialogue), [state, filmLang.value.dialogue]);
+  const view = useMemo(() => languageState(state, filmLang.dialogue), [state, filmLang.dialogue]);
   const clips = useMemo(() => filmClips(view, productionId), [view, productionId]);
   const audioItems = useMemo(
-    () => [...filmAudio(view, clips, fps, filmLang.value.dialogue), ...filmTakeAudio(clips, fps)],
-    [view, clips, fps, filmLang.value.dialogue],
+    () => [...filmAudio(view, clips, fps, filmLang.dialogue), ...filmTakeAudio(clips, fps)],
+    [view, clips, fps, filmLang.dialogue],
   );
   const film = useMemo(() => storyboardFilm(view, clips, audioItems), [view, clips, audioItems]);
   const images = useFilmImages(film.state, film.clips);
@@ -103,7 +103,7 @@ export function StoryboardFilm({
     const occId = current?.shot.occurrenceId ?? null;
     if (!occId || occId === lastPublished.current) return;
     lastPublished.current = occId;
-    rememberScene(projectId, occId, current?.shot.panel.sceneId ?? null);
+    rememberScene(projectId, occId, state.occurrences[occId]?.sceneId ?? null);
   }, [current, projectId]);
   useEffect(() => () => { lastPublished.current = null; }, []);
   const close = useCallback(() => {
