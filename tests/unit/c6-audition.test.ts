@@ -144,6 +144,7 @@ describe("C-6 lydplan fra prosjektet", () => {
   it("roller, låst/godkjent versjon, midlertidig panellyd og panelmarkører; ID-er, ikke navn", () => {
     const r = setup();
     const plan = auditionPlan(r.s, r.occ.id)!;
+    console.log("DBG", JSON.stringify(plan.clips.map(c => [c.role, c.offsetMs, c.panelId])), JSON.stringify(plan.markers));
     const byRole = Object.fromEntries(plan.clips.map(c => [c.role, c]));
     expect(byRole["dialogue"]).toMatchObject({ clipId: r.dlg, versionId: r.v2, variantId: r.variantId, offsetMs: 1200, panelId: r.panels[1] });
     expect(byRole["music"]).toMatchObject({ clipId: r.mus, versionId: r.v1 });

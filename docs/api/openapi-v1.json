@@ -866,20 +866,10 @@
             "$ref": "#/components/parameters/projectId"
           },
           {
-            "name": "occurrenceId",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "$ref": "#/components/parameters/occurrenceId"
           },
           {
-            "name": "panelId",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
+            "$ref": "#/components/parameters/panelId"
           }
         ],
         "security": [
@@ -992,6 +982,22 @@
         "name": "conflictId",
         "in": "path",
         "required": true,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "occurrenceId": {
+        "name": "occurrenceId",
+        "in": "query",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "panelId": {
+        "name": "panelId",
+        "in": "query",
+        "required": false,
         "schema": {
           "type": "string"
         }
