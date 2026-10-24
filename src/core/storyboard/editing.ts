@@ -43,7 +43,9 @@ export function panelDetailsValid(s: ProjectState, p: Composition, d: PanelDetai
   if (d.tempAudio !== undefined && d.tempAudio !== null) {
     const a = d.tempAudio;
     if (!a || typeof a !== "object" || typeof a.name !== "string" || a.name.length > 500 || !Number.isFinite(a.durationMs) || a.durationMs <= 0 || a.durationMs > 3600000) return false;
-    if (!s.assets[a.assetId] || s.assets[a.assetId]!.removed || !s.assetVersions[a.versionId] || s.assetVersions[a.versionId]!.assetId !== a.assetId) return false;
+    if (!s.assets[a.assetId] || s.assets[a.assetId]!.removed) return false;
+    const v = s.assetVersions[a.versionId];
+    if (!v || v.removed || s.assetVariants[v.variantId]?.assetId !== a.assetId) return false;
   }
   return d.dialogueIds.every(id => { const b = s.blocks[id]; return b && !b.removed && b.variantId === p.variantId && b.kind === "dialogue"; });
 }
