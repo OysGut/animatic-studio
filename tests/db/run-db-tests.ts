@@ -9056,12 +9056,12 @@ try {
     await expectError(as("service_role",ALICE,tx=>tx`select public.connector_create_device(${h('0f')},'BCDF-GHJQ','ptg.unknown',array['project:read'],now()+interval '10 minutes')`),'22023');
     assert((await sql`select count(*)::int n from private.connector_clients`)[0]?.['n']===7,'client list size');
     // 6. Cleanup removes expired pending rows and used refresh hashes older than 90 days; keeps newer ones.
-    await sql`insert into private.connector_pending(hash,kind,user_code,client_id,scopes,expires_at) values(${h('10')},'device','BCDF-GHJR','ptg.krita',array['project:read'],now()-interval '1 minute'),(${h('11')},'device','BCDF-GHJS','ptg.krita',array['project:read'],now()+interval '10 minutes')`;
-    await sql`insert into private.connector_used_refresh(hash,session_id,used_at) values(${h('12')},${live},now()-interval '91 days'),(${h('13')},${live},now()-interval '1 day')`;
+    await sql`insert into private.connector_pending(hash,kind,user_code,client_id,scopes,expires_at) values(${h('1d')},'device','BCDF-GHJR','ptg.krita',array['project:read'],now()-interval '1 minute'),(${h('1e')},'device','BCDF-GHJS','ptg.krita',array['project:read'],now()+interval '10 minutes')`;
+    await sql`insert into private.connector_used_refresh(hash,session_id,used_at) values(${h('1f')},${live},now()-interval '91 days'),(${h('2a')},${live},now()-interval '1 day')`;
     await expectError(as("authenticated",ALICE,tx=>tx`select public.connector_cleanup()`),'42501');
     await as("service_role",ALICE,tx=>tx`select public.connector_cleanup()`);
-    assert((await sql`select hash from private.connector_pending where hash in (${h('10')},${h('11')})`).map(r=>r['hash']).join()===h('11'),'pending cleanup');
-    assert((await sql`select hash from private.connector_used_refresh where hash in (${h('12')},${h('13')})`).map(r=>r['hash']).join()===h('13'),'refresh cleanup');
+    assert((await sql`select hash from private.connector_pending where hash in (${h('1d')},${h('1e')})`).map(r=>r['hash']).join()===h('1e'),'pending cleanup');
+    assert((await sql`select hash from private.connector_used_refresh where hash in (${h('1f')},${h('2a')})`).map(r=>r['hash']).join()===h('2a'),'refresh cleanup');
   });
   await test("alle SECURITY DEFINER-funksjoner i public/private har search_path=''", async () => {
     const rows = await sql`
