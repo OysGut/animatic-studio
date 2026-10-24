@@ -431,10 +431,8 @@ export function ExportAnimaticDialog({
           const fresh = await signedUrls(missingUrl, 4 * 60 * 60);
           for (const p of missingUrl) if (fresh[p]) { subset[p] = fresh[p]; }
         } catch { /* telles som tapt under */ }
+        for (let i = missingUrl.length - 1; i >= 0; i--) if (subset[missingUrl[i]!]) missingUrl.splice(i, 1);
       }
-      const lost = missingUrl.filter((p) => !subset[p]);
-      missingUrl.length = 0;
-      missingUrl.push(...lost);
       const audioSubset: Record<string, string> = {};
       for (const p of audioPaths) {
         const u = audioUrls?.[p];

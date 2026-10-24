@@ -352,7 +352,8 @@ describe("SB-4 kommandoer for midlertidig panellyd er vanlige kommandoer", () =>
     // Paneldetaljer er allerede dekket av SB-3-kommandoer med angre/gjøre om; her bekreftes at
     // storyboard-tilstanden i SB-4 bare bygger på eksisterende kommandoer (ingen nye skriveveier).
     expect(r.ok).toBe(true);
-    const u = applyCommand(r.state, envelope(r.inverse!));
+    if (!r.ok) return;
+    const u = applyCommand(r.state, envelope(r.inverse));
     expect(u.ok).toBe(true);
   });
 });
