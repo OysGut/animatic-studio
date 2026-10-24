@@ -464,6 +464,7 @@ export function Gallery({
           </select>
         </label>
         <Button variant="ghost" size="sm" onClick={jumpToScript} data-testid="sb-jump-script"><FileText /> {tk("sb2.jump-script")}</Button>
+        {sel ? <Button variant="ghost" size="sm" onClick={() => open(sel)} data-testid="sb5-back-to-scene"><Clapperboard /> {tk("sb5.back-to-scene")}</Button> : null}
         <Button variant="ghost" size="sm" onClick={() => setFilmOpen(true)} data-testid="sb-play-film" aria-label={tk("sb4.play-film")}><Play /> {tk("sb4.play-film")}</Button>
         <div className="ms-auto flex items-center gap-1">
           <Button size="icon" variant="ghost" onClick={cmds.undo} disabled={!cmds.canUndo} aria-label={tk("sb2.undo")} title={cmds.undoLabel ?? undefined}><Undo2 /></Button>
