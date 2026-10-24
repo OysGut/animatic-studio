@@ -21,7 +21,7 @@ export function sketchValid(value:unknown):value is SketchSpec {
   return s.strokes.every(st=>{
     if(!st||typeof st.id!=="string"||!st.id||st.id.length>64||ids.has(st.id))return false;ids.add(st.id);
     if(!["pencil","brush","erase","fill","line","rect","ellipse"].includes(st.tool)||!/^#[0-9a-f]{6}$/i.test(st.color)||!Number.isFinite(st.size)||st.size<.1||st.size>512||!Number.isFinite(st.opacity)||st.opacity<0||st.opacity>1||!Number.isFinite(st.curve)||st.curve<.1||st.curve>4||!Number.isFinite(st.smoothing)||st.smoothing<0||st.smoothing>1||!Array.isArray(st.points)||!st.points.length||st.points.length>MAX_SKETCH_POINTS)return false;
-    let x=0,y=0;return st.points.every(p=>{if(!Array.isArray(p)||p.length!==6||!p.every(Number.isSafeInteger))return false;x+=p[0]??0;y+=p[1]??0;return Math.abs(x)<=163840&&Math.abs(y)<=163840&&(p[2]??-1)>=0&&(p[2]??1001)<=1000&&Math.abs(p[3]??91)<=90&&Math.abs(p[4]??91)<=90&&(p[5]??-1)>=0&&(p[5]??600001)<=600000;});
+    let x=0,y=0;return st.points.every((p:readonly number[])=>{if(!Array.isArray(p)||p.length!==6||!p.every(Number.isSafeInteger))return false;x+=p[0]??0;y+=p[1]??0;return Math.abs(x)<=163840&&Math.abs(y)<=163840&&(p[2]??-1)>=0&&(p[2]??1001)<=1000&&Math.abs(p[3]??91)<=90&&Math.abs(p[4]??91)<=90&&(p[5]??-1)>=0&&(p[5]??600001)<=600000;});
   });
 }
 export function appendStroke(spec:SketchSpec,stroke:SketchStroke):SketchSpec|null {const next={...spec,strokes:[...spec.strokes,stroke]};return sketchValid(next)?next:null;}

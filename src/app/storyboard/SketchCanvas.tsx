@@ -10,8 +10,8 @@ import type { Frame } from "@/core";
 const toolNames={pencil:()=>t("sb8.pencil"),brush:()=>t("sb8.brush"),erase:()=>t("sb8.erase"),fill:()=>t("sb8.fill"),line:()=>t("sb8.line"),rect:()=>t("sb8.rect"),ellipse:()=>t("sb8.ellipse")};
 const tools=[{id:"pencil",Icon:Pencil},{id:"brush",Icon:Paintbrush},{id:"erase",Icon:Eraser},{id:"fill",Icon:PaintBucket},{id:"line",Icon:Minus},{id:"rect",Icon:Square},{id:"ellipse",Icon:Circle}] as const;
 export interface SketchCanvasProps {
-  width:number;height:number;spec:SketchSpec;save:(s:SketchSpec)=>void;disabled?:boolean;palette?:readonly string[];
-  backdrop?:Frame;previous?:Frame;next?:Frame;undo:()=>void;redo:()=>void;canUndo:boolean;canRedo:boolean;
+  width:number;height:number;spec:SketchSpec;save:(s:SketchSpec)=>void;disabled?:boolean;palette?:readonly string[]|undefined;
+  backdrop?:Frame|undefined;previous?:Frame|undefined;next?:Frame|undefined;undo:()=>void;redo:()=>void;canUndo:boolean;canRedo:boolean;
 }
 /** Shared desktop/mobile drawing surface. View transforms never enter project commands. */
 export function SketchCanvas({width,height,spec,save,disabled=false,palette=[],backdrop,previous,next,undo,redo,canUndo,canRedo}:SketchCanvasProps){
