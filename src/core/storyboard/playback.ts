@@ -149,16 +149,6 @@ export function storyboardTimeline(s: ProjectState, clips: readonly FilmClip[]):
   }
   for (const list of panelsByOccurrence.values())
     list.sort((a, b) => (a.orderKey ?? "").localeCompare(b.orderKey ?? "") || a.id.localeCompare(b.id));
-  // Lagene per panel (for kameramerker), sortert som i editoren
-  const layersByPanel = new Map<string, import("../model").CompositionLayer[]>();
-  for (const l of Object.values(s.layers)) {
-    if (l.removed) continue;
-    const list = layersByPanel.get(l.compositionId) ?? [];
-    list.push(l);
-    layersByPanel.set(l.compositionId, list);
-  }
-  for (const list of layersByPanel.values()) list.sort((a, b) => a.orderKey.localeCompare(b.orderKey));
-
   const shots: StoryboardShot[] = [];
   let cursor = 0;
   let prevFree = 0;
@@ -186,9 +176,6 @@ export function storyboardTimeline(s: ProjectState, clips: readonly FilmClip[]):
               : Math.ceil(transition.frames / 2);
       prevFree = durationFrames - myIn;
       prevIn = cursor + myIn;
-      const withLayers = Object.assign(Object.create(Object.getPrototypeOf(panel)) as Composition, panel, {
-        __layers: layersByPanel.get(panel.id) ?? [],
-      });
       shots.push({
         panel,
         occurrenceId: clip.occurrenceId,
@@ -198,7 +185,7 @@ export function storyboardTimeline(s: ProjectState, clips: readonly FilmClip[]):
         timingSource: timing.source,
         transition,
         overlapFrames,
-        camera: panelCameraShot(withLayers, durationFrames),
+        camera: panelCameraShot(s, panel, durationFrames),
       });
       cursor += durationFrames;
       first = false;
@@ -245,7 +232,7 @@ export function storyboardClips(s: ProjectState, clips: readonly FilmClip[], sho
     const scene = byOccurrence.get(shot.occurrenceId);
     return {
       occurrenceId: shot.occurrenceId,
-      sceneId: shot.panel.variantId ? (scene?.sceneId ?? shot.panel.variantId) : (scene?.sceneId ?? ""),
+      sceneId: scene?.sceneId ?? shot.panel.variantId,
       variantId: shot.panel.variantId,
       compositionId: shot.panel.id,
       source: "composition" as const,
@@ -388,6 +375,3 @@ export function storyboardFilm(
     durationFrames: Math.max(1, storyboardDurationFrames(shots)),
   };
 }
-
-/** Filmklippenes samlede lengde brukes bare via monteringen; re-eksportert her for lesbarhet. */
-export { filmDurationFrames, estimatedSceneFrames, orderedOccurrences };
