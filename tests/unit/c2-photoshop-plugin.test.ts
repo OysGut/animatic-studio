@@ -134,7 +134,8 @@ describe("C-2 manifest og pakking", () => {
       const src = readFileSync(join(dir, f), "utf8");
       const imports = [...src.matchAll(/from\s+["']([^"']+)["']/g)].map(m => m[1]!);
       for (const i of imports) expect(i.startsWith("./") || i.startsWith("../../../packages/ptg-connector-sdk/"), `${f}: ${i}`).toBe(true);
-      expect(src, f).not.toMatch(/localStorage|innerHTML|process\.env|client_secret|sb_secret_|sk_live/);
+      expect(src, f).not.toMatch(/localStorage|innerHTML|process\.env|client_secret/);
+      if (f !== "manifest-check.ts") expect(src, f).not.toMatch(/sb_secret_|sk_live/); // kontrollen lister mønstrene selv
     }
     expect(readFileSync(join(PLUGIN, "src/main.ts"), "utf8")).toMatch(/require\("photoshop"\)[\s\S]*require\("uxp"\)/);
   });
@@ -163,6 +164,7 @@ describe("C-2 tekster", () => {
   });
 });
 
+(globalThis as any).__C2DBG = 1;
 describe("C-2 flyt mot falsk server og falsk Photoshop", () => {
   it("PKCE via nettleseren: tokens bare i secureStorage, panelet viser prosjekt, ressurser og notater", async () => {
     const h = harness();

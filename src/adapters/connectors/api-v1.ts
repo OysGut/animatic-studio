@@ -254,7 +254,8 @@ export async function handleApiV1(req: Request, d: ApiDeps): Promise<Response> {
       }
     }
     return apiError(404, "not_found");
-  } catch {
+  } catch (e) {
+    if ((globalThis as any).__C2DBG) console.error("DBG", e);
     return apiError(500, "server_error");
   }
 }
