@@ -50,11 +50,12 @@ export function GalleryPlayback({ state, projectId, productionId, selected, onCu
       const active = shotAtFrame(film.shots, f);
       if (!active || !initialized.current) return;
       const first = positions.first.get(active.shot.occurrenceId) ?? 0;
+      if (playback.playing) window.dispatchEvent(new CustomEvent("ptg-storyboard-frame", { detail: { projectId, occurrenceId: active.shot.occurrenceId, frame: f - first } }));
       const p = panelPosition(state, active.shot.occurrenceId, active.shot.panel.id, null, Math.round((f - first) * 1000 * view.project.fps.den / view.project.fps.num), positions);
       if (p) rememberPosition(projectId, p);
     };
     return playback.store.subscribe(publish);
-  }, [projectId, state, film.shots, positions, playback.store, view.project.fps]);
+  }, [projectId, state, film.shots, positions, playback.store, playback.playing, view.project.fps]);
   useEffect(() => {
     const seek = (event: Event) => {
       const detail = (event as CustomEvent<{ projectId: string; productionId: string; occurrenceId: string; frame: number }>).detail;
@@ -98,6 +99,14 @@ export function ScrubPreview({ state, projectId, panelId, productionId, onSeek }
   const end = sceneShots.at(-1);
   const duration = available && clip ? clip.durationFrames : end ? end.startFrame + end.durationFrames - first : 1;
   const [hover, setHover] = useState<number | null>(null);
+  useEffect(() => {
+    const update = (event: Event) => {
+      const detail = (event as CustomEvent<{ projectId: string; occurrenceId: string; frame: number }>).detail;
+      if (detail.projectId === projectId && detail.occurrenceId === shot?.occurrenceId) setHover(Math.min(duration - 1, detail.frame));
+    };
+    window.addEventListener("ptg-storyboard-frame", update);
+    return () => window.removeEventListener("ptg-storyboard-frame", update);
+  }, [projectId, shot?.occurrenceId, duration]);
   const imageState = available ? state : film.state;
   const imageClips = available ? clips : film.clips;
   const images = useFilmImages(imageState, imageClips);
