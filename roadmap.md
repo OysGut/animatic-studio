@@ -96,6 +96,7 @@
 - [x] Tester + rapport docs/development/SB3_REPORT.md; full Vitest 2894/0/10, DB 227/0, i18n og forhåndsvisningskontroll grønne, nettleser nb/en 16/0 med mobil. 0104 bare lokalt; Claude må kjøre den før Cloud-lagring av nye felt kan verifiseres. 0103 og eldre er låst; ingen publisering.
 
 ## SB-4 tid, avspilling, storyboardfilm og sømløs veksling (23.10.2026) – kjøres etter SB-3
+- [ ] Restoppdrag 24.10: full posisjon, kort-scrubbing, galleriavspilling, timingforslag og midlertidig opptak/QR/opplasting; full Vitest/DB og rapport før ferdigmelding.
 - [ ] Lyd fra scenen som én kilde (filmAudio/audioBank, ingen kopi, over scenegrenser, av/på + volum husket, lyd er tidsmaster)
 - [ ] Timing med arv (panel/scene/sekvens/produksjon), forslag fra manus/dialog/lyd, aldri trimming av ferdig film
 - [ ] Scrubbing over kort (RTL-speilet tid, mus/berøring/tastatur, ingen autolyd)
