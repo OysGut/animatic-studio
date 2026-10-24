@@ -61,7 +61,7 @@ export function SceneSetupDialog({ open, onOpenChange, state, productionId, occu
 
   return (
     <Dialog open={open} onOpenChange={(o) => !busy && onOpenChange(o)}>
-      <ResizableDialogContent sizeKey="scene-setup" className="max-h-[86vh] max-w-[560px] overflow-y-auto border-border bg-surface-2">
+      <ResizableDialogContent uiId="V-173" sizeKey="scene-setup" className="max-h-[86vh] max-w-[560px] overflow-y-auto border-border bg-surface-2">
         <UiId id="V-173" />
         <DialogHeader>
           <DialogTitle>{tk("sb5.setup-title")}</DialogTitle>

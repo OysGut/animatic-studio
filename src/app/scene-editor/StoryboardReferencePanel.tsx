@@ -230,7 +230,7 @@ export function StoryboardReferencePanel(props: RefProps) {
         )}
       </div>
       <Dialog open={largeOpen} onOpenChange={setLargeOpen}>
-        <ResizableDialogContent sizeKey="storyboard-reference" className="max-h-[86vh] max-w-[900px] overflow-y-auto border-border bg-surface-1">
+        <ResizableDialogContent uiId="V-174" sizeKey="storyboard-reference" className="max-h-[86vh] max-w-[900px] overflow-y-auto border-border bg-surface-1">
           <UiId id="V-172" />
           <DialogHeader>
             <DialogTitle>{tk("sb5.reference-title")}</DialogTitle>

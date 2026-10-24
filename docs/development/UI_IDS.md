@@ -176,3 +176,6 @@ Merket nederst i hvert vindu viser «V-nnn · commit». Slå opp nummeret her.
 | V-169 | dialog | `src/app/storyboard/PanelEditor.tsx` | PanelEditor | Dialog i PanelEditor | aktiv |
 | V-170 | dialog | `src/app/storyboard/PanelEditor.tsx` | PanelEditor | Dialog i PanelEditor | aktiv |
 | V-171 | dialog | `src/app/storyboard/StoryboardFilm.tsx` | StoryboardFilm | Dialog «Storyboardfilm» i StoryboardFilm | aktiv |
+| V-172 | side | `src/app/scene-editor/StoryboardReferencePanel.tsx` | StoryboardRefRoute | Side /prosjekt/$projectId/storyboardref | aktiv |
+| V-173 | dialog | `src/app/scene-editor/SceneSetupDialog.tsx` | SceneSetupDialog | Dialog i SceneSetupDialog | aktiv |
+| V-174 | dialog | `src/routes/prosjekt.$projectId.storyboardref.tsx` | StoryboardReferencePanel | Dialog i StoryboardReferencePanel | aktiv |
