@@ -98,12 +98,43 @@ export async function finishReturn(store: HandoffStore, h: HandoffRecord, t: Ret
   const parts: Uint8Array[] = [], sha = new Sha256();
   for (let i = 0; i < returnChunkCount(t.byteSize); i++) { const p = await store.readChunk(t, i); parts.push(p); sha.update(p); }
   const reject = async (code: ReturnError["code"]) => { await store.setTransfer(t.id, { status: "rejected" }); await store.removeChunks(t); throw new ReturnError(code); };
-  const check = checkIntake({ fileName: t.fileName, byteSize: t.byteSize, head: parts[0]!.slice(0, 16), declaredSha256: t.sha256, actualSha256: toHex(sha.digest()) });
-  if (!check.ok) return reject(check.reason === "checksum" ? "checksum" : check.reason === "extension" ? "extension" : check.reason === "mismatch" ? "content" : check.reason === "content" ? "content" : "size");
   const all = new Uint8Array(t.byteSize); let o = 0; for (const p of parts) { all.set(p, o); o += p.length; }
   const rec = recognizeReturn({ bytes: all, linkHandoffId: how.linkHandoffId, knownHandoffIds: how.knownHandoffIds ?? [], outgoingNames: [h.fileName], fileName: t.fileName });
   if (!rec.ok) return reject(rec.reason);
   if (rec.handoffId !== h.id) return reject("mismatch");
+  const sha256Of = (b: Uint8Array) => { const x = new Sha256(); x.update(b); return toHex(x.digest()); };
+
+  // C-5: en .ptgsb-pakke til et produksjonsmål blir kandidatrader (tekst/timing/bilde/nye paneler/
+  // sammenstilling), aldri en ressursversjon og aldri tatt i bruk. Bildene sjekkes mot manifestets SHA-256.
+  if (h.format === "sbpro") {
+    if (toHex(sha.digest()) !== t.sha256) return reject("checksum");
+    const zip = readStoredZip(all);
+    if (!zip.ok) return reject(zip.reason === "deflate" || zip.reason === "too-large" || zip.reason === "too-many" ? "format" : "content");
+    const mf = zip.files.find((f) => f.path === "manifest.json");
+    if (!mf) return reject("content");
+    let parsed: unknown; try { parsed = JSON.parse(fromUtf8(mf.data)); } catch { return reject("content"); }
+    const rr = readSbproReturn(parsed, mf.data.length);
+    if (!rr.ok) return reject("content");
+    if (rr.value.projectId !== h.projectId || rr.value.productionId !== h.targetId) return reject("mismatch");
+    const retState = await store.loadState(h.projectId);
+    const { candidates } = planSbproReturn(retState, h.targetId, rr.value);
+    const saved = await store.saveSbproReturn({ projectId: h.projectId, productionId: h.targetId, userId: actor, hash: rr.value.hash, panelCount: rr.value.panels.length, candidates });
+    const byKey = new Map(candidates.map((c) => [c.key, c]));
+    for (const up of saved.uploads) {
+      const c = byKey.get(up.key); if (!c?.image) continue;
+      const file = zip.files.find((x) => x.path === c.image!.path); if (!file) continue;
+      if (sha256Of(file.data) !== up.sha256) continue;
+      await store.putSbproImage(h.projectId, saved.returnId, up.candidateId, file.data);
+    }
+    const hasConflict = candidates.some((c) => c.conflict);
+    await store.setTransfer(t.id, { status: "candidate", candidateVersionId: saved.returnId, conflictId: null });
+    await store.markHandoff(h.id, { status: hasConflict ? "conflict" : "returned", transferId: t.id, candidateVersionId: saved.returnId });
+    await store.removeChunks(t);
+    return { versionId: saved.returnId, conflictId: null, targetKind: h.targetKind, via: rec.via };
+  }
+
+  const check = checkIntake({ fileName: t.fileName, byteSize: t.byteSize, head: parts[0]!.slice(0, 16), declaredSha256: t.sha256, actualSha256: toHex(sha.digest()) });
+  if (!check.ok) return reject(check.reason === "checksum" ? "checksum" : check.reason === "extension" ? "extension" : check.reason === "mismatch" ? "content" : check.reason === "content" ? "content" : "size");
 
   let state = await store.loadState(h.projectId);
   const sha256Of = (b: Uint8Array) => { const x = new Sha256(); x.update(b); return toHex(x.digest()); };
