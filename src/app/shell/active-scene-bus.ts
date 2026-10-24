@@ -29,6 +29,7 @@ export function validSceneMessage(value: unknown): value is SceneMessage {
 export function createActiveSceneBus(windowId: string, transport: SceneTransport, now = Date.now) {
   const scenes = new Map<string, ActiveScene>();
   const listeners = new Set<() => void>();
+  let lastSent = 0;
   const notify = () => { for (const fn of listeners) fn(); };
   const selectionChanged = (a: ActiveScene | undefined, b: ActiveScene) => !a || a.occurrenceId !== b.occurrenceId || a.sceneId !== b.sceneId || a.productionId !== b.productionId || a.panelId !== b.panelId || a.blockId !== b.blockId;
   const unlisten = transport.listen((value) => {
