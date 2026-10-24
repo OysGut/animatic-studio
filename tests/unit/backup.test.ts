@@ -98,8 +98,8 @@ const mainOf = (s: ProjectState) => Object.values(s.productions).find((p) => p.k
 describe("sikkerhetskopi", () => {
   it("SB-4 avviser midlertidig panellyd som mangler i sikkerhetskopien", () => {
     const b=backup();
-    b.tables["compositions"]=[...(b.tables["compositions"]??[]),{id:"panel",storyboard:{tempAudio:{assetId:"foreign",versionId:"missing"}}}];
-    expect(()=>assertSelfContained(b,new Map([["panel","new-panel"]]))).toThrow();
+    const broken={...b,tables:{...b.tables,compositions:[...(b.tables["compositions"]??[]),{id:"panel",storyboard:{tempAudio:{assetId:"foreign",versionId:"missing"}}}]}};
+    expect(()=>assertSelfContained(broken,new Map([["panel","new-panel"]]))).toThrow();
   });
   it("tar med alle prosjektdata, manusversjoner, historikk og en liste over alle filer", () => {
     const b = backup();
