@@ -56,3 +56,4 @@ __pycache__/
 
 .overforing/
 plugins/photoshop/dist/
+plugins/premiere/dist/
