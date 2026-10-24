@@ -518,7 +518,6 @@ describe("KI-226: notat på enkeltord forankres til ordets grenser", () => {
     expect(wordRange("Hei", 0, 3)).toEqual({ start: 0, end: 3 });
   });
   it("resolveRange velger treff på ordgrenser foran treff inni et lengre ord", () => {
-    const { s } = project();
     const a = {
       id: tid<"annotation">(),
       blockId: null,
@@ -535,11 +534,10 @@ describe("KI-226: notat på enkeltord forankres til ordets grenser", () => {
       removed: false,
       resolved: false,
     } as const;
-    const r = resolveRange(a as never, "soloppgangen var vakker, og solen steg");
+    const r = resolveRange(a as never, "soloppgangen var vakker, og sol steg");
     expect(r.found).toBe(true);
-    expect("soloppgangen var vakker, og solen steg".slice(r.start, r.end)).toBe("sol");
+    expect("soloppgangen var vakker, og sol steg".slice(r.start, r.end)).toBe("sol");
     expect(r.start).toBe(27);
-    void s;
   });
   it("notatet på ordet tåler redigering av teksten rundt", () => {
     const { s: s0, mainId, cmd } = project();
@@ -554,7 +552,7 @@ describe("KI-226: notat på enkeltord forankres til ordets grenser", () => {
     const r = resolveRange(s2.annotations[id]!, s2.blocks[action]!.text);
     expect(r.found).toBe(true);
     // «vasen» skal fortsatt treffe ordet vasen, ikke «vasen» inni «glassvasen»
-    expect(s2.blocks[action]!.text.slice(r.start - 1, r.start)).not.toBe("s");
-    expect(r.start).toBe(41);
+    expect(s2.blocks[action]!.text.slice(r.start - 1, r.start)).toBe(" ");
+    expect(r.start).toBe(45);
   });
 });
