@@ -133,3 +133,18 @@ def make_bpy():
     bpy.ops = types.SimpleNamespace(import_scene=types.SimpleNamespace(fbx=lambda filepath: fbx.append(filepath)))
     bpy._images, bpy._fbx = images, fbx
     return bpy
+
+
+def install_bpy_stub():
+    """Nok av bpy til at tilleggets __init__ kan importeres og registreres."""
+    m = types.ModuleType("bpy")
+    class _Base: pass
+    m.types = types.SimpleNamespace(Operator=_Base, Panel=_Base)
+    m.props = types.SimpleNamespace(StringProperty=lambda **k: ("str", k))
+    registered = []
+    m.utils = types.SimpleNamespace(register_class=registered.append, unregister_class=registered.remove,
+                                    extension_path_user=lambda pkg, path="", create=False: "/tmp/ptg-blender")
+    m.app = types.SimpleNamespace(translations=types.SimpleNamespace(locale="nb_NO"))
+    m._registered = registered
+    sys.modules["bpy"] = m
+    return m

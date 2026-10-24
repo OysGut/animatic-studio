@@ -6,7 +6,12 @@ import webbrowser
 
 import bpy  # type: ignore
 
-from . import logic, ptg_client, ptg_strings
+from . import logic
+try:
+    from . import ptg_client, ptg_strings  # kopiert inn av pakkeskriptet
+except ImportError:  # utvikling og tester
+    import ptg_client  # type: ignore
+    import ptg_strings  # type: ignore
 
 BASE_URL = os.environ.get("PTG_BASE_URL", "https://pentoglass.com")
 

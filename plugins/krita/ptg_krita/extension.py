@@ -7,8 +7,12 @@ from PyQt5.QtCore import QLocale, QStandardPaths  # type: ignore
 from PyQt5.QtWidgets import QFileDialog, QInputDialog, QMessageBox  # type: ignore
 
 from . import logic
-from . import ptg_client
-from .ptg_strings import tr
+try:
+    from . import ptg_client
+    from .ptg_strings import tr
+except ImportError:  # utvikling
+    import ptg_client  # type: ignore
+    from ptg_strings import tr  # type: ignore
 
 BASE_URL = os.environ.get("PTG_BASE_URL", "https://pentoglass.com")
 

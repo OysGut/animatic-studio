@@ -15,6 +15,7 @@ sys.path[:0] = [HERE, os.path.join(PLUGINS, "python-common"), os.path.join(PLUGI
 
 import fakes  # noqa: E402
 fakes.install_krita()
+BPY_STUB = fakes.install_bpy_stub()
 import ptg_client  # noqa: E402
 import ptg_strings  # noqa: E402
 from ptg_krita import logic as krita  # noqa: E402
@@ -165,6 +166,18 @@ class Blender(unittest.TestCase):
         out = blender.png_with_text(src, {"ptg:timecode": "00:00:01:00"})
         self.assertEqual(blender.read_png_text(out), {"ptg:timecode": "00:00:01:00"})
         self.assertEqual(out.replace(out[33:33 + 12 + len(b"ptg:timecode\x0000:00:01:00")], b""), src)
+
+    def test_addon_registers_all_classes(self):
+        import pentoglass
+        pentoglass.register()
+        self.assertEqual(len(BPY_STUB._registered), len(pentoglass.CLASSES))
+        pentoglass.unregister()
+        self.assertEqual(BPY_STUB._registered, [])
+
+    def test_extension_manifest(self):
+        txt = open(os.path.join(PLUGINS, "blender/pentoglass/blender_manifest.toml"), encoding="utf-8").read()
+        for line in ('schema_version = "1.0.0"', 'id = "pentoglass"', 'type = "add-on"', 'blender_version_min = "4.2.0"', "[permissions]", "network ="):
+            self.assertIn(line, txt)
 
     def test_send_limits(self):
         with self.assertRaises(ptg_client.ConnectorError):
