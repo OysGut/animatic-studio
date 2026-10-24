@@ -12,6 +12,7 @@ import { panelDetails } from "./editing";
 import { panelBlockIds } from "./index";
 import { panelLines } from "./gallery";
 import { styleProfileFor, composeStyleText } from "../generation/style";
+import { blocksOfVariant } from "../script";
 
 export type PanelAiBasis = "composition" | "sketch" | "script";
 export type PanelAiStyle = "line" | "grey" | "color";
@@ -23,6 +24,7 @@ export interface PanelAiOptions {
   readonly sketchVersionId: string | null;
   readonly references: readonly string[];
   readonly mask: string;
+  readonly structureVersionId?: string | null;
 }
 export function panelAiCapabilities(model: ProviderModel) {
   return { imageToImage: !!model.acceptsImage, references: model.acceptsImage ? maxAttachedImagesFor(model) : 0,
@@ -63,9 +65,9 @@ export function buildPanelAiInput(s: ProjectState, p: Composition, options: Pane
   const scene = s.variants[p.variantId]?.heading;
   const profile = styleProfileFor(s, "animatic");
   const resources = panelResourceLayers(s, p);
-  const referenceIds = options.basis === "sketch" && options.sketchVersionId ? [options.sketchVersionId] : options.basis === "composition" ? resources.flatMap(l => { const v = layerVersion(s, l); return v ? [v.id] : []; }) : [];
+  const referenceIds = options.structureVersionId ? [options.structureVersionId] : options.basis === "sketch" && options.sketchVersionId ? [options.sketchVersionId] : options.basis === "composition" ? resources.flatMap(l => { const v = layerVersion(s, l); return v ? [v.id] : []; }) : [];
   const approved = options.references.filter(id => { const v = s.assetVersions[id]; return v && !v.removed && s.assetVariants[v.variantId]?.approvedVersionId === id; });
-  const references = [...new Set([...referenceIds, ...approved])].flatMap(id => { const v = s.assetVersions[id]; return v && !v.removed && v.mimeType.startsWith("image/") ? [{ id, path: v.mediaPath, role: approved.includes(id) ? "style" : "identity" }] : []; });
+  const references = [...new Set([...referenceIds, ...approved])].flatMap(id => { const v = s.assetVersions[id]; return v && !v.removed && v.mimeType.startsWith("image/") ? [{ id, path: v.mediaPath, role: id === options.structureVersionId ? "structure" : approved.includes(id) ? "style" : "identity" }] : []; });
   const text = [
     `Create one storyboard image. Basis: ${options.basis}. Style: ${options.style}. Aspect ratio: ${panelAspect(p, options.mask)}.`,
     "Instructions below describe staging, NOT marks to draw. Do not draw arrows, labels, notes, text, guides or camera frames.",
@@ -78,6 +80,9 @@ export function buildPanelAiInput(s: ProjectState, p: Composition, options: Pane
     ...references.map((r, i) => `Image ${i + 1}: ${r.role} reference, version ${r.id}`)
   ].join("\n");
   return { text, references, trace: { panelId: p.id, panelRevision: p.revision, resources: resources.map(l => ({ assetId: l.assetId, versionId: layerVersion(s, l)?.id ?? null })), characters: panelCharacters(s, p).map(a => ({ assetId: a.id, revision: a.revision })), basis: options.basis, style: options.style, aspect: panelAspect(p, options.mask) } };
+}
+export function sceneCoverageText(s: ProjectState, p: Composition): string {
+  return blocksOfVariant(s, p.variantId).map(b => `${b.kind}: ${b.text}`).join("\n");
 }
 /** Hidden layer is a durable candidate; an explicit ordinary UpdateLayers accepts it later. */
 export function panelCandidateLayer(s: ProjectState, p: Composition, assetId: string, variantId: string, versionId: string): Command {
