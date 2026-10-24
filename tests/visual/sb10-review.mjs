@@ -2,7 +2,9 @@
 import { harness } from './mts-harness.mjs';
 import { VISUAL_SCHEMA_VERSION } from './schema-version.mjs';
 const h=harness('/tmp/browser/sb10');
-const media=await import('node:fs').then(fs=>fs.readFileSync('/tmp/browser/sb10/clip.webm')); 
+const {execFileSync}=await import('node:child_process');
+execFileSync('ffmpeg',['-v','error','-f','lavfi','-i','color=c=green:s=640x360:d=5','-f','lavfi','-i','sine=frequency=440:duration=5','-c:v','libvpx','-c:a','libvorbis','-shortest','-y',h.out+'/clip.webm']);
+const media=await import('node:fs').then(fs=>fs.readFileSync(h.out+'/clip.webm')); 
 const token='sr_'+'a'.repeat(43),feedback=[];
 const review={title:'The Paper Kite',comments:true,approval:true,fps:24,expiresAt:'2030-01-01',videoUrl:'https://review.fixture/clip.mp4',panels:[{key:'p1',label:'1 · A',revision:3,durationFrames:48,startFrame:0,imageUrl:'https://review.fixture/p1.svg'},{key:'p2',label:'1 · B',revision:1,durationFrames:72,startFrame:48,imageUrl:'https://review.fixture/p2.svg'}],feedback};
 h.hooks.context=async context=>{await context.route('https://review.fixture/clip.mp4',route=>route.fulfill({status:200,contentType:'video/webm',body:media}));await context.route('https://review.fixture/**',route=>route.request().url().endsWith('clip.mp4')?route.fulfill({status:200,contentType:'video/webm',body:media}):route.fulfill({status:200,contentType:'image/svg+xml',body:'<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720"><rect width="1280" height="720" fill="#25765e"/><rect x="330" y="200" width="180" height="370" fill="#e7a954"/><path d="M750 90L930 230L750 370L570 230Z" fill="#d9514a"/><path d="M750 370Q700 600 550 690" fill="none" stroke="#ffffff" stroke-width="8"/></svg>'}));};

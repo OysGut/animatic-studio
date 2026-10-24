@@ -1,12 +1,15 @@
 # Veikart
 
-## SB-10 – Gjennomgang med kunde og team (pågår)
-- [ ] Hashbasert deling med utvalg, utløp, passord og tilbakekalling
-- [ ] Gjestespiller, nålkommentarer og uavhengig godkjenning
-- [ ] Teamliste, svar, løsning, oppgavekobling og eksplisitt statusvalg
-- [ ] Revisjonssammenligning; alle språk; visuell nb/en desktop/mobil
-- [ ] Migrasjon og DB-tester skrives, men kjøres ikke; full Vitest; rapport
-- [ ] Ingen publisering
+## SB-10 – Gjennomgang med kunde og team (bygget i kode; DB og enkelte ende-til-ende-kontroller gjenstår)
+- [x] Hashbasert deling med sceneutvalg, revisjonsvalg, utløp, passord og tilbakekalling
+- [x] Gjestespiller, nålkommentarer og uavhengig godkjenning; nb/en desktop/mobil 12/0 med falske tjenester
+- [x] Teamliste, svar, løsning, oppgavekobling og eksplisitt, angrebar statusadopsjon
+- [x] To revisjoner av ett panel: side om side, overlegg/glidebryter og differanse; ren sammenligning merker nye/fjernede paneler
+- [ ] Helhetlig sammenligning av to storyboardutvalg med nye/fjernede paneler i brukerflaten
+- [x] 0108 og DB-tester skrevet, ikke kjørt; full Vitest 3036/0/10; i18n og check_kb grønt
+- [ ] Claude: DB-suite og 0108 i Cloud; faktisk opprettelse/opplasting/finalisering og teamets svar/oppgaveflyt ende-til-ende
+- [ ] Privat review-medias uforanderlighet etter finalisering må verifiseres/hardnes; eksisterende prosjektlagring tillater medlemsendringer
+- [x] Ingen publisering; rapport SB10_REPORT.md med begrensninger
 
 ## SB-9 – Kontinuitet og blokking (delvis bygget; se SB9_REPORT.md)
 - [x] Lås 0090–0106 med Claudes MD5-er; ingen låst migrasjon endret
