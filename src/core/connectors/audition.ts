@@ -15,7 +15,7 @@ const ROLE: Record<string, AuditionRole> = { dialogue: "dialogue", narration: "d
 
 function resolveVersion(s: ProjectState, assetId: string, variantId: string | null, versionId: string | null) {
   if (versionId) { const v = s.assetVersions[versionId]; return v && !v.removed ? v : null; }
-  const variants = Object.values(s.assetVariants).filter(v => !v.removed && v.assetId === assetId && (!variantId || v.id === variantId));
+  const variants = Object.values(s.assetVariants).filter(v => !v.archived && v.assetId === assetId && (!variantId || v.id === variantId));
   for (const variant of variants) {
     if (variant.approvedVersionId) { const v = s.assetVersions[variant.approvedVersionId]; if (v && !v.removed) return v; }
     const latest = Object.values(s.assetVersions).filter(v => !v.removed && v.variantId === variant.id).sort((a, b) => b.number - a.number)[0];
@@ -26,7 +26,7 @@ function resolveVersion(s: ProjectState, assetId: string, variantId: string | nu
 
 export function auditionPlan(s: ProjectState, occurrenceId: string, panelId: string | null = null): AuditionPlan | null {
   const occ = s.occurrences[occurrenceId];
-  if (!occ || occ.removed) return null;
+  if (!occ) return null;
   const fps = s.project.fps, msOf = (frames: number) => Math.round((frames * 1000 * fps.den) / fps.num);
   const idx = positionIndex(s, occ.productionId);
   const film = idx.clips.find(c => c.occurrenceId === occurrenceId);
