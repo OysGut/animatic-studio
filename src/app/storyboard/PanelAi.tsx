@@ -1,12 +1,13 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { Sparkles } from "lucide-react";
+import { AiGlyph } from "@/app/design/icons/AiGlyph";
+import { useRevealNew } from "@/app/shared/reveal";
 import { Button } from "@/components/ui/button";
 import { Thumbnail } from "@/app/shared/Thumbnail";
 import { useImageUrls } from "@/app/library/asset-images";
 import { useProjectProviders } from "@/app/ai/use-project-providers";
 import { estimateStoryboardAi, generateStoryboardAi, type StoryboardAiRequest } from "@/adapters/ai/storyboard.functions";
-import { automaticPanelBasis, panelAiCapabilities, panelCandidateLayer, panelResourceLayers } from "@/core/storyboard/ai";
+import { automaticPanelBasis, panelAiCapabilities, panelResourceLayers } from "@/core/storyboard/ai";
 import { providersFor, newId, layerVersion, layerFieldsOf, panelDetails, panelKeyAfter, SHOT_TYPES, SHOT_ANGLES, defaultLayerFields, keyBetween, layersOf, type Composition, type ProjectState, type AssetMedia, type Command } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
 import { t } from "@/core/i18n/keyed";
@@ -32,6 +33,8 @@ export function PanelAi({ state, panel, cmds, editable, mask }: { state: Project
   const [received, setReceived] = useState<Candidate[]>([]); const [text, setText] = useState("");
   const savedCandidates = layersOf(state, panel.id).flatMap(l => { const v = l.versionId ? state.assetVersions[l.versionId] : null; if (!v || !l.assetId || !l.assetVariantId) return []; try { const trace = JSON.parse(v.note) as { panelId?: string }; if (trace.panelId !== panel.id) return []; return [{ versionId: v.id, assetId: l.assetId, variantId: l.assetVariantId, trace, media: { path: v.mediaPath, mimeType: v.mimeType, width: v.width, height: v.height, byteSize: v.byteSize, sha256: v.sha256, durationMs: v.durationMs } }]; } catch { return []; } });
   const candidates = [...savedCandidates, ...received.filter(c => !savedCandidates.some(s => s.versionId === c.versionId))];
+  const resultsRef = useRef<HTMLDivElement>(null);
+  const flash = useRevealNew(resultsRef, candidates.map(c => c.versionId));
   const estimate = useServerFn(estimateStoryboardAi); const generate = useServerFn(generateStoryboardAi);
   const versions = Object.values(state.assetVersions).filter(v => !v.removed && v.mimeType.startsWith("image/"));
   const approved = versions.filter(v => state.assetVariants[v.variantId]?.approvedVersionId === v.id);
@@ -87,7 +90,7 @@ export function PanelAi({ state, panel, cmds, editable, mask }: { state: Project
     } catch (e) { setError((e as Error).message); }
   };
   return <section className="space-y-2 border-t border-border pt-3" data-testid="sb7-ai">
-    <h3 className="flex items-center gap-1 text-[13px] font-semibold"><Sparkles className="size-4"/>{t("sb7.title")}</h3>
+    <h3 className="flex items-center gap-1 text-[13px] font-semibold"><AiGlyph className="size-4"/>{t("sb7.title")}</h3>
     <select aria-label={t("sb7.action")} className={ctl} value={action} disabled={busy} onChange={e => { setAction(e.target.value as typeof action); setQuote(null); setText(""); }}>
       <option value="image">{t("sb7.image")}</option><option value="coverage">{t("sb7.coverage")}</option><option value="between">{t("sb7.between")}</option>{caps?.sketch ? <option value="clean">{t("sb7.clean")}</option> : null}<option value="describe">{t("sb7.describe")}</option>
     </select>
@@ -105,6 +108,6 @@ export function PanelAi({ state, panel, cmds, editable, mask }: { state: Project
     {quote ? <div className="space-y-2" data-testid="sb7-cost"><p className="text-[13px]">{t("sb7.cost", { cost: quote.cost.toFixed(4), study: quote.studyCost.toFixed(4) })}</p><Button size="sm" disabled={busy || !editable} onClick={() => void execute()}>{t("sb7.confirm")}</Button><Button size="sm" variant="ghost" onClick={() => setQuote(null)}>{t("sb5.setup-cancel")}</Button></div> : <Button size="sm" disabled={busy || !editable || !textChoice || ((action === "image" || action === "clean") && !choice)} onClick={() => void getQuote()}>{busy ? t("sb7.working") : t("sb7.estimate")}</Button>}
     {error ? <p role="alert" className="text-[13px] text-status-danger">{error}</p> : null}
     {text ? <div className="space-y-1"><textarea className={ctl} aria-label={t("sb7.result")} value={text} onChange={e => setText(e.target.value)}/><Button size="sm" disabled={!editable} onClick={acceptText}>{t("sb7.accept")}</Button></div> : null}
-    <div className="flex flex-wrap gap-2">{candidates.map(c => <div key={c.versionId} className="w-28"><div className="aspect-video"><Thumbnail src={urls[c.media.path]} alt={t("sb7.candidate")}/></div><Button size="sm" disabled={!editable} onClick={() => { const fresh = cmds.current() ?? state; const l = layersOf(fresh, panel.id).find(l => l.versionId === c.versionId); if (l) cmds.run({ type: "UpdateLayers", layers: [{ layerId: l.id, fields: { ...layerFieldsOf(l), visible: true } }] }, t("sb7.accept")); }}>{t("sb7.accept")}</Button></div>)}</div>
+    <div ref={resultsRef} className="flex flex-wrap gap-2">{candidates.map(c => <div key={c.versionId} data-reveal-id={c.versionId} className={"w-28 " + (flash === c.versionId ? "ring-2 ring-accent-selection" : "")}><div className="aspect-video"><Thumbnail src={urls[c.media.path]} alt={t("sb7.candidate")}/></div><Button size="sm" disabled={!editable} onClick={() => { const fresh = cmds.current() ?? state; const l = layersOf(fresh, panel.id).find(l => l.versionId === c.versionId); if (l) cmds.run({ type: "UpdateLayers", layers: [{ layerId: l.id, fields: { ...layerFieldsOf(l), visible: true } }] }, t("sb7.accept")); }}>{t("sb7.accept")}</Button></div>)}</div>
   </section>;
 }

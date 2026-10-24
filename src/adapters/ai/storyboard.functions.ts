@@ -100,7 +100,7 @@ export const generateStoryboardAi = createServerFn({ method: "POST" }).middlewar
         const trace = { ...built.trace, factSheets: facts, model: data.model, action: data.action, index: i };
         const r = await runImageGeneration({ projectId: data.projectId, assetId: target.id, provider: data.provider, model: data.model, prompt: `${data.action === "clean" ? "Clean the supplied rough sketch into crisp lines; preserve composition.\n" : ""}${built.text}`, referencePaths: built.references.map(r => r.path), identityFirst: built.references[0]?.role === "identity", purpose: "background", aspect, approved: true }, context, { storyboardTrace: trace });
         if (!r.ok) return { ...r, candidates: results };
-        const { saveStoryboardCandidate } = await import("./storyboard-result.server");
+        const { saveStoryboardCandidate } = await import("@/adapters/storage/storyboard-result.server");
         await saveStoryboardCandidate(context.supabase as never, data.projectId, context.userId, p.panel.id, target.id, r.versionId, r.media, trace);
         results.push({ ...r, trace });
       }
