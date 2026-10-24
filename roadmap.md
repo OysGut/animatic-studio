@@ -26,16 +26,16 @@
 - [x] Rapport docs/development/SB5_REPORT.md
 - [x] SB-5 språkoppfølging 24.10: inventar regenerert/kontrollert, alle registrerte språk 0 feil; full Vitest 2928 bestått, 0 feilet, 10 hoppet over. Rapportens tidligere manglende fullkjøring er dokumentert historisk.
 
-## SB-7 – AI fra storyboardpanelet (pågår)
-- [ ] Restleveranse 24.10: faktisk maskeformat/native kontroller, rasterisert layout og direkte sketch/QR, falsk bilde-E2E, DV5/gjenoppretting, forslagsspor/kamerageometri, feilfri nb/en-oppstart og check_kb; full Vitest/DB før avkrysning
+## SB-7 – AI fra storyboardpanelet (bygget og lokalt testet)
+- [x] Restleveranse 24.10: faktisk maskeformat/native kontroller, rasterisert layout og direkte sketch/QR, falsk bilde-E2E, DV5/gjenoppretting, forslagsspor/kamerageometri, feilfri nb/en-oppstart og check_kb; full Vitest 2950/0/10, DB 230/0, i18n/check_kb grønne; ingen ekte leverandør eller autentisert Cloud-E2E hevdes
 - [x] SB-5-retting: bare ressurslag og deres grupper overføres; test former/tekst
 - [x] Utgangspunkt komposisjon/skisse/manus, instruksjoner som tekst, faktaark og valgte stilforbilder (kjerne og brukerflate; ikke ekte leverandørverifisert)
-- [ ] Varianter 1–4, stil, maskens format og modellkapabiliteter
+- [x] Varianter 1–4, stil, maskens format og modellkapabiliteter
 - [x] Kostnadsport og egne nøkler; anslag bindes til innhold/pris. Kandidater lagres som skjulte lag, med resultatkvittering og spor uten promptlogg
-- [ ] Dekning, mellompaneler, ren strek og beskrivelse/alt-tekst med bekreftelse
+- [x] Dekning, mellompaneler, ren strek og beskrivelse/alt-tekst med bekreftelse
 - [x] Falsk leverandør for beskrivelse/kostnadsport og visuelt nb/en; full Vitest 2928/0/10 og DB 228/0
 - [x] Rapport docs/development/SB7_REPORT.md; ingen publisering
-- [ ] Nøyaktig maskeforhold i bildefilen og modellspesifikk skisse-/maskestyring (dagens bildekjører tilbyr fire standardforhold)
-- [ ] Mobil-QR/C-1 direkte til skissevalget; rasterisert komposisjonsgrunnlag med grupper og kamerautsnitt
-- [ ] Leverandøruavhengig bilde-E2E med falsk bildekjører, gjenoppretting fra kvitteringer og samlet angring av serverlagrede kandidater
-- [ ] Tilleggsforslag med varig jobbtilknytning, bekreftet kamerageometri og fullt scenemanus for dekning
+- [x] Faktisk maskeforhold via native dimensjoner eller merket ikke-destruktiv PNG-tilpasning; native maske der støttet, skisse via bilde-til-bilde (falskt nettverk testet)
+- [x] Mobil-QR/C-1 direkte til skissevalget; rasterisert komposisjonsgrunnlag med grupper og kamerautsnitt
+- [x] Leverandøruavhengig bilde-E2E med falsk bildekjører, gjenoppretting fra kvitteringer og samlet angring av serverlagrede kandidater
+- [x] Tilleggsforslag med varig jobbtilknytning, bekreftet kamerageometri og fullt scenemanus for dekning

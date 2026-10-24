@@ -2,7 +2,7 @@
 
 ## Status
 
-Restleveransen er implementert; siste fulltest følges opp nedenfor før endelig avkrysning. Ingen publisering, Cloud-endring eller betalte leverandørkall er utført. Denne leveransen krever ingen ny migrasjon; 0106 tilhører SB-8 og er ikke endret.
+Restleveransen er implementert og kontrollert med grønn full Vitest, lokale DB-tester, språkkontroll og dokumentkontroll. Ingen publisering, Cloud-endring eller betalte leverandørkall er utført. Denne leveransen krever ingen ny migrasjon; 0106 tilhører SB-8 og er ikke endret.
 
 ## Bygget
 
@@ -37,12 +37,13 @@ Restleveransen er implementert; siste fulltest følges opp nedenfor før endelig
 
 ## Kontroller
 
-- Full Vitest: **2928 bestått, 0 feilet, 10 hoppet over**; 367 beståtte testfiler, 2 hoppet over. Siste komplette kjøring: 24.10.2026 03:14 UTC.
-- Lokale DB-tester: **228 bestått, 0 feilet**, inklusive alle SECURITY DEFINER `search_path=''`. Ingen migrasjoner kjørt i Cloud.
-- Målrettet SB-5/SB-7/SB-3: **18 bestått**. Nye tester dekker automatisk utgangspunkt, visuelle lapper, instruksjoner, skjult kandidat/angre, referansegrense, ønsket maskeforhold, falsk tekstleverandør og eksplisitt kostnads-/resultatbekreftelse på nb/en.
-- Automatisk forhåndsvisningskontroll: **build OK** etter siste kodeendringer. Ingen manuell bygging/typekontroll kjørt.
-- `scripts/i18n/check.mjs`: **0 tekster uten engelsk i 0 filer**. Alle nye SB-7-nøkler lagt inn på nb/en/fr/es/de/it/pt-BR/ru/ja/ko; de åtte oversettelsene utenom nb/en er maskinmerket for gjennomlesing. en-XA regenereres av inventaret.
-- `PYTHONPATH=/tmp/sb7-python python3 scripts/kb/check_kb.py`: **OK**, PyYAML ligger bare i midlertidig testmiljø.
+- Full Vitest etter siste kodeendringer: **2950 bestått, 0 feilet, 10 hoppet over**; **372 beståtte testfiler, 2 hoppet over**, 127,51 sekunder. Kjøring 24.10.2026 kl. 04:44:55 UTC, logg /tmp/sb7-final-green.log. En tidligere fullkjøring hadde én Google-innloggingstest som tidsavbrøt; separat kjøring og siste fullkjøring består uten testendring.
+- Lokale DB-tester: **230 bestått, 0 feilet**, inklusive alle SECURITY DEFINER search_path=''; logg /tmp/sb7-release-db.log. Ingen Cloud-migrasjon kjørt.
+- Nye målrettede resttester: **15 bestått** i fem testfiler, inklusive virkelig lokal historieadopsjon/angring, delvis kandidatrecovery, native maskepayload, gruppetransformasjoner og falsk bilde-E2E nb/en.
+- Automatisk typekontroll/forhåndsvisningskontroll: **build OK** etter siste kodeendringer, sist 04:46:07 UTC; ingen manuell bygging/typekontroll kjørt.
+- Språk: **0 tekster uten engelsk i 0 filer**, localeFreshnessErrors() er tom. nb/en er skrevet; fr/es/de/it/pt-BR/ru/ja/ko er maskinmerket for gjennomlesing; en-XA og inventaret er regenerert.
+- Nettleseroppstart/navigation: **4 bestått, 0 feilet** på nb/en uten kjørefeil; syntetisk test, ingen autentisert Cloud-E2E påstås.
+- check_kb.py: **OK**, 925 krav, 12 skills, 0 mandatlinjer uten kravreferanse. PyYAML ligger bare i /tmp/sb7-python.
 
 ## Endrede filer
 
