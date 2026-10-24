@@ -25478,6 +25478,21 @@
     "c5.keep-current": {
       "text": "Behold gjeldende"
     },
+    "c5.kind.conform": {
+      "text": "Rekkefølge og timing"
+    },
+    "c5.kind.image": {
+      "text": "Bilde"
+    },
+    "c5.kind.new_panel": {
+      "text": "Nytt panel"
+    },
+    "c5.kind.text": {
+      "text": "Tekst"
+    },
+    "c5.kind.timing": {
+      "text": "Timing"
+    },
     "c5.login-info": {
       "text": "Skriptet PtG_Login viser en kode. Godkjenn den på siden «Koble til et program»."
     },
@@ -25489,6 +25504,24 @@
     },
     "c5.progress": {
       "text": "Lager panel {done} av {total} …"
+    },
+    "c5.reason.conflict": {
+      "text": "paneler er endret i begge programmene"
+    },
+    "c5.reason.fps": {
+      "text": "ulik bildefrekvens"
+    },
+    "c5.reason.missing": {
+      "text": "paneler mangler"
+    },
+    "c5.reason.moved-scene": {
+      "text": "paneler er flyttet til en annen scene"
+    },
+    "c5.reason.new": {
+      "text": "nye paneler"
+    },
+    "c5.reason.unknown-scene": {
+      "text": "ukjente paneler"
     },
     "c5.reject": {
       "text": "Avvis"
@@ -61109,6 +61142,21 @@
     "c5.keep-current": {
       "text": "Keep current"
     },
+    "c5.kind.conform": {
+      "text": "Order and timing"
+    },
+    "c5.kind.image": {
+      "text": "Image"
+    },
+    "c5.kind.new_panel": {
+      "text": "New panel"
+    },
+    "c5.kind.text": {
+      "text": "Text"
+    },
+    "c5.kind.timing": {
+      "text": "Timing"
+    },
     "c5.login-info": {
       "text": "The PtG_Login script shows a code. Approve it on the “Connect a program” page."
     },
@@ -61120,6 +61168,24 @@
     },
     "c5.progress": {
       "text": "Preparing panel {done} of {total} …"
+    },
+    "c5.reason.conflict": {
+      "text": "panels changed in both programs"
+    },
+    "c5.reason.fps": {
+      "text": "different frame rate"
+    },
+    "c5.reason.missing": {
+      "text": "panels are missing"
+    },
+    "c5.reason.moved-scene": {
+      "text": "panels moved to another scene"
+    },
+    "c5.reason.new": {
+      "text": "new panels"
+    },
+    "c5.reason.unknown-scene": {
+      "text": "unknown panels"
     },
     "c5.reject": {
       "text": "Reject"
