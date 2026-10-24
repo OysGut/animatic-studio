@@ -20,7 +20,8 @@ export function guestFeedbackValid(d:{name:string;email?:string;text:string;deci
 export function reviewAllowed(s:{revoked:boolean;ready:boolean;expiresAt:string},now:number):boolean {return !s.revoked&&s.ready&&Date.parse(s.expiresAt)>now;}
 export function revisionState(s:ProjectState,snapshot:PanelSnapshotContent):ProjectState {
   const id=snapshot.composition.id;
-  return {...s,compositions:{...s.compositions,[id]:{...snapshot.composition,removed:false}},layers:{...Object.fromEntries(Object.entries(s.layers).filter(([,l])=>l.compositionId!==id)),...Object.fromEntries(snapshot.layers.map(l=>[l.id,{...l,removed:false}]))}};
+  const links=snapshot.blockIds.map((blockId,i)=>({id:`review:${id}:${i}`,revision:1,panelId:id,blockId,orderKey:String(i).padStart(6,'0'),removed:false}));
+  return {...s,panelBlocks:{...Object.fromEntries(Object.entries(s.panelBlocks).filter(([,l])=>l.panelId!==id)),...Object.fromEntries(links.map(l=>[l.id,l]))},compositions:{...s.compositions,[id]:{...snapshot.composition,removed:false}},layers:{...Object.fromEntries(Object.entries(s.layers).filter(([,l])=>l.compositionId!==id)),...Object.fromEntries(snapshot.layers.map(l=>[l.id,{...l,removed:false}]))}};
 }
 export function selectReview(s:ProjectState,productionId:string,occurrenceIds:readonly string[],snapshots:Readonly<Record<string,string>>={}):ReviewSelection {
   const selected=new Set(occurrenceIds);if(!selected.size)throw new Error('review selection');

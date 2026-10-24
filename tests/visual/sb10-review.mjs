@@ -2,9 +2,10 @@
 import { harness } from './mts-harness.mjs';
 import { VISUAL_SCHEMA_VERSION } from './schema-version.mjs';
 const h=harness('/tmp/browser/sb10');
+const media=await import('node:fs').then(fs=>fs.readFileSync('/tmp/browser/sb10/clip.mp4')); 
 const token='sr_'+'a'.repeat(43),feedback=[];
-const review={title:'The Paper Kite',comments:true,approval:true,fps:24,expiresAt:'2030-01-01',videoUrl:'',panels:[{key:'p1',label:'1 · A',revision:3,durationFrames:48,startFrame:0,imageUrl:'https://review.fixture/p1.svg'},{key:'p2',label:'1 · B',revision:1,durationFrames:72,startFrame:48,imageUrl:'https://review.fixture/p2.svg'}],feedback};
-h.hooks.context=async context=>{await context.route('https://review.fixture/**',route=>route.fulfill({status:200,contentType:'image/svg+xml',body:'<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720"><rect width="1280" height="720" fill="#25765e"/><rect x="330" y="200" width="180" height="370" fill="#e7a954"/><path d="M750 90L930 230L750 370L570 230Z" fill="#d9514a"/><path d="M750 370Q700 600 550 690" fill="none" stroke="#ffffff" stroke-width="8"/></svg>'}));};
+const review={title:'The Paper Kite',comments:true,approval:true,fps:24,expiresAt:'2030-01-01',videoUrl:'https://review.fixture/clip.mp4',panels:[{key:'p1',label:'1 · A',revision:3,durationFrames:48,startFrame:0,imageUrl:'https://review.fixture/p1.svg'},{key:'p2',label:'1 · B',revision:1,durationFrames:72,startFrame:48,imageUrl:'https://review.fixture/p2.svg'}],feedback};
+h.hooks.context=async context=>{await context.route('https://review.fixture/clip.mp4',route=>route.fulfill({status:200,contentType:'video/mp4',body:media}));await context.route('https://review.fixture/**',route=>route.fulfill({status:200,contentType:'image/svg+xml',body:'<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720"><rect width="1280" height="720" fill="#25765e"/><rect x="330" y="200" width="180" height="370" fill="#e7a954"/><path d="M750 90L930 230L750 370L570 230Z" fill="#d9514a"/><path d="M750 370Q700 600 550 690" fill="none" stroke="#ffffff" stroke-width="8"/></svg>'}));};
 h.hooks.navigate=async(page,path)=>{await page.getByTestId('ui-id').first().waitFor({timeout:30000});await page.evaluate(path=>{history.pushState({},'',path);window.dispatchEvent(new PopStateEvent('popstate'));},path);};
 h.hooks.rest=table=>table==='schema_version'?[{version:Math.max(108,VISUAL_SCHEMA_VERSION)}]:table==='rpc/project_snapshot'?{project:h.fx.project,log_seq:0,history:'current',tables:[h.fx.rows]}:undefined;
 h.hooks.serverFn=(name,d)=>{
@@ -28,6 +29,7 @@ for(const lang of ['nb','en'])await h.scenario(`sb10-${lang}`,h.fx.occurrenceId,
  await guest.getByRole('button',{name:lang==='nb'?'Send':'Send',exact:true}).click();
  await guest.getByText('Please shift the kite left.',{exact:true}).last().waitFor();
  h.check(feedback.at(-1)?.decision==='changes'&&feedback.at(-1)?.pin_x===.52,`${lang}: anonymous pinned change request reads back`);
+ await guest.locator('video').evaluate(async v=>{v.muted=true;await v.play();});await page.waitForTimeout(200);h.check(await guest.locator('video').evaluate(v=>v.currentTime>0),`${lang}: review video actually plays`);await guest.locator('video').evaluate(v=>v.pause());
  h.check(await guest.locator('video').count()===1,`${lang}: review playback and audio controls present`);
  await page.screenshot({path:`${h.out}/desktop-${lang}.png`});
  await page.setViewportSize({width:390,height:844});await page.screenshot({path:`${h.out}/mobile-${lang}.png`});
