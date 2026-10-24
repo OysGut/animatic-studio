@@ -70,7 +70,7 @@ function setup() {
       s = mustApply(s, { type: "AddStoryboardPanel", panelId, occurrenceId: o.id, variantId: o.variantId, orderKey: `a${k}` });
       s = mustApply(s, { type: "UpdateStoryboardPanel", panelId, durationFrames: 24 + k });
       const d = panelDetails(s.compositions[panelId as never]!);
-      s = mustApply(s, { type: "SetStoryboardDetails", panelId, details: { ...d, number: String(oi * 2 + k + 1), fields: { dialogue: `Hei ${k}`, action: `Løper ${oi}`, notes: "" }, shot: "wide" } } as unknown as Command);
+      s = mustApply(s, { type: "SetStoryboardDetails", panelId, details: { ...d, number: String(oi * 2 + k + 1), fields: { dialogue: `Hei ${k}`, action: `Løper ${oi}`, notes: "" }, shot: "WS" } } as unknown as Command);
     }
   });
   return { s, productionId: seed.mainId as string, ids, occs };
@@ -149,7 +149,7 @@ describe("import", () => {
     expect(fake.panels.map(p => p.duration)).toEqual([24, 25, 24, 25]);
     expect(fake.panels[0]!.captions["Dialogue"]).toBe("Hei 0");
     expect(fake.panels[2]!.captions["Action Notes"]).toBe("Løper 1");
-    expect(fake.panels[0]!.captions["Camera"]).toBe("wide");
+    expect(fake.panels[0]!.captions["Camera"]).toBe("WS");
     expect(P.parseRef(fake.panels[0]!.captions["PtG Ref"]).panelId).toBe(ids[0]);
     expect(fake.panels.every(p => p.image)).toBe(true);
     expect(fake.captionNames).toEqual(expect.arrayContaining(["Dialogue", "Action Notes", "Notes", "Camera", "PtG Ref"]));
