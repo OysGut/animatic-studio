@@ -79,3 +79,31 @@ export const resolveConnectorConflict = createServerFn({ method: "POST" }).middl
     if (error) throw fail();
     return true;
   });
+
+export interface ConnectorConflictView { id: string; projectId: string; projectName: string; assetName: string; variantId: string; currentNumber: number | null; incomingNumber: number | null; baseNumber: number | null; incomingVersionId: string; revision: number; createdAt: string }
+export const myOpenConnectorConflicts = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth]).handler(async ({ context }) => {
+  await noStore();
+  const db = context.supabase as AnyClient;
+  const { data, error } = await db.from("connector_conflicts").select("id,project_id,variant_id,base_version_id,current_version_id,incoming_version_id,revision,created_at").eq("status", "open").order("created_at", { ascending: false }).limit(100);
+  if (error) throw fail();
+  const rows = (data ?? []) as Record<string, any>[];
+  const versionIds = [...new Set(rows.flatMap(r => [r["base_version_id"], r["current_version_id"], r["incoming_version_id"]]).filter(Boolean))];
+  const variantIds = [...new Set(rows.map(r => r["variant_id"]))];
+  const projectIds = [...new Set(rows.map(r => r["project_id"]))];
+  const [v, va, p] = await Promise.all([
+    versionIds.length ? db.from("asset_versions").select("id,number").in("id", versionIds) : { data: [] },
+    variantIds.length ? db.from("asset_variants").select("id,asset_id").in("id", variantIds) : { data: [] },
+    projectIds.length ? db.from("projects").select("id,name").in("id", projectIds) : { data: [] },
+  ]);
+  const assetIds = [...new Set(((va.data ?? []) as Record<string, any>[]).map(r => r["asset_id"]))];
+  const a = assetIds.length ? await db.from("assets").select("id,name").in("id", assetIds) : { data: [] };
+  const num = new Map(((v.data ?? []) as Record<string, any>[]).map(r => [r["id"], Number(r["number"])]));
+  const assetOf = new Map(((va.data ?? []) as Record<string, any>[]).map(r => [r["id"], r["asset_id"]]));
+  const assetName = new Map(((a.data ?? []) as Record<string, any>[]).map(r => [r["id"], String(r["name"])]));
+  const projectName = new Map(((p.data ?? []) as Record<string, any>[]).map(r => [r["id"], String(r["name"])]));
+  return rows.map((r): ConnectorConflictView => ({
+    id: r["id"], projectId: r["project_id"], projectName: projectName.get(r["project_id"]) ?? "", assetName: assetName.get(assetOf.get(r["variant_id"])) ?? "",
+    variantId: r["variant_id"], baseNumber: num.get(r["base_version_id"]) ?? null, currentNumber: num.get(r["current_version_id"]) ?? null,
+    incomingNumber: num.get(r["incoming_version_id"]) ?? null, incomingVersionId: r["incoming_version_id"], revision: Number(r["revision"]), createdAt: r["created_at"],
+  }));
+});
