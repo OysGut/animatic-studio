@@ -47,7 +47,7 @@ async function connectionForProject(user: AnyClient, db: AnyClient, userId: stri
 export const myBoordsConnections = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth]).handler(async ({ context }): Promise<BoordsConnectionView[]> => {
   const user = context.supabase as unknown as AnyClient;
   // Kolonnetilgang: nettleserens klient kan ikke lese chifferet; vi spør bare etter trygge kolonner.
-  const r = await user.from("boords_connections").select("id,owner_kind,workspace_id,label,key_hint,status,status_message,last_sync_at").order("created_at");
+  const r = await user.from("boords_connections").select(["id", "owner_kind", "workspace_id", "label", "key_hint", "status", "status_message", "last_sync_at"].join(",")).order("created_at");
   if (r.error) return [];
   const { adminDb } = await import("./boords-store.server");
   const db = await adminDb();
