@@ -37,6 +37,9 @@ export function ConnectorConsent({ search, email }: { search: ConsentSearch; ema
   const [device, setDevice] = useState<{ clientId: string; scopes: string[] } | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  // C-2: programmer med eget skjema (ptg-…://) kan ikke alltid ta imot svaret (UXP lytter ikke på skjemaer),
+  // så adressen vises også for innliming i programmet. Den inneholder en engangskode som utløper raskt.
+  const [pasteBack, setPasteBack] = useState<string | null>(null);
   const pkce = !!search.client_id && !!search.redirect_uri;
   const clientId = pkce ? search.client_id! : device?.clientId ?? "";
   const scopes = pkce ? parseScopes(search.scope ?? "") ?? [] : device?.scopes ?? [];
@@ -53,6 +56,7 @@ export function ConnectorConsent({ search, email }: { search: ConsentSearch; ema
       if (pkce) {
         if (!ok) { const u = new URL(search.redirect_uri!); u.searchParams.set("error", "access_denied"); if (search.state) u.searchParams.set("state", search.state); window.location.assign(u.toString()); return; }
         const r = await approve({ data: { projectId, clientId: search.client_id!, redirectUri: search.redirect_uri!, challenge: search.code_challenge ?? "", method: search.code_challenge_method ?? "", scope: search.scope ?? "", state: search.state ?? "" } });
+        if (/^ptg-[a-z0-9-]+:/i.test(r.redirect)) setPasteBack(r.redirect);
         window.location.assign(r.redirect);
         return;
       }
@@ -77,7 +81,7 @@ export function ConnectorConsent({ search, email }: { search: ConsentSearch; ema
       {showDecision ? (
         <>
           <p className="text-[13px] text-text-primary">{t("c0.consent.explain", { client: clientId })}</p>
-          {pkce ? <p className="text-[13px] text-text-secondary" dir="ltr">{t("c0.consent.redirect", { uri: new URL(search.redirect_uri!).origin })}</p> : null}
+          {pkce ? <p className="text-[13px] text-text-secondary" dir="ltr">{t("c0.consent.redirect", { uri: redirectLabel(search.redirect_uri!) })}</p> : null}
           <ul className="list-disc ps-5 text-[13px] text-text-primary">
             {scopes.map(s => <li key={s}>{scopeLabel(s)}</li>)}
           </ul>
@@ -93,7 +97,20 @@ export function ConnectorConsent({ search, email }: { search: ConsentSearch; ema
           </div>
         </>
       ) : null}
+      {pasteBack ? (
+        <div className="flex flex-col gap-2" data-testid="c0-paste-back">
+          <label className="text-[13px] text-text-primary" htmlFor="c0-paste-back">{t("c0.consent.paste-back", { client: clientId })}</label>
+          <input id="c0-paste-back" className={input} dir="ltr" readOnly value={pasteBack} onFocus={e => e.currentTarget.select()} />
+          <Button variant="outline" onClick={() => void navigator.clipboard?.writeText(pasteBack).then(() => setMsg(t("c0.consent.paste-back-copied")), () => undefined)}>{t("c0.consent.paste-back-copy")}</Button>
+        </div>
+      ) : null}
       {msg ? <p role="status" className="text-[13px] text-text-secondary">{msg}</p> : null}
     </main>
   );
+}
+
+/** http(s) viser opprinnelsen; egne skjemaer (ptg-…://) har ingen opprinnelse og vises som skjema + vert. */
+function redirectLabel(uri: string): string {
+  const u = new URL(uri);
+  return u.origin !== "null" ? u.origin : `${u.protocol}//${u.host}`;
 }
