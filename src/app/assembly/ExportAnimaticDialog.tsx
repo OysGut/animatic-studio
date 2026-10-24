@@ -425,6 +425,16 @@ export function ExportAnimaticDialog({
         if (u) subset[p] = u;
         else missingUrl.push(p);
       }
+      // SB-4: storyboardpanelenes bilder er ikke med i monteringens lenkesett – hent dem her
+      if (missingUrl.length > 0 && imageSource === "storyboard") {
+        try {
+          const fresh = await signedUrls(missingUrl, 4 * 60 * 60);
+          for (const p of missingUrl) if (fresh[p]) { subset[p] = fresh[p]; }
+        } catch { /* telles som tapt under */ }
+      }
+      const lost = missingUrl.filter((p) => !subset[p]);
+      missingUrl.length = 0;
+      missingUrl.push(...lost);
       const audioSubset: Record<string, string> = {};
       for (const p of audioPaths) {
         const u = audioUrls?.[p];
@@ -718,6 +728,34 @@ export function ExportAnimaticDialog({
                 checked={scope === "range"}
                 onChange={() => setScope("range")}
                 className="mt-1"
+              />
+            </label>
+            <fieldset className="flex flex-col gap-2" disabled={busy}>
+              <legend className="sr-only">{t("sb4.export.image-source")}</legend>
+              <span className={legend}>{t("sb4.export.image-source")}</span>
+              {(["animation", "film", "storyboard"] as const).map((src) => (
+                <label key={src} className={radio}>
+                  <input
+                    type="radio"
+                    name="imageSource"
+                    checked={imageSource === src}
+                    onChange={() => setImageSource(src)}
+                    className="mt-1"
+                    data-testid={`export-source-${src}`}
+                  />
+                  <span>{t(`sb4.export.source-${src}`)}</span>
+                </label>
+              ))}
+            </fieldset>
+            <label className={radio}>
+              <input
+                type="radio"
+                name="scope"
+                checked={false}
+                readOnly
+                className="mt-1 hidden"
+                tabIndex={-1}
+                aria-hidden="true"
               />
               <span className="flex min-w-0 flex-1 flex-col gap-1">
                 {t("app-assembly-export-animatic-dialog.export-animatic-dialog.span.f85957df67da")}
