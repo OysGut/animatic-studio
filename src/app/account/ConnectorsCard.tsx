@@ -74,7 +74,7 @@ export function ConnectorsCard() {
             <div key={c.id} data-testid="c0-conflict" className="flex flex-col gap-2 rounded-sm border border-border p-2 text-[13px]">
               <span className="text-text-primary" dir="auto">{c.assetName} · {c.projectName}</span>
               <span className="text-text-secondary">{t("c0.conflict.versions", { current: String(c.currentNumber ?? "–"), incoming: String(c.incomingNumber ?? "–"), base: String(c.baseNumber ?? "–") })}</span>
-              <Link to="/prosjekt/$projectId/bibliotek" params={{ projectId: c.projectId }} className="text-accent underline">{t("c0.conflict.compare")}</Link>
+              <Link to="/prosjekt/$projectId/bibliotek" params={{ projectId: c.projectId }} className="text-accent-brand underline">{t("c0.conflict.compare")}</Link>
               <div className="flex flex-wrap gap-2">
                 <Button size="sm" disabled={busy === c.id} onClick={() => void choose(c, "keep_both")}>{t("c0.conflict.keep-both")}</Button>
                 <Button size="sm" variant="outline" disabled={busy === c.id} onClick={() => void choose(c, "choose_current")}>{t("c0.conflict.current")}</Button>
