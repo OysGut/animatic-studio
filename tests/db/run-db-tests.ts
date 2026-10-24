@@ -9025,7 +9025,7 @@ try {
     await expectError(as("authenticated",ALICE,tx=>tx`select public.connector_approve_code(${g7p},'ptg.photoshop','http://127.0.0.1:7777/cb',${ch},array['project:read'],${h('4')})`),'PTG15');
     await sql`update private.rate_limit_rules set per_key=60 where scope='connector_approve'`;
   });
-  await test("0109 C-0-retting: utløpt/tilbaketrukket sesjon, kodeprøving, scopes, klientliste/redirect og rydding", async () => {
+  await test("0111 C-0-retting: utløpt/tilbaketrukket sesjon, kodeprøving, scopes, klientliste/redirect og rydding", async () => {
     const h=(c:string)=>c.repeat(64).slice(0,64), ch="E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM";
     await sql`delete from private.rate_limit_hits where scope in ('connector_approve','connector_device_lookup')`;
     // 2. Session lookup returns null in SQL for revoked/expired; last_used_at moves only for valid sessions.
