@@ -117,6 +117,8 @@ function fakeStore(state: ProjectState) {
     applyCommands: async (_p, actor, s, cmds) => { let x = s; for (const c of cmds) { x = applyLocally(x, actor, c).state; applied.push(c); } st = x; return x; },
     insertConflict: async (c) => { conflicts.push(c); return "conflict-1"; },
     markHandoff: async (_id, p) => { marks.push(p); },
+    saveSbproReturn: async () => ({ returnId: "00000000-0000-7000-8000-a11ce00000c5", uploads: [] }),
+    putSbproImage: async () => "ok" as const,
   };
   return { store, conflicts, marks, applied, get state() { return st; } };
 }
