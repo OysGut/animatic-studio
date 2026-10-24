@@ -58,7 +58,7 @@ export function SketchCanvas({width,height,spec,save,disabled=false,palette=[],b
       <Button size="sm" variant="ghost" disabled={disabled} onClick={()=>save({...spec,role:spec.role==="rough"?"clean":"rough"})}><Layers/>{spec.role==="rough"?t("sb8.rough"):t("sb8.clean")}</Button>
     </div>
     {error?<p role="alert" className="text-status-danger">{error}</p>:null}
-    <div ref={host} className="relative min-h-80 flex-1 overflow-hidden touch-none" data-testid="sb8-canvas-host">
+    <div ref={host} className="relative min-h-80 flex-1 overflow-hidden touch-none" data-testid="sb8-canvas-host" onDoubleClick={e=>{if(e.nativeEvent instanceof PointerEvent&&e.nativeEvent.pointerType==="pen"){setTool(v=>v==="erase"?"pencil":"erase");setPan(false);}}}>
       <div className="absolute inset-0 flex items-center justify-center" style={{transform:`translate(${view.x}px,${view.y}px) rotate(${view.rotation}deg) scale(${view.zoom}) scaleX(${view.flip?-1:1})`}}>
         <div className="relative shrink-0" style={{width:width*fit,height:height*fit}}>
           <canvas ref={layers} width={width} height={height} className="pointer-events-none absolute inset-0 size-full"/>
