@@ -1,5 +1,14 @@
 # Veikart
 
+## SB-8 – Tegning i appen (pågår)
+- [ ] Storyboard-only sketch-lag, komprimerte vektorstrøk og størrelsesvalidering
+- [ ] Penn/pensel/viskelær/fyll/linjal/figur, prosjektpalett og strøkvis angre
+- [ ] Grov/rentegning, lysbord/løk-visning, vend/zoom/pan/rotasjon kun i visningen
+- [ ] Pointer Events, trykk/tilt/hastighet, koalesserte hendelser, rAF og håndflatevern
+- [ ] Kortlivet panelavgrenset mobiltegning via QR og migrasjon 0106
+- [ ] Felles rasterisering/PNG-alfa og SB-7-skissekobling
+- [ ] Kjerne/DB/visuelt nb/en desktop/mobil, full Vitest 0 feil og rapport SB8_REPORT.md
+
 ## SB-4 (bygget, verifisert)
 - [x] Felles posisjon, timing, midlertidig panellyd, galleriscrubbing/avspilling, eksportkilde
 
