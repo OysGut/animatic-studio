@@ -8,7 +8,8 @@ import { useImageUrls } from "@/app/library/asset-images";
 import { useProjectProviders } from "@/app/ai/use-project-providers";
 import { estimateStoryboardAi, generateStoryboardAi, recoverStoryboardCandidate, type StoryboardAiRequest } from "@/adapters/ai/storyboard.functions";
 import { adoptServerHistory } from "@/app/project/use-commands";
-import { rasterPanelInput, fitCandidateImage } from "./ai-images";
+import { rasterPanelInput, fitCandidateImage, useMobilePanelSketch } from "./ai-images";
+import { MobileImportDialog } from "@/app/mobile/MobileImportDialog";
 import { panelOutputPlan } from "@/core/storyboard/ai-output";
 import { planAiPanels } from "@/core/storyboard/ai-proposals";
 import { automaticPanelBasis, panelAiCapabilities, panelResourceLayers } from "@/core/storyboard/ai";
@@ -38,6 +39,7 @@ export function PanelAi({ state, panel, cmds, editable, mask }: { state: Project
   const [textJobId, setTextJobId] = useState("");
   const [recovery, setRecovery] = useState("");
   const [nativeMask, setNativeMask] = useState("");
+  const [mobile, setMobile] = useState(false);
   const savedCandidates = layersOf(state, panel.id).flatMap(l => { const v = l.versionId ? state.assetVersions[l.versionId] : null; if (!v || !l.assetId || !l.assetVariantId) return []; try { const trace = JSON.parse(v.note) as { panelId?: string }; if (trace.panelId !== panel.id) return []; return [{ versionId: v.id, assetId: l.assetId, variantId: l.assetVariantId, trace, media: { path: v.mediaPath, mimeType: v.mimeType, width: v.width, height: v.height, byteSize: v.byteSize, sha256: v.sha256, durationMs: v.durationMs } }]; } catch { return []; } });
   const candidates = [...savedCandidates, ...received.filter(c => !savedCandidates.some(s => s.versionId === c.versionId))];
   const resultsRef = useRef<HTMLDivElement>(null);
@@ -135,6 +137,7 @@ export function PanelAi({ state, panel, cmds, editable, mask }: { state: Project
       <label className="flex gap-1 text-[11px]"><input type="checkbox" checked={visualNotes} onChange={e => { setVisual(e.target.checked); setQuote(null); }}/>{t("sb7.visual-notes")}</label>
     </> : null}
     {action === "between" ? <select aria-label={t("sb7.end-panel")} className={ctl} value={second} onChange={e => { setSecond(e.target.value); setQuote(null); }}><option value="">{t("sb7.end-panel")}</option>{Object.values(state.compositions).filter(p => p.kind === "storyboard" && !p.removed && p.occurrenceId === panel.occurrenceId && p.id !== panel.id).map(p => <option key={p.id} value={p.id}>{p.name || panelDetails(p).number}</option>)}</select> : null}
+    {(basis === "sketch" || action === "clean") && caps?.sketch ? <><Button size="sm" variant="outline" disabled={!editable || busy} onClick={() => setMobile(true)}>{t("sb8.mobile")}</Button><MobileImportDialog open={mobile} onOpenChange={setMobile} projectId={state.project.id} context={{ type: "draft", draftKey: `storyboard-sketch-${panel.id}`, assetKind: "other" }} label={t("sb7.sketch")} actions={row => row.kind === "image" ? <Button size="sm" disabled={busy} onClick={() => { setBusy(true); void useMobilePanelSketch(cmds.current() ?? state, panel, row, cmds).then(id => { setSketch(id); setQuote(null); setMobile(false); }).catch(e => setError((e as Error).message)).finally(() => setBusy(false)); }}>{t("sb7.sketch")}</Button> : null}/></> : null}
     <select aria-label={t("sb7.text-model")} className={ctl} value={textChoice?.key ?? ""} onChange={e => { setTextPick(e.target.value); setQuote(null); }}><option value="" disabled>{t("sb7.unavailable")}</option>{textChoices.map(c => <option key={c.key} value={c.key}>{c.model.label}</option>)}</select>
     {action !== "describe" ? <label className="block text-[11px]">{t("sb7.count")}<input className={ctl} type="number" min={1} max={4} value={count} onChange={e => { setCount(Math.max(1, Math.min(4, Number(e.target.value) || 1))); setQuote(null); }}/></label> : null}
     {quote ? <div className="space-y-2" data-testid="sb7-cost"><p className="text-[13px]">{t("sb7.cost", { cost: quote.cost.toFixed(4), study: quote.studyCost.toFixed(4) })}</p><Button size="sm" disabled={busy || !editable} onClick={() => void execute()}>{t("sb7.confirm")}</Button><Button size="sm" variant="ghost" onClick={() => setQuote(null)}>{t("sb5.setup-cancel")}</Button></div> : <Button size="sm" disabled={busy || !editable || !textChoice || ((action === "image" || action === "clean") && !choice)} onClick={() => void getQuote()}>{busy ? t("sb7.working") : t("sb7.estimate")}</Button>}

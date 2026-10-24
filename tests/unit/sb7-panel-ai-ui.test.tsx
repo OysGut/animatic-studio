@@ -10,6 +10,7 @@ vi.mock("@/app/project/use-commands",()=>({adoptServerHistory:vi.fn()}));
 vi.mock("@/app/storyboard/ai-images",()=>({rasterPanelInput:vi.fn(),fitCandidateImage:vi.fn()}));
 vi.mock("@/app/ai/use-project-providers",()=>({useProjectProviders:()=>({data:{providers:["openai"]}})}));
 vi.mock("@/app/library/asset-images",()=>({useImageUrls:()=>({data:{}})}));
+vi.mock("@/app/mobile/MobileImportDialog",()=>({MobileImportDialog:()=>null}));
 import { PanelAi } from "@/app/storyboard/PanelAi";
 function setup(){const seed=seedProject(1);const o=orderedOccurrences(seed.state,seed.mainId)[0];if(!o)throw Error("fixture");const id=tid<"composition">();const s=mustApply(seed.state,{type:"AddStoryboardPanel",panelId:id,occurrenceId:o.id,variantId:o.variantId,orderKey:"a1"});const run=vi.fn();const cmds={run,whenIdle:async()=>{},current:()=>s} as unknown as Commands;const p=s.compositions[id];if(!p)throw Error("panel");render(<PanelAi state={s} panel={p} editable cmds={cmds} mask="project"/>);return {run};}
 describe("SB-7 fake provider cost gate",()=>{
