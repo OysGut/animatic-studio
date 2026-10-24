@@ -33,7 +33,8 @@ vi.mock("@/app/account/ui-prefs", async () => {
 const nav = vi.fn();
 vi.mock("@tanstack/react-router", () => ({ useNavigate: () => nav, Link: () => null }));
 vi.mock("@/app/library/asset-images", () => ({ useImageUrls: () => ({ data: {} }) }));
-vi.mock("@/app/shell/current-scene", () => ({ rememberScene: () => undefined }));
+vi.mock("@/app/shell/current-scene", () => ({ rememberScene: () => undefined, currentPosition: () => null, rememberPosition: () => undefined }));
+vi.mock("@/app/storyboard/GalleryPlayback", () => ({ GalleryPlayback: () => null, ScrubPreview: () => null }));
 
 const { Gallery } = await import("@/app/storyboard/StoryboardWorkspace");
 
