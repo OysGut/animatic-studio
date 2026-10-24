@@ -6,7 +6,8 @@ export interface ContourRequest extends Omit<SourceOptions, 'rgba'> {
   cutHoles: boolean;
   strokeWidthMm: number;
 }
-const cache = new LruCache<string, ContourResult>(64);
+let contourCache: LruCache<string, ContourResult> | undefined;
+const cache = () => (contourCache ??= new LruCache<string, ContourResult>(64));
 /** Each preview owns its worker; changing input terminates obsolete computation. */
 export class ContourClient {
   private worker: Worker | undefined;
@@ -21,7 +22,7 @@ export class ContourClient {
   }
   compute(key: string, request: ContourRequest): Promise<ContourResult> {
     this.cancel();
-    const cached = cache.get(key);
+    const cached = cache().get(key);
     if (cached) return Promise.resolve(cached);
     const id = ++this.id;
     const worker = new Worker(new URL('./contour.worker.ts', import.meta.url), { type: 'module' });
@@ -35,7 +36,7 @@ export class ContourClient {
         this.worker = undefined;
         if (data.error) reject(new Error(data.error));
         else {
-          cache.set(key, data.result);
+          cache().set(key, data.result);
           resolve(data.result);
         }
       };

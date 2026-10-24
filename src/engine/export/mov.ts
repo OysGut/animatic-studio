@@ -39,7 +39,6 @@ class W {
   get b() { return new Uint8Array(this.a); }
 }
 
-const COMPRESSOR: Record<ProResProfile, string> = PRORES_NAME;
 
 export class MovWriter {
   private pos = 0;
@@ -85,7 +84,7 @@ export class MovWriter {
     const hdlr = (ct: string, sub: string) => box("hdlr", new W().u32(0).str(ct).str(sub).u32(0).u32(0).u32(0).u8(0).b);
     const dinf = box("dinf", box("dref", new W().u32(0).u32(1).b, box("alis", new W().u32(1).b)));
     const co64 = (offs: readonly number[]) => { const w = new W().u32(0).u32(offs.length); for (const v of offs) w.u64(v); return box("co64", w.b); };
-    const name = COMPRESSOR[profile];
+    const name = (PRORES_NAME as Record<ProResProfile, string>)[profile];
     const entry = box(PRORES_FOURCC[profile], new W().zeros(6).u16(1).u16(0).u16(0).str("appl").u32(0).u32(0x400)
       .u16(width).u16(height).u32(72 * 65536).u32(72 * 65536).u32(0).u16(1)
       .u8(name.length).str(name).zeros(31 - name.length).u16(profile === "4444" ? 32 : 24).u16(0xffff).b,

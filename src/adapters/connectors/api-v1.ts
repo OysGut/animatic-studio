@@ -235,4 +235,3 @@ export async function handleApiV1(req: Request, d: ApiDeps): Promise<Response> {
   }
 }
 
-export const CODE_TTL = CODE_TTL_SECONDS;
