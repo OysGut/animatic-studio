@@ -3,8 +3,8 @@
  * hent endringer, og se kandidater og kommentarer fra Boords. Ingenting fra Boords tas i bruk automatisk:
  * «Bruk innkommende» kjører vanlige, angrebare kommandoer (SetStoryboardDetails, eller et nytt bibliotekbilde).
  */
-import { useState } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useContext, useState } from "react";
+import { QueryClientContext, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { Link } from "@tanstack/react-router";
 import { Dialog, DialogDescription, DialogTitle } from "@/components/ui/dialog";
@@ -43,7 +43,12 @@ async function panelPngBase64(s: ProjectState, panelId: string): Promise<string 
   } finally { for (const im of images.values()) if ("close" in im) (im as ImageBitmap).close(); }
 }
 
-export function BoordsSendButton({ state, projectId, productionId, cmds, editable }: { state: ProjectState; projectId: string; productionId: string; cmds: Commands; editable: boolean }) {
+type SendProps = { state: ProjectState; projectId: string; productionId: string; cmds: Commands; editable: boolean };
+/** Uten QueryClient (enkelte isolerte visninger og tester) vises ikke knappen. */
+export function BoordsSendButton(props: SendProps) {
+  return useContext(QueryClientContext) ? <BoordsSendInner {...props} /> : null;
+}
+function BoordsSendInner({ state, projectId, productionId, cmds, editable }: SendProps) {
   const ready = useSchemaAtLeast(112);
   const [open, setOpen] = useState(false);
   if (!ready || !editable) return null;
