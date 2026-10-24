@@ -110,7 +110,7 @@ describe("SB-4 storyboardtidslinjen", () => {
     const st = mustApply(c.s, {
       type: "SetTransition",
       occurrenceId: occs[1] as never,
-      transition: { kind: "dissolve", frames: 10 },
+      transition: { kind: "dissolve", frames: 10, overlap: true },
     });
     return { s: st, mainId, occs, panels: [a.panelId, b.panelId, c.panelId] };
   }
@@ -346,7 +346,7 @@ describe("SB-4 kommandoer for midlertidig panellyd er vanlige kommandoer", () =>
     const r = applyCommand(p.s, envelope({
       type: "SetStoryboardDetails",
       panelId: p.panelId,
-      details: { fields: {}, dialogueIds: [], shot: null, angle: null, focalMm: null, movement: "" },
+      details: { number: "1", sceneNumber: "1", fields: {}, dialogueIds: [], shot: null, angle: null, focalMm: null, movement: "" },
     }));
     // Paneldetaljer er allerede dekket av SB-3-kommandoer med angre/gjøre om; her bekreftes at
     // storyboard-tilstanden i SB-4 bare bygger på eksisterende kommandoer (ingen nye skriveveier).

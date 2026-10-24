@@ -284,7 +284,9 @@ export function storyboardAudioItems(
     const to = firstShot.get(occId);
     const from = clipStart.get(occId);
     if (to === undefined || from === undefined) continue;
-    out.push({ ...it, start: Math.max(0, to + (it.start - from)) });
+    // Lyden er tidsmaster: filmAudio klipper ikke-continues-klipp ved scenens slutt; i
+    // storyboardfilmen spiller klippet sin fulle (redigerte) lengde siden panelene kan være kortere.
+    out.push({ ...it, start: Math.max(0, to + (it.start - from)), length: it.fullLength });
   }
   return out;
 }
