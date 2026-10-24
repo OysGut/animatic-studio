@@ -13,7 +13,7 @@ import { existsSync } from "node:fs";
 const PORT = Number(process.env.SSR_PORT ?? 8799);
 const PATHS = ["/", "/nb", "/konto", "/koble", "/prosjekt/00000000-0000-7000-8000-000000000001", "/prosjekt/00000000-0000-7000-8000-000000000001/storyboard"];
 const BAD_TEXT = ["The page could not be shown", "\"unhandled\":true"];
-const CONFIG = ".output/server/wrangler.json";
+const CONFIG = [".output/server/wrangler.json", "dist/server/wrangler.json"].find((p) => existsSync(p)) ?? ".output/server/wrangler.json";
 
 if (!process.env.SSR_SKIP_BUILD) {
   console.log("· vite build");
