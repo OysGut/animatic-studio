@@ -694,6 +694,10 @@ export const runCommand = createServerFn({ method: "POST" })
        if (schema.kind === "missing" || schema.version < 102) return { ok: false, code: "schema", message: tk("sb1.schema") };
     }
     // SB-1: lagtypene note/arrow/camera_mark krever migrasjon 0102 (også inni UpdateSceneDraft)
+    if (animationSteps.some(step => (step.type === "AddLayers" || step.type === "UpdateLayers") && step.layers.some(l=>l.fields.kind==="sketch" || !!l.fields.sketch))) {
+      const schema=await checkSchema(admin);
+      if(schema.kind==="missing" || schema.version<106)return {ok:false,code:"schema",message:tk("sb1.schema")};
+    }
     const sbLayerSteps = animationSteps.filter((step) =>
       (step.type === "AddLayers" || step.type === "UpdateLayers") &&
       step.layers.some((l) => l.fields && ("note" in l.fields || "arrow" in l.fields || "cameraMark" in l.fields ||
