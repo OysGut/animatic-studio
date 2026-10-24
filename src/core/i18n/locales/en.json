@@ -76958,5 +76958,95 @@
   },
   "time.weekday-at": {
     "text": "{weekday} at {time}"
+  },
+  "sb7.title": {
+    "text": "AI from storyboard"
+  },
+  "sb7.action": {
+    "text": "Task"
+  },
+  "sb7.image": {
+    "text": "Generate image from panel"
+  },
+  "sb7.coverage": {
+    "text": "Suggest coverage"
+  },
+  "sb7.between": {
+    "text": "Intermediate panels"
+  },
+  "sb7.clean": {
+    "text": "Rough sketch to clean lines"
+  },
+  "sb7.describe": {
+    "text": "Describe panel"
+  },
+  "sb7.model": {
+    "text": "Image model"
+  },
+  "sb7.basis": {
+    "text": "Starting point"
+  },
+  "sb7.script": {
+    "text": "Script excerpt"
+  },
+  "sb7.composition": {
+    "text": "Resource composition"
+  },
+  "sb7.sketch": {
+    "text": "Hand-drawn sketch"
+  },
+  "sb7.style": {
+    "text": "Style"
+  },
+  "sb7.line": {
+    "text": "Storyboard lines"
+  },
+  "sb7.grey": {
+    "text": "Grey drawing"
+  },
+  "sb7.color": {
+    "text": "Finished color"
+  },
+  "sb7.references": {
+    "text": "Approved style references (recommended 1–3, maximum {limit})"
+  },
+  "sb7.visual-notes": {
+    "text": "Include visual notes"
+  },
+  "sb7.end-panel": {
+    "text": "End panel"
+  },
+  "sb7.text-model": {
+    "text": "Text model"
+  },
+  "sb7.count": {
+    "text": "Variants (1–4)"
+  },
+  "sb7.cost": {
+    "text": "Estimate: USD {cost}, including USD {study} for missing fact sheets."
+  },
+  "sb7.confirm": {
+    "text": "Confirm cost and generate"
+  },
+  "sb7.unavailable": {
+    "text": "This choice is unavailable with your connected models."
+  },
+  "sb7.stale": {
+    "text": "Content or price has changed. Request a new estimate."
+  },
+  "sb7.candidate": {
+    "text": "Image candidate"
+  },
+  "sb7.working": {
+    "text": "Working …"
+  },
+  "sb7.estimate": {
+    "text": "Show cost estimate"
+  },
+  "sb7.result": {
+    "text": "Suggestion"
+  },
+  "sb7.accept": {
+    "text": "Confirm and use"
   }
 }

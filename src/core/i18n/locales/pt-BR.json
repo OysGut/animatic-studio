@@ -57990,5 +57990,155 @@
     "text": "A cena não existe.",
     "sourceHash": "8eaf3b74fdec8f2c680ad380a4dbef546022ea89dff78588e886cf1df9cf2ff3",
     "review": "machine"
+  },
+  "sb7.title": {
+    "text": "IA do storyboard",
+    "sourceHash": "33ae5efbeef72ca2588ea7f02a270172292c2d03110abad8e6493e1dc1579a75",
+    "review": "machine"
+  },
+  "sb7.action": {
+    "text": "Tarefa",
+    "sourceHash": "365ef18e3e20fa6fcb047655062f9466cebf37ed63e3daf8a8f252f5acc34cfe",
+    "review": "machine"
+  },
+  "sb7.image": {
+    "text": "Gerar imagem do painel",
+    "sourceHash": "a997218ff8cabbd2b587237ef579100fb2167f03b77f556352cfadf7b26d6937",
+    "review": "machine"
+  },
+  "sb7.coverage": {
+    "text": "Sugerir cobertura",
+    "sourceHash": "9239cd93cd6bcb563fef06354a553da8920aa9b86e163b2971cb5aaa45330dc2",
+    "review": "machine"
+  },
+  "sb7.between": {
+    "text": "Painéis intermediários",
+    "sourceHash": "d8a7612ea88401d96c426129b1613a9ccbc662d2383171e5934029dc0623f6c6",
+    "review": "machine"
+  },
+  "sb7.clean": {
+    "text": "Limpar traços do esboço",
+    "sourceHash": "6f03c2456dd1cbd668056c52afcfb2fb97bbfb99f40f27f2aad8781428fc32f1",
+    "review": "machine"
+  },
+  "sb7.describe": {
+    "text": "Descrever painel",
+    "sourceHash": "9e4cdc7b41d7dc108bbbdd6c5a65a507e2de72a81f80d330c1e9bd216fbaf156",
+    "review": "machine"
+  },
+  "sb7.model": {
+    "text": "Modelo de imagem",
+    "sourceHash": "b258ac871e73d70c6218849d385c1f23358d7e6508d2044e9c9358f400106c2c",
+    "review": "machine"
+  },
+  "sb7.basis": {
+    "text": "Ponto de partida",
+    "sourceHash": "c5e4934b05dab7a60e682bddbae60e811922122db5e0fa162db18aae40b66cdc",
+    "review": "machine"
+  },
+  "sb7.script": {
+    "text": "Trecho do roteiro",
+    "sourceHash": "8f8095159e4c4df04fde57bdfa126bbf789caf7f7130dc7e0225a2e3e6e1804a",
+    "review": "machine"
+  },
+  "sb7.composition": {
+    "text": "Composição de recursos",
+    "sourceHash": "0e75db54c3300e9856a999cae743dc342ccdadeb3529a4d910615da6da2c9bbf",
+    "review": "machine"
+  },
+  "sb7.sketch": {
+    "text": "Esboço à mão",
+    "sourceHash": "a2a8eda7ba5a9a2eb4d5d6bc0c658fe7469f179074d6bfb5a0b0cd0e917d6a23",
+    "review": "machine"
+  },
+  "sb7.style": {
+    "text": "Estilo",
+    "sourceHash": "853f4cd4db86a218aa4031313fa98cdc6ce0f2f1dfee3614d99876bcecfaed1d",
+    "review": "machine"
+  },
+  "sb7.line": {
+    "text": "Traços de storyboard",
+    "sourceHash": "d123babf114cee3e89c4712e58e618c94ac694abd26c430a99df30fc81a4b0af",
+    "review": "machine"
+  },
+  "sb7.grey": {
+    "text": "Desenho cinza",
+    "sourceHash": "bbf48594f49afe87ce3769bbea8e3c37acd450173cfbfa6ec990df9de76e1013",
+    "review": "machine"
+  },
+  "sb7.color": {
+    "text": "Cor final",
+    "sourceHash": "66ae02c7ddc869c83cf0e18b2a1d57742ce809c4095717d16d7811693189499e",
+    "review": "machine"
+  },
+  "sb7.references": {
+    "text": "Referências de estilo aprovadas (1–3 recomendadas, máximo {limit})",
+    "sourceHash": "2d241a0384cc59a5e50581abcc6e87c540f98c0931940d2e5e50732f99b048fb",
+    "review": "machine"
+  },
+  "sb7.visual-notes": {
+    "text": "Incluir notas visuais",
+    "sourceHash": "262af2b1416de9d3bef742b68d00efde69e7d9871d06a849d61831c0c2ec94a8",
+    "review": "machine"
+  },
+  "sb7.end-panel": {
+    "text": "Painel final",
+    "sourceHash": "0b24f342a0033b4b43af400609209d23c541514dfcc92ef739d7bd4572a7ad66",
+    "review": "machine"
+  },
+  "sb7.text-model": {
+    "text": "Modelo de texto",
+    "sourceHash": "e85360f63e2e81218d34b8fd97c02c5125643ecb7de16eeeda33cd4e59267933",
+    "review": "machine"
+  },
+  "sb7.count": {
+    "text": "Variantes (1–4)",
+    "sourceHash": "8c2ec7d9ef3f9a699091dcfc14e3a4e69a1e0f2067e0ebcaf42e7891ccd4f993",
+    "review": "machine"
+  },
+  "sb7.cost": {
+    "text": "Estimativa: USD {cost}, incluindo USD {study} para fichas ausentes.",
+    "sourceHash": "8d814697777c2814420755a88835205f88f4ebc603d4dc019a455c6a03ee50e9",
+    "review": "machine"
+  },
+  "sb7.confirm": {
+    "text": "Confirmar custo e gerar",
+    "sourceHash": "921e4aca182a68a6cea61c7c0fafab229365348f1b94b52b44890874020b59ae",
+    "review": "machine"
+  },
+  "sb7.unavailable": {
+    "text": "Esta opção não está disponível com seus modelos conectados.",
+    "sourceHash": "07a8b04c15f5bbfe725a8bbd898ee0708a5d75a620724a61b0c8bceb33793084",
+    "review": "machine"
+  },
+  "sb7.stale": {
+    "text": "O conteúdo ou preço mudou. Solicite uma nova estimativa.",
+    "sourceHash": "c580c7bd9a8bef0f2a4ba39447a1e4159fce8127cd878fe699b25b9f5c3aed2c",
+    "review": "machine"
+  },
+  "sb7.candidate": {
+    "text": "Imagem candidata",
+    "sourceHash": "aaf037538765d94f06aa129327d444ef3d1dbed22eba9ea91f3dc8015cc29ff3",
+    "review": "machine"
+  },
+  "sb7.working": {
+    "text": "Processando …",
+    "sourceHash": "be48c2fed43c03f3135d6844fefd275431788bb33541d90e4718976ff7f9e569",
+    "review": "machine"
+  },
+  "sb7.estimate": {
+    "text": "Mostrar estimativa de custo",
+    "sourceHash": "1ecf5adf51ab79555e8f83b761c39b0f512c7fc5e0bc05f3ab95575f46638a7f",
+    "review": "machine"
+  },
+  "sb7.result": {
+    "text": "Sugestão",
+    "sourceHash": "a8fa494f272d4011ad6a63bf8e267cbf46b9a244a3e07352cf919d321fc4e697",
+    "review": "machine"
+  },
+  "sb7.accept": {
+    "text": "Confirmar e usar",
+    "sourceHash": "630b9a6e206a4f487e9422dfaf65f84bbce4e3777a744d079d6de585b0ff5df3",
+    "review": "machine"
   }
 }

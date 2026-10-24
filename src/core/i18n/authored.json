@@ -14554,6 +14554,246 @@
       "en": {
         "text": "{weekday} at {time}"
       }
+    },
+    "sb7.title": {
+      "nb": {
+        "text": "KI fra storyboard"
+      },
+      "en": {
+        "text": "AI from storyboard"
+      }
+    },
+    "sb7.action": {
+      "nb": {
+        "text": "Oppgave"
+      },
+      "en": {
+        "text": "Task"
+      }
+    },
+    "sb7.image": {
+      "nb": {
+        "text": "Generer bilde fra panelet"
+      },
+      "en": {
+        "text": "Generate image from panel"
+      }
+    },
+    "sb7.coverage": {
+      "nb": {
+        "text": "Foreslå dekning"
+      },
+      "en": {
+        "text": "Suggest coverage"
+      }
+    },
+    "sb7.between": {
+      "nb": {
+        "text": "Mellompaneler"
+      },
+      "en": {
+        "text": "Intermediate panels"
+      }
+    },
+    "sb7.clean": {
+      "nb": {
+        "text": "Grovskisse til ren strek"
+      },
+      "en": {
+        "text": "Rough sketch to clean lines"
+      }
+    },
+    "sb7.describe": {
+      "nb": {
+        "text": "Beskriv panelet"
+      },
+      "en": {
+        "text": "Describe panel"
+      }
+    },
+    "sb7.model": {
+      "nb": {
+        "text": "Bildemodell"
+      },
+      "en": {
+        "text": "Image model"
+      }
+    },
+    "sb7.basis": {
+      "nb": {
+        "text": "Utgangspunkt"
+      },
+      "en": {
+        "text": "Starting point"
+      }
+    },
+    "sb7.script": {
+      "nb": {
+        "text": "Manusutdrag"
+      },
+      "en": {
+        "text": "Script excerpt"
+      }
+    },
+    "sb7.composition": {
+      "nb": {
+        "text": "Komposisjon med ressurser"
+      },
+      "en": {
+        "text": "Resource composition"
+      }
+    },
+    "sb7.sketch": {
+      "nb": {
+        "text": "Håndtegnet skisse"
+      },
+      "en": {
+        "text": "Hand-drawn sketch"
+      }
+    },
+    "sb7.style": {
+      "nb": {
+        "text": "Stil"
+      },
+      "en": {
+        "text": "Style"
+      }
+    },
+    "sb7.line": {
+      "nb": {
+        "text": "Storyboard-strek"
+      },
+      "en": {
+        "text": "Storyboard lines"
+      }
+    },
+    "sb7.grey": {
+      "nb": {
+        "text": "Grå tegning"
+      },
+      "en": {
+        "text": "Grey drawing"
+      }
+    },
+    "sb7.color": {
+      "nb": {
+        "text": "Ferdig farge"
+      },
+      "en": {
+        "text": "Finished color"
+      }
+    },
+    "sb7.references": {
+      "nb": {
+        "text": "Godkjente stilforbilder (anbefalt 1–3, maks. {limit})"
+      },
+      "en": {
+        "text": "Approved style references (recommended 1–3, maximum {limit})"
+      }
+    },
+    "sb7.visual-notes": {
+      "nb": {
+        "text": "Ta med visuelle lapper"
+      },
+      "en": {
+        "text": "Include visual notes"
+      }
+    },
+    "sb7.end-panel": {
+      "nb": {
+        "text": "Sluttpanel"
+      },
+      "en": {
+        "text": "End panel"
+      }
+    },
+    "sb7.text-model": {
+      "nb": {
+        "text": "Tekstmodell"
+      },
+      "en": {
+        "text": "Text model"
+      }
+    },
+    "sb7.count": {
+      "nb": {
+        "text": "Antall varianter (1–4)"
+      },
+      "en": {
+        "text": "Variants (1–4)"
+      }
+    },
+    "sb7.cost": {
+      "nb": {
+        "text": "Anslag: USD {cost}, inkludert USD {study} for manglende faktaark."
+      },
+      "en": {
+        "text": "Estimate: USD {cost}, including USD {study} for missing fact sheets."
+      }
+    },
+    "sb7.confirm": {
+      "nb": {
+        "text": "Bekreft kostnad og generer"
+      },
+      "en": {
+        "text": "Confirm cost and generate"
+      }
+    },
+    "sb7.unavailable": {
+      "nb": {
+        "text": "Valget er ikke tilgjengelig med dine tilkoblede modeller."
+      },
+      "en": {
+        "text": "This choice is unavailable with your connected models."
+      }
+    },
+    "sb7.stale": {
+      "nb": {
+        "text": "Innholdet eller prisen har endret seg. Hent et nytt anslag."
+      },
+      "en": {
+        "text": "Content or price has changed. Request a new estimate."
+      }
+    },
+    "sb7.candidate": {
+      "nb": {
+        "text": "Bildekandidat"
+      },
+      "en": {
+        "text": "Image candidate"
+      }
+    },
+    "sb7.working": {
+      "nb": {
+        "text": "Arbeider …"
+      },
+      "en": {
+        "text": "Working …"
+      }
+    },
+    "sb7.estimate": {
+      "nb": {
+        "text": "Vis kostnadsanslag"
+      },
+      "en": {
+        "text": "Show cost estimate"
+      }
+    },
+    "sb7.result": {
+      "nb": {
+        "text": "Forslag"
+      },
+      "en": {
+        "text": "Suggestion"
+      }
+    },
+    "sb7.accept": {
+      "nb": {
+        "text": "Bekreft og bruk"
+      },
+      "en": {
+        "text": "Confirm and use"
+      }
     }
   }
 }
