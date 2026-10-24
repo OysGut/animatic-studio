@@ -21,7 +21,7 @@ Vindu-ID V-179 (`/koble`). Alle nye tekster finnes på alle registrerte språk; 
 |---|---|
 | Typekontroll (`tsc --noEmit`) | 0 feil |
 | Nye C-0-tester (`tests/unit/c0-connectors.test.ts`) | 23 bestått |
-| Full Vitest | se tallet i svaret til Øystein (siste kjøring etter regenerert språkinventar) |
+| Full Vitest (etter regenerert språkinventar) | **3059 bestått, 0 feilet, 10 eksisterende hoppet over** |
 | Visuelt Konto-siden og `/koble`, nb/en, desktop/mobil | 14 bestått, 0 feilet (mockede serverfunksjoner) |
 | i18n check/validate/release-check | grønne |
 | check_kb | OK (PyYAML i midlertidig miljø) |
