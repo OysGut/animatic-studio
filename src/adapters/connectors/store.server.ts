@@ -107,7 +107,8 @@ export async function cloudConnectorStore(): Promise<ConnectorStore> {
     },
     async listConflicts(projectId) {
       const { data } = await db.from("connector_conflicts").select("id,variant_id,base_version_id,current_version_id,incoming_version_id,status,choice,created_at,revision").eq("project_id", projectId).order("created_at", { ascending: false }).limit(200);
-      return data ?? [];
+      // Samme form som i OpenAPI (camelCase), så plugins leser én struktur.
+      return ((data ?? []) as Record<string, unknown>[]).map(r => ({ id: r["id"], variantId: r["variant_id"], baseVersionId: r["base_version_id"], currentVersionId: r["current_version_id"], incomingVersionId: r["incoming_version_id"], status: r["status"], choice: r["choice"], createdAt: r["created_at"], revision: r["revision"] }));
     },
   };
 }
