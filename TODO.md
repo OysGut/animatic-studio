@@ -5,6 +5,14 @@ Ikke foreslå, ikke start og ikke bygg dette før Øystein uttrykkelig ber om de
 - Eget test- og produksjonsmiljø (Øystein 23.10.2026): en egen testkopi av prosjektet med egen database, der databaseendringer kjøres først. Mellomtrinnet er funksjonsbryterne (av, beta og på). Til da er forhåndsvisningen test og pentoglass.com produksjon, og Claude prøver migrasjoner på en lokal kopi før de kjøres i Cloud.
 
 
+## C-7 Illustrator – sikkerhet og gjenstående (24.10.2026)
+- Krever Øystein: skal SVG/.ai kunne lagres som egen ressursversjon? Det krever renset SVG (ingen skript, hendelser eller eksterne lenker), visning i alle flater og plass i ASSET_MIME_TYPES. I dag sendes en flat PNG, og lagene blir liggende i .ai-filen hos brukeren.
+- Panelretur fra Illustrator går via C-1-retursiden; C-0-mottak for panelbilder mangler.
+- Sikkerhet: tokens ligger ukryptert i panelets brukerdatamappe (`PenToGlass/illustrator-session.json`), samme begrensning som Audition (CEP har ingen nøkkelring).
+- Sikkerhet: pakken er usignert; signert ZXP krever sertifikat.
+- ExtendScript-kallene (app.open av SVG, saveAs .ai, XMPMeta, exportFile PNG24 med skala) er ikke prøvd; rett `plugins/illustrator/jsx/host.jsx` om de avviker.
+- Overgang til UXP når Adobe åpner det: ny vertsfil som implementerer IllustratorHost og Host; se C7_REPORT.md.
+
 ## C-6 Audition – sikkerhet og gjenstående (24.10.2026)
 - Sikkerhet: CEP har ingen sikker nøkkelring. Tokens ligger ukryptert i panelets brukerdatamappe (`PenToGlass/audition-session.json`) og slettes ved utlogging. Vurder OS-nøkkelring via Node eller kortere refresh-levetid for `ptg.audition`.
 - Sikkerhet: pakken er usignert. Signert ZXP krever sertifikat (ZXPSignCmd); krever Øystein (kostnad/utsteder).
