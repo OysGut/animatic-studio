@@ -53,7 +53,7 @@ export async function cloudConnectorStore(): Promise<ConnectorStore> {
       const projectId = projectOf.get(id)!;
       const up = await db.storage.from("assets").upload(chunkPath({ projectId, id }, i), bytes, { upsert: true, contentType: "application/octet-stream" });
       if (up.error) throw up.error;
-      // Mottatte biter leses fra lagringen (private.connector_chunks er reservert for senere kvotesporing).
+      // Mottatte biter leses fra lagringen.
     },
     async chunkIndexes(id) {
       const projectId = projectOf.get(id);

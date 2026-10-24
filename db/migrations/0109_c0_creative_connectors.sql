@@ -91,7 +91,7 @@ grant all on public.connector_transfers to service_role;
 alter table public.connector_transfers enable row level security;
 create policy c0_transfers_member_read on public.connector_transfers for select to authenticated using(project_id in(select private.my_project_ids()));
 create index c0_transfers_project on public.connector_transfers(project_id,created_at desc);
-create table private.connector_chunks (transfer_id uuid not null references public.connector_transfers(id) on delete cascade, idx integer not null check(idx between 0 and 7), byte_size integer not null check(byte_size between 1 and 8388608), primary key(transfer_id,idx));
+-- Upload chunks live in storage under <project>/connectors/<transfer>/part-N (outside the AI orphan scan) and are removed after intake.
 
 create table public.connector_conflicts (
  id uuid primary key default gen_random_uuid(),
