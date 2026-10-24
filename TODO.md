@@ -5,6 +5,14 @@ Ikke foreslå, ikke start og ikke bygg dette før Øystein uttrykkelig ber om de
 - Eget test- og produksjonsmiljø (Øystein 23.10.2026): en egen testkopi av prosjektet med egen database, der databaseendringer kjøres først. Mellomtrinnet er funksjonsbryterne (av, beta og på). Til da er forhåndsvisningen test og pentoglass.com produksjon, og Claude prøver migrasjoner på en lokal kopi før de kjøres i Cloud.
 
 
+## C-6 Audition – sikkerhet og gjenstående (24.10.2026)
+- Sikkerhet: CEP har ingen sikker nøkkelring. Tokens ligger ukryptert i panelets brukerdatamappe (`PenToGlass/audition-session.json`) og slettes ved utlogging. Vurder OS-nøkkelring via Node eller kortere refresh-levetid for `ptg.audition`.
+- Sikkerhet: pakken er usignert. Signert ZXP krever sertifikat (ZXPSignCmd); krever Øystein (kostnad/utsteder).
+- Auditions ExtendScript-API (`app.openDocument`) og `.sesx`-formatet er ikke prøvd; rett `jsx/host.jsx` og `auditionSesx` der om de avviker.
+- Ikke-WAV-lyd (mp3/ogg/m4a) hoppes over ved utsending; konvertering til WAV i appen eller på serveren mangler.
+- Det er ikke prøvd om Audition beholder egne iXML-`<USER>`-felt og cue-markører ved «Lagre». Hvis ikke: les ID-ene fra bext-beskrivelsen (`ptg:manifest:`) eller fra panelets `ptg-audition.json` med sha-kontroll.
+- `CSInterface.js` må hentes fra Adobe-CEP/CEP-Resources før prøving (legges ikke i repoet).
+
 ## C-3 Premiere Pro – sikkerhet og gjenstående (24.10.2026)
 - API-navnene i `plugins/premiere/src/premiere-host.ts` er ikke prøvd i Premiere: `Project.getActiveProject/importFiles/getActiveSequence`, `getVideoTrack`, `getTrackItems`, `ClipProjectItem.cast/getMediaFilePath`, `Markers.getMarkers`. Rett dem der om de avviker (ett sted).
 - Bare første videospor leses; overlappende lyd på samme spor ligger bare i XML-en, ikke i OTIO.

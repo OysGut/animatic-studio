@@ -1,5 +1,17 @@
 # Veikart
 
+## C-6 – Adobe Audition (CEP-panel) (bygget, ikke verifisert i Audition)
+- [x] 0112 låst i migration-hashes.json (låsetest til 0112); ingen ny migrasjon trengtes
+- [x] Plugin plugins/audition (CEP 11+, Audition 24+, ExtendScript): PKCE (ptg.audition) + enhetsflyt, ingen hemmeligheter
+- [x] Lyd ut per scene eller panel: dialog/musikk/effekter/atmosfære/midlertidig panellyd som WAV/BWF med ID-er i iXML/bext og cue-markører for panel og replikk, pluss .sesx-multitrack-økt
+- [x] Tilbake: redigert WAV blir kandidatversjon via C-0-mottaket med utsendt versjon som grunnlag; tre konfliktvalg; kobling bare på ID i metadata
+- [x] Nytt lesende endepunkt GET /api/v1/projects/{id}/audition/plan + SDK auditionPlan + OpenAPI
+- [x] Takhøyder per plan (400 klipp, 2000 markører) og per sending (100 filer)
+- [x] Pakking: usignert mappe + ZIP for sidelasting, ZXP-signering forberedt; README nb/en med PlayerDebugMode
+- [x] Tester: 17 enhet (falsk CSInterface/cep.fs/ExtendScript + falskt API)
+- [ ] Verifisering i ekte Audition – sjekklisten i C6_REPORT.md
+- [ ] Lydfiler som ikke er WAV (mp3/ogg/m4a) sendes ikke ut; konvertering i appen mangler
+
 ## C-3 – Premiere Pro (UXP-panel) (bygget, ikke verifisert i Premiere Pro)
 - [x] 0114 (skrevet, ikke kjørt): kilde «premiere» og forslagstype «edit» i C-5-tabellene; 0113 og eldre urørt
 - [x] Plugin plugins/premiere (UXP v5, Premiere 25.6+): PKCE (ptg.premiere) + enhetsflyt, ingen hemmeligheter
