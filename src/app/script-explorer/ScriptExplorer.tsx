@@ -107,7 +107,7 @@ function ExplorerContent({ state, editable, cmds, ...props }: Props & { state: P
     return out;
   }, [state, productionId]);
   const sceneAssets = useMemo(() => [...usageByAsset.values()].filter((x) => x.usages.some((u) => u.occurrenceId === visibleId)).map((x) => x.asset).sort((a, b) => (CHIP_ORDER[a.kind] ?? 9) - (CHIP_ORDER[b.kind] ?? 9) || a.name.localeCompare(b.name)), [usageByAsset, visibleId]);
-  useEffect(() => { setNoteTarget(null); setNoteId(null); setChipMenu(null); setTextMenu(null); if (mode === "follow") setSelection({ occurrenceId: visibleId, blockId: null }); root.current?.scrollTo({ top: 0 }); }, [visibleId, mode]);
+  useEffect(() => { setNoteTarget(null); setNoteId(null); setChipMenu(null); setTextMenu(null); root.current?.scrollTo({ top: 0 }); }, [visibleId, mode]);
   useEffect(() => {
     if (!selection.blockId || mode === "follow") return;
     const block = [...(root.current?.querySelectorAll<HTMLElement>("[data-block]") ?? [])].find((element) => element.dataset["block"] === selection.blockId);
