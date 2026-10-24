@@ -809,6 +809,20 @@ function Editor({
       occurrence && occurrenceKind(occurrence) === "credits" ? (
         <CreditsPanel state={state} occurrenceId={occurrence.id} editable={editable} run={cmds.run} cmds={cmds} />
       ) : null,
+    // SB-5: referansepanel for storyboard (låst for redigering)
+    storyboard:
+      occurrence && occurrenceKind(occurrence) === "scene" ? (
+        <StoryboardReferencePanel
+          state={state}
+          projectId={projectId}
+          productionId={productionId}
+          occurrenceId={occurrence.id}
+          playback={playback}
+          selectedPanelId={initialPanelId}
+          cmds={cmds}
+          editable={editable}
+        />
+      ) : null,
   };
 
   return (
@@ -847,6 +861,7 @@ function Editor({
         <ToolbarSeparator />
         <ToolbarGroup priority={8}>
           <SceneMarkControls state={state} occurrence={occurrence ?? undefined} editable={editable} run={cmds.run} />
+          {occurrence ? <StoryboardStatusBadge state={state} occurrenceId={occurrence.id} /> : null}
         </ToolbarGroup>
         <ToolbarSeparator />
         <ToolbarGroup priority={7}>
