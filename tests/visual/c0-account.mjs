@@ -16,7 +16,7 @@ h.hooks.serverFn=(name,d)=>{
  if(/^revokeConnectorSession/.test(name)){sessions.forEach(s=>{if(s.id===d.id)s.revokedAt='2026-10-24T09:00:00Z';});return true;}
  if(/^myOpenConnectorConflicts/.test(name))return conflicts.filter(c=>!c.done);
  if(/^resolveConnectorConflict/.test(name)){conflicts.forEach(c=>{if(c.id===d.id)c.done=d.choice;});return true;}
- if(/^lookupDeviceCode/.test(name))return{clientId:'ptg.cli',scopes:['project:read','manifest:read']};
+ if(/^lookupDeviceCode/.test(name))return{clientId:'ptg.generic-loopback',scopes:['project:read','manifest:read']};
  if(/^decideDeviceCode/.test(name))return true;
 };
 for(const lang of ['nb','en'])await h.scenario(`c0-${lang}`,h.fx.occurrenceId,lang,async page=>{

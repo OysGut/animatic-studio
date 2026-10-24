@@ -161,9 +161,9 @@ describe("C-0 API v1 og SDK mot falsk server", () => {
   });
   it("enhetsflyt: venter til brukeren godkjenner, deretter tokens", async () => {
     const h = harness();
-    const start = await h.fetchFn("https://ptg.test/api/v1/oauth/device", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ client_id: "ptg.cli", scope: "project:read" }) });
+    const start = await h.fetchFn("https://ptg.test/api/v1/oauth/device", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ client_id: "ptg.generic-loopback", scope: "project:read" }) });
     const d = (await start.json()) as { device_code: string };
-    const poll = await h.fetchFn("https://ptg.test/api/v1/oauth/token", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ grant_type: "urn:ietf:params:oauth:grant-type:device_code", device_code: d.device_code, client_id: "ptg.cli" }) });
+    const poll = await h.fetchFn("https://ptg.test/api/v1/oauth/token", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ grant_type: "urn:ietf:params:oauth:grant-type:device_code", device_code: d.device_code, client_id: "ptg.generic-loopback" }) });
     expect(await poll.json()).toEqual({ error: "authorization_pending" });
     let shown = "";
     const t = await h.sdk.deviceLogin("project:read manifest:read", x => { shown = x.userCode; h.mem.approveDevice(shown, h.s.project.id, USER); });
@@ -300,5 +300,17 @@ describe("C-0 OpenAPI og SDK-arkitektur", () => {
     const imports = [...src.matchAll(/from\s+["']([^"']+)["']/g)].map(m => m[1]!);
     expect(imports.every(i => i.startsWith("../../../src/core/connectors/"))).toBe(true);
     expect(src).not.toMatch(/from\s+["'](react|@supabase)|process\.env|client_secret|sk_live|sb_secret_/);
+  });
+});
+
+describe("C-0-retting: klientliste og redirect", () => {
+  it("bare registrerte klienter og loopback med port eller eget skjema", async () => {
+    const { redirectAllowed, clientKnown } = await import("@/core/connectors/auth");
+    expect(clientKnown("ptg.photoshop")).toBe(true);
+    expect(clientKnown("ptg.unknown")).toBe(false);
+    for (const ok of ["http://127.0.0.1:7777/cb", "http://[::1]:9000/cb", "ptg-photoshop://oauth/cb"]) expect(redirectAllowed(ok, "ptg.photoshop")).toBe(true);
+    for (const bad of ["https://evil.example/cb", "http://localhost:7777/cb", "http://127.0.0.1/cb", "ptg-krita://cb", "http://127.0.0.1:7777/cb#x"]) expect(redirectAllowed(bad, "ptg.photoshop")).toBe(false);
+    expect(redirectAllowed("http://127.0.0.1:7777/cb", "ptg.unknown")).toBe(false);
+    expect(redirectAllowed("ptg-photoshop://cb", "ptg.generic-loopback")).toBe(false);
   });
 });

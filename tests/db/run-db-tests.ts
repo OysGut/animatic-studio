@@ -8998,13 +8998,13 @@ try {
     await expectError(as("authenticated",BOB,tx=>tx`select public.connector_revoke_session(${sid})`),'42501');
     await as("authenticated",ALICE,tx=>tx`select public.connector_revoke_session(${sid})`);
     assert((await sql`select revoked_at from public.connector_sessions where id=${sid}`)[0]?.['revoked_at']!==null,'revoke failed');
-    await as("service_role",ALICE,tx=>tx`select public.connector_create_device(${h('7')},'BCDF-GHJK','ptg.cli',array['project:read'],now()+interval '10 minutes')`);
+    await as("service_role",ALICE,tx=>tx`select public.connector_create_device(${h('7')},'BCDF-GHJK','ptg.generic-loopback',array['project:read'],now()+interval '10 minutes')`);
     assert((await as("service_role",ALICE,tx=>tx`select public.connector_poll_device(${h('7')}) v`))[0]?.['v']?.status==='pending','device not pending');
-    assert((await as("authenticated",ALICE,tx=>tx`select public.connector_device_lookup('BCDF-GHJK') v`))[0]?.['v']?.client_id==='ptg.cli','device lookup');
+    assert((await as("authenticated",ALICE,tx=>tx`select public.connector_device_lookup('BCDF-GHJK') v`))[0]?.['v']?.client_id==='ptg.generic-loopback','device lookup');
     await as("authenticated",ALICE,tx=>tx`select public.connector_approve_device('BCDF-GHJK',${g7p},true)`);
     assert((await as("service_role",ALICE,tx=>tx`select public.connector_poll_device(${h('7')}) v`))[0]?.['v']?.status==='approved','device not approved');
     assert((await as("service_role",ALICE,tx=>tx`select public.connector_poll_device(${h('7')}) v`))[0]?.['v']===null,'device code reused');
-    await as("service_role",ALICE,tx=>tx`select public.connector_create_device(${h('8')},'BCDF-GHJL','ptg.cli',array['project:read'],now()-interval '1 second')`);
+    await as("service_role",ALICE,tx=>tx`select public.connector_create_device(${h('8')},'BCDF-GHJL','ptg.generic-loopback',array['project:read'],now()-interval '1 second')`);
     assert((await as("service_role",ALICE,tx=>tx`select public.connector_poll_device(${h('8')}) v`))[0]?.['v']?.status==='expired','expired device');
     const tr=newId();
     await sql`insert into public.connector_transfers(id,project_id,sender,idempotency_key,fingerprint,file_name,byte_size,sha256,asset_id,variant_id) values(${tr},${g7p},${ALICE},${'k'.repeat(20)},'f','a.png',10,${h('9')},${newId()},${newId()})`;
@@ -9024,6 +9024,44 @@ try {
     await as("authenticated",ALICE,tx=>tx`select public.connector_approve_code(${g7p},'ptg.photoshop','http://127.0.0.1:7777/cb',${ch},array['project:read'],${h('3')})`);
     await expectError(as("authenticated",ALICE,tx=>tx`select public.connector_approve_code(${g7p},'ptg.photoshop','http://127.0.0.1:7777/cb',${ch},array['project:read'],${h('4')})`),'PTG15');
     await sql`update private.rate_limit_rules set per_key=60 where scope='connector_approve'`;
+  });
+  await test("0109 C-0-retting: utløpt/tilbaketrukket sesjon, kodeprøving, scopes, klientliste/redirect og rydding", async () => {
+    const h=(c:string)=>c.repeat(64).slice(0,64), ch="E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM";
+    await sql`delete from private.rate_limit_hits where scope in ('connector_approve','connector_device_lookup')`;
+    // 2. Session lookup returns null in SQL for revoked/expired; last_used_at moves only for valid sessions.
+    const mk=async(a:string,r:string,exp:string,revoked:boolean)=>(await sql`insert into public.connector_sessions(project_id,user_id,client_id,scopes,access_hash,refresh_hash,access_expires_at,refresh_expires_at,revoked_at) values(${g7p},${ALICE},'ptg.photoshop',array['project:read'],${h(a)},${h(r)},now()+${exp}::interval,now()+interval '30 days',${revoked?sql`now()`:null}) returning id`)[0]?.['id'];
+    const live=await mk('01','02','15 minutes',false), expired=await mk('03','04','-1 second',false), revoked=await mk('05','06','15 minutes',true);
+    assert((await as("service_role",ALICE,tx=>tx`select public.connector_session_by_access(${h('01')}) v`))[0]?.['v']?.id===live,'valid session not found');
+    assert((await sql`select last_used_at from public.connector_sessions where id=${live}`)[0]?.['last_used_at']!==null,'last_used_at not set');
+    for(const [k,id] of [['03',expired],['05',revoked]] as const){
+      assert((await as("service_role",ALICE,tx=>tx`select public.connector_session_by_access(${h(k)}) v`))[0]?.['v']===null,'invalid session returned');
+      assert((await sql`select last_used_at from public.connector_sessions where id=${id}`)[0]?.['last_used_at']===null,'last_used_at moved on invalid session');
+    }
+    // 3. Device lookup is rate limited per user in its own scope.
+    await sql`update private.rate_limit_rules set per_key=2 where scope='connector_device_lookup'`;
+    await as("authenticated",BOB,tx=>tx`select public.connector_device_lookup('BCDF-GHJM')`);
+    await as("authenticated",BOB,tx=>tx`select public.connector_device_lookup('BCDF-GHJN')`);
+    await expectError(as("authenticated",BOB,tx=>tx`select public.connector_device_lookup('BCDF-GHJP')`),'PTG15');
+    await sql`update private.rate_limit_rules set per_key=20 where scope='connector_device_lookup'`;
+    // 4. Scopes validated in approve_code; empty list refused.
+    await expectError(as("authenticated",ALICE,tx=>tx`select public.connector_approve_code(${g7p},'ptg.photoshop','http://127.0.0.1:7777/cb',${ch},array[]::text[],${h('0b')})`),'22023');
+    await expectError(as("authenticated",ALICE,tx=>tx`select public.connector_approve_code(${g7p},'ptg.photoshop','http://127.0.0.1:7777/cb',${ch},array['project:read','admin:all'],${h('0b')})`),'22023');
+    // 5. Client list and redirect patterns.
+    await expectError(as("authenticated",ALICE,tx=>tx`select public.connector_approve_code(${g7p},'ptg.unknown','http://127.0.0.1:7777/cb',${ch},array['project:read'],${h('0b')})`),'22023');
+    for(const bad of ['https://evil.example/cb','http://localhost:7777/cb','http://127.0.0.1/cb','http://10.0.0.1:7777/cb','ptg-krita://cb','http://127.0.0.1:7777/cb#x'])
+      await expectError(as("authenticated",ALICE,tx=>tx`select public.connector_approve_code(${g7p},'ptg.photoshop',${bad},${ch},array['project:read'],${h('0b')})`),'22023');
+    await as("authenticated",ALICE,tx=>tx`select public.connector_approve_code(${g7p},'ptg.photoshop','ptg-photoshop://oauth/cb',${ch},array['project:read'],${h('0c')})`);
+    await as("authenticated",ALICE,tx=>tx`select public.connector_approve_code(${g7p},'ptg.blender','http://[::1]:9000/cb',${ch},array['project:read'],${h('0d')})`);
+    await expectError(as("authenticated",ALICE,tx=>tx`select public.connector_approve_code(${g7p},'ptg.generic-loopback','ptg-photoshop://cb',${ch},array['project:read'],${h('0e')})`),'22023');
+    await expectError(as("service_role",ALICE,tx=>tx`select public.connector_create_device(${h('0f')},'BCDF-GHJQ','ptg.unknown',array['project:read'],now()+interval '10 minutes')`),'22023');
+    assert((await sql`select count(*)::int n from private.connector_clients`)[0]?.['n']===7,'client list size');
+    // 6. Cleanup removes expired pending rows and used refresh hashes older than 90 days; keeps newer ones.
+    await sql`insert into private.connector_pending(hash,kind,user_code,client_id,scopes,expires_at) values(${h('1d')},'device','BCDF-GHJR','ptg.krita',array['project:read'],now()-interval '1 minute'),(${h('1e')},'device','BCDF-GHJS','ptg.krita',array['project:read'],now()+interval '10 minutes')`;
+    await sql`insert into private.connector_used_refresh(hash,session_id,used_at) values(${h('1f')},${live},now()-interval '91 days'),(${h('2a')},${live},now()-interval '1 day')`;
+    await expectError(as("authenticated",ALICE,tx=>tx`select public.connector_cleanup()`),'42501');
+    await as("service_role",ALICE,tx=>tx`select public.connector_cleanup()`);
+    assert((await sql`select hash from private.connector_pending where hash in (${h('1d')},${h('1e')})`).map(r=>r['hash']).join()===h('1e'),'pending cleanup');
+    assert((await sql`select hash from private.connector_used_refresh where hash in (${h('1f')},${h('2a')})`).map(r=>r['hash']).join()===h('2a'),'refresh cleanup');
   });
   await test("alle SECURITY DEFINER-funksjoner i public/private har search_path=''", async () => {
     const rows = await sql`
