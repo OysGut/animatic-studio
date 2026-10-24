@@ -27,8 +27,8 @@ export async function exportShotlist(o: {
   async function* files() {
     const panels = storyboardShotRows(o.state, doc.production.id);
     if (panels.length) yield {path:"storyboard.json",data:new TextEncoder().encode(JSON.stringify(panels,null,2))};
-    yield { path: "shotlist.csv", data: shotlistCsv(doc, o.profile) };
-    yield { path: "shotlist.json", data: shotlistJson(doc, o.profile) };
+    yield { path: "shotlist.csv", data: shotlistCsv(doc, o.profile,panels) };
+    yield { path: "shotlist.json", data: shotlistJson(doc, o.profile,panels) };
     yield { path: "interchange.json", data: new TextEncoder().encode(JSON.stringify(doc, null, 2)) };
     yield { path: "LESMEG.txt", data: interchangeReadme() };
     let done = 0;

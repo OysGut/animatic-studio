@@ -85,6 +85,6 @@ export function planArrowPath(s: ProjectState, arrowId: string, targetId: string
 export function storyboardShotRows(s: ProjectState, productionId: string): Readonly<Record<string, string | number>>[] {
   return Object.values(s.occurrences).filter(o => o.productionId === productionId && o.active).sort((a,b) => a.orderKey.localeCompare(b.orderKey)).flatMap(o => storyboardPanelsOf(s, o.id).filter(p => p.active !== false).map(p => {
     const d = panelDetails(p);
-    return { scene: d.sceneNumber, panel: d.number, title: p.name, shot: d.shot ?? "", angle: d.angle ?? "", focalMm: d.focalMm ?? "", movement: d.movement, ...d.fields, dialogue: d.dialogueIds.map(id => s.blocks[id]?.text ?? "").join("\n") || d.fields["dialogue"] || "" };
+    return { ...d.fields, occurrenceId:o.id,panelId:p.id,scene: d.sceneNumber, panel: d.number, title: p.name, shot: d.shot ?? "", angle: d.angle ?? "", focalMm: d.focalMm ?? "", movement: d.movement, dialogue: d.dialogueIds.map(id => s.blocks[id]?.text ?? "").join("\n") || d.fields["dialogue"] || "" };
   }));
 }

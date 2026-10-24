@@ -8855,6 +8855,8 @@ try {
     await sbApply(g7p,{updates:{projects:[{id:g7p,expected_revision:revision,revision:revision+1,storyboard_fields:[{id:"action",name:"Action",kind:"text"}]}]}});
     assert((await sql`select storyboard_fields->0->>'id' n from public.projects where id=${g7p}`)[0]?.["n"]==="action","prosjektfeltene ble ikke lagret");
     await expectError(sbApply(g7p,{updates:{compositions:[{id:panel,expected_revision:1,revision:2,storyboard:{...details,dialogueIds:[],focalMm:-1}}]}}),"22023");
+    await expectError(sbApply(g7p,{updates:{compositions:[{id:panel,expected_revision:1,revision:2,storyboard:{...details,dialogueIds:[],fields:[]}}]}}),"22023");
+    await expectError(sbApply(g7p,{updates:{compositions:[{id:panel,expected_revision:1,revision:2,storyboard:{...details,dialogueIds:[],focalMm:"bad"}}]}}),"22023");
     assert((await as("authenticated",BOB,tx=>tx`select id from public.compositions where id=${panel}`)).length===0,"ikke-medlem kan lese panelet");
   });
 
