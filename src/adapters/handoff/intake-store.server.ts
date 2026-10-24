@@ -3,6 +3,7 @@
  * candidates go through apply_changes as the acting editor (role check there).
  */
 import { diffStates } from "@/core";
+import { sha256Hex } from "@/core/connectors";
 import { encodePngWith, pngRaw, readPsd } from "@/core/handoff";
 import { loadProjectState, type AnyClient } from "@/adapters/storage/project-rows";
 import { applyLocally, type HandoffRecord, type HandoffStore, type ReturnTransfer } from "./intake";
@@ -72,5 +73,35 @@ export async function cloudHandoffStore(): Promise<HandoffStore & { db: AnyClien
       if (error) throw error; return String(data["id"]);
     },
     async markHandoff(id, p) { await db.from("connector_handoffs").update({ status: p.status, transfer_id: p.transferId, candidate_version_id: p.candidateVersionId, updated_at: new Date().toISOString() }).eq("id", id); },
+    // C-5: samme lagring som C-0-tokenveien (store.server.ts), idempotent på manifest-hash.
+    async saveSbproReturn(r) {
+      const prev = await db.from("connector_returns").select("id").eq("project_id", r.projectId).eq("source", "sbpro").eq("manifest_hash", r.hash).maybeSingle();
+      let returnId = prev.data?.["id"] as string | undefined;
+      if (!returnId) {
+        const ins = await db.from("connector_returns").insert({ project_id: r.projectId, production_id: r.productionId, source: "sbpro", session_id: null, created_by: r.userId, manifest_hash: r.hash, panel_count: r.panelCount }).select("id").single();
+        if (ins.error) throw ins.error;
+        returnId = String(ins.data["id"]);
+        const rows = r.candidates.map((c) => ({ project_id: r.projectId, return_id: returnId, item_key: c.key, panel_id: c.panelId, kind: c.kind, incoming: c.incoming, conflict: c.conflict, media_sha256: c.image?.sha256 ?? null, media_bytes: c.image?.byteSize ?? null, status: c.image ? "awaiting_file" : "open" }));
+        for (let i = 0; i < rows.length; i += 500) { const up = await db.from("connector_panel_candidates").insert(rows.slice(i, i + 500)); if (up.error) throw up.error; }
+      }
+      const waiting = await db.from("connector_panel_candidates").select("id,item_key,media_sha256,media_bytes").eq("return_id", returnId).eq("status", "awaiting_file").limit(5000);
+      return { returnId: returnId!, uploads: ((waiting.data ?? []) as Record<string, any>[]).map((w) => ({ candidateId: String(w["id"]), key: String(w["item_key"]), sha256: String(w["media_sha256"]), byteSize: Number(w["media_bytes"]) })) };
+    },
+    async putSbproImage(projectId, returnId, candidateId, bytes) {
+      if (!/^[0-9a-f-]{36}$/.test(returnId) || !/^[0-9a-f-]{36}$/.test(candidateId)) return "not_found";
+      const c = await db.from("connector_panel_candidates").select("status,media_sha256").eq("id", candidateId).eq("return_id", returnId).eq("project_id", projectId).maybeSingle();
+      if (!c.data) return "not_found";
+      if (c.data["status"] !== "awaiting_file") return "done";
+      const sha = sha256Hex(bytes);
+      if (sha !== c.data["media_sha256"]) return "sha";
+      const qr = await db.rpc("connector_check_quota", { p_project: projectId, p_bytes: bytes.length });
+      if (qr.data !== true) return "not_found";
+      const path = `${projectId}/connectors/sbpro/${sha}.png`;
+      const up = await db.storage.from("assets").upload(path, bytes, { contentType: "image/png", upsert: true });
+      if (up.error) throw up.error;
+      const u = await db.from("connector_panel_candidates").update({ media_path: path, status: "open" }).eq("id", candidateId).eq("status", "awaiting_file");
+      if (u.error) throw u.error;
+      return "ok";
+    },
   };
 }

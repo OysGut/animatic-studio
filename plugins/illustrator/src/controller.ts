@@ -207,7 +207,9 @@ export class IllustratorPlugin {
       if (!link || !info) { this.say("error", "noDoc"); return; }
       if (link.projectId !== this.state.projectId) { this.say("error", "wrongProject"); return; }
       const target = illustratorUploadTarget(link);
-      if (!target) { this.say("info", "panelOnly"); return; }
+      // C-7: panelretur går nå gjennom C-0-mottaket (skjult kandidat i panelet), ikke bare retursiden.
+      const panelTarget = !target && link.panelId ? { panelId: link.panelId, panelRevision: link.revision } : null;
+      if (!target && !panelTarget) { this.say("info", "panelOnly"); return; }
       const width = this.state.opened?.link.manifestId === link.manifestId ? this.state.opened.width : info.width;
       const height = this.state.opened?.link.manifestId === link.manifestId ? this.state.opened.height : info.height;
       const out = `${this.host.userDataDir}/work/${link.manifestId}/return.png`;
@@ -216,14 +218,14 @@ export class IllustratorPlugin {
       const bytes = await this.host.readFile(out);
       const size = imagePixelSize(bytes);
       if (!size || size.mimeType !== "image/png") { this.say("error", "exportFailed"); return; }
-      const key = PtgConnector.idempotencyKey(PtgConnector.checksum(bytes), target);
-      const r = await this.sdk.upload(link.projectId, { name: "illustrator.png", bytes }, target, key);
+      const key = PtgConnector.idempotencyKey(PtgConnector.checksum(bytes), target ?? { variantId: panelTarget!.panelId, baseVersionId: null });
+      const r = await this.sdk.upload(link.projectId, { name: "illustrator.png", bytes }, target ?? panelTarget!, key);
       let conflict: PluginState["conflict"] = null;
       if (r.conflictId) {
         const c = (await this.sdk.conflicts(link.projectId)).conflicts.find(x => x.id === r.conflictId);
         conflict = { id: r.conflictId, revision: c?.revision ?? 1 };
       }
-      this.set({ conflict, message: { kind: "info", text: conflict ? this.t("conflict") : this.t("sentFlat", { width: size.width, height: size.height }) } });
+      this.set({ conflict, message: { kind: "info", text: conflict ? this.t("conflict") : panelTarget ? this.t("sentPanel", { width: size.width, height: size.height }) : this.t("sentFlat", { width: size.width, height: size.height }) } });
     });
   }
   async resolve(choice: "keep_both" | "choose_current" | "choose_incoming") {

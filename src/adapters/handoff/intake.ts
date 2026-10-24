@@ -5,8 +5,8 @@
  * conflicts against the revision base. Nothing is approved or shown automatically.
  */
 import { applyCommand, newId, type Command, type ProjectState } from "@/core";
-import { Sha256, checkIntake, mimeForExtension, planCandidate, toHex, MAX_TRANSFER_BYTES } from "@/core/connectors";
-import { FORMAT_FACTS, recognizeReturn, type HandoffFormat, type HandoffTarget } from "@/core/handoff";
+import { Sha256, checkIntake, mimeForExtension, planCandidate, readSbproReturn, planSbproReturn, toHex, MAX_TRANSFER_BYTES, type SbproCandidate } from "@/core/connectors";
+import { FORMAT_FACTS, readStoredZip, recognizeReturn, fromUtf8, type HandoffFormat, type HandoffTarget } from "@/core/handoff";
 import { panelCandidateLayer } from "@/core/storyboard/ai";
 
 export const RETURN_CHUNK_BYTES = 4 * 1024 * 1024;
@@ -44,7 +44,10 @@ export interface HandoffStore {
   /** Runs each command through apply_changes as `actor`, returning the final state. */
   applyCommands(projectId: string, actor: string, state: ProjectState, commands: readonly Command[]): Promise<ProjectState>;
   insertConflict(c: { projectId: string; transferId: string; variantId: string; baseVersionId: string | null; currentVersionId: string | null; incomingVersionId: string }): Promise<string>;
-  markHandoff(id: string, patch: { status: "returned" | "conflict"; transferId: string; candidateVersionId: string }): Promise<void>;
+  markHandoff(id: string, patch: { status: "returned" | "conflict"; transferId: string; candidateVersionId: string | null }): Promise<void>;
+  /** C-5: lagrer en Storyboard Pro-retur som kandidatrader (idempotent på manifest-hash). */
+  saveSbproReturn(r: { projectId: string; productionId: string; userId: string; hash: string; panelCount: number; candidates: readonly SbproCandidate[] }): Promise<{ returnId: string; uploads: { candidateId: string; key: string; sha256: string; byteSize: number }[] }>;
+  putSbproImage(projectId: string, returnId: string, candidateId: string, bytes: Uint8Array): Promise<"ok" | "sha" | "done" | "not_found">;
 }
 
 export class ReturnError extends Error {
@@ -61,10 +64,13 @@ export async function beginReturn(store: HandoffStore, h: HandoffRecord, actor: 
   if (!FORMAT_FACTS[h.format].returnable || h.targetKind === "scene") throw new ReturnError("format");
   if (!KEY_RE.test(f.idempotencyKey) || !SHA_RE.test(f.sha256) || typeof f.fileName !== "string" || f.fileName.length < 1 || f.fileName.length > 255 || /[\\/]/.test(f.fileName)) throw new ReturnError("unknown");
   if (!Number.isInteger(f.byteSize) || f.byteSize < 1 || f.byteSize > MAX_TRANSFER_BYTES) throw new ReturnError("size");
-  if (!mimeForExtension(extOf(f.fileName))) throw new ReturnError("extension");
+  // En .ptgsb-pakke (lagret ZIP) er bare gyldig for et produksjonsmål; ellers gjelder den vanlige hvitelisten.
+  if (h.format === "sbpro" ? !["ptgsb", "zip"].includes(extOf(f.fileName)) : !mimeForExtension(extOf(f.fileName))) throw new ReturnError("extension");
   if (!(await store.checkQuota(h.projectId, f.byteSize))) throw new ReturnError("quota");
   let assetId = h.assetId, variantId = h.variantId;
   if (h.targetKind === "panel") { assetId = random(); variantId = random(); }
+  // Produksjonsreturer lager ingen ressurs på forhånd; kolonnene krever likevel en uuid.
+  if (h.targetKind === "production") { assetId = random(); variantId = random(); }
   if (h.targetKind === "clip" && !variantId) {
     const st = await store.loadState(h.projectId);
     variantId = Object.values(st.assetVariants).find((v) => v.assetId === h.assetId && !v.archived)?.id ?? null;
@@ -92,15 +98,45 @@ export async function finishReturn(store: HandoffStore, h: HandoffRecord, t: Ret
   const parts: Uint8Array[] = [], sha = new Sha256();
   for (let i = 0; i < returnChunkCount(t.byteSize); i++) { const p = await store.readChunk(t, i); parts.push(p); sha.update(p); }
   const reject = async (code: ReturnError["code"]) => { await store.setTransfer(t.id, { status: "rejected" }); await store.removeChunks(t); throw new ReturnError(code); };
-  const check = checkIntake({ fileName: t.fileName, byteSize: t.byteSize, head: parts[0]!.slice(0, 16), declaredSha256: t.sha256, actualSha256: toHex(sha.digest()) });
-  if (!check.ok) return reject(check.reason === "checksum" ? "checksum" : check.reason === "extension" ? "extension" : check.reason === "mismatch" ? "content" : check.reason === "content" ? "content" : "size");
   const all = new Uint8Array(t.byteSize); let o = 0; for (const p of parts) { all.set(p, o); o += p.length; }
   const rec = recognizeReturn({ bytes: all, linkHandoffId: how.linkHandoffId, knownHandoffIds: how.knownHandoffIds ?? [], outgoingNames: [h.fileName], fileName: t.fileName });
   if (!rec.ok) return reject(rec.reason);
   if (rec.handoffId !== h.id) return reject("mismatch");
+  const sha256Of = (b: Uint8Array) => { const x = new Sha256(); x.update(b); return toHex(x.digest()); };
+
+  // C-5: en .ptgsb-pakke til et produksjonsmål blir kandidatrader (tekst/timing/bilde/nye paneler/
+  // sammenstilling), aldri en ressursversjon og aldri tatt i bruk. Bildene sjekkes mot manifestets SHA-256.
+  if (h.format === "sbpro") {
+    if (toHex(sha.digest()) !== t.sha256) return reject("checksum");
+    const zip = readStoredZip(all);
+    if (!zip.ok) return reject(zip.reason === "deflate" || zip.reason === "too-large" || zip.reason === "too-many" ? "format" : "content");
+    const mf = zip.files.find((f) => f.path === "manifest.json");
+    if (!mf) return reject("content");
+    let parsed: unknown; try { parsed = JSON.parse(fromUtf8(mf.data)); } catch { return reject("content"); }
+    const rr = readSbproReturn(parsed, mf.data.length);
+    if (!rr.ok) return reject("content");
+    if (rr.value.projectId !== h.projectId || rr.value.productionId !== h.targetId) return reject("mismatch");
+    const retState = await store.loadState(h.projectId);
+    const { candidates } = planSbproReturn(retState, h.targetId, rr.value);
+    const saved = await store.saveSbproReturn({ projectId: h.projectId, productionId: h.targetId, userId: actor, hash: rr.value.hash, panelCount: rr.value.panels.length, candidates });
+    const byKey = new Map(candidates.map((c) => [c.key, c]));
+    for (const up of saved.uploads) {
+      const c = byKey.get(up.key); if (!c?.image) continue;
+      const file = zip.files.find((x) => x.path === c.image!.path); if (!file) continue;
+      if (sha256Of(file.data) !== up.sha256) continue;
+      await store.putSbproImage(h.projectId, saved.returnId, up.candidateId, file.data);
+    }
+    const hasConflict = candidates.some((c) => c.conflict);
+    await store.setTransfer(t.id, { status: "candidate", candidateVersionId: saved.returnId, conflictId: null });
+    await store.markHandoff(h.id, { status: hasConflict ? "conflict" : "returned", transferId: t.id, candidateVersionId: saved.returnId });
+    await store.removeChunks(t);
+    return { versionId: saved.returnId, conflictId: null, targetKind: h.targetKind, via: rec.via };
+  }
+
+  const check = checkIntake({ fileName: t.fileName, byteSize: t.byteSize, head: parts[0]!.slice(0, 16), declaredSha256: t.sha256, actualSha256: toHex(sha.digest()) });
+  if (!check.ok) return reject(check.reason === "checksum" ? "checksum" : check.reason === "extension" ? "extension" : check.reason === "mismatch" ? "content" : check.reason === "content" ? "content" : "size");
 
   let state = await store.loadState(h.projectId);
-  const sha256Of = (b: Uint8Array) => { const x = new Sha256(); x.update(b); return toHex(x.digest()); };
   // The returned bytes are always kept unchanged as their own version. A PSD also gets a PNG preview
   // version (from its composite) so it can be shown, compared and used as an SB-7 sketch. Both are candidates.
   const isPanel = h.targetKind === "panel";

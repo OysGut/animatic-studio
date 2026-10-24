@@ -8,8 +8,9 @@ import { ASSET_MIME_TYPES, type ProjectState } from "@/core";
 import {
   ACCESS_TTL_SECONDS, CLIENT_ID_RE, clientKnown, DEVICE_INTERVAL_SECONDS, DEVICE_TTL_SECONDS, REFRESH_TTL_SECONDS,
   Sha256, buildProjectManifest, checkIntake, checkReserve, checkSession, chunkCount, expectedChunkSize, idempotentReplay,
-  makeToken, makeUserCode, mimeForExtension, missingChunks, parseScopes, pkceMatches, reserveFingerprint, sha256Hex, tokenHash, tokenKind, toHex,
+  makeToken, makeUserCode, mimeForExtension, parseScopes, pkceMatches, reserveFingerprint, sha256Hex, tokenHash, tokenKind, toHex,
   planSbproReturn, readSbproReturn, planPremiereProposal, readPremiereReturn, type PremiereEdit, SBPRO_MAX_IMAGE_BYTES, MAX_MANIFEST_BYTES, type SbproCandidate, auditionPlan, blenderCameraPlan,
+  usesDirectUpload, signedChunkCount, expectedSignedChunkSize, reserveTargetPanel, planPanelReturn, checkLink, checkNote, LINKS_MAX_PER_PROJECT, NOTES_MAX_PER_PROJECT,
   type ConnectorScope, type ConnectorSessionRow, type ReserveRequest, type TransferStatus,
 } from "@/core/connectors";
 
@@ -17,6 +18,8 @@ export interface StoredTransfer {
   readonly id: string; readonly projectId: string; readonly sessionId: string; readonly idempotencyKey: string; readonly fingerprint: string;
   readonly fileName: string; readonly byteSize: number; readonly sha256: string; readonly assetId: string; readonly variantId: string;
   readonly baseVersionId: string | null; status: TransferStatus; candidateVersionId: string | null; conflictId: string | null;
+  /** Panelmål (C-7): skjult kandidat i et storyboardpanel. assetId/variantId er da genererte ID-er for den nye ressursen. */
+  readonly panelId: string | null; readonly panelRevision: number | null;
 }
 export interface ConnectorStore {
   rateLimit(scope: string, keys: string[]): Promise<boolean>;
@@ -36,6 +39,16 @@ export interface ConnectorStore {
   putChunk(transferId: string, index: number, bytes: Uint8Array): Promise<void>;
   chunkIndexes(transferId: string): Promise<number[]>;
   readChunk(transferId: string, index: number): Promise<Uint8Array>;
+  /** Direkte opplasting (>64 MiB): signert URL for bit `index` (16 MiB-biter). Klienten PUT-er rett til lagringen. */
+  signChunk(transferId: string, index: number): Promise<{ url: string; headers?: Record<string, string> } | null>;
+  /** Panelmål (C-7): lagrer filen og legger inn ressurs + versjon + skjult kandidatlag via apply_changes. */
+  createPanelCandidate(t: StoredTransfer, file: { bytes: Uint8Array[]; mimeType: string; sha256: string }, actor: string): Promise<{ versionId: string; conflictId: string | null }>;
+  /** connector_links: ekstern ID (fra klienten) ↔ prosjektentitet, per prosjekt og klient. */
+  listLinks(projectId: string, clientId: string, entity?: string, entityId?: string): Promise<{ id: string; entity: string; entityId: string; externalId: string; revision: number }[]>;
+  putLink(projectId: string, clientId: string, userId: string, l: { entity: string; entityId: string; externalId: string }): Promise<{ id: string; revision: number } | "limit">;
+  removeLink(projectId: string, clientId: string, entity: string, externalId: string): Promise<"ok" | "not_found">;
+  /** notes:write: et notatflagg på et prosjektobjekt, som sesjonsbrukeren (angrebar kommando i appen). */
+  addNote(projectId: string, userId: string, n: { targetKind: string; targetId: string; text: string }): Promise<{ id: string } | "limit" | "target">;
   /** Lagrer filen og legger kandidaten inn via apply_changes (AddAssetVersion, aldri godkjenning). */
   createCandidate(t: StoredTransfer, file: { bytes: Uint8Array[]; mimeType: string; sha256: string }, actor: string): Promise<{ versionId: string; conflictId: string | null }>;
   setTransferStatus(id: string, status: TransferStatus): Promise<void>;
@@ -135,9 +148,15 @@ async function authed(req: Request, d: ApiDeps, scope: ConnectorScope, projectId
   return row!;
 }
 
+const transferChunks = (byteSize: number) => usesDirectUpload(byteSize) ? signedChunkCount(byteSize) : chunkCount(byteSize);
+const transferMissing = (byteSize: number, received: readonly number[]) => {
+  const have = new Set(received);
+  return Array.from({ length: transferChunks(byteSize) }, (_, i) => i).filter(i => !have.has(i));
+};
 const publicTransfer = (t: StoredTransfer, received: number[]) => ({
-  id: t.id, status: t.status, fileName: t.fileName, byteSize: t.byteSize, sha256: t.sha256, chunkCount: chunkCount(t.byteSize),
-  missingChunks: missingChunks(t.byteSize, received), candidateVersionId: t.candidateVersionId, conflictId: t.conflictId,
+  id: t.id, status: t.status, fileName: t.fileName, byteSize: t.byteSize, sha256: t.sha256, chunkCount: transferChunks(t.byteSize),
+  missingChunks: transferMissing(t.byteSize, received), candidateVersionId: t.candidateVersionId, conflictId: t.conflictId,
+  panelId: t.panelId, direct: usesDirectUpload(t.byteSize),
 });
 
 export async function handleApiV1(req: Request, d: ApiDeps): Promise<Response> {
@@ -274,7 +293,10 @@ export async function handleApiV1(req: Request, d: ApiDeps): Promise<Response> {
         if (m === "POST" && rest.length === 1) {
           const b = await body(req);
           const target = (b["target"] ?? {}) as Record<string, unknown>, base = (b["base"] ?? {}) as Record<string, unknown>;
-          const r: ReserveRequest = { idempotencyKey: req.headers.get("idempotency-key") ?? "", fileName: s(b["fileName"]), byteSize: Number(b["byteSize"]), sha256: s(b["sha256"]), target: { assetId: s(target["assetId"]), variantId: s(target["variantId"]) }, base: { versionId: typeof base["versionId"] === "string" ? base["versionId"] : null } };
+          const tgt = typeof target["panelId"] === "string" && target["panelId"]
+            ? { panelId: s(target["panelId"]), panelRevision: typeof target["panelRevision"] === "number" ? target["panelRevision"] : null }
+            : { assetId: s(target["assetId"]), variantId: s(target["variantId"]) };
+          const r: ReserveRequest = { idempotencyKey: req.headers.get("idempotency-key") ?? "", fileName: s(b["fileName"]), byteSize: Number(b["byteSize"]), sha256: s(b["sha256"]), target: tgt, base: { versionId: typeof base["versionId"] === "string" ? base["versionId"] : null } };
           const c = checkReserve(r);
           if (!c.ok) return apiError(c.reason === "file" ? 415 : 400, "invalid_" + c.reason);
           // C-2: bildeformater prosjektmodellen ikke kan lagre som versjon (i dag PSD) avvises før noen byte sendes,
@@ -287,21 +309,41 @@ export async function handleApiV1(req: Request, d: ApiDeps): Promise<Response> {
           if (replay === "conflict") return apiError(409, "idempotency_key_reused");
           if (replay === "replay" && existing) return json(publicTransfer(existing, await d.store.chunkIndexes(existing.id)), 200, { "Idempotent-Replayed": "true" });
           const st = await d.store.loadState(pid);
-          const variant = st.assetVariants[r.target.variantId];
-          if (!variant || variant.assetId !== r.target.assetId || st.assets[r.target.assetId]?.removed) return apiError(404, "target_not_found");
+          let panelId: string | null = null, panelRevision: number | null = null, assetId = "", variantId = "";
+          if (reserveTargetPanel(r.target)) {
+            const panel = st.compositions[r.target.panelId as never];
+            if (!panel || panel.removed || panel.kind !== "storyboard") return apiError(404, "target_not_found");
+            panelId = r.target.panelId; panelRevision = r.target.panelRevision ?? null;
+            assetId = uuidFrom(d.random(16)); variantId = uuidFrom(d.random(16)); // den nye kandidatressursen
+          } else {
+            assetId = r.target.assetId; variantId = r.target.variantId;
+            const variant = st.assetVariants[variantId];
+            if (!variant || variant.assetId !== assetId || st.assets[assetId]?.removed) return apiError(404, "target_not_found");
+          }
           if (!(await d.store.checkQuota(pid, r.byteSize))) return apiError(413, "quota_exceeded");
-          const t: StoredTransfer = { id: uuidFrom(d.random(16)), projectId: pid, sessionId: a.id, idempotencyKey: r.idempotencyKey, fingerprint: fp, fileName: r.fileName, byteSize: r.byteSize, sha256: r.sha256, assetId: r.target.assetId, variantId: r.target.variantId, baseVersionId: r.base.versionId, status: "reserved", candidateVersionId: null, conflictId: null };
+          const t: StoredTransfer = { id: uuidFrom(d.random(16)), projectId: pid, sessionId: a.id, idempotencyKey: r.idempotencyKey, fingerprint: fp, fileName: r.fileName, byteSize: r.byteSize, sha256: r.sha256, assetId, variantId, baseVersionId: r.base.versionId, status: "reserved", candidateVersionId: null, conflictId: null, panelId, panelRevision };
           await d.store.insertTransfer(t);
           return json(publicTransfer(t, []), 201);
         }
         const t = rest[1] ? await d.store.getTransfer(pid, rest[1]) : null;
         if (!t) return apiError(404, "not_found");
         if (m === "GET" && rest.length === 2) return json(publicTransfer(t, await d.store.chunkIndexes(t.id)));
+        if (m === "POST" && rest[2] === "signed-chunks" && rest.length === 4) {
+          // Direkte opplasting (>64 MiB): klienten får en signert URL per 16 MiB-bit og PUT-er rett til lagringen.
+          if (!usesDirectUpload(t.byteSize)) return apiError(400, "not_direct");
+          if (t.status !== "reserved" && t.status !== "uploading") return apiError(409, "transfer_closed");
+          const idx = Number(rest[3]);
+          if (!Number.isInteger(idx) || expectedSignedChunkSize(t.byteSize, idx) < 0) return apiError(400, "invalid_chunk");
+          const signed = await d.store.signChunk(t.id, idx);
+          if (!signed) return apiError(500, "sign_failed");
+          return json({ url: signed.url, headers: signed.headers ?? {}, byteSize: expectedSignedChunkSize(t.byteSize, idx) });
+        }
         if (m === "PUT" && rest[2] === "chunks" && rest.length === 4) {
           if (t.status !== "reserved" && t.status !== "uploading") return apiError(409, "transfer_closed");
           const idx = Number(rest[3]);
           const bytes = new Uint8Array(await req.arrayBuffer());
-          if (!Number.isInteger(idx) || bytes.length !== expectedChunkSize(t.byteSize, idx)) return apiError(400, "invalid_chunk");
+          const expected = usesDirectUpload(t.byteSize) ? expectedSignedChunkSize(t.byteSize, idx) : expectedChunkSize(t.byteSize, idx);
+          if (!Number.isInteger(idx) || bytes.length !== expected) return apiError(400, "invalid_chunk");
           await d.store.putChunk(t.id, idx, bytes); // samme bit kan sendes på nytt (gjenopptak)
           if (t.status === "reserved") await d.store.setTransferStatus(t.id, "uploading");
           return json({ received: idx });
@@ -310,18 +352,60 @@ export async function handleApiV1(req: Request, d: ApiDeps): Promise<Response> {
           if (t.status === "candidate") return json(publicTransfer(t, await d.store.chunkIndexes(t.id)), 200, { "Idempotent-Replayed": "true" });
           if (t.status === "rejected") return apiError(409, "transfer_closed");
           const have = await d.store.chunkIndexes(t.id);
-          if (missingChunks(t.byteSize, have).length) return apiError(409, "incomplete");
+          if (transferMissing(t.byteSize, have).length) return apiError(409, "incomplete");
           const parts: Uint8Array[] = [], h = new Sha256();
-          for (let i = 0; i < chunkCount(t.byteSize); i++) { const p = await d.store.readChunk(t.id, i); parts.push(p); h.update(p); }
+          for (let i = 0; i < transferChunks(t.byteSize); i++) { const p = await d.store.readChunk(t.id, i); parts.push(p); h.update(p); }
           const head = parts[0]!.slice(0, 16);
           const check = checkIntake({ fileName: t.fileName, byteSize: t.byteSize, head, declaredSha256: t.sha256, actualSha256: toHex(h.digest()) });
           if (!check.ok) { await d.store.setTransferStatus(t.id, "rejected"); return apiError(check.reason === "checksum" ? 422 : 415, "rejected_" + check.reason); }
           const st = await d.store.loadState(pid);
+          if (t.panelId) {
+            // C-7: panelretur — skjult kandidat i panelet (SB-7-regelen), konflikt ved revisjonsendring.
+            if (!st.compositions[t.panelId as never]) return apiError(404, "target_not_found");
+            const res = await d.store.createPanelCandidate(t, { bytes: parts, mimeType: check.mimeType, sha256: t.sha256 }, a.userId);
+            t.status = "candidate"; t.candidateVersionId = res.versionId; t.conflictId = res.conflictId;
+            return json(publicTransfer(t, have));
+          }
           if (!st.assetVariants[t.variantId]) return apiError(404, "target_not_found");
           const res = await d.store.createCandidate(t, { bytes: parts, mimeType: check.mimeType, sha256: t.sha256 }, a.userId);
           t.status = "candidate"; t.candidateVersionId = res.versionId; t.conflictId = res.conflictId;
           return json(publicTransfer(t, have));
         }
+      }
+      if (rest[0] === "links") {
+        const a = await authed(req, d, m === "GET" ? "project:read" : "transfers:write", pid); if (a instanceof Response) return a;
+        if (m === "GET" && rest.length === 1) {
+          const entity = url.searchParams.get("linkEntity") ?? undefined, linkId = url.searchParams.get("linkId") ?? undefined;
+          return json({ links: await d.store.listLinks(pid, a.clientId, entity ?? undefined, linkId ?? undefined) });
+        }
+        if (m === "PUT" && rest.length === 1) {
+          const b = await body(req);
+          const l = { entity: s(b["linkEntity"]), entityId: s(b["linkId"]), externalId: s(b["externalId"]) };
+          const c = checkLink(l);
+          if (!c.ok) return apiError(400, "invalid_" + c.reason);
+          const r = await d.store.putLink(pid, a.clientId, a.userId, l);
+          if (r === "limit") return apiError(413, "too_many_links");
+          return json({ id: r.id, revision: r.revision });
+        }
+        if (m === "DELETE" && rest.length === 1) {
+          const b = await body(req);
+          const l = { entity: s(b["linkEntity"]), entityId: "x", externalId: s(b["externalId"]) };
+          if (!checkLink(l).ok) return apiError(400, "invalid_external_id");
+          const r = await d.store.removeLink(pid, a.clientId, l.entity, l.externalId);
+          return r === "ok" ? json({ removed: true }) : apiError(404, "not_found");
+        }
+        return apiError(404, "not_found");
+      }
+      if (m === "POST" && rest[0] === "notes" && rest.length === 1) {
+        const a = await authed(req, d, "notes:write", pid); if (a instanceof Response) return a;
+        const b = await body(req);
+        const n = { targetKind: s(b["targetKind"]), targetId: s(b["targetId"]), text: s(b["text"]) };
+        const c = checkNote(n);
+        if (!c.ok) return apiError(400, "invalid_" + c.reason);
+        const r = await d.store.addNote(pid, a.userId, n);
+        if (r === "limit") return apiError(413, "too_many_notes");
+        if (r === "target") return apiError(404, "target_not_found");
+        return json({ id: r.id }, 201);
       }
     }
     return apiError(404, "not_found");

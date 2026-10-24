@@ -4,9 +4,9 @@
  */
 import { ADAPTERS, type AdapterDescriptor } from "../connectors/capabilities";
 
-export const HANDOFF_TARGETS = ["asset", "panel", "clip", "scene"] as const;
+export const HANDOFF_TARGETS = ["asset", "panel", "clip", "scene", "production"] as const;
 export type HandoffTarget = (typeof HANDOFF_TARGETS)[number];
-export const HANDOFF_FORMATS = ["psd", "png", "svg", "wav", "otio"] as const;
+export const HANDOFF_FORMATS = ["psd", "png", "svg", "wav", "otio", "sbpro"] as const;
 export type HandoffFormat = (typeof HANDOFF_FORMATS)[number];
 
 export interface FormatFacts {
@@ -27,16 +27,19 @@ export const FORMAT_FACTS: Record<HandoffFormat, FormatFacts> = {
   svg: { editableLayers: true, textAsText: true, flatImage: false, audio: false, timeline: false, returnable: false, extension: "svg", mimeType: "image/svg+xml" },
   wav: { editableLayers: false, textAsText: false, flatImage: false, audio: true, timeline: false, returnable: true, extension: "wav", mimeType: "audio/wav" },
   otio: { editableLayers: false, textAsText: false, flatImage: false, audio: false, timeline: true, returnable: false, extension: "otio", mimeType: "application/json" },
+  // C-5: Storyboard Pro-pakke (.ptgsb = lagret ZIP med manifest v1 + panelbilder). Retur blir kandidater.
+  sbpro: { editableLayers: false, textAsText: false, flatImage: false, audio: false, timeline: true, returnable: true, extension: "ptgsb", mimeType: "application/zip" },
 };
 export const FORMATS_FOR: Record<HandoffTarget, readonly HandoffFormat[]> = {
   asset: ["psd", "png", "svg"],
   panel: ["psd", "png", "svg"],
   clip: ["wav"],
   scene: ["otio"],
+  production: ["sbpro"],
 };
 /** Default adapter per format (only for labels and capability gating). */
 export const ADAPTER_FOR: Record<HandoffFormat, string> = {
-  psd: "adobe-photoshop-uxp", png: "procreate-handoff", svg: "adobe-photoshop-uxp", wav: "daw-roundtrip", otio: "storyboard-interchange",
+  psd: "adobe-photoshop-uxp", png: "procreate-handoff", svg: "adobe-photoshop-uxp", wav: "daw-roundtrip", otio: "storyboard-interchange", sbpro: "toonboom-sbpro",
 };
 export function adapterFor(format: HandoffFormat): AdapterDescriptor {
   return ADAPTERS.find((a) => a.id === ADAPTER_FOR[format])!;

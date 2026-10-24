@@ -12,8 +12,10 @@
  */
 import { ConnectorError, PtgConnector } from "../../../packages/ptg-connector-sdk/src/index";
 import {
-  AUDITION_CLIENT_ID, auditionFileName, auditionSesx, auditionUploadTarget, readAuditionReturn, tagAuditionWav, type AuditionPlan,
+  AUDITION_CLIENT_ID, AUDITION_MAX_CONVERT_SECONDS, auditionConvertedFileName, auditionConvertedMeta, auditionFileName,
+  auditionSesx, auditionUploadTarget, convertibleAudioFrom, readAuditionReturn, tagAuditionWav, type AuditionPlan,
 } from "../../../src/core/connectors/audition-session";
+import { encodeBwf } from "../../../src/core/handoff/wav";
 import type { Host } from "./host";
 import { jsxArg } from "./cep-host";
 import { fileTokenStore } from "./token-store";
@@ -130,23 +132,42 @@ export class AuditionPlugin {
       const plan: AuditionPlan = await this.sdk.auditionPlan(pid, occ, this.state.panelId);
       const folder = folderArg ?? await this.host.pickFolder(this.t("chooseFolder"));
       if (!folder) return;
-      const files: string[] = []; let skipped = 0;
+      const files: string[] = []; const keptClips: AuditionPlan["clips"][number][] = [];
+      let skipped = 0; let converted = 0;
       for (const [i, clip] of plan.clips.entries()) {
-        if (!/wav|wave/i.test(clip.mimeType)) { skipped++; continue; }
+        const wav = /wav|wave/i.test(clip.mimeType);
+        const from = wav ? null : convertibleAudioFrom(clip.mimeType);
+        if (!wav && (!from || !this.host.decodeAudio)) { skipped++; continue; }
         const dl = await this.sdk.download(pid, clip.assetId, clip.versionId);
-        let tagged: Uint8Array;
-        try { tagged = tagAuditionWav(dl.bytes, plan, clip); } catch { skipped++; continue; }
-        const name = auditionFileName(clip, i);
+        let tagged: Uint8Array; let name: string;
+        try {
+          if (from) {
+            const decoded = await this.host.decodeAudio!(dl.bytes.slice(), clip.mimeType);
+            if (!decoded || !Number.isFinite(decoded.sampleRate) || decoded.sampleRate <= 0 || !decoded.channels.length
+              || !decoded.channels[0]!.length
+              || decoded.channels.some(ch => ch.length !== decoded.channels[0]!.length || ch.length / decoded.sampleRate > AUDITION_MAX_CONVERT_SECONDS)) {
+              skipped++; continue;
+            }
+            tagged = encodeBwf(decoded.channels, decoded.sampleRate, auditionConvertedMeta(plan, clip, from, decoded.sampleRate));
+            name = auditionConvertedFileName(clip, i, from);
+          } else {
+            tagged = tagAuditionWav(dl.bytes, plan, clip);
+            name = auditionFileName(clip, i);
+          }
+        } catch { skipped++; continue; }
         await this.host.writeFile(`${folder}/${name}`, tagged);
         files.push(name);
+        keptClips.push(clip);
+        if (from) converted++;
       }
-      const kept = { ...plan, clips: plan.clips.filter((c, i) => files.includes(auditionFileName(c, i))) };
+      const kept = { ...plan, clips: keptClips };
       const sesx = `${folder}/ptg_${plan.sceneLabel}_${plan.manifestId.slice(0, 8)}.sesx`;
       await this.host.writeFile(sesx, auditionSesx(kept, files));
       await this.host.writeFile(`${folder}/ptg-audition.json`, JSON.stringify({ manifestVersion: 1, adapter: { id: "adobe-audition-cep", version: "1" }, plan: kept, files }, null, 2));
       this.set({ lastExport: { folder, files, skipped, manifestId: plan.manifestId, truncated: plan.truncated } });
       const parts = [this.t("exported", { count: files.length })];
       if (skipped) parts.push(this.t("skipped", { count: skipped }));
+      if (converted) parts.push(this.t("converted", { count: converted }));
       if (plan.truncated) parts.push(this.t("truncated"));
       if (files.length) parts.push(this.t((await this.host.evalScript(`ptgOpenSession(${jsxArg(sesx)})`)) === "ok" ? "sessionOpened" : "sessionFailed"));
       this.say(plan.truncated || skipped ? "error" : "info", parts.join(" "));

@@ -14,6 +14,21 @@ const host = cepHost(new CSInterface(), window.cep.fs, {
   fetch: (...a) => fetch(...a),
   random: n => crypto.getRandomValues(new Uint8Array(n)),
 });
+// mp3/ogg/m4a dekodes med Web Audio og sendes ut som merket WAV; originalen røres aldri.
+host.decodeAudio = async (bytes, _mimeType) => {
+  try {
+    const context = new OfflineAudioContext(1, 1, 48000);
+    const buffer = await new Promise<AudioBuffer>((resolve, reject) => {
+      void context.decodeAudioData(bytes.slice().buffer as ArrayBuffer, resolve, reject);
+    });
+    return {
+      channels: Array.from({ length: buffer.numberOfChannels }, (_, i) => buffer.getChannelData(i).slice()),
+      sampleRate: buffer.sampleRate,
+    };
+  } catch {
+    return null;
+  }
+};
 const plugin = new AuditionPlugin(host);
 const root = document.getElementById("ptg-root")!;
 plugin.subscribe(() => render(root, plugin));

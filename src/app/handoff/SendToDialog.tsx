@@ -51,6 +51,7 @@ export function resolveTarget(s: ProjectState, target: SendTarget): Resolved | n
 }
 
 export function formatLabel(f: HandoffFormat): string {
+  if (f === "sbpro") return adapterFor(f).name; // produktnavn, oversettes ikke
   return { psd: t("c1.format.psd"), png: t("c1.format.png"), svg: t("c1.format.svg"), wav: t("c1.format.wav"), otio: t("c1.format.otio") }[f];
 }
 

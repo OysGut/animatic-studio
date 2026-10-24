@@ -226,6 +226,39 @@ describe("C-6 panelet mot falsk CEP/ExtendScript og falskt API", () => {
     await h.plugin.sendBack(["/Users/x/Ny/helt_annet_navn.wav"]);
     expect(h.mem.transfers.size).toBe(1);
   });
+  it("mp3 konverteres til merket WAV med skalerte markører; uten dekoder hoppes den over", async () => {
+    const h = harness();
+    await signIn(h);
+    const original = h.mp3Bytes.slice();
+    const plan = await h.sdk.auditionPlan(h.projectId, h.occ.id, null);
+    const clip = plan.clips.find(c => c.mimeType === "audio/mpeg")!;
+    const markedPlan = { ...plan, markers: [{ kind: "line" as const, id: "conversion-marker", label: "Konvertering", ms: clip.offsetMs + 100 }] };
+    h.sdk.auditionPlan = async () => markedPlan;
+    let calls = 0;
+    h.host.decodeAudio = async (bytes, mimeType) => {
+      calls++;
+      expect(mimeType).toBe("audio/mpeg");
+      bytes.fill(0); // en dekoder som roter i input må aldri endre kilden
+      return { channels: tone(44100), sampleRate: 44100 };
+    };
+    await h.plugin.exportAudio("/converted");
+    expect(calls).toBe(1);
+    expect(h.plugin.state.lastExport?.skipped).toBe(0);
+    const name = h.plugin.state.lastExport!.files.find(f => f.endsWith("_from-mp3.wav"))!;
+    expect(name).toBeTruthy();
+    const bytes = fromBase64(h.cep.files.get(`/converted/${name}`)!);
+    const info = readBwf(bytes);
+    expect(info.ixml["PTG_CONVERTED_FROM"]).toBe("mp3");
+    expect(info.description).toMatch(/^\[converted from mp3\] /);
+    expect(info.markers).toEqual([{ sample: Math.round(((clip.sourceInMs + 100) / 1000) * 44100), label: "ptg:line:conversion-marker Konvertering" }]);
+    expect(h.mp3Bytes).toEqual(original);
+    expect(h.mem.files.get(h.s.assetVersions[h.mp3]!.mediaPath)).toEqual(original);
+    expect(h.plugin.state.message?.text).toContain(h.plugin.t("converted", { count: 1 }));
+    delete h.host.decodeAudio;
+    await h.plugin.exportAudio("/no-decoder");
+    expect(h.plugin.state.lastExport?.skipped).toBe(1);
+    expect(h.plugin.state.lastExport?.files.some(f => f.includes("_from-"))).toBe(false);
+  });
   it("konflikt når grunnlaget ikke er gjeldende versjon: tre valg, «Bruk min» åpner appen og godkjenner ikke", async () => {
     const h = harness();
     await signIn(h);

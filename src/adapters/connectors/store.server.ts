@@ -3,8 +3,8 @@
  * går via security-definer-RPC-er i 0109; kandidatversjonen går via apply_changes som brukeren som
  * godkjente tilkoblingen (redaktørsjekk der).
  */
-import { applyCommand, diffStates, newId } from "@/core";
-import { planCandidate, sha256Hex } from "@/core/connectors";
+import { applyCommand, diffStates, newId, type Command } from "@/core";
+import { planCandidate, planPanelReturn, sha256Hex, usesDirectUpload, signedChunkCount, chunkCount, LINKS_MAX_PER_PROJECT, NOTES_MAX_PER_PROJECT } from "@/core/connectors";
 import { loadProjectState, type AnyClient } from "@/adapters/storage/project-rows";
 import type { ConnectorStore, StoredTransfer } from "./api-v1";
 
@@ -13,6 +13,7 @@ const row = (r: Record<string, any>): StoredTransfer => ({
   id: r["id"], projectId: r["project_id"], sessionId: r["session_id"], idempotencyKey: r["idempotency_key"], fingerprint: r["fingerprint"],
   fileName: r["file_name"], byteSize: Number(r["byte_size"]), sha256: r["sha256"], assetId: r["asset_id"], variantId: r["variant_id"],
   baseVersionId: r["base_version_id"], status: r["status"], candidateVersionId: r["candidate_version_id"], conflictId: r["conflict_id"],
+  panelId: r["panel_id"] ?? null, panelRevision: r["panel_revision"] ?? null,
 });
 
 export async function cloudConnectorStore(): Promise<ConnectorStore> {
@@ -27,8 +28,19 @@ export async function cloudConnectorStore(): Promise<ConnectorStore> {
       const { data, error } = await db.from("connector_sessions").insert({ project_id: s.projectId, user_id: s.userId, client_id: s.clientId, scopes: s.scopes, access_hash: s.accessHash, refresh_hash: s.refreshHash, access_expires_at: s.accessExpiresAt, refresh_expires_at: s.refreshExpiresAt }).select("id").single();
       if (error) throw error; return String(data["id"]);
     },
-    async sessionByAccess(hash) { return await rpc("connector_session_by_access", { p_hash: hash }); },
-    async rotateRefresh(old, n) { return await rpc("connector_rotate_refresh", { p_old: old, p_access: n.accessHash, p_refresh: n.refreshHash, p_access_exp: n.accessExpiresAt, p_refresh_exp: n.refreshExpiresAt }); },
+    // RPC-ene fra 0109 er låst og returnerer ikke client_id; den hentes med et eget oppslag.
+    async sessionByAccess(hash) {
+      const row = await rpc("connector_session_by_access", { p_hash: hash });
+      if (!row) return null;
+      const c = await db.from("connector_sessions").select("client_id").eq("id", row["id"]).maybeSingle();
+      return { ...row, clientId: c.data?.["client_id"] ?? "" };
+    },
+    async rotateRefresh(old, n) {
+      const row = await rpc("connector_rotate_refresh", { p_old: old, p_access: n.accessHash, p_refresh: n.refreshHash, p_access_exp: n.accessExpiresAt, p_refresh_exp: n.refreshExpiresAt });
+      if (!row) return null;
+      const c = await db.from("connector_sessions").select("client_id").eq("id", row["id"]).maybeSingle();
+      return { ...row, clientId: c.data?.["client_id"] ?? "" };
+    },
     async createDevice(d) { await rpc("connector_create_device", { p_hash: d.deviceHash, p_user_code: d.userCode, p_client: d.clientId, p_scopes: d.scopes, p_expires: d.expiresAt }); },
     async pollDevice(hash) { return await rpc("connector_poll_device", { p_hash: hash }); },
     async revokeByToken(hash) { await rpc("connector_revoke_token", { p_hash: hash }); },
@@ -45,7 +57,7 @@ export async function cloudConnectorStore(): Promise<ConnectorStore> {
     },
     async insertTransfer(t) {
       const sess = await db.from("connector_sessions").select("user_id").eq("id", t.sessionId).single();
-      const { error } = await db.from("connector_transfers").insert({ id: t.id, project_id: t.projectId, session_id: t.sessionId, sender: sess.data?.["user_id"], idempotency_key: t.idempotencyKey, fingerprint: t.fingerprint, file_name: t.fileName, byte_size: t.byteSize, sha256: t.sha256, asset_id: t.assetId, variant_id: t.variantId, base_version_id: t.baseVersionId });
+      const { error } = await db.from("connector_transfers").insert({ id: t.id, project_id: t.projectId, session_id: t.sessionId, sender: sess.data?.["user_id"], idempotency_key: t.idempotencyKey, fingerprint: t.fingerprint, file_name: t.fileName, byte_size: t.byteSize, sha256: t.sha256, asset_id: t.assetId, variant_id: t.variantId, base_version_id: t.baseVersionId, panel_id: t.panelId, panel_revision: t.panelRevision });
       if (error) throw error; projectOf.set(t.id, t.projectId);
     },
     async checkQuota(projectId, bytes) { return (await rpc("connector_check_quota", { p_project: projectId, p_bytes: bytes })) === true; },
@@ -65,6 +77,71 @@ export async function cloudConnectorStore(): Promise<ConnectorStore> {
       const { data, error } = await db.storage.from("assets").download(chunkPath({ projectId: projectOf.get(id)!, id }, i));
       if (error || !data) throw error ?? new Error("chunk");
       return new Uint8Array(await data.arrayBuffer());
+    },
+    async signChunk(id, i) {
+      const projectId = projectOf.get(id);
+      if (!projectId) return null;
+      const r = await db.storage.from("assets").createSignedUploadUrl(chunkPath({ projectId, id }, i), { upsert: true });
+      if (r.error || !r.data) return null;
+      return { url: r.data.signedUrl };
+    },
+    async createPanelCandidate(t, file, actor) {
+      let state = await loadProjectState(db, t.projectId);
+      const versionId = newId<"assetVersion">();
+      const path = `${t.projectId}/${t.assetId}/${versionId}/${t.fileName}`;
+      const blob = new Blob(file.bytes as BlobPart[], { type: file.mimeType });
+      const up = await db.storage.from("assets").upload(path, blob, { contentType: file.mimeType, upsert: false });
+      if (up.error) throw up.error;
+      const plan = planPanelReturn({ state, panelId: t.panelId!, assetId: t.assetId, variantId: t.variantId, versionId, name: t.fileName.replace(/\.[^.]+$/, ""), media: { path, mimeType: file.mimeType, byteSize: t.byteSize, sha256: file.sha256, width: null, height: null }, baseRevision: t.panelRevision, note: JSON.stringify({ kind: "sketch", source: "connector", transferId: t.id, panelId: t.panelId }) });
+      if (!plan) throw new Error("target");
+      for (const command of plan.commands) {
+        const id = newId<"command">();
+        const r = applyCommand(state, { id, actor: actor as never, at: new Date().toISOString(), command });
+        if (!r.ok) throw new Error(r.error.message);
+        const { error } = await db.rpc("apply_changes", { p_project: t.projectId, p_actor: actor, p_command_id: id, p_command: command, p_inverse: r.inverse, p_changes: diffStates(state, r.state) });
+        if (error) throw error;
+        state = r.state;
+      }
+      let conflictId: string | null = null;
+      if (plan.conflict) {
+        const c = await db.from("connector_conflicts").insert({ project_id: t.projectId, transfer_id: t.id, variant_id: t.variantId, base_version_id: null, current_version_id: null, incoming_version_id: versionId }).select("id").single();
+        if (c.error) throw c.error; conflictId = String(c.data["id"]);
+      }
+      await db.from("connector_transfers").update({ status: "candidate", candidate_version_id: versionId, conflict_id: conflictId, updated_at: new Date().toISOString() }).eq("id", t.id);
+      const n = usesDirectUpload(t.byteSize) ? signedChunkCount(t.byteSize) : chunkCount(t.byteSize);
+      await db.storage.from("assets").remove(Array.from({ length: n }, (_, i) => chunkPath(t, i)));
+      return { versionId, conflictId };
+    },
+    async listLinks(projectId, clientId, entity, entityId) {
+      let q = db.from("connector_links").select("id,entity,entity_id,external_id,revision").eq("project_id", projectId).eq("client_id", clientId).eq("removed", false).limit(200);
+      if (entity) q = q.eq("entity", entity);
+      if (entityId) q = q.eq("entity_id", entityId);
+      const { data, error } = await q;
+      if (error) throw error;
+      return ((data ?? []) as Record<string, any>[]).map(r => ({ id: r["id"], entity: r["entity"], entityId: r["entity_id"], externalId: r["external_id"], revision: r["revision"] }));
+    },
+    async putLink(projectId, clientId, userId, l) {
+      const cnt = await db.from("connector_links").select("id", { count: "exact", head: true }).eq("project_id", projectId).eq("client_id", clientId).eq("removed", false);
+      if ((cnt.count ?? 0) >= LINKS_MAX_PER_PROJECT) return "limit";
+      const up = await db.from("connector_links").upsert({ project_id: projectId, client_id: clientId, external_id: l.externalId, entity: l.entity, entity_id: l.entityId, created_by: userId, removed: false }, { onConflict: "project_id,client_id,external_id,entity" }).select("id,revision").single();
+      if (up.error) throw up.error;
+      return { id: String(up.data["id"]), revision: Number(up.data["revision"]) };
+    },
+    async removeLink(projectId, clientId, entity, externalId) {
+      const u = await db.from("connector_links").update({ removed: true }).eq("project_id", projectId).eq("client_id", clientId).eq("entity", entity).eq("external_id", externalId).eq("removed", false).select("id");
+      if (u.error) throw u.error;
+      return (u.data ?? []).length ? "ok" : "not_found";
+    },
+    async addNote(projectId, userId, n) {
+      const state = await loadProjectState(db, projectId);
+      if (Object.values(state.noteFlags ?? {}).filter(f => !f.removed).length >= NOTES_MAX_PER_PROJECT) return "limit";
+      const flagId = newId<"noteFlag">();
+      const command: Command = { type: "AddNoteFlag", flagId: flagId as never, targetKind: n.targetKind as never, targetId: n.targetId as never, text: n.text };
+      const r = applyCommand(state, { id: newId<"command">(), actor: userId as never, at: new Date().toISOString(), command });
+      if (!r.ok) return "target";
+      const { error } = await db.rpc("apply_changes", { p_project: projectId, p_actor: userId, p_command_id: newId<"command">(), p_command: command, p_inverse: r.inverse, p_changes: diffStates(state, r.state) });
+      if (error) return "target";
+      return { id: flagId };
     },
     async createCandidate(t, file, actor) {
       let state = await loadProjectState(db, t.projectId);
@@ -90,7 +167,8 @@ export async function cloudConnectorStore(): Promise<ConnectorStore> {
         if (c.error) throw c.error; conflictId = String(c.data["id"]);
       }
       await db.from("connector_transfers").update({ status: "candidate", candidate_version_id: versionId, conflict_id: conflictId, updated_at: new Date().toISOString() }).eq("id", t.id);
-      await db.storage.from("assets").remove(Array.from({ length: Math.ceil(t.byteSize / (8 * 1024 * 1024)) }, (_, i) => chunkPath(t, i)));
+      const cn = usesDirectUpload(t.byteSize) ? signedChunkCount(t.byteSize) : chunkCount(t.byteSize);
+      await db.storage.from("assets").remove(Array.from({ length: cn }, (_, i) => chunkPath(t, i)));
       return { versionId, conflictId };
     },
     async setTransferStatus(id, status) { await db.from("connector_transfers").update({ status, updated_at: new Date().toISOString() }).eq("id", id); },

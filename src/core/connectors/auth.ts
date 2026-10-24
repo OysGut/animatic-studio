@@ -92,6 +92,7 @@ export interface ConnectorSessionRow {
   readonly id: string;
   readonly projectId: string;
   readonly userId: string;
+  readonly clientId: string;
   readonly scopes: readonly string[];
   readonly expiresAt: string;
   readonly revokedAt: string | null;

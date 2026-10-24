@@ -2,8 +2,8 @@
  * C-0: falsk ConnectorStore i minnet med samme regler som RPC-ene i 0109 (engangskoder, rotasjon med
  * gjenbruksdeteksjon, tilbaketrekking, fartsgrense, kvote). Brukes av API- og SDK-testene; ingen nettverk.
  */
-import { applyCommand, type ProjectState } from "@/core";
-import { planCandidate, sha256Hex, type PremiereEdit, type SbproCandidate } from "@/core/connectors";
+import { applyCommand, newId, type Command, type ProjectState } from "@/core";
+import { LINKS_MAX_PER_PROJECT, NOTES_MAX_PER_PROJECT, planCandidate, planPanelReturn, sha256Hex, type PremiereEdit, type SbproCandidate } from "@/core/connectors";
 import type { ConnectorStore, StoredTransfer } from "@/adapters/connectors/api-v1";
 
 type Pending = { kind: "code" | "device"; userCode?: string; clientId: string; redirectUri?: string; challenge?: string; projectId?: string; userId?: string; scopes: string[]; status: "pending" | "approved" | "denied" | "used"; expiresAt: string };
@@ -20,10 +20,11 @@ export function memoryStore(state: ProjectState, opts: { now: () => number; rate
   const hits = new Map<string, number>();
   const files = new Map<string, Uint8Array>();
   const sbproReturns: { id: string; projectId: string; hash: string; userId: string }[] = [];
+  const links: { id: string; projectId: string; clientId: string; userId: string; entity: string; entityId: string; externalId: string; revision: number; removed: boolean }[] = [];
   const sbproCandidates: (SbproCandidate & { id: string; returnId: string; status: string; mediaPath: string | null })[] = [];
   const premiereProposals: { id: string; returnId: string; edit: PremiereEdit; conflict: boolean; status: string }[] = [];
   let n = 0;
-  const view = (x: Session) => ({ id: x.id, projectId: x.projectId, userId: x.userId, scopes: x.scopes, expiresAt: x.accessExpiresAt, revokedAt: x.revokedAt });
+  const view = (x: Session) => ({ id: x.id, projectId: x.projectId, userId: x.userId, clientId: x.clientId, scopes: x.scopes, expiresAt: x.accessExpiresAt, revokedAt: x.revokedAt });
   const store: ConnectorStore = {
     async rateLimit(scope, keys) {
       const limit = opts.rateLimit ?? 1000;
@@ -67,6 +68,53 @@ export function memoryStore(state: ProjectState, opts: { now: () => number; rate
     async putChunk(id, i, b) { const m = chunks.get(id) ?? new Map(); m.set(i, b); chunks.set(id, m); },
     async chunkIndexes(id) { return [...(chunks.get(id)?.keys() ?? [])].sort((a, b) => a - b); },
     async readChunk(id, i) { return chunks.get(id)!.get(i)!; },
+    // Falsk signert URL: egen «lagrings»-sti som testens fetch avfanger og skriver rett til bitlageret,
+    // akkurat som en ekte signert URL skriver rett til fil-lagringen (uten Bearer-token).
+    async signChunk(id, i) { const t = transfers.get(id); return t ? { url: `/fake-storage/${id}/part-${i}` } : null; },
+    async createPanelCandidate(t, file, actor) {
+      const versionId = `00000000-0000-4000-9000-${String(++n).padStart(12, "0")}`;
+      const path = `${t.projectId}/${t.assetId}/${versionId}/${t.fileName}`;
+      files.set(path, Uint8Array.from(file.bytes.flatMap(b => [...b])));
+      const plan = planPanelReturn({ state: s, panelId: t.panelId!, assetId: t.assetId, variantId: t.variantId, versionId, name: t.fileName.replace(/\.[^.]+$/, ""), media: { path, mimeType: file.mimeType, byteSize: t.byteSize, sha256: file.sha256, width: null, height: null }, baseRevision: t.panelRevision, note: JSON.stringify({ kind: "sketch", source: "connector", transferId: t.id, panelId: t.panelId }) });
+      if (!plan) throw new Error("target");
+      for (const command of plan.commands) {
+        const r = applyCommand(s, { id: `00000000-0000-4000-a000-${String(++n).padStart(12, "0")}` as never, actor: actor as never, at: new Date(opts.now()).toISOString(), command });
+        if (!r.ok) throw new Error(r.error.message);
+        s = r.state;
+      }
+      let conflictId: string | null = null;
+      if (plan.conflict) { conflictId = `c-${++n}`; conflicts.push({ id: conflictId, variantId: t.variantId, baseVersionId: null, currentVersionId: null, incomingVersionId: versionId, status: "open", revision: 1, choice: null }); }
+      t.status = "candidate"; t.candidateVersionId = versionId; t.conflictId = conflictId;
+      return { versionId, conflictId };
+    },
+    async listLinks(projectId, clientId, entity, entityId) {
+      return links.filter(l => l.projectId === projectId && l.clientId === clientId && !l.removed && (!entity || l.entity === entity) && (!entityId || l.entityId === entityId))
+        .map(l => ({ id: l.id, entity: l.entity, entityId: l.entityId, externalId: l.externalId, revision: l.revision }));
+    },
+    async putLink(projectId, clientId, userId, l) {
+      if (links.filter(x => x.projectId === projectId && x.clientId === clientId && !x.removed).length >= LINKS_MAX_PER_PROJECT) return "limit";
+      const prev = links.find(x => x.projectId === projectId && x.clientId === clientId && x.entity === l.entity && x.externalId === l.externalId);
+      if (prev && !prev.removed) { prev.entityId = l.entityId; prev.revision++; return { id: prev.id, revision: prev.revision }; }
+      if (prev) { prev.removed = false; prev.entityId = l.entityId; prev.revision++; return { id: prev.id, revision: prev.revision }; }
+      const id = `00000000-0000-4000-8000-${String(++n).padStart(12, "0")}`;
+      links.push({ id, projectId, clientId, userId, entity: l.entity, entityId: l.entityId, externalId: l.externalId, revision: 1, removed: false });
+      return { id, revision: 1 };
+    },
+    async removeLink(projectId, clientId, entity, externalId) {
+      const prev = links.find(x => x.projectId === projectId && x.clientId === clientId && x.entity === entity && x.externalId === externalId && !x.removed);
+      if (!prev) return "not_found";
+      prev.removed = true; prev.revision++;
+      return "ok";
+    },
+    async addNote(projectId, userId, note) {
+      if (Object.values(s.noteFlags ?? {}).filter(f => !f.removed).length >= NOTES_MAX_PER_PROJECT) return "limit";
+      const flagId = newId<"noteFlag">() as string;
+      const command: Command = { type: "AddNoteFlag", flagId: flagId as never, targetKind: note.targetKind as never, targetId: note.targetId as never, text: note.text };
+      const r = applyCommand(s, { id: `00000000-0000-4000-a000-${String(++n).padStart(12, "0")}` as never, actor: userId as never, at: new Date(opts.now()).toISOString(), command });
+      if (!r.ok) return "target";
+      s = r.state;
+      return { id: flagId };
+    },
     async createCandidate(t, file, actor) {
       const variant = s.assetVariants[t.variantId]!;
       const versionId = `00000000-0000-4000-9000-${String(++n).padStart(12, "0")}`;

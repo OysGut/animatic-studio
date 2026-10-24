@@ -7,7 +7,7 @@
  */
 import { base64Url, sha256Hex, Sha256, toHex } from "../../../src/core/connectors/sha256";
 import { pkceChallenge } from "../../../src/core/connectors/auth";
-import { CHUNK_BYTES, chunkCount } from "../../../src/core/connectors/transfer";
+import { CHUNK_BYTES, SIGNED_CHUNK_BYTES, chunkCount, signedChunkCount, usesDirectUpload } from "../../../src/core/connectors/transfer";
 import { validateManifest, type ConnectorManifest } from "../../../src/core/connectors/manifest";
 import type { AuditionPlan } from "../../../src/core/connectors/audition-session";
 import type { BlenderCameraPlan } from "../../../src/core/connectors/blender";
@@ -33,7 +33,10 @@ export interface ConflictInfo { id: string; variantId: string; baseVersionId: st
 export interface AssetInfo { id: string; kind: string; name: string; revision: number; variants: { id: string; name: string; approvedVersionId: string | null }[] }
 export interface VersionInfo { id: string; variantId: string; number: number; mimeType: string; byteSize: number; sha256: string; approved: boolean; createdAt: string }
 export interface PanelInfo { id: string; name: string; revision: number; occurrenceId: string | null; durationFrames: number; width: number; height: number }
-export interface TransferInfo { id: string; status: string; chunkCount: number; missingChunks: number[]; candidateVersionId: string | null; conflictId: string | null }
+export interface TransferInfo { id: string; status: string; chunkCount: number; missingChunks: number[]; candidateVersionId: string | null; conflictId: string | null; panelId?: string | null; direct?: boolean }
+export interface LinkInfo { id: string; entity: "asset" | "panel" | "clip"; entityId: string; externalId: string; revision: number }
+/** Mål for opplasting: en ressursvariant (kandidatversjon) eller et storyboardpanel (skjult kandidat, C-7). */
+export type UploadTarget = { assetId: string; variantId: string; baseVersionId: string | null } | { panelId: string; panelRevision?: number | null };
 
 export class PtgConnector {
   private readonly now: () => number;
@@ -120,18 +123,50 @@ export class PtgConnector {
    * Sender en fil som ny kandidatversjon. Gjenopptakbar: samme idempotensnøkkel hopper over biter serveren
    * allerede har. Resultatet godkjennes aldri automatisk; `conflictId` vises for brukeren hvis satt.
    */
-  async upload(projectId: string, file: { name: string; bytes: Uint8Array }, target: { assetId: string; variantId: string; baseVersionId: string | null }, idempotencyKey: string, onProgress?: (done: number, total: number) => void): Promise<TransferInfo> {
+  async upload(projectId: string, file: { name: string; bytes: Uint8Array }, target: UploadTarget, idempotencyKey: string, onProgress?: (done: number, total: number) => void): Promise<TransferInfo> {
     const sha256 = sha256Hex(file.bytes);
-    const t = await this.json<TransferInfo>("POST", `/api/v1/projects/${projectId}/transfers`, { fileName: file.name, byteSize: file.bytes.length, sha256, target: { assetId: target.assetId, variantId: target.variantId }, base: { versionId: target.baseVersionId } }, true, { "Idempotency-Key": idempotencyKey });
+    const isPanel = "panelId" in target;
+    const t = await this.json<TransferInfo>("POST", `/api/v1/projects/${projectId}/transfers`, {
+      fileName: file.name, byteSize: file.bytes.length, sha256,
+      target: isPanel ? { panelId: target.panelId, panelRevision: target.panelRevision ?? null } : { assetId: target.assetId, variantId: target.variantId },
+      base: { versionId: isPanel ? null : target.baseVersionId },
+    }, true, { "Idempotency-Key": idempotencyKey });
     if (t.status === "candidate") return t;
-    const n = chunkCount(file.bytes.length);
+    const direct = usesDirectUpload(file.bytes.length);
+    const size = direct ? SIGNED_CHUNK_BYTES : CHUNK_BYTES;
+    const n = direct ? signedChunkCount(file.bytes.length) : chunkCount(file.bytes.length);
     let done = n - t.missingChunks.length;
     for (const i of t.missingChunks) {
-      const part = file.bytes.subarray(i * CHUNK_BYTES, Math.min(file.bytes.length, (i + 1) * CHUNK_BYTES));
-      await this.withRetry(() => this.raw("PUT", `/api/v1/projects/${projectId}/transfers/${t.id}/chunks/${i}`, part, { "Content-Type": "application/octet-stream" }));
+      const part = file.bytes.subarray(i * size, Math.min(file.bytes.length, (i + 1) * size));
+      if (direct) {
+        // Over 64 MiB: hent signert URL og PUT rett til lagringen (gjenopptakbar per bit).
+        const signed = await this.withRetry(() => this.json<{ url: string; headers?: Record<string, string> }>("POST", `/api/v1/projects/${projectId}/transfers/${t.id}/signed-chunks/${i}`, {}));
+        await this.withRetry(async () => {
+          const res = await this.o.fetch(new URL(signed.url, this.o.baseUrl).toString(), { method: "PUT", headers: { "Content-Type": "application/octet-stream", ...(signed.headers ?? {}) }, body: part as BodyInit });
+          if (!res.ok) throw new ConnectorError(res.status, "http_" + res.status);
+        });
+      } else {
+        await this.withRetry(() => this.raw("PUT", `/api/v1/projects/${projectId}/transfers/${t.id}/chunks/${i}`, part, { "Content-Type": "application/octet-stream" }));
+      }
       onProgress?.(++done, n);
     }
     return this.json<TransferInfo>("POST", `/api/v1/projects/${projectId}/transfers/${t.id}/complete`, {});
+  }
+  /** connector_links: koble en ekstern ID (fra programmet) til en ressurs, et panel eller et klipp. */
+  links(projectId: string, entity?: string, entityId?: string) {
+    const q = new URLSearchParams(); if (entity) q.set("linkEntity", entity); if (entityId) q.set("linkId", entityId);
+    const suffix = q.size ? `?${q}` : "";
+    return this.json<{ links: LinkInfo[] }>("GET", `/api/v1/projects/${projectId}/links${suffix}`);
+  }
+  putLink(projectId: string, link: { entity: "asset" | "panel" | "clip"; entityId: string; externalId: string }) {
+    return this.json<{ id: string; revision: number }>("PUT", `/api/v1/projects/${projectId}/links`, { linkEntity: link.entity, linkId: link.entityId, externalId: link.externalId });
+  }
+  removeLink(projectId: string, link: { entity: "asset" | "panel" | "clip"; externalId: string }) {
+    return this.json<{ removed: boolean }>("DELETE", `/api/v1/projects/${projectId}/links`, { linkEntity: link.entity, externalId: link.externalId });
+  }
+  /** notes:write: et notatflagg på et prosjektobjekt (vises som vanlig notat i appen). */
+  addNote(projectId: string, note: { targetKind: "occurrence" | "asset_version" | "asset_variant" | "audio_clip" | "dialogue_version"; targetId: string; text: string }) {
+    return this.json<{ id: string }>("POST", `/api/v1/projects/${projectId}/notes`, note);
   }
   /**
    * C-3: sender klipperytmen fra Premiere tilbake som forslag (manifest v1, adapter «adobe-premiere-uxp»).

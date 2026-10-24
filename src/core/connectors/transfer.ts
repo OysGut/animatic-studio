@@ -5,8 +5,18 @@
 import { AE_SAFE_EXTENSIONS, extensionOf } from "../interchange/media-formats";
 
 export const CHUNK_BYTES = 8 * 1024 * 1024;
-export const MAX_TRANSFER_BYTES = 64 * 1024 * 1024;
+export const MAX_TRANSFER_BYTES = 512 * 1024 * 1024;
 export const MAX_CHUNKS = Math.ceil(MAX_TRANSFER_BYTES / CHUNK_BYTES);
+/** Inntil 64 MiB går bitene gjennom API-et; over det lastes de rett til lagringen med signerte URL-er. */
+export const DIRECT_MAX_BYTES = 64 * 1024 * 1024;
+export const SIGNED_CHUNK_BYTES = 16 * 1024 * 1024;
+export const usesDirectUpload = (byteSize: number) => byteSize > DIRECT_MAX_BYTES;
+export const signedChunkCount = (byteSize: number) => Math.max(1, Math.ceil(byteSize / SIGNED_CHUNK_BYTES));
+export function expectedSignedChunkSize(byteSize: number, index: number): number {
+  const n = signedChunkCount(byteSize);
+  if (index < 0 || index >= n) return -1;
+  return index < n - 1 ? SIGNED_CHUNK_BYTES : byteSize - SIGNED_CHUNK_BYTES * (n - 1);
+}
 export const IDEMPOTENCY_RE = /^[A-Za-z0-9_-]{16,128}$/;
 
 export type TransferStatus = "reserved" | "uploading" | "received" | "candidate" | "rejected" | "failed";
@@ -69,12 +79,18 @@ export function missingChunks(byteSize: number, received: readonly number[]): nu
   return Array.from({ length: chunkCount(byteSize) }, (_, i) => i).filter(i => !have.has(i));
 }
 
+/** Målet er enten en ressursvariant (ny kandidatversjon) eller et storyboardpanel (skjult kandidat). */
+export type ReserveTarget =
+  | { readonly assetId: string; readonly variantId: string }
+  | { readonly panelId: string; readonly panelRevision?: number | null };
+export const reserveTargetPanel = (t: ReserveTarget): t is { readonly panelId: string; readonly panelRevision?: number | null } => "panelId" in t;
+
 export interface ReserveRequest {
   readonly idempotencyKey: string;
   readonly fileName: string;
   readonly byteSize: number;
   readonly sha256: string;
-  readonly target: { readonly assetId: string; readonly variantId: string };
+  readonly target: ReserveTarget;
   readonly base: { readonly versionId: string | null };
 }
 export type ReserveCheck = { ok: true } | { ok: false; reason: "idempotency" | "file" | "size" | "checksum" | "target" };
@@ -83,7 +99,14 @@ export function checkReserve(r: ReserveRequest): ReserveCheck {
   if (typeof r.fileName !== "string" || r.fileName.length < 1 || r.fileName.length > 255 || /[\\/]/.test(r.fileName) || !mimeForExtension(extensionOf(r.fileName))) return { ok: false, reason: "file" };
   if (!Number.isInteger(r.byteSize) || r.byteSize <= 0 || r.byteSize > MAX_TRANSFER_BYTES) return { ok: false, reason: "size" };
   if (!/^[0-9a-f]{64}$/.test(r.sha256)) return { ok: false, reason: "checksum" };
-  if (!r.target || typeof r.target.assetId !== "string" || typeof r.target.variantId !== "string") return { ok: false, reason: "target" };
+  const t = r.target;
+  if (!t || typeof t !== "object") return { ok: false, reason: "target" };
+  if (reserveTargetPanel(t)) {
+    if (typeof t.panelId !== "string" || !t.panelId) return { ok: false, reason: "target" };
+    if (t.panelRevision !== undefined && t.panelRevision !== null && (!Number.isInteger(t.panelRevision) || t.panelRevision < 0)) return { ok: false, reason: "target" };
+    return { ok: true };
+  }
+  if (typeof (t as { assetId?: unknown }).assetId !== "string" || typeof (t as { variantId?: unknown }).variantId !== "string") return { ok: false, reason: "target" };
   return { ok: true };
 }
 
@@ -96,4 +119,6 @@ export function idempotentReplay(existing: { fingerprint: string } | null, finge
   return existing.fingerprint === fingerprint ? "replay" : "conflict";
 }
 export const reserveFingerprint = (r: ReserveRequest): string =>
-  [r.fileName, r.byteSize, r.sha256, r.target.assetId, r.target.variantId, r.base.versionId ?? ""].join("|");
+  reserveTargetPanel(r.target)
+    ? [r.fileName, r.byteSize, r.sha256, "panel", r.target.panelId, r.target.panelRevision ?? "", r.base.versionId ?? ""].join("|")
+    : [r.fileName, r.byteSize, r.sha256, r.target.assetId, r.target.variantId, r.base.versionId ?? ""].join("|");
