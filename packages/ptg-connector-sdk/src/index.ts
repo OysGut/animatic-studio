@@ -10,6 +10,7 @@ import { pkceChallenge } from "../../../src/core/connectors/auth";
 import { CHUNK_BYTES, chunkCount } from "../../../src/core/connectors/transfer";
 import { validateManifest, type ConnectorManifest } from "../../../src/core/connectors/manifest";
 import type { AuditionPlan } from "../../../src/core/connectors/audition-session";
+import type { BlenderCameraPlan } from "../../../src/core/connectors/blender";
 
 export type { ConnectorManifest };
 /** C-7: delt, plattformnøytral SVG-/lenkemodell for Illustrator (CEP nå, UXP senere). */
@@ -147,6 +148,10 @@ export class PtgConnector {
   auditionPlan(projectId: string, occurrenceId: string, panelId?: string | null) {
     const q = new URLSearchParams({ occurrenceId }); if (panelId) q.set("panelId", panelId);
     return this.json<AuditionPlan>("GET", `/api/v1/projects/${projectId}/audition/plan?${q}`);
+  }
+  /** C-8: SB-9-kameraene per panel for én scene (Blender). Bare lesing. */
+  blenderCameras(projectId: string, occurrenceId: string) {
+    return this.json<BlenderCameraPlan>("GET", `/api/v1/projects/${projectId}/blender/cameras?${new URLSearchParams({ occurrenceId })}`);
   }
   /** Stabil idempotensnøkkel for en fil og et mål (samme fil til samme mål gjenopptas). */
   static idempotencyKey(fileSha256: string, target: { variantId: string; baseVersionId: string | null }): string {

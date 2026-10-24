@@ -22,6 +22,9 @@ export const ADAPTERS: readonly AdapterDescriptor[] = [
   { id: "adobe-illustrator-cep", name: "Adobe Illustrator", capabilities: ["read", "write", "layers"], exportFallback: "svg" },
   // C-6: Audition via CEP (ikke UXP). Lyd ut som BWF med ID-er og multitrack-økt; retur blir kandidatversjon.
   { id: "adobe-audition-cep", name: "Adobe Audition", capabilities: ["read", "write", "audio", "timeline"], exportFallback: "wav" },
+  // C-8: Python-tillegg. Krita: lag inn, flat PNG-kandidat tilbake. Blender: kamera/referanser inn, rendringer tilbake.
+  { id: "krita-python", name: "Krita", capabilities: ["read", "write", "layers"], exportFallback: "psd" },
+  { id: "blender-python", name: "Blender", capabilities: ["read", "write", "timeline"], exportFallback: "fbx" },
   { id: "daw-roundtrip", name: "DAW", capabilities: ["read", "write", "audio", "timeline"], exportFallback: "wav" },
   // C-4: Boords API (beta, betalt plan). Lese/skrive frames (action/sound/dialogue + bilde) og kommentarer.
   { id: "boords-api", name: "Boords", capabilities: ["read", "write", "notes"], exportFallback: "pdf" },

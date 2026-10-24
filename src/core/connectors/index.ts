@@ -12,3 +12,4 @@ export * from "./premiere";
 export * from "./audition-session";
 export * from "./audition";
 export * from "./illustrator-svg";
+export * from "./blender";
