@@ -92,7 +92,7 @@ describe("C-8 kontrakt: Python-klient og tillegg mot /api/v1 (lokal falsk server
     const chunks: Buffer[] = []; for await (const c of req) chunks.push(c as Buffer);
     now += 10_000; // tiden går mellom kall (enhetsflytens intervall)
     const body = chunks.length ? Buffer.concat(chunks) : undefined;
-    const request = new Request(`https://ptg.test${req.url}`, { method: req.method, headers: req.headers as Record<string, string>, ...(body && req.method !== "GET" ? { body } : {}) });
+    const request = new Request(`https://ptg.test${req.url}`, { method: req.method ?? "GET", headers: req.headers as Record<string, string>, ...(body && req.method !== "GET" ? { body: new Uint8Array(body) } : {}) });
     const out = await handleApiV1(request, { store: mem.store, now: () => now, random, ip: "127.0.0.1" });
     const bytes = new Uint8Array(await out.arrayBuffer());
     if (req.url === "/api/v1/oauth/device" && out.ok) mem.approveDevice(JSON.parse(new TextDecoder().decode(bytes)).user_code, r.s.project.id, USER);
