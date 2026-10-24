@@ -77273,5 +77273,92 @@
   },
   "sb6.camera-mark": {
     "text": "Kameramerker"
+  },
+  "sb9.plan": {
+    "text": "Plantegning"
+  },
+  "sb9.create": {
+    "text": "Opprett plantegning"
+  },
+  "sb9.previous": {
+    "text": "Kopier forrige blokking"
+  },
+  "sb9.width": {
+    "text": "Bredde (m)"
+  },
+  "sb9.height": {
+    "text": "Høyde (m)"
+  },
+  "sb9.object": {
+    "text": "Objekt"
+  },
+  "sb9.character": {
+    "text": "Karakter"
+  },
+  "sb9.camera": {
+    "text": "Kamera"
+  },
+  "sb9.axis": {
+    "text": "Handlingsakse"
+  },
+  "sb9.facing": {
+    "text": "Retning (grader)"
+  },
+  "sb9.movement": {
+    "text": "Bevegelse (grader)"
+  },
+  "sb9.sensor": {
+    "text": "Sensorbredde (mm)"
+  },
+  "sb9.transition": {
+    "text": "Overgang"
+  },
+  "sb9.inherit": {
+    "text": "Arv fra scenen"
+  },
+  "sb9.cut": {
+    "text": "Kutt"
+  },
+  "sb9.dissolve": {
+    "text": "Overtoning"
+  },
+  "sb9.black": {
+    "text": "Via svart"
+  },
+  "sb9.white": {
+    "text": "Via hvitt"
+  },
+  "sb9.wipe": {
+    "text": "Wipe"
+  },
+  "sb9.direction": {
+    "text": "Retning"
+  },
+  "sb9.left": {
+    "text": "Venstre"
+  },
+  "sb9.right": {
+    "text": "Høyre"
+  },
+  "sb9.center": {
+    "text": "Sentrert"
+  },
+  "sb9.continuity": {
+    "text": "Kontinuitet"
+  },
+  "sb9.crossing": {
+    "text": "Krysser handlingsaksen"
+  },
+  "sb9.gaze": {
+    "text": "Brudd på blikkretning"
+  },
+  "sb9.motion-break": {
+    "text": "Brudd på bevegelsesretning"
+  },
+  "sb9.approve": {
+    "text": "Godkjenn bevisst"
+  },
+  "sb9.reason": {
+    "text": "Begrunnelse"
   }
 }

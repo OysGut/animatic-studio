@@ -34702,6 +34702,93 @@
     "sb8.zoom-out": {
       "text": "Zoom ut"
     },
+    "sb9.approve": {
+      "text": "Godkjenn bevisst"
+    },
+    "sb9.axis": {
+      "text": "Handlingsakse"
+    },
+    "sb9.black": {
+      "text": "Via svart"
+    },
+    "sb9.camera": {
+      "text": "Kamera"
+    },
+    "sb9.center": {
+      "text": "Sentrert"
+    },
+    "sb9.character": {
+      "text": "Karakter"
+    },
+    "sb9.continuity": {
+      "text": "Kontinuitet"
+    },
+    "sb9.create": {
+      "text": "Opprett plantegning"
+    },
+    "sb9.crossing": {
+      "text": "Krysser handlingsaksen"
+    },
+    "sb9.cut": {
+      "text": "Kutt"
+    },
+    "sb9.direction": {
+      "text": "Retning"
+    },
+    "sb9.dissolve": {
+      "text": "Overtoning"
+    },
+    "sb9.facing": {
+      "text": "Retning (grader)"
+    },
+    "sb9.gaze": {
+      "text": "Brudd på blikkretning"
+    },
+    "sb9.height": {
+      "text": "Høyde (m)"
+    },
+    "sb9.inherit": {
+      "text": "Arv fra scenen"
+    },
+    "sb9.left": {
+      "text": "Venstre"
+    },
+    "sb9.motion-break": {
+      "text": "Brudd på bevegelsesretning"
+    },
+    "sb9.movement": {
+      "text": "Bevegelse (grader)"
+    },
+    "sb9.object": {
+      "text": "Objekt"
+    },
+    "sb9.plan": {
+      "text": "Plantegning"
+    },
+    "sb9.previous": {
+      "text": "Kopier forrige blokking"
+    },
+    "sb9.reason": {
+      "text": "Begrunnelse"
+    },
+    "sb9.right": {
+      "text": "Høyre"
+    },
+    "sb9.sensor": {
+      "text": "Sensorbredde (mm)"
+    },
+    "sb9.transition": {
+      "text": "Overgang"
+    },
+    "sb9.white": {
+      "text": "Via hvitt"
+    },
+    "sb9.width": {
+      "text": "Bredde (m)"
+    },
+    "sb9.wipe": {
+      "text": "Wipe"
+    },
     "script-explorer2.chip.menu": {
       "text": "Valg for {name}"
     },
@@ -69543,6 +69630,93 @@
     },
     "sb8.zoom-out": {
       "text": "Zoom out"
+    },
+    "sb9.approve": {
+      "text": "Approve intentionally"
+    },
+    "sb9.axis": {
+      "text": "Action axis"
+    },
+    "sb9.black": {
+      "text": "Through black"
+    },
+    "sb9.camera": {
+      "text": "Camera"
+    },
+    "sb9.center": {
+      "text": "Centered"
+    },
+    "sb9.character": {
+      "text": "Character"
+    },
+    "sb9.continuity": {
+      "text": "Continuity"
+    },
+    "sb9.create": {
+      "text": "Create floor plan"
+    },
+    "sb9.crossing": {
+      "text": "Crosses action axis"
+    },
+    "sb9.cut": {
+      "text": "Cut"
+    },
+    "sb9.direction": {
+      "text": "Direction"
+    },
+    "sb9.dissolve": {
+      "text": "Dissolve"
+    },
+    "sb9.facing": {
+      "text": "Facing (degrees)"
+    },
+    "sb9.gaze": {
+      "text": "Eyeline mismatch"
+    },
+    "sb9.height": {
+      "text": "Height (m)"
+    },
+    "sb9.inherit": {
+      "text": "Inherit from scene"
+    },
+    "sb9.left": {
+      "text": "Left"
+    },
+    "sb9.motion-break": {
+      "text": "Movement direction mismatch"
+    },
+    "sb9.movement": {
+      "text": "Movement (degrees)"
+    },
+    "sb9.object": {
+      "text": "Object"
+    },
+    "sb9.plan": {
+      "text": "Floor plan"
+    },
+    "sb9.previous": {
+      "text": "Copy previous blocking"
+    },
+    "sb9.reason": {
+      "text": "Reason"
+    },
+    "sb9.right": {
+      "text": "Right"
+    },
+    "sb9.sensor": {
+      "text": "Sensor width (mm)"
+    },
+    "sb9.transition": {
+      "text": "Transition"
+    },
+    "sb9.white": {
+      "text": "Through white"
+    },
+    "sb9.width": {
+      "text": "Width (m)"
+    },
+    "sb9.wipe": {
+      "text": "Wipe"
     },
     "script-explorer2.chip.menu": {
       "text": "Options for {name}"

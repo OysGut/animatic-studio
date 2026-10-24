@@ -77255,5 +77255,92 @@
   },
   "sb6.camera-mark": {
     "text": "[!! CCáámmëërráá mmáárrkkss !!]"
+  },
+  "sb9.plan": {
+    "text": "[!! FFllôôôôrr pplláánn !!]"
+  },
+  "sb9.create": {
+    "text": "[!! CCrrëëááttëë ffllôôôôrr pplláánn !!]"
+  },
+  "sb9.previous": {
+    "text": "[!! CCôôppyy pprrëëvvïïôôüüss bbllôôcckkïïnngg !!]"
+  },
+  "sb9.width": {
+    "text": "[!! WWïïddtthh (mm) !!]"
+  },
+  "sb9.height": {
+    "text": "[!! HHëëïïgghhtt (mm) !!]"
+  },
+  "sb9.object": {
+    "text": "[!! ÔÔbbjjëëcctt !!]"
+  },
+  "sb9.character": {
+    "text": "[!! CChháárrááccttëërr !!]"
+  },
+  "sb9.camera": {
+    "text": "[!! CCáámmëërráá !!]"
+  },
+  "sb9.axis": {
+    "text": "[!! ÁÁccttïïôônn ááxxïïss !!]"
+  },
+  "sb9.facing": {
+    "text": "[!! FFááccïïnngg (ddëëggrrëëëëss) !!]"
+  },
+  "sb9.movement": {
+    "text": "[!! MMôôvvëëmmëënntt (ddëëggrrëëëëss) !!]"
+  },
+  "sb9.sensor": {
+    "text": "[!! SSëënnssôôrr wwïïddtthh (mmmm) !!]"
+  },
+  "sb9.transition": {
+    "text": "[!! TTrráánnssïïttïïôônn !!]"
+  },
+  "sb9.inherit": {
+    "text": "[!! ÏÏnnhhëërrïïtt ffrrôômm ssccëënnëë !!]"
+  },
+  "sb9.cut": {
+    "text": "[!! CCüütt !!]"
+  },
+  "sb9.dissolve": {
+    "text": "[!! DDïïssssôôllvvëë !!]"
+  },
+  "sb9.black": {
+    "text": "[!! TThhrrôôüügghh bblláácckk !!]"
+  },
+  "sb9.white": {
+    "text": "[!! TThhrrôôüügghh wwhhïïttëë !!]"
+  },
+  "sb9.wipe": {
+    "text": "[!! WWïïppëë !!]"
+  },
+  "sb9.direction": {
+    "text": "[!! DDïïrrëëccttïïôônn !!]"
+  },
+  "sb9.left": {
+    "text": "[!! LLëëfftt !!]"
+  },
+  "sb9.right": {
+    "text": "[!! RRïïgghhtt !!]"
+  },
+  "sb9.center": {
+    "text": "[!! CCëënnttëërrëëdd !!]"
+  },
+  "sb9.continuity": {
+    "text": "[!! CCôônnttïïnnüüïïttyy !!]"
+  },
+  "sb9.crossing": {
+    "text": "[!! CCrrôôssssëëss ááccttïïôônn ááxxïïss !!]"
+  },
+  "sb9.gaze": {
+    "text": "[!! ËËyyëëllïïnnëë mmïïssmmááttcchh !!]"
+  },
+  "sb9.motion-break": {
+    "text": "[!! MMôôvvëëmmëënntt ddïïrrëëccttïïôônn mmïïssmmááttcchh !!]"
+  },
+  "sb9.approve": {
+    "text": "[!! ÁÁpppprrôôvvëë ïïnnttëënnttïïôônnáállllyy !!]"
+  },
+  "sb9.reason": {
+    "text": "[!! RRëëáássôônn !!]"
   }
 }
