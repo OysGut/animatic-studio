@@ -19,6 +19,20 @@ export const AUDITION_SAMPLE_RATE = 48000;
 export const AUDITION_MAX_CLIPS = 400;
 export const AUDITION_MAX_MARKERS = 2000;
 export const AUDITION_MAX_FILE_BYTES = 512 * 1024 * 1024;
+/** Takhøyde per konvertert fil (én time), så ett klipp aldri blir ubegrenset stort. */
+export const AUDITION_MAX_CONVERT_SECONDS = 3600;
+/** Lydfiler som nettleseren kan dekode og sende ut som merket WAV. */
+export const CONVERTIBLE_AUDIO_MIMES = {
+  "audio/mpeg": "mp3", "audio/mp3": "mp3", "audio/ogg": "ogg",
+  "audio/x-m4a": "m4a", "audio/mp4": "m4a", "audio/aac": "m4a", "audio/webm": "webm",
+} as const;
+export type ConvertibleAudioFormat = (typeof CONVERTIBLE_AUDIO_MIMES)[keyof typeof CONVERTIBLE_AUDIO_MIMES];
+export function convertibleAudioFrom(mimeType: string): ConvertibleAudioFormat | null {
+  const mime = mimeType.split(";")[0]!.trim().toLowerCase();
+  return Object.prototype.hasOwnProperty.call(CONVERTIBLE_AUDIO_MIMES, mime)
+    ? CONVERTIBLE_AUDIO_MIMES[mime as keyof typeof CONVERTIBLE_AUDIO_MIMES]
+    : null;
+}
 
 export type AuditionRole = "dialogue" | "music" | "effects" | "ambience" | "temp";
 export const AUDITION_ROLES: readonly AuditionRole[] = ["dialogue", "music", "effects", "ambience", "temp"];
@@ -72,6 +86,11 @@ const safe = (s: string) => s.normalize("NFC").replace(/[^\p{L}\p{N}_-]+/gu, "_"
 /** Filnavnet er bare for mennesker; koblingen går på ID-ene i metadata. */
 export function auditionFileName(c: AuditionClip, index: number): string {
   return `${pad(index + 1, 3)}_${c.role}_${safe(c.name)}_${c.versionId.slice(0, 8)}.wav`;
+}
+
+/** Konverterte filer merkes i navnet også, så ingen tror originalformatet ble sendt. */
+export function auditionConvertedFileName(c: AuditionClip, index: number, from: ConvertibleAudioFormat): string {
+  return auditionFileName(c, index).replace(/\.wav$/, `_from-${from}.wav`);
 }
 
 /** Metadata for én fil. Markørene er de som faller innenfor klippet, relativt til klippets start. */
