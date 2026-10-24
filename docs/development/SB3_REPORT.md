@@ -22,7 +22,7 @@ Dato: 24.10.2026. Ikke publisert. 0103 er låst. `0104_sb3_panel_editing.sql` er
 ## Tester og kontroll
 
 - Lokalt DB: **227 bestått, 0 feilet**, også ukjent replikk, ugyldig fokallengde/type, feil feltstruktur, prosjektfelt, RLS og search_path.
-- SB-3 kjerne: **8 bestått** (nummerering, angre/gjør om, prosjektfelt, row-roundtrip, backup-remapping, eksplisitt bane, lag/duplisering).
+- SB-3 kjerne: **9 bestått** (nummerering, angre/gjør om, prosjektfelt, row-roundtrip, backup-remapping, eksplisitt bane, lag/duplisering).
 - SB-3 brukerflate: **3 bestått**, bokmål/engelsk og snapshot før ny status.
 - SB-2 galleri: **13 bestått**, inkludert scenedrag/angre og 2 000 paneler.
 - Eksisterende PTG1: **14 bestått**, inkludert storyboardtilleggsfelt og uendret eksport uten paneler.
@@ -30,6 +30,23 @@ Dato: 24.10.2026. Ikke publisert. 0103 er låst. `0104_sb3_panel_editing.sql` er
 - Full Vitest kjøres etter siste endringer; endelig resultat føres nedenfor.
 - Forhåndsvisningens typekontroll: grønn. i18n: grønn, 0 tekster uten engelsk. Alle registrerte språk har SB-3-nøkler; fr/es/ru/ja/pt-BR/de/it/ko er maskinoversatt og merket for gjennomlesing.
 
-## Begrensninger som ikke skal krysses av som verifisert
+## Nettleser og begrensninger
 
-Nettleserprøven med mockede tjenester har vist lagring av lapp, lapptekst, ingen automatisk bane og `MoveOccurrence` på nb/en, men har avdekket feil ved førstevisningen (vindusmerke/første siderender). Den er ikke grønn før ny kontroll bekrefter dette. Cloud-endepunktet er ikke prøvd med 0104: Claude må kontrollere og kjøre migrasjonen før lagring av nye felt kan virke der. Ingen betalte kall, ingen private manus og ingen SB-4-funksjoner.
+Nettleserprøven nb/en er grønn: **10 bestått, 0 feilet**, med skjermbilder kontrollert. Oppsettet venter på førstevisning og bruker intern navigasjon etter mocket innlogging. Tidligere feil kom av navigasjon før startsidens førstevisning var ferdig; ingen feil filtreres bort. Vindusmerket vises etter førstevisningen, så serverens startsidemerke ikke kolliderer med klientens scene-ID. Cloud-endepunktet er ikke prøvd med 0104: Claude må kontrollere og kjøre migrasjonen før lagring av nye felt kan virke der. Ingen betalte kall, ingen private manus og ingen SB-4-funksjoner.
+
+
+## Endrede filer i SB-3-leveransen
+
+- `AGENTS.md`, `roadmap.md`, `docs/development/SB3_REPORT.md`, `docs/development/UI_IDS.md`.
+- `db/migrations/0104_sb3_panel_editing.sql`.
+- `src/core/storyboard/{editing.ts,editing-commands.ts,gallery.ts,index.ts}`.
+- `src/core/{model.ts,patch.ts}`, `src/core/commands/{types.ts,apply.ts}`, `src/core/composition/{index.ts,render.ts}`, `src/core/backup/index.ts`.
+- `src/core/interchange/shotlist.ts`, `src/engine/export/shotlist.ts`, `src/engine/compositor/canvas.ts`.
+- `src/app/storyboard/{PanelEditor.tsx,StoryboardWorkspace.tsx,AGENTS.md}`, `src/app/scene-editor/SceneEditorWorkspace.tsx`, `src/app/shared/UiId.tsx`, `src/app/ui-ids.ts`.
+- `src/adapters/storage/{project-rows.ts,commands.functions.ts}`.
+- `src/core/i18n/{authored.json,runtime.gen.json}`, `src/core/i18n/locales/{nb,en,en-XA,fr,es,ru,ja,pt-BR,de,it,ko}.json`.
+- `scripts/i18n/{baseline.v1.json,candidates.v1.json,mapping.v1.json,references.v1.json,inventory-report.json}` (katalog-/inventargenerering).
+- `tests/unit/{sb3-panel-editing.test.ts,sb3-panel-editor-ui.test.tsx,sb2-storyboard-gallery.test.tsx,ptg1-interchange.test.ts}`, `tests/db/run-db-tests.ts`.
+- `tests/visual/{sb3-panel-editing.mjs,make-sb3-fixture.ts,mts-harness.mjs,schema-version.mjs}`.
+
+Arbeidsmetodene «Arkitektur og data – Animatic Studio» og «Testing – Animatic Studio» er fulgt; de historiske skill-navnene er ikke produktnavn i brukerflaten.

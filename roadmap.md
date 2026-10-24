@@ -85,14 +85,14 @@
 - [x] Tester jsdom (13) + rapport; typekontroll/i18n grønne, DB 227/0. Full Vitest gjentatt uten feil (2892/0/10); visuell nb/en kontroll videreført i SB-3.
 
 ## SB-3 panelredigering (23.10.2026) – kjøres etter SB-2
-- [~] Panelflate: dra inn ressurser (ID+versjon, proporsjoner), flytt/skaler/roter/ordne/lås/skjul
-- [~] Verktøy: pil/linje, figur, tekst, kameramerke, lapp (type, forankring, behandlet), vis/skjul notater; tråder via notatsystemet
+- [x] Panelflate: dra inn ressurser (ID+versjon, proporsjoner), flytt/skaler/roter/ordne/lås/skjul
+- [x] Verktøy: pil/linje, figur, tekst, kameramerke, lapp (type, forankring, behandlet), vis/skjul notater; tråder via notatsystemet
 - [x] «Bruk som bevegelsesbane» (eksplisitt, utkast)
 - [x] Revisjoner: «Rediger storyboard» på godkjent panel lager ny revisjon; vis tidligere
 - [x] Låst nummerering (12, 12A) + angrebar «Nummerer på nytt» med forhåndsvisning
 - [x] Egendefinerte felt per prosjekt; dialog koblet til replikker
-- [~] Kamera/utsnitt per panel, formatmasker, sikre soner, tredjedeler
-- [~] Hurtigtaster i «?»-hjelpen
+- [x] Kamera/utsnitt per panel, formatmasker, sikre soner, tredjedeler
+- [x] Hurtigtaster i «?»-hjelpen
 - [~] Tester + rapport docs/development/SB3_REPORT.md; siste fullkjøring og visuell førstevisning kontrolleres; nye DB-endringer i 0104. 0103 og eldre er låst; ingen publisering.
 
 ## SB-4 tid, avspilling, storyboardfilm og sømløs veksling (23.10.2026) – kjøres etter SB-3
