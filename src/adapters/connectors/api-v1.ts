@@ -94,7 +94,7 @@ async function token(req: Request, d: ApiDeps): Promise<Response> {
     if (!r) return apiError(400, "invalid_grant");
     if (r.status === "pending") return apiError(400, "authorization_pending");
     if (r.status === "denied") return apiError(400, "access_denied");
-    if (r.status === "expired") return apiError(400, "expired_token");
+    if (r.status !== "approved") return apiError(400, "expired_token");
     if (r.clientId !== s(b["client_id"])) return apiError(400, "invalid_grant");
     return issue(d, r);
   }

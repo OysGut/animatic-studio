@@ -108,7 +108,7 @@ export function validateManifest(input: unknown, byteLength?: number): ManifestR
   else if (items.length > MAX_MANIFEST_ITEMS) add("$.items", "size");
   else items.forEach((it, i) => {
     const p = `$.items[${i}]`;
-    if (!isObj(it)) return add(p, "type");
+    if (!isObj(it)) { add(p, "type"); return; }
     if (!KINDS.has(String(it["kind"]))) add(`${p}.kind`, "format");
     if (!str(it["id"], 64)) add(`${p}.id`, "required");
     if (it["revision"] !== undefined && !int(it["revision"], 0, 1e9)) add(`${p}.revision`, "range");
@@ -127,7 +127,7 @@ export function validateManifest(input: unknown, byteLength?: number): ManifestR
       if (!Array.isArray(files) || files.length > 1000) add(`${p}.files`, "type");
       else files.forEach((f, j) => {
         const q = `${p}.files[${j}]`;
-        if (!isObj(f)) return add(q, "type");
+        if (!isObj(f)) { add(q, "type"); return; }
         if (!str(f["path"], 1000) || String(f["path"]).includes("..") || String(f["path"]).startsWith("/")) add(`${q}.path`, "format");
         if (!(typeof f["sha256"] === "string" && SHA.test(f["sha256"]))) add(`${q}.sha256`, "format");
         if (!int(f["byteSize"], 0, 2 ** 40)) add(`${q}.byteSize`, "range");

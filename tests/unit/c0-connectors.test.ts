@@ -289,7 +289,7 @@ describe("C-0 OpenAPI og SDK-arkitektur", () => {
       if (path === "/openapi.json") continue;
       for (const method of Object.keys(item)) {
         const url = "https://ptg.test/api/v1" + path.replace("{projectId}", h.s.project.id).replace("{assetId}", h.assetId).replace("{transferId}", "00000000-0000-4000-8000-000000000001").replace("{index}", "0");
-        const res = await h.fetchFn(url, { method: method.toUpperCase(), body: method === "get" ? undefined : "{}", headers: { "Content-Type": "application/json" } });
+        const res = await h.fetchFn(url, method === "get" ? { method: "GET" } : { method: method.toUpperCase(), body: "{}", headers: { "Content-Type": "application/json" } });
         const body = (await res.json()) as { error?: string };
         expect(body.error === "not_found" && res.status === 404 && !path.includes("{transferId}"), `${method} ${path}`).toBe(false);
       }
