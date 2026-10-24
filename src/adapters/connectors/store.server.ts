@@ -4,7 +4,7 @@
  * godkjente tilkoblingen (redaktørsjekk der).
  */
 import { applyCommand, diffStates, newId } from "@/core";
-import { planCandidate } from "@/core/connectors";
+import { planCandidate, sha256Hex } from "@/core/connectors";
 import { loadProjectState, type AnyClient } from "@/adapters/storage/project-rows";
 import type { ConnectorStore, StoredTransfer } from "./api-v1";
 
@@ -104,6 +104,35 @@ export async function cloudConnectorStore(): Promise<ConnectorStore> {
       const r = await db.rpc("connector_resolve_conflict_for", { p_user: userId, p_project: projectId, p_id: id, p_choice: choice, p_revision: revision });
       if (r.error) return "not_found";
       return r.data as "ok" | "stale" | "not_found" | "forbidden" | "choice";
+    },
+    async saveSbproReturn(r) {
+      const prev = await db.from("connector_returns").select("id").eq("project_id", r.projectId).eq("source", "sbpro").eq("manifest_hash", r.hash).maybeSingle();
+      let returnId = prev.data?.["id"] as string | undefined;
+      const replayed = !!returnId;
+      if (!returnId) {
+        const ins = await db.from("connector_returns").insert({ project_id: r.projectId, production_id: r.productionId, source: "sbpro", session_id: r.sessionId, created_by: r.userId, manifest_hash: r.hash, panel_count: r.panelCount }).select("id").single();
+        if (ins.error) throw ins.error;
+        returnId = String(ins.data["id"]);
+        const rows = r.candidates.map(c => ({ project_id: r.projectId, return_id: returnId, item_key: c.key, panel_id: c.panelId, kind: c.kind, incoming: c.incoming, conflict: c.conflict, media_sha256: c.image?.sha256 ?? null, media_bytes: c.image?.byteSize ?? null, status: c.image ? "awaiting_file" : "open" }));
+        for (let i = 0; i < rows.length; i += 500) { const up = await db.from("connector_panel_candidates").insert(rows.slice(i, i + 500)); if (up.error) throw up.error; }
+      }
+      const waiting = await db.from("connector_panel_candidates").select("id,item_key,media_sha256,media_bytes").eq("return_id", returnId).eq("status", "awaiting_file").limit(5000);
+      return { returnId: returnId!, replayed, uploads: ((waiting.data ?? []) as Record<string, any>[]).map(w => ({ candidateId: w["id"], key: w["item_key"], sha256: w["media_sha256"], byteSize: Number(w["media_bytes"]) })) };
+    },
+    async putSbproImage(projectId, returnId, candidateId, bytes) {
+      if (!/^[0-9a-f-]{36}$/.test(returnId) || !/^[0-9a-f-]{36}$/.test(candidateId)) return "not_found";
+      const c = await db.from("connector_panel_candidates").select("status,media_sha256").eq("id", candidateId).eq("return_id", returnId).eq("project_id", projectId).maybeSingle();
+      if (!c.data) return "not_found";
+      if (c.data["status"] !== "awaiting_file") return "done";
+      const sha = sha256Hex(bytes);
+      if (sha !== c.data["media_sha256"]) return "sha";
+      if (!(await rpc("connector_check_quota", { p_project: projectId, p_bytes: bytes.length }))) return "not_found";
+      const path = `${projectId}/connectors/sbpro/${sha}.png`;
+      const up = await db.storage.from("assets").upload(path, bytes, { contentType: "image/png", upsert: true });
+      if (up.error) throw up.error;
+      const u = await db.from("connector_panel_candidates").update({ media_path: path, status: "open" }).eq("id", candidateId).eq("status", "awaiting_file");
+      if (u.error) throw u.error;
+      return "ok";
     },
     async listConflicts(projectId) {
       const { data } = await db.from("connector_conflicts").select("id,variant_id,base_version_id,current_version_id,incoming_version_id,status,choice,created_at,revision").eq("project_id", projectId).order("created_at", { ascending: false }).limit(200);
