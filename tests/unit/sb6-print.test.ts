@@ -1,7 +1,7 @@
 // @vitest-environment node
 import { describe, it, expect } from "vitest";
 import { PRINT_PAPERS, panelPrintRows, printLayout, printTable, printCsv } from "@/core/storyboard/print";
-import { exportChunks, storyboardXlsx } from "@/engine/export/storyboard-print";
+import { exportChunks, storyboardXlsx, storyboardCsv } from "@/engine/export/storyboard-print";
 import { mustApply, seedProject, tid } from "../helpers/fixtures";
 import { filmClips, orderedOccurrences } from "@/core";
 
@@ -63,4 +63,18 @@ it("500 panels yield input and cancellation stops at the next chunk", async () =
   const ctrl = new AbortController(), done: number[] = [];
   const promise = exportChunks(Array.from({ length: 500 }, (_, i) => i), ctrl.signal, async i => { done.push(i); if (i === 19) ctrl.abort(); });
   await expect(promise).rejects.toMatchObject({ name: "AbortError" }); expect(done).toHaveLength(20);
+});
+it("chunked CSV matches BOM, row quoting and selected fields exactly", async () => {
+  const table = printTable(fixture(), ["dialogue", "notes"], {});
+  const blob = await storyboardCsv(table, new AbortController().signal);
+  expect(new Uint8Array(await blob.arrayBuffer())).toEqual(printCsv(table));
+});
+it("actual 500-row spreadsheet exports can be cancelled without returning a partial file", async () => {
+  const row = fixture()[0]; if (!row) throw new Error("fixture");
+  const table = printTable(Array.from({ length: 500 }, () => row), ["duration"], {});
+  for (const exporter of [storyboardCsv, storyboardXlsx]) {
+    const ctrl = new AbortController(); let progress = 0;
+    await expect(exporter(table, ctrl.signal, done => { progress = done; if (done === 20) ctrl.abort(); })).rejects.toMatchObject({ name: "AbortError" });
+    expect(progress).toBe(20);
+  }
 });
