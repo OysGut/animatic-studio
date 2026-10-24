@@ -1,0 +1,21 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src https://pentoglass.com; script-src 'self'; style-src 'self' 'unsafe-inline'" />
+    <style>
+      body { font-family: system-ui, sans-serif; font-size: 12px; padding: 8px; color: #ddd; background: #2b2b2b; }
+      main { display: flex; flex-direction: column; gap: 8px; }
+      .ptg-title { font-size: 14px; margin: 0; }
+      dl { display: grid; grid-template-columns: auto 1fr; gap: 2px 8px; margin: 0; }
+      dt { opacity: 0.7; }
+      dd { margin: 0; }
+      input, select, button { width: 100%; }
+    </style>
+  </head>
+  <body>
+    <main id="ptg-root"></main>
+    <script src="CSInterface.js"></script>
+    <script src="main.js"></script>
+  </body>
+</html>

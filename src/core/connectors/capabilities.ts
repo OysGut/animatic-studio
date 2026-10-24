@@ -18,6 +18,8 @@ export const ADAPTERS: readonly AdapterDescriptor[] = [
   { id: "adobe-premiere-uxp", name: "Adobe Premiere Pro", capabilities: ["read", "write", "audio", "timeline", "notes"], exportFallback: "fcp7" },
   { id: "adobe-after-effects-legacy", name: "Adobe After Effects", capabilities: ["read", "layers", "timeline"], exportFallback: "ae" },
   { id: "procreate-handoff", name: "Procreate", capabilities: ["read", "write"], exportFallback: "png" },
+  // C-7: Illustrator via CEP/ExtendScript (UXP ikke offentlig). SVG/.ai ut med lag; retur som flat PNG-kandidat.
+  { id: "adobe-illustrator-cep", name: "Adobe Illustrator", capabilities: ["read", "write", "layers"], exportFallback: "svg" },
   // C-6: Audition via CEP (ikke UXP). Lyd ut som BWF med ID-er og multitrack-økt; retur blir kandidatversjon.
   { id: "adobe-audition-cep", name: "Adobe Audition", capabilities: ["read", "write", "audio", "timeline"], exportFallback: "wav" },
   { id: "daw-roundtrip", name: "DAW", capabilities: ["read", "write", "audio", "timeline"], exportFallback: "wav" },

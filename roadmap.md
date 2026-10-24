@@ -1,5 +1,15 @@
 # Veikart
 
+## C-7 – Adobe Illustrator (CEP + ExtendScript) (bygget, ikke verifisert i Illustrator)
+- [x] 0113 og 0114 låst i migration-hashes.json (låsetest til 0114); ingen ny migrasjon trengtes
+- [x] Delt SVG-/lenkemodell i kjernen (src/core/connectors/illustrator-svg.ts), eksportert fra SDK-et
+- [x] Plugin plugins/illustrator (CEP 11+, Illustrator 27+): PKCE (ptg.illustrator) + enhetsflyt, ingen hemmeligheter, tynt vertslag
+- [x] Ut: ressursversjon som SVG i nøyaktig pikselstørrelse og ppi, kildelag og tegnelag, .ai der det går, manifest v1; C-1-pakker for panel/ressurs med lag, grupper, navn og synlighet
+- [x] Tilbake: XMP-kobling; artboard som PNG med alfa i ressursens størrelse blir kandidatversjon via C-0; tre konfliktvalg; ingen automatisk bruk
+- [ ] SVG/.ai som egen versjon (prosjektmodellen lagrer bare PNG/JPEG/WebP/GIF) – krever Øystein
+- [ ] Panelretur via C-0 (i dag via C-1-retursiden)
+- [ ] Verifisering i ekte Illustrator – sjekklisten i C7_REPORT.md
+
 ## C-6 – Adobe Audition (CEP-panel) (bygget, ikke verifisert i Audition)
 - [x] 0112 låst i migration-hashes.json (låsetest til 0112); ingen ny migrasjon trengtes
 - [x] Plugin plugins/audition (CEP 11+, Audition 24+, ExtendScript): PKCE (ptg.audition) + enhetsflyt, ingen hemmeligheter
