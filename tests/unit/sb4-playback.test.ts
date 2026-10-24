@@ -29,6 +29,9 @@ import {
   type ProjectState,
 } from "@/core";
 import { envelope, mustApply, seedProject, tid } from "../helpers/fixtures";
+import { panelPosition, positionIndex, scrubFrame } from "@/core/storyboard/position";
+import { usePanelAudioPlan } from "@/core/storyboard/temp-audio";
+import { panelDetails, storyboardTempAudioItems } from "@/core";
 
 function addPanel(s: ProjectState, occId: string, orderKey: string, durationFrames = 0) {
   const panelId = tid<"composition">();
@@ -341,6 +344,32 @@ describe("SB-4 bildekildeadapteren", () => {
 });
 
 describe("SB-4 kommandoer for midlertidig panellyd er vanlige kommandoer", () => {
+  it("lyd forblir midlertidig til eksplisitt plan brukes; planen kan angres og gjøres om", () => {
+    const { s: base, mainId, occs } = setup(1);
+    const sound = withSound(base);
+    const p = addPanel(sound.s, occs[0] ?? "", "a", 50);
+    const version = Object.values(p.s.assetVersions).find(v => p.s.assetVariants[v.variantId]?.assetId === sound.assetId);
+    if (!version) throw new Error("Missing audio fixture");
+    const panel = p.s.compositions[p.panelId];
+    if (!panel) throw new Error("Missing panel fixture");
+    const tempAudio = {assetId:sound.assetId,versionId:version.id,name:"Temporary",durationMs:8000};
+    const added = applyCommand(p.s,envelope({type:"SetStoryboardDetails",panelId:p.panelId,details:{...panelDetails(panel),tempAudio}}));
+    expect(added.ok).toBe(true); if (!added.ok) return;
+    expect(Object.keys(added.state.audioClips)).toHaveLength(0);
+    const shots = storyboardTimeline(added.state,filmClips(added.state,mainId));
+    expect(storyboardTempAudioItems(added.state,shots,added.state.project.fps)[0]?.version).toBe(added.state.assetVersions[version.id]);
+    const commands=usePanelAudioPlan(added.state,p.panelId,tid<"audio_clip">());
+    expect(commands).toHaveLength(2);
+    let state=added.state; const inverses=[];
+    for(const command of commands){const result=applyCommand(state,envelope(command));expect(result.ok).toBe(true);if(!result.ok)return;state=result.state;inverses.unshift(result.inverse);}
+    expect(Object.values(state.audioClips)[0]?.versionId).toBe(version.id);
+    expect(state.compositions[p.panelId]?.storyboard?.tempAudio).toBeNull();
+    for(const inverse of inverses) state=mustApply(state,inverse);
+    expect(Object.keys(state.audioClips)).toHaveLength(0);
+    expect(state.compositions[p.panelId]?.storyboard?.tempAudio).toEqual(tempAudio);
+    for(const command of commands) state=mustApply(state,command);
+    expect(Object.keys(state.audioClips)).toHaveLength(1);
+  });
   it("SetStoryboardPanelTempAudio har invers og anger rent", () => {
     let { s, occs } = setup(1);
     const p = addPanel(s, occs[0]!, "a", 50);
@@ -355,5 +384,23 @@ describe("SB-4 kommandoer for midlertidig panellyd er vanlige kommandoer", () =>
     if (!r.ok) return;
     const u = applyCommand(r.state, envelope(r.inverse));
     expect(u.ok).toBe(true);
+  });
+});
+
+describe("SB-4 felles posisjon og stille scrubbing", () => {
+  it("scrubbing speiler tidsretningen i RTL og holder grensene", () => {
+    expect(scrubFrame(0,100,51,false)).toBe(0);
+    expect(scrubFrame(100,100,51,false)).toBe(50);
+    expect(scrubFrame(0,100,51,true)).toBe(50);
+    expect(scrubFrame(100,100,51,true)).toBe(0);
+    expect(scrubFrame(200,100,51,false)).toBe(50);
+  });
+  it("eksakt tid beholdes i panelet og begrenses til panelets siste bilde", () => {
+    const {s,mainId,occs}=setup(1);const occurrence=occs[0]??"";
+    const a=addPanel(s,occurrence,"a",50);const b=addPanel(a.s,occurrence,"b",50);
+    const index=positionIndex(b.s,mainId);
+    expect(panelPosition(b.s,occurrence,b.panelId,null,2500,index)?.timeMs).toBe(2500);
+    expect(panelPosition(b.s,occurrence,b.panelId,null,99999,index)?.timeMs).toBe(3960);
+    expect(panelPosition(b.s,occurrence,null,null,2500,index)?.panelId).toBe(b.panelId);
   });
 });
