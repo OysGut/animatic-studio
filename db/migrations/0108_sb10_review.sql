@@ -4,7 +4,7 @@ create table public.storyboard_shares (
  created_by uuid not null,created_at timestamptz not null default now(),token_hash text not null unique check(token_hash ~ '^[0-9a-f]{64}$'),
  password_hash text,expires_at timestamptz not null,revoked boolean not null default false,ready boolean not null default false,
  title text not null check(length(title)<=500),allow_comments boolean not null default true,allow_approval boolean not null default false,
- manifest jsonb not null check(jsonb_typeof(manifest)='array' and jsonb_array_length(manifest) between 1 and 500 and octet_length(manifest::text)<=2000000),
+ manifest jsonb not null check(jsonb_typeof(manifest)='array' and jsonb_array_length(manifest) between 1 and 500 and octet_length(manifest::text)<=2000000 and pg_column_size(manifest)<=2000000),
  video_key text not null,video_bytes bigint, fps double precision not null check(fps>0 and fps<=240)
 );
 grant select on public.storyboard_shares to authenticated;
@@ -20,7 +20,7 @@ create table public.storyboard_feedback (
  guest_name text not null check(length(guest_name) between 1 and 100),guest_email text check(length(guest_email)<=254),
  text text not null default '' check(length(text)<=4000 and text !~ '<[^>]*>'),decision text not null default 'none' check(decision in('none','approved','changes')),
  pin_x double precision,pin_y double precision,created_at timestamptz not null default now(),revision integer not null default 1,
- resolved boolean not null default false,replies jsonb not null default '[]' check(jsonb_typeof(replies)='array' and octet_length(replies::text)<=64000),task_id uuid,
+ resolved boolean not null default false,replies jsonb not null default '[]' check(jsonb_typeof(replies)='array' and octet_length(replies::text)<=64000 and pg_column_size(replies)<=64000),task_id uuid,
  check((pin_x is null and pin_y is null) or(pin_x is not null and pin_y is not null and pin_x between 0 and 1 and pin_y between 0 and 1))
 );
 grant select on public.storyboard_feedback to authenticated;
@@ -64,4 +64,7 @@ create policy sb10_frozen_review_update on storage.objects as restrictive for up
  with check(bucket_id<>'assets' or public.storyboard_review_path_writable(name));
 create policy sb10_frozen_review_delete on storage.objects as restrictive for delete to authenticated
  using(bucket_id<>'assets' or public.storyboard_review_path_writable(name));
+-- Browsers only read; all writes go through service-role server functions.
+revoke insert,update,delete,truncate,references,trigger on public.storyboard_shares,public.storyboard_feedback from authenticated;
+revoke all on public.storyboard_shares,public.storyboard_feedback from anon;
 insert into public.schema_version(version,description)values(108,'SB-10 storyboard guest review');

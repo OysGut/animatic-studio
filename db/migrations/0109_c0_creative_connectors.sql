@@ -240,5 +240,8 @@ end $$;
 revoke all on function public.connector_resolve_conflict(uuid,text,integer) from public,anon;
 grant execute on function public.connector_resolve_conflict(uuid,text,integer) to authenticated;
 
+-- Browsers only read; all writes go through service-role code and security-definer RPCs.
+revoke insert,update,delete,truncate,references,trigger on public.connector_sessions,public.connector_links,public.connector_transfers,public.connector_conflicts from authenticated;
+revoke all on public.connector_sessions,public.connector_links,public.connector_transfers,public.connector_conflicts from anon;
 insert into public.schema_version(version,description) values(109,'C-0 creative connectors core');
 commit;
