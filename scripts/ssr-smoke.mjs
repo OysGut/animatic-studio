@@ -13,7 +13,7 @@ import { tmpdir } from "node:os";
 import { resolve } from "node:path";
 
 const PORT = Number(process.env.SSR_PORT ?? 8799);
-const PATHS = ["/", "/nb", "/konto", "/koble", "/prosjekt/00000000-0000-7000-8000-000000000001", "/prosjekt/00000000-0000-7000-8000-000000000001/storyboard"];
+const PATHS = ["/", "/nb", "/konto", "/koble", "/retur", "/r/ptgh_AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "/prosjekt/00000000-0000-7000-8000-000000000001", "/prosjekt/00000000-0000-7000-8000-000000000001/storyboard"];
 const BAD_TEXT = ["The page could not be shown", "\"unhandled\":true"];
 const findConfig = () => [".output/server/wrangler.json", "dist/server/wrangler.json"].find((p) => existsSync(p)) ?? ".output/server/wrangler.json";
 let CONFIG = findConfig();
