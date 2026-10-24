@@ -77978,5 +77978,122 @@
   },
   "c4.comments.out": {
     "text": "[!! TTôô BBôôôôrrddss !!]"
+  },
+  "c5.open": {
+    "text": "[!! SSttôôrryybbôôáárrdd PPrrôô !!]"
+  },
+  "c5.title": {
+    "text": "[!! TTôôôônn BBôôôômm SSttôôrryybbôôáárrdd PPrrôô !!]"
+  },
+  "c5.intro": {
+    "text": "[!! DDôôwwnnllôôáádd áá ppáácckkáággëë ffôôrr tthhëë SSttôôrryybbôôáárrdd PPrrôô ssccrrïïppttss, áánndd rrëëvvïïëëww wwhháátt ccôômmëëss bbáácckk. NNôôtthhïïnngg ïïss ááppppllïïëëdd ááüüttôômmááttïïccáállllyy. !!]"
+  },
+  "c5.download": {
+    "text": "[!! DDôôwwnnllôôáádd ppáácckkáággëë !!]"
+  },
+  "c5.download.info": {
+    "text": "[!! TThhëë ppáácckkáággëë hhááss {count} ppáánnëëllss wwïïtthh ïïmmáággëëss, ttïïmmïïnngg, ttëëxxtt ffïïëëllddss, ccáámmëërráá áánndd ttëëmmppôôrráárryy ppáánnëëll ssôôüünndd. !!]"
+  },
+  "c5.download.done": {
+    "text": "[!! TThhëë ppáácckkáággëë wwïïtthh {count} ppáánnëëllss wwááss ddôôwwnnllôôááddëëdd. ÜÜnnzzïïpp ïïtt áánndd üüssëë PPttGG_ÏÏmmppôôrrtt ïïnn SSttôôrryybbôôáárrdd PPrrôô. !!]"
+  },
+  "c5.progress": {
+    "text": "[!! PPrrëëppáárrïïnngg ppáánnëëll {done} ôôff {total} … !!]"
+  },
+  "c5.login-info": {
+    "text": "[!! TThhëë PPttGG_LLôôggïïnn ssccrrïïpptt sshhôôwwss áá ccôôddëë. ÁÁpppprrôôvvëë ïïtt ôônn tthhëë “CCôônnnnëëcctt áá pprrôôggrráámm” ppáággëë. !!]"
+  },
+  "c5.candidates": {
+    "text": "[!! FFrrôômm SSttôôrryybbôôáárrdd PPrrôô !!]"
+  },
+  "c5.none": {
+    "text": "[!! NNôô ccáánnddïïddááttëëss áárrëë wwááïïttïïnngg. !!]"
+  },
+  "c5.conflict": {
+    "text": "[!! CCôônnffllïïcctt !!]"
+  },
+  "c5.timing": {
+    "text": "[!! TTïïmmïïnngg: {from} → {to} ffrráámmëëss !!]"
+  },
+  "c5.suggestion": {
+    "text": "[!! ÔÔnnllyy áá ssüüggggëëssttïïôônn, bbëëccááüüssëë ïïtt ïïss nnôôtt llôôssssllëëssss: {reasons}. !!]"
+  },
+  "c5.use-incoming": {
+    "text": "[!! ÜÜssëë ïïnnccôômmïïnngg !!]"
+  },
+  "c5.keep-both": {
+    "text": "[!! KKëëëëpp bbôôtthh !!]"
+  },
+  "c5.keep-current": {
+    "text": "[!! KKëëëëpp ccüürrrrëënntt !!]"
+  },
+  "c5.reject": {
+    "text": "[!! RRëëjjëëcctt !!]"
+  },
+  "c5.stale": {
+    "text": "[!! TThhëë ppáánnëëll cchháánnggëëdd ááffttëërr tthhëë rrëëttüürrnn. SSëënndd áá nnëëww rrëëttüürrnn ffrrôômm SSttôôrryybbôôáárrdd PPrrôô. !!]"
+  },
+  "c5.incoming": {
+    "text": "[!! FFrrôômm SSttôôrryybbôôáárrdd PPrrôô !!]"
+  },
+  "c5.error": {
+    "text": "[!! SSôômmëëtthhïïnngg wwëënntt wwrrôônngg wwïïtthh tthhëë SSttôôrryybbôôáárrdd PPrrôô ccôônnnnëëccttïïôônn. !!]"
+  },
+  "c5.image-name": {
+    "text": "[!! PPáánnëëll ïïmmáággëë ffrrôômm SSttôôrryybbôôáárrdd PPrrôô !!]"
+  },
+  "c5.all-panels": {
+    "text": "[!! áállll ppáánnëëllss !!]"
+  },
+  "c5.kind.text": {
+    "text": "[!! TTëëxxtt !!]"
+  },
+  "c5.kind.timing": {
+    "text": "[!! TTïïmmïïnngg !!]"
+  },
+  "c5.kind.image": {
+    "text": "[!! ÏÏmmáággëë !!]"
+  },
+  "c5.kind.new_panel": {
+    "text": "[!! NNëëww ppáánnëëll !!]"
+  },
+  "c5.kind.conform": {
+    "text": "[!! ÔÔrrddëërr áánndd ttïïmmïïnngg !!]"
+  },
+  "c5.reason.new": {
+    "text": "[!! nnëëww ppáánnëëllss !!]"
+  },
+  "c5.reason.missing": {
+    "text": "[!! ppáánnëëllss áárrëë mmïïssssïïnngg !!]"
+  },
+  "c5.reason.moved-scene": {
+    "text": "[!! ppáánnëëllss mmôôvvëëdd ttôô áánnôôtthhëërr ssccëënnëë !!]"
+  },
+  "c5.reason.conflict": {
+    "text": "[!! ppáánnëëllss cchháánnggëëdd ïïnn bbôôtthh pprrôôggrráámmss !!]"
+  },
+  "c5.reason.unknown-scene": {
+    "text": "[!! üünnkknnôôwwnn ppáánnëëllss !!]"
+  },
+  "c5.reason.fps": {
+    "text": "[!! ddïïffffëërrëënntt ffrráámmëë rrááttëë !!]"
+  },
+  "c5.limit.no-browser": {
+    "text": "[!! SSttôôrryybbôôáárrdd PPrrôô hhááss nnôô bbrrôôwwssëërr; ssïïggnn-ïïnn üüssëëss áá ccôôddëë. !!]"
+  },
+  "c5.limit.no-layers-back": {
+    "text": "[!! FFlláátt ppáánnëëll ïïmmáággëëss ccôômmëë bbáácckk, nnôôtt llááyyëërrss. !!]"
+  },
+  "c5.limit.captions-only": {
+    "text": "[!! ÔÔnnllyy DDïïáállôôggüüëë, ÁÁccttïïôônn NNôôttëëss áánndd NNôôttëëss áárrëë ëëxxcchháánnggëëdd ááss ttëëxxtt. !!]"
+  },
+  "c5.limit.no-auto-apply": {
+    "text": "[!! NNôôtthhïïnngg ïïss ááppppllïïëëdd ááüüttôômmááttïïccáállllyy. !!]"
+  },
+  "c5.limit.lossless-conform-only": {
+    "text": "[!! ÔÔrrddëërr áánndd ttïïmmïïnngg áárrëë ááppppllïïëëdd ïïnn ôônnëë ssttëëpp ôônnllyy wwhhëënn llôôssssllëëssss. !!]"
+  },
+  "c5.limit.unverified": {
+    "text": "[!! BBüüïïlltt, nnôôtt vvëërrïïffïïëëdd ïïnn SSttôôrryybbôôáárrdd PPrrôô. !!]"
   }
 }

@@ -107,5 +107,7 @@
   "0106_sb8_sketch.sql": "81793900cf3a143f4613cb08a8086d04",
   "0107_sb9_blocking.sql": "934f119a5e8eed085332eea7ed4d5815",
   "0108_sb10_review.sql": "d2765f99374350cbc72509d9af1b5dee",
-  "0109_c0_creative_connectors.sql": "2b0d27bf8818ac8d741016742beaea68"
+  "0109_c0_creative_connectors.sql": "2b0d27bf8818ac8d741016742beaea68",
+  "0110_c1_handoffs.sql": "0ce46e169265a04c36f8534065dcef65",
+  "0111_c0_security_fixes.sql": "cea8717fe4914fe2ed41d0c8319578a6"
 }

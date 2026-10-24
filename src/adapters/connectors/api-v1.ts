@@ -9,6 +9,7 @@ import {
   ACCESS_TTL_SECONDS, CLIENT_ID_RE, clientKnown, DEVICE_INTERVAL_SECONDS, DEVICE_TTL_SECONDS, REFRESH_TTL_SECONDS,
   Sha256, buildProjectManifest, checkIntake, checkReserve, checkSession, chunkCount, expectedChunkSize, idempotentReplay,
   makeToken, makeUserCode, mimeForExtension, missingChunks, parseScopes, pkceMatches, reserveFingerprint, sha256Hex, tokenHash, tokenKind, toHex,
+  planSbproReturn, readSbproReturn, SBPRO_MAX_IMAGE_BYTES, MAX_MANIFEST_BYTES, type SbproCandidate,
   type ConnectorScope, type ConnectorSessionRow, type ReserveRequest, type TransferStatus,
 } from "@/core/connectors";
 
@@ -43,6 +44,10 @@ export interface ConnectorStore {
   readFile(projectId: string, path: string): Promise<Uint8Array | null>;
   /** C-2: konfliktvalg for sesjonsbrukeren (keep_both, choose_current, reject); choose_incoming skjer i appen. */
   resolveConflict(projectId: string, userId: string, id: string, choice: string, revision: number): Promise<"ok" | "stale" | "not_found" | "forbidden" | "choice">;
+  /** C-5: lagrer en Storyboard Pro-retur som kandidater (idempotent på manifest-hash per prosjekt). */
+  saveSbproReturn?(r: { projectId: string; productionId: string; sessionId: string; userId: string; hash: string; panelCount: number; candidates: readonly SbproCandidate[] }): Promise<{ returnId: string; replayed: boolean; uploads: { candidateId: string; key: string; sha256: string; byteSize: number }[] }>;
+  /** C-5: panelbilde til en bildekandidat som venter på fil. */
+  putSbproImage?(projectId: string, returnId: string, candidateId: string, bytes: Uint8Array): Promise<"ok" | "not_found" | "done" | "sha">;
 }
 export interface ApiDeps { store: ConnectorStore; now: () => number; random: (n: number) => Uint8Array; ip: string }
 
@@ -160,6 +165,37 @@ export async function handleApiV1(req: Request, d: ApiDeps): Promise<Response> {
       if (m === "GET" && rest[0] === "manifest" && rest.length === 1) {
         const a = await authed(req, d, "manifest:read", pid); if (a instanceof Response) return a;
         return json(buildProjectManifest(await d.store.loadState(pid), iso(d.now()), { id: "api-v1", version: "1" }));
+      }
+      if (rest[0] === "sbpro" && rest[1] === "returns") {
+        const a = await authed(req, d, "transfers:write", pid); if (a instanceof Response) return a;
+        if (!d.store.saveSbproReturn || !d.store.putSbproImage) return apiError(501, "not_available");
+        if (m === "POST" && rest.length === 2) {
+          const text = await req.text();
+          if (text.length > MAX_MANIFEST_BYTES) return apiError(413, "too_large");
+          let raw: unknown; try { raw = JSON.parse(text); } catch { return apiError(400, "invalid_json"); }
+          const r = readSbproReturn(raw, text.length);
+          if (!r.ok) return json({ error: "invalid_manifest", reason: r.reason }, 422);
+          if (r.value.projectId !== pid) return apiError(403, "wrong_project");
+          const st = await d.store.loadState(pid);
+          if (!st.productions[r.value.productionId as never]) return apiError(404, "production_not_found");
+          const plan = planSbproReturn(st, r.value.productionId, r.value);
+          const saved = await d.store.saveSbproReturn({ projectId: pid, productionId: r.value.productionId, sessionId: a.id, userId: a.userId, hash: r.value.hash, panelCount: r.value.panels.length, candidates: plan.candidates });
+          return json({ returnId: saved.returnId, candidates: plan.candidates.length, conflicts: plan.candidates.filter(c => c.conflict).length, conform: { lossless: plan.conform.lossless, reasons: plan.conform.reasons }, uploads: saved.uploads }, saved.replayed ? 200 : 201, saved.replayed ? { "Idempotent-Replayed": "true" } : {});
+        }
+        if (m === "PUT" && rest[3] === "images" && rest.length === 5) {
+          const declared = Number(req.headers.get("content-length") ?? "0");
+          if (declared > SBPRO_MAX_IMAGE_BYTES) return apiError(413, "too_large");
+          const bytes = new Uint8Array(await req.arrayBuffer());
+          if (bytes.length > SBPRO_MAX_IMAGE_BYTES || bytes.length < 8) return apiError(413, "too_large");
+          const png = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a].every((b, i) => bytes[i] === b);
+          if (!png) return apiError(415, "rejected_type");
+          const res = await d.store.putSbproImage(pid, rest[2]!, rest[4]!, bytes);
+          if (res === "not_found") return apiError(404, "not_found");
+          if (res === "sha") return apiError(422, "rejected_checksum");
+          if (res === "done") return json({ ok: true }, 200, { "Idempotent-Replayed": "true" });
+          return json({ ok: true });
+        }
+        return apiError(404, "not_found");
       }
       if (m === "GET" && rest[0] === "assets" && rest.length === 1) {
         const a = await authed(req, d, "assets:read", pid); if (a instanceof Response) return a;

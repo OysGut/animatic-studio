@@ -24,7 +24,7 @@ import { t } from "@/core/i18n/keyed";
 
 const MAX_IMAGE_BYTES = 8 * 1024 * 1024;
 
-async function panelPngBase64(s: ProjectState, panelId: string): Promise<string | null> {
+export async function panelPngBase64(s: ProjectState, panelId: string): Promise<string | null> {
   const panel = s.compositions[panelId as never]; if (!panel) return null;
   const frame = panelStructureFrame(s, panel, "composition", null);
   const paths = [...new Set(frame.items.flatMap(it => it.version ? [it.version.mediaPath] : []))];

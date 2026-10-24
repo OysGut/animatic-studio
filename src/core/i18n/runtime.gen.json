@@ -25442,6 +25442,105 @@
     "c4.webhook-url": {
       "text": "Lim inn denne adressen som webhook i Boords:"
     },
+    "c5.all-panels": {
+      "text": "alle paneler"
+    },
+    "c5.candidates": {
+      "text": "Fra Storyboard Pro"
+    },
+    "c5.conflict": {
+      "text": "Konflikt"
+    },
+    "c5.download": {
+      "text": "Last ned pakke"
+    },
+    "c5.download.done": {
+      "text": "Pakken med {count} paneler er lastet ned. Pakk den ut og bruk PtG_Import i Storyboard Pro."
+    },
+    "c5.download.info": {
+      "text": "Pakken har {count} paneler med bilder, timing, tekstfelt, kamera og midlertidig panellyd."
+    },
+    "c5.error": {
+      "text": "Noe gikk galt med Storyboard Pro-koblingen."
+    },
+    "c5.image-name": {
+      "text": "Panelbilde fra Storyboard Pro"
+    },
+    "c5.incoming": {
+      "text": "Fra Storyboard Pro"
+    },
+    "c5.intro": {
+      "text": "Last ned en pakke for skriptene i Storyboard Pro, og se det som kommer tilbake. Ingenting tas i bruk automatisk."
+    },
+    "c5.keep-both": {
+      "text": "Behold begge"
+    },
+    "c5.keep-current": {
+      "text": "Behold gjeldende"
+    },
+    "c5.kind.conform": {
+      "text": "Rekkefølge og timing"
+    },
+    "c5.kind.image": {
+      "text": "Bilde"
+    },
+    "c5.kind.new_panel": {
+      "text": "Nytt panel"
+    },
+    "c5.kind.text": {
+      "text": "Tekst"
+    },
+    "c5.kind.timing": {
+      "text": "Timing"
+    },
+    "c5.login-info": {
+      "text": "Skriptet PtG_Login viser en kode. Godkjenn den på siden «Koble til et program»."
+    },
+    "c5.none": {
+      "text": "Ingen kandidater venter."
+    },
+    "c5.open": {
+      "text": "Storyboard Pro"
+    },
+    "c5.progress": {
+      "text": "Lager panel {done} av {total} …"
+    },
+    "c5.reason.conflict": {
+      "text": "paneler er endret i begge programmene"
+    },
+    "c5.reason.fps": {
+      "text": "ulik bildefrekvens"
+    },
+    "c5.reason.missing": {
+      "text": "paneler mangler"
+    },
+    "c5.reason.moved-scene": {
+      "text": "paneler er flyttet til en annen scene"
+    },
+    "c5.reason.new": {
+      "text": "nye paneler"
+    },
+    "c5.reason.unknown-scene": {
+      "text": "ukjente paneler"
+    },
+    "c5.reject": {
+      "text": "Avvis"
+    },
+    "c5.stale": {
+      "text": "Panelet er endret siden returen. Send en ny retur fra Storyboard Pro."
+    },
+    "c5.suggestion": {
+      "text": "Bare et forslag, fordi det ikke er tapsfritt: {reasons}."
+    },
+    "c5.timing": {
+      "text": "Timing: {from} → {to} bilder"
+    },
+    "c5.title": {
+      "text": "Toon Boom Storyboard Pro"
+    },
+    "c5.use-incoming": {
+      "text": "Bruk innkommende"
+    },
     "components-ui-dialog.dialog-content.span.4e9257a0bdea": {
       "text": "Lukk"
     },
@@ -61006,6 +61105,105 @@
     },
     "c4.webhook-url": {
       "text": "Paste this address as the webhook in Boords:"
+    },
+    "c5.all-panels": {
+      "text": "all panels"
+    },
+    "c5.candidates": {
+      "text": "From Storyboard Pro"
+    },
+    "c5.conflict": {
+      "text": "Conflict"
+    },
+    "c5.download": {
+      "text": "Download package"
+    },
+    "c5.download.done": {
+      "text": "The package with {count} panels was downloaded. Unzip it and use PtG_Import in Storyboard Pro."
+    },
+    "c5.download.info": {
+      "text": "The package has {count} panels with images, timing, text fields, camera and temporary panel sound."
+    },
+    "c5.error": {
+      "text": "Something went wrong with the Storyboard Pro connection."
+    },
+    "c5.image-name": {
+      "text": "Panel image from Storyboard Pro"
+    },
+    "c5.incoming": {
+      "text": "From Storyboard Pro"
+    },
+    "c5.intro": {
+      "text": "Download a package for the Storyboard Pro scripts, and review what comes back. Nothing is applied automatically."
+    },
+    "c5.keep-both": {
+      "text": "Keep both"
+    },
+    "c5.keep-current": {
+      "text": "Keep current"
+    },
+    "c5.kind.conform": {
+      "text": "Order and timing"
+    },
+    "c5.kind.image": {
+      "text": "Image"
+    },
+    "c5.kind.new_panel": {
+      "text": "New panel"
+    },
+    "c5.kind.text": {
+      "text": "Text"
+    },
+    "c5.kind.timing": {
+      "text": "Timing"
+    },
+    "c5.login-info": {
+      "text": "The PtG_Login script shows a code. Approve it on the “Connect a program” page."
+    },
+    "c5.none": {
+      "text": "No candidates are waiting."
+    },
+    "c5.open": {
+      "text": "Storyboard Pro"
+    },
+    "c5.progress": {
+      "text": "Preparing panel {done} of {total} …"
+    },
+    "c5.reason.conflict": {
+      "text": "panels changed in both programs"
+    },
+    "c5.reason.fps": {
+      "text": "different frame rate"
+    },
+    "c5.reason.missing": {
+      "text": "panels are missing"
+    },
+    "c5.reason.moved-scene": {
+      "text": "panels moved to another scene"
+    },
+    "c5.reason.new": {
+      "text": "new panels"
+    },
+    "c5.reason.unknown-scene": {
+      "text": "unknown panels"
+    },
+    "c5.reject": {
+      "text": "Reject"
+    },
+    "c5.stale": {
+      "text": "The panel changed after the return. Send a new return from Storyboard Pro."
+    },
+    "c5.suggestion": {
+      "text": "Only a suggestion, because it is not lossless: {reasons}."
+    },
+    "c5.timing": {
+      "text": "Timing: {from} → {to} frames"
+    },
+    "c5.title": {
+      "text": "Toon Boom Storyboard Pro"
+    },
+    "c5.use-incoming": {
+      "text": "Use incoming"
     },
     "components-ui-dialog.dialog-content.span.4e9257a0bdea": {
       "text": "Close"

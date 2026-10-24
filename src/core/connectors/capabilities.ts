@@ -21,6 +21,7 @@ export const ADAPTERS: readonly AdapterDescriptor[] = [
   { id: "daw-roundtrip", name: "DAW", capabilities: ["read", "write", "audio", "timeline"], exportFallback: "wav" },
   // C-4: Boords API (beta, betalt plan). Lese/skrive frames (action/sound/dialogue + bilde) og kommentarer.
   { id: "boords-api", name: "Boords", capabilities: ["read", "write", "notes"], exportFallback: "pdf" },
+  { id: "toonboom-sbpro", name: "Toon Boom Storyboard Pro", capabilities: ["read", "write", "audio", "timeline", "notes"], exportFallback: "otio" },
   { id: "storyboard-interchange", name: "Storyboard Pro / OTIO", capabilities: ["read", "timeline", "notes"], exportFallback: "otio" },
 ];
 
@@ -35,3 +36,6 @@ export const validDescriptor = (a: AdapterDescriptor): boolean =>
 
 /** C-4: det Boords-koblingen ikke kan, vist ærlig i innstillingene (i18n-nøkler under c4.limit.*). */
 export const BOORDS_LIMITS = ["paid-plan", "beta", "no-layers", "no-audio", "no-timeline", "no-etag", "partial-webhooks", "no-auto-apply"] as const;
+
+/** C-5: det skriptpakken for Storyboard Pro ikke kan, vist ærlig (i18n-nøkler under c5.limit.*). */
+export const SBPRO_LIMITS = ["no-browser", "no-layers-back", "captions-only", "no-auto-apply", "lossless-conform-only", "unverified"] as const;

@@ -9054,7 +9054,7 @@ try {
     await as("authenticated",ALICE,tx=>tx`select public.connector_approve_code(${g7p},'ptg.blender','http://[::1]:9000/cb',${ch},array['project:read'],${h('0d')})`);
     await expectError(as("authenticated",ALICE,tx=>tx`select public.connector_approve_code(${g7p},'ptg.generic-loopback','ptg-photoshop://cb',${ch},array['project:read'],${h('0e')})`),'22023');
     await expectError(as("service_role",ALICE,tx=>tx`select public.connector_create_device(${h('0f')},'BCDF-GHJQ','ptg.unknown',array['project:read'],now()+interval '10 minutes')`),'22023');
-    assert((await sql`select count(*)::int n from private.connector_clients`)[0]?.['n']===7,'client list size');
+    assert((await sql`select count(*)::int n from private.connector_clients`)[0]?.['n']===8,'client list size (7 fra 0111 + Storyboard Pro fra 0113)');
     // 6. Cleanup removes expired pending rows and used refresh hashes older than 90 days; keeps newer ones.
     await sql`insert into private.connector_pending(hash,kind,user_code,client_id,scopes,expires_at) values(${h('1d')},'device','BCDF-GHJR','ptg.krita',array['project:read'],now()-interval '1 minute'),(${h('1e')},'device','BCDF-GHJS','ptg.krita',array['project:read'],now()+interval '10 minutes')`;
     await sql`insert into private.connector_used_refresh(hash,session_id,used_at) values(${h('1f')},${live},now()-interval '91 days'),(${h('2a')},${live},now()-interval '1 day')`;
@@ -9102,6 +9102,27 @@ try {
     assert((await sql`select status,choice from public.boords_candidates where id=${cand}`)[0]?.['choice']==='choose_incoming','stored');
     await sql`update public.boords_webhook_events set received_at=now()-interval '8 days'`;
     assert(Number((await as("service_role",null,tx=>tx`select public.boords_cleanup() n`))[0]?.['n'])>=1,'cleanup');
+  });
+  await test("0113 C-5 Storyboard Pro: klient, RLS, idempotent retur, kandidatvalg", async () => {
+    const h=(c:string)=>c.repeat(64).slice(0,64);
+    assert((await sql`select private.connector_client_known('ptg.toonboom-sbpro') v`)[0]?.['v']===true,'client unknown');
+    const ret=(await sql`insert into public.connector_returns(project_id,production_id,source,created_by,manifest_hash,panel_count) values(${g7p},${newId()},'sbpro',${ALICE},${h('b')},2) returning id`)[0]?.['id'];
+    await expectError(sql`insert into public.connector_returns(project_id,production_id,source,created_by,manifest_hash,panel_count) values(${g7p},${newId()},'sbpro',${ALICE},${h('b')},2)`,'23505');
+    await expectError(sql`insert into public.connector_returns(project_id,production_id,source,created_by,manifest_hash,panel_count) values(${g7p},${newId()},'sbpro',${ALICE},${h('c')},0)`,'23514');
+    const cand=(await sql`insert into public.connector_panel_candidates(project_id,return_id,item_key,panel_id,kind,incoming) values(${g7p},${ret},'p1',${newId()},'text','{"dialogue":"x"}') returning id`)[0]?.['id'];
+    await expectError(sql`insert into public.connector_panel_candidates(project_id,return_id,item_key,kind) values(${g7p},${ret},'p1','text')`,'23505');
+    await expectError(sql`insert into public.connector_panel_candidates(project_id,return_id,item_key,kind) values(${g7p},${ret},'p2','delete')`,'23514');
+    assert((await as("authenticated",ALICE,tx=>tx`select id from public.connector_panel_candidates where id=${cand}`)).length===1,'member cannot read');
+    assert((await as("authenticated",CAROL,tx=>tx`select id from public.connector_panel_candidates where id=${cand}`)).length===0,'nonmember reads');
+    await expectError(as("authenticated",ALICE,tx=>tx`update public.connector_panel_candidates set status='resolved' where id=${cand}`),'42501');
+    await expectError(as("authenticated",ALICE,tx=>tx`insert into public.connector_returns(project_id,production_id,source,created_by,manifest_hash,panel_count) values(${g7p},${newId()},'sbpro',${ALICE},${h('d')},1)`),'42501');
+    assert((await as("authenticated",CAROL,tx=>tx`select public.connector_resolve_panel_candidate(${cand},'keep_both',1) r`))[0]?.['r']==='forbidden','nonmember resolved');
+    assert((await as("authenticated",ALICE,tx=>tx`select public.connector_resolve_panel_candidate(${cand},'merge',1) r`))[0]?.['r']==='choice','bad choice');
+    assert((await as("authenticated",ALICE,tx=>tx`select public.connector_resolve_panel_candidate(${cand},'choose_incoming',2) r`))[0]?.['r']==='stale','stale');
+    assert((await as("authenticated",ALICE,tx=>tx`select public.connector_resolve_panel_candidate(${cand},'choose_incoming',1) r`))[0]?.['r']==='ok','resolve');
+    assert((await as("authenticated",ALICE,tx=>tx`select public.connector_resolve_panel_candidate(${cand},'reject',2) r`))[0]?.['r']==='stale','resolved twice');
+    const wait=(await sql`insert into public.connector_panel_candidates(project_id,return_id,item_key,kind,status,media_sha256,media_bytes) values(${g7p},${ret},'p3','image','awaiting_file',${h('e')},10) returning id`)[0]?.['id'];
+    assert((await as("authenticated",ALICE,tx=>tx`select public.connector_resolve_panel_candidate(${wait},'choose_incoming',1) r`))[0]?.['r']==='stale','awaiting file resolved');
   });
   await test("alle SECURITY DEFINER-funksjoner i public/private har search_path=''", async () => {
     const rows = await sql`

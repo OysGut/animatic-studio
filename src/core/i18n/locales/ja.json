@@ -59542,5 +59542,200 @@
     "text": "Boords へ",
     "sourceHash": "3e9d06443213c06113be05052fff7aea62df529de590397b3b0a9b2d214df687",
     "review": "machine"
+  },
+  "c5.open": {
+    "text": "Storyboard Pro",
+    "sourceHash": "aa2dcef48be52f8e20e4625963686edfb79c0b98123e29a8cdad4e72d6a4e1af",
+    "review": "machine"
+  },
+  "c5.title": {
+    "text": "Toon Boom Storyboard Pro",
+    "sourceHash": "4a367322a9af905fa01742258e277076715c1239cecd7686be558ff47ddd2f31",
+    "review": "machine"
+  },
+  "c5.intro": {
+    "text": "Storyboard Pro のスクリプト用パッケージをダウンロードし、戻ってきた内容を確認します。自動では何も適用されません。",
+    "sourceHash": "96b1b27da07440727346707f9e20fc24b4d8c6ecec9d3841d4795a23bf2d6a2f",
+    "review": "machine"
+  },
+  "c5.download": {
+    "text": "パッケージをダウンロード",
+    "sourceHash": "4e52217d853a66c46904395bae52cddf53ef51230ce56d989fd7091ea112eeed",
+    "review": "machine"
+  },
+  "c5.download.info": {
+    "text": "パッケージには画像、タイミング、テキスト、カメラ、仮サウンド付きの {count} 枚のパネルが含まれます。",
+    "sourceHash": "6ceb99601aec903ed3b79c262146cfc93abb87aeb0ef1db7d84ddef293b8c1c2",
+    "review": "machine"
+  },
+  "c5.download.done": {
+    "text": "{count} 枚のパネルのパッケージをダウンロードしました。展開して Storyboard Pro で PtG_Import を使ってください。",
+    "sourceHash": "1d3c46ee611539df5f51c7dfbe15550d5da1cda59170c57ac589bbd20691c049",
+    "review": "machine"
+  },
+  "c5.progress": {
+    "text": "{total} 枚中 {done} 枚目を準備中 …",
+    "sourceHash": "6b3aa9b9fc9b07a29fcb97612b177c900a78682b1c973a1bb322ed889a360979",
+    "review": "machine"
+  },
+  "c5.login-info": {
+    "text": "PtG_Login スクリプトがコードを表示します。「プログラムを接続」ページで承認してください。",
+    "sourceHash": "9d4ed3c5a6bf955bbf09f9dc4e45abe104aa15882062758fb11c22c95fc842a7",
+    "review": "machine"
+  },
+  "c5.candidates": {
+    "text": "Storyboard Pro から",
+    "sourceHash": "c59f55e9bf65ca013c252108d18cfb909b3eb59e96a80c51536cf00e7da6d492",
+    "review": "machine"
+  },
+  "c5.none": {
+    "text": "待機中の候補はありません。",
+    "sourceHash": "57b123f6c29eda0fe4ba2de2ba2dbe41239e87f42d0fcb17deeb60c2c70a10e5",
+    "review": "machine"
+  },
+  "c5.conflict": {
+    "text": "競合",
+    "sourceHash": "6518ca5aca7464851b0c1eb5e20a3fb3604090b97ef810fc838d353ee6cec24e",
+    "review": "machine"
+  },
+  "c5.timing": {
+    "text": "タイミング: {from} → {to} フレーム",
+    "sourceHash": "fe24801cbcf970fa28002ee0280eb20a594b75e1f5d9da817cb4951712c9af2d",
+    "review": "machine"
+  },
+  "c5.suggestion": {
+    "text": "損失なしではないため提案のみです: {reasons}。",
+    "sourceHash": "c7ebfc5dd3430b4e81f4f137c9ca04a95a244f27d6bc1015f0184884b9b1d45c",
+    "review": "machine"
+  },
+  "c5.use-incoming": {
+    "text": "受信側を使う",
+    "sourceHash": "1a5769de1547295b5f6994cb6189d2dec8905ce75e8b08514f5154c9d9a4e227",
+    "review": "machine"
+  },
+  "c5.keep-both": {
+    "text": "両方を残す",
+    "sourceHash": "ec7d92e358f4dcfa2f2c32d9201873b6dadc33faa2eacad7dc5089c49480fb2b",
+    "review": "machine"
+  },
+  "c5.keep-current": {
+    "text": "現在のものを残す",
+    "sourceHash": "2cb4345ebd698f2584fbd05242b4542c2c55ba43580e25c439dbb265832cac39",
+    "review": "machine"
+  },
+  "c5.reject": {
+    "text": "却下",
+    "sourceHash": "d3a48b52dbff252243bf3b1ee4cce1a85c466f1f84948cae80235c43cf3ccb78",
+    "review": "machine"
+  },
+  "c5.stale": {
+    "text": "返却後にパネルが変更されました。Storyboard Pro から新しく返却してください。",
+    "sourceHash": "972f41378248bb9da6e349d7469bc31f3c18422795bb1b27e05073f1c72accd3",
+    "review": "machine"
+  },
+  "c5.incoming": {
+    "text": "Storyboard Pro から",
+    "sourceHash": "c59f55e9bf65ca013c252108d18cfb909b3eb59e96a80c51536cf00e7da6d492",
+    "review": "machine"
+  },
+  "c5.error": {
+    "text": "Storyboard Pro との接続で問題が発生しました。",
+    "sourceHash": "747576806d9c6d10b5275b1febb3248bd996632659457ccee57148ab825335c9",
+    "review": "machine"
+  },
+  "c5.image-name": {
+    "text": "Storyboard Pro のパネル画像",
+    "sourceHash": "901f371c7c0423a11eb2d4143c6de78923d148d5db2d46005ee32b06b0eff366",
+    "review": "machine"
+  },
+  "c5.all-panels": {
+    "text": "すべてのパネル",
+    "sourceHash": "f71c2fbfb1e3caca81955566c54ad93f4701dae4744ee6b9b97db84b1e17780b",
+    "review": "machine"
+  },
+  "c5.kind.text": {
+    "text": "テキスト",
+    "sourceHash": "dac8687677f6288ba22025c6ce1822e602cea8e074dc05d7c938d356dc0e365f",
+    "review": "machine"
+  },
+  "c5.kind.timing": {
+    "text": "タイミング",
+    "sourceHash": "b4bf53105e6792f46c7af6021156b5dcc09bdc93f354ec60d83f359f03563bac",
+    "review": "machine"
+  },
+  "c5.kind.image": {
+    "text": "画像",
+    "sourceHash": "711558ba55fec0921e12c8b411042a65381c59fd1545c0d668b836cc8d82837b",
+    "review": "machine"
+  },
+  "c5.kind.new_panel": {
+    "text": "新しいパネル",
+    "sourceHash": "1fc89ec10d44f3a3060a69c7eaf52a73332224517818340eeb0f3d9c268b5fac",
+    "review": "machine"
+  },
+  "c5.kind.conform": {
+    "text": "順序とタイミング",
+    "sourceHash": "dc50ae6a164a8b845e4b381130ad11c200f3c8e47d08c1cc2dc3ce150dbe5f3f",
+    "review": "machine"
+  },
+  "c5.reason.new": {
+    "text": "新しいパネル",
+    "sourceHash": "015f1162df64fff77e182ea767945516828693a7bceface66eebbcdbb777f1f6",
+    "review": "machine"
+  },
+  "c5.reason.missing": {
+    "text": "パネルが不足",
+    "sourceHash": "febadbfb4fad802ee405729a6d906d89d487e84eb88600a4f30b47fbabc0121b",
+    "review": "machine"
+  },
+  "c5.reason.moved-scene": {
+    "text": "パネルが別のシーンに移動",
+    "sourceHash": "b9ddfdfd266d92bc057cb9c097197fd024252132c260b943606c77214078f696",
+    "review": "machine"
+  },
+  "c5.reason.conflict": {
+    "text": "両方のプログラムでパネルが変更",
+    "sourceHash": "1d4cbc871f1f6a5ec9e216b543276ff6d5d3e8a840f32c6c0cea086c656cdc87",
+    "review": "machine"
+  },
+  "c5.reason.unknown-scene": {
+    "text": "不明なパネル",
+    "sourceHash": "888a71f2f56fd95631461bd3a4f7dc3af72f56e0c6d3a1d083c734296e40aba9",
+    "review": "machine"
+  },
+  "c5.reason.fps": {
+    "text": "フレームレートが異なる",
+    "sourceHash": "e3a13fd662201374969dc45a0d93a93014807fbd9ee14864cceaab761bb90efe",
+    "review": "machine"
+  },
+  "c5.limit.no-browser": {
+    "text": "Storyboard Pro にはブラウザがないため、コードでサインインします。",
+    "sourceHash": "27980630497ad7d2da2c530fda5bcc1ac73527ef94371ec40bf288741a09d4cc",
+    "review": "machine"
+  },
+  "c5.limit.no-layers-back": {
+    "text": "戻るのはレイヤーではなく平坦な画像です。",
+    "sourceHash": "3a1811dd927ecaf2c259aeb7b7349d70dc17d49557406fd2e0d0d8668dd115b0",
+    "review": "machine"
+  },
+  "c5.limit.captions-only": {
+    "text": "テキストとして交換するのは Dialogue、Action Notes、Notes のみです。",
+    "sourceHash": "462dbd8738d9669afaf5a0212f554a8cd4cf725d8a8891fb88d9c36310de56c4",
+    "review": "machine"
+  },
+  "c5.limit.no-auto-apply": {
+    "text": "自動では何も適用されません。",
+    "sourceHash": "7667a8e53b88180f3f37a67bcc9e4e1edb9e0e2b73467e807f10e2016669b44f",
+    "review": "machine"
+  },
+  "c5.limit.lossless-conform-only": {
+    "text": "順序とタイミングは損失がない場合のみ一括適用できます。",
+    "sourceHash": "f2a8fde463866fb34d4d5b301ca155473075dd4308cec5cfe5ca9672e3c860c8",
+    "review": "machine"
+  },
+  "c5.limit.unverified": {
+    "text": "作成済み、Storyboard Pro では未検証。",
+    "sourceHash": "0ef593be5caea8c07bf42a600622428606115d63a27593bd41a0d07435812552",
+    "review": "machine"
   }
 }

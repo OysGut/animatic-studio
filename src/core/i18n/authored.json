@@ -17274,6 +17274,318 @@
       "en": {
         "text": "To Boords"
       }
+    },
+    "c5.open": {
+      "nb": {
+        "text": "Storyboard Pro"
+      },
+      "en": {
+        "text": "Storyboard Pro"
+      }
+    },
+    "c5.title": {
+      "nb": {
+        "text": "Toon Boom Storyboard Pro"
+      },
+      "en": {
+        "text": "Toon Boom Storyboard Pro"
+      }
+    },
+    "c5.intro": {
+      "nb": {
+        "text": "Last ned en pakke for skriptene i Storyboard Pro, og se det som kommer tilbake. Ingenting tas i bruk automatisk."
+      },
+      "en": {
+        "text": "Download a package for the Storyboard Pro scripts, and review what comes back. Nothing is applied automatically."
+      }
+    },
+    "c5.download": {
+      "nb": {
+        "text": "Last ned pakke"
+      },
+      "en": {
+        "text": "Download package"
+      }
+    },
+    "c5.download.info": {
+      "nb": {
+        "text": "Pakken har {count} paneler med bilder, timing, tekstfelt, kamera og midlertidig panellyd."
+      },
+      "en": {
+        "text": "The package has {count} panels with images, timing, text fields, camera and temporary panel sound."
+      }
+    },
+    "c5.download.done": {
+      "nb": {
+        "text": "Pakken med {count} paneler er lastet ned. Pakk den ut og bruk PtG_Import i Storyboard Pro."
+      },
+      "en": {
+        "text": "The package with {count} panels was downloaded. Unzip it and use PtG_Import in Storyboard Pro."
+      }
+    },
+    "c5.progress": {
+      "nb": {
+        "text": "Lager panel {done} av {total} …"
+      },
+      "en": {
+        "text": "Preparing panel {done} of {total} …"
+      }
+    },
+    "c5.login-info": {
+      "nb": {
+        "text": "Skriptet PtG_Login viser en kode. Godkjenn den på siden «Koble til et program»."
+      },
+      "en": {
+        "text": "The PtG_Login script shows a code. Approve it on the “Connect a program” page."
+      }
+    },
+    "c5.candidates": {
+      "nb": {
+        "text": "Fra Storyboard Pro"
+      },
+      "en": {
+        "text": "From Storyboard Pro"
+      }
+    },
+    "c5.none": {
+      "nb": {
+        "text": "Ingen kandidater venter."
+      },
+      "en": {
+        "text": "No candidates are waiting."
+      }
+    },
+    "c5.conflict": {
+      "nb": {
+        "text": "Konflikt"
+      },
+      "en": {
+        "text": "Conflict"
+      }
+    },
+    "c5.timing": {
+      "nb": {
+        "text": "Timing: {from} → {to} bilder"
+      },
+      "en": {
+        "text": "Timing: {from} → {to} frames"
+      }
+    },
+    "c5.suggestion": {
+      "nb": {
+        "text": "Bare et forslag, fordi det ikke er tapsfritt: {reasons}."
+      },
+      "en": {
+        "text": "Only a suggestion, because it is not lossless: {reasons}."
+      }
+    },
+    "c5.use-incoming": {
+      "nb": {
+        "text": "Bruk innkommende"
+      },
+      "en": {
+        "text": "Use incoming"
+      }
+    },
+    "c5.keep-both": {
+      "nb": {
+        "text": "Behold begge"
+      },
+      "en": {
+        "text": "Keep both"
+      }
+    },
+    "c5.keep-current": {
+      "nb": {
+        "text": "Behold gjeldende"
+      },
+      "en": {
+        "text": "Keep current"
+      }
+    },
+    "c5.reject": {
+      "nb": {
+        "text": "Avvis"
+      },
+      "en": {
+        "text": "Reject"
+      }
+    },
+    "c5.stale": {
+      "nb": {
+        "text": "Panelet er endret siden returen. Send en ny retur fra Storyboard Pro."
+      },
+      "en": {
+        "text": "The panel changed after the return. Send a new return from Storyboard Pro."
+      }
+    },
+    "c5.incoming": {
+      "nb": {
+        "text": "Fra Storyboard Pro"
+      },
+      "en": {
+        "text": "From Storyboard Pro"
+      }
+    },
+    "c5.error": {
+      "nb": {
+        "text": "Noe gikk galt med Storyboard Pro-koblingen."
+      },
+      "en": {
+        "text": "Something went wrong with the Storyboard Pro connection."
+      }
+    },
+    "c5.image-name": {
+      "nb": {
+        "text": "Panelbilde fra Storyboard Pro"
+      },
+      "en": {
+        "text": "Panel image from Storyboard Pro"
+      }
+    },
+    "c5.all-panels": {
+      "nb": {
+        "text": "alle paneler"
+      },
+      "en": {
+        "text": "all panels"
+      }
+    },
+    "c5.kind.text": {
+      "nb": {
+        "text": "Tekst"
+      },
+      "en": {
+        "text": "Text"
+      }
+    },
+    "c5.kind.timing": {
+      "nb": {
+        "text": "Timing"
+      },
+      "en": {
+        "text": "Timing"
+      }
+    },
+    "c5.kind.image": {
+      "nb": {
+        "text": "Bilde"
+      },
+      "en": {
+        "text": "Image"
+      }
+    },
+    "c5.kind.new_panel": {
+      "nb": {
+        "text": "Nytt panel"
+      },
+      "en": {
+        "text": "New panel"
+      }
+    },
+    "c5.kind.conform": {
+      "nb": {
+        "text": "Rekkefølge og timing"
+      },
+      "en": {
+        "text": "Order and timing"
+      }
+    },
+    "c5.reason.new": {
+      "nb": {
+        "text": "nye paneler"
+      },
+      "en": {
+        "text": "new panels"
+      }
+    },
+    "c5.reason.missing": {
+      "nb": {
+        "text": "paneler mangler"
+      },
+      "en": {
+        "text": "panels are missing"
+      }
+    },
+    "c5.reason.moved-scene": {
+      "nb": {
+        "text": "paneler er flyttet til en annen scene"
+      },
+      "en": {
+        "text": "panels moved to another scene"
+      }
+    },
+    "c5.reason.conflict": {
+      "nb": {
+        "text": "paneler er endret i begge programmene"
+      },
+      "en": {
+        "text": "panels changed in both programs"
+      }
+    },
+    "c5.reason.unknown-scene": {
+      "nb": {
+        "text": "ukjente paneler"
+      },
+      "en": {
+        "text": "unknown panels"
+      }
+    },
+    "c5.reason.fps": {
+      "nb": {
+        "text": "ulik bildefrekvens"
+      },
+      "en": {
+        "text": "different frame rate"
+      }
+    },
+    "c5.limit.no-browser": {
+      "nb": {
+        "text": "Storyboard Pro har ingen nettleser; innlogging skjer med en kode."
+      },
+      "en": {
+        "text": "Storyboard Pro has no browser; sign-in uses a code."
+      }
+    },
+    "c5.limit.no-layers-back": {
+      "nb": {
+        "text": "Tilbake kommer flate panelbilder, ikke lag."
+      },
+      "en": {
+        "text": "Flat panel images come back, not layers."
+      }
+    },
+    "c5.limit.captions-only": {
+      "nb": {
+        "text": "Bare Dialogue, Action Notes og Notes utveksles som tekst."
+      },
+      "en": {
+        "text": "Only Dialogue, Action Notes and Notes are exchanged as text."
+      }
+    },
+    "c5.limit.no-auto-apply": {
+      "nb": {
+        "text": "Ingenting tas i bruk automatisk."
+      },
+      "en": {
+        "text": "Nothing is applied automatically."
+      }
+    },
+    "c5.limit.lossless-conform-only": {
+      "nb": {
+        "text": "Rekkefølge og timing brukes i ett steg bare når det er tapsfritt."
+      },
+      "en": {
+        "text": "Order and timing are applied in one step only when lossless."
+      }
+    },
+    "c5.limit.unverified": {
+      "nb": {
+        "text": "Bygget, ikke verifisert i Storyboard Pro."
+      },
+      "en": {
+        "text": "Built, not verified in Storyboard Pro."
+      }
     }
   }
 }
