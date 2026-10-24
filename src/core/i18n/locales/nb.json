@@ -77189,5 +77189,89 @@
   },
   "sb7.recover": {
     "text": "Gjenopprett kandidat fra kvittering"
+  },
+  "sb6.title": {
+    "text": "Storyboardutskrift"
+  },
+  "sb6.print": {
+    "text": "Utskrift"
+  },
+  "sb6.pitch": {
+    "text": "Pitch"
+  },
+  "sb6.shotlist": {
+    "text": "Skuddliste"
+  },
+  "sb6.paper": {
+    "text": "Papirformat"
+  },
+  "sb6.orientation": {
+    "text": "Retning"
+  },
+  "sb6.portrait": {
+    "text": "Stående"
+  },
+  "sb6.landscape": {
+    "text": "Liggende"
+  },
+  "sb6.per-page": {
+    "text": "Paneler per side"
+  },
+  "sb6.version": {
+    "text": "Versjon"
+  },
+  "sb6.fields": {
+    "text": "Felt"
+  },
+  "sb6.layers": {
+    "text": "Lag"
+  },
+  "sb6.panel": {
+    "text": "Panelnummer"
+  },
+  "sb6.scene": {
+    "text": "Scene"
+  },
+  "sb6.shot": {
+    "text": "Skudd"
+  },
+  "sb6.duration": {
+    "text": "Varighet (sekunder)"
+  },
+  "sb6.dialogue": {
+    "text": "Dialog"
+  },
+  "sb6.action": {
+    "text": "Handling"
+  },
+  "sb6.camera": {
+    "text": "Kamera"
+  },
+  "sb6.movement": {
+    "text": "Bevegelse"
+  },
+  "sb6.sound": {
+    "text": "Lyd"
+  },
+  "sb6.notes": {
+    "text": "Notater"
+  },
+  "sb6.status": {
+    "text": "Status per fagområde"
+  },
+  "sb6.frames": {
+    "text": "Varighet (bilder)"
+  },
+  "sb6.timecode": {
+    "text": "Tidskode"
+  },
+  "sb6.note": {
+    "text": "Lapper"
+  },
+  "sb6.arrow": {
+    "text": "Piler"
+  },
+  "sb6.camera-mark": {
+    "text": "Kameramerker"
   }
 }

@@ -51,7 +51,7 @@ Kortversjonen († = detaljer i `docs/development/AGENTS_DETAILS.md`):
 36. New file-path tables/columns join ORPHAN_REFERENCE_TABLES in the same change, with a test, so cleanup keeps used files.
 37. R3: global publish undo/redo is a group-bound history effect (withdraw/republish via security-definer RPC); global rows/files never change.
 38. Locked pages use document SHA-256 and import order; blocks without documentId form one legacy document.
-39. Rig printing previews a pure mm layout plan; PDF rendering is separate and never writes project data.
+39. Rig and storyboard print layouts live in core; shared-source browser PDF/XLSX rendering never writes project data.
 40. Product name «From Pen to Glass»; b104-product-name.test.ts bans the old name in user text (explicit exceptions); IDs/keys/formats unchanged.
 41. Manifest UI locales use adapter-injected split loading and request-local SSR; core and script/data Lang stay portable.
 42. Image ingestion separates pure size/file-selection policy in core from browser decoding/encoding in adapters, preserving immutable source bytes.
@@ -81,7 +81,7 @@ Kortversjonen († = detaljer i `docs/development/AGENTS_DETAILS.md`):
 66. Every window (dialog, popup, sheet, floating panel, page) shows its fixed ID from src/app/ui-ids.ts via UiId or the uiId prop on shared contents; new windows get the next free number with `node scripts/ui-ids/ui-ids.mjs --assign`, numbers are never reused (removed ones stay as «fjernet»), and tests/architecture/ui-ids.test.ts fails on missing, duplicate or unregistered IDs.
 67. Punkter under SPERRET i TODO.md skal ikke implementeres eller forberedes, verken helt eller delvis, før Øystein uttrykkelig ber om det.
 68. A migration file is locked once Claude reports it run in Cloud or it predates the published EXPECTED_SCHEMA_VERSION; changes go in a new file (next number), and if in doubt, make a new file. MD5s in tests/fixtures/migration-hashes.json (checked by migration-hashes.test.ts) guard locked bytes; Claude updates them after each Cloud run.
-69. Google sign-in rules: docs/agents/AUTH.md.
+69. Google sign-in: docs/agents/AUTH.md.
 70. G-2: project_snapshot loads before history; foreign commands apply in project_seq order, fetching gaps. Full reload is logged last resort; RLS uses my_project_ids(). SB-4 uses scene-local time and store-only ticks (N8).
 71. G-3 global text, settings and time zones: docs/agents/G3_GLOBAL.md (read before changing them).
 

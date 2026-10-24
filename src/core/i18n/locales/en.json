@@ -77171,5 +77171,89 @@
   },
   "sb7.recover": {
     "text": "Recover candidate from receipt"
+  },
+  "sb6.title": {
+    "text": "Storyboard documents"
+  },
+  "sb6.print": {
+    "text": "Print"
+  },
+  "sb6.pitch": {
+    "text": "Pitch"
+  },
+  "sb6.shotlist": {
+    "text": "Shot list"
+  },
+  "sb6.paper": {
+    "text": "Paper size"
+  },
+  "sb6.orientation": {
+    "text": "Orientation"
+  },
+  "sb6.portrait": {
+    "text": "Portrait"
+  },
+  "sb6.landscape": {
+    "text": "Landscape"
+  },
+  "sb6.per-page": {
+    "text": "Panels per page"
+  },
+  "sb6.version": {
+    "text": "Version"
+  },
+  "sb6.fields": {
+    "text": "Fields"
+  },
+  "sb6.layers": {
+    "text": "Layers"
+  },
+  "sb6.panel": {
+    "text": "Panel number"
+  },
+  "sb6.scene": {
+    "text": "Scene"
+  },
+  "sb6.shot": {
+    "text": "Shot"
+  },
+  "sb6.duration": {
+    "text": "Duration (seconds)"
+  },
+  "sb6.dialogue": {
+    "text": "Dialogue"
+  },
+  "sb6.action": {
+    "text": "Action"
+  },
+  "sb6.camera": {
+    "text": "Camera"
+  },
+  "sb6.movement": {
+    "text": "Movement"
+  },
+  "sb6.sound": {
+    "text": "Sound"
+  },
+  "sb6.notes": {
+    "text": "Notes"
+  },
+  "sb6.status": {
+    "text": "Status by discipline"
+  },
+  "sb6.frames": {
+    "text": "Duration (frames)"
+  },
+  "sb6.timecode": {
+    "text": "Timecode"
+  },
+  "sb6.note": {
+    "text": "Notes layers"
+  },
+  "sb6.arrow": {
+    "text": "Arrows"
+  },
+  "sb6.camera-mark": {
+    "text": "Camera marks"
   }
 }
