@@ -19,6 +19,15 @@ Formatet kontrolleres av `python3 scripts/kb/check_kb.py`. Vurdering av eksterne
 | `ux-interaction-design` | Arbeidsflyter, tidslinje, drag-and-drop, snarveier, angre/gjør om, feiltilstander | design-system-director |
 | `lovable-development` | Kompatibilitet med Lovable, synk GitHub↔Lovable, migrasjoner/deploy via Lovable, meldinger til Lovable | secure-development |
 | `secure-development` | Nøkler, tilgang (skriving bare via `runCommand` → `apply_changes`, DEC-0022), filimport, lagring, avhengigheter, logging, eksterne plugins; kostnadsporten (INV-12/INV-C3) inntil `ai-cost-quality-governance` finnes (M5, DEC-0020) | database-domain-modeling |
+| `ptg-storyboard-direction` | Storyboardregi og instruksjoner som skal ut via connectors | ptg-creative-connectors |
+| `ptg-creative-connectors` | C-0-kjernen: manifest, API v1, kandidater, konflikter, kapabiliteter, SDK | ptg-plugin-security |
+| `ptg-adobe-uxp` | Photoshop/Premiere-plugins med UXP | ptg-creative-connectors |
+| `ptg-adobe-legacy-bridge` | After Effects og eldre Adobe via ExtendScript/CEP | ptg-adobe-uxp |
+| `ptg-storyboard-interchange` | OTIO/FCP7/EDL-utveksling av storyboard | ptg-creative-connectors |
+| `ptg-ipad-creative-handoff` | iPad/Procreate-overlevering og QR/enhetsflyt | ptg-plugin-security |
+| `ptg-audio-roundtrip` | Lydrundtur med DAW | ptg-creative-connectors |
+| `ptg-plugin-security` | OAuth/PKCE/enhetsflyt, tokens, opplastingssikkerhet for plugins | secure-development |
+| `ptg-integration-qa` | Tester for connectors, API, SDK og plugins | test-quality-engineering |
 
 ## Planlagt (opprettes ved behov – se `docs/development/ROADMAP.md`)
 Fagskills (del D): screenplay-version-control, narrative-continuity-analysis, duration-estimation, production-branching, multiplane-2d-engine, camera-motion-editor, character-continuity, asset-style-consistency, editorial-timeline, audio-dialogue-engine, media-pipeline, multilingual-localization, ai-provider-adapters, generation-prompt-engineering, render-queue-orchestration, ai-cost-quality-governance, cinematic-poster-design, print-prepress-export.
