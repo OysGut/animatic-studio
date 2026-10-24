@@ -3,7 +3,7 @@
  * gjenbruksdeteksjon, tilbaketrekking, fartsgrense, kvote). Brukes av API- og SDK-testene; ingen nettverk.
  */
 import { applyCommand, type ProjectState } from "@/core";
-import { planCandidate } from "@/core/connectors";
+import { planCandidate, sha256Hex, type SbproCandidate } from "@/core/connectors";
 import type { ConnectorStore, StoredTransfer } from "@/adapters/connectors/api-v1";
 
 type Pending = { kind: "code" | "device"; userCode?: string; clientId: string; redirectUri?: string; challenge?: string; projectId?: string; userId?: string; scopes: string[]; status: "pending" | "approved" | "denied" | "used"; expiresAt: string };
@@ -19,6 +19,8 @@ export function memoryStore(state: ProjectState, opts: { now: () => number; rate
   const conflicts: Record<string, unknown>[] = [];
   const hits = new Map<string, number>();
   const files = new Map<string, Uint8Array>();
+  const sbproReturns: { id: string; projectId: string; hash: string; userId: string }[] = [];
+  const sbproCandidates: (SbproCandidate & { id: string; returnId: string; status: string; mediaPath: string | null })[] = [];
   let n = 0;
   const view = (x: Session) => ({ id: x.id, projectId: x.projectId, userId: x.userId, scopes: x.scopes, expiresAt: x.accessExpiresAt, revokedAt: x.revokedAt });
   const store: ConnectorStore = {
@@ -91,9 +93,27 @@ export function memoryStore(state: ProjectState, opts: { now: () => number; rate
       Object.assign(c, { status: choice === "reject" ? "rejected" : "resolved", choice, revision: revision + 1 });
       return "ok";
     },
+    async saveSbproReturn(r) {
+      const prev = sbproReturns.find(x => x.projectId === r.projectId && x.hash === r.hash);
+      if (prev) return { returnId: prev.id, replayed: true, uploads: sbproCandidates.filter(c => c.returnId === prev.id && c.status === "awaiting_file").map(c => ({ candidateId: c.id, key: c.key, sha256: c.image!.sha256, byteSize: c.image!.byteSize })) };
+      const id = `00000000-0000-4000-8000-${String(++n).padStart(12, "0")}`;
+      sbproReturns.push({ id, projectId: r.projectId, hash: r.hash, userId: r.userId });
+      for (const c of r.candidates) sbproCandidates.push({ ...c, id: `00000000-0000-4000-9000-${String(++n).padStart(12, "0")}`, returnId: id, status: c.image ? "awaiting_file" : "open", mediaPath: null });
+      return { returnId: id, replayed: false, uploads: sbproCandidates.filter(c => c.returnId === id && c.status === "awaiting_file").map(c => ({ candidateId: c.id, key: c.key, sha256: c.image!.sha256, byteSize: c.image!.byteSize })) };
+    },
+    async putSbproImage(projectId, returnId, candidateId, bytes) {
+      const c = sbproCandidates.find(x => x.id === candidateId && x.returnId === returnId);
+      if (!c || !sbproReturns.some(r => r.id === returnId && r.projectId === projectId)) return "not_found";
+      if (c.status !== "awaiting_file") return "done";
+      const sha = sha256Hex(bytes);
+      if (sha !== c.image!.sha256) return "sha";
+      const path = `${projectId}/connectors/sbpro/${sha}.png`;
+      files.set(path, bytes); c.mediaPath = path; c.status = "open";
+      return "ok";
+    },
   };
   return {
-    store,
+    store, sbproReturns, sbproCandidates,
     get state() { return s; },
     files, sessions, transfers, chunks,
     /** Det nettlesersiden (connector_approve_code) gjør etter brukerens godkjenning. */
