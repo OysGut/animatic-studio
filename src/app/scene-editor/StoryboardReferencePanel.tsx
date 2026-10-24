@@ -147,12 +147,16 @@ export function StoryboardReferencePanel(props: RefProps) {
           </Button>
         ) : null}
         <div className="ms-auto flex items-center gap-1">
-          <Button size="icon" variant="ghost" aria-label={tk("sb5.open-large")} title={tk("sb5.open-large")} data-testid="sb5-open-large" onClick={() => setLargeOpen(true)}>
-            <Maximize2 />
-          </Button>
-          <Button size="icon" variant="ghost" aria-label={tk("sb5.open-popup")} title={tk("sb5.open-popup")} data-testid="sb5-open-popup" onClick={pin}>
-            <PinIcon />
-          </Button>
+          {!props.large ? (
+            <Button size="icon" variant="ghost" aria-label={tk("sb5.open-large")} title={tk("sb5.open-large")} data-testid="sb5-open-large" onClick={() => setLargeOpen(true)}>
+              <Maximize2 />
+            </Button>
+          ) : null}
+          {!props.large && !props.sourceWindow ? (
+            <Button size="icon" variant="ghost" aria-label={tk("sb5.open-popup")} title={tk("sb5.open-popup")} data-testid="sb5-open-popup" onClick={pin}>
+              <PinIcon />
+            </Button>
+          ) : null}
         </div>
       </div>
       {blocked ? (
