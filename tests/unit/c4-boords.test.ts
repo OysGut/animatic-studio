@@ -46,7 +46,7 @@ describe("kø og 429", () => {
   it("gir opp etter maks forsøk uten å lekke nøkkelen", async () => {
     const c = clock(); const f = (async () => new Response("", { status: 429 })) as unknown as typeof fetch;
     const e = await new BoordsClient(KEY, { fetch: f, clock: c, windowKey: "tmax" }).request("GET", "/me").catch(x => x as Error);
-    expect(String(e.message)).not.toContain(KEY);
+    expect(String((e as Error).message)).not.toContain(KEY);
     expect(scrub(`fail ${KEY}`, KEY)).toBe("fail [redacted]");
   });
   it("nøkkelen sendes bare i X-API-KEY", async () => {
