@@ -25,7 +25,15 @@ function setup(opts: { quotaBytes?: number } = {}) {
   st = mustApply(st, { type: "CreateAssetVariant", variantId, assetId, fields: { name: "Main", style: "illustrated", appearance: "" } });
   let now = Date.parse("2026-10-24T08:00:00Z");
   const mem = memoryStore(st, { now: () => now, ...opts });
-  const fetchFn = (async (input: RequestInfo | URL, init?: RequestInit) => handleApiV1(new Request(String(input), init), { store: mem.store, now: () => now, random, ip: "203.0.113.9" })) as typeof fetch;
+  const fetchFn = (async (input: RequestInfo | URL, init?: RequestInit) => {
+    const url = String(input);
+    const fake = /\/fake-storage\/([0-9a-f-]{36})\/part-(\d+)$/.exec(url);
+    if (fake && init?.method === "PUT") { // den falske signerte URL-en skriver rett til «lagringen»
+      await mem.store.putChunk(fake[1]!, Number(fake[2]), new Uint8Array(await new Response(init.body).arrayBuffer()));
+      return new Response("{}", { status: 200 });
+    }
+    return handleApiV1(new Request(url, init), { store: mem.store, now: () => now, random, ip: "203.0.113.9" });
+  }) as typeof fetch;
   const sdk = new PtgConnector({ baseUrl: "https://ptg.test", clientId: "ptg.photoshop", fetch: fetchFn, random, tokens: memoryTokenStore(), now: () => now, sleep: async () => {} });
   return { s: st, occ, panelId: panelId as string, assetId: assetId as string, variantId: variantId as string, mem, sdk, fetchFn };
 }
@@ -70,8 +78,6 @@ describe("C-0 rester: direkte opplasting over 64 MiB", () => {
   it("over 512 MiB avvises ved reservasjon, og kvoten fra G-5 gjelder også direkte opplasting", async () => {
     const h = setup({ quotaBytes: DIRECT_MAX_BYTES + 10 });
     await login(h, FULL_SCOPE);
-    const tooBig = await h.fetchFn(`https://ptg.test/api/v1/projects/${h.s.project.id}/transfers`, { method: "POST", headers: { "Content-Type": "application/json", "Idempotency-Key": "for-stor-nokkel-001", Authorization: `Bearer ${(await h.sdk.session()).id && ""}` } });
-    void tooBig;
     await expect(h.sdk.upload(h.s.project.id, { name: "k.png", bytes: png(70 * 1024 * 1024) }, { assetId: h.assetId, variantId: h.variantId, baseVersionId: null }, "kvote-nokkel-000001")).rejects.toMatchObject({ code: "quota_exceeded" });
     const huge = await h.sdk["json"]<Response>("POST", `/api/v1/projects/${h.s.project.id}/transfers`, { fileName: "h.png", byteSize: 513 * 1024 * 1024, sha256: "a".repeat(64), target: { assetId: h.assetId, variantId: h.variantId }, base: { versionId: null } }, true, { "Idempotency-Key": "huge-nokkel-0000001" }).catch(e => e);
     expect((huge as { code: string }).code).toBe("invalid_size");
@@ -92,9 +98,11 @@ describe("C-0 rester: panelretur (C-7)", () => {
     const h = setup();
     await login(h, FULL_SCOPE);
     const bytes = png(5000);
-    const t = await h.sdk.upload(h.s.project.id, { name: "Panel-1.png", bytes }, { panelId: h.panelId, panelRevision: 1 }, "panel-nokkel-00001");
+    const revision = h.mem.state.compositions[h.panelId as never]!.revision;
+    const t = await h.sdk.upload(h.s.project.id, { name: "Panel-1.png", bytes }, { panelId: h.panelId, panelRevision: revision }, "panel-nokkel-00001");
     expect(t.status).toBe("candidate");
     expect(t.panelId).toBe(h.panelId);
+    expect(t.conflictId).toBeNull(); // samme revisjon som panelet: ingen konflikt
     const st = h.mem.state;
     // Ny ressurs med én versjon, og et lag i panelet som er SKJULT (visible: false).
     const version = Object.values(st.assetVersions).find(v => v.id === t.candidateVersionId);
@@ -103,7 +111,10 @@ describe("C-0 rester: panelretur (C-7)", () => {
     const hidden = layers.find(l => l.versionId === t.candidateVersionId);
     expect(hidden).toBeTruthy();
     expect(hidden!.visible).toBe(false);
-    expect(t.conflictId).toBeTruthy(); // panelets revisjon er 1, men vi sendte fra et annet grunnlag? nei — samme
+    // Utgått revisjonsgrunnlag: kandidaten lages likevel, men merkes med konflikt.
+    const stale = await h.sdk.upload(h.s.project.id, { name: "Panel-1b.png", bytes: png(6000) }, { panelId: h.panelId, panelRevision: revision + 5 }, "panel-nokkel-00002");
+    expect(stale.status).toBe("candidate");
+    expect(stale.conflictId).toBeTruthy();
   });
   it("ukjent panel avvises ved reservasjon", async () => {
     const h = setup();
