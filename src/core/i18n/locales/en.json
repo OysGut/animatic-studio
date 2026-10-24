@@ -77792,5 +77792,14 @@
   },
   "c1.format.otio": {
     "text": "OTIO timeline"
+  },
+  "c0.consent.paste-back": {
+    "text": "If {client} did not open, copy this address and paste it into the program:"
+  },
+  "c0.consent.paste-back-copy": {
+    "text": "Copy the address"
+  },
+  "c0.consent.paste-back-copied": {
+    "text": "The address has been copied."
   }
 }
