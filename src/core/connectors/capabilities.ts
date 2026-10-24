@@ -21,6 +21,7 @@ export const ADAPTERS: readonly AdapterDescriptor[] = [
   { id: "daw-roundtrip", name: "DAW", capabilities: ["read", "write", "audio", "timeline"], exportFallback: "wav" },
   // C-4: Boords API (beta, betalt plan). Lese/skrive frames (action/sound/dialogue + bilde) og kommentarer.
   { id: "boords-api", name: "Boords", capabilities: ["read", "write", "notes"], exportFallback: "pdf" },
+  { id: "toonboom-sbpro", name: "Toon Boom Storyboard Pro", capabilities: ["read", "write", "audio", "timeline", "notes"], exportFallback: "otio" },
   { id: "storyboard-interchange", name: "Storyboard Pro / OTIO", capabilities: ["read", "timeline", "notes"], exportFallback: "otio" },
 ];
 

@@ -78,6 +78,7 @@ export const CONNECTOR_CLIENTS: Readonly<Record<string, readonly RegExp[]>> = {
   "ptg.illustrator": [LOOPBACK, scheme("illustrator")],
   "ptg.krita": [LOOPBACK, scheme("krita")],
   "ptg.blender": [LOOPBACK, scheme("blender")],
+  "ptg.toonboom-sbpro": [LOOPBACK, scheme("toonboom-sbpro")],
   "ptg.generic-loopback": [LOOPBACK],
 };
 export const clientKnown = (clientId: string): boolean => Object.prototype.hasOwnProperty.call(CONNECTOR_CLIENTS, clientId);
