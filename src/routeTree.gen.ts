@@ -16,6 +16,7 @@ import { Route as InvitasjonRouteImport } from './routes/invitasjon'
 import { Route as KobleRouteImport } from './routes/koble'
 import { Route as KontoRouteImport } from './routes/konto'
 import { Route as PersonvernRouteImport } from './routes/personvern'
+import { Route as ReturRouteImport } from './routes/retur'
 import { Route as TilbakestillPassordRouteImport } from './routes/tilbakestill-passord'
 import { Route as GruppeWorkspaceIdRouteImport } from './routes/gruppe.$workspaceId'
 import { Route as KCodeRouteImport } from './routes/k.$code'
@@ -23,6 +24,7 @@ import { Route as MTokenRouteImport } from './routes/m.$token'
 import { Route as ManusutforskerProjectIdRouteImport } from './routes/manusutforsker.$projectId'
 import { Route as ProsjektProjectIdRouteImport } from './routes/prosjekt.$projectId'
 import { Route as PtgIRouteImport } from './routes/ptg.i'
+import { Route as RTokenRouteImport } from './routes/r.$token'
 import { Route as ReviewTokenRouteImport } from './routes/review.$token'
 import { Route as SeTokenRouteImport } from './routes/se.$token'
 import { Route as ApiV1SplatRouteImport } from './routes/api/v1/$'
@@ -73,6 +75,11 @@ const PersonvernRoute = PersonvernRouteImport.update({
   path: '/personvern',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ReturRoute = ReturRouteImport.update({
+  id: '/retur',
+  path: '/retur',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TilbakestillPassordRoute = TilbakestillPassordRouteImport.update({
   id: '/tilbakestill-passord',
   path: '/tilbakestill-passord',
@@ -106,6 +113,11 @@ const ProsjektProjectIdRoute = ProsjektProjectIdRouteImport.update({
 const PtgIRoute = PtgIRouteImport.update({
   id: '/ptg/i',
   path: '/ptg/i',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RTokenRoute = RTokenRouteImport.update({
+  id: '/r/$token',
+  path: '/r/$token',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ReviewTokenRoute = ReviewTokenRouteImport.update({
@@ -193,6 +205,7 @@ export interface FileRoutesByFullPath {
   '/koble': typeof KobleRoute
   '/konto': typeof KontoRoute
   '/personvern': typeof PersonvernRoute
+  '/retur': typeof ReturRoute
   '/tilbakestill-passord': typeof TilbakestillPassordRoute
   '/gruppe/$workspaceId': typeof GruppeWorkspaceIdRoute
   '/k/$code': typeof KCodeRoute
@@ -200,6 +213,7 @@ export interface FileRoutesByFullPath {
   '/manusutforsker/$projectId': typeof ManusutforskerProjectIdRoute
   '/prosjekt/$projectId': typeof ProsjektProjectIdRouteWithChildren
   '/ptg/i': typeof PtgIRoute
+  '/r/$token': typeof RTokenRoute
   '/review/$token': typeof ReviewTokenRoute
   '/se/$token': typeof SeTokenRoute
   '/api/v1/$': typeof ApiV1SplatRoute
@@ -223,12 +237,14 @@ export interface FileRoutesByTo {
   '/koble': typeof KobleRoute
   '/konto': typeof KontoRoute
   '/personvern': typeof PersonvernRoute
+  '/retur': typeof ReturRoute
   '/tilbakestill-passord': typeof TilbakestillPassordRoute
   '/gruppe/$workspaceId': typeof GruppeWorkspaceIdRoute
   '/k/$code': typeof KCodeRoute
   '/m/$token': typeof MTokenRoute
   '/manusutforsker/$projectId': typeof ManusutforskerProjectIdRoute
   '/ptg/i': typeof PtgIRoute
+  '/r/$token': typeof RTokenRoute
   '/review/$token': typeof ReviewTokenRoute
   '/se/$token': typeof SeTokenRoute
   '/api/v1/$': typeof ApiV1SplatRoute
@@ -253,6 +269,7 @@ export interface FileRoutesById {
   '/koble': typeof KobleRoute
   '/konto': typeof KontoRoute
   '/personvern': typeof PersonvernRoute
+  '/retur': typeof ReturRoute
   '/tilbakestill-passord': typeof TilbakestillPassordRoute
   '/gruppe/$workspaceId': typeof GruppeWorkspaceIdRoute
   '/k/$code': typeof KCodeRoute
@@ -260,6 +277,7 @@ export interface FileRoutesById {
   '/manusutforsker/$projectId': typeof ManusutforskerProjectIdRoute
   '/prosjekt/$projectId': typeof ProsjektProjectIdRouteWithChildren
   '/ptg/i': typeof PtgIRoute
+  '/r/$token': typeof RTokenRoute
   '/review/$token': typeof ReviewTokenRoute
   '/se/$token': typeof SeTokenRoute
   '/api/v1/$': typeof ApiV1SplatRoute
@@ -285,6 +303,7 @@ export interface FileRouteTypes {
     | '/koble'
     | '/konto'
     | '/personvern'
+    | '/retur'
     | '/tilbakestill-passord'
     | '/gruppe/$workspaceId'
     | '/k/$code'
@@ -292,6 +311,7 @@ export interface FileRouteTypes {
     | '/manusutforsker/$projectId'
     | '/prosjekt/$projectId'
     | '/ptg/i'
+    | '/r/$token'
     | '/review/$token'
     | '/se/$token'
     | '/api/v1/$'
@@ -315,12 +335,14 @@ export interface FileRouteTypes {
     | '/koble'
     | '/konto'
     | '/personvern'
+    | '/retur'
     | '/tilbakestill-passord'
     | '/gruppe/$workspaceId'
     | '/k/$code'
     | '/m/$token'
     | '/manusutforsker/$projectId'
     | '/ptg/i'
+    | '/r/$token'
     | '/review/$token'
     | '/se/$token'
     | '/api/v1/$'
@@ -344,6 +366,7 @@ export interface FileRouteTypes {
     | '/koble'
     | '/konto'
     | '/personvern'
+    | '/retur'
     | '/tilbakestill-passord'
     | '/gruppe/$workspaceId'
     | '/k/$code'
@@ -351,6 +374,7 @@ export interface FileRouteTypes {
     | '/manusutforsker/$projectId'
     | '/prosjekt/$projectId'
     | '/ptg/i'
+    | '/r/$token'
     | '/review/$token'
     | '/se/$token'
     | '/api/v1/$'
@@ -375,6 +399,7 @@ export interface RootRouteChildren {
   KobleRoute: typeof KobleRoute
   KontoRoute: typeof KontoRoute
   PersonvernRoute: typeof PersonvernRoute
+  ReturRoute: typeof ReturRoute
   TilbakestillPassordRoute: typeof TilbakestillPassordRoute
   GruppeWorkspaceIdRoute: typeof GruppeWorkspaceIdRoute
   KCodeRoute: typeof KCodeRoute
@@ -382,6 +407,7 @@ export interface RootRouteChildren {
   ManusutforskerProjectIdRoute: typeof ManusutforskerProjectIdRoute
   ProsjektProjectIdRoute: typeof ProsjektProjectIdRouteWithChildren
   PtgIRoute: typeof PtgIRoute
+  RTokenRoute: typeof RTokenRoute
   ReviewTokenRoute: typeof ReviewTokenRoute
   SeTokenRoute: typeof SeTokenRoute
   ApiV1SplatRoute: typeof ApiV1SplatRoute
@@ -439,6 +465,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PersonvernRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/retur': {
+      id: '/retur'
+      path: '/retur'
+      fullPath: '/retur'
+      preLoaderRoute: typeof ReturRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/tilbakestill-passord': {
       id: '/tilbakestill-passord'
       path: '/tilbakestill-passord'
@@ -486,6 +519,13 @@ declare module '@tanstack/react-router' {
       path: '/ptg/i'
       fullPath: '/ptg/i'
       preLoaderRoute: typeof PtgIRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/r/$token': {
+      id: '/r/$token'
+      path: '/r/$token'
+      fullPath: '/r/$token'
+      preLoaderRoute: typeof RTokenRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/review/$token': {
@@ -626,6 +666,7 @@ const rootRouteChildren: RootRouteChildren = {
   KobleRoute: KobleRoute,
   KontoRoute: KontoRoute,
   PersonvernRoute: PersonvernRoute,
+  ReturRoute: ReturRoute,
   TilbakestillPassordRoute: TilbakestillPassordRoute,
   GruppeWorkspaceIdRoute: GruppeWorkspaceIdRoute,
   KCodeRoute: KCodeRoute,
@@ -633,6 +674,7 @@ const rootRouteChildren: RootRouteChildren = {
   ManusutforskerProjectIdRoute: ManusutforskerProjectIdRoute,
   ProsjektProjectIdRoute: ProsjektProjectIdRouteWithChildren,
   PtgIRoute: PtgIRoute,
+  RTokenRoute: RTokenRoute,
   ReviewTokenRoute: ReviewTokenRoute,
   SeTokenRoute: SeTokenRoute,
   ApiV1SplatRoute: ApiV1SplatRoute,
