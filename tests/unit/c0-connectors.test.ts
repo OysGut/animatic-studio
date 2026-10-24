@@ -302,3 +302,15 @@ describe("C-0 OpenAPI og SDK-arkitektur", () => {
     expect(src).not.toMatch(/from\s+["'](react|@supabase)|process\.env|client_secret|sk_live|sb_secret_/);
   });
 });
+
+describe("C-0-retting: klientliste og redirect", () => {
+  it("bare registrerte klienter og loopback med port eller eget skjema", async () => {
+    const { redirectAllowed, clientKnown } = await import("@/core/connectors/auth");
+    expect(clientKnown("ptg.photoshop")).toBe(true);
+    expect(clientKnown("ptg.unknown")).toBe(false);
+    for (const ok of ["http://127.0.0.1:7777/cb", "http://[::1]:9000/cb", "ptg-photoshop://oauth/cb"]) expect(redirectAllowed(ok, "ptg.photoshop")).toBe(true);
+    for (const bad of ["https://evil.example/cb", "http://localhost:7777/cb", "http://127.0.0.1/cb", "ptg-krita://cb", "http://127.0.0.1:7777/cb#x"]) expect(redirectAllowed(bad, "ptg.photoshop")).toBe(false);
+    expect(redirectAllowed("http://127.0.0.1:7777/cb", "ptg.unknown")).toBe(false);
+    expect(redirectAllowed("ptg-photoshop://cb", "ptg.generic-loopback")).toBe(false);
+  });
+});
