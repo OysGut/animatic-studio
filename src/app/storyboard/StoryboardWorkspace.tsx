@@ -5,7 +5,7 @@
  */
 import { useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type DragEvent, type KeyboardEvent } from "react";
-import { ArrowDown, ArrowUp, Copy, Eye, EyeOff, FileText, GripVertical, Minus, Play, Plus, Power, Redo2, RotateCcw, Undo2, MoveRight } from "lucide-react";
+import { ArrowDown, ArrowUp, Clapperboard, Copy, Eye, EyeOff, FileText, GripVertical, Minus, Play, Plus, Power, Redo2, RotateCcw, Undo2, MoveRight } from "lucide-react";
 import {
   PRODUCTION_AREAS,
   PRODUCTION_STATUSES,
