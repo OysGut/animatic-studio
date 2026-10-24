@@ -1,7 +1,8 @@
 -- 0111: security fixes for C-0 (0109 is run in Cloud and locked). No begin/commit: the runner wraps each
 -- migration in its own transaction. Session lookup refuses revoked/expired sessions in SQL, device-code lookup
 -- is rate limited per user, scopes are validated in SQL, clients and redirect URIs come from a registered list,
--- and expired codes / old used refresh hashes are cleaned up by the scheduled job.
+-- expired codes / old used refresh hashes are cleaned up by the scheduled job, and plugins (C-2) may resolve
+-- conflicts for their session user through a service-role function.
 
 create index c0_used_refresh_age on private.connector_used_refresh(used_at);
 
@@ -96,5 +97,24 @@ begin
 end $$;
 revoke all on function public.connector_cleanup() from public,anon,authenticated;
 grant execute on function public.connector_cleanup() to service_role;
+
+-- C-2: plugins resolve conflicts through /api/v1 on behalf of the signed-in session user. Same rules as
+-- connector_resolve_conflict (editor role, open conflict, matching revision), but service-role only and
+-- without choose_incoming: making the incoming version active stays the user's own approval in the app.
+create function public.connector_resolve_conflict_for(p_user uuid,p_project uuid,p_id uuid,p_choice text,p_revision integer) returns text
+language plpgsql security definer set search_path='' as $$
+declare c public.connector_conflicts;
+begin
+ if p_choice not in('keep_both','choose_current','reject') then return 'choice'; end if;
+ select * into c from public.connector_conflicts where id=p_id and project_id=p_project for update;
+ if not found then return 'not_found'; end if;
+ if private.member_role_rank(c.project_id,p_user) < private.role_rank('editor') then return 'forbidden'; end if;
+ if c.revision<>p_revision or c.status<>'open' then return 'stale'; end if;
+ update public.connector_conflicts set status=case when p_choice='reject' then 'rejected' else 'resolved' end,choice=p_choice,resolved_by=p_user,resolved_at=now(),revision=revision+1 where id=p_id;
+ if p_choice='reject' then update public.connector_transfers set status='rejected',updated_at=now() where id=c.transfer_id; end if;
+ return 'ok';
+end $$;
+revoke all on function public.connector_resolve_conflict_for(uuid,uuid,uuid,text,integer) from public,anon,authenticated;
+grant execute on function public.connector_resolve_conflict_for(uuid,uuid,uuid,text,integer) to service_role;
 
 insert into public.schema_version(version,description) values(111,'C-0 security fixes');
