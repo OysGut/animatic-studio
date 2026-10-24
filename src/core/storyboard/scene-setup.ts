@@ -2,7 +2,7 @@
  * SB-5: «Opprett sceneoppsett fra storyboard» som ren plan (ADR-0003). Brukeren starter overføringen
  * selv og ser en forhåndsvisning før noe skrives; kommandoene kjøres som én angregruppe (runGroup).
  *
- * Kopiert: ressurs-, form-, tekst- og gruppelag med ressurs-ID/-versjon, plassering, skala, rotasjon
+ * Kopiert: ressurslag og deres grupper med ressurs-ID/-versjon, plassering, skala, rotasjon
  * og lagrekkefølge; panelets bakgrunnsfarge; kameramerket som kamerautgangspunkt (samme omregning
  * som storyboardfilmen, panelCameraShot). Lapper, piler og kameramerkelag følger IKKE med som synlige
  * objekter – de er reginotater og vises fortsatt i referansepanelet.
@@ -18,12 +18,11 @@ import { keyBetween } from "../order-key";
 import { layerFieldsOf } from "../composition/index";
 import { compositionOfVariant, layersOf } from "../composition/render";
 import { DEFAULT_COMPOSITION } from "../composition/fields";
-import { isStoryboardLayerKind } from "./index";
 import { panelCameraShot, panelTiming } from "./playback";
 import type { FilmClip } from "../assembly/film";
 
 export interface SceneSetupSummary {
-  /** Lag som kopieres (ressurs, form, tekst, gruppe). */
+  /** Ressurslag og grupper som inneholder slike lag. */
   readonly copied: number;
   /** Reginotater som bevisst ikke følger med. */
   readonly skippedNotes: number;
@@ -65,7 +64,21 @@ export function planSceneSetup(
     return { ok: false, reason: "no_panel" };
 
   const all = layersOf(s, panel.id);
-  const copied = all.filter((l) => !isStoryboardLayerKind(l.kind));
+  const included = new Set(all.filter((l) => l.kind === "image" && l.assetId).map((l) => l.id as string));
+  // Ta bare med grupper i ressurslagenes foreldrelinje, ikke tomme instruksjonsgrupper.
+  for (const layer of all) {
+    if (!included.has(layer.id)) continue;
+    let parent = layer.groupId;
+    const visited = new Set<string>();
+    while (parent && !visited.has(parent)) {
+      visited.add(parent);
+      const group = all.find((l) => l.id === parent && l.kind === "group");
+      if (!group) break;
+      included.add(group.id);
+      parent = group.groupId;
+    }
+  }
+  const copied = all.filter((l) => included.has(l.id));
   const skippedNotes = all.filter((l) => l.kind === "note").length;
   const skippedArrows = all.filter((l) => l.kind === "arrow").length;
   const cameraMark = all.some((l) => l.kind === "camera_mark");
@@ -114,17 +127,19 @@ export function planSceneSetup(
   const remap = new Map<string, LayerId>(copied.map((l) => [l.id, makeLayer()]));
   // I en tom komposisjon beholdes panelrekkefølgen; i et nytt lagsett legges lagene øverst, i samme
   // innbyrdes rekkefølge.
-  const topKey = existingLayers.length ? existingLayers[existingLayers.length - 1]!.orderKey : null;
+  const topKey = existingLayers.at(-1)?.orderKey ?? null;
   let after = topKey;
-  const layers: NewLayer[] = copied.map((l) => {
+  const layers: NewLayer[] = copied.flatMap((l) => {
+    const layerId = remap.get(l.id);
+    if (!layerId) return [];
     const orderKey = mode === "layers" ? (after = keyBetween(after, null)) : l.orderKey;
     const fields = layerFieldsOf(l);
-    return {
-      layerId: remap.get(l.id)!,
+    return [{
+      layerId,
       compositionId,
       orderKey,
       fields: { ...fields, ...(l.groupId ? { groupId: remap.get(l.groupId) ?? null } : {}) },
-    };
+    }];
   });
   if (layers.length) commands.push({ type: "AddLayers", layers });
   if (mode === "create" && cameraAdded && shot)

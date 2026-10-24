@@ -13,3 +13,12 @@
 - [x] Storyboardstatus i sceneeditorens topp med de andre fagområdene
 - [x] Ingen DB-endring nødvendig (0106 utgår) ved behov (0105 låst); tester kjerne/angre/ikke-overskriving/avspillingsfølging/navigasjon; visuelt nb/en
 - [x] Rapport docs/development/SB5_REPORT.md
+
+## SB-7 – AI fra storyboardpanelet (pågår)
+- [ ] SB-5-retting: bare ressurslag og deres grupper overføres; test former/tekst
+- [ ] Utgangspunkt komposisjon/skisse/manus, instruksjoner som tekst, faktaark og valgte stilforbilder
+- [ ] Varianter 1–4, stil, maskens format og modellkapabiliteter
+- [ ] Kostnadsport, egne nøkler, inaktive kandidater med sporbarhet uten promptlogg
+- [ ] Dekning, mellompaneler, ren strek og beskrivelse/alt-tekst med bekreftelse
+- [ ] Falsk leverandør, visuelt nb/en, full Vitest og DB-tester
+- [ ] Rapport docs/development/SB7_REPORT.md; ingen publisering
