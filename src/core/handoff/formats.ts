@@ -49,3 +49,15 @@ export function formatsForAsset(kind: string): readonly HandoffFormat[] {
 export const RETURN_TTL_SECONDS = 48 * 3600;
 export const RETURN_TOKEN_PREFIX = "ptgh_";
 export const RETURN_TOKEN_RE = /^ptgh_[A-Za-z0-9_-]{43}$/;
+
+/** URL-safe base64 without padding (32 random bytes → 43 characters). */
+export function base64UrlToken(bytes: Uint8Array): string {
+  const A = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
+  let out = "";
+  for (let i = 0; i < bytes.length; i += 3) {
+    const n = (bytes[i]! << 16) | ((bytes[i + 1] ?? 0) << 8) | (bytes[i + 2] ?? 0);
+    const k = Math.min(3, bytes.length - i) + 1;
+    for (let j = 0; j < k; j++) out += A[(n >> (18 - 6 * j)) & 63];
+  }
+  return out;
+}

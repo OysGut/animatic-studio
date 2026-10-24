@@ -30,7 +30,7 @@ interface Resolved { kind: HandoffTarget; id: string; name: string; revision: nu
 export function resolveTarget(s: ProjectState, target: SendTarget): Resolved | null {
   if (target.kind === "asset") {
     const a = s.assets[target.assetId as never]; if (!a || a.removed) return null;
-    const variant = Object.values(s.assetVariants).find((v) => v.assetId === a.id && !v.removed && v.approvedVersionId) ?? Object.values(s.assetVariants).find((v) => v.assetId === a.id && !v.removed);
+    const variant = Object.values(s.assetVariants).find((v) => v.assetId === a.id && !v.archived && v.approvedVersionId) ?? Object.values(s.assetVariants).find((v) => v.assetId === a.id && !v.archived);
     if (!variant) return null;
     return { kind: "asset", id: a.id, name: a.name, revision: a.revision, assetId: a.id, variantId: variant.id, sceneId: null, baseVersionId: variant.approvedVersionId, formats: formatsForAsset(a.kind) };
   }
@@ -42,7 +42,7 @@ export function resolveTarget(s: ProjectState, target: SendTarget): Resolved | n
   if (target.kind === "clip") {
     const c = s.audioClips[target.clipId as never]; if (!c || c.removed) return null;
     const occ = s.occurrences[c.occurrenceId];
-    const variant = c.assetVariantId ? s.assetVariants[c.assetVariantId] : Object.values(s.assetVariants).find((v) => v.assetId === c.assetId && !v.removed);
+    const variant = c.assetVariantId ? s.assetVariants[c.assetVariantId] : Object.values(s.assetVariants).find((v) => v.assetId === c.assetId && !v.archived);
     return { kind: "clip", id: c.id, name: c.name, revision: c.revision, assetId: c.assetId, variantId: variant?.id ?? null, sceneId: occ ? occ.sceneId : null, baseVersionId: c.versionId ?? variant?.approvedVersionId ?? null, formats: FORMATS_FOR.clip };
   }
   const o = s.occurrences[target.occurrenceId as never]; if (!o) return null;

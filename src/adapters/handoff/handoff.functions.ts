@@ -66,7 +66,7 @@ async function byToken(s: HandoffStore, token: string): Promise<HandoffRecord> {
   if (!handoffOpen(h, Date.now())) throw fail("unavailable");
   return h;
 }
-const tokenIn = (d: { token: string }) => { if (!d || typeof d.token !== "string" || !RETURN_TOKEN_RE.test(d.token)) throw fail("unavailable"); return d; };
+const tokenIn = <T extends { token: string }>(d: T): T => { if (!d || typeof d.token !== "string" || !RETURN_TOKEN_RE.test(d.token)) throw fail("unavailable"); return d; };
 
 export const returnInfo = createServerFn({ method: "POST" }).inputValidator(tokenIn).handler(async ({ data }) => {
   await noStore(); const s = await store(); const h = await byToken(s, data.token);

@@ -74,7 +74,7 @@ export async function buildImageFile(format: HandoffFormat, handoffId: string, s
 }
 
 export async function buildClipWav(state: ProjectState, clip: AudioClip, handoffId: string): Promise<Uint8Array> {
-  const variant = clip.assetVariantId ? state.assetVariants[clip.assetVariantId] : Object.values(state.assetVariants).find((v) => v.assetId === clip.assetId && !v.removed);
+  const variant = clip.assetVariantId ? state.assetVariants[clip.assetVariantId] : Object.values(state.assetVariants).find((v) => v.assetId === clip.assetId && !v.archived);
   const version = clip.versionId ? state.assetVersions[clip.versionId] : variant?.approvedVersionId ? state.assetVersions[variant.approvedVersionId] : undefined;
   if (!version) throw fail();
   const urls = await createSignedUrls("assets", [version.mediaPath], 600); const u = urls[0]?.signedUrl; if (!u) throw fail();

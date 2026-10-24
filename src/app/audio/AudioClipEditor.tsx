@@ -4,6 +4,8 @@
  * dra flytter, dobbeltklikk eller Delete fjerner. Lytt til klippet med kurven.
  */
 import { ResizableDialogContent } from "@/app/shared/ResizableDialogContent";
+import { SendToButton } from "@/app/handoff/SendToDialog";
+import { HandoffStatus } from "@/app/handoff/HandoffStatus";
 import { Pause, Play, Trash2 } from "lucide-react";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { AUDIO_KIND_LABEL, audioVersion, volumeKeyDbAt, type AudioClip, type AudioClipFields, type FilmAudioItem, type ProjectState, type VolumeKey, locale } from "@/core";
@@ -260,6 +262,7 @@ function Editor({
           .{" "}
           {tk("app-audio-audio-clip-editor.editor.dialog-description.2d933392f1a3")}
         </DialogDescription>
+        <div className="flex flex-wrap items-center gap-2" data-testid="clip-handoff"><SendToButton state={state} target={{ kind: "clip", clipId: clip.id }} disabled={!editable} /><HandoffStatus projectId={state.project.id} target={{ kind: "clip", id: clip.id }} /></div>
       </DialogHeader>
 
       <div className="flex items-center gap-2">
