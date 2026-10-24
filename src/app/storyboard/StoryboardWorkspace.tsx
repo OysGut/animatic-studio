@@ -571,7 +571,7 @@ export function Gallery({
                       onClick={() => selectPanel(p.panel.id)}
                       onDoubleClick={() => open(p)}
                       onFocus={() => selectPanel(p.panel.id)}
-                      aria-label={tk("sb2.panel-label", { number: String(p.index + 1), scene: scene.number || scene.heading })}
+                      aria-label={panelDetails(p.panel).fields.description || tk("sb2.panel-label", { number: String(p.index + 1), scene: scene.number || scene.heading })}
                       className={
                         "flex shrink-0 flex-col overflow-hidden rounded border bg-surface-1 text-[12px] outline-none focus-visible:outline-2 focus-visible:outline-focus-ring " +
                         (on ? "border-accent-brand ring-2 ring-accent-selection " : "border-border ") +

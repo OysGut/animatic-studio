@@ -83,7 +83,7 @@ export function PanelAi({ state, panel, cmds, editable, mask }: { state: Project
         const panelId = newId<"composition">();
         commands.push({ type: "AddStoryboardPanel", panelId, occurrenceId: panel.occurrenceId, variantId: panel.variantId, name: row.title, orderKey: after });
         commands.push({ type: "SetStoryboardDetails", panelId, details: { ...panelDetails(panel), number: "", fields: {}, dialogueIds: [], shot: row.shot as never, angle: row.angle as never, movement: row.movement } });
-        commands.push({ type: "AddLayers", layers: [{ layerId: newId<"composition_layer">(), compositionId: panelId, fields: { ...defaultLayerFields(state, panel, {}), kind: "camera_mark", assetId: null, assetVariantId: null, versionId: null, fill: null, cameraMark: { frame: { x: 0, y: 0, width: panel.width, height: panel.height }, zoom: 1, pan: { x: 0, y: 0 }, tilt: 0 } } }] });
+        commands.push({ type: "AddLayers", layers: [{ layerId: newId<"composition_layer">(), compositionId: panelId, fields: { ...defaultLayerFields(state, panel, { fill: panel.background }), kind: "camera_mark", assetId: null, assetVariantId: null, versionId: null, fill: null, cameraMark: { frame: { x: 0, y: 0, width: panel.width, height: panel.height }, zoom: 1, pan: { x: 0, y: 0 }, tilt: 0 } } }] });
         after = keyBetween(after, null);
       }
       for (const c of commands) { const e = cmds.run(c, t("sb7.confirm"), group); if (e) throw Error(e); }
