@@ -77651,5 +77651,164 @@
   },
   "c0.scope.other": {
     "text": "Annen tilgang: {scope}"
+  },
+  "c1.build-failed": {
+    "text": "Filen kunne ikke lages."
+  },
+  "c1.error": {
+    "text": "Noe gikk galt. Prøv igjen."
+  },
+  "c1.fact.audio": {
+    "text": "Lyd med metadata (tidskode, scene og ressurs-ID)."
+  },
+  "c1.fact.flat": {
+    "text": "Bare et flatt bilde, uten lag."
+  },
+  "c1.fact.layers": {
+    "text": "Redigerbare lag med navn, synlighet, opasitet og alfa."
+  },
+  "c1.fact.not-returnable": {
+    "text": "Kan ikke sendes tilbake hit. Bruk PNG eller PSD for retur."
+  },
+  "c1.fact.returnable": {
+    "text": "Kan sendes tilbake og blir en ny kandidatversjon."
+  },
+  "c1.fact.text-raster": {
+    "text": "Tekst og lapper blir bilde, ikke redigerbar tekst."
+  },
+  "c1.fact.timeline": {
+    "text": "Tidslinje med klipp og tider, uten mediefilene."
+  },
+  "c1.no-image": {
+    "text": "Ressursen har ingen bildeversjon å sende."
+  },
+  "c1.panel": {
+    "text": "Panel"
+  },
+  "c1.scene": {
+    "text": "Scene"
+  },
+  "c1.readme": {
+    "text": "Rediger filen i {app}. Last den opp igjen via lenken under. Filen gjenkjennes ved merket inni den, ikke ved navnet."
+  },
+  "c1.return.boundary": {
+    "text": "Ingenting tas i bruk automatisk. Teamet sammenligner og velger aktiv versjon."
+  },
+  "c1.return.done": {
+    "text": "Mottatt. Filen er en ny kandidatversjon som venter på godkjenning."
+  },
+  "c1.return.done-conflict": {
+    "text": "Mottatt, men originalen er endret siden den ble sendt. Teamet må velge hva som skal gjelde."
+  },
+  "c1.return.err-checksum": {
+    "text": "Filen ble skadet under opplastingen. Prøv igjen."
+  },
+  "c1.return.err-filename": {
+    "text": "Filen har ikke merket fra From Pen to Glass. Bruk lenken eller QR-koden fra utsendelsen."
+  },
+  "c1.return.err-format": {
+    "text": "Filen har et annet format enn det som ble sendt ut."
+  },
+  "c1.return.err-rate": {
+    "text": "For mange forsøk. Vent litt og prøv igjen."
+  },
+  "c1.return.err-size": {
+    "text": "Filen er for stor eller kvoten er brukt opp."
+  },
+  "c1.return.err-type": {
+    "text": "Filtypen eller innholdet er ikke tillatt."
+  },
+  "c1.return.err-unavailable": {
+    "text": "Lenken er ugyldig, utløpt eller trukket tilbake."
+  },
+  "c1.return.err-unknown": {
+    "text": "Filen hører ikke til denne utsendelsen."
+  },
+  "c1.return.for": {
+    "text": "Send tilbake: {file}"
+  },
+  "c1.return.loading": {
+    "text": "Laster …"
+  },
+  "c1.return.page-description": {
+    "text": "Send en redigert fil tilbake til From Pen to Glass."
+  },
+  "c1.return.page-description-signed": {
+    "text": "Send filer tilbake som er merket fra From Pen to Glass."
+  },
+  "c1.return.page-title": {
+    "text": "Send tilbake – From Pen to Glass"
+  },
+  "c1.return.pick": {
+    "text": "Velg den redigerte filen"
+  },
+  "c1.return.progress": {
+    "text": "Laster opp … {percent} %"
+  },
+  "c1.return.signed-intro": {
+    "text": "Last opp en fil som har vært sendt ut fra et av prosjektene dine. Den gjenkjennes ved merket inni filen."
+  },
+  "c1.return.title": {
+    "text": "Send fil tilbake"
+  },
+  "c1.return.types": {
+    "text": "Tillatte filtyper: {types}"
+  },
+  "c1.send.busy": {
+    "text": "Lager filen …"
+  },
+  "c1.send.button": {
+    "text": "Send til …"
+  },
+  "c1.send.copy": {
+    "text": "Kopier lenke"
+  },
+  "c1.send.done": {
+    "text": "Pakken er lastet ned. Bruk QR-koden eller lenken for å sende filen tilbake."
+  },
+  "c1.send.expires": {
+    "text": "Lenken gjelder til {date}."
+  },
+  "c1.send.for": {
+    "text": "for {app}"
+  },
+  "c1.send.format": {
+    "text": "Format"
+  },
+  "c1.send.go": {
+    "text": "Lag og last ned"
+  },
+  "c1.send.intro": {
+    "text": "Velg format. Du ser hva mottakeren får. Filen sendes tilbake med QR-koden eller lenken."
+  },
+  "c1.send.ipad": {
+    "text": "På iPad (Procreate): Del → Arkiver i Filer, åpne lenken i nettleseren og velg filen."
+  },
+  "c1.send.title": {
+    "text": "Send til … – {name}"
+  },
+  "c1.status.conflict": {
+    "text": "Konflikt ved retur"
+  },
+  "c1.status.out": {
+    "text": "Til behandling i {app}"
+  },
+  "c1.status.returned": {
+    "text": "Returnert, venter på godkjenning"
+  },
+  "c1.format.psd": {
+    "text": "PSD med lag"
+  },
+  "c1.format.png": {
+    "text": "PNG"
+  },
+  "c1.format.svg": {
+    "text": "SVG"
+  },
+  "c1.format.wav": {
+    "text": "WAV/BWF"
+  },
+  "c1.format.otio": {
+    "text": "OTIO-tidslinje"
   }
 }

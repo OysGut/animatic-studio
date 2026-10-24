@@ -25097,6 +25097,150 @@
     "c0.scope.transfers-write": {
       "text": "Sende filer som nye kandidatversjoner"
     },
+    "c1.build-failed": {
+      "text": "Filen kunne ikke lages."
+    },
+    "c1.error": {
+      "text": "Noe gikk galt. Prøv igjen."
+    },
+    "c1.fact.audio": {
+      "text": "Lyd med metadata (tidskode, scene og ressurs-ID)."
+    },
+    "c1.fact.flat": {
+      "text": "Bare et flatt bilde, uten lag."
+    },
+    "c1.fact.layers": {
+      "text": "Redigerbare lag med navn, synlighet, opasitet og alfa."
+    },
+    "c1.fact.not-returnable": {
+      "text": "Kan ikke sendes tilbake hit. Bruk PNG eller PSD for retur."
+    },
+    "c1.fact.returnable": {
+      "text": "Kan sendes tilbake og blir en ny kandidatversjon."
+    },
+    "c1.fact.text-raster": {
+      "text": "Tekst og lapper blir bilde, ikke redigerbar tekst."
+    },
+    "c1.fact.timeline": {
+      "text": "Tidslinje med klipp og tider, uten mediefilene."
+    },
+    "c1.no-image": {
+      "text": "Ressursen har ingen bildeversjon å sende."
+    },
+    "c1.panel": {
+      "text": "Panel"
+    },
+    "c1.readme": {
+      "text": "Rediger filen i {app}. Last den opp igjen via lenken under. Filen gjenkjennes ved merket inni den, ikke ved navnet."
+    },
+    "c1.return.boundary": {
+      "text": "Ingenting tas i bruk automatisk. Teamet sammenligner og velger aktiv versjon."
+    },
+    "c1.return.done": {
+      "text": "Mottatt. Filen er en ny kandidatversjon som venter på godkjenning."
+    },
+    "c1.return.done-conflict": {
+      "text": "Mottatt, men originalen er endret siden den ble sendt. Teamet må velge hva som skal gjelde."
+    },
+    "c1.return.err-checksum": {
+      "text": "Filen ble skadet under opplastingen. Prøv igjen."
+    },
+    "c1.return.err-filename": {
+      "text": "Filen har ikke merket fra From Pen to Glass. Bruk lenken eller QR-koden fra utsendelsen."
+    },
+    "c1.return.err-format": {
+      "text": "Filen har et annet format enn det som ble sendt ut."
+    },
+    "c1.return.err-rate": {
+      "text": "For mange forsøk. Vent litt og prøv igjen."
+    },
+    "c1.return.err-size": {
+      "text": "Filen er for stor eller kvoten er brukt opp."
+    },
+    "c1.return.err-type": {
+      "text": "Filtypen eller innholdet er ikke tillatt."
+    },
+    "c1.return.err-unavailable": {
+      "text": "Lenken er ugyldig, utløpt eller trukket tilbake."
+    },
+    "c1.return.err-unknown": {
+      "text": "Filen hører ikke til denne utsendelsen."
+    },
+    "c1.return.for": {
+      "text": "Send tilbake: {file}"
+    },
+    "c1.return.loading": {
+      "text": "Laster …"
+    },
+    "c1.return.page-description": {
+      "text": "Send en redigert fil tilbake til From Pen to Glass."
+    },
+    "c1.return.page-description-signed": {
+      "text": "Send filer tilbake som er merket fra From Pen to Glass."
+    },
+    "c1.return.page-title": {
+      "text": "Send tilbake – From Pen to Glass"
+    },
+    "c1.return.pick": {
+      "text": "Velg den redigerte filen"
+    },
+    "c1.return.progress": {
+      "text": "Laster opp … {percent} %"
+    },
+    "c1.return.signed-intro": {
+      "text": "Last opp en fil som har vært sendt ut fra et av prosjektene dine. Den gjenkjennes ved merket inni filen."
+    },
+    "c1.return.title": {
+      "text": "Send fil tilbake"
+    },
+    "c1.return.types": {
+      "text": "Tillatte filtyper: {types}"
+    },
+    "c1.scene": {
+      "text": "Scene"
+    },
+    "c1.send.busy": {
+      "text": "Lager filen …"
+    },
+    "c1.send.button": {
+      "text": "Send til …"
+    },
+    "c1.send.copy": {
+      "text": "Kopier lenke"
+    },
+    "c1.send.done": {
+      "text": "Pakken er lastet ned. Bruk QR-koden eller lenken for å sende filen tilbake."
+    },
+    "c1.send.expires": {
+      "text": "Lenken gjelder til {date}."
+    },
+    "c1.send.for": {
+      "text": "for {app}"
+    },
+    "c1.send.format": {
+      "text": "Format"
+    },
+    "c1.send.go": {
+      "text": "Lag og last ned"
+    },
+    "c1.send.intro": {
+      "text": "Velg format. Du ser hva mottakeren får. Filen sendes tilbake med QR-koden eller lenken."
+    },
+    "c1.send.ipad": {
+      "text": "På iPad (Procreate): Del → Arkiver i Filer, åpne lenken i nettleseren og velg filen."
+    },
+    "c1.send.title": {
+      "text": "Send til … – {name}"
+    },
+    "c1.status.conflict": {
+      "text": "Konflikt ved retur"
+    },
+    "c1.status.out": {
+      "text": "Til behandling i {app}"
+    },
+    "c1.status.returned": {
+      "text": "Returnert, venter på godkjenning"
+    },
     "components-ui-dialog.dialog-content.span.4e9257a0bdea": {
       "text": "Lukk"
     },
@@ -60316,6 +60460,150 @@
     },
     "c0.scope.transfers-write": {
       "text": "Send files as new candidate versions"
+    },
+    "c1.build-failed": {
+      "text": "The file could not be created."
+    },
+    "c1.error": {
+      "text": "Something went wrong. Try again."
+    },
+    "c1.fact.audio": {
+      "text": "Audio with metadata (timecode, scene and asset ID)."
+    },
+    "c1.fact.flat": {
+      "text": "Only a flat image, without layers."
+    },
+    "c1.fact.layers": {
+      "text": "Editable layers with names, visibility, opacity and alpha."
+    },
+    "c1.fact.not-returnable": {
+      "text": "Cannot be returned here. Use PNG or PSD to return."
+    },
+    "c1.fact.returnable": {
+      "text": "Can be returned and becomes a new candidate version."
+    },
+    "c1.fact.text-raster": {
+      "text": "Text and notes become pixels, not editable text."
+    },
+    "c1.fact.timeline": {
+      "text": "Timeline with clips and timing, without the media files."
+    },
+    "c1.no-image": {
+      "text": "The asset has no image version to send."
+    },
+    "c1.panel": {
+      "text": "Panel"
+    },
+    "c1.readme": {
+      "text": "Edit the file in {app}. Upload it again through the link below. The file is recognized by the marker inside it, not by its name."
+    },
+    "c1.return.boundary": {
+      "text": "Nothing is used automatically. The team compares and chooses the active version."
+    },
+    "c1.return.done": {
+      "text": "Received. The file is a new candidate version awaiting approval."
+    },
+    "c1.return.done-conflict": {
+      "text": "Received, but the original changed after it was sent. The team must choose what applies."
+    },
+    "c1.return.err-checksum": {
+      "text": "The file was damaged during upload. Try again."
+    },
+    "c1.return.err-filename": {
+      "text": "The file has no From Pen to Glass marker. Use the link or QR code from the hand-off."
+    },
+    "c1.return.err-format": {
+      "text": "The file has a different format than the one sent out."
+    },
+    "c1.return.err-rate": {
+      "text": "Too many attempts. Wait a moment and try again."
+    },
+    "c1.return.err-size": {
+      "text": "The file is too large or the quota is used up."
+    },
+    "c1.return.err-type": {
+      "text": "The file type or content is not allowed."
+    },
+    "c1.return.err-unavailable": {
+      "text": "The link is invalid, expired or revoked."
+    },
+    "c1.return.err-unknown": {
+      "text": "The file does not belong to this hand-off."
+    },
+    "c1.return.for": {
+      "text": "Return: {file}"
+    },
+    "c1.return.loading": {
+      "text": "Loading …"
+    },
+    "c1.return.page-description": {
+      "text": "Return an edited file to From Pen to Glass."
+    },
+    "c1.return.page-description-signed": {
+      "text": "Return files that carry a From Pen to Glass marker."
+    },
+    "c1.return.page-title": {
+      "text": "Return file – From Pen to Glass"
+    },
+    "c1.return.pick": {
+      "text": "Choose the edited file"
+    },
+    "c1.return.progress": {
+      "text": "Uploading … {percent}%"
+    },
+    "c1.return.signed-intro": {
+      "text": "Upload a file that was sent out from one of your projects. It is recognized by the marker inside the file."
+    },
+    "c1.return.title": {
+      "text": "Return a file"
+    },
+    "c1.return.types": {
+      "text": "Allowed file types: {types}"
+    },
+    "c1.scene": {
+      "text": "Scene"
+    },
+    "c1.send.busy": {
+      "text": "Creating the file …"
+    },
+    "c1.send.button": {
+      "text": "Send to …"
+    },
+    "c1.send.copy": {
+      "text": "Copy link"
+    },
+    "c1.send.done": {
+      "text": "The package has been downloaded. Use the QR code or link to return the file."
+    },
+    "c1.send.expires": {
+      "text": "The link is valid until {date}."
+    },
+    "c1.send.for": {
+      "text": "for {app}"
+    },
+    "c1.send.format": {
+      "text": "Format"
+    },
+    "c1.send.go": {
+      "text": "Create and download"
+    },
+    "c1.send.intro": {
+      "text": "Choose a format. You see what the receiver gets. The file is returned with the QR code or link."
+    },
+    "c1.send.ipad": {
+      "text": "On iPad (Procreate): Share → Save to Files, open the link in the browser and pick the file."
+    },
+    "c1.send.title": {
+      "text": "Send to … – {name}"
+    },
+    "c1.status.conflict": {
+      "text": "Conflict on return"
+    },
+    "c1.status.out": {
+      "text": "In progress in {app}"
+    },
+    "c1.status.returned": {
+      "text": "Returned, awaiting approval"
     },
     "components-ui-dialog.dialog-content.span.4e9257a0bdea": {
       "text": "Close"

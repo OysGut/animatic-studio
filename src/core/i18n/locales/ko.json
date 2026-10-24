@@ -58967,5 +58967,270 @@
     "text": "기타 권한: {scope}",
     "sourceHash": "378f60603d87c902070afe3b77ac167d31c8ba39fdd39519ca1df241f0fcce4e",
     "review": "machine"
+  },
+  "c1.build-failed": {
+    "text": "파일을 만들 수 없습니다.",
+    "sourceHash": "029090105d1838d556aee3336980d990c6343174d07218d4332b71a17705902b",
+    "review": "machine"
+  },
+  "c1.error": {
+    "text": "문제가 발생했습니다. 다시 시도하세요.",
+    "sourceHash": "3d739fa3b7d9c39b4ca225ed4f5c15dc9c343517420aa17b19f4ad679dfbad3e",
+    "review": "machine"
+  },
+  "c1.fact.audio": {
+    "text": "메타데이터가 포함된 오디오(타임코드, 장면, 에셋 ID).",
+    "sourceHash": "882592e52273b6f2b3b161ec11a45ee23d915f8e14c3273ce18f06adf955ffea",
+    "review": "machine"
+  },
+  "c1.fact.flat": {
+    "text": "레이어 없는 평면 이미지만.",
+    "sourceHash": "cdfedd55c2ae27b20dd1a2fbe7b6b976f21a8b4e866107e674087facdba70527",
+    "review": "machine"
+  },
+  "c1.fact.layers": {
+    "text": "이름, 표시, 불투명도, 알파가 있는 편집 가능한 레이어.",
+    "sourceHash": "b671dc5c068dbb9bf8424223215fbeadd726c51a47a615aecd3e4bb57919840e",
+    "review": "machine"
+  },
+  "c1.fact.not-returnable": {
+    "text": "여기로 되돌릴 수 없습니다. 반환하려면 PNG 또는 PSD를 사용하세요.",
+    "sourceHash": "f01e907cc6a9f2d83ebb09be3654f8d4a5ff75722db30d8d0dfd9b202e279063",
+    "review": "machine"
+  },
+  "c1.fact.returnable": {
+    "text": "반환하면 새 후보 버전이 됩니다.",
+    "sourceHash": "552b517b4878bd413ac48c8b55f254f0f2f927d45ee946b6cfef2d220d0b0fc3",
+    "review": "machine"
+  },
+  "c1.fact.text-raster": {
+    "text": "텍스트와 메모는 편집 가능한 텍스트가 아니라 픽셀이 됩니다.",
+    "sourceHash": "45be13b6c2e793e7e5b5a3fc53e2ff94d8deaaa7bc716f80f30f95c0e317a928",
+    "review": "machine"
+  },
+  "c1.fact.timeline": {
+    "text": "클립과 타이밍이 있는 타임라인(미디어 파일 제외).",
+    "sourceHash": "015e5cbd8d0babdcf4bcefae1d4e754ae229c02a0f0853ed2cdaddf2797d5269",
+    "review": "machine"
+  },
+  "c1.no-image": {
+    "text": "보낼 이미지 버전이 없습니다.",
+    "sourceHash": "f8d127ee27134a62ea5683b0d939b01f83d996716cecdd2979c47d96d2c94929",
+    "review": "machine"
+  },
+  "c1.panel": {
+    "text": "패널",
+    "sourceHash": "46da2692e83cefeca063204f5fcd27f34c96402d7e71ac3e2bcabab22e41743d",
+    "review": "machine"
+  },
+  "c1.scene": {
+    "text": "장면",
+    "sourceHash": "8e78c9759cd21e214716a22af84715427ca71b525a20d44da165b454e15e7fac",
+    "review": "machine"
+  },
+  "c1.readme": {
+    "text": "{app}에서 파일을 편집한 뒤 아래 링크로 다시 업로드하세요. 파일은 이름이 아니라 내부 표식으로 인식됩니다.",
+    "sourceHash": "ba0c3f56f05d57fda2e3e3db71e60fa160a854e26a77cd02619d4a847c529397",
+    "review": "machine"
+  },
+  "c1.return.boundary": {
+    "text": "자동으로 적용되는 것은 없습니다. 팀이 비교하고 활성 버전을 선택합니다.",
+    "sourceHash": "411487cf146cbf6faccda9b8b60602fe67498420fed1dcfc0e0b7120206ec240",
+    "review": "machine"
+  },
+  "c1.return.done": {
+    "text": "받았습니다. 새 후보 버전으로 승인을 기다립니다.",
+    "sourceHash": "813bd590b0d7523560d6202adae29fa016711a0a7ba6d95997082c1de370b03e",
+    "review": "machine"
+  },
+  "c1.return.done-conflict": {
+    "text": "받았지만 보낸 뒤 원본이 바뀌었습니다. 팀이 적용할 것을 선택해야 합니다.",
+    "sourceHash": "0102fc8a110d5d1492f7929811bcd3f5964c96b14758653179af71afabd2dd9a",
+    "review": "machine"
+  },
+  "c1.return.err-checksum": {
+    "text": "업로드 중 파일이 손상되었습니다. 다시 시도하세요.",
+    "sourceHash": "b1b752c8e4ccd04a510f7e644198082759ff42d3338d1839df0bfe7c786a848a",
+    "review": "machine"
+  },
+  "c1.return.err-filename": {
+    "text": "파일에 From Pen to Glass 표식이 없습니다. 보낼 때 받은 링크나 QR 코드를 사용하세요.",
+    "sourceHash": "9e1467f450fee684cf779ff56c30502548654769678098fc7c69dc483e243e69",
+    "review": "machine"
+  },
+  "c1.return.err-format": {
+    "text": "보낸 형식과 다른 파일입니다.",
+    "sourceHash": "b0d51c9db7801f0589c16b1938fc1112d9138476bbfeb9a9b951b7f8280da796",
+    "review": "machine"
+  },
+  "c1.return.err-rate": {
+    "text": "시도가 너무 많습니다. 잠시 후 다시 시도하세요.",
+    "sourceHash": "8d70a7fecb8fade72330f34bf96e50d74bdf1c90a2890bc4fc32257e4251067a",
+    "review": "machine"
+  },
+  "c1.return.err-size": {
+    "text": "파일이 너무 크거나 할당량을 모두 사용했습니다.",
+    "sourceHash": "b0409784171b4339cdf3bec0a74584dba370f875e5893280960c5c62d49e2616",
+    "review": "machine"
+  },
+  "c1.return.err-type": {
+    "text": "허용되지 않는 파일 형식 또는 내용입니다.",
+    "sourceHash": "8851f0fc01e13c699ab76682b616a40954385e794869af681377e55deb22ae31",
+    "review": "machine"
+  },
+  "c1.return.err-unavailable": {
+    "text": "링크가 잘못되었거나 만료되었거나 취소되었습니다.",
+    "sourceHash": "f2743c3eaefeb52419b726ad102c206192a1f76507eed93c9af0f924b6d9f39b",
+    "review": "machine"
+  },
+  "c1.return.err-unknown": {
+    "text": "이 파일은 이 전달 건에 속하지 않습니다.",
+    "sourceHash": "07dfa00e0055e22e3b68b90522da379071f48ff842f8e1387e77835c09b1296c",
+    "review": "machine"
+  },
+  "c1.return.for": {
+    "text": "반환: {file}",
+    "sourceHash": "56f176ddba96096b2d3e77c971822a44409ed501fc84edb4abffa185d2b5f970",
+    "review": "machine"
+  },
+  "c1.return.loading": {
+    "text": "불러오는 중…",
+    "sourceHash": "9afa6b4550a416f8b1bf9a4d708a82a427e1f6ff70e25ef9d52769b406cf65ef",
+    "review": "machine"
+  },
+  "c1.return.page-description": {
+    "text": "편집한 파일을 From Pen to Glass로 반환합니다.",
+    "sourceHash": "0c62695ac71ac051dc3d9aed32cf713bcf7508c7608571023e72a4f6300b7a77",
+    "review": "machine"
+  },
+  "c1.return.page-description-signed": {
+    "text": "From Pen to Glass 표식이 있는 파일을 반환합니다.",
+    "sourceHash": "fe7bc7882f2217b267a1fee3fe92f03061cc30e9e95483125f5aa0b37333e690",
+    "review": "machine"
+  },
+  "c1.return.page-title": {
+    "text": "파일 반환 – From Pen to Glass",
+    "sourceHash": "c124aa757a97aa591da1324377c2bb4d657b30970b3ac44a7e30318e0a498a91",
+    "review": "machine"
+  },
+  "c1.return.pick": {
+    "text": "편집한 파일 선택",
+    "sourceHash": "b882768b200231baf428165556409642127de41ae51830251a0ca3ac5e234386",
+    "review": "machine"
+  },
+  "c1.return.progress": {
+    "text": "업로드 중… {percent}%",
+    "sourceHash": "8251755ca0ab699186f481c2b1ebd284ab1fb1d582ead02d099090f94ddf7341",
+    "review": "machine"
+  },
+  "c1.return.signed-intro": {
+    "text": "내 프로젝트에서 보낸 파일을 업로드하세요. 파일 안의 표식으로 인식됩니다.",
+    "sourceHash": "56a674ab42a6dfdc293d954bfac4a3cb54dfa42d19346b28c4cf7eeb4f7ad7f4",
+    "review": "machine"
+  },
+  "c1.return.title": {
+    "text": "파일 반환",
+    "sourceHash": "c5cfa7ce65a5423323c9826bbafb1300005bd49d14b7ccd7679b0421d6e7d94f",
+    "review": "machine"
+  },
+  "c1.return.types": {
+    "text": "허용 파일 형식: {types}",
+    "sourceHash": "6fdd419d6455e1176efd034b78b71006f0da536426601fa958033038152a4efa",
+    "review": "machine"
+  },
+  "c1.send.busy": {
+    "text": "파일을 만드는 중…",
+    "sourceHash": "1712dc1dcdde9dba49d1aa87d489b0da7e10fea1699a0d25504402ca2c8fb626",
+    "review": "machine"
+  },
+  "c1.send.button": {
+    "text": "보내기…",
+    "sourceHash": "8351db7d118d305478bade70860d605da62d721f9ea9d6fe90747c1ba5005c86",
+    "review": "machine"
+  },
+  "c1.send.copy": {
+    "text": "링크 복사",
+    "sourceHash": "c02c5db20168bdd5c3f87428863673a2e834c141ed0a0a633bf92362a08ceed8",
+    "review": "machine"
+  },
+  "c1.send.done": {
+    "text": "패키지를 내려받았습니다. QR 코드나 링크로 파일을 반환하세요.",
+    "sourceHash": "11e729b125260ad8d140d5034b311154861eb14849dece541a29264001a629a5",
+    "review": "machine"
+  },
+  "c1.send.expires": {
+    "text": "링크 유효 기한: {date}",
+    "sourceHash": "474208a02efd80f8d4f0b538664ff69d24751be28f97175e592f6f2464936679",
+    "review": "machine"
+  },
+  "c1.send.for": {
+    "text": "{app}용",
+    "sourceHash": "240786b847148091458e7438c7eb507ea1e3dd2d80d90a6f342f8a696682b4e4",
+    "review": "machine"
+  },
+  "c1.send.format": {
+    "text": "형식",
+    "sourceHash": "5c30e50c15a19af80fbdcd13b0d5fcace8fc7f673e660bc42dc9f03879d9f6c7",
+    "review": "machine"
+  },
+  "c1.send.go": {
+    "text": "만들고 내려받기",
+    "sourceHash": "54c9ece70b1a0e303205b1f19da7665b89cffc000cb4f546449512d9ee814e83",
+    "review": "machine"
+  },
+  "c1.send.intro": {
+    "text": "형식을 고르세요. 받는 쪽이 무엇을 받는지 보입니다. 파일은 QR 코드나 링크로 반환됩니다.",
+    "sourceHash": "36988c33914e97679bbd933951bc197ef72d1594bf0c3b03407b6e3780c04c6a",
+    "review": "machine"
+  },
+  "c1.send.ipad": {
+    "text": "iPad(Procreate): 공유 → 파일에 저장 후 브라우저에서 링크를 열고 파일을 선택하세요.",
+    "sourceHash": "a7f56f824d00f499a48fdb85349dd94e49969ba7b086e93d33e6c2f09a4e766a",
+    "review": "machine"
+  },
+  "c1.send.title": {
+    "text": "보내기 – {name}",
+    "sourceHash": "798a3184c207481a16cfc217f98a9e774e866ce9bc374659ae88939f993c7157",
+    "review": "machine"
+  },
+  "c1.status.conflict": {
+    "text": "반환 충돌",
+    "sourceHash": "d2dc4fa013b5e097f7d5a7dbeb9ce3ca5a7be2a0b88ec7bf08b4b1708dfbecf0",
+    "review": "machine"
+  },
+  "c1.status.out": {
+    "text": "{app}에서 작업 중",
+    "sourceHash": "9766c9e861ade396a7beac1f44c6905042693360fe4cb4d583026c52ccd71b59",
+    "review": "machine"
+  },
+  "c1.status.returned": {
+    "text": "반환됨, 승인 대기",
+    "sourceHash": "fff07be76ce2181ab04808a3a89c6db777f0d9ce66e7a480f560a48d02a6b522",
+    "review": "machine"
+  },
+  "c1.format.psd": {
+    "text": "레이어 포함 PSD",
+    "sourceHash": "458c4108c4d28c17d676e6d3ebfb9e846744185c9f94bc71db4b43bf57921e01",
+    "review": "machine"
+  },
+  "c1.format.png": {
+    "text": "PNG",
+    "sourceHash": "815c67080bf958b8f7de8cf90047a150b354a95fe02cde26a88b4923b25d033d",
+    "review": "machine"
+  },
+  "c1.format.svg": {
+    "text": "SVG",
+    "sourceHash": "390134ffe7c502b1043eb651dfabc32ff6dc8ef5ea16fa3f17d3df05aefeace1",
+    "review": "machine"
+  },
+  "c1.format.wav": {
+    "text": "WAV/BWF",
+    "sourceHash": "d116b9f4b70a4d2bbc09798e5b3aed45a4adfa0a01627253dadc6f1d90c71c67",
+    "review": "machine"
+  },
+  "c1.format.otio": {
+    "text": "OTIO 타임라인",
+    "sourceHash": "878fe644a15cdb4b9b41f769ff8da67824c17976837d8f168da3fb6d53b8d567",
+    "review": "machine"
   }
 }

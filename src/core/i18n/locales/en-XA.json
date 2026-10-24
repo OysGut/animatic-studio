@@ -77633,5 +77633,164 @@
   },
   "c0.scope.other": {
     "text": "[!! ÔÔtthhëërr ppëërrmmïïssssïïôônn: {scope} !!]"
+  },
+  "c1.build-failed": {
+    "text": "[!! TThhëë ffïïllëë ccôôüülldd nnôôtt bbëë ccrrëëááttëëdd. !!]"
+  },
+  "c1.error": {
+    "text": "[!! SSôômmëëtthhïïnngg wwëënntt wwrrôônngg. TTrryy áággááïïnn. !!]"
+  },
+  "c1.fact.audio": {
+    "text": "[!! ÁÁüüddïïôô wwïïtthh mmëëttááddááttáá (ttïïmmëëccôôddëë, ssccëënnëë áánndd áássssëëtt ÏÏDD). !!]"
+  },
+  "c1.fact.flat": {
+    "text": "[!! ÔÔnnllyy áá fflláátt ïïmmáággëë, wwïïtthhôôüütt llááyyëërrss. !!]"
+  },
+  "c1.fact.layers": {
+    "text": "[!! ËËddïïttáábbllëë llááyyëërrss wwïïtthh nnáámmëëss, vvïïssïïbbïïllïïttyy, ôôppááccïïttyy áánndd áállpphháá. !!]"
+  },
+  "c1.fact.not-returnable": {
+    "text": "[!! CCáánnnnôôtt bbëë rrëëttüürrnnëëdd hhëërrëë. ÜÜssëë PPNNGG ôôrr PPSSDD ttôô rrëëttüürrnn. !!]"
+  },
+  "c1.fact.returnable": {
+    "text": "[!! CCáánn bbëë rrëëttüürrnnëëdd áánndd bbëëccôômmëëss áá nnëëww ccáánnddïïddááttëë vvëërrssïïôônn. !!]"
+  },
+  "c1.fact.text-raster": {
+    "text": "[!! TTëëxxtt áánndd nnôôttëëss bbëëccôômmëë ppïïxxëëllss, nnôôtt ëëddïïttáábbllëë ttëëxxtt. !!]"
+  },
+  "c1.fact.timeline": {
+    "text": "[!! TTïïmmëëllïïnnëë wwïïtthh ccllïïppss áánndd ttïïmmïïnngg, wwïïtthhôôüütt tthhëë mmëëddïïáá ffïïllëëss. !!]"
+  },
+  "c1.no-image": {
+    "text": "[!! TThhëë áássssëëtt hhááss nnôô ïïmmáággëë vvëërrssïïôônn ttôô ssëënndd. !!]"
+  },
+  "c1.panel": {
+    "text": "[!! PPáánnëëll !!]"
+  },
+  "c1.scene": {
+    "text": "[!! SSccëënnëë !!]"
+  },
+  "c1.readme": {
+    "text": "[!! ËËddïïtt tthhëë ffïïllëë ïïnn {app}. ÜÜppllôôáádd ïïtt áággááïïnn tthhrrôôüügghh tthhëë llïïnnkk bbëëllôôww. TThhëë ffïïllëë ïïss rrëëccôôggnnïïzzëëdd bbyy tthhëë mmáárrkkëërr ïïnnssïïddëë ïïtt, nnôôtt bbyy ïïttss nnáámmëë. !!]"
+  },
+  "c1.return.boundary": {
+    "text": "[!! NNôôtthhïïnngg ïïss üüssëëdd ááüüttôômmááttïïccáállllyy. TThhëë ttëëáámm ccôômmppáárrëëss áánndd cchhôôôôssëëss tthhëë ááccttïïvvëë vvëërrssïïôônn. !!]"
+  },
+  "c1.return.done": {
+    "text": "[!! RRëëccëëïïvvëëdd. TThhëë ffïïllëë ïïss áá nnëëww ccáánnddïïddááttëë vvëërrssïïôônn ááwwááïïttïïnngg áápppprrôôvvááll. !!]"
+  },
+  "c1.return.done-conflict": {
+    "text": "[!! RRëëccëëïïvvëëdd, bbüütt tthhëë ôôrrïïggïïnnááll cchháánnggëëdd ááffttëërr ïïtt wwááss ssëënntt. TThhëë ttëëáámm mmüüsstt cchhôôôôssëë wwhháátt ááppppllïïëëss. !!]"
+  },
+  "c1.return.err-checksum": {
+    "text": "[!! TThhëë ffïïllëë wwááss ddáámmáággëëdd ddüürrïïnngg üüppllôôáádd. TTrryy áággááïïnn. !!]"
+  },
+  "c1.return.err-filename": {
+    "text": "[!! TThhëë ffïïllëë hhááss nnôô FFrrôômm PPëënn ttôô GGlláássss mmáárrkkëërr. ÜÜssëë tthhëë llïïnnkk ôôrr QQRR ccôôddëë ffrrôômm tthhëë hháánndd-ôôffff. !!]"
+  },
+  "c1.return.err-format": {
+    "text": "[!! TThhëë ffïïllëë hhááss áá ddïïffffëërrëënntt ffôôrrmmáátt tthháánn tthhëë ôônnëë ssëënntt ôôüütt. !!]"
+  },
+  "c1.return.err-rate": {
+    "text": "[!! TTôôôô mmáánnyy ááttttëëmmppttss. WWááïïtt áá mmôômmëënntt áánndd ttrryy áággááïïnn. !!]"
+  },
+  "c1.return.err-size": {
+    "text": "[!! TThhëë ffïïllëë ïïss ttôôôô lláárrggëë ôôrr tthhëë qqüüôôttáá ïïss üüssëëdd üüpp. !!]"
+  },
+  "c1.return.err-type": {
+    "text": "[!! TThhëë ffïïllëë ttyyppëë ôôrr ccôônnttëënntt ïïss nnôôtt áállllôôwwëëdd. !!]"
+  },
+  "c1.return.err-unavailable": {
+    "text": "[!! TThhëë llïïnnkk ïïss ïïnnvváállïïdd, ëëxxppïïrrëëdd ôôrr rrëëvvôôkkëëdd. !!]"
+  },
+  "c1.return.err-unknown": {
+    "text": "[!! TThhëë ffïïllëë ddôôëëss nnôôtt bbëëllôônngg ttôô tthhïïss hháánndd-ôôffff. !!]"
+  },
+  "c1.return.for": {
+    "text": "[!! RRëëttüürrnn: {file} !!]"
+  },
+  "c1.return.loading": {
+    "text": "[!! LLôôááddïïnngg … !!]"
+  },
+  "c1.return.page-description": {
+    "text": "[!! RRëëttüürrnn áánn ëëddïïttëëdd ffïïllëë ttôô FFrrôômm PPëënn ttôô GGlláássss. !!]"
+  },
+  "c1.return.page-description-signed": {
+    "text": "[!! RRëëttüürrnn ffïïllëëss tthháátt ccáárrrryy áá FFrrôômm PPëënn ttôô GGlláássss mmáárrkkëërr. !!]"
+  },
+  "c1.return.page-title": {
+    "text": "[!! RRëëttüürrnn ffïïllëë – FFrrôômm PPëënn ttôô GGlláássss !!]"
+  },
+  "c1.return.pick": {
+    "text": "[!! CChhôôôôssëë tthhëë ëëddïïttëëdd ffïïllëë !!]"
+  },
+  "c1.return.progress": {
+    "text": "[!! ÜÜppllôôááddïïnngg … {percent}% !!]"
+  },
+  "c1.return.signed-intro": {
+    "text": "[!! ÜÜppllôôáádd áá ffïïllëë tthháátt wwááss ssëënntt ôôüütt ffrrôômm ôônnëë ôôff yyôôüürr pprrôôjjëëccttss. ÏÏtt ïïss rrëëccôôggnnïïzzëëdd bbyy tthhëë mmáárrkkëërr ïïnnssïïddëë tthhëë ffïïllëë. !!]"
+  },
+  "c1.return.title": {
+    "text": "[!! RRëëttüürrnn áá ffïïllëë !!]"
+  },
+  "c1.return.types": {
+    "text": "[!! ÁÁllllôôwwëëdd ffïïllëë ttyyppëëss: {types} !!]"
+  },
+  "c1.send.busy": {
+    "text": "[!! CCrrëëááttïïnngg tthhëë ffïïllëë … !!]"
+  },
+  "c1.send.button": {
+    "text": "[!! SSëënndd ttôô … !!]"
+  },
+  "c1.send.copy": {
+    "text": "[!! CCôôppyy llïïnnkk !!]"
+  },
+  "c1.send.done": {
+    "text": "[!! TThhëë ppáácckkáággëë hhááss bbëëëënn ddôôwwnnllôôááddëëdd. ÜÜssëë tthhëë QQRR ccôôddëë ôôrr llïïnnkk ttôô rrëëttüürrnn tthhëë ffïïllëë. !!]"
+  },
+  "c1.send.expires": {
+    "text": "[!! TThhëë llïïnnkk ïïss vváállïïdd üünnttïïll {date}. !!]"
+  },
+  "c1.send.for": {
+    "text": "[!! ffôôrr {app} !!]"
+  },
+  "c1.send.format": {
+    "text": "[!! FFôôrrmmáátt !!]"
+  },
+  "c1.send.go": {
+    "text": "[!! CCrrëëááttëë áánndd ddôôwwnnllôôáádd !!]"
+  },
+  "c1.send.intro": {
+    "text": "[!! CChhôôôôssëë áá ffôôrrmmáátt. YYôôüü ssëëëë wwhháátt tthhëë rrëëccëëïïvvëërr ggëëttss. TThhëë ffïïllëë ïïss rrëëttüürrnnëëdd wwïïtthh tthhëë QQRR ccôôddëë ôôrr llïïnnkk. !!]"
+  },
+  "c1.send.ipad": {
+    "text": "[!! ÔÔnn ïïPPáádd (PPrrôôccrrëëááttëë): SShháárrëë → SSáávvëë ttôô FFïïllëëss, ôôppëënn tthhëë llïïnnkk ïïnn tthhëë bbrrôôwwssëërr áánndd ppïïcckk tthhëë ffïïllëë. !!]"
+  },
+  "c1.send.title": {
+    "text": "[!! SSëënndd ttôô … – {name} !!]"
+  },
+  "c1.status.conflict": {
+    "text": "[!! CCôônnffllïïcctt ôônn rrëëttüürrnn !!]"
+  },
+  "c1.status.out": {
+    "text": "[!! ÏÏnn pprrôôggrrëëssss ïïnn {app} !!]"
+  },
+  "c1.status.returned": {
+    "text": "[!! RRëëttüürrnnëëdd, ááwwááïïttïïnngg áápppprrôôvvááll !!]"
+  },
+  "c1.format.psd": {
+    "text": "[!! PPSSDD wwïïtthh llááyyëërrss !!]"
+  },
+  "c1.format.png": {
+    "text": "[!! PPNNGG !!]"
+  },
+  "c1.format.svg": {
+    "text": "[!! SSVVGG !!]"
+  },
+  "c1.format.wav": {
+    "text": "[!! WWÁÁVV/BBWWFF !!]"
+  },
+  "c1.format.otio": {
+    "text": "[!! ÔÔTTÏÏÔÔ ttïïmmëëllïïnnëë !!]"
   }
 }
