@@ -107,6 +107,8 @@ import {
 } from "@/components/ui/dialog";
 import { ExportAnimaticDialog } from "./ExportAnimaticDialog";
 import { rememberScene } from "@/app/shell/current-scene";
+import { currentPosition } from "@/app/shell/current-scene";
+import { usePositionPlayback } from "@/app/shell/use-position-playback";
 import { AssemblyMoreMenu, AssemblyTextMenu, AssemblyViewMenu } from "./AssemblyToolbarMenus";
 import { createKindScene } from "./mts-occurrences";
 import { ShortcutsButton, ShortcutsDialog } from "@/app/shortcuts/ShortcutsDialog";
@@ -194,7 +196,7 @@ function Assembly({
   const [productionId, setProductionId] = useActiveProduction(
     projectId,
     state,
-    focus?.occurrenceId ?? null,
+    focus?.occurrenceId ?? currentPosition(projectId)?.occurrenceId ?? null,
   );
   // Språkversjon (DEC-0059): dialogspråket bestemmer lyden og språkavhengige bilder i visningen,
   // avspillingen og eksporten. Endringer gjøres alltid på den egentlige tilstanden.
@@ -220,7 +222,9 @@ function Assembly({
   }, [state, clips]);
   const duration = Math.max(1, filmDurationFrames(clips));
   const fps = state.project.fps;
-  const playback = usePlayback(duration, fps, false);
+  const audioClock = useRef<(() => number | null) | null>(null);
+  const playback = usePlayback(duration, fps, false, null, audioClock);
+  usePositionPlayback(projectId, state, playback, clips[0]?.occurrenceId ?? null, clips);
   const images = useFilmImages(view, clips);
   // B-105a: eldre bilder får proxy og miniatyr i bakgrunnen første gang de vises (uten å blokkere)
   useEffect(() => {
@@ -232,7 +236,7 @@ function Assembly({
       height: view.project.frameHeight,
     });
   }, [view, clips, projectId, cmds]);
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(() => currentPosition(projectId)?.occurrenceId ?? null);
   useEffect(() => rememberScene(projectId, selectedId, state.occurrences[selectedId ?? ""]?.sceneId ?? null), [projectId, selectedId, state.occurrences]);
   const [follow, setFollow] = useStoredFlag("assembly-follow", true);
   // Hele filmen i svart-hvitt (visning; foreslås i eksporten, REQ-0573)
@@ -280,6 +284,7 @@ function Assembly({
     playing: playback.playing,
     time: framesToSeconds(playback.frame, fps),
     mutedKinds,
+    clock: audioClock,
   });
   const [addAudio, setAddAudio] = useState<AudioKind | null>(null);
   const [longFilm, setLongFilm] = useState(false);

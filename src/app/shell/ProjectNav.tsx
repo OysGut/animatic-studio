@@ -1,5 +1,6 @@
-import { Link } from "@tanstack/react-router";
-import { useLayoutEffect, useRef, useState } from "react";
+import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { currentPosition } from "./current-scene";
 import { useLanguage } from "@/app/i18n/language";
 import {
   Camera,
@@ -90,6 +91,25 @@ const active =
 
 /** Fanerad med arbeidsflatene øverst (U4). Kan slås sammen til bare ikoner (DEC-0040); valget huskes. */
 export function ProjectNav({ projectId }: { projectId: string }) {
+  const navigate = useNavigate();
+  const path = useRouterState({ select: s => s.location.pathname });
+  useEffect(() => {
+    const key = (e: KeyboardEvent) => {
+      if (!(e.ctrlKey || e.metaKey) || !e.shiftKey || e.key !== " ") return;
+      if (e.target instanceof HTMLElement && e.target.closest("input,textarea,[contenteditable=true],[role=dialog]")) return;
+      e.preventDefault();
+      const views = ["manus", "storyboard", "scene", "montering"];
+      const next = views[(views.indexOf(path.split("/").at(-1) ?? "") + 1) % views.length];
+      const p = currentPosition(projectId);
+      const search = new URLSearchParams();
+      if (p?.occurrenceId) search.set("scene", p.occurrenceId);
+      if (p?.blockId && next === "manus") search.set("blokk", p.blockId);
+      if (p?.panelId && next === "storyboard") search.set("panel", p.panelId);
+      void navigate({ href: `/prosjekt/${encodeURIComponent(projectId)}/${next}?${search}` });
+    };
+    window.addEventListener("keydown", key);
+    return () => window.removeEventListener("keydown", key);
+  }, [projectId, path, navigate]);
   const [stored, setCollapsed] = useStoredFlag("project-nav-collapsed", false);
   // N9: får ikke etikettene plass (f.eks. lange språk), vises bare ikoner med verktøytips.
   // Bredden med etiketter huskes, så visningen går tilbake når det blir plass igjen.

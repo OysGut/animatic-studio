@@ -90,6 +90,12 @@ function ExplorerContent({ state, editable, cmds, ...props }: Props & { state: P
   const pages = useMemo(() => filterPages(scriptPages(view, productionId, { lockedPages: true }).pages, new Set(visibleId ? [visibleId] : [])), [view, productionId, visibleId]);
   const groups = useMemo(() => explorerGroups(state, productionId, { text: query, ...(character ? { character } : {}), ...(assetId ? { assetId } : {}) }, kind === "all" ? undefined : kind), [state, productionId, query, character, assetId, kind]);
   const decor = useMemo(() => pageDecorations(pages, view, { query: query || character || state.assets[assetId]?.name || "", notes: notesPref.marks }), [pages, view, query, character, assetId, notesPref.marks]);
+  useEffect(() => {
+    if (mode !== "follow") return;
+    const blockId = active.scene?.blockId ?? null;
+    setSelection({ occurrenceId: visibleId, blockId });
+    if (blockId) requestAnimationFrame(() => root.current?.querySelector<HTMLElement>(`[data-block="${blockId}"]`)?.scrollIntoView({ block: "center" }));
+  }, [mode, visibleId, active.scene?.blockId]);
   // Ressursbruk per ressurs, regnet én gang per tilstand og produksjon (N5/N8: ikke per tegning)
   const usageByAsset = useMemo(() => {
     const out = new Map<string, { asset: Asset; usages: AssetUsage[] }>();
