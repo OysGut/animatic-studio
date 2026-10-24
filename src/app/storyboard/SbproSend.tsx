@@ -13,7 +13,7 @@ import { newId, type Command, type ProjectState } from "@/core";
 import { applySbproText, buildSbproPackage, conformCommands, productionPanels, sha256Hex, type ConformPlan, type ConflictChoice, type SbproPackageFile } from "@/core/connectors";
 import { storedZip } from "@/core/handoff/bytes";
 import { keyBetween } from "@/core/order-key";
-import { panelDetails } from "@/core/storyboard/editing";
+import { EMPTY_PANEL_DETAILS, panelDetails } from "@/core/storyboard/editing";
 import { storyboardPanelsOf } from "@/core/storyboard";
 import { createSignedUrls } from "@/adapters/browser/storage-files";
 import { resolveSbproCandidate, sbproCandidatesFor, type SbproCandidateView } from "@/adapters/connectors/sbpro.functions";
@@ -100,7 +100,7 @@ function SbproDialog({ open, onOpenChange, state, projectId, productionId, cmds 
       const caps = (inc["captions"] ?? {}) as Record<string, unknown>;
       const out: Command[] = [{ type: "AddStoryboardPanel", panelId, occurrenceId: occ.id, variantId: occ.variantId, orderKey: keyBetween(list.at(-1)?.orderKey ?? null, null) } as Command];
       if (Number.isInteger(inc["durationFrames"])) out.push({ type: "UpdateStoryboardPanel", panelId, durationFrames: inc["durationFrames"] as number } as Command);
-      out.push({ type: "SetStoryboardFields", panelId, fields: applySbproText({}, caps) } as unknown as Command);
+      out.push({ type: "SetStoryboardDetails", panelId, details: { ...EMPTY_PANEL_DETAILS, fields: applySbproText({}, caps) } } as Command);
       return out;
     }
     if (c.kind === "conform") return conformCommands(state, inc as unknown as ConformPlan);

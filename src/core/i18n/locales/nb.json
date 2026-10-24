@@ -77996,5 +77996,122 @@
   },
   "c4.comments.out": {
     "text": "Til Boords"
+  },
+  "c5.open": {
+    "text": "Storyboard Pro"
+  },
+  "c5.title": {
+    "text": "Toon Boom Storyboard Pro"
+  },
+  "c5.intro": {
+    "text": "Last ned en pakke for skriptene i Storyboard Pro, og se det som kommer tilbake. Ingenting tas i bruk automatisk."
+  },
+  "c5.download": {
+    "text": "Last ned pakke"
+  },
+  "c5.download.info": {
+    "text": "Pakken har {count} paneler med bilder, timing, tekstfelt, kamera og midlertidig panellyd."
+  },
+  "c5.download.done": {
+    "text": "Pakken med {count} paneler er lastet ned. Pakk den ut og bruk PtG_Import i Storyboard Pro."
+  },
+  "c5.progress": {
+    "text": "Lager panel {done} av {total} …"
+  },
+  "c5.login-info": {
+    "text": "Skriptet PtG_Login viser en kode. Godkjenn den på siden «Koble til et program»."
+  },
+  "c5.candidates": {
+    "text": "Fra Storyboard Pro"
+  },
+  "c5.none": {
+    "text": "Ingen kandidater venter."
+  },
+  "c5.conflict": {
+    "text": "Konflikt"
+  },
+  "c5.timing": {
+    "text": "Timing: {from} → {to} bilder"
+  },
+  "c5.suggestion": {
+    "text": "Bare et forslag, fordi det ikke er tapsfritt: {reasons}."
+  },
+  "c5.use-incoming": {
+    "text": "Bruk innkommende"
+  },
+  "c5.keep-both": {
+    "text": "Behold begge"
+  },
+  "c5.keep-current": {
+    "text": "Behold gjeldende"
+  },
+  "c5.reject": {
+    "text": "Avvis"
+  },
+  "c5.stale": {
+    "text": "Panelet er endret siden returen. Send en ny retur fra Storyboard Pro."
+  },
+  "c5.incoming": {
+    "text": "Fra Storyboard Pro"
+  },
+  "c5.error": {
+    "text": "Noe gikk galt med Storyboard Pro-koblingen."
+  },
+  "c5.image-name": {
+    "text": "Panelbilde fra Storyboard Pro"
+  },
+  "c5.all-panels": {
+    "text": "alle paneler"
+  },
+  "c5.kind.text": {
+    "text": "Tekst"
+  },
+  "c5.kind.timing": {
+    "text": "Timing"
+  },
+  "c5.kind.image": {
+    "text": "Bilde"
+  },
+  "c5.kind.new_panel": {
+    "text": "Nytt panel"
+  },
+  "c5.kind.conform": {
+    "text": "Rekkefølge og timing"
+  },
+  "c5.reason.new": {
+    "text": "nye paneler"
+  },
+  "c5.reason.missing": {
+    "text": "paneler mangler"
+  },
+  "c5.reason.moved-scene": {
+    "text": "paneler er flyttet til en annen scene"
+  },
+  "c5.reason.conflict": {
+    "text": "paneler er endret i begge programmene"
+  },
+  "c5.reason.unknown-scene": {
+    "text": "ukjente paneler"
+  },
+  "c5.reason.fps": {
+    "text": "ulik bildefrekvens"
+  },
+  "c5.limit.no-browser": {
+    "text": "Storyboard Pro har ingen nettleser; innlogging skjer med en kode."
+  },
+  "c5.limit.no-layers-back": {
+    "text": "Tilbake kommer flate panelbilder, ikke lag."
+  },
+  "c5.limit.captions-only": {
+    "text": "Bare Dialogue, Action Notes og Notes utveksles som tekst."
+  },
+  "c5.limit.no-auto-apply": {
+    "text": "Ingenting tas i bruk automatisk."
+  },
+  "c5.limit.lossless-conform-only": {
+    "text": "Rekkefølge og timing brukes i ett steg bare når det er tapsfritt."
+  },
+  "c5.limit.unverified": {
+    "text": "Bygget, ikke verifisert i Storyboard Pro."
   }
 }
