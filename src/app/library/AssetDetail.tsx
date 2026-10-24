@@ -38,7 +38,7 @@ import { useProfiles } from "@/app/project/use-project";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { IMAGE_ACCEPT, addUploadedImage, uploadAssetImage, useImageUrls } from "./asset-images";
+import { imageAccept, addUploadedImage, uploadAssetImage, useImageUrls } from "./asset-images";
 import { ImageViewer } from "./ImageViewer";
 import { ReuploadDialog, type ReuploadItem } from "./ReuploadDialog";
 import { uploadAssetAudio } from "./asset-audio";
@@ -1008,7 +1008,7 @@ function VariantCard({
               accept={
                 asset.kind === "sound"
                   ? "audio/*,.mp3,.wav,.ogg,.m4a,.aac,.flac,.webm"
-                  : IMAGE_ACCEPT
+                  : imageAccept()
               }
               className="hidden"
               aria-hidden

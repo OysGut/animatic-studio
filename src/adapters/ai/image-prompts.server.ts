@@ -34,82 +34,91 @@ import {
 } from "@/core";
 import { t as tk } from "@/core/i18n/keyed";
 
-const uuid = z.string().uuid();
-const view = z.enum(VERSION_VIEWS as unknown as [VersionView, ...VersionView[]]);
-const family = z.enum(["narrative", "compact"]);
-const name = z.string().max(200);
+/** Bygges ved første bruk: VERSION_VIEWS og MAX_ATTACHED_IMAGES_ANY fra @/core leses aldri når modulen lastes (SSR-sirkularitet 24.10). */
+function buildImagePromptRequest() {
+  const uuid = z.string().uuid();
+  const view = z.enum(VERSION_VIEWS as unknown as [VersionView, ...VersionView[]]);
+  const family = z.enum(["narrative", "compact"]);
+  const name = z.string().max(200);
 
-export const imagePromptRequest = z.discriminatedUnion("kind", [
-  z.object({
-    kind: z.literal("asset"),
-    assetId: uuid,
-    variantId: uuid.nullable(),
-    /** Dagens bilde som beholdes (identitet), eller null. */
-    referenceVersionId: uuid.nullable(),
-    /** Produksjon og scene (DEC-0065); null: enkel beskrivelse uten filmens kontekst. */
-    productionId: uuid.nullable(),
-    occurrenceId: uuid.nullable(),
-    style: z.boolean(),
-    /** Brukerens valg av vedlegg (Øystein 23.10): bortvalg og tillegg med rolle. */
-    excluded: z.array(uuid).max(64).optional(),
-    added: z
-      .array(z.object({ versionId: uuid, role: z.enum(["style", "view"]) }))
-      .max(MAX_ATTACHED_IMAGES_ANY)
-      .optional(),
-    /** Grensen for den valgte modellen (serveren bruker den minste av denne og modellens egen). */
-    maxImages: z.number().int().min(1).max(MAX_ATTACHED_IMAGES_ANY).optional(),
-    fullSize: z.boolean(),
-    family,
-    transparent: z.boolean(),
-  }),
-  z.object({
-    kind: z.literal("turnaround"),
-    assetId: uuid,
-    versionId: uuid,
-    view: view.nullable(),
-    views: z.array(view).max(VERSION_VIEWS.length),
-    extraViews: z.array(z.object({ versionId: uuid, view })).max(12),
-    style: z.boolean(),
-    family,
-    transparent: z.boolean(),
-  }),
-  z.object({
-    kind: z.literal("variation"),
-    assetId: uuid,
-    versionId: uuid,
-    change: z.string().max(2000),
-    index: z.number().int().min(0).max(20),
-    count: z.number().int().min(1).max(20),
-    style: z.boolean(),
-    family,
-    transparent: z.boolean(),
-  }),
-  z.object({
-    kind: z.literal("part"),
-    assetId: uuid,
-    versionId: uuid,
-    part: name.min(1),
-    others: z.array(name).max(30),
-    style: z.boolean(),
-    family,
-    transparent: z.boolean(),
-  }),
-  z.object({
-    /** Filmens visuelle stil: eksempel på en beskrivelse med et ulagret utkast (DEC-0065). */
-    kind: z.literal("styleDraft"),
-    assetId: uuid,
-    profileId: uuid.nullable(),
-    guide: z.record(z.string(), z.unknown()),
-  }),
-  z.object({
-    kind: z.literal("harmonize"),
-    assetId: uuid,
-    versionId: uuid,
-    styleProfileId: uuid.nullable(),
-    referenceVersionId: uuid.nullable(),
-  }),
-]);
-export type ImagePromptRequest = z.infer<typeof imagePromptRequest>;
+  return z.discriminatedUnion("kind", [
+    z.object({
+      kind: z.literal("asset"),
+      assetId: uuid,
+      variantId: uuid.nullable(),
+      /** Dagens bilde som beholdes (identitet), eller null. */
+      referenceVersionId: uuid.nullable(),
+      /** Produksjon og scene (DEC-0065); null: enkel beskrivelse uten filmens kontekst. */
+      productionId: uuid.nullable(),
+      occurrenceId: uuid.nullable(),
+      style: z.boolean(),
+      /** Brukerens valg av vedlegg (Øystein 23.10): bortvalg og tillegg med rolle. */
+      excluded: z.array(uuid).max(64).optional(),
+      added: z
+        .array(z.object({ versionId: uuid, role: z.enum(["style", "view"]) }))
+        .max(MAX_ATTACHED_IMAGES_ANY)
+        .optional(),
+      /** Grensen for den valgte modellen (serveren bruker den minste av denne og modellens egen). */
+      maxImages: z.number().int().min(1).max(MAX_ATTACHED_IMAGES_ANY).optional(),
+      fullSize: z.boolean(),
+      family,
+      transparent: z.boolean(),
+    }),
+    z.object({
+      kind: z.literal("turnaround"),
+      assetId: uuid,
+      versionId: uuid,
+      view: view.nullable(),
+      views: z.array(view).max(VERSION_VIEWS.length),
+      extraViews: z.array(z.object({ versionId: uuid, view })).max(12),
+      style: z.boolean(),
+      family,
+      transparent: z.boolean(),
+    }),
+    z.object({
+      kind: z.literal("variation"),
+      assetId: uuid,
+      versionId: uuid,
+      change: z.string().max(2000),
+      index: z.number().int().min(0).max(20),
+      count: z.number().int().min(1).max(20),
+      style: z.boolean(),
+      family,
+      transparent: z.boolean(),
+    }),
+    z.object({
+      kind: z.literal("part"),
+      assetId: uuid,
+      versionId: uuid,
+      part: name.min(1),
+      others: z.array(name).max(30),
+      style: z.boolean(),
+      family,
+      transparent: z.boolean(),
+    }),
+    z.object({
+      /** Filmens visuelle stil: eksempel på en beskrivelse med et ulagret utkast (DEC-0065). */
+      kind: z.literal("styleDraft"),
+      assetId: uuid,
+      profileId: uuid.nullable(),
+      guide: z.record(z.string(), z.unknown()),
+    }),
+    z.object({
+      kind: z.literal("harmonize"),
+      assetId: uuid,
+      versionId: uuid,
+      styleProfileId: uuid.nullable(),
+      referenceVersionId: uuid.nullable(),
+    }),
+  ]);
+}
+let schemaCache: ReturnType<typeof buildImagePromptRequest> | undefined;
+const schema = () => (schemaCache ??= buildImagePromptRequest());
+export const imagePromptRequest = {
+  parse: (input: unknown) => schema().parse(input),
+  safeParse: (input: unknown) => schema().safeParse(input),
+};
+export type ImagePromptRequest = z.infer<ReturnType<typeof buildImagePromptRequest>>;
 
 export interface ComposedImagePrompt {
   /** Beskrivelsen uten avsnittet om vedlagte bilder (det brukeren ser og kan redigere). */

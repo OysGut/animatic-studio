@@ -14,6 +14,7 @@
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
     "test:db": "bun tests/db/run-db-tests.ts",
+    "test:ssr": "node scripts/ssr-smoke.mjs",
     "kb:check": "python3 scripts/kb/check_kb.py"
   },
   "overrides": {
