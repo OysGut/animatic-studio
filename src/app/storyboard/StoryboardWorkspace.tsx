@@ -5,7 +5,7 @@
  */
 import { useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type DragEvent, type KeyboardEvent } from "react";
-import { ArrowDown, ArrowUp, Copy, Eye, EyeOff, FileText, GripVertical, Minus, Plus, Power, Redo2, RotateCcw, Undo2, MoveRight } from "lucide-react";
+import { ArrowDown, ArrowUp, Copy, Eye, EyeOff, FileText, GripVertical, Minus, Play, Plus, Power, Redo2, RotateCcw, Undo2, MoveRight } from "lucide-react";
 import {
   PRODUCTION_AREAS,
   PRODUCTION_STATUSES,
@@ -42,6 +42,7 @@ import { useImageUrls } from "@/app/library/asset-images";
 import { Thumbnail } from "@/app/shared/Thumbnail";
 import { SceneSelect } from "@/app/shell/SceneSelect";
 import { rememberScene } from "@/app/shell/current-scene";
+import { StoryboardFilm } from "./StoryboardFilm";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import {
@@ -171,6 +172,7 @@ export function Gallery({
   const [error, setError] = useState<string | null>(null);
   const [moveOpen, setMoveOpen] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
+  const [filmOpen, setFilmOpen] = useState(false);
   const fps = state.project.fps.num / state.project.fps.den;
   const rtl = typeof document !== "undefined" && document.documentElement.dir === "rtl";
 
@@ -435,6 +437,7 @@ export function Gallery({
           </select>
         </label>
         <Button variant="ghost" size="sm" onClick={jumpToScript} data-testid="sb-jump-script"><FileText /> {tk("sb2.jump-script")}</Button>
+        <Button variant="ghost" size="sm" onClick={() => setFilmOpen(true)} data-testid="sb-play-film" aria-label={tk("sb4.play-film")}><Play /> {tk("sb4.play-film")}</Button>
         <div className="ms-auto flex items-center gap-1">
           <Button size="icon" variant="ghost" onClick={cmds.undo} disabled={!cmds.canUndo} aria-label={tk("sb2.undo")} title={cmds.undoLabel ?? undefined}><Undo2 /></Button>
           <Button size="icon" variant="ghost" onClick={cmds.redo} disabled={!cmds.canRedo} aria-label={tk("sb2.redo")} title={cmds.redoLabel ?? undefined}><Redo2 /></Button>
@@ -598,6 +601,22 @@ export function Gallery({
         </DialogContent>
       </Dialog>
 
+      {filmOpen ? (
+        <StoryboardFilm
+          projectId={projectId}
+          state={state}
+          productionId={productionId}
+          open={filmOpen}
+          onOpenChange={setFilmOpen}
+          startOccurrenceId={sel?.panel.occurrenceId ?? null}
+          onCurrentPanel={(panelId) => {
+            if (panelId) {
+              focusPending.current = true;
+              setSelected(panelId);
+            }
+          }}
+        />
+      ) : null}
       {sel ? (
         <MovePanelDialog
           open={moveOpen}
