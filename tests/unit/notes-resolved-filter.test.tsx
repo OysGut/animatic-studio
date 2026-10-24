@@ -10,7 +10,6 @@ const note = (id: string, text: string, resolved: boolean): Annotation => ({
   id: id as Annotation["id"],
   blockId: "b1" as Annotation["blockId"],
   variantId: null,
-  kind: "note",
   start: 0,
   end: 3,
   quote: "Hei",
