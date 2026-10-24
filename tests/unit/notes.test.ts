@@ -505,3 +505,56 @@ describe("«Endret av …» (DEC-0032)", () => {
     ).toEqual([null, null]);
   });
 });
+
+describe("KI-226: notat på enkeltord forankres til ordets grenser", () => {
+  it("wordRange utvider et utvalg inni et ord til hele ordet", () => {
+    expect(wordRange("Maja setter den blå vasen", 6, 9)).toEqual({ start: 5, end: 11 });
+  });
+  it("wordRange endrer ikke et utvalg som allerede står på ordgrensene", () => {
+    expect(wordRange("Maja setter den blå vasen", 5, 11)).toEqual({ start: 5, end: 11 });
+  });
+  it("wordRange håndterer tekst med aksenter og utvalg ved kantene", () => {
+    expect(wordRange("Blåbær syltetøy", 2, 5)).toEqual({ start: 0, end: 7 });
+    expect(wordRange("Hei", 0, 3)).toEqual({ start: 0, end: 3 });
+  });
+  it("resolveRange velger treff på ordgrenser foran treff inni et lengre ord", () => {
+    const { s } = project();
+    const a = {
+      id: tid<"annotation">(),
+      blockId: null,
+      variantId: null,
+      kind: "note",
+      start: 0,
+      end: 3,
+      quote: "sol",
+      text: "n",
+      authorName: "M",
+      stampAt: "2026-10-01T10:00:00Z",
+      editedByName: "",
+      editedAt: "",
+      removed: false,
+      resolved: false,
+    } as const;
+    const r = resolveRange(a as never, "soloppgangen var vakker, og solen steg");
+    expect(r.found).toBe(true);
+    expect("soloppgangen var vakker, og solen steg".slice(r.start, r.end)).toBe("sol");
+    expect(r.start).toBe(27);
+    void s;
+  });
+  it("notatet på ordet tåler redigering av teksten rundt", () => {
+    const { s: s0, mainId, cmd } = project();
+    const action = cmd.scenes[0]!.blocks[0]!.blockId;
+    const { s, id } = addNote(s0, action, "vasen", "Rekvisitt");
+    const s2 = mustApply(s, {
+      type: "EditBlockText",
+      productionId: mainId,
+      blockId: action,
+      text: "Om kvelden setter Maja den blå glassvasen og vasen i vinduet.",
+    });
+    const r = resolveRange(s2.annotations[id]!, s2.blocks[action]!.text);
+    expect(r.found).toBe(true);
+    // «vasen» skal fortsatt treffe ordet vasen, ikke «vasen» inni «glassvasen»
+    expect(s2.blocks[action]!.text.slice(r.start - 1, r.start)).not.toBe("s");
+    expect(r.start).toBe(41);
+  });
+});
