@@ -15,10 +15,14 @@
 - [x] Rapport docs/development/SB5_REPORT.md
 
 ## SB-7 – AI fra storyboardpanelet (pågår)
-- [ ] SB-5-retting: bare ressurslag og deres grupper overføres; test former/tekst
-- [ ] Utgangspunkt komposisjon/skisse/manus, instruksjoner som tekst, faktaark og valgte stilforbilder
+- [x] SB-5-retting: bare ressurslag og deres grupper overføres; test former/tekst
+- [x] Utgangspunkt komposisjon/skisse/manus, instruksjoner som tekst, faktaark og valgte stilforbilder (kjerne og brukerflate; ikke ekte leverandørverifisert)
 - [ ] Varianter 1–4, stil, maskens format og modellkapabiliteter
-- [ ] Kostnadsport, egne nøkler, inaktive kandidater med sporbarhet uten promptlogg
+- [x] Kostnadsport og egne nøkler; anslag bindes til innhold/pris. Kandidater lagres som skjulte lag, med resultatkvittering og spor uten promptlogg
 - [ ] Dekning, mellompaneler, ren strek og beskrivelse/alt-tekst med bekreftelse
-- [ ] Falsk leverandør, visuelt nb/en, full Vitest og DB-tester
-- [ ] Rapport docs/development/SB7_REPORT.md; ingen publisering
+- [x] Falsk leverandør for beskrivelse/kostnadsport og visuelt nb/en; full Vitest 2928/0/10 og DB 228/0
+- [x] Rapport docs/development/SB7_REPORT.md; ingen publisering
+- [ ] Nøyaktig maskeforhold i bildefilen og modellspesifikk skisse-/maskestyring (dagens bildekjører tilbyr fire standardforhold)
+- [ ] Mobil-QR/C-1 direkte til skissevalget; rasterisert komposisjonsgrunnlag med grupper og kamerautsnitt
+- [ ] Leverandøruavhengig bilde-E2E med falsk bildekjører, gjenoppretting fra kvitteringer og samlet angring av serverlagrede kandidater
+- [ ] Tilleggsforslag med varig jobbtilknytning, bekreftet kamerageometri og fullt scenemanus for dekning
