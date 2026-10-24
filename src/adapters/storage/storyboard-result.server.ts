@@ -16,9 +16,13 @@ export async function saveStoryboardCandidate(db: AnyClient, projectId: string, 
   const history: { commandId: string; inverse: Command; affected: readonly string[]; group: string }[] = [];
   // Recovery also adopts commands committed before a later attachment failed.
   if (existing) {
-    const { data, error } = await db.from("change_log").select("id,inverse,affected_ids,command").eq("project_id", projectId).eq("actor", userId).in("command_type", ["AddAssetVersion", "AddLayers"]).order("project_seq", { ascending: true });
-    if (error) throw Error(t("sb7.stale"));
-    for (const row of data ?? []) {
+    const matches = await Promise.all([
+      { type: "AddAssetVersion", versionId },
+      { type: "AddLayers", layers: [{ compositionId: panelId, fields: { versionId } }] },
+    ].map(command => db.from("change_log").select("id,inverse,affected_ids,command,project_seq").eq("project_id", projectId).eq("actor", userId).contains("command", command).order("project_seq", { ascending: true })));
+    if (matches.some(r => r.error)) throw Error(t("sb7.stale"));
+    const data = matches.flatMap(r => r.data ?? []).sort((a, b) => a.project_seq - b.project_seq);
+    for (const row of data) {
       const command = row.command as Command;
       if ((command.type === "AddAssetVersion" && command.versionId === versionId) || (command.type === "AddLayers" && command.layers.some(l => l.compositionId === panelId && l.fields.versionId === versionId))) {
         if (row.inverse) history.push({ commandId: row.id, inverse: row.inverse as Command, affected: row.affected_ids ?? [], group: versionId });
