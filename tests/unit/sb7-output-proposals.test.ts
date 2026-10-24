@@ -18,7 +18,7 @@ describe("SB-7 output and acceptance policy", () => {
     s=mustApply(s,{type:"CreateAssets",assets:[{assetId,fields:{kind:"other",name:"resource",names:[],description:"",category:"",tags:[]}}]});
     s=mustApply(s,{type:"CreateAssetVariant",assetId,variantId,fields:{name:"base",style:"other",appearance:""}});
     const base=defaultLayerFields(s,p,{fill:p.background});
-    s=mustApply(s,{type:"AddLayers",layers:[{layerId:groupId,compositionId:p.id,fields:{...base,kind:"group",fill:null,transform:{...base.transform,x:120,y:80}}},{layerId:cameraGroupId,compositionId:p.id,fields:{...base,kind:"group",fill:null,visible:false}}]});
+    s=mustApply(s,{type:"AddLayers",layers:[{layerId:groupId,compositionId:p.id,fields:{...base,kind:"group",fill:null,anchor:{x:0,y:0},transform:{...base.transform,x:120,y:80}}},{layerId:cameraGroupId,compositionId:p.id,fields:{...base,kind:"group",fill:null,visible:false}}]});
     s=mustApply(s,{type:"AddLayers",layers:[{layerId:tid(),compositionId:p.id,fields:{...defaultLayerFields(s,p,{assetId,assetVariantId:variantId}),groupId,transform:{...base.transform,x:10,y:20}}},{layerId:tid(),compositionId:p.id,fields:{...base,kind:"camera_mark",fill:null,groupId:cameraGroupId,cameraMark:{frame:{x:0,y:0,width:p.width/2,height:p.height/2},zoom:2,pan:{x:0,y:0},tilt:0}}}]});
     const frame=panelStructureFrame(s,p,"composition");expect(frame.items).toHaveLength(1);expect(frame.items[0]?.kind).not.toBe("group");expect(frame.items[0]?.matrix[4]).toBe(130);expect(frame.items[0]?.matrix[5]).toBe(100);
   });

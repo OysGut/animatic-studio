@@ -23,7 +23,7 @@ export function panelOutputPlan(panel: Composition, mask: string, model: Provide
 
 /** Shared renderFrame handles groups; instruction layers never enter the structure raster. */
 export function panelStructureFrame(s: ProjectState, panel: Composition, basis: "composition" | "sketch", sketchLayerId?: string | null): Frame {
-  const selected = new Set(layersOf(s, panel.id).filter(l => l.visible && (basis === "sketch" ? l.id === sketchLayerId && !!l.sketch : !!l.assetId && !l.note && !l.arrow && !l.text && !l.shape && !l.cameraMark && !l.sketch)).map(l => l.id));
+  const selected = new Set<string>(layersOf(s, panel.id).filter(l => l.visible && (basis === "sketch" ? l.id === sketchLayerId && !!l.sketch : !!l.assetId && !l.note && !l.arrow && !l.text && !l.shape && !l.cameraMark && !l.sketch)).map(l => l.id));
   const rendered = renderFrame(s, panel.id, 0, { onlyLayers: selected });
   const frame = { ...rendered, items: rendered.items.filter(it => selected.has(it.layerId)) };
   const marker = layersOf(s, panel.id).find(l => {
