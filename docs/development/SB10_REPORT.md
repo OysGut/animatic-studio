@@ -8,7 +8,7 @@ Dato: 24.10.2026. **Ikke publisert. 0108 er bare skrevet; ingen migrasjon eller 
 - Serveren fryser det valgte storyboardet før eksport. Eksport bruker denne frosne tilstanden, ikke en mulig utdatert lokal revisjon. Panelbilder og storyboardfilm bruker eksisterende bildekilde/compositor og SB-4-lydmiks/SB-9-overganger. Originale prosjektdata endres ikke.
 - Offentlig `/review/$token` med mobilvennlig avspilling, lydkontroller og panelvalg. Kommentar med koordinatnål, navn og valgfri e-post; ingen konto kreves. Gjestebeslutningen endrer ikke produksjonsstatus.
 - Teamoversikt og panelavgrenset innboks med svar, løsning/gjenåpning, oppgavekobling via eksisterende note-flagg og eksplisitt bekreftet statusadopsjon via `SetProductionStatus`. «Endring ønsket» blir `changes_requested`, ikke en automatisk godkjenning.
-- Sammenligning av to revisjoner av **ett panel**, side om side eller overlegg med glidebryter og differanse. Kjernen klassifiserer også nye og fjernede paneler; samlet revisjonsutvalg i UI gjenstår.
+- Sammenligning av to revisjoner av **ett panel**, side om side eller overlegg med glidebryter og differanse. I tillegg kan to delte storyboardutvalg velges i en samlet liste, der endrede, nye og fjernede paneler merkes.
 - Ingen HTML gjengis. NFC, teksttak, koordinatgrenser, G-8-rategrenser, no-store og no-referrer. Gjestesvaret inneholder ikke interne stier, prosjektidentitet, snapshotinnhold, token-/passordhash eller gjestens e-post. Prosjektmedlemmer leser feedback gjennom medlems-RLS; mutasjoner krever redaktør/eier og revisjonssjekk.
 - Nye review-referanser inngår i orphan-beskyttelsen. Vindu-ID-er V-175–178 er registrert. Alle registrerte språk har nøklene; nb/en er skrevet direkte, øvrige språk er maskinoversatt og merket for gjennomlesing.
 
@@ -28,9 +28,9 @@ Dato: 24.10.2026. **Ikke publisert. 0108 er bare skrevet; ingen migrasjon eller 
 DB-testen som er skrevet dekker service-only lookup, skjulte hashkolonner, ikke-medlems-RLS, riktig panelutvalg, kommentar/godkjenning, tekst-/pin-tak, utløp, tilbakekalling og rategrense. Den er ikke rapportert som grønn.
 
 ## Ærlige åpne punkter og sikkerhetsbegrensninger
-1. Samlet sammenligning av to storyboardutvalg med nye/fjernede paneler finnes i kjernen, men ikke som egen utvalgsvelger i brukerflaten. Nåværende UI sammenligner to revisjoner av ett panel.
+1. Samlet revisjonsutvalg er bygget som liste av to delingers snapshots. Panelenes visuelle side-/overleggssammenligning bruker den eksisterende panelvisningen. Samlet delingsutvalg er ennå ikke prøvd med virkelige Cloud-rader.
 2. Faktisk Cloud-opprettelse, eksportopplasting og finalisering, og teamets svar/løsning/oppgave/statusflyt, er ikke verifisert ende-til-ende. DB må først få 0108. Testene kjører ikke betalte tjenester eller ekte gjesteskritt mot produksjon.
-3. Snapshotdata er frosset, men ferdige review-filer ligger i eksisterende privat prosjektlagring. Den eksisterende medlemskontrollen kan tillate senere overskriving/sletting av disse filene. Uforanderlig medielagring etter finalisering må hardnes/verifiseres før reell kundedeling. Ikke klassifiser denne delen som ferdig sikkerhetsverifisert.
+3. 0108 har nå restriktive insert/update/delete-policyer som blokkerer medlemsendringer under finaliserte review-prefikser, også etter tilbakekalling. Service-only purge beholder tilgang. Policyene er skrevet og DB-testen utvidet, men ingen policy er kjørt eller DB-verifisert her. Det gjenstår å teste opplasting/finalisering samtidig med medlemsendringer før reell kundedeling.
 4. Tilbakekalling sperrer nye oppslag straks; allerede utstedte signerte medielenker kan være gyldige i maksimalt 60 sekunder. Data som allerede er lastet ned kan ikke trekkes tilbake. Spilleren fornyer hver 45. sekund.
 5. Ingen nye produktvalg er tatt. Disse kontrollpunktene krever implementering/test, ikke nye betalte tjenester. De er også ført i roadmap/TODO.
 
@@ -42,6 +42,7 @@ DB-testen som er skrevet dekker service-only lookup, skjulte hashkolonner, ikke-
 - `src/adapters/review/review.functions.ts`
 - `src/engine/export/storyboard-review.ts`
 - `src/app/storyboard/ReviewCompare.tsx`
+- `src/app/storyboard/ReviewSetCompare.tsx`
 - `src/app/storyboard/StoryboardReview.tsx`
 - `src/app/share/StoryboardReviewPage.tsx`
 - `src/routes/review.$token.tsx`

@@ -5,10 +5,11 @@
 - [x] Gjestespiller, nålkommentarer og uavhengig godkjenning; nb/en desktop/mobil 12/0 med falske tjenester
 - [x] Teamliste, svar, løsning, oppgavekobling og eksplisitt, angrebar statusadopsjon
 - [x] To revisjoner av ett panel: side om side, overlegg/glidebryter og differanse; ren sammenligning merker nye/fjernede paneler
-- [ ] Helhetlig sammenligning av to storyboardutvalg med nye/fjernede paneler i brukerflaten
+- [x] To delte storyboardutvalg kan velges og sammenlignes i samlet liste med endrede/nye/fjernede paneler
 - [x] 0108 og DB-tester skrevet, ikke kjørt; full Vitest 3036/0/10; i18n og check_kb grønt
 - [ ] Claude: DB-suite og 0108 i Cloud; faktisk opprettelse/opplasting/finalisering og teamets svar/oppgaveflyt ende-til-ende
-- [ ] Privat review-medias uforanderlighet etter finalisering må verifiseres/hardnes; eksisterende prosjektlagring tillater medlemsendringer
+- [x] Restriktive insert/update/delete-policyer for ferdige review-filer skrevet i 0108
+- [ ] Claude: verifiser filenes uforanderlighet med 0108/DB; ingen storage-policy kjørt her
 - [x] Ingen publisering; rapport SB10_REPORT.md med begrensninger
 
 ## SB-9 – Kontinuitet og blokking (delvis bygget; se SB9_REPORT.md)

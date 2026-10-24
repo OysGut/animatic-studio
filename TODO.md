@@ -341,6 +341,6 @@ B-087: REQ-0879–REQ-0895 (Rigg & 2D-utskrift, A1–A17) og REQ-0896–REQ-0915
 
 ## SB-10 – kontroll før kundedeling
 - [ ] Claude: kjør 0108 og DB-suiten; Lovable har skrevet, men ikke kjørt dem.
-- [ ] Gjør finaliserte review-medier uforanderlige for prosjektmedlemmer, og verifiser storage-policyene før kundedeling.
-- [ ] Bygg UI for sammenligning av to hele storyboardutvalg med nye/fjernede paneler.
+- [ ] Claude: verifiser de nye restriktive storage-policyene i 0108 før kundedeling.
+- [ ] Verifiser samlet revisjonsutvalg i UI med virkelige delinger etter 0108.
 - [ ] Verifiser virkelig delingsopprettelse, eksport/finalisering og teamets svar/oppgave/statusadopsjon ende-til-ende. Se SB10_REPORT.md.
