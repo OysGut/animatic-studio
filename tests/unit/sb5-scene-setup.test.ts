@@ -39,7 +39,7 @@ function addPanel(s: ProjectState, occurrenceId: string, orderKey: string, durat
 }
 
 function addPanelLayer(s: ProjectState, panelId: string, over: Partial<import("@/core").LayerFields> = {}) {
-  const layerId = tid<"composition_layer>();
+  const layerId = tid<"composition_layer">();
   const st = mustApply(s, {
     type: "AddLayers",
     layers: [
@@ -67,11 +67,8 @@ describe("SB-5 planSceneSetup", () => {
     const st = mustApply(s, plan.commands[0]!);
     const comp = st.compositions[plan.compositionId]!;
     expect(comp.kind ?? "scene").toBe("scene");
-    expect(comp.variantId).toBe(occ.variantId(s));
+    expect(comp.variantId).toBe(s.occurrences[occurrenceId as never]!.variantId);
     expect(comp.width).toBe(s.project.frameWidth);
-    function occVariant(state: ProjectState) { return state.occurrences[occurrenceId as never]!.variantId; }
-    function occVariantId() { return occVariant(s); }
-    expect(comp.variantId).toBe(occVariantId());
     expect(comp.background).toBe(s.compositions[p.panelId]!.background);
     expect(comp.durationFrames).toBe(120);
   });
