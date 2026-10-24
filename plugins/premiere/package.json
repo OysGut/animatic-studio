@@ -1,0 +1,9 @@
+{
+  "name": "@pentoglass/premiere-plugin",
+  "version": "0.1.0",
+  "private": true,
+  "description": "From Pen to Glass for Adobe Premiere Pro (UXP, manifest v5, Premiere 25.6+). Built, not verified in Premiere Pro.",
+  "scripts": {
+    "pack": "bun scripts/pack.ts"
+  }
+}
