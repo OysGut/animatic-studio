@@ -1,6 +1,6 @@
 /**
  * Panel-UI med vanlig DOM og Spectrum UXP-knapper (`sp-button`). Bare visning: all logikk er i controller.ts.
- * Tekst settes med textContent (aldri innerHTML), så navn og notater fra prosjektet kan ikke kjøre kode.
+ * Tekst settes med textContent (aldri som HTML), så navn og notater fra prosjektet kan ikke kjøre kode.
  */
 import type { PhotoshopPlugin } from "./controller";
 

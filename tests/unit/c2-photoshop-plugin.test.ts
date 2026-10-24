@@ -213,6 +213,7 @@ describe("C-2 flyt mot falsk server og falsk Photoshop", () => {
     h.fake.app.activeDocument!.layers.push("Linjer", "Farge"); // brukeren endrer lag
     const before = Object.keys(h.mem.state.assetVersions).length;
     await h.plugin.sendBack();
+    expect(h.plugin.state.message?.text).toBe(tr("nb", "sent"));
     expect(h.fake.calls.saveOptions.at(-1)).toEqual({ options: { embedColorProfile: true, alphaChannels: true, layers: true, maximizeCompatibility: true }, asCopy: true });
     expect(h.fake.calls.modal).toContain(tr("nb", "sendBack"));
     const t = [...h.mem.transfers.values()].at(-1)!;
