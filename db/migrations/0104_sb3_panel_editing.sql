@@ -12,8 +12,14 @@ create or replace function private.validate_sb3_panel_details(p_project uuid, p_
 language plpgsql volatile security definer set search_path = '' as $$
 declare c record; d jsonb; item jsonb;
 begin
-  for c in select * from public.compositions where project_id = p_project  and storyboard is not null loop
+  for c in select * from public.compositions where project_id = p_project and storyboard is not null and id in (select (r->>'id')::uuid from jsonb_array_elements(coalesce(p_changes->'inserts'->'compositions','[]') || coalesce(p_changes->'updates'->'compositions','[]')) r) loop
     d := c.storyboard;
+    if jsonb_typeof(d->'fields') is distinct from 'object' or jsonb_typeof(d->'dialogueIds') is distinct from 'array' then
+      raise exception 'Invalid storyboard details structure' using errcode = '22023';
+    end if;
+    if d->'focalMm' <> 'null'::jsonb and jsonb_typeof(d->'focalMm') is distinct from 'number' then
+      raise exception 'Invalid storyboard focal type' using errcode = '22023';
+    end if;
     if jsonb_typeof(d->'number') is distinct from 'string' or (d->>'number') !~ '^(|[1-9][0-9]*[A-Z]*)$'
       or jsonb_typeof(d->'sceneNumber') is distinct from 'string' or (d->>'sceneNumber') !~ '^(|[1-9][0-9]*[A-Z]*)$'
       or jsonb_typeof(d->'fields') is distinct from 'object' or jsonb_typeof(d->'dialogueIds') is distinct from 'array'
@@ -48,7 +54,7 @@ revoke all on function private.validate_sb3_fields(uuid,jsonb,uuid[]) from publi
 create or replace function private.validate_sb3_annotations(p_project uuid, p_changes jsonb, p_ids uuid[]) returns void
 language plpgsql volatile security definer set search_path = '' as $$
 begin
-  if exists (select 1 from public.script_annotations a where a.project_id = p_project  and a.panel_id is not null
+  if exists (select 1 from public.script_annotations a where a.project_id = p_project  and a.panel_id is not null and a.id in (select (r->>'id')::uuid from jsonb_array_elements(coalesce(p_changes->'inserts'->'script_annotations','[]') || coalesce(p_changes->'updates'->'script_annotations','[]')) r)
     and (not exists (select 1 from public.compositions c where c.id = a.panel_id and c.project_id = p_project and c.kind = 'storyboard' and c.variant_id = a.variant_id)
       or a.block_id is not null or (a.layer_id is not null and not exists (select 1 from public.composition_layers l where l.id = a.layer_id and l.composition_id = a.panel_id and l.project_id = p_project))))
   then raise exception 'Invalid storyboard annotation target' using errcode = '22023'; end if;
@@ -58,7 +64,7 @@ revoke all on function private.validate_sb3_annotations(uuid,jsonb,uuid[]) from 
 create or replace function private.validate_sb3_layer_links(p_project uuid, p_changes jsonb, p_ids uuid[]) returns void
 language plpgsql volatile security definer set search_path = '' as $$
 begin
-  if exists (select 1 from public.composition_layers l where l.project_id = p_project 
+  if exists (select 1 from public.composition_layers l where l.project_id = p_project and l.id in (select (r->>'id')::uuid from jsonb_array_elements(coalesce(p_changes->'inserts'->'composition_layers','[]') || coalesce(p_changes->'updates'->'composition_layers','[]')) r)
     and ((l.note->'anchor'->>'layerId' is not null and not exists (select 1 from public.composition_layers target where target.id::text = l.note->'anchor'->>'layerId' and target.project_id = p_project and target.composition_id = l.composition_id))
       or (l.arrow->>'layerId' is not null and not exists (select 1 from public.composition_layers target where target.id::text = l.arrow->>'layerId' and target.project_id = p_project and target.composition_id = l.composition_id))))
   then raise exception 'Invalid storyboard layer link' using errcode = '22023'; end if;
