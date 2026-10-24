@@ -9,7 +9,7 @@
 - [x] «Send tilbake»: PSD med lag/alfa/fargeprofil; kandidatversjon med revisjonsgrunnlag; konflikt med tre valg
 - [x] API: nedlasting av versjonsfil og konfliktvalg for plugins (0111), beskrevet i OpenAPI
 - [x] Pakking til .ccx, README nb/en, Marketplace-utkast (ikke sendt)
-- [x] Tester med falsk Photoshop/UXP (19), DB 236/0, full Vitest grønn, test:ssr 8/8
+- [x] Tester med falsk Photoshop/UXP (19), DB 235/0, full Vitest grønn, test:ssr 8/8
 - [ ] Prøving i ekte Photoshop etter sjekklisten i C2_REPORT.md (Øystein/tester)
 - [ ] PSD som egen versjon i prosjektet (krever Øysteins valg; i dag sendes flat PNG når PSD avvises)
 - [ ] 0111 i Cloud (Claude)
