@@ -105,7 +105,7 @@ export function ProjectNav({ projectId }: { projectId: string }) {
       if (p?.occurrenceId) search.set("scene", p.occurrenceId);
       if (p?.blockId && next === "manus") search.set("blokk", p.blockId);
       if (p?.panelId && next === "storyboard") search.set("panel", p.panelId);
-      if (next === "scene") { if (p?.panelId) search.set("panel", p.panelId); if (p?.blockId) search.set("line", p.blockId); }
+      if (next === "scene" && p?.panelId) search.set("panel", p.panelId);
       void navigate({ href: `/prosjekt/${encodeURIComponent(projectId)}/${next}?${search}` });
     };
     window.addEventListener("keydown", key);

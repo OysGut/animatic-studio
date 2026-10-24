@@ -18,7 +18,9 @@ for(const lang of ['nb','en']){
   await scrub.press('Home');await page.waitForTimeout(100);
   h.check((await page.getByTestId('sb4-gallery-play').getAttribute('aria-label'))===(lang==='nb'?'Spill av':'Play'),`${lang}: scrubbing stopper avspilling`);
   await page.screenshot({path:`${h.out}/${lang}.png`});
-  await page.evaluate(path=>{history.pushState({},'',path);window.dispatchEvent(new PopStateEvent('popstate'));},`${h.P}/scene?scene=${h.fx.occurrenceId}&panel=${h.fx.panelId}`);
+  await page.getByTestId('sb4-gallery-play').focus();
+  await page.keyboard.press('Control+Shift+Space');
+  h.check(await h.eventually(()=>page.url().includes('/scene')&&page.url().includes('panel=')),`${lang}: hurtigtast beholder valgt panel ved bytte`);
   await page.getByTestId('sb4-panel-audio').waitFor({timeout:20000});
   await page.getByTestId('sb4-audio-timing').click();
   h.check(await h.eventually(()=>h.state.commands.some(c=>c.type==='UpdateStoryboardPanel')),`${lang}: lydvarighet kan sette paneltiming`);
