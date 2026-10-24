@@ -67,7 +67,7 @@ export function msToTimecode(ms: number, fps: Rational): string {
   return `${pad(Math.floor(secs / 3600))}:${pad(Math.floor(secs / 60) % 60)}:${pad(secs % 60)}:${pad(f)}`;
 }
 const samples = (ms: number, sr: number) => Math.max(0, Math.round((ms / 1000) * sr));
-const safe = (s: string) => s.normalize("NFC").replace(/[^\p{L}\p{N}_-]+/gu, "_").replace(/^_+|_+$/g, "").slice(0, 40) || "lyd";
+const safe = (s: string) => s.normalize("NFC").replace(/[^\p{L}\p{N}_-]+/gu, "_").replace(/^_+|_+$/g, "").slice(0, 40) || "audio";
 
 /** Filnavnet er bare for mennesker; koblingen går på ID-ene i metadata. */
 export function auditionFileName(c: AuditionClip, index: number): string {
