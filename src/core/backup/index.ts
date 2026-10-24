@@ -455,6 +455,15 @@ export function assertSelfContained(b: BackupData, map: ReadonlyMap<string, stri
             tk("core-backup-index.assert-self-contained.message.72bee2145230", { t: String(t), k: String(k) }),
           );
       }
+  for (const r of b.tables["compositions"] ?? []) {
+    const details = r["storyboard"] as { tempAudio?: { assetId?: string; versionId?: string } } | null;
+    const audio = details?.tempAudio;
+    if (!audio) continue;
+    const version = (b.tables["asset_versions"] ?? []).find(v => v["id"] === audio.versionId);
+    const variant = (b.tables["asset_variants"] ?? []).find(v => v["id"] === version?.["variant_id"]);
+    if (!audio.assetId || !audio.versionId || !map.has(audio.assetId) || !map.has(audio.versionId) || !version || variant?.["asset_id"] !== audio.assetId)
+      throw new Error(tk("core-backup-index.assert-self-contained.message.72bee2145230", { t: "compositions", k: "tempAudio" }));
+  }
   for (const r of b.tables["translation_line_links"] ?? [])
     for (const key of ["source_block_ids","target_translation_ids"]) {
       const ids=r[key];

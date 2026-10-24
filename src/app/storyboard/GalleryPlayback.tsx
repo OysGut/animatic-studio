@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Pause, Play, Square, SkipBack, SkipForward, Volume2, VolumeX } from "lucide-react";
 import { filmAudio, filmClips, filmTakeAudio, filmMediaPaths, stillMediaPaths, languageState, framesToSeconds, shotAtFrame, storyboardFilm, storyboardTempAudioItems, type ProjectState } from "@/core";
-import { panelPosition, scrubFrame } from "@/core/storyboard/position";
+import { panelPosition, positionIndex, scrubFrame } from "@/core/storyboard/position";
 import { currentPosition, rememberPosition } from "@/app/shell/current-scene";
 import { usePlaybackStore, useFrame } from "@/app/scene-editor/use-playback";
 import { useAudioPlayback } from "@/app/audio/use-audio-playback";
@@ -19,6 +19,7 @@ export function GalleryPlayback({ state, projectId, productionId, selected, onCu
   const clips = useMemo(() => filmClips(view, productionId), [view, productionId]);
   const sound = useMemo(() => [...filmAudio(view, clips, view.project.fps, lang.dialogue), ...filmTakeAudio(clips, view.project.fps)], [view, clips, lang.dialogue]);
   const film = useMemo(() => storyboardFilm(view, clips, sound), [view, clips, sound]);
+  const positions = useMemo(() => positionIndex(state, productionId), [state, productionId]);
   const temp = useMemo(() => storyboardTempAudioItems(view, film.shots, view.project.fps), [view, film.shots]);
   const [temporary, setTemporary] = useState(false);
   const [muted, setMuted] = useState(false);
@@ -36,7 +37,7 @@ export function GalleryPlayback({ state, projectId, productionId, selected, onCu
     const saved = currentPosition(projectId);
     const shot = film.shots.find(x => x.panel.id === (selected ?? saved?.panelId));
     const first = film.shots.find(x => x.occurrenceId === saved?.occurrenceId);
-    playback.setFrame(shot?.startFrame ?? (first ? first.startFrame + Math.round((saved?.timeMs ?? 0) * view.project.fps.num / view.project.fps.den / 1000) : 0));
+    playback.setFrame(saved && first && (!selected || selected === saved.panelId) ? first.startFrame + Math.round((saved.timeMs ?? 0) * view.project.fps.num / view.project.fps.den / 1000) : shot?.startFrame ?? 0);
   }, [film, selected, projectId, playback, view.project.fps]);
   useEffect(() => {
     if (!current || !playback.playing) { onPlaying(null); return; }
@@ -44,15 +45,32 @@ export function GalleryPlayback({ state, projectId, productionId, selected, onCu
     onCurrent(current.shot.panel.id);
   }, [current?.shot.panel.id, playback.playing, onCurrent, onPlaying]);
   useEffect(() => {
-    if (!current || !initialized.current) return;
-    const first = film.shots.find(x => x.occurrenceId === current.shot.occurrenceId);
-    const p = panelPosition(state, current.shot.occurrenceId, current.shot.panel.id, null, Math.round((frame - (first?.startFrame ?? 0)) * 1000 * view.project.fps.den / view.project.fps.num));
-    if (p) rememberPosition(projectId, p);
-  }, [frame, current?.shot.panel.id, projectId, state, film.shots]);
+    const publish = () => {
+      const f = playback.store.get();
+      const active = shotAtFrame(film.shots, f);
+      if (!active || !initialized.current) return;
+      const first = positions.first.get(active.shot.occurrenceId) ?? 0;
+      const p = panelPosition(state, active.shot.occurrenceId, active.shot.panel.id, null, Math.round((f - first) * 1000 * view.project.fps.den / view.project.fps.num), positions);
+      if (p) rememberPosition(projectId, p);
+    };
+    return playback.store.subscribe(publish);
+  }, [projectId, state, film.shots, positions, playback.store, view.project.fps]);
+  useEffect(() => {
+    const seek = (event: Event) => {
+      const detail = (event as CustomEvent<{ projectId: string; productionId: string; occurrenceId: string; frame: number }>).detail;
+      if (detail.projectId !== projectId || detail.productionId !== productionId) return;
+      playback.pause();
+      playback.setFrame((positions.first.get(detail.occurrenceId) ?? 0) + detail.frame);
+    };
+    window.addEventListener("ptg-storyboard-seek", seek);
+    return () => window.removeEventListener("ptg-storyboard-seek", seek);
+  }, [projectId, productionId, positions, playback]);
   useEffect(() => {
     if (playback.playing) return;
     const shot = film.shots.find(x => x.panel.id === selected);
-    if (shot && shotAtFrame(film.shots, playback.frame)?.shot.panel.id !== selected) playback.setFrame(shot.startFrame);
+    const saved = currentPosition(projectId);
+    const first = shot ? positions.first.get(shot.occurrenceId) ?? 0 : 0;
+    if (shot && shotAtFrame(film.shots, playback.store.get())?.shot.panel.id !== selected) playback.setFrame(saved?.panelId === selected ? first + Math.round((saved.timeMs ?? 0) * view.project.fps.num / view.project.fps.den / 1000) : shot.startFrame);
   }, [selected, film.shots, playback]);
   const jump = (offset: number) => { const shot = film.shots[Math.max(0, Math.min(film.shots.length - 1, (current?.shot.index ?? 0) + offset))]; if (shot) { playback.setFrame(shot.startFrame); onCurrent(shot.panel.id); } };
   return <div className="flex flex-wrap items-center gap-2 border-b border-border px-4 py-1.5" data-testid="sb4-gallery-playback">
@@ -71,6 +89,7 @@ export function GalleryPlayback({ state, projectId, productionId, selected, onCu
 export function ScrubPreview({ state, projectId, panelId, productionId, onSeek }: { state: ProjectState; projectId: string; panelId: string; productionId: string; onSeek: (frame: number, panelId: string) => void }) {
   const clips = useMemo(() => filmClips(state, productionId), [state, productionId]);
   const film = useMemo(() => storyboardFilm(state, clips, []), [state, clips]);
+  const positions = useMemo(() => positionIndex(state, productionId), [state, productionId]);
   const shot = film.shots.find(x => x.panel.id === panelId);
   const clip = clips.find(c => c.occurrenceId === shot?.occurrenceId);
   const available = !!clip && (clip.source === "film" || clip.source === "composition");
@@ -88,14 +107,14 @@ export function ScrubPreview({ state, projectId, panelId, productionId, onSeek }
   const seek = (f: number) => {
     setHover(f);
     if (!shot) return;
-    const p = panelPosition(state, shot.occurrenceId, null, null, Math.round(f * 1000 * state.project.fps.den / state.project.fps.num));
+    window.dispatchEvent(new CustomEvent("ptg-storyboard-seek", { detail: { projectId, productionId, occurrenceId: shot.occurrenceId, frame: f } }));
+    const p = panelPosition(state, shot.occurrenceId, null, null, Math.round(f * 1000 * state.project.fps.den / state.project.fps.num), positions);
     if (p) rememberPosition(projectId, p);
     onSeek(f, p?.panelId ?? panelId);
   };
   return <div className="relative flex size-full touch-pan-y" role="slider" tabIndex={0} aria-label={t("sb4.scrub")} aria-valuemin={0} aria-valuemax={Math.max(0, duration - 1)} aria-valuenow={hover ?? 0} data-testid="sb4-scrub"
     onPointerMove={e => { if (e.pointerType === "touch" && e.buttons === 0) return; const box = e.currentTarget.getBoundingClientRect(); seek(scrubFrame(e.clientX - box.left, box.width, duration, getComputedStyle(e.currentTarget).direction === "rtl")); }}
     onPointerDown={e => { e.stopPropagation(); if (e.pointerType === "touch") e.currentTarget.setPointerCapture(e.pointerId); const box = e.currentTarget.getBoundingClientRect(); seek(scrubFrame(e.clientX - box.left, box.width, duration, getComputedStyle(e.currentTarget).direction === "rtl")); }}
-    onPointerLeave={() => setHover(null)}
     onKeyDown={e => { const rtl = getComputedStyle(e.currentTarget).direction === "rtl"; if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(e.key)) return; e.preventDefault(); e.stopPropagation(); const n = e.key === "Home" ? 0 : e.key === "End" ? duration - 1 : (hover ?? 0) + ((e.key === "ArrowRight") !== rtl ? 1 : -1); seek(Math.max(0, Math.min(duration - 1, n))); }}>
     <FilmViewer state={imageState} clips={imageClips} frame={hover === null ? (available ? clip?.startFrame ?? 0 : shot?.startFrame ?? 0) : (available ? clip?.startFrame ?? 0 : first) + hover} tick={images.tick + video.tick} video={video.provider} onDrawn={video.settle}/>
     {hover !== null ? <output className="pointer-events-none absolute bottom-0 end-0 bg-surface-1 px-1 font-mono text-xs text-text-primary">{(hover * state.project.fps.den / state.project.fps.num).toFixed(1)} s</output> : null}
