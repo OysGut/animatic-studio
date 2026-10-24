@@ -2,7 +2,8 @@
 import { newId, type Command, type Composition, type ProjectState } from "@/core";
 import { panelStructureFrame, containGeometry } from "@/core/storyboard/ai-output";
 import { drawFrame, type ImageSource } from "@/engine/compositor/canvas";
-import { uploadAssetImage } from "@/app/library/asset-images";
+import { uploadAssetImage, mediaFromStoredFile } from "@/app/library/asset-images";
+import { claimMobileImport, linkMobileImport, type MobileImportRow } from "@/adapters/browser/mobile-import";
 import { createSignedUrls } from "@/adapters/browser/storage-files";
 import type { Commands } from "@/app/project/use-commands";
 import { t } from "@/core/i18n/keyed";
@@ -55,4 +56,19 @@ export async function fitCandidateImage(s: ProjectState, panel: Composition, pat
     ctx.drawImage(bmp, box.x, box.y);
     return await saveImage(s, panel, await blobOf(c), cmds, { kind: "storyboard-mask-fit", sourceVersionId, ratio, adaptation: "contain" });
   } finally { bmp.close(); }
+}
+
+/** Same claim/link lifecycle as mobile-import; source bytes stay immutable. */
+export async function useMobilePanelSketch(s: ProjectState, panel: Composition, row: MobileImportRow, cmds: Commands) {
+  if (row.project_id !== s.project.id || row.kind !== "image" || !row.mime_type.startsWith("image/") || !(await claimMobileImport(row.id))) throw Error(t("sb7.unavailable"));
+  const media = await mediaFromStoredFile(row.path);
+  const assetId = newId<"asset">(), variantId = newId<"asset_variant">(), versionId = newId<"asset_version">(), group = newId();
+  const commands: Command[] = [
+    { type: "CreateAssets", assets: [{ assetId, fields: { kind: "other", name: t("sb7.sketch"), names: [], description: "", category: "", tags: [] } }] },
+    { type: "CreateAssetVariant", assetId, variantId, fields: { name: t("sb7.sketch"), style: "other", appearance: "" } },
+    { type: "AddAssetVersion", versionId, variantId, media, note: JSON.stringify({ kind: "sketch", panelId: panel.id, mobileImportId: row.id }) },
+  ];
+  for (const command of commands) { const r = await cmds.runAndWait(command, t("sb7.sketch"), group); if (r.error) throw Error(r.error); }
+  const error = await linkMobileImport(row.id, { assetId, versionId }); if (error) throw Error(t("sb7.unavailable"));
+  return versionId;
 }
