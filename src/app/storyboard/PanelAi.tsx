@@ -50,7 +50,7 @@ export function PanelAi({ state, panel, cmds, editable, mask }: { state: Project
   const exportedSketch=versions.filter(v=>{try{const meta=JSON.parse(v.note);return meta.kind==="sketch"&&meta.panelId===panel.id;}catch{return false;}}).at(-1);
   const sketchLayers = layersOf(state, panel.id).filter(l => l.visible && l.sketch?.strokes.length);
   const output = choice ? panelOutputPlan(panel, mask, choice.model) : null;
-  const makeRequest = (): StoryboardAiRequest => ({ projectId: state.project.id, panelId: panel.id, revision: panel.revision, action, secondPanelId: second || null, basis, style, visualNotes, sketchVersionId: sketch || exportedSketch?.id || panelResourceLayers(state, panel).flatMap(l => { const v = layerVersion(state, l); return v ? [v.id] : []; })[0] || null, references: refs, mask, provider: choice?.provider ?? "", model: choice?.model.id ?? "", textProvider: textChoice?.provider ?? "", textModel: textChoice?.model.id ?? "", count, assetId: null, approved: false });
+  const makeRequest = (): StoryboardAiRequest => ({ projectId: state.project.id, panelId: panel.id, revision: panel.revision, action, secondPanelId: second || null, basis, style, visualNotes, sketchVersionId: (!sketch.startsWith("layer:") && sketch) || exportedSketch?.id || panelResourceLayers(state, panel).flatMap(l => { const v = layerVersion(state, l); return v ? [v.id] : []; })[0] || null, references: refs, mask, provider: choice?.provider ?? "", model: choice?.model.id ?? "", textProvider: textChoice?.provider ?? "", textModel: textChoice?.model.id ?? "", count, assetId: null, approved: false });
   const getQuote = async () => {
     setBusy(true); setError(null);
     try {

@@ -24,7 +24,7 @@ export interface PanelAiOptions {
   readonly sketchVersionId: string | null;
   readonly references: readonly string[];
   readonly mask: string;
-  readonly structureVersionId?: string | null;
+  readonly structureVersionId?: string | null | undefined;
 }
 export function panelAiCapabilities(model: ProviderModel) {
   return { imageToImage: !!model.acceptsImage, references: model.acceptsImage ? maxAttachedImagesFor(model) : 0,
