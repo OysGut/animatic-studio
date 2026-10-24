@@ -8031,6 +8031,7 @@ export type Database = {
         Args: { p_bytes: number; p_project: string }
         Returns: boolean
       }
+      connector_cleanup: { Args: never; Returns: Json }
       connector_consume_code: { Args: { p_hash: string }; Returns: Json }
       connector_create_device: {
         Args: {
@@ -8047,6 +8048,16 @@ export type Database = {
       connector_resolve_conflict: {
         Args: { p_choice: string; p_id: string; p_revision: number }
         Returns: undefined
+      }
+      connector_resolve_conflict_for: {
+        Args: {
+          p_choice: string
+          p_id: string
+          p_project: string
+          p_revision: number
+          p_user: string
+        }
+        Returns: string
       }
       connector_revoke_session: { Args: { p_id: string }; Returns: undefined }
       connector_revoke_token: { Args: { p_hash: string }; Returns: undefined }
