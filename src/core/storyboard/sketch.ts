@@ -7,8 +7,8 @@ export interface PenSample { readonly x:number; readonly y:number; readonly pres
 export interface SketchStroke { readonly id:string; readonly tool:SketchTool; readonly color:string; readonly size:number; readonly opacity:number; readonly curve:number; readonly smoothing:number; readonly points:readonly (readonly number[])[] }
 export interface SketchSpec { readonly version:1; readonly role:"rough"|"clean"; readonly strokes:readonly SketchStroke[] }
 export function packSamples(samples:readonly PenSample[]): readonly (readonly number[])[] {
-  let x=0,y=0,time=0;
-  return samples.map(p=>{const nx=Math.round(p.x*10),ny=Math.round(p.y*10),nt=Math.round(p.time);const row=[nx-x,ny-y,Math.round(p.pressure*1000),Math.round(p.tiltX),Math.round(p.tiltY),nt-time];x=nx;y=ny;time=nt;return row;});
+  let x=0,y=0,time=0;const start=samples[0]?.time??0;
+  return samples.map(p=>{const nx=Math.round(p.x*10),ny=Math.round(p.y*10),nt=Math.round(p.time-start);const row=[nx-x,ny-y,Math.round(p.pressure*1000),Math.round(p.tiltX),Math.round(p.tiltY),nt-time];x=nx;y=ny;time=nt;return row;});
 }
 export function unpackSamples(points:readonly (readonly number[])[]):PenSample[] {
   let x=0,y=0,time=0;
