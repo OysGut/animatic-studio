@@ -84,7 +84,7 @@ export async function printImageRenderer(input: PrintExportInput) {
         // Printed instructions remain visible: camera mark is not applied as a destructive crop.
         canvas.height = Math.round(canvas.width * panel.height / panel.width);
         const frame = renderFrame({ ...state, compositions: { ...state.compositions, [panel.id]: { ...panel, camera: { shots: [] } } } }, panel.id, 0);
-        drawFrame(ctx, frame, { view: [canvas.width / frame.width, 0, 0, canvas.height / frame.height, 0, 0], images: loaded.images, placeholders: true });
+        drawFrame(ctx, { ...frame, items: frame.items.filter(item => !item.hidden) }, { view: [canvas.width / frame.width, 0, 0, canvas.height / frame.height, 0, 0], images: loaded.images, placeholders: true });
       } else if (clip) {
         canvas.height = Math.round(canvas.width * state.project.frameHeight / state.project.frameWidth);
         const solo = { ...clip, startFrame: 0, transition: { kind: "cut" as const, frames: 0 }, overlapFrames: 0 };

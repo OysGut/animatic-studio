@@ -15,6 +15,11 @@ import { prepareDownload, type ReadyFile } from "@/app/download";
 export function printLabels(): Record<string, string> {
   return { panel: t("sb6.panel"), scene: t("sb6.scene"), shot: t("sb6.shot"), duration: t("sb6.duration"), dialogue: t("sb6.dialogue"), action: t("sb6.action"), camera: t("sb6.camera"), movement: t("sb6.movement"), sound: t("sb6.sound"), notes: t("sb6.notes"), status: t("sb6.status"), durationFrames: t("sb6.frames"), timecode: t("sb6.timecode"), sketch: t("sb8.canvas"), note: t("sb6.note"), arrow: t("sb6.arrow"), camera_mark: t("sb6.camera-mark") };
 }
+function statusText(area: string, status: string) {
+  const areas: Record<string, string> = { script: t("sb2.area.script"), storyboard: t("sb2.area.storyboard"), animation: t("sb2.area.animation"), sound: t("sb2.area.sound"), film: t("sb2.area.film") };
+  const statuses: Record<string, string> = { not_started: t("sb2.status.not-started"), in_progress: t("sb2.status.in-progress"), review: t("sb2.status.review"), changes_requested: t("sb2.status.changes-requested"), done: t("sb2.status.done") };
+  return `${areas[area] ?? area}: ${statuses[status] ?? status}`;
+}
 export function StoryboardPrintExport({ state, clips, imageSource, language, disabled }: {
   state: ProjectState; clips: readonly FilmClip[]; imageSource: ExportImageSource; language: string; disabled: boolean;
 }) {
@@ -32,7 +37,7 @@ export function StoryboardPrintExport({ state, clips, imageSource, language, dis
   const [error, setError] = useState(false);
   const abort = useRef<AbortController | null>(null);
   const uiLanguage = getUiLanguage();
-  const rows = useMemo(() => panelPrintRows(state, clips, (area, status) => `${t(`sb2.area.${area}`)}: ${t(`sb2.status.${status.replaceAll("_", "-")}`)}`), [state, clips, uiLanguage]);
+  const rows = useMemo(() => panelPrintRows(state, clips, statusText), [state, clips, uiLanguage]);
   const labels = printLabels();
   useEffect(() => () => { if (ready) URL.revokeObjectURL(ready.url); }, [ready]);
   useEffect(() => () => abort.current?.abort(), []);
