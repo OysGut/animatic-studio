@@ -30,7 +30,7 @@ export function editorialShots(doc: InterchangeDoc): EditorialShot[] {
 
 /** Render each shot alone: do not bake a neighboring transition which the editor will recreate. */
 export function editorialClip(clips: readonly FilmClip[], shot: Shot): FilmClip[] {
-  const clip = clips.find(c => c.occurrenceId === shot.id);
+  const clip = clips.find(c => c.compositionId === shot.id || c.occurrenceId === shot.id);
   return clip ? [{ ...clip, transition: { kind: "cut", frames: 0, overlap: false }, overlapFrames: 0 }] : [];
 }
 export function editorialFrames(doc: InterchangeDoc, shot: Shot): number[] {
@@ -51,7 +51,7 @@ export function editorialOtio(doc: InterchangeDoc): string {
     shots.forEach((s, i) => {
       const transition = i > 0 && !audio ? editorialTransition(s.shot) : null;
       if (transition) children.push({ OTIO_SCHEMA: "Transition.1", name: s.shot.transition.type, transition_type: "SMPTE_Dissolve",
-        in_offset: rt(transition.before), out_offset: rt(transition.after), metadata: { ptg: { type: s.shot.transition.type } } });
+        in_offset: rt(transition.before), out_offset: rt(transition.after), metadata: { ptg: { type: s.shot.transition.type, direction: s.shot.transition.direction } } });
       children.push({ OTIO_SCHEMA: "Clip.2", name: s.shot.name, source_range: range(s.sourceIn, s.shot.lengthFrames),
         media_references: { DEFAULT_MEDIA: { OTIO_SCHEMA: "ExternalReference.1", target_url: audio ? s.audio : s.video, available_range: range(0, s.mediaFrames), metadata: {} } },
         active_media_reference_key: "DEFAULT_MEDIA", enabled: true,
@@ -75,7 +75,9 @@ export function editorialXml(doc: InterchangeDoc): string {
     const tail = next && !audio ? editorialTransition(next.shot) : null;
     const kind = audio ? "audio" : "video";
     const start = s.shot.startFrame, end = start + s.shot.lengthFrames;
-    const trans = head ? `<transitionitem><start>${start - head.before}</start><end>${start + head.after}</end><alignment>center</alignment>${rate}<effect><name>${xml(s.shot.transition.type)}</name><effectid>Cross Dissolve</effectid><effecttype>transition</effecttype><mediatype>video</mediatype></effect></transitionitem>` : "";
+    const effectId = s.shot.transition.type === "wipe" ? "Wipe" : s.shot.transition.type === "dip" ? "Dip to Color Dissolve" : s.shot.transition.type === "dipWhite" ? "Dip to Color Dissolve" : "Cross Dissolve";
+    const parameter = s.shot.transition.type === "wipe" ? `<parameter><parameterid>ptg-direction</parameterid><value>${s.shot.transition.direction ?? "right"}</value></parameter>` : s.shot.transition.type === "dip" || s.shot.transition.type === "dipWhite" ? `<parameter><parameterid>color</parameterid><value><red>${s.shot.transition.type === "dipWhite" ? 255 : 0}</red><green>${s.shot.transition.type === "dipWhite" ? 255 : 0}</green><blue>${s.shot.transition.type === "dipWhite" ? 255 : 0}</blue><alpha>255</alpha></value></parameter>` : "";
+    const trans = head ? `<transitionitem><start>${start - head.before}</start><end>${start + head.after}</end><alignment>center</alignment>${rate}<effect><name>${xml(s.shot.transition.type)}</name><effectid>${effectId}</effectid><effecttype>transition</effecttype><mediatype>video</mediatype>${parameter}</effect></transitionitem>` : "";
     const characteristics = audio ? "<samplecharacteristics><depth>24</depth><samplerate>48000</samplerate></samplecharacteristics><channelcount>2</channelcount>"
       : `<samplecharacteristics>${rate}<width>${doc.frameSize.width}</width><height>${doc.frameSize.height}</height><anamorphic>FALSE</anamorphic><pixelaspectratio>square</pixelaspectratio><fielddominance>none</fielddominance></samplecharacteristics>`;
     return `${trans}<clipitem id="${kind}-${i + 1}"><name>${xml(s.shot.name)}</name>${rate}<duration>${s.shot.lengthFrames}</duration><start>${start}</start><end>${end}</end><in>${s.sourceIn}</in><out>${s.sourceOut}</out><file id="file-${kind}-${i + 1}"><name>${xml(s.shot.name)}</name><pathurl>${xml(audio ? s.audio : s.video)}</pathurl>${rate}<duration>${s.mediaFrames}</duration><timecode>${rate}<string>00:00:00:00</string><frame>0</frame><displayformat>NDF</displayformat></timecode><media><${kind}>${characteristics}</${kind}></media></file><sourcetrack><mediatype>${kind}</mediatype><trackindex>1</trackindex></sourcetrack></clipitem>`;
@@ -86,8 +88,8 @@ export function editorialXml(doc: InterchangeDoc): string {
 /** CMX places dissolves at their start; centered cuts are shifted by the incoming handle. */
 export function editorialEdl(doc: InterchangeDoc): string {
   const tc = (f: number) => formatTimecode(f, doc.fps);
-  const line = (event: number, reel: string, dissolve: number, si: number, so: number, ri: number, ro: number) =>
-    `${String(event).padStart(3, "0")}  ${reel.padEnd(8)} ${"V".padEnd(5)} ${dissolve ? `D ${String(dissolve).padStart(3, "0")}    ` : "C        "}${tc(si)} ${tc(so)} ${tc(ri)} ${tc(ro)}`;
+  const line = (event: number, reel: string, dissolve: number, si: number, so: number, ri: number, ro: number, effect = "D") =>
+    `${String(event).padStart(3, "0")}  ${reel.padEnd(8)} ${"V".padEnd(5)} ${dissolve ? `${effect} ${String(dissolve).padStart(3, "0")}    ` : "C        "}${tc(si)} ${tc(so)} ${tc(ri)} ${tc(ro)}`;
   const shots = editorialShots(doc);
   const lines = [`TITLE: ${doc.project.code}`, "FCM: NON-DROP FRAME", ""];
   shots.forEach((s, i) => {
@@ -103,7 +105,9 @@ export function editorialEdl(doc: InterchangeDoc): string {
         lines.push(line(i + 1, prev.reel, 0, source, source, cut, cut), `* FROM CLIP NAME: ${prev.shot.name}`);
       }
     }
-    lines.push(line(i + 1, s.reel, head ? head.before + head.after : 0, s.sourceIn - (head?.before ?? 0), s.sourceOut - (tail?.before ?? 0), s.shot.startFrame - (head?.before ?? 0), end),
+    const wipe = s.shot.transition.type === "wipe" ? (s.shot.transition.direction === "up" || s.shot.transition.direction === "down" ? "W002" : "W001") : "D";
+    lines.push(line(i + 1, s.reel, head ? head.before + head.after : 0, s.sourceIn - (head?.before ?? 0), s.sourceOut - (tail?.before ?? 0), s.shot.startFrame - (head?.before ?? 0), end, wipe),
+      ...(head && s.shot.transition.type !== "dissolve" ? [`* PTG TRANSITION: ${s.shot.transition.type} ${s.shot.transition.direction ?? ""}`] : []),
       `* ${head ? "TO" : "FROM"} CLIP NAME: ${s.shot.name}`, ...(head ? [`* FROM CLIP NAME: ${s.shot.name}`] : []), `* FROM FILE: ${s.video}`, "");
   });
   return lines.join("\r\n");

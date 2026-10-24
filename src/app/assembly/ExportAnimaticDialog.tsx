@@ -1130,7 +1130,7 @@ export function ExportAnimaticDialog({
         </Button>
 
         </div>
-        <ShotlistExport state={state} productionId={productionId} clips={sel.clips} language={language} disabled={busy} />
+        <ShotlistExport state={state} productionId={productionId} clips={sel.clips} language={language} disabled={busy} imageSource={imageSource} />
         <StoryboardPrintExport state={state} clips={clips.filter(c => sel.clips.some(selected => selected.occurrenceId === c.occurrenceId))} imageSource={imageSource} language={language.dialogue} disabled={busy} />
         </div>
         <details data-testid="export-history-section" className="rounded-sm border border-border bg-surface-1 px-3 py-2">

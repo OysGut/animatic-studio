@@ -1,5 +1,13 @@
 # Veikart
 
+## SB-9 – Kontinuitet og blokking (pågår)
+- [x] Lås 0090–0106 med Claudes MD5-verdier; ingen migrasjonsfiler endres
+- [ ] Plantegning, karakterer/kameraer og panelblokking via angrebare kommandoer
+- [ ] Akse-, blikk- og bevegelsesvarsler i fortellingstid; eksplisitt begrunnet godkjenning
+- [ ] Paneloverganger i avspilling, film og støttede eksportformater
+- [ ] Kjerne/angre/grenser, visuelt nb/en desktop/mobil, full Vitest og DB; rapport SB9_REPORT.md
+- [ ] Ingen publisering
+
 ## SB-6 – Utskrift, pitch og skuddliste (bygget; separate kontroller gjenstår)
 - [x] Nye kort i eksisterende ExportAnimaticDialog, felles bildekildevalg
 - [x] PDF 3/6/9, pitch, fem papirformater, feltvalg, topp/bunntekst, Noto/RTL

@@ -412,7 +412,7 @@ export function remapValue<T>(v: T, map: ReadonlyMap<string, string>): T {
   if (v && typeof v === "object") {
     const out: Record<string, unknown> = {};
     // Også nøkler (f.eks. takes.produced_from: blokk-ID → revisjon)
-    for (const [k, x] of Object.entries(v)) out[map.get(k) ?? k] = remapValue(x, map);
+    for (const [k, x] of Object.entries(v)) out[k.replace(UUID_G, m => map.get(m) ?? m)] = remapValue(x, map);
     return out as T;
   }
   return v;

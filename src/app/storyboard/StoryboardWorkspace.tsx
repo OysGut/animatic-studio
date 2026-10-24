@@ -43,6 +43,7 @@ import { Thumbnail } from "@/app/shared/Thumbnail";
 import { SceneSelect } from "@/app/shell/SceneSelect";
 import { currentPosition, rememberPosition } from "@/app/shell/current-scene";
 import { panelPosition } from "@/core/storyboard/position";
+import { continuityBlockingIssues } from "@/core/storyboard/blocking";
 import { suggestPanelTimings, panelTiming } from "@/core/storyboard/playback";
 import { filmClips } from "@/core";
 import { GalleryPlayback, ScrubPreview } from "./GalleryPlayback";
@@ -167,6 +168,7 @@ export function Gallery({
   const [savedPosition, setSavedPosition] = useState<ReturnType<typeof currentPosition>>(null);
   useEffect(() => { setSavedPosition(currentPosition(projectId)); }, [projectId]);
   const [productionId, setProductionId] = useActiveProduction(projectId, state, initialOccurrenceId ?? savedPosition?.occurrenceId);
+  const continuityFlags = useMemo(()=>new Set(continuityBlockingIssues(state,productionId).map(i=>i.panelId)),[state,productionId]);
   const filter = prefs.filterArea && prefs.filterStatus ? { area: prefs.filterArea, status: prefs.filterStatus } : null;
   const gallery = useMemo(
     () => buildGallery(state, productionId, { showHidden: prefs.showHidden, filter }),
@@ -602,6 +604,7 @@ export function Gallery({
                         {prefs.show.script && lines ? <p className="line-clamp-2 text-text-tertiary" dir="auto" data-testid="sb-script">{lines.script.join(" ")}</p> : null}
                         {p.panel.storyboard ? <div className="text-[11px] text-text-secondary" dir="auto">{[p.panel.storyboard.shot,p.panel.storyboard.angle,p.panel.storyboard.focalMm ? `${p.panel.storyboard.focalMm} mm` : "",p.panel.storyboard.movement,...Object.values(p.panel.storyboard.fields)].filter(Boolean).join(" · ")}</div> : null}
                         {prefs.show.status ? <StatusBadges statuses={p.statuses} /> : null}
+                        {continuityFlags.has(p.panel.id)?<span className="text-status-warning" data-testid="sb9-panel-flag">{tk("sb9.continuity")}</span>:null}
                         {prefs.show.notes ? <span className="text-text-tertiary">{tk("sb2.notes-count", { count: String(noteCount) })}</span> : null}
                       </div>
                     </div>

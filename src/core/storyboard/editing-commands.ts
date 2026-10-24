@@ -20,6 +20,6 @@ export function applyStoryboardEditing(s: ProjectState, c: StoryboardEditingComm
   if (c.details !== null && !panelDetailsValid(s, p, c.details)) return invalid();
   const old = p.storyboard ?? null;
   const { storyboard: _old, ...panel } = p;
-  const details = c.details === null ? null : { ...c.details, movement: c.details.movement.normalize("NFC"), fields: Object.fromEntries(Object.entries(c.details.fields).map(([k,v]) => [k,v.normalize("NFC")])) };
+  const details = c.details === null ? null : { ...c.details, movement: c.details.movement.normalize("NFC"), fields: Object.fromEntries(Object.entries(c.details.fields).map(([k,v]) => [k,v.normalize("NFC")])), ...(c.details.blocking ? { blocking: { ...c.details.blocking, objects: c.details.blocking.objects.map(o=>({...o,name:o.name.normalize("NFC")})), approvals: Object.fromEntries(Object.entries(c.details.blocking.approvals).map(([k,v])=>[k,v.normalize("NFC")])) } } : {}) };
   return { state: { ...s, compositions: { ...s.compositions, [p.id]: { ...panel, revision: p.revision + 1, ...(details ? { storyboard: details } : {}) } } }, inverse: { type: "SetStoryboardDetails", panelId: p.id, details: old } as StoryboardEditingCommand, affected: [p.id] };
 }

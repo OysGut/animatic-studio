@@ -117,7 +117,7 @@ export interface Shot {
   readonly handleOut: number;
   readonly frameIn: number;
   readonly frameOut: number;
-  readonly transition: { readonly type: TransitionKind; readonly lengthFrames: number; readonly overlap: boolean };
+  readonly transition: { readonly type: TransitionKind; readonly lengthFrames: number; readonly overlap: boolean; readonly direction?: "left" | "right" | "up" | "down" };
   readonly sourceStartFrame: number;
   readonly sourceLengthFrames: number;
   readonly compositionId: string | null;

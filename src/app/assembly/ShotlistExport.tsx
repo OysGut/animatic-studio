@@ -4,6 +4,7 @@ import { Download, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { ProjectState } from "@/core/model";
 import type { FilmClip } from "@/core/assembly/film";
+import { exportImageSource, type ExportImageSource } from "@/core/storyboard/playback";
 import { buildInterchange } from "@/core/interchange";
 import type { ShotlistProfile } from "@/core/interchange/shotlist";
 import { languageState } from "@/core/language";
@@ -31,9 +32,10 @@ import { exportMouthPackage } from "@/engine/export/mouth-list";
 
 type PtgCard = "shotlist" | "dragonframe" | "ae" | "fbx" | "editorial" | "compositing" | "mouth";
 
-export function ShotlistExport({ state, productionId, clips, language, disabled }: {
+export function ShotlistExport({ state, productionId, clips, language, disabled, imageSource = "animation" }: {
   state: ProjectState; productionId: string; clips: readonly FilmClip[];
   language: { dialogue: string; subtitles: string | null }; disabled: boolean;
+  imageSource?: ExportImageSource;
 }) {
   const session = useSession();
   const qc = useQueryClient();
@@ -118,7 +120,8 @@ export function ShotlistExport({ state, productionId, clips, language, disabled 
     } finally { abort.current = null; setProgress(null); }
   }
   async function startDragonframe(editorial = false) {
-    const initial = buildInterchange(state, { productionId, language, occurrenceIds: clips.map(c => c.occurrenceId) });
+    const source = editorial ? imageSource : "animation";
+    const initial = buildInterchange(state, { productionId, language, occurrenceIds: clips.map(c => c.occurrenceId), imageSource: source });
     const fileName = `${initial.project.code}-${editorial ? "editorial" : "dragonframe"}.zip`;
     // Picker must be opened synchronously from the click, before waiting for commands.
     const sinkPromise = openZipSink(fileName);
@@ -130,15 +133,16 @@ export function ShotlistExport({ state, productionId, clips, language, disabled 
       await commands.whenIdle();
       const reservation = await reserveInterchangeExport({ projectId: state.project.id, productionId, occurrenceIds: clips.map(c => c.occurrenceId), fileName,
         settings: { format: editorial ? "editorial" : "dragonframe", language: language.dialogue, png: dfPng, burnIn: dfBurnIn, includeMedia: editorialMedia, captureFpsNum: initial.captureFps.num, captureFpsDen: initial.captureFps.den } });
-      const doc = buildInterchange(state, { productionId, language, occurrenceIds: clips.map(c => c.occurrenceId), versions: reservation.versions });
-      const ls = languageState(state, language.dialogue);
+      const doc = buildInterchange(state, { productionId, language, occurrenceIds: clips.map(c => c.occurrenceId), versions: reservation.versions, imageSource: source });
+      const adapted = exportImageSource(languageState(state, language.dialogue), clips, source);
+      const ls = adapted.state;
       const imagePaths = doc.references.filter(r => r.mimeType.startsWith("image/")).map(r => r.mediaPath);
       const { images } = await loadImages(await signedUrls(editorial && !editorialMedia ? [] : imagePaths, 600));
       const filmPaths = clips.flatMap(c => c.parts.flatMap(p => p.take?.mediaRef ? [p.take.mediaRef] : []));
       const items = filmAudio(ls, clips, ls.project.fps, language.dialogue);
       const audioPaths = [...new Set(items.flatMap(it => it.version ? [it.version.mediaPath] : []))];
       if (!editorial || editorialMedia) await audioBank.loadAll(await signedUrls(audioPaths, 600));
-      const options = { doc, state: ls, clips, images, filmUrls: await signedUrls(editorial && !editorialMedia ? [] : [...new Set(filmPaths)], 600),
+      const options = { doc, state: ls, clips: adapted.clips, images, filmUrls: await signedUrls(editorial && !editorialMedia ? [] : [...new Set(filmPaths)], 600),
         audio: { items, bank: audioBank }, sink, signal: ctrl.signal,
         onProgress: (done: number, total: number) => setProgress({ done, total }) };
       if (editorial) await exportEditorial({ ...options, includeMedia: editorialMedia });

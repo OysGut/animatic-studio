@@ -1,6 +1,7 @@
 /** SB-3: immutable panel metadata, locked numbering and explicit arrow-to-path plans. */
 import type { Command } from "../commands/types";
-import type { Composition, ProjectState } from "../model";
+import type { Composition, ProjectState, Transition } from "../model";
+import { blockingValid, transitionValid, type BlockingPlan } from "./blocking";
 import { applyMatrix, modelMatrix, compositionOfVariant } from "../composition/render";
 import { layerFieldsOf } from "../composition";
 import { storyboardPanelsOf } from "./index";
@@ -26,6 +27,8 @@ export interface PanelDetails {
   readonly focalMm: number | null;
   readonly movement: string;
   readonly tempAudio?: PanelTempAudio | null;
+  readonly blocking?: BlockingPlan | null;
+  readonly transition?: Transition | null;
 }
 export const EMPTY_PANEL_DETAILS: PanelDetails = { number: "", sceneNumber: "", fields: {}, dialogueIds: [], shot: null, angle: null, focalMm: null, movement: "", tempAudio: null };
 export function panelDetails(p: Composition): PanelDetails { return p.storyboard ?? EMPTY_PANEL_DETAILS; }
@@ -33,6 +36,8 @@ export function panelFields(s: ProjectState): readonly PanelField[] {
   return s.project.storyboardFields ?? STANDARD_PANEL_FIELDS.map(id => ({ id, name: "", kind: id === "dialogue" ? "dialogue" : "text" }));
 }
 export function panelDetailsValid(s: ProjectState, p: Composition, d: PanelDetails): boolean {
+  if (d?.blocking != null && (!blockingValid(d.blocking) || d.blocking.characters.some(c => !s.assets[c.id] || s.assets[c.id]?.removed))) return false;
+  if (d?.transition != null && !transitionValid(d.transition)) return false;
   if (!d || typeof d !== "object" || !/^(?:[1-9][0-9]*[A-Z]*)?$/.test(d.number) || !/^(?:[1-9][0-9]*[A-Z]*)?$/.test(d.sceneNumber)) return false;
   if (d.shot !== null && !SHOT_TYPES.includes(d.shot)) return false;
   if (d.angle !== null && !SHOT_ANGLES.includes(d.angle)) return false;

@@ -1,0 +1,53 @@
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Plus, Check, Copy, Trash2, Square } from "lucide-react";
+import { assetsInScene } from "@/core/library";
+import { t } from "@/core/i18n/keyed";
+import { panelDetails } from "@/core/storyboard/editing";
+import { blockingOf, EMPTY_BLOCKING, fieldOfView, continuityBlockingIssues, continuityPanels, screenDirection, type BlockingPlan } from "@/core/storyboard/blocking";
+import type { Composition, PanelDetails, ProjectState } from "@/core";
+
+const control="w-full min-w-0 rounded-sm border border-border-control bg-surface-1 px-2 py-1 text-[13px]";
+export function PanelBlocking({state,panel,allowed,save}:{state:ProjectState;panel:Composition;allowed:boolean;save:(patch:Partial<PanelDetails>)=>unknown}) {
+  const [reason,setReason]=useState("");
+  const plan=blockingOf(panel)??EMPTY_BLOCKING;
+  const productionId=panel.occurrenceId?state.occurrences[panel.occurrenceId]?.productionId??"":"";
+  const panels=continuityPanels(state,productionId);
+  const issues=continuityBlockingIssues(state,productionId);
+  const camera=plan.cameras.find(c=>c.id===plan.cameraId);
+  const characters=panel.occurrenceId?assetsInScene(state,productionId,panel.occurrenceId).map(r=>r.asset).filter(a=>a.kind==="character"):[];
+  const update=(patch:Partial<BlockingPlan>)=>save({blocking:{...plan,...patch}});
+  const number=(label:string,value:number,onSave:(v:number)=>void,min=-10000)=><label className="block min-w-0 text-[11px]">{label}<input className={control} type="number" key={`${label}-${value}`} defaultValue={value} min={min} step="any" onBlur={e=>{const n=Number(e.target.value);if(Number.isFinite(n)&&n>=min&&n!==value)onSave(n);}}/></label>;
+  const transition=panelDetails(panel).transition;
+  return <section className="space-y-2 border-b border-border pb-3" data-testid="sb9-blocking">
+    <h3 className="text-[13px] font-semibold">{t("sb9.plan")}</h3>
+    <fieldset disabled={!allowed} className="space-y-2">
+      <div className="flex flex-wrap gap-1"><Button size="sm" variant="outline" onClick={()=>update({})}>{t("sb9.create")}</Button><Button size="icon" variant="ghost" title={t("sb9.previous")} aria-label={t("sb9.previous")} onClick={()=>{const prev=panels[panels.findIndex(p=>p.id===panel.id)-1];const old=prev?blockingOf(prev):null;if(old)save({blocking:{...old,approvals:{}}});}}><Copy/></Button></div>
+      <svg viewBox={`-1 -1 ${plan.width+2} ${plan.height+2}`} className="aspect-[5/4] w-full bg-surface-2 text-text-primary" role="img" aria-label={t("sb9.plan")} data-testid="sb9-map">
+        {plan.walls.map((w,i)=><line key={i} x1={w[0]} y1={w[1]} x2={w[2]} y2={w[3]} stroke="currentColor" strokeWidth=".08"/>)}
+        {plan.objects.map((o,i)=><g key={i}><rect x={o.x} y={o.y} width={o.width} height={o.height} className="fill-surface-3 stroke-border" strokeWidth=".05"/><text x={o.x} y={o.y+.3} fontSize=".3">{o.name}</text></g>)}
+        {plan.axis?(()=>{const a=plan.characters.find(c=>c.id===plan.axis?.[0]),b=plan.characters.find(c=>c.id===plan.axis?.[1]);return a&&b?<line x1={a.x} y1={a.y} x2={b.x} y2={b.y} className="stroke-status-warning" strokeWidth=".07" strokeDasharray=".2 .1"/>:null;})():null}
+        {plan.cameras.map(c=>{const fov=fieldOfView(c.focal,c.sensor,panel.width/panel.height).horizontal*Math.PI/180,h=c.heading*Math.PI/180,l=3;return <g key={c.id} className={c.id===plan.cameraId?"text-accent-brand":"text-text-tertiary"}><path d={`M${c.x} ${c.y} L${c.x+Math.cos(h-fov/2)*l} ${c.y+Math.sin(h-fov/2)*l} A${l} ${l} 0 0 1 ${c.x+Math.cos(h+fov/2)*l} ${c.y+Math.sin(h+fov/2)*l}Z`} fill="currentColor" fillOpacity=".12" stroke="currentColor" strokeWidth=".04"/><circle cx={c.x} cy={c.y} r=".15" fill="currentColor"/><text x={c.x} y={c.y-.25} fontSize=".3">{c.id}</text></g>;})}
+        {plan.characters.map(c=><g key={c.id}><circle cx={c.x} cy={c.y} r=".2" fill="currentColor"/><line x1={c.x} y1={c.y} x2={c.x+Math.cos(c.facing*Math.PI/180)*.6} y2={c.y+Math.sin(c.facing*Math.PI/180)*.6} stroke="currentColor" strokeWidth=".06"/><text x={c.x} y={c.y+.5} fontSize=".3">{state.assets[c.id]?.name}</text></g>)}
+      </svg>
+      <div className="grid grid-cols-2 gap-1">{number(t("sb9.width"),plan.width,width=>update({width}),.1)}{number(t("sb9.height"),plan.height,height=>update({height}),.1)}</div>
+      <Button size="icon" variant="outline" aria-label={t("sb9.plan")} title={t("sb9.plan")} onClick={()=>update({walls:[[0,0,plan.width,0],[plan.width,0,plan.width,plan.height],[plan.width,plan.height,0,plan.height],[0,plan.height,0,0]]})}><Square/></Button>
+      {plan.walls.map((w,i)=><div key={i} className="grid grid-cols-5 gap-1">{w.map((v,k)=>number(`${k<2?"A":"B"} ${k%2?"Y":"X"}`,v,n=>update({walls:plan.walls.map((row,j)=>j===i?row.map((v,l)=>l===k?n:v) as unknown as readonly [number,number,number,number]:row)})))}<Button size="icon" variant="ghost" aria-label={t("sb9.plan")} onClick={()=>update({walls:plan.walls.filter((_,j)=>j!==i)})}><Trash2/></Button></div>)}
+      <Button size="sm" variant="outline" onClick={()=>update({objects:[...plan.objects,{name:t("sb9.object"),x:1,y:1,width:2,height:1}]})}><Plus/>{t("sb9.object")}</Button>
+      {plan.objects.map((o,i)=><div key={i} className="grid grid-cols-2 gap-1"><input aria-label={t("sb9.object")} className={control+" col-span-2"} defaultValue={o.name} onBlur={e=>update({objects:plan.objects.map((v,j)=>j===i?{...v,name:e.target.value}:v)})}/>{(["x","y","width","height"] as const).map(k=>number(k.toUpperCase(),o[k],n=>update({objects:plan.objects.map((v,j)=>j===i?{...v,[k]:n}:v)}),k==="width"||k==="height"?.1:-10000))}</div>)}
+      <select className={control} aria-label={t("sb9.character")} value="" onChange={e=>{if(e.target.value&&!plan.characters.some(c=>c.id===e.target.value))update({characters:[...plan.characters,{id:e.target.value,x:plan.width/2,y:plan.height/2,facing:0,movement:null}]});}}><option value="">{t("sb9.character")}</option>{characters.map(a=><option value={a.id} key={a.id}>{a.name}</option>)}</select>
+      {plan.characters.map(c=><div key={c.id} className="space-y-1"><strong className="text-[11px]" dir="auto">{state.assets[c.id]?.name} · {camera?(screenDirection(c.facing,camera.heading)<0?t("sb9.left"):screenDirection(c.facing,camera.heading)>0?t("sb9.right"):t("sb9.center")):"–"}</strong><div className="grid grid-cols-2 gap-1">{number("X",c.x,x=>update({characters:plan.characters.map(v=>v.id===c.id?{...v,x}:v)}))}{number("Y",c.y,y=>update({characters:plan.characters.map(v=>v.id===c.id?{...v,y}:v)}))}{number(t("sb9.facing"),c.facing,facing=>update({characters:plan.characters.map(v=>v.id===c.id?{...v,facing}:v)}))}{number(t("sb9.movement"),c.movement??0,movement=>update({characters:plan.characters.map(v=>v.id===c.id?{...v,movement}:v)}))}</div></div>)}
+      <Button size="sm" variant="outline" onClick={()=>{const id=`C${plan.cameras.length+1}`;update({cameras:[...plan.cameras,{id,x:plan.width/2,y:plan.height-1,heading:-90,focal:50,sensor:36}],cameraId:id});}}><Plus/>{t("sb9.camera")}</Button>
+      <select className={control} value={plan.cameraId??""} aria-label={t("sb9.camera")} onChange={e=>update({cameraId:e.target.value||null})}><option value="">–</option>{plan.cameras.map(c=><option key={c.id}>{c.id}</option>)}</select>
+      {camera?<div className="grid grid-cols-2 gap-1">{(["x","y","heading","focal","sensor"] as const).map(k=>number(k==="heading"?t("sb9.facing"):k==="focal"?t("sb3.focal"):k==="sensor"?t("sb9.sensor"):k.toUpperCase(),camera[k],n=>update({cameras:plan.cameras.map(c=>c.id===camera.id?{...c,[k]:n}:c)}),k==="focal"||k==="sensor"?.1:-10000))}<output className="text-[11px]">{fieldOfView(camera.focal,camera.sensor,panel.width/panel.height).horizontal.toFixed(1)}° × {fieldOfView(camera.focal,camera.sensor,panel.width/panel.height).vertical.toFixed(1)}°</output></div>:null}
+      <div className="grid grid-cols-2 gap-1">{[0,1].map(i=><select key={i} className={control} value={plan.axis?.[i]??""} aria-label={`${t("sb9.axis")} ${i+1}`} onChange={e=>{const ids:[string,string]=[plan.axis?.[0]??"",plan.axis?.[1]??""];ids[i]=e.target.value;if(ids.every(Boolean)&&ids[0]!==ids[1])update({axis:ids});else if(e.target.value){const other=plan.characters.find(c=>c.id!==e.target.value);if(other)update({axis:i===0?[e.target.value,other.id]:[other.id,e.target.value]});}else update({axis:null});}}><option value="">{t("sb9.axis")}</option>{plan.characters.map(c=><option value={c.id} key={c.id}>{state.assets[c.id]?.name}</option>)}</select>)}</div>
+      <h4 className="text-[13px] font-semibold">{t("sb9.transition")}</h4>
+      <select className={control} value={transition?.kind??"inherit"} aria-label={t("sb9.transition")} onChange={e=>save({transition:e.target.value==="inherit"?null:{kind:e.target.value as "cut"|"dissolve"|"dip"|"dipWhite"|"wipe",frames:e.target.value==="cut"?0:12,overlap:true,direction:"right"}})}><option value="inherit">{t("sb9.inherit")}</option><option value="cut">{t("sb9.cut")}</option><option value="dissolve">{t("sb9.dissolve")}</option><option value="dip">{t("sb9.black")}</option><option value="dipWhite">{t("sb9.white")}</option><option value="wipe">{t("sb9.wipe")}</option></select>
+      {transition&&transition.kind!=="cut"?number(t("sb6.frames"),transition.frames,frames=>save({transition:{...transition,frames:Math.min(600,Math.round(frames))}}),1):null}
+      {transition?.kind==="wipe"?<select className={control} value={transition.direction??"right"} aria-label={t("sb9.direction")} onChange={e=>save({transition:{...transition,direction:e.target.value as "left"|"right"|"up"|"down"}})}><option value="left">{t("sb9.left")}</option><option value="right">{t("sb9.right")}</option><option value="up">{t("sb3.up")}</option><option value="down">{t("sb3.down")}</option></select>:null}
+    </fieldset>
+    <h4 className="text-[13px] font-semibold">{t("sb9.continuity")}</h4>
+    <ul className="space-y-1 text-[11px]" data-testid="sb9-issues">{issues.map(issue=><li key={issue.key} className="text-status-warning">{state.compositions[issue.panelId]?.name} · {issue.kind==="axis"?t("sb9.crossing"):issue.kind==="gaze"?t("sb9.gaze"):t("sb9.motion-break")}{issue.panelId===panel.id?<Button size="icon" variant="ghost" disabled={!allowed||!reason.trim()} aria-label={t("sb9.approve")} onClick={()=>update({approvals:{...plan.approvals,[issue.key]:reason.trim()}})}><Check/></Button>:null}</li>)}</ul>
+    <textarea className={control} aria-label={t("sb9.reason")} placeholder={t("sb9.reason")} value={reason} onChange={e=>setReason(e.target.value)} disabled={!allowed}/>
+  </section>;
+}

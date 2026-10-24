@@ -168,7 +168,11 @@ export function drawFilmFrame(
       if (m.kind === "push") ctx.drawImage(B as CanvasImageSource, (1 - p) * W, 0);
       else if (m.kind === "wipe") {
         ctx.beginPath();
-        ctx.rect(0, 0, p * W, H);
+        const direction = m.b.clip.transition.direction ?? "right";
+        if (direction === "left") ctx.rect((1-p)*W,0,p*W,H);
+        else if (direction === "up") ctx.rect(0,(1-p)*H,W,p*H);
+        else if (direction === "down") ctx.rect(0,0,W,p*H);
+        else ctx.rect(0, 0, p * W, H);
         ctx.clip();
         ctx.drawImage(B as CanvasImageSource, 0, 0);
       } else if (m.kind === "iris") {
