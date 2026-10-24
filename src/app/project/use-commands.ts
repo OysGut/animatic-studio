@@ -235,6 +235,7 @@ export function registerHistoryEffect(group: string, effect: HistoryEffect): voi
  * Legges på brukerens lokale angreliste og angres deretter som en vanlig kommando (ingen nye betalte kall).
  */
 export interface ServerHistoryRow {
+  readonly group?: string;
   readonly commandId: string;
   readonly inverse: Command;
   readonly affected: readonly string[];
@@ -243,7 +244,7 @@ export interface ServerHistoryRow {
 /** Gjør en rad fra serverhistorikken om til et vanlig angresteg. Ugyldige rader gir null. */
 export function serverHistoryEntry(row: ServerHistoryRow, label: string, seenForeign: number): HistoryEntry | null {
   if (!row.commandId || !row.inverse || typeof (row.inverse as { type?: unknown }).type !== "string") return null;
-  return { id: row.commandId, label, inverse: row.inverse, affected: [...row.affected], seenForeign };
+  return { id: row.commandId, label, inverse: row.inverse, affected: [...row.affected], seenForeign, ...(row.group ? { group: row.group } : {}) };
 }
 
 /** Angrelistene per prosjekt som tar imot serverresultater (arbeidsflatenes hovedliste, sist montert vinner). */
@@ -314,7 +315,7 @@ export function useCommands(projectId: string, actorId: string, enabled: boolean
     const receive = (rows: readonly ServerHistoryRow[], label: string) => {
       const entries = rows.flatMap((r) => serverHistoryEntry(r, label, foreignSeq.current) ?? []);
       if (entries.length === 0) return;
-      setUndo((u) => entries.reduce((list, e) => pushEntry(list, e), u));
+      setUndo((u) => entries.reduce((list, e) => pushEntry(list, e, e.group), u));
       setRedo([]);
     };
     const list = serverHistoryTargets.get(projectId) ?? [];

@@ -28,7 +28,7 @@ async function saveImage(s: ProjectState, panel: Composition, blob: Blob, cmds: 
 export async function rasterPanelInput(s: ProjectState, panel: Composition, basis: "composition" | "sketch", layerId: string | null, cmds: Commands) {
   const frame = panelStructureFrame(s, panel, basis, layerId);
   const paths = [...new Set(frame.items.flatMap(it => it.version ? [it.version.mediaPath] : []))];
-  const urls = await createSignedUrls(paths);
+  const urls = Object.fromEntries((await createSignedUrls("assets", paths, 600)).map(r => [r.path, r.signedUrl]));
   const images = new Map<string, ImageSource>();
   await Promise.all(paths.map(async path => {
     const url = urls[path]; if (!url) throw Error(t("sb7.unavailable"));
@@ -45,7 +45,7 @@ export async function rasterPanelInput(s: ProjectState, panel: Composition, basi
 
 /** Immutable padded derivative; source remains in the candidate and receipt. */
 export async function fitCandidateImage(s: ProjectState, panel: Composition, path: string, ratio: number, cmds: Commands, sourceVersionId: string) {
-  const urls = await createSignedUrls([path]); const url = urls[path];
+  const urls = Object.fromEntries((await createSignedUrls("assets", [path], 600)).map(r => [r.path, r.signedUrl])); const url = urls[path];
   if (!url) throw Error(t("sb7.unavailable"));
   const bmp = await createImageBitmap(await (await fetch(url)).blob());
   try {
