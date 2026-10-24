@@ -73,10 +73,6 @@ describe("SB-5 planSceneSetup", () => {
     expect(comp.durationFrames).toBe(120);
   });
 
-  function occVariantOf(state: ProjectState, occurrenceId: string) {
-    return state.occurrences[occurrenceId as never]!.variantId;
-  }
-
   it("kopierer ressurslag med ID/versjon og transformasjon; hopper over lapp, pil og kameramerke", () => {
     let { s, mainId, occurrenceId } = setup();
     const p = addPanel(s, occurrenceId, "a", 100);
