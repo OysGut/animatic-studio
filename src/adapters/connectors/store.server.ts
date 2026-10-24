@@ -156,7 +156,8 @@ export async function cloudConnectorStore(): Promise<ConnectorStore> {
         if (c.error) throw c.error; conflictId = String(c.data["id"]);
       }
       await db.from("connector_transfers").update({ status: "candidate", candidate_version_id: versionId, conflict_id: conflictId, updated_at: new Date().toISOString() }).eq("id", t.id);
-      await db.storage.from("assets").remove(Array.from({ length: Math.ceil(t.byteSize / (8 * 1024 * 1024)) }, (_, i) => chunkPath(t, i)));
+      const cn = usesDirectUpload(t.byteSize) ? signedChunkCount(t.byteSize) : chunkCount(t.byteSize);
+      await db.storage.from("assets").remove(Array.from({ length: cn }, (_, i) => chunkPath(t, i)));
       return { versionId, conflictId };
     },
     async setTransferStatus(id, status) { await db.from("connector_transfers").update({ status, updated_at: new Date().toISOString() }).eq("id", id); },
