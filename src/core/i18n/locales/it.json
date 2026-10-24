@@ -58885,5 +58885,235 @@
     "text": "Team",
     "sourceHash": "bb1f3f53234364d0395f8ba2a0768351280532acc381f9a324b5aa33135ff8da",
     "review": "machine"
+  },
+  "c0.error": {
+    "text": "Qualcosa è andato storto. Riprova.",
+    "sourceHash": "3d739fa3b7d9c39b4ca225ed4f5c15dc9c343517420aa17b19f4ad679dfbad3e",
+    "review": "machine"
+  },
+  "c0.account.title": {
+    "text": "App collegate",
+    "sourceHash": "a48dd88de9cda652ded711268f8298cfdd9b613b062d595a23cf66ae8d2b1119",
+    "review": "machine"
+  },
+  "c0.account.intro": {
+    "text": "App a cui hai dato accesso a un progetto. Puoi revocare l’accesso in qualsiasi momento.",
+    "sourceHash": "92cfdfa67b2cb9d1101c47b679db6e7ff396d5f68d548abba0cd011b4f7a696e",
+    "review": "machine"
+  },
+  "c0.account.none": {
+    "text": "Nessuna app collegata.",
+    "sourceHash": "bd31cc29e8f32d5752ac48c8c0739c2543697fa9b4f96591cbab727062b85ec8",
+    "review": "machine"
+  },
+  "c0.account.project": {
+    "text": "Progetto: {name}",
+    "sourceHash": "24c6fa4a1311f9a12d5664fa8af6d21ec9267242aa6e89d7337b21709cf114be",
+    "review": "machine"
+  },
+  "c0.account.scopes": {
+    "text": "Autorizzazioni: {scopes}",
+    "sourceHash": "7647cc4584988e2dcfd27a29a2fa2e85bd8a8e49502801b3024cf37aa3341ef7",
+    "review": "machine"
+  },
+  "c0.account.used": {
+    "text": "Ultimo utilizzo: {date}",
+    "sourceHash": "f9061821a95e3110d93bc6e2ee6451b9df24d76ffe8b962f49ce2814a8999254",
+    "review": "machine"
+  },
+  "c0.account.expires": {
+    "text": "Scade: {date}",
+    "sourceHash": "ff5e4c3589569d714fcdcff00b58e1f26795211ddd61d7ab1d6bde605c20e90a",
+    "review": "machine"
+  },
+  "c0.account.revoke": {
+    "text": "Revoca",
+    "sourceHash": "60bc56e28eba63cf51496e93e4fa45d7a8c0f7e7fa2db8e92e1217627b61c0e8",
+    "review": "machine"
+  },
+  "c0.account.revoke-aria": {
+    "text": "Revoca l’accesso per {name}",
+    "sourceHash": "2095b440ef0b39c1a9c3664adf078a3440f5f41d7d74ee35fb9029c7c1037a7a",
+    "review": "machine"
+  },
+  "c0.account.revoked": {
+    "text": "Accesso revocato.",
+    "sourceHash": "91d6c45a75f8807a1cda51a8ec25666a06068ec37c27e4a46c2e9a305de6d40b",
+    "review": "machine"
+  },
+  "c0.conflict.title": {
+    "text": "File ricevuti in conflitto",
+    "sourceHash": "72ecbcf769318cccc462e8c337185381dfa1d5935a73cab1b840d10159c6e985",
+    "review": "machine"
+  },
+  "c0.conflict.intro": {
+    "text": "Il file si basa su una versione più vecchia di quella approvata ora. Entrambe le versioni vengono mantenute, qualunque cosa tu scelga.",
+    "sourceHash": "92b4f253126bf351d3597b1aac883215fba82b2cd75f245fe99a2ca047b27969",
+    "review": "machine"
+  },
+  "c0.conflict.versions": {
+    "text": "Approvata ora: v{current} · In arrivo: v{incoming} · Creata da: v{base}",
+    "sourceHash": "fc95de8462b49cb0537f24e3a88b3d5e89032335020096c793a620e330e9fc91",
+    "review": "machine"
+  },
+  "c0.conflict.compare": {
+    "text": "Confronta nella libreria",
+    "sourceHash": "1552f953ea39fcfe88c20290e792a1d9665af0993363497010b4190365a8f8aa",
+    "review": "machine"
+  },
+  "c0.conflict.keep-both": {
+    "text": "Mantieni entrambe",
+    "sourceHash": "ec7d92e358f4dcfa2f2c32d9201873b6dadc33faa2eacad7dc5089c49480fb2b",
+    "review": "machine"
+  },
+  "c0.conflict.current": {
+    "text": "Mantieni l’attuale",
+    "sourceHash": "2cb4345ebd698f2584fbd05242b4542c2c55ba43580e25c439dbb265832cac39",
+    "review": "machine"
+  },
+  "c0.conflict.incoming": {
+    "text": "Usa quella in arrivo",
+    "sourceHash": "1a5769de1547295b5f6994cb6189d2dec8905ce75e8b08514f5154c9d9a4e227",
+    "review": "machine"
+  },
+  "c0.conflict.reject": {
+    "text": "Rifiuta",
+    "sourceHash": "d3a48b52dbff252243bf3b1ee4cce1a85c466f1f84948cae80235c43cf3ccb78",
+    "review": "machine"
+  },
+  "c0.conflict.done": {
+    "text": "La tua scelta è stata salvata. Nessuna versione è stata eliminata.",
+    "sourceHash": "f01645d6ea1466e87d4f2a64e18eddd89548d45cac536f6c8ef5aeb30312d803",
+    "review": "machine"
+  },
+  "c0.consent.page-title": {
+    "text": "Collega un’app – From Pen to Glass",
+    "sourceHash": "fef023ffdaa7e6bc6747dff2070bafbea1d6407d764b9a82a4cbc3bc4daa5ad0",
+    "review": "machine"
+  },
+  "c0.consent.page-description": {
+    "text": "Dai a un’app esterna l’accesso a un progetto.",
+    "sourceHash": "9ba8ca6b63942a244c5e91e895daffb573312dad3628d95ed4bc43560fe12075",
+    "review": "machine"
+  },
+  "c0.consent.trail": {
+    "text": "Collega app",
+    "sourceHash": "13f7af086d97ea6690a398403a6319a57ea6169eea2a9e399a1d48677882f9af",
+    "review": "machine"
+  },
+  "c0.consent.title": {
+    "text": "Collega {client} a From Pen to Glass",
+    "sourceHash": "8fd69e768c468766a79f878a93d224fd93ec863d4632deeea33b0125b56f0110",
+    "review": "machine"
+  },
+  "c0.consent.title-device": {
+    "text": "Collega un’app",
+    "sourceHash": "90132e6edba511f549648b0622cf67b37c1de28a744fd2bffe3be05755341987",
+    "review": "machine"
+  },
+  "c0.consent.signed-in": {
+    "text": "Accesso effettuato come {email}",
+    "sourceHash": "b0c1d7e7d78396725bdeee012fe734197d9e66077a5fe03a0ea6b67f4fb13059",
+    "review": "machine"
+  },
+  "c0.consent.code-label": {
+    "text": "Il codice mostrato nell’app",
+    "sourceHash": "7cb81045a6fefb575a59830592d7e97bc5e528a1e8e1ee1eebcab9d71fd3ee02",
+    "review": "machine"
+  },
+  "c0.consent.continue": {
+    "text": "Continua",
+    "sourceHash": "7fe794f715961fd87e42da0469dfd9f0ce2345834fa594854df9ee3cc0bac160",
+    "review": "machine"
+  },
+  "c0.consent.bad-code": {
+    "text": "Il codice non è valido o è scaduto.",
+    "sourceHash": "c1f916677592bb26093846330f3e88db308f7a005aadc174f20c56061fa6fe58",
+    "review": "machine"
+  },
+  "c0.consent.explain": {
+    "text": "{client} può usare il progetto che scegli, a tuo nome, con le autorizzazioni qui sotto.",
+    "sourceHash": "b722437492c1c6219a0c1d8974dcbae62823b5be0f694bd0409fd172b03053c5",
+    "review": "machine"
+  },
+  "c0.consent.redirect": {
+    "text": "Invia la risposta a {uri}",
+    "sourceHash": "b0c431aecb6f25918ee6f8fa892044a321220ea294381a7dbd3eab169e0ec244",
+    "review": "machine"
+  },
+  "c0.consent.project": {
+    "text": "Progetto",
+    "sourceHash": "30a6bf7d10a859379d1cdfbc84ffe8c4a5a7e5333aa51b9fcdf05f4febd04e7c",
+    "review": "machine"
+  },
+  "c0.consent.pick-project": {
+    "text": "Scegli un progetto",
+    "sourceHash": "cb96ffe373cd320dc66c4bbd94f99b50b1271e93bdf347ee7390e45cce6ec280",
+    "review": "machine"
+  },
+  "c0.consent.boundary": {
+    "text": "Questo non aggira il tuo ruolo nel progetto. I file ricevuti diventano sempre nuove versioni che approvi tu.",
+    "sourceHash": "f2634f8d0cb98978c330c48c903fa9d68a8a9421d65d01971b637907861b50eb",
+    "review": "machine"
+  },
+  "c0.consent.approve": {
+    "text": "Approva",
+    "sourceHash": "a990bf3b84b44c4921a6748e26d38a46e4e3cb0b4454eff99640887ef9c4b1e8",
+    "review": "machine"
+  },
+  "c0.consent.deny": {
+    "text": "Annulla collegamento",
+    "sourceHash": "b4a6dc868fd72319a8f272b4ac523bff157dc7b37460c91ccaa358b12161e72a",
+    "review": "machine"
+  },
+  "c0.consent.device-done": {
+    "text": "Approvato. Puoi tornare all’app.",
+    "sourceHash": "038a95ac1f11393e2ce5cf6a5a36ad381dfd45f57f86141929a3dbcb12ec610e",
+    "review": "machine"
+  },
+  "c0.consent.denied": {
+    "text": "Il collegamento è stato rifiutato.",
+    "sourceHash": "c2b327129765e37732ce751ec8bdb09dec58421582a7cce7e0dee3c69ab03c6d",
+    "review": "machine"
+  },
+  "c0.scope.project-read": {
+    "text": "Vedere nome e frequenza fotogrammi del progetto",
+    "sourceHash": "e08bae9df6449089e75db82558bf6ac0d9a1fea200c339667371207b4384e441",
+    "review": "machine"
+  },
+  "c0.scope.manifest-read": {
+    "text": "Leggere la panoramica del progetto (manifest)",
+    "sourceHash": "75b556c9ae57a2dc3a998dfb08586885e39c5fde2dea7a9535f6fdb690052f58",
+    "review": "machine"
+  },
+  "c0.scope.assets-read": {
+    "text": "Leggere risorse e versioni",
+    "sourceHash": "1a5f1a1fabd8f61ace212cdf17bfbc728431a0c607f2305ed734423b62d12565",
+    "review": "machine"
+  },
+  "c0.scope.panels-read": {
+    "text": "Leggere i pannelli dello storyboard",
+    "sourceHash": "b0e5bce235afd2c7d8f4f00d85df73ad606f1fc1b2b92ce37b139adcf19bf3c8",
+    "review": "machine"
+  },
+  "c0.scope.transfers-write": {
+    "text": "Inviare file come nuove versioni candidate",
+    "sourceHash": "3bff0942dd8897f08fda7047b3195170487685365f1008d3693d1dd8bcdc49e5",
+    "review": "machine"
+  },
+  "c0.scope.conflicts-read": {
+    "text": "Vedere i conflitti dei file ricevuti",
+    "sourceHash": "0207ba5fc3434ab26d22a8e6b57845b2034a3b4eced399b68f6db4d180ad5186",
+    "review": "machine"
+  },
+  "c0.scope.notes-write": {
+    "text": "Scrivere note",
+    "sourceHash": "ebaa6f23c765aa433b135f454bef68a7e3b17c26aebbf81d5764941f70021a8d",
+    "review": "machine"
+  },
+  "c0.scope.other": {
+    "text": "Altra autorizzazione: {scope}",
+    "sourceHash": "378f60603d87c902070afe3b77ac167d31c8ba39fdd39519ca1df241f0fcce4e",
+    "review": "machine"
   }
 }
