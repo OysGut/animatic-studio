@@ -39,6 +39,7 @@ import { Route as ProsjektProjectIdStoryboardrefRouteImport } from './routes/pro
 import { Route as ProsjektProjectIdStorylabRouteImport } from './routes/prosjekt.$projectId.storylab'
 import { Route as ProsjektProjectIdUtgivelseRouteImport } from './routes/prosjekt.$projectId.utgivelse'
 import { Route as ApiPublicCronAiJobsRouteImport } from './routes/api/public/cron/ai-jobs'
+import { Route as ApiPublicBoordsWebhookConnectionIdRouteImport } from './routes/api/public/boords/webhook.$connectionId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -196,6 +197,12 @@ const ApiPublicCronAiJobsRoute = ApiPublicCronAiJobsRouteImport.update({
   path: '/api/public/cron/ai-jobs',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicBoordsWebhookConnectionIdRoute =
+  ApiPublicBoordsWebhookConnectionIdRouteImport.update({
+    id: '/api/public/boords/webhook/$connectionId',
+    path: '/api/public/boords/webhook/$connectionId',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -228,6 +235,7 @@ export interface FileRoutesByFullPath {
   '/prosjekt/$projectId/utgivelse': typeof ProsjektProjectIdUtgivelseRoute
   '/prosjekt/$projectId/': typeof ProsjektProjectIdIndexRoute
   '/api/public/cron/ai-jobs': typeof ApiPublicCronAiJobsRoute
+  '/api/public/boords/webhook/$connectionId': typeof ApiPublicBoordsWebhookConnectionIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -259,6 +267,7 @@ export interface FileRoutesByTo {
   '/prosjekt/$projectId/utgivelse': typeof ProsjektProjectIdUtgivelseRoute
   '/prosjekt/$projectId': typeof ProsjektProjectIdIndexRoute
   '/api/public/cron/ai-jobs': typeof ApiPublicCronAiJobsRoute
+  '/api/public/boords/webhook/$connectionId': typeof ApiPublicBoordsWebhookConnectionIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -292,6 +301,7 @@ export interface FileRoutesById {
   '/prosjekt/$projectId/utgivelse': typeof ProsjektProjectIdUtgivelseRoute
   '/prosjekt/$projectId/': typeof ProsjektProjectIdIndexRoute
   '/api/public/cron/ai-jobs': typeof ApiPublicCronAiJobsRoute
+  '/api/public/boords/webhook/$connectionId': typeof ApiPublicBoordsWebhookConnectionIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -326,6 +336,7 @@ export interface FileRouteTypes {
     | '/prosjekt/$projectId/utgivelse'
     | '/prosjekt/$projectId/'
     | '/api/public/cron/ai-jobs'
+    | '/api/public/boords/webhook/$connectionId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -357,6 +368,7 @@ export interface FileRouteTypes {
     | '/prosjekt/$projectId/utgivelse'
     | '/prosjekt/$projectId'
     | '/api/public/cron/ai-jobs'
+    | '/api/public/boords/webhook/$connectionId'
   id:
     | '__root__'
     | '/'
@@ -389,6 +401,7 @@ export interface FileRouteTypes {
     | '/prosjekt/$projectId/utgivelse'
     | '/prosjekt/$projectId/'
     | '/api/public/cron/ai-jobs'
+    | '/api/public/boords/webhook/$connectionId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -412,6 +425,7 @@ export interface RootRouteChildren {
   SeTokenRoute: typeof SeTokenRoute
   ApiV1SplatRoute: typeof ApiV1SplatRoute
   ApiPublicCronAiJobsRoute: typeof ApiPublicCronAiJobsRoute
+  ApiPublicBoordsWebhookConnectionIdRoute: typeof ApiPublicBoordsWebhookConnectionIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -626,6 +640,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicCronAiJobsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/boords/webhook/$connectionId': {
+      id: '/api/public/boords/webhook/$connectionId'
+      path: '/api/public/boords/webhook/$connectionId'
+      fullPath: '/api/public/boords/webhook/$connectionId'
+      preLoaderRoute: typeof ApiPublicBoordsWebhookConnectionIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -679,6 +700,8 @@ const rootRouteChildren: RootRouteChildren = {
   SeTokenRoute: SeTokenRoute,
   ApiV1SplatRoute: ApiV1SplatRoute,
   ApiPublicCronAiJobsRoute: ApiPublicCronAiJobsRoute,
+  ApiPublicBoordsWebhookConnectionIdRoute:
+    ApiPublicBoordsWebhookConnectionIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
