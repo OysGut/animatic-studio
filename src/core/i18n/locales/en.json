@@ -77495,5 +77495,143 @@
   },
   "sb10.team": {
     "text": "Team"
+  },
+  "c0.error": {
+    "text": "Something went wrong. Try again."
+  },
+  "c0.account.title": {
+    "text": "Connected apps"
+  },
+  "c0.account.intro": {
+    "text": "Apps you have given access to one project. You can revoke access at any time."
+  },
+  "c0.account.none": {
+    "text": "No apps are connected."
+  },
+  "c0.account.project": {
+    "text": "Project: {name}"
+  },
+  "c0.account.scopes": {
+    "text": "Permissions: {scopes}"
+  },
+  "c0.account.used": {
+    "text": "Last used: {date}"
+  },
+  "c0.account.expires": {
+    "text": "Expires: {date}"
+  },
+  "c0.account.revoke": {
+    "text": "Revoke"
+  },
+  "c0.account.revoke-aria": {
+    "text": "Revoke access for {name}"
+  },
+  "c0.account.revoked": {
+    "text": "Access revoked."
+  },
+  "c0.conflict.title": {
+    "text": "Received files with a conflict"
+  },
+  "c0.conflict.intro": {
+    "text": "The file is based on an older version than the one approved now. Both versions are kept whatever you choose."
+  },
+  "c0.conflict.versions": {
+    "text": "Approved now: v{current} · Incoming: v{incoming} · Made from: v{base}"
+  },
+  "c0.conflict.compare": {
+    "text": "Compare in the library"
+  },
+  "c0.conflict.keep-both": {
+    "text": "Keep both"
+  },
+  "c0.conflict.current": {
+    "text": "Keep current"
+  },
+  "c0.conflict.incoming": {
+    "text": "Use incoming"
+  },
+  "c0.conflict.reject": {
+    "text": "Reject"
+  },
+  "c0.conflict.done": {
+    "text": "Your choice is saved. No versions were deleted."
+  },
+  "c0.consent.page-title": {
+    "text": "Connect an app – From Pen to Glass"
+  },
+  "c0.consent.page-description": {
+    "text": "Give an external app access to one project."
+  },
+  "c0.consent.trail": {
+    "text": "Connect app"
+  },
+  "c0.consent.title": {
+    "text": "Connect {client} to From Pen to Glass"
+  },
+  "c0.consent.title-device": {
+    "text": "Connect an app"
+  },
+  "c0.consent.signed-in": {
+    "text": "Signed in as {email}"
+  },
+  "c0.consent.code-label": {
+    "text": "The code shown in the app"
+  },
+  "c0.consent.continue": {
+    "text": "Continue"
+  },
+  "c0.consent.bad-code": {
+    "text": "The code is invalid or has expired."
+  },
+  "c0.consent.explain": {
+    "text": "{client} can use the project you choose, as you, with the permissions below."
+  },
+  "c0.consent.redirect": {
+    "text": "Sends the answer to {uri}"
+  },
+  "c0.consent.project": {
+    "text": "Project"
+  },
+  "c0.consent.pick-project": {
+    "text": "Choose a project"
+  },
+  "c0.consent.boundary": {
+    "text": "This does not bypass your role in the project. Received files always become new versions that you approve yourself."
+  },
+  "c0.consent.approve": {
+    "text": "Approve"
+  },
+  "c0.consent.deny": {
+    "text": "Cancel connection"
+  },
+  "c0.consent.device-done": {
+    "text": "Approved. You can return to the app."
+  },
+  "c0.consent.denied": {
+    "text": "The connection was declined."
+  },
+  "c0.scope.project-read": {
+    "text": "See the project name and frame rate"
+  },
+  "c0.scope.manifest-read": {
+    "text": "Read the project overview (manifest)"
+  },
+  "c0.scope.assets-read": {
+    "text": "Read assets and versions"
+  },
+  "c0.scope.panels-read": {
+    "text": "Read storyboard panels"
+  },
+  "c0.scope.transfers-write": {
+    "text": "Send files as new candidate versions"
+  },
+  "c0.scope.conflicts-read": {
+    "text": "See conflicts for received files"
+  },
+  "c0.scope.notes-write": {
+    "text": "Write notes"
+  },
+  "c0.scope.other": {
+    "text": "Other permission: {scope}"
   }
 }

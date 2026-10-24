@@ -24959,6 +24959,123 @@
     "build.version": {
       "text": "Versjon {sha} · bygget {time}"
     },
+    "c0.account.expires": {
+      "text": "Utløper: {date}"
+    },
+    "c0.account.intro": {
+      "text": "Programmer du har gitt tilgang til ett prosjekt. Tilgangen kan trekkes tilbake når som helst."
+    },
+    "c0.account.none": {
+      "text": "Ingen programmer er koblet til."
+    },
+    "c0.account.project": {
+      "text": "Prosjekt: {name}"
+    },
+    "c0.account.revoke": {
+      "text": "Trekk tilbake"
+    },
+    "c0.account.revoke-aria": {
+      "text": "Trekk tilbake tilgangen for {name}"
+    },
+    "c0.account.revoked": {
+      "text": "Tilgangen er trukket tilbake."
+    },
+    "c0.account.scopes": {
+      "text": "Tilganger: {scopes}"
+    },
+    "c0.account.title": {
+      "text": "Tilkoblede programmer"
+    },
+    "c0.account.used": {
+      "text": "Sist brukt: {date}"
+    },
+    "c0.conflict.compare": {
+      "text": "Sammenlign i biblioteket"
+    },
+    "c0.conflict.current": {
+      "text": "Behold gjeldende"
+    },
+    "c0.conflict.done": {
+      "text": "Valget er lagret. Ingen versjoner er slettet."
+    },
+    "c0.conflict.incoming": {
+      "text": "Bruk innkommende"
+    },
+    "c0.conflict.intro": {
+      "text": "Filen bygger på en eldre versjon enn den som er godkjent nå. Begge versjonene beholdes uansett hva du velger."
+    },
+    "c0.conflict.keep-both": {
+      "text": "Behold begge"
+    },
+    "c0.conflict.reject": {
+      "text": "Avvis"
+    },
+    "c0.conflict.title": {
+      "text": "Mottatte filer med konflikt"
+    },
+    "c0.conflict.versions": {
+      "text": "Godkjent nå: v{current} · Innkommende: v{incoming} · Laget fra: v{base}"
+    },
+    "c0.consent.approve": {
+      "text": "Godkjenn"
+    },
+    "c0.consent.bad-code": {
+      "text": "Koden er ugyldig eller utløpt."
+    },
+    "c0.consent.boundary": {
+      "text": "Dette går ikke forbi rollen din i prosjektet. Mottatte filer blir alltid nye versjoner som du selv godkjenner."
+    },
+    "c0.consent.code-label": {
+      "text": "Koden som vises i programmet"
+    },
+    "c0.consent.continue": {
+      "text": "Fortsett"
+    },
+    "c0.consent.denied": {
+      "text": "Tilkoblingen ble avvist."
+    },
+    "c0.consent.deny": {
+      "text": "Avbryt tilkoblingen"
+    },
+    "c0.consent.device-done": {
+      "text": "Godkjent. Du kan gå tilbake til programmet."
+    },
+    "c0.consent.explain": {
+      "text": "{client} får bruke prosjektet du velger, som deg, med tilgangene under."
+    },
+    "c0.consent.page-description": {
+      "text": "Gi et eksternt program tilgang til ett prosjekt."
+    },
+    "c0.consent.page-title": {
+      "text": "Koble til et program – From Pen to Glass"
+    },
+    "c0.consent.pick-project": {
+      "text": "Velg et prosjekt"
+    },
+    "c0.consent.project": {
+      "text": "Prosjekt"
+    },
+    "c0.consent.redirect": {
+      "text": "Sender svaret til {uri}"
+    },
+    "c0.consent.signed-in": {
+      "text": "Innlogget som {email}"
+    },
+    "c0.consent.title": {
+      "text": "Koble {client} til From Pen to Glass"
+    },
+    "c0.consent.title-device": {
+      "text": "Koble til et program"
+    },
+    "c0.consent.trail": {
+      "text": "Koble til program"
+    },
+    "c0.error": {
+      "text": "Noe gikk galt. Prøv igjen."
+    },
+    "c0.scope.other": {
+      "text": "Annen tilgang: {scope}"
+    },
     "components-ui-dialog.dialog-content.span.4e9257a0bdea": {
       "text": "Lukk"
     },
@@ -60040,6 +60157,123 @@
     },
     "build.version": {
       "text": "Version {sha} · built {time}"
+    },
+    "c0.account.expires": {
+      "text": "Expires: {date}"
+    },
+    "c0.account.intro": {
+      "text": "Apps you have given access to one project. You can revoke access at any time."
+    },
+    "c0.account.none": {
+      "text": "No apps are connected."
+    },
+    "c0.account.project": {
+      "text": "Project: {name}"
+    },
+    "c0.account.revoke": {
+      "text": "Revoke"
+    },
+    "c0.account.revoke-aria": {
+      "text": "Revoke access for {name}"
+    },
+    "c0.account.revoked": {
+      "text": "Access revoked."
+    },
+    "c0.account.scopes": {
+      "text": "Permissions: {scopes}"
+    },
+    "c0.account.title": {
+      "text": "Connected apps"
+    },
+    "c0.account.used": {
+      "text": "Last used: {date}"
+    },
+    "c0.conflict.compare": {
+      "text": "Compare in the library"
+    },
+    "c0.conflict.current": {
+      "text": "Keep current"
+    },
+    "c0.conflict.done": {
+      "text": "Your choice is saved. No versions were deleted."
+    },
+    "c0.conflict.incoming": {
+      "text": "Use incoming"
+    },
+    "c0.conflict.intro": {
+      "text": "The file is based on an older version than the one approved now. Both versions are kept whatever you choose."
+    },
+    "c0.conflict.keep-both": {
+      "text": "Keep both"
+    },
+    "c0.conflict.reject": {
+      "text": "Reject"
+    },
+    "c0.conflict.title": {
+      "text": "Received files with a conflict"
+    },
+    "c0.conflict.versions": {
+      "text": "Approved now: v{current} · Incoming: v{incoming} · Made from: v{base}"
+    },
+    "c0.consent.approve": {
+      "text": "Approve"
+    },
+    "c0.consent.bad-code": {
+      "text": "The code is invalid or has expired."
+    },
+    "c0.consent.boundary": {
+      "text": "This does not bypass your role in the project. Received files always become new versions that you approve yourself."
+    },
+    "c0.consent.code-label": {
+      "text": "The code shown in the app"
+    },
+    "c0.consent.continue": {
+      "text": "Continue"
+    },
+    "c0.consent.denied": {
+      "text": "The connection was declined."
+    },
+    "c0.consent.deny": {
+      "text": "Cancel connection"
+    },
+    "c0.consent.device-done": {
+      "text": "Approved. You can return to the app."
+    },
+    "c0.consent.explain": {
+      "text": "{client} can use the project you choose, as you, with the permissions below."
+    },
+    "c0.consent.page-description": {
+      "text": "Give an external app access to one project."
+    },
+    "c0.consent.page-title": {
+      "text": "Connect an app – From Pen to Glass"
+    },
+    "c0.consent.pick-project": {
+      "text": "Choose a project"
+    },
+    "c0.consent.project": {
+      "text": "Project"
+    },
+    "c0.consent.redirect": {
+      "text": "Sends the answer to {uri}"
+    },
+    "c0.consent.signed-in": {
+      "text": "Signed in as {email}"
+    },
+    "c0.consent.title": {
+      "text": "Connect {client} to From Pen to Glass"
+    },
+    "c0.consent.title-device": {
+      "text": "Connect an app"
+    },
+    "c0.consent.trail": {
+      "text": "Connect app"
+    },
+    "c0.error": {
+      "text": "Something went wrong. Try again."
+    },
+    "c0.scope.other": {
+      "text": "Other permission: {scope}"
     },
     "components-ui-dialog.dialog-content.span.4e9257a0bdea": {
       "text": "Close"
