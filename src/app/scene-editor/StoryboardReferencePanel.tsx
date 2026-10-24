@@ -116,17 +116,17 @@ export function StoryboardReferencePanel(props: RefProps) {
   const highlighted = props.selectedPanelId ?? null;
   const listRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
-    const id = playback?.playing ? activePanelId : highlighted;
+    const id = playback?.playing ? effectiveActive : highlighted;
     if (!id) return;
     listRef.current?.querySelector(`[data-ref-panel="${id}"]`)?.scrollIntoView({ block: "nearest" });
-  }, [activePanelId, highlighted, playback?.playing]);
+  }, [effectiveActive, highlighted, playback?.playing]);
 
   const [largeOpen, setLargeOpen] = useState(false);
   const [setupOpen, setSetupOpen] = useState(false);
   const [blocked, setBlocked] = useState<string | null>(null);
   const [popupPref] = useUiPref<PopupPref | null>("sceneEditor.storyboardRef.popup", null, validPopupPref);
 
-  const editTarget = highlighted ?? activePanelId ?? panels[0]?.panel.id ?? null;
+  const editTarget = highlighted ?? effectiveActive ?? panels[0]?.panel.id ?? null;
   const pin = () => {
     const url = `${window.location.origin}/prosjekt/${projectId}/storyboardref?scene=${occurrenceId}&kilde=${sourceWindowId()}`;
     const opened = window.open(url, `animatic-storyboardref-${projectId}-${sourceWindowId()}`, popupFeatures(popupPref, { w: 480, h: 720 }));
@@ -178,7 +178,7 @@ export function StoryboardReferencePanel(props: RefProps) {
           <ul className="flex flex-col gap-2">
             {panels.map((info) => {
               const shot = sceneShots.find((s) => s.panel.id === info.panel.id);
-              const isActive = info.panel.id === activePanelId;
+              const isActive = info.panel.id === effectiveActive;
               const isSelected = info.panel.id === highlighted;
               const timing = panelTiming(state, clips, info.panel);
               return (
@@ -199,7 +199,7 @@ export function StoryboardReferencePanel(props: RefProps) {
                 >
                   <div className="flex items-center gap-2">
                     <span className="font-mono text-[11px] text-text-tertiary">{info.number}</span>
-                    <span className="min-w-0 flex-1 truncate text-[13px] font-medium text-text-primary">{info.panel.name || tk("sb2.untitled-panel")}</span>
+                    <span className="min-w-0 flex-1 truncate text-[13px] font-medium text-text-primary">{info.panel.name || tk("sb5.untitled-panel")}</span>
                     <span className={"rounded px-1 font-mono text-[11px] " + STATUS_CLASS[info.status as ProductionStatusValue]} data-testid="sb5-panel-status">
                       {STATUS_KEY[info.status as ProductionStatusValue] ?? info.status}
                     </span>
