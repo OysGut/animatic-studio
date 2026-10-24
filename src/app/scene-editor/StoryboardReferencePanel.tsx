@@ -108,6 +108,10 @@ export function StoryboardReferencePanel(props: RefProps) {
     update();
     return playback.store.subscribe(update);
   }, [playback, state, clips, occurrenceId]);
+  // Popup-vinduet har ingen egen avspilling: det følger hovedvinduets delte posisjon (SB-4-bussen).
+  const shared = useActiveSceneInfo(projectId, props.sourceWindow);
+  const sharedPanelId = !playback && shared.scene?.occurrenceId === occurrenceId ? shared.scene.panelId ?? null : null;
+  const effectiveActive = playback ? activePanelId : sharedPanelId;
 
   const highlighted = props.selectedPanelId ?? null;
   const listRef = useRef<HTMLDivElement | null>(null);
