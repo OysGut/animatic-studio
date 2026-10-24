@@ -9,6 +9,8 @@
  */
 import { spawn, spawnSync } from "node:child_process";
 import { existsSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { resolve } from "node:path";
 
 const PORT = Number(process.env.SSR_PORT ?? 8799);
 const PATHS = ["/", "/nb", "/konto", "/koble", "/prosjekt/00000000-0000-7000-8000-000000000001", "/prosjekt/00000000-0000-7000-8000-000000000001/storyboard"];
@@ -23,8 +25,11 @@ if (!process.env.SSR_SKIP_BUILD) {
 if (!existsSync(CONFIG)) { console.error(`FEIL: fant ikke ${CONFIG}`); process.exit(1); }
 
 const log = [];
-const server = spawn("npx", ["--yes", "wrangler@4", "dev", "--config", CONFIG, "--port", String(PORT), "--ip", "127.0.0.1", "--log-level", "error"], {
-  stdio: ["ignore", "pipe", "pipe"], env: { ...process.env, CI: "1", WRANGLER_SEND_METRICS: "false" }, detached: true,
+// Lokal wrangler hvis den finnes; ellers en midlertidig utenfor prosjektet (ingen pakkeendring).
+const local = resolve("node_modules/.bin/wrangler");
+const [cmd, pre, cwd] = existsSync(local) ? [local, [], process.cwd()] : ["npx", ["--yes", "wrangler@4"], tmpdir()];
+const server = spawn(cmd, [...pre, "dev", "--config", resolve(CONFIG), "--port", String(PORT), "--ip", "127.0.0.1", "--log-level", "error"], {
+  cwd, stdio: ["ignore", "pipe", "pipe"], env: { ...process.env, CI: "1", WRANGLER_SEND_METRICS: "false" }, detached: true,
 });
 server.stdout.on("data", (d) => log.push(String(d)));
 server.stderr.on("data", (d) => log.push(String(d)));
