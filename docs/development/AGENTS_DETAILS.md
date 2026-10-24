@@ -18,3 +18,5 @@ short-lived signed URL.
 `check.mjs` rejects new `L()`/`localized()`; `authored.json` holds plural/select/date messages; `tm()` only for
 old stored server messages. No remount on language switch; server error codes are additive. Builds stop unless
 nb/en are complete; the script PDF stops on glyphs Courier lacks.
+
+**57. Layer refit (full rule).** When a layer's shown image changes, including an UpdateSceneDraft save, applyCommand refits it from the final state in the same change (pure core/composition/refit: insert size for placeholders, kept centre and longest side for new proportions); the inverse is the inverse-only WithLayerRefit, checked server-side as its inner command, so every image path stays undistorted and undoes in one step.

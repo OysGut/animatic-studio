@@ -69,7 +69,7 @@ Kortversjonen († = detaljer i `docs/development/AGENTS_DETAILS.md`):
 54. Server-applied background results reach the local undo list only through adoptServerHistory into a workspace stack opted in with serverHistory=true, deduplicated per command and inverted from change_log, so undo stays an ordinary runCommand without provider calls.
 55. Google Fonts licenses come from a generated table of google/fonts METADATA.pb (scripts/fonts/build-font-licenses.mjs), so the app never guesses from name lists or fetches licenses at runtime.
 56. The scene editor's current frame lives in a small store (usePlaybackStore); only parts that show the frame subscribe via useFrame/FrameValue, and callbacks read playback.frame from the store, so playback ticks never re-render the workspace; verifisering4-ui caps renders per frame.
-57. When a layer's shown image changes, including an UpdateSceneDraft save, applyCommand refits it from the final state in the same change (pure core/composition/refit: insert size for placeholders, kept centre and longest side for new proportions); the inverse is the inverse-only WithLayerRefit, checked server-side as its inner command, so every image path stays undistorted and undoes in one step.
+57. A changed layer image refits in the same command (pure core/composition/refit; inverse-only WithLayerRefit), so images never distort and undo is one step.†
 58. Every image thumbnail or small preview renders through src/app/shared/Thumbnail (object-contain over a checker background); thumbnail-architecture.test.ts bans raw <img>, object-cover/fill and bg-cover outside a justified exception list, so thumbnails never crop or stretch.
 59. Image-description text versions live on the asset (SetAssetBriefVersions, pure core/assets/brief-versions); edits append and never overwrite, and generated image versions store only briefVersionId, never the server prompt, so text is never lost and results stay traceable.
 60. New results are revealed via src/app/shared/reveal (useRevealNew scrolls and flashes new or linked versions); version strips wrap instead of hiding items past an edge, so results never land off-screen.
@@ -84,4 +84,5 @@ Kortversjonen († = detaljer i `docs/development/AGENTS_DETAILS.md`):
 69. Google sign-in: docs/agents/AUTH.md.
 70. G-2: project_snapshot loads before history; foreign commands apply in project_seq order, fetching gaps. Full reload is logged last resort; RLS uses my_project_ids(). SB-4 uses scene-local time and store-only ticks (N8).
 71. G-3 global text, settings and time zones: docs/agents/G3_GLOBAL.md (read before changing them).
+72. Creative Connectors (C-0): docs/agents/CONNECTORS.md (read before changing connectors, /api/v1 or the SDK).
 
