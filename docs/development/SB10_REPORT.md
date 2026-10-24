@@ -78,3 +78,11 @@ DB-testen som er skrevet dekker service-only lookup, skjulte hashkolonner, ikke-
 - `TODO.md`
 
 Arbeidsmetoden følger **animatic-testing** og **animatic-arkitektur-og-data**; DB-kjøring er uttrykkelig overlatt til Claude i dette oppdraget.
+
+## Retting av 0108 før Cloud-kjøring (24.10)
+- `tests/db/supabase-emulation.sql` har nå et minimalt storage-skjema (`storage.buckets`, `storage.objects` med RLS og `storage.foldername`). DB-testene stoppet før med «schema "storage" does not exist». Lagringsreglene i 0002 og 0004 opprettes nå også lokalt (kontrollert i testen), og de restriktive 0108-reglene prøves for ekte: et medlem kan ikke skrive over en ferdig delingsfil, men kan fortsatt laste opp andre steder.
+- Taket på `storyboard_shares.manifest` er senket fra 150 000 000 til 2 000 000 byte (500 paneler), med både `octet_length` og `pg_column_size` (G-5). `replies` fikk også `pg_column_size`.
+- `begin;`/`commit;` er fjernet.
+- `storyboard_review_comment` tar nå `p_ip` (SHA-256 av gjestens IP, beregnet i serverfunksjonen) og teller både per deling (600/time) og per IP (60/time). En gjest som når grensen, stopper ikke andre gjester. Kall uten gyldig IP-hash avvises.
+- Bare lesing for innloggede: 0108 (og 0109) trekker eksplisitt tilbake skriverettigheter fra `authenticated` og alt fra `anon` på de nye tabellene, slik 0058-testen krever.
+- DB-tester lokalt (Postgres 17): **233 bestått, 0 feilet**.
