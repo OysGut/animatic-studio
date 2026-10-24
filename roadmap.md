@@ -7,7 +7,8 @@
 - [x] Paneloverganger i storyboardfilm/felles kompositor og eksportserialisering
 - [ ] Overgangsblanding i gallerikort; felles scenegrunnriss med egen paneltidslinje
 - [x] Kjerne/angre/grenser; visuelt nb/en desktop/mobil 10/0; lokal DB 231/0
-- [ ] Endelig full Vitest-resultat; separat tsc bekreftes av Claude
+- [x] Endelig full Vitest 3020/0/10; i18n grønne
+- [ ] Separat tsc bekreftes av Claude
 - [ ] Cloud 0107 venter på Claude; ekte import i klippeprogrammer ikke verifisert
 - [x] Ingen publisering; rapport med begrensninger og endrede filer
 

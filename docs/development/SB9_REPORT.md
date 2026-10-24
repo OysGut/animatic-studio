@@ -13,7 +13,7 @@
 - Kjerne 14/0, eksport/backup 2/0, eksisterende PTG6-regresjoner 10/0. Forventningene til eksisterende animasjonseksport er ikke svekket.
 - Full lokal DB-suite: 231 bestått, 0 feilet. Migrasjonene ble prøvd kun i en separat, slettbar lokal Postgres-database. Ingen Cloud-migrasjon kjørt.
 - Visuell fixture/mock-suite før miljøavbrudd: nb/en desktop/mobil, 10/0. Oppretting, kamera, overgang og retning ble valgt i brukerflaten og lest tilbake. Skjermbilder kontrollert; ingen kjørefeil eller vannrett overflyt.
-- Full Vitest før siste EDL-endring: 3019/0/10. Etter miljøavbrudd ble manglende språkdata gjenopprettet; fullkjøring på endelig kode føres nedenfor.
+- Full Vitest før siste EDL-endring: 3019/0/10. Etter miljøavbrudd ble manglende språkdata gjenopprettet; **Full Vitest på endelig kode: 3020 bestått, 0 feilet, 10 hoppet over (377 testfiler).**
 - i18n check og validate grønne. 29 nøkler på alle registrerte språk. fr/es/ru/ja/pt-BR/de/it/ko merket maskinoversatt for gjennomlesing.
 - check_kb: OK før miljøavbrudd; PyYAML kun installert under /tmp.
 - Previewkontroll build OK. Separat manuell tsc er ikke kjørt; Lovable-miljøet tillater ikke dette. Claude må bekrefte separat typekontroll.
