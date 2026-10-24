@@ -22,7 +22,7 @@ create table public.storyboard_feedback (
  text text not null default '' check(length(text)<=4000 and text !~ '<[^>]*>'),decision text not null default 'none' check(decision in('none','approved','changes')),
  pin_x double precision,pin_y double precision,created_at timestamptz not null default now(),revision integer not null default 1,
  resolved boolean not null default false,replies jsonb not null default '[]' check(jsonb_typeof(replies)='array' and octet_length(replies::text)<=64000),task_id uuid,
- check((pin_x is null and pin_y is null) or(pin_x between 0 and 1 and pin_y between 0 and 1))
+ check((pin_x is null and pin_y is null) or(pin_x is not null and pin_y is not null and pin_x between 0 and 1 and pin_y between 0 and 1))
 );
 grant select on public.storyboard_feedback to authenticated;
 grant all on public.storyboard_feedback to service_role;

@@ -30,10 +30,13 @@ export function selectReview(s:ProjectState,productionId:string,occurrenceIds:re
   const timeline=storyboardTimeline(state,clips);if(!timeline.length||timeline.length>REVIEW_MAX_PANELS)throw new Error('review panel limit');
   const adapted=storyboardFilm(state,clips,[]);
   const panels=timeline.map((sh,i)=>{const snapshot=panelSnapshotContentOf(state,sh.panel.id);if(!snapshot)throw new Error('review snapshot');const details=panelDetails(sh.panel);return {key:`p${i+1}`,panelId:sh.panel.id,revision:sh.panel.revision,label:[details.sceneNumber,details.number,sh.panel.name].filter(Boolean).join(' · '),durationFrames:sh.durationFrames,startFrame:adapted.clips[i]?.startFrame??sh.startFrame,snapshot};});
-  return {panels,state:adapted.state,clips:adapted.clips};
+  return {panels,state,clips:adapted.clips};
 }
 export function compareRevisions(a:readonly PanelSnapshotContent[],b:readonly PanelSnapshotContent[]) {
   const left=new Map(a.map(p=>[p.composition.id,p])),right=new Map(b.map(p=>[p.composition.id,p]));
   const semantic=(p:PanelSnapshotContent)=>JSON.stringify({composition:{...p.composition,revision:0},layers:p.layers.map(l=>({...l,revision:0})),blockIds:p.blockIds});
   return [...new Set([...left.keys(),...right.keys()])].map(id=>({id,before:left.get(id),after:right.get(id),kind:!left.has(id)?'new':!right.has(id)?'removed':semantic(left.get(id) as PanelSnapshotContent)===semantic(right.get(id) as PanelSnapshotContent)?'same':'changed'}));
 }
+
+export function decisionLabelKey(value:string){return value==='approved'?'sb10.approved':value==='changes'?'sb10.changes':'sb10.none';}
+export function comparisonLabelKey(value:string){return value==='new'?'sb10.new':value==='removed'?'sb10.removed':value==='changed'?'sb10.changed':'sb10.same';}
