@@ -9,7 +9,7 @@ import { SceneSelect, mainOccurrenceOfScene } from "@/app/shell/SceneSelect";
 import { SceneMark } from "@/app/shell/SceneMark";
 import { AlertTriangle, CheckCircle2, Download, Info } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { filmMediaPaths, filmRange, shiftAudioItems, shiftCues, formatHeading, formatTimecode, framesToSeconds, layerVersion, layerVersions, layersOf, orderedOccurrences, LANGUAGE_LABEL, MAIN_LANGUAGE, type SubtitleCue, type AudioKind, type FilmAudioItem, type ExportSettings, type FilmClip, type ProjectState, qualityProfileSnapshot, locale, languageWord, toSrt, toVtt } from "@/core";
+import { filmMediaPaths, filmRange, shiftAudioItems, shiftCues, formatHeading, formatTimecode, framesToSeconds, layerVersion, layerVersions, layersOf, orderedOccurrences, LANGUAGE_LABEL, MAIN_LANGUAGE, exportImageSource, storyboardAudioItems, type ExportImageSource, type SubtitleCue, type AudioKind, type FilmAudioItem, type ExportSettings, type FilmClip, type ProjectState, qualityProfileSnapshot, locale, languageWord, toSrt, toVtt } from "@/core";
 import { useTextFonts } from "@/engine/typography/fonts";
 import type { TextSpec } from "@/core";
 import { ExportError, canExportVideo, exportAnimatic, loadImages } from "@/engine/export/animatic";
@@ -128,6 +128,8 @@ export function ExportAnimaticDialog({
   // R4: ProRes-profilen for filmeksport (422 HQ som standard; 422, LT og Proxy valgfritt)
   const [proresKind, setProresKind] = useState<ProResKind>("hq");
   const [scope, setScope] = useState<Scope>("film");
+  // SB-4: bildet i eksporten kan komme fra animasjonen (som før), importert film eller storyboardpanelene.
+  const [imageSource, setImageSource] = useState<ExportImageSource>("animation");
   const [alphaOpen, setAlphaOpen] = useState(false);
   const alphaClip = clips.find(c => c.occurrenceId === selectedId);
   const alphaComposition = alphaClip?.compositionId ? state.compositions[alphaClip.compositionId] : undefined;
@@ -201,14 +203,23 @@ export function ExportAnimaticDialog({
   }, [quality.profile, open]);
 
   const fps = state.project.fps;
+  // SB-4: bildekilden velges her; «animasjon» er dagens oppførsel uendret. Adapteren gir en visning
+  // (state + klipp) – prosjektdata endres aldri. Lyden er alltid den samme filmlyden, flyttet i tid.
+  const adapted = useMemo(() => exportImageSource(state, clips, imageSource), [state, clips, imageSource]);
+  const exState = adapted.state;
+  const exClips = adapted.clips;
+  const exAudioItems = useMemo(
+    () => (imageSource === "storyboard" ? storyboardAudioItems(clips, adapted.shots, allAudioItems, fps) : allAudioItems),
+    [imageSource, clips, adapted, allAudioItems, fps],
+  );
   // Alle utvalg unntatt hele filmen går gjennom filmSelection: lyd og undertekster følger scenen sin, så lyd
   // fra scenen før ikke lekker inn i overlappen (KI-85, som «Valgte scener» etter KI-172)
   const exportClips = useMemo(
     () =>
       includeCredits
-        ? clips
-        : clips.filter((c) => state.occurrences[c.occurrenceId] !== undefined && occurrenceKind(state.occurrences[c.occurrenceId]!) !== "credits"),
-    [clips, includeCredits, state],
+        ? exClips
+        : exClips.filter((c) => exState.occurrences[c.occurrenceId] !== undefined && occurrenceKind(exState.occurrences[c.occurrenceId]!) !== "credits"),
+    [exClips, includeCredits, exState],
   );
   const partSel = useMemo(
     () => exportSelection(exportClips, scope, { selectedId, fromId, toId, picked }),
