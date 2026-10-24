@@ -3,9 +3,9 @@ import type { FilmClip } from "@/core/assembly/film";
 import { exportImageSource, type ExportImageSource } from "@/core/storyboard/playback";
 import { printLayout, printTable, type PanelPrintRow, type PrintOptions } from "@/core/storyboard/print";
 import { layerVersions, renderFrame } from "@/core/composition/render";
-import { notoScriptsNeeded } from "@/core/typography/pdf-scripts";
+import { notoScriptsNeeded, scriptRuns, RTL_SCRIPTS } from "@/core/typography/pdf-scripts";
 import { isRtlText } from "@/core/rtl";
-import { loadNotoFonts, registerNotoFonts, drawRuns, runsWidth } from "./pdf-fonts";
+import { loadNotoFonts, registerNotoFonts, drawRuns, runsWidth, NOTO_FONT_FILES } from "./pdf-fonts";
 import { drawFrame } from "../compositor/canvas";
 import { drawFilmFrame } from "../compositor/film";
 import { FilmVideoFrames } from "./film-video";
@@ -92,7 +92,14 @@ export async function storyboardPdf(input: PrintExportInput): Promise<Blob> {
   const layout = printLayout(input.rows.length, input.options);
   const doc = new jsPDF({ unit: "mm", format: [layout.width, layout.height], orientation: input.options.landscape ? "landscape" : "portrait", compress: true });
   const texts = input.rows.flatMap(row => input.options.fields.map(k => `${input.labels[k]}: ${row[k]}`));
-  const fonts = registerNotoFonts(doc, await loadNotoFonts(notoScriptsNeeded([input.state.project.name, input.version, input.date, ...texts], input.language)), "StoryboardNoto");
+  const scripts = notoScriptsNeeded([input.state.project.name, input.version, input.date, ...texts], input.language);
+  const fonts = registerNotoFonts(doc, await loadNotoFonts(scripts), "StoryboardNoto");
+  // Browser shaping is required for complex Indic/Thai clusters; embed Noto in the PDF as well.
+  const complex = scripts.filter(s => s === "devanagari" || s === "thai");
+  for (const script of complex) {
+    const face = new FontFace(`Storyboard-${script}`, `url(${NOTO_FONT_FILES[script]})`);
+    document.fonts.add(await face.load());
+  }
   const renderer = await printImageRenderer(input);
   const overflow: { number: string; lines: string[] }[] = [];
   doc.setProperties({ title: input.state.project.name, subject: t("sb6.print"), creator: "From Pen to Glass" });
@@ -112,7 +119,25 @@ export async function storyboardPdf(input: PrintExportInput): Promise<Blob> {
     return result;
   }
   function textLine(text: string, x: number, y: number, width: number) {
-    drawRuns(doc, fonts, text, isRtlText(text) ? x + width - runsWidth(doc, fonts, text, input.language) : x, y, input.language);
+    const runs = scriptRuns(text, input.language), rtl = isRtlText(text);
+    if (runs.some(r => r.script === "devanagari" || r.script === "thai")) {
+      const canvas = document.createElement("canvas"); canvas.width = Math.ceil(width * 12); canvas.height = 70;
+      const context = canvas.getContext("2d"); if (!context) throw new Error(t("ptg1.export-failed"));
+      const pt = doc.getFontSize();
+      context.font = `${pt * 12 * 25.4 / 72}px ${complex.map(s => `"Storyboard-${s}"`).join(",")}, sans-serif`;
+      context.textBaseline = "alphabetic"; context.direction = rtl ? "rtl" : "ltr";
+      context.fillText(text, rtl ? canvas.width : 0, 48);
+      doc.addImage(canvas.toDataURL("image/png"), "PNG", x, y - 4, width, 70 / 12);
+      canvas.width = 0; canvas.height = 0;
+    } else if (rtl) {
+      let cursor = x + width;
+      for (const run of runs) {
+        const font = fonts[run.script] ?? fonts.latin; if (font) doc.setFont(font);
+        const w = doc.getTextWidth(run.text); cursor -= w;
+        if (RTL_SCRIPTS.has(run.script)) doc.text(run.text, cursor, y, { isInputVisual: false, isOutputVisual: true } as never);
+        else doc.text(run.text, cursor, y);
+      }
+    } else drawRuns(doc, fonts, text, x, y, input.language);
   }
   try {
     await exportChunks(layout.pages, input.signal, async (cells, pi) => {
