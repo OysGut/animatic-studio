@@ -47,7 +47,7 @@ export interface ConnectorStore {
   /** C-5: lagrer en Storyboard Pro-retur som kandidater (idempotent på manifest-hash per prosjekt). */
   saveSbproReturn?(r: { projectId: string; productionId: string; sessionId: string; userId: string; hash: string; panelCount: number; candidates: readonly SbproCandidate[] }): Promise<{ returnId: string; replayed: boolean; uploads: { candidateId: string; key: string; sha256: string; byteSize: number }[] }>;
   /** C-5: panelbilde til en bildekandidat som venter på fil. */
-  putSbproImage?(projectId: string, returnId: string, candidateId: string, bytes: Uint8Array): Promise<"ok" | "not_found" | "done">;
+  putSbproImage?(projectId: string, returnId: string, candidateId: string, bytes: Uint8Array): Promise<"ok" | "not_found" | "done" | "sha">;
 }
 export interface ApiDeps { store: ConnectorStore; now: () => number; random: (n: number) => Uint8Array; ip: string }
 
@@ -191,6 +191,7 @@ export async function handleApiV1(req: Request, d: ApiDeps): Promise<Response> {
           if (!png) return apiError(415, "rejected_type");
           const res = await d.store.putSbproImage(pid, rest[2]!, rest[4]!, bytes);
           if (res === "not_found") return apiError(404, "not_found");
+          if (res === "sha") return apiError(422, "rejected_checksum");
           if (res === "done") return json({ ok: true }, 200, { "Idempotent-Replayed": "true" });
           return json({ ok: true });
         }
