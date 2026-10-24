@@ -30,6 +30,7 @@ import {
 } from "../typography/validate";
 import { t as tk, tLocalized } from "@/core/i18n/keyed";
 import { panelNoteError, arrowSpecError, cameraMarkError } from "../storyboard";
+import { sketchValid } from "../storyboard/sketch";
 
 export const LAYER_KINDS: readonly LayerKind[] = [
   "background",
@@ -46,6 +47,7 @@ export const LAYER_KINDS: readonly LayerKind[] = [
   "note",
   "arrow",
   "camera_mark",
+  "sketch",
 ];
 
 export const LAYER_KIND_LABEL: Record<LayerKind, string> = tLocalized({ background: "core-composition-fields.layer-kind-label.background.6e4860fc7e26", midground: "core-composition-fields.layer-kind-label.midground.31b050e96f64", foreground: "core-composition-fields.layer-kind-label.foreground.6f7287418771", character: "core-composition-fields.layer-kind-label.character.4ad6ccb07769", object: "core-composition-fields.layer-kind-label.object.0cc9d5535e35", effect: "core-composition-fields.layer-kind-label.effect.e9a75c00a85f", other: "core-composition-fields.layer-kind-label.other.03f5066b9af7", group: "core-composition-fields.layer-kind-label.group.0cdb01acb892", text: "core-composition-fields.layer-kind-label.text.07732bbe6214", page: "core-composition-fields.layer-kind-label.page.1fb83e5a1234", note: "sb1.layer-note", arrow: "sb1.layer-arrow", camera_mark: "sb1.layer-camera-mark" });
@@ -65,6 +67,7 @@ export const DEFAULT_PARALLAX: Record<LayerKind, number> = {
   note: 1,
   arrow: 1,
   camera_mark: 1,
+  sketch: 1,
 };
 
 /** Egenskapene i lagets plassering som kan animeres. */
@@ -423,7 +426,9 @@ export function normalizeLayerFields(f: LayerFields): Result<LayerFields> {
     return { ok: false, error: tk("core-composition-fields.error.error.b016677c4eb9") };
   // Storyboardlag (SB-1): lapp, pil og kameramerke bærer innholdet sitt i egen spesifikasjon.
   // At lagtypen bare er tillatt i storyboardkomposisjoner, kontrolleres i kommandoen og i databasen.
-  const sbKind = f.kind === "note" || f.kind === "arrow" || f.kind === "camera_mark";
+  const sbKind = f.kind === "note" || f.kind === "arrow" || f.kind === "camera_mark" || f.kind === "sketch";
+  if ((f.kind === "sketch" && !sketchValid(f.sketch)) || (f.kind !== "sketch" && f.sketch))
+    return { ok: false, error: tk("sb1.error.invalid-layer") };
   if (sbKind) {
     if (f.assetId !== null || fill !== null || (f.swaps ?? []).length > 0)
       return { ok: false, error: tk("sb1.error.invalid-layer") };
@@ -432,7 +437,7 @@ export function normalizeLayerFields(f: LayerFields): Result<LayerFields> {
         ? panelNoteError(f.note as never)
         : f.kind === "arrow"
           ? arrowSpecError(f.arrow as never)
-          : cameraMarkError(f.cameraMark as never);
+          : f.kind === "sketch" ? null : cameraMarkError(f.cameraMark as never);
     if (
       specError ||
       (f.kind !== "note" && f.note) ||
@@ -572,6 +577,7 @@ export function normalizeLayerFields(f: LayerFields): Result<LayerFields> {
       ...(f.kind === "note" && f.note ? { note: f.note } : {}),
       ...(f.kind === "arrow" && f.arrow ? { arrow: f.arrow } : {}),
       ...(f.kind === "camera_mark" && f.cameraMark ? { cameraMark: f.cameraMark } : {}),
+      ...(f.kind === "sketch" && f.sketch ? { sketch: f.sketch } : {}),
     },
   };
 }

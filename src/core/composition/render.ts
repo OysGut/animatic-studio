@@ -501,6 +501,7 @@ export interface DrawItem {
   readonly note?: import("../storyboard").PanelNoteSpec;
   readonly arrow?: import("../storyboard").ArrowSpec;
   readonly cameraMark?: import("../storyboard").CameraMarkSpec;
+  readonly sketch?: import("../storyboard/sketch").SketchSpec;
   readonly layerId: string;
   /** «group»: en gruppe (tegnes ikke; rammen rundt lagene i gruppen, for markering i editoren). */
   readonly kind: "image" | "fill" | "group" | "text";
@@ -710,6 +711,7 @@ export function renderFrame(
       ...(l.note ? { note: l.note } : {}),
       ...(l.arrow ? { arrow: l.arrow } : {}),
       ...(l.cameraMark ? { cameraMark: l.cameraMark } : {}),
+      ...(l.sketch ? { sketch: l.sketch } : {}),
       version,
       ...(sym ? { symbol: { path: sym.path, color: sym.color } } : {}),
       fill: l.fill,

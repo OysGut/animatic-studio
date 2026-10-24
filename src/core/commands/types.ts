@@ -155,6 +155,7 @@ export interface LayerFields {
   readonly note?: import("../storyboard").PanelNoteSpec | null;
   readonly arrow?: import("../storyboard").ArrowSpec | null;
   readonly cameraMark?: import("../storyboard").CameraMarkSpec | null;
+  readonly sketch?: import("../storyboard/sketch").SketchSpec | null;
 }
 
 /** SB-1: en blokkobling på et panel. linkId lages av klienten, slik at koblingen kan angres og gjøres om likt på alle klienter. */

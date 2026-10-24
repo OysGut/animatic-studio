@@ -788,6 +788,7 @@ function layerFields(s: ProjectState, f: LayerFields, prev?: CompositionLayer): 
       note: f.note === undefined ? (prev.note ?? null) : f.note,
       arrow: f.arrow === undefined ? (prev.arrow ?? null) : f.arrow,
       cameraMark: f.cameraMark === undefined ? (prev.cameraMark ?? null) : f.cameraMark,
+      sketch: f.sketch === undefined ? (prev.sketch ?? null) : f.sketch,
     };
   // Nytt bilde i laget (annen ressurs): bilder per språk av den gamle ressursen passer ikke lenger
   if (prev && f.assetId !== prev.assetId)
@@ -916,6 +917,7 @@ function fieldsOfLayer(l: CompositionLayer): LayerFields {
     ...(l.note ? { note: l.note } : {}),
     ...(l.arrow ? { arrow: l.arrow } : {}),
     ...(l.cameraMark ? { cameraMark: l.cameraMark } : {}),
+    ...(l.sketch ? { sketch: l.sketch } : {}),
   };
 }
 
@@ -8227,6 +8229,7 @@ function run(
             note: l.note ?? null,
             arrow: l.arrow ?? null,
             cameraMark: l.cameraMark ?? null,
+            sketch: l.sketch ?? null,
           },
         });
         const {

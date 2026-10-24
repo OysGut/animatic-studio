@@ -14,7 +14,7 @@ import type { Composition, CompositionLayer, LayerKind, PathPoint, ProjectState 
 export type CompositionKind = "scene" | "storyboard";
 
 /** Lagtyper som bare er tillatt i storyboardkomposisjoner (SB-1). shape og text finnes fra før. */
-export const STORYBOARD_LAYER_KINDS = ["note", "arrow", "camera_mark"] as const;
+export const STORYBOARD_LAYER_KINDS = ["note", "arrow", "camera_mark", "sketch"] as const;
 export type StoryboardLayerKind = (typeof STORYBOARD_LAYER_KINDS)[number];
 
 export function isStoryboardLayerKind(kind: LayerKind): kind is StoryboardLayerKind {
