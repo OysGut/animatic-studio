@@ -102,7 +102,7 @@ export interface SbproReturnPanel {
   readonly captions: Readonly<Record<SbproField, string>>;
   readonly image: SbproPackageFile | null;
 }
-export interface SbproReturn { readonly projectId: string; readonly fps: { num: number; den: number }; readonly panels: readonly SbproReturnPanel[]; readonly hash: string }
+export interface SbproReturn { readonly projectId: string; readonly productionId: string; readonly fps: { num: number; den: number }; readonly panels: readonly SbproReturnPanel[]; readonly hash: string }
 export type SbproReturnResult = { ok: true; value: SbproReturn } | { ok: false; reason: string };
 
 const isObj = (v: unknown): v is Record<string, unknown> => !!v && typeof v === "object" && !Array.isArray(v);
@@ -114,6 +114,9 @@ export function readSbproReturn(input: unknown, byteLength?: number): SbproRetur
   if (!v.ok) return { ok: false, reason: `manifest:${v.issues[0]?.path ?? "$"}:${v.issues[0]?.code ?? "type"}` };
   const m = v.manifest;
   if (m.adapter.id !== SBPRO_ADAPTER.id) return { ok: false, reason: "adapter" };
+  const top = isObj(m["sbpro"]) ? m["sbpro"] : {};
+  const productionId = typeof top["productionId"] === "string" && SBPRO_ID.test(top["productionId"]) ? top["productionId"] : "";
+  if (!productionId) return { ok: false, reason: "production" };
   const panels: SbproReturnPanel[] = [];
   const keys = new Set<string>();
   for (const it of m.items) {
@@ -144,7 +147,7 @@ export function readSbproReturn(input: unknown, byteLength?: number): SbproRetur
   if (panels.length === 0) return { ok: false, reason: "empty" };
   if (panels.length > SBPRO_MAX_PANELS) return { ok: false, reason: "too-many" };
   const hash = toHex(new Sha256().update(utf8(canonicalJson(input))).digest());
-  return { ok: true, value: { projectId: m.projectId, fps: { num: m.frameRate.num, den: m.frameRate.den }, panels: [...panels].sort((a, b) => a.order - b.order), hash } };
+  return { ok: true, value: { projectId: m.projectId, productionId, fps: { num: m.frameRate.num, den: m.frameRate.den }, panels: [...panels].sort((a, b) => a.order - b.order), hash } };
 }
 
 export type SbproCandidateKind = "text" | "timing" | "image" | "new_panel" | "conform";
