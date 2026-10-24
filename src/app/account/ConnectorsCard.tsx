@@ -67,7 +67,7 @@ export function ConnectorsCard() {
         ))}
       </ul>
       {(conflicts.data ?? []).length > 0 ? (
-        <div className="flex flex-col gap-2">
+        <div id="c0-conflicts" className="flex flex-col gap-2">
           <h3 className="text-[13px] font-semibold text-text-primary">{t("c0.conflict.title")}</h3>
           <p className="text-[13px] text-text-secondary">{t("c0.conflict.intro")}</p>
           {(conflicts.data ?? []).map(c => (

@@ -24,7 +24,7 @@ Det lager `plugins/photoshop/dist/com.pentoglass.photoshop_<versjon>.ccx` og en 
 2. Velg en ressurs og trykk **Åpne fra Pen to Glass** på versjonen du vil jobbe med.
 3. Endre lag som vanlig, og trykk **Send tilbake**. Resultatet blir en ny kandidatversjon; ingenting tas i bruk automatisk.
 4. Har noen godkjent en annen versjon i mellomtiden, får du tre valg: **Behold begge**, **Behold gjeldende** eller **Bruk min** (godkjennes i appen).
-5. Tilgangen kan trekkes tilbake under **Konto → Koblede programmer** i From Pen to Glass.
+5. Tilgangen kan trekkes tilbake under **Konto → Tilkoblede programmer** i From Pen to Glass.
 
 Ingen hemmeligheter ligger i pluginen. Innloggingen lagres kryptert i Photoshops sikre lager.
 
@@ -50,7 +50,7 @@ This creates `plugins/photoshop/dist/com.pentoglass.photoshop_<version>.ccx` and
 2. Pick an asset and press **Open from Pen to Glass** on the version you want to work on.
 3. Edit layers as usual and press **Send back**. The result becomes a new candidate version; nothing is put into use automatically.
 4. If someone approved another version in the meantime, you get three choices: **Keep both**, **Keep current** or **Use mine** (approved in the app).
-5. Access can be revoked under **Account → Connected programs** in From Pen to Glass.
+5. Access can be revoked under **Account → Connected apps** in From Pen to Glass.
 
 The plugin contains no secrets. The sign-in is stored encrypted in Photoshop's secure storage.
 
