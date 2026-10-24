@@ -9,8 +9,8 @@
  * Lyden kopieres aldri: filmAudio regnes ut på den virkelige filmen og flyttes bare i tid til
  * storyboardtidslinjen (samme klipp, samme versjoner). Lyden er tidsmaster – bildet følger lydklokken.
  */
-import { filmAudio, type FilmClip } from "../assembly/film";
-import type { FilmAudioItem } from "../audio";
+import type { FilmClip } from "../assembly/film";
+import { filmAudio, type FilmAudioItem } from "../audio";
 import type { CameraShot, Composition, ProjectState, Transition } from "../model";
 import type { OccurrenceId } from "../ids";
 import { speechSeconds } from "../language/text-metrics";
