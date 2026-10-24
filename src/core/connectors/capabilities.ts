@@ -18,6 +18,8 @@ export const ADAPTERS: readonly AdapterDescriptor[] = [
   { id: "adobe-premiere-uxp", name: "Adobe Premiere Pro", capabilities: ["read", "write", "audio", "timeline", "notes"], exportFallback: "fcp7" },
   { id: "adobe-after-effects-legacy", name: "Adobe After Effects", capabilities: ["read", "layers", "timeline"], exportFallback: "ae" },
   { id: "procreate-handoff", name: "Procreate", capabilities: ["read", "write"], exportFallback: "png" },
+  // C-6: Audition via CEP (ikke UXP). Lyd ut som BWF med ID-er og multitrack-økt; retur blir kandidatversjon.
+  { id: "adobe-audition-cep", name: "Adobe Audition", capabilities: ["read", "write", "audio", "timeline"], exportFallback: "wav" },
   { id: "daw-roundtrip", name: "DAW", capabilities: ["read", "write", "audio", "timeline"], exportFallback: "wav" },
   // C-4: Boords API (beta, betalt plan). Lese/skrive frames (action/sound/dialogue + bilde) og kommentarer.
   { id: "boords-api", name: "Boords", capabilities: ["read", "write", "notes"], exportFallback: "pdf" },

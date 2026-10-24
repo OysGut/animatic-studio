@@ -9,7 +9,7 @@ import {
   ACCESS_TTL_SECONDS, CLIENT_ID_RE, clientKnown, DEVICE_INTERVAL_SECONDS, DEVICE_TTL_SECONDS, REFRESH_TTL_SECONDS,
   Sha256, buildProjectManifest, checkIntake, checkReserve, checkSession, chunkCount, expectedChunkSize, idempotentReplay,
   makeToken, makeUserCode, mimeForExtension, missingChunks, parseScopes, pkceMatches, reserveFingerprint, sha256Hex, tokenHash, tokenKind, toHex,
-  planSbproReturn, readSbproReturn, planPremiereProposal, readPremiereReturn, type PremiereEdit, SBPRO_MAX_IMAGE_BYTES, MAX_MANIFEST_BYTES, type SbproCandidate,
+  planSbproReturn, readSbproReturn, planPremiereProposal, readPremiereReturn, type PremiereEdit, SBPRO_MAX_IMAGE_BYTES, MAX_MANIFEST_BYTES, type SbproCandidate, auditionPlan,
   type ConnectorScope, type ConnectorSessionRow, type ReserveRequest, type TransferStatus,
 } from "@/core/connectors";
 
@@ -167,6 +167,13 @@ export async function handleApiV1(req: Request, d: ApiDeps): Promise<Response> {
       if (m === "GET" && rest[0] === "manifest" && rest.length === 1) {
         const a = await authed(req, d, "manifest:read", pid); if (a instanceof Response) return a;
         return json(buildProjectManifest(await d.store.loadState(pid), iso(d.now()), { id: "api-v1", version: "1" }));
+      }
+      if (m === "GET" && rest[0] === "audition" && rest[1] === "plan" && rest.length === 2) {
+        const a = await authed(req, d, "manifest:read", pid); if (a instanceof Response) return a;
+        const occ = url.searchParams.get("occurrenceId") ?? "", panel = url.searchParams.get("panelId");
+        if (!/^[0-9a-zA-Z_-]{1,80}$/.test(occ) || (panel !== null && !/^[0-9a-zA-Z_-]{1,80}$/.test(panel))) return apiError(400, "invalid_request");
+        const plan = auditionPlan(await d.store.loadState(pid), occ, panel);
+        return plan ? json(plan) : apiError(404, "not_found");
       }
       if (rest[0] === "sbpro" && rest[1] === "returns") {
         const a = await authed(req, d, "transfers:write", pid); if (a instanceof Response) return a;

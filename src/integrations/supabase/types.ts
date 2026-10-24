@@ -1915,6 +1915,125 @@ export type Database = {
           },
         ]
       }
+      connector_panel_candidates: {
+        Row: {
+          choice: string | null
+          conflict: boolean
+          created_at: string
+          id: string
+          incoming: Json
+          item_key: string
+          kind: string
+          media_bytes: number | null
+          media_path: string | null
+          media_sha256: string | null
+          panel_id: string | null
+          project_id: string
+          resolved_at: string | null
+          resolved_by: string | null
+          return_id: string
+          revision: number
+          status: string
+        }
+        Insert: {
+          choice?: string | null
+          conflict?: boolean
+          created_at?: string
+          id?: string
+          incoming?: Json
+          item_key: string
+          kind: string
+          media_bytes?: number | null
+          media_path?: string | null
+          media_sha256?: string | null
+          panel_id?: string | null
+          project_id: string
+          resolved_at?: string | null
+          resolved_by?: string | null
+          return_id: string
+          revision?: number
+          status?: string
+        }
+        Update: {
+          choice?: string | null
+          conflict?: boolean
+          created_at?: string
+          id?: string
+          incoming?: Json
+          item_key?: string
+          kind?: string
+          media_bytes?: number | null
+          media_path?: string | null
+          media_sha256?: string | null
+          panel_id?: string | null
+          project_id?: string
+          resolved_at?: string | null
+          resolved_by?: string | null
+          return_id?: string
+          revision?: number
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "connector_panel_candidates_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "connector_panel_candidates_return_id_fkey"
+            columns: ["return_id"]
+            isOneToOne: false
+            referencedRelation: "connector_returns"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      connector_returns: {
+        Row: {
+          created_at: string
+          created_by: string
+          id: string
+          manifest_hash: string
+          panel_count: number
+          production_id: string
+          project_id: string
+          session_id: string | null
+          source: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          id?: string
+          manifest_hash: string
+          panel_count: number
+          production_id: string
+          project_id: string
+          session_id?: string | null
+          source: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          id?: string
+          manifest_hash?: string
+          panel_count?: number
+          production_id?: string
+          project_id?: string
+          session_id?: string | null
+          source?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "connector_returns_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       connector_sessions: {
         Row: {
           access_expires_at: string
@@ -8382,6 +8501,10 @@ export type Database = {
           p_revision: number
           p_user: string
         }
+        Returns: string
+      }
+      connector_resolve_panel_candidate: {
+        Args: { p_choice: string; p_id: string; p_revision: number }
         Returns: string
       }
       connector_revoke_session: { Args: { p_id: string }; Returns: undefined }

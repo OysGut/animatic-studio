@@ -9,6 +9,7 @@ import { base64Url, sha256Hex, Sha256, toHex } from "../../../src/core/connector
 import { pkceChallenge } from "../../../src/core/connectors/auth";
 import { CHUNK_BYTES, chunkCount } from "../../../src/core/connectors/transfer";
 import { validateManifest, type ConnectorManifest } from "../../../src/core/connectors/manifest";
+import type { AuditionPlan } from "../../../src/core/connectors/audition-session";
 
 export type { ConnectorManifest };
 export interface TokenSet { accessToken: string; refreshToken: string; expiresAt: number; scope: string; projectId: string }
@@ -136,6 +137,14 @@ export class PtgConnector {
    */
   sendPremiereReturn(projectId: string, manifest: ConnectorManifest) {
     return this.json<{ returnId: string; proposals: number; conflicts: number; missing: number; unknown: number }>("POST", `/api/v1/projects/${projectId}/premiere/returns`, manifest);
+  }
+  /**
+   * C-6: lydplanen for én scene (sceneforekomst) eller ett panel til Audition: klipp med ressurs-, variant- og
+   * versjons-ID, roller og markører for panel og replikk. Bare lesing.
+   */
+  auditionPlan(projectId: string, occurrenceId: string, panelId?: string | null) {
+    const q = new URLSearchParams({ occurrenceId }); if (panelId) q.set("panelId", panelId);
+    return this.json<AuditionPlan>("GET", `/api/v1/projects/${projectId}/audition/plan?${q}`);
   }
   /** Stabil idempotensnøkkel for en fil og et mål (samme fil til samme mål gjenopptas). */
   static idempotencyKey(fileSha256: string, target: { variantId: string; baseVersionId: string | null }): string {

@@ -9,3 +9,5 @@ export * from "./boords";
 export * from "./sbpro";
 export * from "./premiere-sequence";
 export * from "./premiere";
+export * from "./audition-session";
+export * from "./audition";

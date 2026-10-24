@@ -853,6 +853,51 @@
           }
         }
       }
+    },
+    "/projects/{projectId}/audition/plan": {
+      "get": {
+        "summary": "C-6: audio plan for one scene occurrence or panel for Adobe Audition (read only).",
+        "operationId": "audition_plan",
+        "tags": [
+          "v1"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/projectId"
+          },
+          {
+            "$ref": "#/components/parameters/occurrenceId"
+          },
+          {
+            "$ref": "#/components/parameters/panelId"
+          }
+        ],
+        "security": [
+          {
+            "bearer": [
+              "manifest:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Plan with clips (asset/variant/version IDs), roles and panel/line markers",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "invalid_request"
+          },
+          "404": {
+            "description": "not_found"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -937,6 +982,22 @@
         "name": "conflictId",
         "in": "path",
         "required": true,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "occurrenceId": {
+        "name": "occurrenceId",
+        "in": "query",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "panelId": {
+        "name": "panelId",
+        "in": "query",
+        "required": false,
         "schema": {
           "type": "string"
         }
