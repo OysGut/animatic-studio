@@ -1,6 +1,6 @@
 ---
 name: ptg-storyboard-direction
-description: Faglig storyboardregi i From Pen to Glass: utsnitt, vinkel, brennvidde, bevegelse, 180-gradersregelen, blikk-/bevegelsesretning, dekning og overganger (SB-3/SB-9) og hvordan de skal overføres uendret til eksterne programmer via Manifest v1. Bruk ved storyboard-, kamera- eller kontinuitetsoppgaver og når instruksjoner skal eksporteres til connectors.
+description: "Faglig storyboardregi i From Pen to Glass: utsnitt, vinkel, brennvidde, bevegelse, 180-gradersregelen, blikk-/bevegelsesretning, dekning og overganger (SB-3/SB-9) og hvordan de skal overføres uendret til eksterne programmer via Manifest v1. Bruk ved storyboard-, kamera- eller kontinuitetsoppgaver og når instruksjoner skal eksporteres til connectors."
 metadata:
   version: "0.1.0"
   owner: "animatic-studio"

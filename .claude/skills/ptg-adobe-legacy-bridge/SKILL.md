@@ -1,6 +1,6 @@
 ---
 name: ptg-adobe-legacy-bridge
-description: Bro for eldre Adobe-versjoner (After Effects og CC før UXP) via ExtendScript/CEP: lesing av Manifest v1, import av PTG3-pakker og hvorfor skriving går via SDK i en separat hjelpeprosess. Bruk ved After Effects-integrasjon eller CEP/ExtendScript.
+description: "Bro for eldre Adobe-versjoner (After Effects og CC før UXP) via ExtendScript/CEP: lesing av Manifest v1, import av PTG3-pakker og hvorfor skriving går via SDK i en separat hjelpeprosess. Bruk ved After Effects-integrasjon eller CEP/ExtendScript."
 metadata:
   version: "0.1.0"
   owner: "animatic-studio"

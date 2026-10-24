@@ -1,6 +1,6 @@
 ---
 name: ptg-adobe-uxp
-description: Plugins for Photoshop og Premiere Pro med Adobe UXP mot Connector SDK: manifest v5, tillatelser (network.domains), sikker lagring av tokens, PKCE via systemnettleser og lag/tidslinje-mapping. Bruk ved arbeid på UXP-plugins.
+description: "Plugins for Photoshop og Premiere Pro med Adobe UXP mot Connector SDK: manifest v5, tillatelser (network.domains), sikker lagring av tokens, PKCE via systemnettleser og lag/tidslinje-mapping. Bruk ved arbeid på UXP-plugins."
 metadata:
   version: "0.1.0"
   owner: "animatic-studio"

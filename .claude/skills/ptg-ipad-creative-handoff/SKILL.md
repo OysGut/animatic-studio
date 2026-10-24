@@ -1,6 +1,6 @@
 ---
 name: ptg-ipad-creative-handoff
-description: Overlevering til og fra iPad (Procreate og nettlesertegning via QR): enhetsflyt eller kortlivet QR-token, PNG/PSD-retur som kandidatversjon og Apple Pencil-hensyn. Bruk ved iPad-/mobilflyt eller Procreate-integrasjon.
+description: "Overlevering til og fra iPad (Procreate og nettlesertegning via QR): enhetsflyt eller kortlivet QR-token, PNG/PSD-retur som kandidatversjon og Apple Pencil-hensyn. Bruk ved iPad-/mobilflyt eller Procreate-integrasjon."
 metadata:
   version: "0.1.0"
   owner: "animatic-studio"

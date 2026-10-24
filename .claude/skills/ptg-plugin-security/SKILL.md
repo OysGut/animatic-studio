@@ -1,6 +1,6 @@
 ---
 name: ptg-plugin-security
-description: Sikkerhetsregler for plugins og Creative Connectors: OAuth 2.0 Authorization Code + PKCE (S256), enhetsflyt, kortlivede prosjekt-/scope-tokens lagret som SHA-256, rotasjon med gjenbruksdeteksjon, fartsgrenser, kvoter, innholdssjekk og ingen hemmeligheter i pluginkode. Bruk ved all auth-, token-, opplastings- eller pluginsikkerhet.
+description: "Sikkerhetsregler for plugins og Creative Connectors: OAuth 2.0 Authorization Code + PKCE (S256), enhetsflyt, kortlivede prosjekt-/scope-tokens lagret som SHA-256, rotasjon med gjenbruksdeteksjon, fartsgrenser, kvoter, innholdssjekk og ingen hemmeligheter i pluginkode. Bruk ved all auth-, token-, opplastings- eller pluginsikkerhet."
 metadata:
   version: "0.1.0"
   owner: "animatic-studio"

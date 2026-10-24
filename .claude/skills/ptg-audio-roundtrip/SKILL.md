@@ -1,6 +1,6 @@
 ---
 name: ptg-audio-roundtrip
-description: Lydrundtur med DAW (Pro Tools, Reaper, Logic) via Manifest v1: samplingfrekvens, tidskode, BWF/WAV, AIFF, takes og dialogversjoner uten å endre kilder. Bruk ved lydeksport/-import og DAW-adaptere.
+description: "Lydrundtur med DAW (Pro Tools, Reaper, Logic) via Manifest v1: samplingfrekvens, tidskode, BWF/WAV, AIFF, takes og dialogversjoner uten å endre kilder. Bruk ved lydeksport/-import og DAW-adaptere."
 metadata:
   version: "0.1.0"
   owner: "animatic-studio"

@@ -1,6 +1,6 @@
 ---
 name: ptg-storyboard-interchange
-description: Utveksling av storyboard med andre programmer (OTIO, FCP7 XML, CMX EDL, Storyboard Pro-lignende pakker) via Manifest v1 og eksisterende core/interchange. Bruk ved import/eksport av paneler, timing og overganger.
+description: "Utveksling av storyboard med andre programmer (OTIO, FCP7 XML, CMX EDL, Storyboard Pro-lignende pakker) via Manifest v1 og eksisterende core/interchange. Bruk ved import/eksport av paneler, timing og overganger."
 metadata:
   version: "0.1.0"
   owner: "animatic-studio"

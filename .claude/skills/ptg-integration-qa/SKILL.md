@@ -1,6 +1,6 @@
 ---
 name: ptg-integration-qa
-description: Testing av Creative Connectors: kjernetester, API mot falsk lagring, SDK mot falsk server, OpenAPI-sjekk, DB-tester for 0109 og nettlesertest av Konto-siden. Ingen ekte eksterne kall. Bruk når en connector, plugin eller API-endring skal verifiseres.
+description: "Testing av Creative Connectors: kjernetester, API mot falsk lagring, SDK mot falsk server, OpenAPI-sjekk, DB-tester for 0109 og nettlesertest av Konto-siden. Ingen ekte eksterne kall. Bruk når en connector, plugin eller API-endring skal verifiseres."
 metadata:
   version: "0.1.0"
   owner: "animatic-studio"

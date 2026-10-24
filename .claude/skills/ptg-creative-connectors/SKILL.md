@@ -1,6 +1,6 @@
 ---
 name: ptg-creative-connectors
-description: Arkitekturen for Creative Connectors (C-0): Manifest v1, API v1 under /api/v1, connector-tabellene i 0109, kandidatversjoner, konflikter, kapabilitetsmodell og Connector SDK i packages/ptg-connector-sdk. Bruk ved enhver ny plugin, adapter, endepunkt eller endring i overføringsflyten.
+description: "Arkitekturen for Creative Connectors (C-0): Manifest v1, API v1 under /api/v1, connector-tabellene i 0109, kandidatversjoner, konflikter, kapabilitetsmodell og Connector SDK i packages/ptg-connector-sdk. Bruk ved enhver ny plugin, adapter, endepunkt eller endring i overføringsflyten."
 metadata:
   version: "0.1.0"
   owner: "animatic-studio"
