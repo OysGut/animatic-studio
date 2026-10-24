@@ -33,7 +33,7 @@ async function sha256(b: Uint8Array): Promise<string> {
 export async function runImageGeneration(
   data: GenerateImageInput,
   ctx: { userId: string; supabase: unknown },
-  opts: { existingJobId?: string } = {},
+  opts: { existingJobId?: string; storyboardTrace?: Readonly<Record<string, unknown>> } = {},
 ): Promise<GenerateImageResult> {
   const batch = !!opts.existingJobId;
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -238,6 +238,7 @@ export async function runImageGeneration(
             // Kvalitetsprofilen bildet ble laget med (M8, REQ-0859): et øyeblikksbilde
             ...(data.qualityProfile ? { qualityProfile: data.qualityProfile } : {}),
             ...(data.variantId ? { variantId: data.variantId } : {}),
+            ...(opts.storyboardTrace ? { storyboard: opts.storyboardTrace } : {}),
           },
         }
       : {}),
@@ -246,7 +247,7 @@ export async function runImageGeneration(
     ...(ownKey
       ? { provider_key_id: ownKey.id, key_owner: ownKey.user_id, cost_usd: costUsd }
       : {}),
-    prompt: data.prompt,
+    prompt: opts.storyboardTrace ? "[storyboard]" : data.prompt,
     asset_id: data.assetId,
     reference_path: data.referencePaths[0] ?? null,
     ...(schema.version >= 22 ? { reference_paths: data.referencePaths } : {}),

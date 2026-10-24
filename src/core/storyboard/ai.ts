@@ -3,8 +3,8 @@ import type { Composition, ProjectState, CompositionLayer } from "../model";
 import type { Command } from "../commands/types";
 import type { ProviderModel } from "../generation/providers";
 import { maxAttachedImagesFor } from "../generation/image-prompt";
-import { assetsInScene, layerVersion } from "../library";
-import { layersOf } from "../composition/render";
+import { assetsInScene } from "../library";
+import { layersOf, layerVersion } from "../composition/render";
 import { defaultLayerFields } from "../composition/fields";
 import { newId } from "../ids";
 import { keyBetween } from "../order-key";
@@ -59,7 +59,7 @@ export function panelInstructions(s: ProjectState, p: Composition, visualNotes: 
 /** Server calls this against fresh authorized state; instructions never enter raster input. */
 export function buildPanelAiInput(s: ProjectState, p: Composition, options: PanelAiOptions) {
   const lines = panelLines(s, p.variantId, panelBlockIds(s, p.id));
-  const scene = s.scenes[s.variants[p.variantId]?.sceneId ?? ""];
+  const scene = s.variants[p.variantId]?.heading;
   const profile = styleProfileFor(s, "animatic");
   const resources = panelResourceLayers(s, p);
   const referenceIds = options.basis === "sketch" && options.sketchVersionId ? [options.sketchVersionId] : options.basis === "composition" ? resources.flatMap(l => { const v = layerVersion(s, l); return v ? [v.id] : []; }) : [];
