@@ -176,13 +176,14 @@ export async function pullStoryboard(i: { client: BoordsClient; store: BoordsSto
   const plan = planBoordsIntake({ frames, states, panels, imageChanged: f => { const s = stateByFrame.get(f.id); return !!s && seenImage.get(s.linkId) !== f.imageUrl; } });
   let candidates = 0, conflicts = 0;
   for (const c of plan) {
-    let mediaPath: string | null = null, mediaSha256: string | null = null;
+    let mediaPath: string | null = null, mediaSha256: string | null = null, byteSize = 0;
     if (c.kind === "image" && c.imageUrl) {
       const bytes = await i.client.image(c.imageUrl);
+      byteSize = bytes.length;
       const stored = await i.store.storeImage(i.projectId, bytes); mediaPath = stored.path; mediaSha256 = stored.sha256;
     }
-    const incoming = c.kind === "image" ? { imageSha256: mediaSha256 ?? "" } : (c.incoming as Record<string, string>);
-    const incomingHash = sha256Hex(JSON.stringify([c.kind, incoming]));
+    const incoming = c.kind === "image" ? { imageSha256: mediaSha256 ?? "", byteSize: String(byteSize) } : (c.incoming as Record<string, string>);
+    const incomingHash = sha256Hex(JSON.stringify([c.kind, c.kind === "image" ? mediaSha256 : incoming]));
     if (await i.store.insertCandidate({ projectId: i.projectId, linkId: c.linkId, panelId: c.panelId, frameId: c.frameId, kind: c.kind, incoming, incomingHash, conflict: c.conflict, mediaPath, mediaSha256 })) { candidates++; if (c.conflict) conflicts++; }
     const st = stateByFrame.get(c.frameId)!;
     await i.store.saveFrameState({ linkId: c.linkId, projectId: i.projectId, ourHash: st.ourHash, theirHash: c.kind === "text" ? c.theirHash : st.theirHash, ...(c.kind === "image" ? { theirImage: c.imageUrl } : {}) });
