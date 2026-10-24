@@ -286,3 +286,5 @@ export function planStoryboardSeed(s: ProjectState, productionId: string): Story
 export * from "./gallery";
 export * from "./editing";
 export type { StoryboardEditingCommand } from "./editing-commands";
+export * from "./scene-setup";
+export * from "./reference";

@@ -98,6 +98,7 @@ import { StoryboardPanelMark } from "@/app/storyboard/StoryboardPanelMark";
 import { PanelEditor } from "@/app/storyboard/PanelEditor";
 import { RhythmPanel } from "./animation/RhythmPanel";
 import { runGroup } from "@/app/storylab/canvas/run-group";
+import { StoryboardReferencePanel, StoryboardStatusBadge } from "./StoryboardReferencePanel";
 import { t as tk } from "@/core/i18n/keyed";
 
 export function SceneEditorWorkspace({
@@ -157,6 +158,7 @@ export function SceneEditorWorkspace({
       editable={editable}
       roleKnown={members.isSuccess}
       cmds={cmds}
+      initialPanelId={initialPanelId}
       initialOccurrenceId={initialOccurrenceId}
       initialLineId={initialLineId}
       initialFrame={initialFrame}
@@ -174,6 +176,7 @@ function Editor({
   editable: roleEditable,
   roleKnown,
   cmds,
+  initialPanelId = null,
   initialOccurrenceId,
   initialLineId = null,
   initialFrame = null,
@@ -185,6 +188,7 @@ function Editor({
   initialLayerId?: string | null;
   initialLineId?: string | null;
   initialFrame?: number | null;
+  initialPanelId?: string | null;
   userId: string;
   state: ProjectState;
   editable: boolean;
@@ -809,6 +813,20 @@ function Editor({
       occurrence && occurrenceKind(occurrence) === "credits" ? (
         <CreditsPanel state={state} occurrenceId={occurrence.id} editable={editable} run={cmds.run} cmds={cmds} />
       ) : null,
+    // SB-5: referansepanel for storyboard (låst for redigering)
+    storyboard:
+      occurrence && occurrenceKind(occurrence) === "scene" ? (
+        <StoryboardReferencePanel
+          state={state}
+          projectId={projectId}
+          productionId={productionId}
+          occurrenceId={occurrence.id}
+          playback={playback}
+          selectedPanelId={initialPanelId}
+          cmds={cmds}
+          editable={editable}
+        />
+      ) : null,
   };
 
   return (
@@ -847,6 +865,7 @@ function Editor({
         <ToolbarSeparator />
         <ToolbarGroup priority={8}>
           <SceneMarkControls state={state} occurrence={occurrence ?? undefined} editable={editable} run={cmds.run} />
+          {occurrence ? <StoryboardStatusBadge state={state} occurrenceId={occurrence.id} /> : null}
         </ToolbarGroup>
         <ToolbarSeparator />
         <ToolbarGroup priority={7}>

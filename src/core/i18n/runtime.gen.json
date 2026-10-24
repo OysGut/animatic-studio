@@ -34297,6 +34297,114 @@
     "sb4.use-scene": {
       "text": "Bruk i scenen"
     },
+    "sb5.arrows": {
+      "text": "{count} piler"
+    },
+    "sb5.back-to-scene": {
+      "text": "Tilbake til scenen"
+    },
+    "sb5.camera-mark": {
+      "text": "Kameramerke"
+    },
+    "sb5.comments": {
+      "text": "{count} kommentarer"
+    },
+    "sb5.create-setup": {
+      "text": "Opprett sceneoppsett fra storyboard"
+    },
+    "sb5.dialogue": {
+      "text": "{count} replikker"
+    },
+    "sb5.edit-storyboard": {
+      "text": "Rediger storyboard"
+    },
+    "sb5.figures": {
+      "text": "{count} figurer"
+    },
+    "sb5.load-error": {
+      "text": "Kunne ikke laste prosjektet."
+    },
+    "sb5.loading": {
+      "text": "Laster …"
+    },
+    "sb5.no-panels": {
+      "text": "Ingen storyboardpaneler i denne scenen ennå."
+    },
+    "sb5.no-scene": {
+      "text": "Scenen finnes ikke."
+    },
+    "sb5.notes": {
+      "text": "{count} lapper"
+    },
+    "sb5.open-large": {
+      "text": "Forstørr"
+    },
+    "sb5.open-link": {
+      "text": "Åpne likevel"
+    },
+    "sb5.open-popup": {
+      "text": "Åpne i eget vindu"
+    },
+    "sb5.popup-blocked": {
+      "text": "Nettleseren blokkerte popup-vinduet."
+    },
+    "sb5.read-only": {
+      "text": "Låst for redigering"
+    },
+    "sb5.reference-title": {
+      "text": "Storyboard"
+    },
+    "sb5.route.description": {
+      "text": "Scenens storyboardpaneler i eget vindu, låst for redigering."
+    },
+    "sb5.route.title": {
+      "text": "Storyboard-referanse"
+    },
+    "sb5.setup-cancel": {
+      "text": "Avbryt"
+    },
+    "sb5.setup-choose-panel": {
+      "text": "Velg hvilket panel som skal være utgangspunkt"
+    },
+    "sb5.setup-confirm": {
+      "text": "Opprett"
+    },
+    "sb5.setup-description": {
+      "text": "Forhåndsvisning før noe opprettes. Alt kan angres som én kommando."
+    },
+    "sb5.setup-failed": {
+      "text": "Kunne ikke opprette sceneoppsettet."
+    },
+    "sb5.setup-has-content": {
+      "text": "Scenen har innhold fra før. Det eksisterende bevares – ingenting overskrives."
+    },
+    "sb5.setup-new-draft": {
+      "text": "Nytt utkast (nytt lagsett øverst)"
+    },
+    "sb5.setup-preview-background": {
+      "text": "Bakgrunnsfargen kopieres."
+    },
+    "sb5.setup-preview-camera": {
+      "text": "Kameramerket blir kameraets utgangspunkt."
+    },
+    "sb5.setup-preview-copied": {
+      "text": "{count} lag kopieres med ressurs, plassering, skala, rotasjon og rekkefølge."
+    },
+    "sb5.setup-preview-layers": {
+      "text": "Lagene legges øverst som et nytt lagsett; eksisterende lag, bakgrunn og kamera røres ikke."
+    },
+    "sb5.setup-preview-skipped": {
+      "text": "{notes} lapper og {arrows} piler følger ikke med – de vises i referansepanelet."
+    },
+    "sb5.setup-title": {
+      "text": "Opprett sceneoppsett fra storyboard"
+    },
+    "sb5.undo-setup": {
+      "text": "Opprett sceneoppsett fra storyboard"
+    },
+    "sb5.untitled-panel": {
+      "text": "Panel uten navn"
+    },
     "script-explorer2.chip.menu": {
       "text": "Valg for {name}"
     },
@@ -68733,6 +68841,114 @@
     },
     "sb4.use-scene": {
       "text": "Use in scene"
+    },
+    "sb5.arrows": {
+      "text": "{count} arrows"
+    },
+    "sb5.back-to-scene": {
+      "text": "Back to scene"
+    },
+    "sb5.camera-mark": {
+      "text": "Camera mark"
+    },
+    "sb5.comments": {
+      "text": "{count} comments"
+    },
+    "sb5.create-setup": {
+      "text": "Create scene setup from storyboard"
+    },
+    "sb5.dialogue": {
+      "text": "{count} lines"
+    },
+    "sb5.edit-storyboard": {
+      "text": "Edit storyboard"
+    },
+    "sb5.figures": {
+      "text": "{count} figures"
+    },
+    "sb5.load-error": {
+      "text": "Could not load the project."
+    },
+    "sb5.loading": {
+      "text": "Loading …"
+    },
+    "sb5.no-panels": {
+      "text": "No storyboard panels in this scene yet."
+    },
+    "sb5.no-scene": {
+      "text": "The scene does not exist."
+    },
+    "sb5.notes": {
+      "text": "{count} notes"
+    },
+    "sb5.open-large": {
+      "text": "Enlarge"
+    },
+    "sb5.open-link": {
+      "text": "Open anyway"
+    },
+    "sb5.open-popup": {
+      "text": "Open in separate window"
+    },
+    "sb5.popup-blocked": {
+      "text": "The browser blocked the popup window."
+    },
+    "sb5.read-only": {
+      "text": "Read-only"
+    },
+    "sb5.reference-title": {
+      "text": "Storyboard"
+    },
+    "sb5.route.description": {
+      "text": "The scene's storyboard panels in a separate window, read-only."
+    },
+    "sb5.route.title": {
+      "text": "Storyboard reference"
+    },
+    "sb5.setup-cancel": {
+      "text": "Cancel"
+    },
+    "sb5.setup-choose-panel": {
+      "text": "Choose which panel to use as the starting point"
+    },
+    "sb5.setup-confirm": {
+      "text": "Create"
+    },
+    "sb5.setup-description": {
+      "text": "Preview before anything is created. Everything can be undone as one command."
+    },
+    "sb5.setup-failed": {
+      "text": "Could not create the scene setup."
+    },
+    "sb5.setup-has-content": {
+      "text": "The scene already has content. The existing content is preserved – nothing is overwritten."
+    },
+    "sb5.setup-new-draft": {
+      "text": "New draft (new layer set on top)"
+    },
+    "sb5.setup-preview-background": {
+      "text": "The background color is copied."
+    },
+    "sb5.setup-preview-camera": {
+      "text": "The camera mark becomes the camera's starting point."
+    },
+    "sb5.setup-preview-copied": {
+      "text": "{count} layers are copied with asset, position, scale, rotation and order."
+    },
+    "sb5.setup-preview-layers": {
+      "text": "The layers are added on top as a new layer set; existing layers, background and camera are untouched."
+    },
+    "sb5.setup-preview-skipped": {
+      "text": "{notes} notes and {arrows} arrows are not copied – they remain visible in the reference panel."
+    },
+    "sb5.setup-title": {
+      "text": "Create scene setup from storyboard"
+    },
+    "sb5.undo-setup": {
+      "text": "Create scene setup from storyboard"
+    },
+    "sb5.untitled-panel": {
+      "text": "Untitled panel"
     },
     "script-explorer2.chip.menu": {
       "text": "Options for {name}"

@@ -71765,6 +71765,27 @@
   "adapters-ai-video-functions.database-outdated-queue": {
     "text": "The database is not up to date for AI video in the queue. Contact the administrator to update From Pen to Glass.\"0025\" : \"0024\"})."
   },
+  "adapters-mobile-mobile-functions.db-message.quota-storage": {
+    "text": "The storage quota has been reached. Delete files you no longer need, or contact the administrator to raise the limit."
+  },
+  "adapters-mobile-mobile-functions.db-message.quota-uploads": {
+    "text": "Too many uploads in the last hour. Wait a moment and try again."
+  },
+  "adapters-storage-commands-functions.quota-change-log": {
+    "text": "The change log is full. Contact the administrator to raise the limit."
+  },
+  "adapters-storage-commands-functions.quota-projects": {
+    "text": "The project limit has been reached. Delete a project or contact the administrator to raise the limit."
+  },
+  "adapters-storage-commands-functions.quota-storage": {
+    "text": "The storage quota has been reached. Delete files you no longer need, or contact the administrator to raise the limit."
+  },
+  "adapters-storage-commands-functions.quota-uploads": {
+    "text": "Too many uploads in the last hour. Wait a moment and try again."
+  },
+  "adapters-storage-commands-functions.rate-limited": {
+    "text": "Too many requests in a short time. Wait a moment and try again."
+  },
   "adapters-storage-commands-functions.undo-production-history": {
     "text": "The production has exports or saved estimates and cannot be undone. It is kept as it is."
   },
@@ -74634,6 +74655,297 @@
   "g1b-fdx.import.invalid": {
     "text": "The file is not a valid Final Draft file (.fdx)."
   },
+  "g1b.poster.approx-min": {
+    "text": "approx. {min} min"
+  },
+  "g1b.poster.fallback-placeholder": {
+    "text": "Empty: the {language} text is used"
+  },
+  "g1b.poster.feature": {
+    "text": "Animated feature"
+  },
+  "g1b.poster.genre-family": {
+    "text": "Animated family film"
+  },
+  "g1b.poster.genre-film": {
+    "text": "Animated film"
+  },
+  "g1b.poster.untranslated-many": {
+    "text": "{length} texts have no {language} version and are shown in another language."
+  },
+  "g1b.poster.untranslated-one": {
+    "text": "1 text has no {language} version and is shown in another language."
+  },
+  "g5-admin.cancel": {
+    "text": "Cancel"
+  },
+  "g5-admin.failed": {
+    "text": "That didn't work. Try again."
+  },
+  "g5-admin.log.days": {
+    "text": "Days of full history"
+  },
+  "g5-admin.log.invalid": {
+    "text": "Days must be 1–3650 and changes 100–10,000,000."
+  },
+  "g5-admin.log.max-rows": {
+    "text": "Changes per project"
+  },
+  "g5-admin.log.note": {
+    "text": "Full history is kept for a number of days or changes per project. Older changes are cleaned up once a day by the background job, or now with the button."
+  },
+  "g5-admin.log.project": {
+    "text": "Project"
+  },
+  "g5-admin.log.prune": {
+    "text": "Clean up now"
+  },
+  "g5-admin.log.pruned": {
+    "text": "Cleaned up. Changes removed: {count}."
+  },
+  "g5-admin.log.rows": {
+    "text": "Changes"
+  },
+  "g5-admin.log.size": {
+    "text": "Size"
+  },
+  "g5-admin.log.title": {
+    "text": "Change log"
+  },
+  "g5-admin.log.total": {
+    "text": "{rows} changes in {projects} projects"
+  },
+  "g5-admin.quota.add-user": {
+    "text": "New quota for {user}"
+  },
+  "g5-admin.quota.add-workspace": {
+    "text": "New quota for the workspace"
+  },
+  "g5-admin.quota.find-user": {
+    "text": "Find user (email or name)"
+  },
+  "g5-admin.quota.invalid": {
+    "text": "Use whole numbers (storage may have decimals), or leave the field empty."
+  },
+  "g5-admin.quota.log-rows": {
+    "text": "Changes in the log"
+  },
+  "g5-admin.quota.none": {
+    "text": "No quotas have been set."
+  },
+  "g5-admin.quota.note": {
+    "text": "Limits per workspace, or per user for projects without a workspace. An empty field means no limit. The database enforces the limits."
+  },
+  "g5-admin.quota.projects": {
+    "text": "Projects"
+  },
+  "g5-admin.quota.remove": {
+    "text": "Remove quota"
+  },
+  "g5-admin.quota.search": {
+    "text": "Search"
+  },
+  "g5-admin.quota.storage": {
+    "text": "Storage (GB)"
+  },
+  "g5-admin.quota.title": {
+    "text": "Quotas"
+  },
+  "g5-admin.quota.unlimited": {
+    "text": "No limit"
+  },
+  "g5-admin.quota.uploads": {
+    "text": "Uploads per hour"
+  },
+  "g5-admin.quota.used": {
+    "text": "Used: {used}"
+  },
+  "g5-admin.quota.user": {
+    "text": "User: {name}"
+  },
+  "g5-admin.quota.workspace": {
+    "text": "Workspace: {name}"
+  },
+  "g5-admin.quota.workspace-id": {
+    "text": "Workspace ID"
+  },
+  "g5-admin.rate.note": {
+    "text": "How many requests are allowed in a time window, per user or email and per IP address. Above the limit the user sees “Too many requests in a short time”."
+  },
+  "g5-admin.rate.per-ip": {
+    "text": "Per IP"
+  },
+  "g5-admin.rate.per-key": {
+    "text": "Per user/email"
+  },
+  "g5-admin.rate.title": {
+    "text": "Rate limits"
+  },
+  "g5-admin.rate.window": {
+    "text": "Window (seconds)"
+  },
+  "g5-admin.save": {
+    "text": "Save"
+  },
+  "g5-admin.saved": {
+    "text": "Saved."
+  },
+  "g5-admin.unavailable": {
+    "text": "Not available yet (the database has not been updated)."
+  },
+  "g6-bundle.apply": {
+    "text": "Updated"
+  },
+  "g6-bundle.briefs-added": {
+    "text": "Added: {count}"
+  },
+  "g6-bundle.cancel": {
+    "text": "Cancel"
+  },
+  "g6-bundle.confirm": {
+    "text": "Bring in"
+  },
+  "g6-bundle.field.active-brief": {
+    "text": "Active text version"
+  },
+  "g6-bundle.field.briefs": {
+    "text": "Text versions in the fact sheet"
+  },
+  "g6-bundle.field.mouth": {
+    "text": "Mouth set ({set})"
+  },
+  "g6-bundle.field.rig": {
+    "text": "Rig"
+  },
+  "g6-bundle.field.voice": {
+    "text": "Voice profile"
+  },
+  "g6-bundle.keep": {
+    "text": "Kept"
+  },
+  "g6-bundle.nothing": {
+    "text": "Nothing to bring in: the project already has this, or you have changed everything yourself."
+  },
+  "g6-bundle.plan-note": {
+    "text": "This is brought in field by field. Fields you have changed yourself in the project are kept. Nothing is applied until you confirm."
+  },
+  "g6-bundle.plan-title": {
+    "text": "Get bundle no. {number} for {name}"
+  },
+  "g6-bundle.publish": {
+    "text": "Publish character bundle"
+  },
+  "g6-bundle.published": {
+    "text": "Bundle no. {number} has been published to the workspace."
+  },
+  "g6-bundle.pull": {
+    "text": "Get update (no. {number})"
+  },
+  "g6-bundle.pull-label": {
+    "text": "Get character bundle for {name}"
+  },
+  "g6-bundle.pulled": {
+    "text": "Bundle no. {number} has been brought in. You can undo it in one step."
+  },
+  "g6-inherit.currency": {
+    "text": "Currency"
+  },
+  "g6-inherit.none": {
+    "text": "None"
+  },
+  "g6-inherit.paper": {
+    "text": "Paper"
+  },
+  "g6-inherit.source.country": {
+    "text": "from the country"
+  },
+  "g6-inherit.source.default": {
+    "text": "default"
+  },
+  "g6-inherit.source.project": {
+    "text": "from the project"
+  },
+  "g6-inherit.source.user": {
+    "text": "from the user"
+  },
+  "g6-inherit.source.workspace": {
+    "text": "from the workspace"
+  },
+  "g6-inherit.time-zone": {
+    "text": "Time zone"
+  },
+  "g6-inherit.title": {
+    "text": "Inherited from the workspace {name}"
+  },
+  "g6-inherit.units": {
+    "text": "Units"
+  },
+  "g6-profiles.add": {
+    "text": "Add"
+  },
+  "g6-profiles.archive": {
+    "text": "Archive"
+  },
+  "g6-profiles.default": {
+    "text": "Default"
+  },
+  "g6-profiles.kind.font": {
+    "text": "Fonts"
+  },
+  "g6-profiles.kind.quality": {
+    "text": "Quality profiles"
+  },
+  "g6-profiles.kind.style": {
+    "text": "Style profiles"
+  },
+  "g6-profiles.kind.template": {
+    "text": "Templates"
+  },
+  "g6-profiles.make-default": {
+    "text": "Make default"
+  },
+  "g6-profiles.new-name": {
+    "text": "Name of new profile ({kind})"
+  },
+  "g6-profiles.none": {
+    "text": "None yet."
+  },
+  "g6-profiles.note": {
+    "text": "Projects in the workspace inherit the default profile of each type when they have none of their own. A profile in the project always takes precedence."
+  },
+  "g6-profiles.title": {
+    "text": "Profiles for the projects"
+  },
+  "g6-profiles.unavailable": {
+    "text": "The profiles could not be loaded."
+  },
+  "g9-demo.failed": {
+    "text": "The example project could not be created: {message}"
+  },
+  "g9-demo.open": {
+    "text": "Open the example project"
+  },
+  "g9-demo.opening": {
+    "text": "Creating the example project…"
+  },
+  "google.account.method-email": {
+    "text": "Email and password"
+  },
+  "google.account.method-google": {
+    "text": "Google"
+  },
+  "google.account.methods": {
+    "text": "Sign-in"
+  },
+  "google.sign-in.button": {
+    "text": "Continue with Google"
+  },
+  "google.sign-in.failed": {
+    "text": "Signing in with Google was not completed. Please try again."
+  },
+  "google.sign-in.or": {
+    "text": "or"
+  },
   "id3.derived-from.invalid": {
     "text": "The source version does not exist in this asset."
   },
@@ -75675,6 +75987,840 @@
   "routes-prosjekt-rigg.head.title": {
     "text": "Rig – Pen to Glass"
   },
+  "sb1.error.blocks-variant": {
+    "text": "The blocks do not belong to the scene's variant."
+  },
+  "sb1.error.invalid-layer": {
+    "text": "Invalid storyboard layer."
+  },
+  "sb1.error.invalid-panel": {
+    "text": "Invalid storyboard panel."
+  },
+  "sb1.error.invalid-status": {
+    "text": "Invalid production status."
+  },
+  "sb1.error.layer-kind": {
+    "text": "The layer kind is only allowed in storyboard panels."
+  },
+  "sb1.error.not-approved": {
+    "text": "The panel must be approved before a new revision can start."
+  },
+  "sb1.error.not-panel": {
+    "text": "The composition is not a storyboard panel."
+  },
+  "sb1.layer-arrow": {
+    "text": "Arrow"
+  },
+  "sb1.layer-camera-mark": {
+    "text": "Camera mark"
+  },
+  "sb1.layer-note": {
+    "text": "Note"
+  },
+  "sb1.schema": {
+    "text": "The database is missing the storyboard foundation. Run migration 0102 first."
+  },
+  "sb2.add": {
+    "text": "New panel"
+  },
+  "sb2.area-short.animation": {
+    "text": "A"
+  },
+  "sb2.area-short.film": {
+    "text": "F"
+  },
+  "sb2.area-short.script": {
+    "text": "S"
+  },
+  "sb2.area-short.sound": {
+    "text": "Snd"
+  },
+  "sb2.area-short.storyboard": {
+    "text": "SB"
+  },
+  "sb2.area.animation": {
+    "text": "Animation"
+  },
+  "sb2.area.film": {
+    "text": "Film"
+  },
+  "sb2.area.script": {
+    "text": "Script"
+  },
+  "sb2.area.sound": {
+    "text": "Sound"
+  },
+  "sb2.area.storyboard": {
+    "text": "Storyboard"
+  },
+  "sb2.cancel": {
+    "text": "Cancel"
+  },
+  "sb2.deactivate": {
+    "text": "Deactivate"
+  },
+  "sb2.drag-scene": {
+    "text": "Drag the scene – changes the film’s scene order"
+  },
+  "sb2.duplicate": {
+    "text": "Duplicate"
+  },
+  "sb2.empty": {
+    "text": "The production has no active scenes yet."
+  },
+  "sb2.filter": {
+    "text": "Filter"
+  },
+  "sb2.filter-area": {
+    "text": "Area to filter on"
+  },
+  "sb2.filter-none": {
+    "text": "All"
+  },
+  "sb2.filter-status": {
+    "text": "Status to filter on"
+  },
+  "sb2.gallery": {
+    "text": "Storyboard panels"
+  },
+  "sb2.hide": {
+    "text": "Hide"
+  },
+  "sb2.jump-script": {
+    "text": "Jump to script"
+  },
+  "sb2.load-error": {
+    "text": "The storyboard could not be loaded."
+  },
+  "sb2.loading": {
+    "text": "Loading the storyboard …"
+  },
+  "sb2.mark": {
+    "text": "Opened from storyboard panel {number} {name}"
+  },
+  "sb2.mark-back": {
+    "text": "Back to the storyboard"
+  },
+  "sb2.move-anchor": {
+    "text": "New anchor in the script (optional)"
+  },
+  "sb2.move-body": {
+    "text": "Panel {number} is moved and gets a new anchor in the script. Can be undone."
+  },
+  "sb2.move-choose": {
+    "text": "Choose scene"
+  },
+  "sb2.move-confirm": {
+    "text": "Move"
+  },
+  "sb2.move-no-blocks": {
+    "text": "The scene has no lines or action."
+  },
+  "sb2.move-target": {
+    "text": "Target scene"
+  },
+  "sb2.move-title": {
+    "text": "Move panel to another scene"
+  },
+  "sb2.move-to-scene": {
+    "text": "Move to scene …"
+  },
+  "sb2.nav": {
+    "text": "Storyboard"
+  },
+  "sb2.none-selected": {
+    "text": "No panel selected"
+  },
+  "sb2.notes-count": {
+    "text": "Notes: {count}"
+  },
+  "sb2.panel-actions": {
+    "text": "Selected panel"
+  },
+  "sb2.panel-label": {
+    "text": "Panel {number}, scene {scene}"
+  },
+  "sb2.panel-size": {
+    "text": "Panel size"
+  },
+  "sb2.production": {
+    "text": "Production"
+  },
+  "sb2.redo": {
+    "text": "Redo"
+  },
+  "sb2.restore": {
+    "text": "Reinstate"
+  },
+  "sb2.route.description": {
+    "text": "The whole film as storyboard panels, in story order."
+  },
+  "sb2.route.title": {
+    "text": "Storyboard – Pen to Glass"
+  },
+  "sb2.scene-earlier": {
+    "text": "Move the scene earlier in the film"
+  },
+  "sb2.scene-empty": {
+    "text": "No panels in the scene."
+  },
+  "sb2.scene-later": {
+    "text": "Move the scene later in the film"
+  },
+  "sb2.scene-order-changed": {
+    "text": "The film’s scene order changed. Script and edit follow. Can be undone."
+  },
+  "sb2.scene-order-warning": {
+    "text": "Moving changes the film’s scene order"
+  },
+  "sb2.seed-body": {
+    "text": "Suggestion: one empty panel per scene ({count} scenes). Nothing is created until you confirm, and it can be undone."
+  },
+  "sb2.seed-confirm": {
+    "text": "Create panels"
+  },
+  "sb2.seed-later": {
+    "text": "Not now"
+  },
+  "sb2.seed-title": {
+    "text": "Create storyboard panels?"
+  },
+  "sb2.selected": {
+    "text": "Panel {number} selected"
+  },
+  "sb2.show-hidden": {
+    "text": "Show hidden and deactivated"
+  },
+  "sb2.show-legend": {
+    "text": "Show on cards"
+  },
+  "sb2.show-panel": {
+    "text": "Show"
+  },
+  "sb2.show.dialogue": {
+    "text": "Dialogue"
+  },
+  "sb2.show.name": {
+    "text": "Name"
+  },
+  "sb2.show.notes": {
+    "text": "Notes"
+  },
+  "sb2.show.number": {
+    "text": "Number"
+  },
+  "sb2.show.script": {
+    "text": "Script text"
+  },
+  "sb2.show.status": {
+    "text": "Status"
+  },
+  "sb2.show.timing": {
+    "text": "Timing"
+  },
+  "sb2.status-of": {
+    "text": "Status for {area}"
+  },
+  "sb2.status.changes-requested": {
+    "text": "Changes requested"
+  },
+  "sb2.status.done": {
+    "text": "Done"
+  },
+  "sb2.status.in-progress": {
+    "text": "In progress"
+  },
+  "sb2.status.not-started": {
+    "text": "Not started"
+  },
+  "sb2.status.review": {
+    "text": "Ready for review"
+  },
+  "sb2.text-view": {
+    "text": "Text view"
+  },
+  "sb2.toolbar": {
+    "text": "Storyboard view"
+  },
+  "sb2.undo": {
+    "text": "Undo"
+  },
+  "sb2.undo.activate": {
+    "text": "Reinstate panel"
+  },
+  "sb2.undo.add": {
+    "text": "New storyboard panel"
+  },
+  "sb2.undo.deactivate": {
+    "text": "Deactivate panel"
+  },
+  "sb2.undo.duplicate": {
+    "text": "Duplicate panel"
+  },
+  "sb2.undo.hide": {
+    "text": "Hide panel"
+  },
+  "sb2.undo.move": {
+    "text": "Move panel"
+  },
+  "sb2.undo.move-scene": {
+    "text": "Change the film’s scene order"
+  },
+  "sb2.undo.move-to-scene": {
+    "text": "Move panel to scene"
+  },
+  "sb2.undo.seed": {
+    "text": "Create storyboard panels"
+  },
+  "sb2.undo.show": {
+    "text": "Show panel"
+  },
+  "sb2.undo.status": {
+    "text": "Change status"
+  },
+  "sb2.untitled-scene": {
+    "text": "Scene without heading"
+  },
+  "sb2.zoom": {
+    "text": "Zoom"
+  },
+  "sb2.zoom-in": {
+    "text": "Zoom in (detail)"
+  },
+  "sb2.zoom-out": {
+    "text": "Zoom out (overview)"
+  },
+  "sb3.add-comment": {
+    "text": "Add comment"
+  },
+  "sb3.add-field": {
+    "text": "Add field"
+  },
+  "sb3.add-point": {
+    "text": "Add point"
+  },
+  "sb3.anchor": {
+    "text": "Anchor"
+  },
+  "sb3.angle": {
+    "text": "Angle"
+  },
+  "sb3.angle.bird": {
+    "text": "Bird’s eye"
+  },
+  "sb3.angle.dutch": {
+    "text": "Dutch"
+  },
+  "sb3.angle.eye": {
+    "text": "Eye level"
+  },
+  "sb3.angle.high": {
+    "text": "High"
+  },
+  "sb3.angle.low": {
+    "text": "Low"
+  },
+  "sb3.camera.frame-height": {
+    "text": "Frame height"
+  },
+  "sb3.camera.frame-width": {
+    "text": "Frame width"
+  },
+  "sb3.camera.frame-x": {
+    "text": "Frame X"
+  },
+  "sb3.camera.frame-y": {
+    "text": "Frame Y"
+  },
+  "sb3.camera.pan-x": {
+    "text": "Pan X"
+  },
+  "sb3.camera.pan-y": {
+    "text": "Pan Y"
+  },
+  "sb3.camera.tilt": {
+    "text": "Tilt"
+  },
+  "sb3.camera.zoom": {
+    "text": "Zoom"
+  },
+  "sb3.category": {
+    "text": "Category"
+  },
+  "sb3.category.attention": {
+    "text": "Attention"
+  },
+  "sb3.category.camera": {
+    "text": "Camera"
+  },
+  "sb3.category.character": {
+    "text": "Character"
+  },
+  "sb3.category.gaze": {
+    "text": "Gaze"
+  },
+  "sb3.category.object": {
+    "text": "Object"
+  },
+  "sb3.color": {
+    "text": "Color"
+  },
+  "sb3.comment": {
+    "text": "Comment"
+  },
+  "sb3.comments": {
+    "text": "Comments"
+  },
+  "sb3.confirm": {
+    "text": "Confirm"
+  },
+  "sb3.current": {
+    "text": "Current revision"
+  },
+  "sb3.curved": {
+    "text": "Curved"
+  },
+  "sb3.custom-field": {
+    "text": "Custom field"
+  },
+  "sb3.dialogue-links": {
+    "text": "Linked dialogue"
+  },
+  "sb3.down": {
+    "text": "Move down"
+  },
+  "sb3.edit": {
+    "text": "Edit storyboard"
+  },
+  "sb3.edit-approved": {
+    "text": "Edit storyboard"
+  },
+  "sb3.field.action": {
+    "text": "Action"
+  },
+  "sb3.field.camera": {
+    "text": "Camera"
+  },
+  "sb3.field.dialogue": {
+    "text": "Dialogue"
+  },
+  "sb3.field.notes": {
+    "text": "Notes"
+  },
+  "sb3.field.sound": {
+    "text": "Sound"
+  },
+  "sb3.focal": {
+    "text": "Focal length (mm)"
+  },
+  "sb3.form": {
+    "text": "Form"
+  },
+  "sb3.handled": {
+    "text": "Handled"
+  },
+  "sb3.height": {
+    "text": "Height"
+  },
+  "sb3.help": {
+    "text": "Help"
+  },
+  "sb3.layer": {
+    "text": "Layer"
+  },
+  "sb3.layers": {
+    "text": "Layers"
+  },
+  "sb3.library": {
+    "text": "Library"
+  },
+  "sb3.lock": {
+    "text": "Lock"
+  },
+  "sb3.lock-numbers": {
+    "text": "Lock numbers"
+  },
+  "sb3.mask": {
+    "text": "Aspect mask"
+  },
+  "sb3.movement": {
+    "text": "Camera movement"
+  },
+  "sb3.new": {
+    "text": "New panel"
+  },
+  "sb3.next": {
+    "text": "Next panel"
+  },
+  "sb3.no-anchor": {
+    "text": "No anchor"
+  },
+  "sb3.note": {
+    "text": "Note"
+  },
+  "sb3.note-type": {
+    "text": "Note type"
+  },
+  "sb3.note-type.camera": {
+    "text": "Camera instruction"
+  },
+  "sb3.note-type.direction": {
+    "text": "Direction"
+  },
+  "sb3.note-type.visual": {
+    "text": "Visual note"
+  },
+  "sb3.notes-visible": {
+    "text": "Show notes"
+  },
+  "sb3.panel": {
+    "text": "Panel"
+  },
+  "sb3.path-target": {
+    "text": "Scene layer"
+  },
+  "sb3.path-warning": {
+    "text": "Apply the arrow as a movement path in the scene draft? Finished material stays unchanged."
+  },
+  "sb3.previous": {
+    "text": "Previous panel"
+  },
+  "sb3.project-format": {
+    "text": "Project format"
+  },
+  "sb3.properties": {
+    "text": "Properties"
+  },
+  "sb3.readonly": {
+    "text": "This revision is read-only."
+  },
+  "sb3.redo": {
+    "text": "Redo"
+  },
+  "sb3.region": {
+    "text": "Region"
+  },
+  "sb3.remove": {
+    "text": "Remove layer"
+  },
+  "sb3.renumber": {
+    "text": "Renumber"
+  },
+  "sb3.renumber-warning": {
+    "text": "Existing locked numbers will change. Review the changes before confirming."
+  },
+  "sb3.reopen": {
+    "text": "Reopen"
+  },
+  "sb3.resolve": {
+    "text": "Resolve"
+  },
+  "sb3.revision": {
+    "text": "Revision {number}"
+  },
+  "sb3.revisions": {
+    "text": "Revisions"
+  },
+  "sb3.safe": {
+    "text": "Safe zones"
+  },
+  "sb3.shape": {
+    "text": "Shape"
+  },
+  "sb3.shape.ellipse": {
+    "text": "Ellipse"
+  },
+  "sb3.shape.line": {
+    "text": "Line"
+  },
+  "sb3.shape.rect": {
+    "text": "Rectangle"
+  },
+  "sb3.shortcuts": {
+    "text": "Keyboard shortcuts"
+  },
+  "sb3.shot": {
+    "text": "Shot size"
+  },
+  "sb3.size": {
+    "text": "Text size"
+  },
+  "sb3.straight": {
+    "text": "Straight"
+  },
+  "sb3.text": {
+    "text": "Text"
+  },
+  "sb3.thickness": {
+    "text": "Thickness"
+  },
+  "sb3.thirds": {
+    "text": "Rule of thirds"
+  },
+  "sb3.title": {
+    "text": "Title"
+  },
+  "sb3.tool.arrow": {
+    "text": "Arrow"
+  },
+  "sb3.tool.camera": {
+    "text": "Camera mark"
+  },
+  "sb3.tool.line": {
+    "text": "Line"
+  },
+  "sb3.tool.note": {
+    "text": "Note"
+  },
+  "sb3.tool.select": {
+    "text": "Select"
+  },
+  "sb3.tool.shape": {
+    "text": "Shape"
+  },
+  "sb3.tool.text": {
+    "text": "Text"
+  },
+  "sb3.tools": {
+    "text": "Tools"
+  },
+  "sb3.transform.rotation": {
+    "text": "Rotation"
+  },
+  "sb3.transform.scaleX": {
+    "text": "Scale X"
+  },
+  "sb3.transform.scaleY": {
+    "text": "Scale Y"
+  },
+  "sb3.transform.x": {
+    "text": "X"
+  },
+  "sb3.transform.y": {
+    "text": "Y"
+  },
+  "sb3.undo": {
+    "text": "Undo"
+  },
+  "sb3.up": {
+    "text": "Move up"
+  },
+  "sb3.use-path": {
+    "text": "Use as movement path"
+  },
+  "sb3.visibility": {
+    "text": "Visibility"
+  },
+  "sb3.width": {
+    "text": "Width"
+  },
+  "sb4.accept-scene-timing": {
+    "text": "Accept timing for scene"
+  },
+  "sb4.accept-timing": {
+    "text": "Accept timing suggestion"
+  },
+  "sb4.audio-timing": {
+    "text": "Use audio duration"
+  },
+  "sb4.export.image-source": {
+    "text": "Image source"
+  },
+  "sb4.export.source-animation": {
+    "text": "Animation"
+  },
+  "sb4.export.source-film": {
+    "text": "Film"
+  },
+  "sb4.export.source-storyboard": {
+    "text": "Storyboard panels"
+  },
+  "sb4.film.description": {
+    "text": "The panels play with the scene's sound. The sound is the time master."
+  },
+  "sb4.film.empty": {
+    "text": "No active panels in the film yet."
+  },
+  "sb4.film.exit-fullscreen": {
+    "text": "Exit fullscreen"
+  },
+  "sb4.film.fullscreen": {
+    "text": "Fullscreen"
+  },
+  "sb4.film.mute": {
+    "text": "Mute"
+  },
+  "sb4.film.panel-label": {
+    "text": "Scene {scene}, panel {panel}: {name}"
+  },
+  "sb4.film.pause": {
+    "text": "Pause"
+  },
+  "sb4.film.play": {
+    "text": "Play"
+  },
+  "sb4.film.timeline": {
+    "text": "Storyboard film timeline"
+  },
+  "sb4.film.title": {
+    "text": "Storyboard film"
+  },
+  "sb4.film.unmute": {
+    "text": "Unmute"
+  },
+  "sb4.film.volume": {
+    "text": "Volume"
+  },
+  "sb4.inherited": {
+    "text": "Timing source"
+  },
+  "sb4.mix-confirm": {
+    "text": "Add temporary audio to the scene sound? Existing audio is preserved."
+  },
+  "sb4.mobile-audio": {
+    "text": "Record on mobile"
+  },
+  "sb4.next": {
+    "text": "Next panel"
+  },
+  "sb4.play-film": {
+    "text": "Play the storyboard film"
+  },
+  "sb4.previous": {
+    "text": "Previous panel"
+  },
+  "sb4.record": {
+    "text": "Record temporary audio"
+  },
+  "sb4.scene-timing": {
+    "text": "Inherited from scene"
+  },
+  "sb4.scrub": {
+    "text": "Scrub scene frames"
+  },
+  "sb4.stop": {
+    "text": "Stop"
+  },
+  "sb4.switch-view": {
+    "text": "Switch workspace"
+  },
+  "sb4.temp-audio": {
+    "text": "Temporary audio"
+  },
+  "sb4.upload-audio": {
+    "text": "Upload audio"
+  },
+  "sb4.use-scene": {
+    "text": "Use in scene"
+  },
+  "sb5.arrows": {
+    "text": "{count} arrows"
+  },
+  "sb5.back-to-scene": {
+    "text": "Back to scene"
+  },
+  "sb5.camera-mark": {
+    "text": "Camera mark"
+  },
+  "sb5.comments": {
+    "text": "{count} comments"
+  },
+  "sb5.create-setup": {
+    "text": "Create scene setup from storyboard"
+  },
+  "sb5.dialogue": {
+    "text": "{count} lines"
+  },
+  "sb5.edit-storyboard": {
+    "text": "Edit storyboard"
+  },
+  "sb5.figures": {
+    "text": "{count} figures"
+  },
+  "sb5.load-error": {
+    "text": "Could not load the project."
+  },
+  "sb5.loading": {
+    "text": "Loading …"
+  },
+  "sb5.no-panels": {
+    "text": "No storyboard panels in this scene yet."
+  },
+  "sb5.no-scene": {
+    "text": "The scene does not exist."
+  },
+  "sb5.notes": {
+    "text": "{count} notes"
+  },
+  "sb5.open-large": {
+    "text": "Enlarge"
+  },
+  "sb5.open-link": {
+    "text": "Open anyway"
+  },
+  "sb5.open-popup": {
+    "text": "Open in separate window"
+  },
+  "sb5.popup-blocked": {
+    "text": "The browser blocked the popup window."
+  },
+  "sb5.read-only": {
+    "text": "Read-only"
+  },
+  "sb5.reference-title": {
+    "text": "Storyboard"
+  },
+  "sb5.route.description": {
+    "text": "The scene's storyboard panels in a separate window, read-only."
+  },
+  "sb5.route.title": {
+    "text": "Storyboard reference"
+  },
+  "sb5.setup-cancel": {
+    "text": "Cancel"
+  },
+  "sb5.setup-choose-panel": {
+    "text": "Choose which panel to use as the starting point"
+  },
+  "sb5.setup-confirm": {
+    "text": "Create"
+  },
+  "sb5.setup-description": {
+    "text": "Preview before anything is created. Everything can be undone as one command."
+  },
+  "sb5.setup-failed": {
+    "text": "Could not create the scene setup."
+  },
+  "sb5.setup-has-content": {
+    "text": "The scene already has content. The existing content is preserved – nothing is overwritten."
+  },
+  "sb5.setup-new-draft": {
+    "text": "New draft (new layer set on top)"
+  },
+  "sb5.setup-preview-background": {
+    "text": "The background color is copied."
+  },
+  "sb5.setup-preview-camera": {
+    "text": "The camera mark becomes the camera's starting point."
+  },
+  "sb5.setup-preview-copied": {
+    "text": "{count} layers are copied with asset, position, scale, rotation and order."
+  },
+  "sb5.setup-preview-layers": {
+    "text": "The layers are added on top as a new layer set; existing layers, background and camera are untouched."
+  },
+  "sb5.setup-preview-skipped": {
+    "text": "{notes} notes and {arrows} arrows are not copied – they remain visible in the reference panel."
+  },
+  "sb5.setup-title": {
+    "text": "Create scene setup from storyboard"
+  },
+  "sb5.undo-setup": {
+    "text": "Create scene setup from storyboard"
+  },
+  "sb5.untitled-panel": {
+    "text": "Untitled panel"
+  },
   "script-explorer2.chip.menu": {
     "text": "Options for {name}"
   },
@@ -75812,1043 +76958,5 @@
   },
   "time.weekday-at": {
     "text": "{weekday} at {time}"
-  },
-  "g1b.poster.genre-film": {
-    "text": "Animated film"
-  },
-  "g1b.poster.genre-family": {
-    "text": "Animated family film"
-  },
-  "g1b.poster.feature": {
-    "text": "Animated feature"
-  },
-  "g1b.poster.approx-min": {
-    "text": "approx. {min} min"
-  },
-  "g1b.poster.fallback-placeholder": {
-    "text": "Empty: the {language} text is used"
-  },
-  "g1b.poster.untranslated-one": {
-    "text": "1 text has no {language} version and is shown in another language."
-  },
-  "g1b.poster.untranslated-many": {
-    "text": "{length} texts have no {language} version and are shown in another language."
-  },
-  "google.sign-in.button": {
-    "text": "Continue with Google"
-  },
-  "google.sign-in.or": {
-    "text": "or"
-  },
-  "google.sign-in.failed": {
-    "text": "Signing in with Google was not completed. Please try again."
-  },
-  "google.account.methods": {
-    "text": "Sign-in"
-  },
-  "google.account.method-google": {
-    "text": "Google"
-  },
-  "google.account.method-email": {
-    "text": "Email and password"
-  },
-  "adapters-storage-commands-functions.quota-projects": {
-    "text": "The project limit has been reached. Delete a project or contact the administrator to raise the limit."
-  },
-  "adapters-storage-commands-functions.quota-change-log": {
-    "text": "The change log is full. Contact the administrator to raise the limit."
-  },
-  "adapters-storage-commands-functions.quota-storage": {
-    "text": "The storage quota has been reached. Delete files you no longer need, or contact the administrator to raise the limit."
-  },
-  "adapters-storage-commands-functions.quota-uploads": {
-    "text": "Too many uploads in the last hour. Wait a moment and try again."
-  },
-  "adapters-mobile-mobile-functions.db-message.quota-storage": {
-    "text": "The storage quota has been reached. Delete files you no longer need, or contact the administrator to raise the limit."
-  },
-  "adapters-mobile-mobile-functions.db-message.quota-uploads": {
-    "text": "Too many uploads in the last hour. Wait a moment and try again."
-  },
-  "adapters-storage-commands-functions.rate-limited": {
-    "text": "Too many requests in a short time. Wait a moment and try again."
-  },
-  "g9-demo.open": {
-    "text": "Open the example project"
-  },
-  "g9-demo.opening": {
-    "text": "Creating the example project…"
-  },
-  "g9-demo.failed": {
-    "text": "The example project could not be created: {message}"
-  },
-  "g5-admin.cancel": {
-    "text": "Cancel"
-  },
-  "g5-admin.failed": {
-    "text": "That didn't work. Try again."
-  },
-  "g5-admin.save": {
-    "text": "Save"
-  },
-  "g5-admin.saved": {
-    "text": "Saved."
-  },
-  "g5-admin.unavailable": {
-    "text": "Not available yet (the database has not been updated)."
-  },
-  "g5-admin.log.title": {
-    "text": "Change log"
-  },
-  "g5-admin.log.note": {
-    "text": "Full history is kept for a number of days or changes per project. Older changes are cleaned up once a day by the background job, or now with the button."
-  },
-  "g5-admin.log.total": {
-    "text": "{rows} changes in {projects} projects"
-  },
-  "g5-admin.log.project": {
-    "text": "Project"
-  },
-  "g5-admin.log.rows": {
-    "text": "Changes"
-  },
-  "g5-admin.log.size": {
-    "text": "Size"
-  },
-  "g5-admin.log.days": {
-    "text": "Days of full history"
-  },
-  "g5-admin.log.max-rows": {
-    "text": "Changes per project"
-  },
-  "g5-admin.log.prune": {
-    "text": "Clean up now"
-  },
-  "g5-admin.log.pruned": {
-    "text": "Cleaned up. Changes removed: {count}."
-  },
-  "g5-admin.log.invalid": {
-    "text": "Days must be 1–3650 and changes 100–10,000,000."
-  },
-  "g5-admin.quota.title": {
-    "text": "Quotas"
-  },
-  "g5-admin.quota.note": {
-    "text": "Limits per workspace, or per user for projects without a workspace. An empty field means no limit. The database enforces the limits."
-  },
-  "g5-admin.quota.none": {
-    "text": "No quotas have been set."
-  },
-  "g5-admin.quota.find-user": {
-    "text": "Find user (email or name)"
-  },
-  "g5-admin.quota.search": {
-    "text": "Search"
-  },
-  "g5-admin.quota.workspace-id": {
-    "text": "Workspace ID"
-  },
-  "g5-admin.quota.add-workspace": {
-    "text": "New quota for the workspace"
-  },
-  "g5-admin.quota.add-user": {
-    "text": "New quota for {user}"
-  },
-  "g5-admin.quota.workspace": {
-    "text": "Workspace: {name}"
-  },
-  "g5-admin.quota.user": {
-    "text": "User: {name}"
-  },
-  "g5-admin.quota.storage": {
-    "text": "Storage (GB)"
-  },
-  "g5-admin.quota.projects": {
-    "text": "Projects"
-  },
-  "g5-admin.quota.log-rows": {
-    "text": "Changes in the log"
-  },
-  "g5-admin.quota.uploads": {
-    "text": "Uploads per hour"
-  },
-  "g5-admin.quota.unlimited": {
-    "text": "No limit"
-  },
-  "g5-admin.quota.used": {
-    "text": "Used: {used}"
-  },
-  "g5-admin.quota.remove": {
-    "text": "Remove quota"
-  },
-  "g5-admin.quota.invalid": {
-    "text": "Use whole numbers (storage may have decimals), or leave the field empty."
-  },
-  "g5-admin.rate.title": {
-    "text": "Rate limits"
-  },
-  "g5-admin.rate.note": {
-    "text": "How many requests are allowed in a time window, per user or email and per IP address. Above the limit the user sees “Too many requests in a short time”."
-  },
-  "g5-admin.rate.window": {
-    "text": "Window (seconds)"
-  },
-  "g5-admin.rate.per-key": {
-    "text": "Per user/email"
-  },
-  "g5-admin.rate.per-ip": {
-    "text": "Per IP"
-  },
-  "g6-bundle.publish": {
-    "text": "Publish character bundle"
-  },
-  "g6-bundle.published": {
-    "text": "Bundle no. {number} has been published to the workspace."
-  },
-  "g6-bundle.pull": {
-    "text": "Get update (no. {number})"
-  },
-  "g6-bundle.pull-label": {
-    "text": "Get character bundle for {name}"
-  },
-  "g6-bundle.pulled": {
-    "text": "Bundle no. {number} has been brought in. You can undo it in one step."
-  },
-  "g6-bundle.plan-title": {
-    "text": "Get bundle no. {number} for {name}"
-  },
-  "g6-bundle.plan-note": {
-    "text": "This is brought in field by field. Fields you have changed yourself in the project are kept. Nothing is applied until you confirm."
-  },
-  "g6-bundle.cancel": {
-    "text": "Cancel"
-  },
-  "g6-bundle.confirm": {
-    "text": "Bring in"
-  },
-  "g6-bundle.apply": {
-    "text": "Updated"
-  },
-  "g6-bundle.keep": {
-    "text": "Kept"
-  },
-  "g6-bundle.nothing": {
-    "text": "Nothing to bring in: the project already has this, or you have changed everything yourself."
-  },
-  "g6-bundle.field.voice": {
-    "text": "Voice profile"
-  },
-  "g6-bundle.field.briefs": {
-    "text": "Text versions in the fact sheet"
-  },
-  "g6-bundle.briefs-added": {
-    "text": "Added: {count}"
-  },
-  "g6-bundle.field.active-brief": {
-    "text": "Active text version"
-  },
-  "g6-bundle.field.mouth": {
-    "text": "Mouth set ({set})"
-  },
-  "g6-bundle.field.rig": {
-    "text": "Rig"
-  },
-  "g6-profiles.title": {
-    "text": "Profiles for the projects"
-  },
-  "g6-profiles.note": {
-    "text": "Projects in the workspace inherit the default profile of each type when they have none of their own. A profile in the project always takes precedence."
-  },
-  "g6-profiles.unavailable": {
-    "text": "The profiles could not be loaded."
-  },
-  "g6-profiles.kind.style": {
-    "text": "Style profiles"
-  },
-  "g6-profiles.kind.quality": {
-    "text": "Quality profiles"
-  },
-  "g6-profiles.kind.font": {
-    "text": "Fonts"
-  },
-  "g6-profiles.kind.template": {
-    "text": "Templates"
-  },
-  "g6-profiles.none": {
-    "text": "None yet."
-  },
-  "g6-profiles.default": {
-    "text": "Default"
-  },
-  "g6-profiles.make-default": {
-    "text": "Make default"
-  },
-  "g6-profiles.archive": {
-    "text": "Archive"
-  },
-  "g6-profiles.new-name": {
-    "text": "Name of new profile ({kind})"
-  },
-  "g6-profiles.add": {
-    "text": "Add"
-  },
-  "g6-inherit.title": {
-    "text": "Inherited from the workspace {name}"
-  },
-  "g6-inherit.none": {
-    "text": "None"
-  },
-  "g6-inherit.paper": {
-    "text": "Paper"
-  },
-  "g6-inherit.currency": {
-    "text": "Currency"
-  },
-  "g6-inherit.time-zone": {
-    "text": "Time zone"
-  },
-  "g6-inherit.units": {
-    "text": "Units"
-  },
-  "g6-inherit.source.project": {
-    "text": "from the project"
-  },
-  "g6-inherit.source.workspace": {
-    "text": "from the workspace"
-  },
-  "g6-inherit.source.user": {
-    "text": "from the user"
-  },
-  "g6-inherit.source.country": {
-    "text": "from the country"
-  },
-  "g6-inherit.source.default": {
-    "text": "default"
-  },
-  "sb1.schema": {
-    "text": "The database is missing the storyboard foundation. Run migration 0102 first."
-  },
-  "sb1.error.invalid-panel": {
-    "text": "Invalid storyboard panel."
-  },
-  "sb1.error.not-panel": {
-    "text": "The composition is not a storyboard panel."
-  },
-  "sb1.error.blocks-variant": {
-    "text": "The blocks do not belong to the scene's variant."
-  },
-  "sb1.error.invalid-status": {
-    "text": "Invalid production status."
-  },
-  "sb1.error.not-approved": {
-    "text": "The panel must be approved before a new revision can start."
-  },
-  "sb1.error.invalid-layer": {
-    "text": "Invalid storyboard layer."
-  },
-  "sb1.error.layer-kind": {
-    "text": "The layer kind is only allowed in storyboard panels."
-  },
-  "sb1.layer-note": {
-    "text": "Note"
-  },
-  "sb1.layer-arrow": {
-    "text": "Arrow"
-  },
-  "sb1.layer-camera-mark": {
-    "text": "Camera mark"
-  },
-  "sb2.nav": {
-    "text": "Storyboard"
-  },
-  "sb2.route.title": {
-    "text": "Storyboard – Pen to Glass"
-  },
-  "sb2.route.description": {
-    "text": "The whole film as storyboard panels, in story order."
-  },
-  "sb2.loading": {
-    "text": "Loading the storyboard …"
-  },
-  "sb2.load-error": {
-    "text": "The storyboard could not be loaded."
-  },
-  "sb2.toolbar": {
-    "text": "Storyboard view"
-  },
-  "sb2.production": {
-    "text": "Production"
-  },
-  "sb2.zoom": {
-    "text": "Zoom"
-  },
-  "sb2.zoom-out": {
-    "text": "Zoom out (overview)"
-  },
-  "sb2.zoom-in": {
-    "text": "Zoom in (detail)"
-  },
-  "sb2.panel-size": {
-    "text": "Panel size"
-  },
-  "sb2.text-view": {
-    "text": "Text view"
-  },
-  "sb2.show-legend": {
-    "text": "Show on cards"
-  },
-  "sb2.show.name": {
-    "text": "Name"
-  },
-  "sb2.show.number": {
-    "text": "Number"
-  },
-  "sb2.show.dialogue": {
-    "text": "Dialogue"
-  },
-  "sb2.show.script": {
-    "text": "Script text"
-  },
-  "sb2.show.notes": {
-    "text": "Notes"
-  },
-  "sb2.show.timing": {
-    "text": "Timing"
-  },
-  "sb2.show.status": {
-    "text": "Status"
-  },
-  "sb2.show-hidden": {
-    "text": "Show hidden and deactivated"
-  },
-  "sb2.filter": {
-    "text": "Filter"
-  },
-  "sb2.filter-area": {
-    "text": "Area to filter on"
-  },
-  "sb2.filter-status": {
-    "text": "Status to filter on"
-  },
-  "sb2.filter-none": {
-    "text": "All"
-  },
-  "sb2.jump-script": {
-    "text": "Jump to script"
-  },
-  "sb2.undo": {
-    "text": "Undo"
-  },
-  "sb2.redo": {
-    "text": "Redo"
-  },
-  "sb2.panel-actions": {
-    "text": "Selected panel"
-  },
-  "sb2.selected": {
-    "text": "Panel {number} selected"
-  },
-  "sb2.none-selected": {
-    "text": "No panel selected"
-  },
-  "sb2.add": {
-    "text": "New panel"
-  },
-  "sb2.duplicate": {
-    "text": "Duplicate"
-  },
-  "sb2.hide": {
-    "text": "Hide"
-  },
-  "sb2.show-panel": {
-    "text": "Show"
-  },
-  "sb2.deactivate": {
-    "text": "Deactivate"
-  },
-  "sb2.restore": {
-    "text": "Reinstate"
-  },
-  "sb2.move-to-scene": {
-    "text": "Move to scene …"
-  },
-  "sb2.status-of": {
-    "text": "Status for {area}"
-  },
-  "sb2.area.script": {
-    "text": "Script"
-  },
-  "sb2.area.storyboard": {
-    "text": "Storyboard"
-  },
-  "sb2.area.animation": {
-    "text": "Animation"
-  },
-  "sb2.area.sound": {
-    "text": "Sound"
-  },
-  "sb2.area.film": {
-    "text": "Film"
-  },
-  "sb2.area-short.script": {
-    "text": "S"
-  },
-  "sb2.area-short.storyboard": {
-    "text": "SB"
-  },
-  "sb2.area-short.animation": {
-    "text": "A"
-  },
-  "sb2.area-short.sound": {
-    "text": "Snd"
-  },
-  "sb2.area-short.film": {
-    "text": "F"
-  },
-  "sb2.status.not-started": {
-    "text": "Not started"
-  },
-  "sb2.status.in-progress": {
-    "text": "In progress"
-  },
-  "sb2.status.review": {
-    "text": "Ready for review"
-  },
-  "sb2.status.changes-requested": {
-    "text": "Changes requested"
-  },
-  "sb2.status.done": {
-    "text": "Done"
-  },
-  "sb2.gallery": {
-    "text": "Storyboard panels"
-  },
-  "sb2.empty": {
-    "text": "The production has no active scenes yet."
-  },
-  "sb2.drag-scene": {
-    "text": "Drag the scene – changes the film’s scene order"
-  },
-  "sb2.untitled-scene": {
-    "text": "Scene without heading"
-  },
-  "sb2.scene-order-warning": {
-    "text": "Moving changes the film’s scene order"
-  },
-  "sb2.scene-earlier": {
-    "text": "Move the scene earlier in the film"
-  },
-  "sb2.scene-later": {
-    "text": "Move the scene later in the film"
-  },
-  "sb2.scene-order-changed": {
-    "text": "The film’s scene order changed. Script and edit follow. Can be undone."
-  },
-  "sb2.scene-empty": {
-    "text": "No panels in the scene."
-  },
-  "sb2.panel-label": {
-    "text": "Panel {number}, scene {scene}"
-  },
-  "sb2.notes-count": {
-    "text": "Notes: {count}"
-  },
-  "sb2.seed-title": {
-    "text": "Create storyboard panels?"
-  },
-  "sb2.seed-body": {
-    "text": "Suggestion: one empty panel per scene ({count} scenes). Nothing is created until you confirm, and it can be undone."
-  },
-  "sb2.seed-confirm": {
-    "text": "Create panels"
-  },
-  "sb2.seed-later": {
-    "text": "Not now"
-  },
-  "sb2.move-title": {
-    "text": "Move panel to another scene"
-  },
-  "sb2.move-body": {
-    "text": "Panel {number} is moved and gets a new anchor in the script. Can be undone."
-  },
-  "sb2.move-target": {
-    "text": "Target scene"
-  },
-  "sb2.move-choose": {
-    "text": "Choose scene"
-  },
-  "sb2.move-anchor": {
-    "text": "New anchor in the script (optional)"
-  },
-  "sb2.move-no-blocks": {
-    "text": "The scene has no lines or action."
-  },
-  "sb2.move-confirm": {
-    "text": "Move"
-  },
-  "sb2.cancel": {
-    "text": "Cancel"
-  },
-  "sb2.mark": {
-    "text": "Opened from storyboard panel {number} {name}"
-  },
-  "sb2.mark-back": {
-    "text": "Back to the storyboard"
-  },
-  "sb2.undo.add": {
-    "text": "New storyboard panel"
-  },
-  "sb2.undo.duplicate": {
-    "text": "Duplicate panel"
-  },
-  "sb2.undo.hide": {
-    "text": "Hide panel"
-  },
-  "sb2.undo.show": {
-    "text": "Show panel"
-  },
-  "sb2.undo.deactivate": {
-    "text": "Deactivate panel"
-  },
-  "sb2.undo.activate": {
-    "text": "Reinstate panel"
-  },
-  "sb2.undo.move": {
-    "text": "Move panel"
-  },
-  "sb2.undo.move-scene": {
-    "text": "Change the film’s scene order"
-  },
-  "sb2.undo.move-to-scene": {
-    "text": "Move panel to scene"
-  },
-  "sb2.undo.seed": {
-    "text": "Create storyboard panels"
-  },
-  "sb2.undo.status": {
-    "text": "Change status"
-  },
-  "sb3.add-comment": {
-    "text": "Add comment"
-  },
-  "sb3.add-field": {
-    "text": "Add field"
-  },
-  "sb3.add-point": {
-    "text": "Add point"
-  },
-  "sb3.anchor": {
-    "text": "Anchor"
-  },
-  "sb3.angle": {
-    "text": "Angle"
-  },
-  "sb3.category": {
-    "text": "Category"
-  },
-  "sb3.color": {
-    "text": "Color"
-  },
-  "sb3.comment": {
-    "text": "Comment"
-  },
-  "sb3.comments": {
-    "text": "Comments"
-  },
-  "sb3.confirm": {
-    "text": "Confirm"
-  },
-  "sb3.current": {
-    "text": "Current revision"
-  },
-  "sb3.curved": {
-    "text": "Curved"
-  },
-  "sb3.custom-field": {
-    "text": "Custom field"
-  },
-  "sb3.dialogue-links": {
-    "text": "Linked dialogue"
-  },
-  "sb3.down": {
-    "text": "Move down"
-  },
-  "sb3.edit": {
-    "text": "Edit storyboard"
-  },
-  "sb3.edit-approved": {
-    "text": "Edit storyboard"
-  },
-  "sb3.focal": {
-    "text": "Focal length (mm)"
-  },
-  "sb3.form": {
-    "text": "Form"
-  },
-  "sb3.handled": {
-    "text": "Handled"
-  },
-  "sb3.height": {
-    "text": "Height"
-  },
-  "sb3.help": {
-    "text": "Help"
-  },
-  "sb3.layer": {
-    "text": "Layer"
-  },
-  "sb3.layers": {
-    "text": "Layers"
-  },
-  "sb3.library": {
-    "text": "Library"
-  },
-  "sb3.lock": {
-    "text": "Lock"
-  },
-  "sb3.lock-numbers": {
-    "text": "Lock numbers"
-  },
-  "sb3.mask": {
-    "text": "Aspect mask"
-  },
-  "sb3.movement": {
-    "text": "Camera movement"
-  },
-  "sb3.new": {
-    "text": "New panel"
-  },
-  "sb3.next": {
-    "text": "Next panel"
-  },
-  "sb3.no-anchor": {
-    "text": "No anchor"
-  },
-  "sb3.note": {
-    "text": "Note"
-  },
-  "sb3.note-type": {
-    "text": "Note type"
-  },
-  "sb3.notes-visible": {
-    "text": "Show notes"
-  },
-  "sb3.panel": {
-    "text": "Panel"
-  },
-  "sb3.path-target": {
-    "text": "Scene layer"
-  },
-  "sb3.path-warning": {
-    "text": "Apply the arrow as a movement path in the scene draft? Finished material stays unchanged."
-  },
-  "sb3.previous": {
-    "text": "Previous panel"
-  },
-  "sb3.project-format": {
-    "text": "Project format"
-  },
-  "sb3.properties": {
-    "text": "Properties"
-  },
-  "sb3.readonly": {
-    "text": "This revision is read-only."
-  },
-  "sb3.redo": {
-    "text": "Redo"
-  },
-  "sb3.region": {
-    "text": "Region"
-  },
-  "sb3.remove": {
-    "text": "Remove layer"
-  },
-  "sb3.renumber": {
-    "text": "Renumber"
-  },
-  "sb3.renumber-warning": {
-    "text": "Existing locked numbers will change. Review the changes before confirming."
-  },
-  "sb3.reopen": {
-    "text": "Reopen"
-  },
-  "sb3.resolve": {
-    "text": "Resolve"
-  },
-  "sb3.revision": {
-    "text": "Revision {number}"
-  },
-  "sb3.revisions": {
-    "text": "Revisions"
-  },
-  "sb3.safe": {
-    "text": "Safe zones"
-  },
-  "sb3.shape": {
-    "text": "Shape"
-  },
-  "sb3.shortcuts": {
-    "text": "Keyboard shortcuts"
-  },
-  "sb3.shot": {
-    "text": "Shot size"
-  },
-  "sb3.size": {
-    "text": "Text size"
-  },
-  "sb3.straight": {
-    "text": "Straight"
-  },
-  "sb3.text": {
-    "text": "Text"
-  },
-  "sb3.thickness": {
-    "text": "Thickness"
-  },
-  "sb3.thirds": {
-    "text": "Rule of thirds"
-  },
-  "sb3.title": {
-    "text": "Title"
-  },
-  "sb3.tools": {
-    "text": "Tools"
-  },
-  "sb3.undo": {
-    "text": "Undo"
-  },
-  "sb3.up": {
-    "text": "Move up"
-  },
-  "sb3.use-path": {
-    "text": "Use as movement path"
-  },
-  "sb3.visibility": {
-    "text": "Visibility"
-  },
-  "sb3.width": {
-    "text": "Width"
-  },
-  "sb3.tool.select": {
-    "text": "Select"
-  },
-  "sb3.tool.arrow": {
-    "text": "Arrow"
-  },
-  "sb3.tool.line": {
-    "text": "Line"
-  },
-  "sb3.tool.shape": {
-    "text": "Shape"
-  },
-  "sb3.tool.text": {
-    "text": "Text"
-  },
-  "sb3.tool.camera": {
-    "text": "Camera mark"
-  },
-  "sb3.tool.note": {
-    "text": "Note"
-  },
-  "sb3.field.action": {
-    "text": "Action"
-  },
-  "sb3.field.dialogue": {
-    "text": "Dialogue"
-  },
-  "sb3.field.sound": {
-    "text": "Sound"
-  },
-  "sb3.field.camera": {
-    "text": "Camera"
-  },
-  "sb3.field.notes": {
-    "text": "Notes"
-  },
-  "sb3.angle.eye": {
-    "text": "Eye level"
-  },
-  "sb3.angle.high": {
-    "text": "High"
-  },
-  "sb3.angle.low": {
-    "text": "Low"
-  },
-  "sb3.angle.bird": {
-    "text": "Bird’s eye"
-  },
-  "sb3.angle.dutch": {
-    "text": "Dutch"
-  },
-  "sb3.shape.rect": {
-    "text": "Rectangle"
-  },
-  "sb3.shape.ellipse": {
-    "text": "Ellipse"
-  },
-  "sb3.shape.line": {
-    "text": "Line"
-  },
-  "sb3.note-type.visual": {
-    "text": "Visual note"
-  },
-  "sb3.note-type.direction": {
-    "text": "Direction"
-  },
-  "sb3.note-type.camera": {
-    "text": "Camera instruction"
-  },
-  "sb3.category.character": {
-    "text": "Character"
-  },
-  "sb3.category.camera": {
-    "text": "Camera"
-  },
-  "sb3.category.object": {
-    "text": "Object"
-  },
-  "sb3.category.gaze": {
-    "text": "Gaze"
-  },
-  "sb3.category.attention": {
-    "text": "Attention"
-  },
-  "sb3.transform.x": {
-    "text": "X"
-  },
-  "sb3.transform.y": {
-    "text": "Y"
-  },
-  "sb3.transform.scaleX": {
-    "text": "Scale X"
-  },
-  "sb3.transform.scaleY": {
-    "text": "Scale Y"
-  },
-  "sb3.transform.rotation": {
-    "text": "Rotation"
-  },
-  "sb3.camera.zoom": {
-    "text": "Zoom"
-  },
-  "sb3.camera.tilt": {
-    "text": "Tilt"
-  },
-  "sb3.camera.pan-x": {
-    "text": "Pan X"
-  },
-  "sb3.camera.pan-y": {
-    "text": "Pan Y"
-  },
-  "sb3.camera.frame-x": {
-    "text": "Frame X"
-  },
-  "sb3.camera.frame-y": {
-    "text": "Frame Y"
-  },
-  "sb3.camera.frame-width": {
-    "text": "Frame width"
-  },
-  "sb3.camera.frame-height": {
-    "text": "Frame height"
-  },
-  "sb4.play-film": {
-    "text": "Play the storyboard film"
-  },
-  "sb4.film.title": {
-    "text": "Storyboard film"
-  },
-  "sb4.film.description": {
-    "text": "The panels play with the scene's sound. The sound is the time master."
-  },
-  "sb4.film.empty": {
-    "text": "No active panels in the film yet."
-  },
-  "sb4.film.pause": {
-    "text": "Pause"
-  },
-  "sb4.film.play": {
-    "text": "Play"
-  },
-  "sb4.film.timeline": {
-    "text": "Storyboard film timeline"
-  },
-  "sb4.film.mute": {
-    "text": "Mute"
-  },
-  "sb4.film.unmute": {
-    "text": "Unmute"
-  },
-  "sb4.film.volume": {
-    "text": "Volume"
-  },
-  "sb4.film.fullscreen": {
-    "text": "Fullscreen"
-  },
-  "sb4.film.exit-fullscreen": {
-    "text": "Exit fullscreen"
-  },
-  "sb4.film.panel-label": {
-    "text": "Scene {scene}, panel {panel}: {name}"
-  },
-  "sb4.export.image-source": {
-    "text": "Image source"
-  },
-  "sb4.export.source-animation": {
-    "text": "Animation"
-  },
-  "sb4.export.source-film": {
-    "text": "Film"
-  },
-  "sb4.export.source-storyboard": {
-    "text": "Storyboard panels"
-  },
-  "sb4.switch-view": {
-    "text": "Switch workspace"
-  },
-  "sb4.previous": {
-    "text": "Previous panel"
-  },
-  "sb4.next": {
-    "text": "Next panel"
-  },
-  "sb4.stop": {
-    "text": "Stop"
-  },
-  "sb4.temp-audio": {
-    "text": "Temporary audio"
-  },
-  "sb4.inherited": {
-    "text": "Timing source"
-  },
-  "sb4.scene-timing": {
-    "text": "Inherited from scene"
-  },
-  "sb4.accept-timing": {
-    "text": "Accept timing suggestion"
-  },
-  "sb4.accept-scene-timing": {
-    "text": "Accept timing for scene"
-  },
-  "sb4.scrub": {
-    "text": "Scrub scene frames"
-  },
-  "sb4.use-scene": {
-    "text": "Use in scene"
-  },
-  "sb4.audio-timing": {
-    "text": "Use audio duration"
-  },
-  "sb4.mix-confirm": {
-    "text": "Add temporary audio to the scene sound? Existing audio is preserved."
-  },
-  "sb4.record": {
-    "text": "Record temporary audio"
-  },
-  "sb4.upload-audio": {
-    "text": "Upload audio"
-  },
-  "sb4.mobile-audio": {
-    "text": "Record on mobile"
   }
 }

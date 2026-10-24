@@ -46,6 +46,62 @@
         "text": "The database is not up to date for AI video in the queue. Contact the administrator to update From Pen to Glass.\"0025\" : \"0024\"})."
       }
     },
+    "adapters-mobile-mobile-functions.db-message.quota-storage": {
+      "nb": {
+        "text": "Lagringskvoten er nådd. Slett filer du ikke trenger, eller kontakt administrator for å øke grensen."
+      },
+      "en": {
+        "text": "The storage quota has been reached. Delete files you no longer need, or contact the administrator to raise the limit."
+      }
+    },
+    "adapters-mobile-mobile-functions.db-message.quota-uploads": {
+      "nb": {
+        "text": "For mange opplastinger den siste timen. Vent litt og prøv igjen."
+      },
+      "en": {
+        "text": "Too many uploads in the last hour. Wait a moment and try again."
+      }
+    },
+    "adapters-storage-commands-functions.quota-change-log": {
+      "nb": {
+        "text": "Endringsloggen er full. Kontakt administrator for å øke grensen."
+      },
+      "en": {
+        "text": "The change log is full. Contact the administrator to raise the limit."
+      }
+    },
+    "adapters-storage-commands-functions.quota-projects": {
+      "nb": {
+        "text": "Grensen for antall prosjekter er nådd. Slett et prosjekt eller kontakt administrator for å øke grensen."
+      },
+      "en": {
+        "text": "The project limit has been reached. Delete a project or contact the administrator to raise the limit."
+      }
+    },
+    "adapters-storage-commands-functions.quota-storage": {
+      "nb": {
+        "text": "Lagringskvoten er nådd. Slett filer du ikke trenger, eller kontakt administrator for å øke grensen."
+      },
+      "en": {
+        "text": "The storage quota has been reached. Delete files you no longer need, or contact the administrator to raise the limit."
+      }
+    },
+    "adapters-storage-commands-functions.quota-uploads": {
+      "nb": {
+        "text": "For mange opplastinger den siste timen. Vent litt og prøv igjen."
+      },
+      "en": {
+        "text": "Too many uploads in the last hour. Wait a moment and try again."
+      }
+    },
+    "adapters-storage-commands-functions.rate-limited": {
+      "nb": {
+        "text": "For mange forespørsler på kort tid. Vent litt og prøv igjen."
+      },
+      "en": {
+        "text": "Too many requests in a short time. Wait a moment and try again."
+      }
+    },
     "adapters-storage-commands-functions.undo-production-history": {
       "replaces": [
         "adapters-storage-commands-functions.message.message.8d1fcaf3dc8b"
@@ -8195,6 +8251,811 @@
         "text": "The file is not a valid Final Draft file (.fdx)."
       }
     },
+    "g1b.poster.approx-min": {
+      "replaces": [],
+      "nb": {
+        "text": "ca. {min} min"
+      },
+      "en": {
+        "text": "approx. {min} min"
+      }
+    },
+    "g1b.poster.fallback-placeholder": {
+      "replaces": [
+        "app-release-poster-dialogs.export-poster-dialog.option.2ba2c82ca3fa",
+        "app-release-poster-dialogs.export-poster-dialog.option.7d645d203fe3",
+        "app-release-poster-dialogs.new-poster-dialog.option.39e4c15e4b70",
+        "app-release-poster-dialogs.new-poster-dialog.option.e3870b997183",
+        "app-release-poster-inspector.bilingual.label.2f1aee6df04c",
+        "app-release-poster-inspector.bilingual.label.e68a78963db2",
+        "app-release-poster-inspector.bilingual.placeholder.701d079a0cb5",
+        "app-release-poster-inspector.poster-settings.option.cf6b065837cf",
+        "app-release-poster-inspector.poster-settings.option.e6ed30832c1c",
+        "app-release-poster-workspace.release.option.c8bb36bc83a1",
+        "app-release-poster-workspace.release.option.cad6bb633625"
+      ],
+      "nb": {
+        "text": "Tom: teksten på {language} brukes"
+      },
+      "en": {
+        "text": "Empty: the {language} text is used"
+      }
+    },
+    "g1b.poster.feature": {
+      "replaces": [],
+      "nb": {
+        "text": "Animert spillefilm"
+      },
+      "en": {
+        "text": "Animated feature"
+      }
+    },
+    "g1b.poster.genre-family": {
+      "replaces": [],
+      "nb": {
+        "text": "Animert familiefilm"
+      },
+      "en": {
+        "text": "Animated family film"
+      }
+    },
+    "g1b.poster.genre-film": {
+      "replaces": [],
+      "nb": {
+        "text": "Animasjonsfilm"
+      },
+      "en": {
+        "text": "Animated film"
+      }
+    },
+    "g1b.poster.untranslated-many": {
+      "replaces": [
+        "core-presentation-poster.text.text.fd87329d7c53"
+      ],
+      "nb": {
+        "text": "{length} tekster finnes ikke på {language} og vises på et annet språk."
+      },
+      "en": {
+        "text": "{length} texts have no {language} version and are shown in another language."
+      }
+    },
+    "g1b.poster.untranslated-one": {
+      "replaces": [
+        "core-presentation-poster.text.text.7c664d2f6b00"
+      ],
+      "nb": {
+        "text": "1 tekst finnes ikke på {language} og vises på et annet språk."
+      },
+      "en": {
+        "text": "1 text has no {language} version and is shown in another language."
+      }
+    },
+    "g5-admin.cancel": {
+      "nb": {
+        "text": "Avbryt"
+      },
+      "en": {
+        "text": "Cancel"
+      }
+    },
+    "g5-admin.failed": {
+      "nb": {
+        "text": "Det gikk ikke. Prøv igjen."
+      },
+      "en": {
+        "text": "That didn't work. Try again."
+      }
+    },
+    "g5-admin.log.days": {
+      "nb": {
+        "text": "Dager med full historikk"
+      },
+      "en": {
+        "text": "Days of full history"
+      }
+    },
+    "g5-admin.log.invalid": {
+      "nb": {
+        "text": "Dager må være 1–3650 og endringer 100–10 000 000."
+      },
+      "en": {
+        "text": "Days must be 1–3650 and changes 100–10,000,000."
+      }
+    },
+    "g5-admin.log.max-rows": {
+      "nb": {
+        "text": "Endringer per prosjekt"
+      },
+      "en": {
+        "text": "Changes per project"
+      }
+    },
+    "g5-admin.log.note": {
+      "nb": {
+        "text": "Full historikk beholdes i et antall dager eller endringer per prosjekt. Eldre endringer ryddes én gang i døgnet av bakgrunnsjobben, eller nå med knappen."
+      },
+      "en": {
+        "text": "Full history is kept for a number of days or changes per project. Older changes are cleaned up once a day by the background job, or now with the button."
+      }
+    },
+    "g5-admin.log.project": {
+      "nb": {
+        "text": "Prosjekt"
+      },
+      "en": {
+        "text": "Project"
+      }
+    },
+    "g5-admin.log.prune": {
+      "nb": {
+        "text": "Rydd nå"
+      },
+      "en": {
+        "text": "Clean up now"
+      }
+    },
+    "g5-admin.log.pruned": {
+      "nb": {
+        "text": "Ryddet. Slettede endringer: {count}."
+      },
+      "en": {
+        "text": "Cleaned up. Changes removed: {count}."
+      }
+    },
+    "g5-admin.log.rows": {
+      "nb": {
+        "text": "Endringer"
+      },
+      "en": {
+        "text": "Changes"
+      }
+    },
+    "g5-admin.log.size": {
+      "nb": {
+        "text": "Størrelse"
+      },
+      "en": {
+        "text": "Size"
+      }
+    },
+    "g5-admin.log.title": {
+      "nb": {
+        "text": "Endringslogg"
+      },
+      "en": {
+        "text": "Change log"
+      }
+    },
+    "g5-admin.log.total": {
+      "nb": {
+        "text": "{rows} endringer i {projects} prosjekter"
+      },
+      "en": {
+        "text": "{rows} changes in {projects} projects"
+      }
+    },
+    "g5-admin.quota.add-user": {
+      "nb": {
+        "text": "Ny kvote for {user}"
+      },
+      "en": {
+        "text": "New quota for {user}"
+      }
+    },
+    "g5-admin.quota.add-workspace": {
+      "nb": {
+        "text": "Ny kvote for arbeidsgruppen"
+      },
+      "en": {
+        "text": "New quota for the workspace"
+      }
+    },
+    "g5-admin.quota.find-user": {
+      "nb": {
+        "text": "Finn bruker (e-post eller navn)"
+      },
+      "en": {
+        "text": "Find user (email or name)"
+      }
+    },
+    "g5-admin.quota.invalid": {
+      "nb": {
+        "text": "Bruk hele tall (lagring kan ha desimaler), eller la feltet stå tomt."
+      },
+      "en": {
+        "text": "Use whole numbers (storage may have decimals), or leave the field empty."
+      }
+    },
+    "g5-admin.quota.log-rows": {
+      "nb": {
+        "text": "Endringer i loggen"
+      },
+      "en": {
+        "text": "Changes in the log"
+      }
+    },
+    "g5-admin.quota.none": {
+      "nb": {
+        "text": "Ingen kvoter er satt."
+      },
+      "en": {
+        "text": "No quotas have been set."
+      }
+    },
+    "g5-admin.quota.note": {
+      "nb": {
+        "text": "Grenser per arbeidsgruppe, eller per bruker for prosjekter uten arbeidsgruppe. Tomt felt betyr ingen grense. Databasen håndhever grensene."
+      },
+      "en": {
+        "text": "Limits per workspace, or per user for projects without a workspace. An empty field means no limit. The database enforces the limits."
+      }
+    },
+    "g5-admin.quota.projects": {
+      "nb": {
+        "text": "Prosjekter"
+      },
+      "en": {
+        "text": "Projects"
+      }
+    },
+    "g5-admin.quota.remove": {
+      "nb": {
+        "text": "Fjern kvoten"
+      },
+      "en": {
+        "text": "Remove quota"
+      }
+    },
+    "g5-admin.quota.search": {
+      "nb": {
+        "text": "Søk"
+      },
+      "en": {
+        "text": "Search"
+      }
+    },
+    "g5-admin.quota.storage": {
+      "nb": {
+        "text": "Lagring (GB)"
+      },
+      "en": {
+        "text": "Storage (GB)"
+      }
+    },
+    "g5-admin.quota.title": {
+      "nb": {
+        "text": "Kvoter"
+      },
+      "en": {
+        "text": "Quotas"
+      }
+    },
+    "g5-admin.quota.unlimited": {
+      "nb": {
+        "text": "Ingen grense"
+      },
+      "en": {
+        "text": "No limit"
+      }
+    },
+    "g5-admin.quota.uploads": {
+      "nb": {
+        "text": "Opplastinger per time"
+      },
+      "en": {
+        "text": "Uploads per hour"
+      }
+    },
+    "g5-admin.quota.used": {
+      "nb": {
+        "text": "Brukt: {used}"
+      },
+      "en": {
+        "text": "Used: {used}"
+      }
+    },
+    "g5-admin.quota.user": {
+      "nb": {
+        "text": "Bruker: {name}"
+      },
+      "en": {
+        "text": "User: {name}"
+      }
+    },
+    "g5-admin.quota.workspace": {
+      "nb": {
+        "text": "Arbeidsgruppe: {name}"
+      },
+      "en": {
+        "text": "Workspace: {name}"
+      }
+    },
+    "g5-admin.quota.workspace-id": {
+      "nb": {
+        "text": "Arbeidsgruppens ID"
+      },
+      "en": {
+        "text": "Workspace ID"
+      }
+    },
+    "g5-admin.rate.note": {
+      "nb": {
+        "text": "Hvor mange forespørsler som tillates i et tidsvindu, per bruker eller e-post og per IP-adresse. Over taket får brukeren «For mange forespørsler på kort tid»."
+      },
+      "en": {
+        "text": "How many requests are allowed in a time window, per user or email and per IP address. Above the limit the user sees “Too many requests in a short time”."
+      }
+    },
+    "g5-admin.rate.per-ip": {
+      "nb": {
+        "text": "Per IP"
+      },
+      "en": {
+        "text": "Per IP"
+      }
+    },
+    "g5-admin.rate.per-key": {
+      "nb": {
+        "text": "Per bruker/e-post"
+      },
+      "en": {
+        "text": "Per user/email"
+      }
+    },
+    "g5-admin.rate.title": {
+      "nb": {
+        "text": "Hastighetsgrenser"
+      },
+      "en": {
+        "text": "Rate limits"
+      }
+    },
+    "g5-admin.rate.window": {
+      "nb": {
+        "text": "Vindu (sekunder)"
+      },
+      "en": {
+        "text": "Window (seconds)"
+      }
+    },
+    "g5-admin.save": {
+      "nb": {
+        "text": "Lagre"
+      },
+      "en": {
+        "text": "Save"
+      }
+    },
+    "g5-admin.saved": {
+      "nb": {
+        "text": "Lagret."
+      },
+      "en": {
+        "text": "Saved."
+      }
+    },
+    "g5-admin.unavailable": {
+      "nb": {
+        "text": "Ikke tilgjengelig ennå (databasen er ikke oppdatert)."
+      },
+      "en": {
+        "text": "Not available yet (the database has not been updated)."
+      }
+    },
+    "g6-bundle.apply": {
+      "nb": {
+        "text": "Oppdateres"
+      },
+      "en": {
+        "text": "Updated"
+      }
+    },
+    "g6-bundle.briefs-added": {
+      "nb": {
+        "text": "Legges til: {count}"
+      },
+      "en": {
+        "text": "Added: {count}"
+      }
+    },
+    "g6-bundle.cancel": {
+      "nb": {
+        "text": "Avbryt"
+      },
+      "en": {
+        "text": "Cancel"
+      }
+    },
+    "g6-bundle.confirm": {
+      "nb": {
+        "text": "Ta inn"
+      },
+      "en": {
+        "text": "Bring in"
+      }
+    },
+    "g6-bundle.field.active-brief": {
+      "nb": {
+        "text": "Aktiv tekstversjon"
+      },
+      "en": {
+        "text": "Active text version"
+      }
+    },
+    "g6-bundle.field.briefs": {
+      "nb": {
+        "text": "Tekstversjoner i faktaarket"
+      },
+      "en": {
+        "text": "Text versions in the fact sheet"
+      }
+    },
+    "g6-bundle.field.mouth": {
+      "nb": {
+        "text": "Munnsett ({set})"
+      },
+      "en": {
+        "text": "Mouth set ({set})"
+      }
+    },
+    "g6-bundle.field.rig": {
+      "nb": {
+        "text": "Rigg"
+      },
+      "en": {
+        "text": "Rig"
+      }
+    },
+    "g6-bundle.field.voice": {
+      "nb": {
+        "text": "Stemmeprofil"
+      },
+      "en": {
+        "text": "Voice profile"
+      }
+    },
+    "g6-bundle.keep": {
+      "nb": {
+        "text": "Beholdes"
+      },
+      "en": {
+        "text": "Kept"
+      }
+    },
+    "g6-bundle.nothing": {
+      "nb": {
+        "text": "Ingenting å ta inn: prosjektet har allerede dette, eller du har endret alt selv."
+      },
+      "en": {
+        "text": "Nothing to bring in: the project already has this, or you have changed everything yourself."
+      }
+    },
+    "g6-bundle.plan-note": {
+      "nb": {
+        "text": "Dette tas inn felt for felt. Felt du har endret selv i prosjektet, beholdes. Ingenting tas i bruk før du bekrefter."
+      },
+      "en": {
+        "text": "This is brought in field by field. Fields you have changed yourself in the project are kept. Nothing is applied until you confirm."
+      }
+    },
+    "g6-bundle.plan-title": {
+      "nb": {
+        "text": "Hent knippe nr. {number} for {name}"
+      },
+      "en": {
+        "text": "Get bundle no. {number} for {name}"
+      }
+    },
+    "g6-bundle.publish": {
+      "nb": {
+        "text": "Publiser karakterknippe"
+      },
+      "en": {
+        "text": "Publish character bundle"
+      }
+    },
+    "g6-bundle.published": {
+      "nb": {
+        "text": "Knippe nr. {number} er publisert i arbeidsgruppen."
+      },
+      "en": {
+        "text": "Bundle no. {number} has been published to the workspace."
+      }
+    },
+    "g6-bundle.pull": {
+      "nb": {
+        "text": "Hent oppdatering (nr. {number})"
+      },
+      "en": {
+        "text": "Get update (no. {number})"
+      }
+    },
+    "g6-bundle.pull-label": {
+      "nb": {
+        "text": "Hent karakterknippe for {name}"
+      },
+      "en": {
+        "text": "Get character bundle for {name}"
+      }
+    },
+    "g6-bundle.pulled": {
+      "nb": {
+        "text": "Knippe nr. {number} er tatt inn. Du kan angre det i ett trinn."
+      },
+      "en": {
+        "text": "Bundle no. {number} has been brought in. You can undo it in one step."
+      }
+    },
+    "g6-inherit.currency": {
+      "nb": {
+        "text": "Valuta"
+      },
+      "en": {
+        "text": "Currency"
+      }
+    },
+    "g6-inherit.none": {
+      "nb": {
+        "text": "Ingen"
+      },
+      "en": {
+        "text": "None"
+      }
+    },
+    "g6-inherit.paper": {
+      "nb": {
+        "text": "Papir"
+      },
+      "en": {
+        "text": "Paper"
+      }
+    },
+    "g6-inherit.source.country": {
+      "nb": {
+        "text": "fra landet"
+      },
+      "en": {
+        "text": "from the country"
+      }
+    },
+    "g6-inherit.source.default": {
+      "nb": {
+        "text": "standard"
+      },
+      "en": {
+        "text": "default"
+      }
+    },
+    "g6-inherit.source.project": {
+      "nb": {
+        "text": "fra prosjektet"
+      },
+      "en": {
+        "text": "from the project"
+      }
+    },
+    "g6-inherit.source.user": {
+      "nb": {
+        "text": "fra brukeren"
+      },
+      "en": {
+        "text": "from the user"
+      }
+    },
+    "g6-inherit.source.workspace": {
+      "nb": {
+        "text": "fra arbeidsgruppen"
+      },
+      "en": {
+        "text": "from the workspace"
+      }
+    },
+    "g6-inherit.time-zone": {
+      "nb": {
+        "text": "Tidssone"
+      },
+      "en": {
+        "text": "Time zone"
+      }
+    },
+    "g6-inherit.title": {
+      "nb": {
+        "text": "Arvet fra arbeidsgruppen {name}"
+      },
+      "en": {
+        "text": "Inherited from the workspace {name}"
+      }
+    },
+    "g6-inherit.units": {
+      "nb": {
+        "text": "Enheter"
+      },
+      "en": {
+        "text": "Units"
+      }
+    },
+    "g6-profiles.add": {
+      "nb": {
+        "text": "Legg til"
+      },
+      "en": {
+        "text": "Add"
+      }
+    },
+    "g6-profiles.archive": {
+      "nb": {
+        "text": "Arkiver"
+      },
+      "en": {
+        "text": "Archive"
+      }
+    },
+    "g6-profiles.default": {
+      "nb": {
+        "text": "Standard"
+      },
+      "en": {
+        "text": "Default"
+      }
+    },
+    "g6-profiles.kind.font": {
+      "nb": {
+        "text": "Fonter"
+      },
+      "en": {
+        "text": "Fonts"
+      }
+    },
+    "g6-profiles.kind.quality": {
+      "nb": {
+        "text": "Kvalitetsprofiler"
+      },
+      "en": {
+        "text": "Quality profiles"
+      }
+    },
+    "g6-profiles.kind.style": {
+      "nb": {
+        "text": "Stilprofiler"
+      },
+      "en": {
+        "text": "Style profiles"
+      }
+    },
+    "g6-profiles.kind.template": {
+      "nb": {
+        "text": "Maler"
+      },
+      "en": {
+        "text": "Templates"
+      }
+    },
+    "g6-profiles.make-default": {
+      "nb": {
+        "text": "Gjør til standard"
+      },
+      "en": {
+        "text": "Make default"
+      }
+    },
+    "g6-profiles.new-name": {
+      "nb": {
+        "text": "Navn på ny profil ({kind})"
+      },
+      "en": {
+        "text": "Name of new profile ({kind})"
+      }
+    },
+    "g6-profiles.none": {
+      "nb": {
+        "text": "Ingen ennå."
+      },
+      "en": {
+        "text": "None yet."
+      }
+    },
+    "g6-profiles.note": {
+      "nb": {
+        "text": "Prosjekter i arbeidsgruppen arver standardprofilen av hver type når de ikke har en egen. En profil i prosjektet går alltid foran."
+      },
+      "en": {
+        "text": "Projects in the workspace inherit the default profile of each type when they have none of their own. A profile in the project always takes precedence."
+      }
+    },
+    "g6-profiles.title": {
+      "nb": {
+        "text": "Profiler for prosjektene"
+      },
+      "en": {
+        "text": "Profiles for the projects"
+      }
+    },
+    "g6-profiles.unavailable": {
+      "nb": {
+        "text": "Profilene kunne ikke hentes."
+      },
+      "en": {
+        "text": "The profiles could not be loaded."
+      }
+    },
+    "g9-demo.failed": {
+      "nb": {
+        "text": "Eksempelprosjektet kunne ikke lages: {message}"
+      },
+      "en": {
+        "text": "The example project could not be created: {message}"
+      }
+    },
+    "g9-demo.open": {
+      "nb": {
+        "text": "Åpne eksempelprosjektet"
+      },
+      "en": {
+        "text": "Open the example project"
+      }
+    },
+    "g9-demo.opening": {
+      "nb": {
+        "text": "Lager eksempelprosjektet …"
+      },
+      "en": {
+        "text": "Creating the example project…"
+      }
+    },
+    "google.account.method-email": {
+      "replaces": [],
+      "nb": {
+        "text": "E-post og passord"
+      },
+      "en": {
+        "text": "Email and password"
+      }
+    },
+    "google.account.method-google": {
+      "replaces": [],
+      "nb": {
+        "text": "Google"
+      },
+      "en": {
+        "text": "Google"
+      }
+    },
+    "google.account.methods": {
+      "replaces": [],
+      "nb": {
+        "text": "Innlogging"
+      },
+      "en": {
+        "text": "Sign-in"
+      }
+    },
+    "google.sign-in.button": {
+      "replaces": [],
+      "nb": {
+        "text": "Fortsett med Google"
+      },
+      "en": {
+        "text": "Continue with Google"
+      }
+    },
+    "google.sign-in.failed": {
+      "replaces": [],
+      "nb": {
+        "text": "Innloggingen med Google ble ikke fullført. Prøv igjen."
+      },
+      "en": {
+        "text": "Signing in with Google was not completed. Please try again."
+      }
+    },
+    "google.sign-in.or": {
+      "replaces": [],
+      "nb": {
+        "text": "eller"
+      },
+      "en": {
+        "text": "or"
+      }
+    },
     "id3.derived-from.invalid": {
       "replaces": [],
       "nb": {
@@ -11074,6 +11935,2230 @@
         "text": "Rig – Pen to Glass"
       }
     },
+    "sb1.error.blocks-variant": {
+      "nb": {
+        "text": "Blokkene hører ikke til scenens variant."
+      },
+      "en": {
+        "text": "The blocks do not belong to the scene's variant."
+      }
+    },
+    "sb1.error.invalid-layer": {
+      "nb": {
+        "text": "Ugyldig storyboardlag."
+      },
+      "en": {
+        "text": "Invalid storyboard layer."
+      }
+    },
+    "sb1.error.invalid-panel": {
+      "nb": {
+        "text": "Ugyldig storyboardpanel."
+      },
+      "en": {
+        "text": "Invalid storyboard panel."
+      }
+    },
+    "sb1.error.invalid-status": {
+      "nb": {
+        "text": "Ugyldig produksjonsstatus."
+      },
+      "en": {
+        "text": "Invalid production status."
+      }
+    },
+    "sb1.error.layer-kind": {
+      "nb": {
+        "text": "Lagtypen er bare tillatt i storyboardpaneler."
+      },
+      "en": {
+        "text": "The layer kind is only allowed in storyboard panels."
+      }
+    },
+    "sb1.error.not-approved": {
+      "nb": {
+        "text": "Panelet må være godkjent før en ny revisjon kan startes."
+      },
+      "en": {
+        "text": "The panel must be approved before a new revision can start."
+      }
+    },
+    "sb1.error.not-panel": {
+      "nb": {
+        "text": "Komposisjonen er ikke et storyboardpanel."
+      },
+      "en": {
+        "text": "The composition is not a storyboard panel."
+      }
+    },
+    "sb1.layer-arrow": {
+      "nb": {
+        "text": "Pil"
+      },
+      "en": {
+        "text": "Arrow"
+      }
+    },
+    "sb1.layer-camera-mark": {
+      "nb": {
+        "text": "Kameramerke"
+      },
+      "en": {
+        "text": "Camera mark"
+      }
+    },
+    "sb1.layer-note": {
+      "nb": {
+        "text": "Lapp"
+      },
+      "en": {
+        "text": "Note"
+      }
+    },
+    "sb1.schema": {
+      "nb": {
+        "text": "Databasen mangler storyboardgrunnmuren. Kjør migrasjon 0102 først."
+      },
+      "en": {
+        "text": "The database is missing the storyboard foundation. Run migration 0102 first."
+      }
+    },
+    "sb2.add": {
+      "nb": {
+        "text": "Nytt panel"
+      },
+      "en": {
+        "text": "New panel"
+      }
+    },
+    "sb2.area-short.animation": {
+      "nb": {
+        "text": "A"
+      },
+      "en": {
+        "text": "A"
+      }
+    },
+    "sb2.area-short.film": {
+      "nb": {
+        "text": "F"
+      },
+      "en": {
+        "text": "F"
+      }
+    },
+    "sb2.area-short.script": {
+      "nb": {
+        "text": "M"
+      },
+      "en": {
+        "text": "S"
+      }
+    },
+    "sb2.area-short.sound": {
+      "nb": {
+        "text": "L"
+      },
+      "en": {
+        "text": "Snd"
+      }
+    },
+    "sb2.area-short.storyboard": {
+      "nb": {
+        "text": "SB"
+      },
+      "en": {
+        "text": "SB"
+      }
+    },
+    "sb2.area.animation": {
+      "nb": {
+        "text": "Animasjon"
+      },
+      "en": {
+        "text": "Animation"
+      }
+    },
+    "sb2.area.film": {
+      "nb": {
+        "text": "Film"
+      },
+      "en": {
+        "text": "Film"
+      }
+    },
+    "sb2.area.script": {
+      "nb": {
+        "text": "Manus"
+      },
+      "en": {
+        "text": "Script"
+      }
+    },
+    "sb2.area.sound": {
+      "nb": {
+        "text": "Lyd"
+      },
+      "en": {
+        "text": "Sound"
+      }
+    },
+    "sb2.area.storyboard": {
+      "nb": {
+        "text": "Storyboard"
+      },
+      "en": {
+        "text": "Storyboard"
+      }
+    },
+    "sb2.cancel": {
+      "nb": {
+        "text": "Avbryt"
+      },
+      "en": {
+        "text": "Cancel"
+      }
+    },
+    "sb2.deactivate": {
+      "nb": {
+        "text": "Deaktiver"
+      },
+      "en": {
+        "text": "Deactivate"
+      }
+    },
+    "sb2.drag-scene": {
+      "nb": {
+        "text": "Dra scenen – endrer filmens scenerekkefølge"
+      },
+      "en": {
+        "text": "Drag the scene – changes the film’s scene order"
+      }
+    },
+    "sb2.duplicate": {
+      "nb": {
+        "text": "Dupliser"
+      },
+      "en": {
+        "text": "Duplicate"
+      }
+    },
+    "sb2.empty": {
+      "nb": {
+        "text": "Produksjonen har ingen aktive scener ennå."
+      },
+      "en": {
+        "text": "The production has no active scenes yet."
+      }
+    },
+    "sb2.filter": {
+      "nb": {
+        "text": "Filter"
+      },
+      "en": {
+        "text": "Filter"
+      }
+    },
+    "sb2.filter-area": {
+      "nb": {
+        "text": "Fagområde for filteret"
+      },
+      "en": {
+        "text": "Area to filter on"
+      }
+    },
+    "sb2.filter-none": {
+      "nb": {
+        "text": "Alle"
+      },
+      "en": {
+        "text": "All"
+      }
+    },
+    "sb2.filter-status": {
+      "nb": {
+        "text": "Status for filteret"
+      },
+      "en": {
+        "text": "Status to filter on"
+      }
+    },
+    "sb2.gallery": {
+      "nb": {
+        "text": "Storyboardpaneler"
+      },
+      "en": {
+        "text": "Storyboard panels"
+      }
+    },
+    "sb2.hide": {
+      "nb": {
+        "text": "Skjul"
+      },
+      "en": {
+        "text": "Hide"
+      }
+    },
+    "sb2.jump-script": {
+      "nb": {
+        "text": "Hopp til manus"
+      },
+      "en": {
+        "text": "Jump to script"
+      }
+    },
+    "sb2.load-error": {
+      "nb": {
+        "text": "Storyboardet kunne ikke lastes."
+      },
+      "en": {
+        "text": "The storyboard could not be loaded."
+      }
+    },
+    "sb2.loading": {
+      "nb": {
+        "text": "Laster storyboardet …"
+      },
+      "en": {
+        "text": "Loading the storyboard …"
+      }
+    },
+    "sb2.mark": {
+      "nb": {
+        "text": "Åpnet fra storyboardpanel {number} {name}"
+      },
+      "en": {
+        "text": "Opened from storyboard panel {number} {name}"
+      }
+    },
+    "sb2.mark-back": {
+      "nb": {
+        "text": "Tilbake til storyboardet"
+      },
+      "en": {
+        "text": "Back to the storyboard"
+      }
+    },
+    "sb2.move-anchor": {
+      "nb": {
+        "text": "Ny forankring i manuset (valgfritt)"
+      },
+      "en": {
+        "text": "New anchor in the script (optional)"
+      }
+    },
+    "sb2.move-body": {
+      "nb": {
+        "text": "Panel {number} flyttes og får ny forankring i manuset. Kan angres."
+      },
+      "en": {
+        "text": "Panel {number} is moved and gets a new anchor in the script. Can be undone."
+      }
+    },
+    "sb2.move-choose": {
+      "nb": {
+        "text": "Velg scene"
+      },
+      "en": {
+        "text": "Choose scene"
+      }
+    },
+    "sb2.move-confirm": {
+      "nb": {
+        "text": "Flytt"
+      },
+      "en": {
+        "text": "Move"
+      }
+    },
+    "sb2.move-no-blocks": {
+      "nb": {
+        "text": "Scenen har ingen replikker eller handling."
+      },
+      "en": {
+        "text": "The scene has no lines or action."
+      }
+    },
+    "sb2.move-target": {
+      "nb": {
+        "text": "Målscene"
+      },
+      "en": {
+        "text": "Target scene"
+      }
+    },
+    "sb2.move-title": {
+      "nb": {
+        "text": "Flytt panel til en annen scene"
+      },
+      "en": {
+        "text": "Move panel to another scene"
+      }
+    },
+    "sb2.move-to-scene": {
+      "nb": {
+        "text": "Flytt til scene …"
+      },
+      "en": {
+        "text": "Move to scene …"
+      }
+    },
+    "sb2.nav": {
+      "nb": {
+        "text": "Storyboard"
+      },
+      "en": {
+        "text": "Storyboard"
+      }
+    },
+    "sb2.none-selected": {
+      "nb": {
+        "text": "Ingen paneler valgt"
+      },
+      "en": {
+        "text": "No panel selected"
+      }
+    },
+    "sb2.notes-count": {
+      "nb": {
+        "text": "Notater: {count}"
+      },
+      "en": {
+        "text": "Notes: {count}"
+      }
+    },
+    "sb2.panel-actions": {
+      "nb": {
+        "text": "Valgt panel"
+      },
+      "en": {
+        "text": "Selected panel"
+      }
+    },
+    "sb2.panel-label": {
+      "nb": {
+        "text": "Panel {number}, scene {scene}"
+      },
+      "en": {
+        "text": "Panel {number}, scene {scene}"
+      }
+    },
+    "sb2.panel-size": {
+      "nb": {
+        "text": "Panelstørrelse"
+      },
+      "en": {
+        "text": "Panel size"
+      }
+    },
+    "sb2.production": {
+      "nb": {
+        "text": "Produksjon"
+      },
+      "en": {
+        "text": "Production"
+      }
+    },
+    "sb2.redo": {
+      "nb": {
+        "text": "Gjør om"
+      },
+      "en": {
+        "text": "Redo"
+      }
+    },
+    "sb2.restore": {
+      "nb": {
+        "text": "Gjeninnfør"
+      },
+      "en": {
+        "text": "Reinstate"
+      }
+    },
+    "sb2.route.description": {
+      "nb": {
+        "text": "Hele filmen som storyboardpaneler, i fortellerrekkefølge."
+      },
+      "en": {
+        "text": "The whole film as storyboard panels, in story order."
+      }
+    },
+    "sb2.route.title": {
+      "nb": {
+        "text": "Storyboard – Pen to Glass"
+      },
+      "en": {
+        "text": "Storyboard – Pen to Glass"
+      }
+    },
+    "sb2.scene-earlier": {
+      "nb": {
+        "text": "Flytt scenen tidligere i filmen"
+      },
+      "en": {
+        "text": "Move the scene earlier in the film"
+      }
+    },
+    "sb2.scene-empty": {
+      "nb": {
+        "text": "Ingen paneler i scenen."
+      },
+      "en": {
+        "text": "No panels in the scene."
+      }
+    },
+    "sb2.scene-later": {
+      "nb": {
+        "text": "Flytt scenen senere i filmen"
+      },
+      "en": {
+        "text": "Move the scene later in the film"
+      }
+    },
+    "sb2.scene-order-changed": {
+      "nb": {
+        "text": "Filmens scenerekkefølge er endret. Manus og montering følger med. Kan angres."
+      },
+      "en": {
+        "text": "The film’s scene order changed. Script and edit follow. Can be undone."
+      }
+    },
+    "sb2.scene-order-warning": {
+      "nb": {
+        "text": "Flytting endrer filmens scenerekkefølge"
+      },
+      "en": {
+        "text": "Moving changes the film’s scene order"
+      }
+    },
+    "sb2.seed-body": {
+      "nb": {
+        "text": "Forslag: ett tomt panel per scene ({count} scener). Ingenting lages før du bekrefter, og det kan angres."
+      },
+      "en": {
+        "text": "Suggestion: one empty panel per scene ({count} scenes). Nothing is created until you confirm, and it can be undone."
+      }
+    },
+    "sb2.seed-confirm": {
+      "nb": {
+        "text": "Lag paneler"
+      },
+      "en": {
+        "text": "Create panels"
+      }
+    },
+    "sb2.seed-later": {
+      "nb": {
+        "text": "Ikke nå"
+      },
+      "en": {
+        "text": "Not now"
+      }
+    },
+    "sb2.seed-title": {
+      "nb": {
+        "text": "Lag storyboardpaneler?"
+      },
+      "en": {
+        "text": "Create storyboard panels?"
+      }
+    },
+    "sb2.selected": {
+      "nb": {
+        "text": "Panel {number} valgt"
+      },
+      "en": {
+        "text": "Panel {number} selected"
+      }
+    },
+    "sb2.show-hidden": {
+      "nb": {
+        "text": "Vis skjulte og deaktiverte"
+      },
+      "en": {
+        "text": "Show hidden and deactivated"
+      }
+    },
+    "sb2.show-legend": {
+      "nb": {
+        "text": "Vis på kortene"
+      },
+      "en": {
+        "text": "Show on cards"
+      }
+    },
+    "sb2.show-panel": {
+      "nb": {
+        "text": "Vis"
+      },
+      "en": {
+        "text": "Show"
+      }
+    },
+    "sb2.show.dialogue": {
+      "nb": {
+        "text": "Dialog"
+      },
+      "en": {
+        "text": "Dialogue"
+      }
+    },
+    "sb2.show.name": {
+      "nb": {
+        "text": "Navn"
+      },
+      "en": {
+        "text": "Name"
+      }
+    },
+    "sb2.show.notes": {
+      "nb": {
+        "text": "Notater"
+      },
+      "en": {
+        "text": "Notes"
+      }
+    },
+    "sb2.show.number": {
+      "nb": {
+        "text": "Nummer"
+      },
+      "en": {
+        "text": "Number"
+      }
+    },
+    "sb2.show.script": {
+      "nb": {
+        "text": "Manustekst"
+      },
+      "en": {
+        "text": "Script text"
+      }
+    },
+    "sb2.show.status": {
+      "nb": {
+        "text": "Status"
+      },
+      "en": {
+        "text": "Status"
+      }
+    },
+    "sb2.show.timing": {
+      "nb": {
+        "text": "Timing"
+      },
+      "en": {
+        "text": "Timing"
+      }
+    },
+    "sb2.status-of": {
+      "nb": {
+        "text": "Status for {area}"
+      },
+      "en": {
+        "text": "Status for {area}"
+      }
+    },
+    "sb2.status.changes-requested": {
+      "nb": {
+        "text": "Endringer ønskes"
+      },
+      "en": {
+        "text": "Changes requested"
+      }
+    },
+    "sb2.status.done": {
+      "nb": {
+        "text": "Ferdig"
+      },
+      "en": {
+        "text": "Done"
+      }
+    },
+    "sb2.status.in-progress": {
+      "nb": {
+        "text": "Under arbeid"
+      },
+      "en": {
+        "text": "In progress"
+      }
+    },
+    "sb2.status.not-started": {
+      "nb": {
+        "text": "Ikke startet"
+      },
+      "en": {
+        "text": "Not started"
+      }
+    },
+    "sb2.status.review": {
+      "nb": {
+        "text": "Klar for gjennomgang"
+      },
+      "en": {
+        "text": "Ready for review"
+      }
+    },
+    "sb2.text-view": {
+      "nb": {
+        "text": "Tekstvisning"
+      },
+      "en": {
+        "text": "Text view"
+      }
+    },
+    "sb2.toolbar": {
+      "nb": {
+        "text": "Storyboardvisning"
+      },
+      "en": {
+        "text": "Storyboard view"
+      }
+    },
+    "sb2.undo": {
+      "nb": {
+        "text": "Angre"
+      },
+      "en": {
+        "text": "Undo"
+      }
+    },
+    "sb2.undo.activate": {
+      "nb": {
+        "text": "Gjeninnfør panel"
+      },
+      "en": {
+        "text": "Reinstate panel"
+      }
+    },
+    "sb2.undo.add": {
+      "nb": {
+        "text": "Nytt storyboardpanel"
+      },
+      "en": {
+        "text": "New storyboard panel"
+      }
+    },
+    "sb2.undo.deactivate": {
+      "nb": {
+        "text": "Deaktiver panel"
+      },
+      "en": {
+        "text": "Deactivate panel"
+      }
+    },
+    "sb2.undo.duplicate": {
+      "nb": {
+        "text": "Dupliser panel"
+      },
+      "en": {
+        "text": "Duplicate panel"
+      }
+    },
+    "sb2.undo.hide": {
+      "nb": {
+        "text": "Skjul panel"
+      },
+      "en": {
+        "text": "Hide panel"
+      }
+    },
+    "sb2.undo.move": {
+      "nb": {
+        "text": "Flytt panel"
+      },
+      "en": {
+        "text": "Move panel"
+      }
+    },
+    "sb2.undo.move-scene": {
+      "nb": {
+        "text": "Endre filmens scenerekkefølge"
+      },
+      "en": {
+        "text": "Change the film’s scene order"
+      }
+    },
+    "sb2.undo.move-to-scene": {
+      "nb": {
+        "text": "Flytt panel til scene"
+      },
+      "en": {
+        "text": "Move panel to scene"
+      }
+    },
+    "sb2.undo.seed": {
+      "nb": {
+        "text": "Lag storyboardpaneler"
+      },
+      "en": {
+        "text": "Create storyboard panels"
+      }
+    },
+    "sb2.undo.show": {
+      "nb": {
+        "text": "Vis panel"
+      },
+      "en": {
+        "text": "Show panel"
+      }
+    },
+    "sb2.undo.status": {
+      "nb": {
+        "text": "Endre status"
+      },
+      "en": {
+        "text": "Change status"
+      }
+    },
+    "sb2.untitled-scene": {
+      "nb": {
+        "text": "Scene uten overskrift"
+      },
+      "en": {
+        "text": "Scene without heading"
+      }
+    },
+    "sb2.zoom": {
+      "nb": {
+        "text": "Zoom"
+      },
+      "en": {
+        "text": "Zoom"
+      }
+    },
+    "sb2.zoom-in": {
+      "nb": {
+        "text": "Zoom inn (detalj)"
+      },
+      "en": {
+        "text": "Zoom in (detail)"
+      }
+    },
+    "sb2.zoom-out": {
+      "nb": {
+        "text": "Zoom ut (oversikt)"
+      },
+      "en": {
+        "text": "Zoom out (overview)"
+      }
+    },
+    "sb3.add-comment": {
+      "nb": {
+        "text": "Legg til kommentar"
+      },
+      "en": {
+        "text": "Add comment"
+      }
+    },
+    "sb3.add-field": {
+      "nb": {
+        "text": "Legg til felt"
+      },
+      "en": {
+        "text": "Add field"
+      }
+    },
+    "sb3.add-point": {
+      "nb": {
+        "text": "Legg til punkt"
+      },
+      "en": {
+        "text": "Add point"
+      }
+    },
+    "sb3.anchor": {
+      "nb": {
+        "text": "Forankring"
+      },
+      "en": {
+        "text": "Anchor"
+      }
+    },
+    "sb3.angle": {
+      "nb": {
+        "text": "Vinkel"
+      },
+      "en": {
+        "text": "Angle"
+      }
+    },
+    "sb3.angle.bird": {
+      "nb": {
+        "text": "Fugleperspektiv"
+      },
+      "en": {
+        "text": "Bird’s eye"
+      }
+    },
+    "sb3.angle.dutch": {
+      "nb": {
+        "text": "Nederlandsk"
+      },
+      "en": {
+        "text": "Dutch"
+      }
+    },
+    "sb3.angle.eye": {
+      "nb": {
+        "text": "Øyehøyde"
+      },
+      "en": {
+        "text": "Eye level"
+      }
+    },
+    "sb3.angle.high": {
+      "nb": {
+        "text": "Høy"
+      },
+      "en": {
+        "text": "High"
+      }
+    },
+    "sb3.angle.low": {
+      "nb": {
+        "text": "Lav"
+      },
+      "en": {
+        "text": "Low"
+      }
+    },
+    "sb3.camera.frame-height": {
+      "nb": {
+        "text": "Rammehøyde"
+      },
+      "en": {
+        "text": "Frame height"
+      }
+    },
+    "sb3.camera.frame-width": {
+      "nb": {
+        "text": "Rammebredde"
+      },
+      "en": {
+        "text": "Frame width"
+      }
+    },
+    "sb3.camera.frame-x": {
+      "nb": {
+        "text": "Ramme X"
+      },
+      "en": {
+        "text": "Frame X"
+      }
+    },
+    "sb3.camera.frame-y": {
+      "nb": {
+        "text": "Ramme Y"
+      },
+      "en": {
+        "text": "Frame Y"
+      }
+    },
+    "sb3.camera.pan-x": {
+      "nb": {
+        "text": "Panorering X"
+      },
+      "en": {
+        "text": "Pan X"
+      }
+    },
+    "sb3.camera.pan-y": {
+      "nb": {
+        "text": "Panorering Y"
+      },
+      "en": {
+        "text": "Pan Y"
+      }
+    },
+    "sb3.camera.tilt": {
+      "nb": {
+        "text": "Tilt"
+      },
+      "en": {
+        "text": "Tilt"
+      }
+    },
+    "sb3.camera.zoom": {
+      "nb": {
+        "text": "Zoom"
+      },
+      "en": {
+        "text": "Zoom"
+      }
+    },
+    "sb3.category": {
+      "nb": {
+        "text": "Kategori"
+      },
+      "en": {
+        "text": "Category"
+      }
+    },
+    "sb3.category.attention": {
+      "nb": {
+        "text": "Oppmerksomhet"
+      },
+      "en": {
+        "text": "Attention"
+      }
+    },
+    "sb3.category.camera": {
+      "nb": {
+        "text": "Kamera"
+      },
+      "en": {
+        "text": "Camera"
+      }
+    },
+    "sb3.category.character": {
+      "nb": {
+        "text": "Karakter"
+      },
+      "en": {
+        "text": "Character"
+      }
+    },
+    "sb3.category.gaze": {
+      "nb": {
+        "text": "Blikk"
+      },
+      "en": {
+        "text": "Gaze"
+      }
+    },
+    "sb3.category.object": {
+      "nb": {
+        "text": "Objekt"
+      },
+      "en": {
+        "text": "Object"
+      }
+    },
+    "sb3.color": {
+      "nb": {
+        "text": "Farge"
+      },
+      "en": {
+        "text": "Color"
+      }
+    },
+    "sb3.comment": {
+      "nb": {
+        "text": "Kommentar"
+      },
+      "en": {
+        "text": "Comment"
+      }
+    },
+    "sb3.comments": {
+      "nb": {
+        "text": "Kommentarer"
+      },
+      "en": {
+        "text": "Comments"
+      }
+    },
+    "sb3.confirm": {
+      "nb": {
+        "text": "Bekreft"
+      },
+      "en": {
+        "text": "Confirm"
+      }
+    },
+    "sb3.current": {
+      "nb": {
+        "text": "Gjeldende revisjon"
+      },
+      "en": {
+        "text": "Current revision"
+      }
+    },
+    "sb3.curved": {
+      "nb": {
+        "text": "Buet"
+      },
+      "en": {
+        "text": "Curved"
+      }
+    },
+    "sb3.custom-field": {
+      "nb": {
+        "text": "Egendefinert felt"
+      },
+      "en": {
+        "text": "Custom field"
+      }
+    },
+    "sb3.dialogue-links": {
+      "nb": {
+        "text": "Koblede replikker"
+      },
+      "en": {
+        "text": "Linked dialogue"
+      }
+    },
+    "sb3.down": {
+      "nb": {
+        "text": "Flytt ned"
+      },
+      "en": {
+        "text": "Move down"
+      }
+    },
+    "sb3.edit": {
+      "nb": {
+        "text": "Rediger storyboard"
+      },
+      "en": {
+        "text": "Edit storyboard"
+      }
+    },
+    "sb3.edit-approved": {
+      "nb": {
+        "text": "Rediger storyboard"
+      },
+      "en": {
+        "text": "Edit storyboard"
+      }
+    },
+    "sb3.field.action": {
+      "nb": {
+        "text": "Handling"
+      },
+      "en": {
+        "text": "Action"
+      }
+    },
+    "sb3.field.camera": {
+      "nb": {
+        "text": "Kamera"
+      },
+      "en": {
+        "text": "Camera"
+      }
+    },
+    "sb3.field.dialogue": {
+      "nb": {
+        "text": "Dialog"
+      },
+      "en": {
+        "text": "Dialogue"
+      }
+    },
+    "sb3.field.notes": {
+      "nb": {
+        "text": "Notater"
+      },
+      "en": {
+        "text": "Notes"
+      }
+    },
+    "sb3.field.sound": {
+      "nb": {
+        "text": "Lyd"
+      },
+      "en": {
+        "text": "Sound"
+      }
+    },
+    "sb3.focal": {
+      "nb": {
+        "text": "Brennvidde (mm)"
+      },
+      "en": {
+        "text": "Focal length (mm)"
+      }
+    },
+    "sb3.form": {
+      "nb": {
+        "text": "Form"
+      },
+      "en": {
+        "text": "Form"
+      }
+    },
+    "sb3.handled": {
+      "nb": {
+        "text": "Behandlet"
+      },
+      "en": {
+        "text": "Handled"
+      }
+    },
+    "sb3.height": {
+      "nb": {
+        "text": "Høyde"
+      },
+      "en": {
+        "text": "Height"
+      }
+    },
+    "sb3.help": {
+      "nb": {
+        "text": "Hjelp"
+      },
+      "en": {
+        "text": "Help"
+      }
+    },
+    "sb3.layer": {
+      "nb": {
+        "text": "Lag"
+      },
+      "en": {
+        "text": "Layer"
+      }
+    },
+    "sb3.layers": {
+      "nb": {
+        "text": "Lag"
+      },
+      "en": {
+        "text": "Layers"
+      }
+    },
+    "sb3.library": {
+      "nb": {
+        "text": "Bibliotek"
+      },
+      "en": {
+        "text": "Library"
+      }
+    },
+    "sb3.lock": {
+      "nb": {
+        "text": "Lås"
+      },
+      "en": {
+        "text": "Lock"
+      }
+    },
+    "sb3.lock-numbers": {
+      "nb": {
+        "text": "Lås nummer"
+      },
+      "en": {
+        "text": "Lock numbers"
+      }
+    },
+    "sb3.mask": {
+      "nb": {
+        "text": "Formatmaske"
+      },
+      "en": {
+        "text": "Aspect mask"
+      }
+    },
+    "sb3.movement": {
+      "nb": {
+        "text": "Kamerabevegelse"
+      },
+      "en": {
+        "text": "Camera movement"
+      }
+    },
+    "sb3.new": {
+      "nb": {
+        "text": "Nytt panel"
+      },
+      "en": {
+        "text": "New panel"
+      }
+    },
+    "sb3.next": {
+      "nb": {
+        "text": "Neste panel"
+      },
+      "en": {
+        "text": "Next panel"
+      }
+    },
+    "sb3.no-anchor": {
+      "nb": {
+        "text": "Ingen forankring"
+      },
+      "en": {
+        "text": "No anchor"
+      }
+    },
+    "sb3.note": {
+      "nb": {
+        "text": "Lapp"
+      },
+      "en": {
+        "text": "Note"
+      }
+    },
+    "sb3.note-type": {
+      "nb": {
+        "text": "Lapptype"
+      },
+      "en": {
+        "text": "Note type"
+      }
+    },
+    "sb3.note-type.camera": {
+      "nb": {
+        "text": "Kamerainstruksjon"
+      },
+      "en": {
+        "text": "Camera instruction"
+      }
+    },
+    "sb3.note-type.direction": {
+      "nb": {
+        "text": "Reginotat"
+      },
+      "en": {
+        "text": "Direction"
+      }
+    },
+    "sb3.note-type.visual": {
+      "nb": {
+        "text": "Visuell lapp"
+      },
+      "en": {
+        "text": "Visual note"
+      }
+    },
+    "sb3.notes-visible": {
+      "nb": {
+        "text": "Vis lapper"
+      },
+      "en": {
+        "text": "Show notes"
+      }
+    },
+    "sb3.panel": {
+      "nb": {
+        "text": "Panel"
+      },
+      "en": {
+        "text": "Panel"
+      }
+    },
+    "sb3.path-target": {
+      "nb": {
+        "text": "Lag i scenen"
+      },
+      "en": {
+        "text": "Scene layer"
+      }
+    },
+    "sb3.path-warning": {
+      "nb": {
+        "text": "Bruke pilen som bevegelsesbane i scenens utkast? Ferdig materiale beholdes uendret."
+      },
+      "en": {
+        "text": "Apply the arrow as a movement path in the scene draft? Finished material stays unchanged."
+      }
+    },
+    "sb3.previous": {
+      "nb": {
+        "text": "Forrige panel"
+      },
+      "en": {
+        "text": "Previous panel"
+      }
+    },
+    "sb3.project-format": {
+      "nb": {
+        "text": "Prosjektets format"
+      },
+      "en": {
+        "text": "Project format"
+      }
+    },
+    "sb3.properties": {
+      "nb": {
+        "text": "Egenskaper"
+      },
+      "en": {
+        "text": "Properties"
+      }
+    },
+    "sb3.readonly": {
+      "nb": {
+        "text": "Denne revisjonen kan bare leses."
+      },
+      "en": {
+        "text": "This revision is read-only."
+      }
+    },
+    "sb3.redo": {
+      "nb": {
+        "text": "Gjør om"
+      },
+      "en": {
+        "text": "Redo"
+      }
+    },
+    "sb3.region": {
+      "nb": {
+        "text": "Område"
+      },
+      "en": {
+        "text": "Region"
+      }
+    },
+    "sb3.remove": {
+      "nb": {
+        "text": "Fjern lag"
+      },
+      "en": {
+        "text": "Remove layer"
+      }
+    },
+    "sb3.renumber": {
+      "nb": {
+        "text": "Nummerer på nytt"
+      },
+      "en": {
+        "text": "Renumber"
+      }
+    },
+    "sb3.renumber-warning": {
+      "nb": {
+        "text": "Eksisterende låste nummer endres. Se gjennom endringene før du bekrefter."
+      },
+      "en": {
+        "text": "Existing locked numbers will change. Review the changes before confirming."
+      }
+    },
+    "sb3.reopen": {
+      "nb": {
+        "text": "Åpne igjen"
+      },
+      "en": {
+        "text": "Reopen"
+      }
+    },
+    "sb3.resolve": {
+      "nb": {
+        "text": "Behandle"
+      },
+      "en": {
+        "text": "Resolve"
+      }
+    },
+    "sb3.revision": {
+      "nb": {
+        "text": "Revisjon {number}"
+      },
+      "en": {
+        "text": "Revision {number}"
+      }
+    },
+    "sb3.revisions": {
+      "nb": {
+        "text": "Revisjoner"
+      },
+      "en": {
+        "text": "Revisions"
+      }
+    },
+    "sb3.safe": {
+      "nb": {
+        "text": "Sikre soner"
+      },
+      "en": {
+        "text": "Safe zones"
+      }
+    },
+    "sb3.shape": {
+      "nb": {
+        "text": "Figur"
+      },
+      "en": {
+        "text": "Shape"
+      }
+    },
+    "sb3.shape.ellipse": {
+      "nb": {
+        "text": "Ellipse"
+      },
+      "en": {
+        "text": "Ellipse"
+      }
+    },
+    "sb3.shape.line": {
+      "nb": {
+        "text": "Linje"
+      },
+      "en": {
+        "text": "Line"
+      }
+    },
+    "sb3.shape.rect": {
+      "nb": {
+        "text": "Rektangel"
+      },
+      "en": {
+        "text": "Rectangle"
+      }
+    },
+    "sb3.shortcuts": {
+      "nb": {
+        "text": "Hurtigtaster"
+      },
+      "en": {
+        "text": "Keyboard shortcuts"
+      }
+    },
+    "sb3.shot": {
+      "nb": {
+        "text": "Utsnittstype"
+      },
+      "en": {
+        "text": "Shot size"
+      }
+    },
+    "sb3.size": {
+      "nb": {
+        "text": "Tekststørrelse"
+      },
+      "en": {
+        "text": "Text size"
+      }
+    },
+    "sb3.straight": {
+      "nb": {
+        "text": "Rett"
+      },
+      "en": {
+        "text": "Straight"
+      }
+    },
+    "sb3.text": {
+      "nb": {
+        "text": "Tekst"
+      },
+      "en": {
+        "text": "Text"
+      }
+    },
+    "sb3.thickness": {
+      "nb": {
+        "text": "Tykkelse"
+      },
+      "en": {
+        "text": "Thickness"
+      }
+    },
+    "sb3.thirds": {
+      "nb": {
+        "text": "Tredjedelsrutenett"
+      },
+      "en": {
+        "text": "Rule of thirds"
+      }
+    },
+    "sb3.title": {
+      "nb": {
+        "text": "Tittel"
+      },
+      "en": {
+        "text": "Title"
+      }
+    },
+    "sb3.tool.arrow": {
+      "nb": {
+        "text": "Pil"
+      },
+      "en": {
+        "text": "Arrow"
+      }
+    },
+    "sb3.tool.camera": {
+      "nb": {
+        "text": "Kameramerke"
+      },
+      "en": {
+        "text": "Camera mark"
+      }
+    },
+    "sb3.tool.line": {
+      "nb": {
+        "text": "Linje"
+      },
+      "en": {
+        "text": "Line"
+      }
+    },
+    "sb3.tool.note": {
+      "nb": {
+        "text": "Lapp"
+      },
+      "en": {
+        "text": "Note"
+      }
+    },
+    "sb3.tool.select": {
+      "nb": {
+        "text": "Velg"
+      },
+      "en": {
+        "text": "Select"
+      }
+    },
+    "sb3.tool.shape": {
+      "nb": {
+        "text": "Figur"
+      },
+      "en": {
+        "text": "Shape"
+      }
+    },
+    "sb3.tool.text": {
+      "nb": {
+        "text": "Tekst"
+      },
+      "en": {
+        "text": "Text"
+      }
+    },
+    "sb3.tools": {
+      "nb": {
+        "text": "Verktøy"
+      },
+      "en": {
+        "text": "Tools"
+      }
+    },
+    "sb3.transform.rotation": {
+      "nb": {
+        "text": "Rotasjon"
+      },
+      "en": {
+        "text": "Rotation"
+      }
+    },
+    "sb3.transform.scaleX": {
+      "nb": {
+        "text": "Skala X"
+      },
+      "en": {
+        "text": "Scale X"
+      }
+    },
+    "sb3.transform.scaleY": {
+      "nb": {
+        "text": "Skala Y"
+      },
+      "en": {
+        "text": "Scale Y"
+      }
+    },
+    "sb3.transform.x": {
+      "nb": {
+        "text": "X"
+      },
+      "en": {
+        "text": "X"
+      }
+    },
+    "sb3.transform.y": {
+      "nb": {
+        "text": "Y"
+      },
+      "en": {
+        "text": "Y"
+      }
+    },
+    "sb3.undo": {
+      "nb": {
+        "text": "Angre"
+      },
+      "en": {
+        "text": "Undo"
+      }
+    },
+    "sb3.up": {
+      "nb": {
+        "text": "Flytt opp"
+      },
+      "en": {
+        "text": "Move up"
+      }
+    },
+    "sb3.use-path": {
+      "nb": {
+        "text": "Bruk som bevegelsesbane"
+      },
+      "en": {
+        "text": "Use as movement path"
+      }
+    },
+    "sb3.visibility": {
+      "nb": {
+        "text": "Synlighet"
+      },
+      "en": {
+        "text": "Visibility"
+      }
+    },
+    "sb3.width": {
+      "nb": {
+        "text": "Bredde"
+      },
+      "en": {
+        "text": "Width"
+      }
+    },
+    "sb4.accept-scene-timing": {
+      "nb": {
+        "text": "Godta timing for scenen"
+      },
+      "en": {
+        "text": "Accept timing for scene"
+      }
+    },
+    "sb4.accept-timing": {
+      "nb": {
+        "text": "Godta timingforslag"
+      },
+      "en": {
+        "text": "Accept timing suggestion"
+      }
+    },
+    "sb4.audio-timing": {
+      "nb": {
+        "text": "Bruk lydens varighet"
+      },
+      "en": {
+        "text": "Use audio duration"
+      }
+    },
+    "sb4.export.image-source": {
+      "nb": {
+        "text": "Bildekilde"
+      },
+      "en": {
+        "text": "Image source"
+      }
+    },
+    "sb4.export.source-animation": {
+      "nb": {
+        "text": "Animasjon"
+      },
+      "en": {
+        "text": "Animation"
+      }
+    },
+    "sb4.export.source-film": {
+      "nb": {
+        "text": "Film"
+      },
+      "en": {
+        "text": "Film"
+      }
+    },
+    "sb4.export.source-storyboard": {
+      "nb": {
+        "text": "Storyboardpaneler"
+      },
+      "en": {
+        "text": "Storyboard panels"
+      }
+    },
+    "sb4.film.description": {
+      "nb": {
+        "text": "Panelene spilles av med scenens lyd. Lyden er tidsmaster."
+      },
+      "en": {
+        "text": "The panels play with the scene's sound. The sound is the time master."
+      }
+    },
+    "sb4.film.empty": {
+      "nb": {
+        "text": "Ingen aktive paneler i filmen ennå."
+      },
+      "en": {
+        "text": "No active panels in the film yet."
+      }
+    },
+    "sb4.film.exit-fullscreen": {
+      "nb": {
+        "text": "Avslutt fullskjerm"
+      },
+      "en": {
+        "text": "Exit fullscreen"
+      }
+    },
+    "sb4.film.fullscreen": {
+      "nb": {
+        "text": "Fullskjerm"
+      },
+      "en": {
+        "text": "Fullscreen"
+      }
+    },
+    "sb4.film.mute": {
+      "nb": {
+        "text": "Slå lyden av"
+      },
+      "en": {
+        "text": "Mute"
+      }
+    },
+    "sb4.film.panel-label": {
+      "nb": {
+        "text": "Scene {scene}, panel {panel}: {name}"
+      },
+      "en": {
+        "text": "Scene {scene}, panel {panel}: {name}"
+      }
+    },
+    "sb4.film.pause": {
+      "nb": {
+        "text": "Sett på pause"
+      },
+      "en": {
+        "text": "Pause"
+      }
+    },
+    "sb4.film.play": {
+      "nb": {
+        "text": "Spill av"
+      },
+      "en": {
+        "text": "Play"
+      }
+    },
+    "sb4.film.timeline": {
+      "nb": {
+        "text": "Tidslinje for storyboardfilmen"
+      },
+      "en": {
+        "text": "Storyboard film timeline"
+      }
+    },
+    "sb4.film.title": {
+      "nb": {
+        "text": "Storyboardfilm"
+      },
+      "en": {
+        "text": "Storyboard film"
+      }
+    },
+    "sb4.film.unmute": {
+      "nb": {
+        "text": "Slå lyden på"
+      },
+      "en": {
+        "text": "Unmute"
+      }
+    },
+    "sb4.film.volume": {
+      "nb": {
+        "text": "Volum"
+      },
+      "en": {
+        "text": "Volume"
+      }
+    },
+    "sb4.inherited": {
+      "nb": {
+        "text": "Timingkilde"
+      },
+      "en": {
+        "text": "Timing source"
+      }
+    },
+    "sb4.mix-confirm": {
+      "nb": {
+        "text": "Legg den midlertidige lyden til scenens lyd? Eksisterende lyd beholdes."
+      },
+      "en": {
+        "text": "Add temporary audio to the scene sound? Existing audio is preserved."
+      }
+    },
+    "sb4.mobile-audio": {
+      "nb": {
+        "text": "Ta opp med mobilen"
+      },
+      "en": {
+        "text": "Record on mobile"
+      }
+    },
+    "sb4.next": {
+      "nb": {
+        "text": "Neste panel"
+      },
+      "en": {
+        "text": "Next panel"
+      }
+    },
+    "sb4.play-film": {
+      "nb": {
+        "text": "Spill av storyboardfilmen"
+      },
+      "en": {
+        "text": "Play the storyboard film"
+      }
+    },
+    "sb4.previous": {
+      "nb": {
+        "text": "Forrige panel"
+      },
+      "en": {
+        "text": "Previous panel"
+      }
+    },
+    "sb4.record": {
+      "nb": {
+        "text": "Ta opp midlertidig lyd"
+      },
+      "en": {
+        "text": "Record temporary audio"
+      }
+    },
+    "sb4.scene-timing": {
+      "nb": {
+        "text": "Arvet fra scenen"
+      },
+      "en": {
+        "text": "Inherited from scene"
+      }
+    },
+    "sb4.scrub": {
+      "nb": {
+        "text": "Bla i scenens bilder"
+      },
+      "en": {
+        "text": "Scrub scene frames"
+      }
+    },
+    "sb4.stop": {
+      "nb": {
+        "text": "Stopp"
+      },
+      "en": {
+        "text": "Stop"
+      }
+    },
+    "sb4.switch-view": {
+      "nb": {
+        "text": "Veksle arbeidsflate"
+      },
+      "en": {
+        "text": "Switch workspace"
+      }
+    },
+    "sb4.temp-audio": {
+      "nb": {
+        "text": "Midlertidig lyd"
+      },
+      "en": {
+        "text": "Temporary audio"
+      }
+    },
+    "sb4.upload-audio": {
+      "nb": {
+        "text": "Last opp lyd"
+      },
+      "en": {
+        "text": "Upload audio"
+      }
+    },
+    "sb4.use-scene": {
+      "nb": {
+        "text": "Bruk i scenen"
+      },
+      "en": {
+        "text": "Use in scene"
+      }
+    },
+    "sb5.arrows": {
+      "nb": {
+        "text": "{count} piler"
+      },
+      "en": {
+        "text": "{count} arrows"
+      }
+    },
+    "sb5.back-to-scene": {
+      "nb": {
+        "text": "Tilbake til scenen"
+      },
+      "en": {
+        "text": "Back to scene"
+      }
+    },
+    "sb5.camera-mark": {
+      "nb": {
+        "text": "Kameramerke"
+      },
+      "en": {
+        "text": "Camera mark"
+      }
+    },
+    "sb5.comments": {
+      "nb": {
+        "text": "{count} kommentarer"
+      },
+      "en": {
+        "text": "{count} comments"
+      }
+    },
+    "sb5.create-setup": {
+      "nb": {
+        "text": "Opprett sceneoppsett fra storyboard"
+      },
+      "en": {
+        "text": "Create scene setup from storyboard"
+      }
+    },
+    "sb5.dialogue": {
+      "nb": {
+        "text": "{count} replikker"
+      },
+      "en": {
+        "text": "{count} lines"
+      }
+    },
+    "sb5.edit-storyboard": {
+      "nb": {
+        "text": "Rediger storyboard"
+      },
+      "en": {
+        "text": "Edit storyboard"
+      }
+    },
+    "sb5.figures": {
+      "nb": {
+        "text": "{count} figurer"
+      },
+      "en": {
+        "text": "{count} figures"
+      }
+    },
+    "sb5.load-error": {
+      "nb": {
+        "text": "Kunne ikke laste prosjektet."
+      },
+      "en": {
+        "text": "Could not load the project."
+      }
+    },
+    "sb5.loading": {
+      "nb": {
+        "text": "Laster …"
+      },
+      "en": {
+        "text": "Loading …"
+      }
+    },
+    "sb5.no-panels": {
+      "nb": {
+        "text": "Ingen storyboardpaneler i denne scenen ennå."
+      },
+      "en": {
+        "text": "No storyboard panels in this scene yet."
+      }
+    },
+    "sb5.no-scene": {
+      "nb": {
+        "text": "Scenen finnes ikke."
+      },
+      "en": {
+        "text": "The scene does not exist."
+      }
+    },
+    "sb5.notes": {
+      "nb": {
+        "text": "{count} lapper"
+      },
+      "en": {
+        "text": "{count} notes"
+      }
+    },
+    "sb5.open-large": {
+      "nb": {
+        "text": "Forstørr"
+      },
+      "en": {
+        "text": "Enlarge"
+      }
+    },
+    "sb5.open-link": {
+      "nb": {
+        "text": "Åpne likevel"
+      },
+      "en": {
+        "text": "Open anyway"
+      }
+    },
+    "sb5.open-popup": {
+      "nb": {
+        "text": "Åpne i eget vindu"
+      },
+      "en": {
+        "text": "Open in separate window"
+      }
+    },
+    "sb5.popup-blocked": {
+      "nb": {
+        "text": "Nettleseren blokkerte popup-vinduet."
+      },
+      "en": {
+        "text": "The browser blocked the popup window."
+      }
+    },
+    "sb5.read-only": {
+      "nb": {
+        "text": "Låst for redigering"
+      },
+      "en": {
+        "text": "Read-only"
+      }
+    },
+    "sb5.reference-title": {
+      "nb": {
+        "text": "Storyboard"
+      },
+      "en": {
+        "text": "Storyboard"
+      }
+    },
+    "sb5.route.description": {
+      "nb": {
+        "text": "Scenens storyboardpaneler i eget vindu, låst for redigering."
+      },
+      "en": {
+        "text": "The scene's storyboard panels in a separate window, read-only."
+      }
+    },
+    "sb5.route.title": {
+      "nb": {
+        "text": "Storyboard-referanse"
+      },
+      "en": {
+        "text": "Storyboard reference"
+      }
+    },
+    "sb5.setup-cancel": {
+      "nb": {
+        "text": "Avbryt"
+      },
+      "en": {
+        "text": "Cancel"
+      }
+    },
+    "sb5.setup-choose-panel": {
+      "nb": {
+        "text": "Velg hvilket panel som skal være utgangspunkt"
+      },
+      "en": {
+        "text": "Choose which panel to use as the starting point"
+      }
+    },
+    "sb5.setup-confirm": {
+      "nb": {
+        "text": "Opprett"
+      },
+      "en": {
+        "text": "Create"
+      }
+    },
+    "sb5.setup-description": {
+      "nb": {
+        "text": "Forhåndsvisning før noe opprettes. Alt kan angres som én kommando."
+      },
+      "en": {
+        "text": "Preview before anything is created. Everything can be undone as one command."
+      }
+    },
+    "sb5.setup-failed": {
+      "nb": {
+        "text": "Kunne ikke opprette sceneoppsettet."
+      },
+      "en": {
+        "text": "Could not create the scene setup."
+      }
+    },
+    "sb5.setup-has-content": {
+      "nb": {
+        "text": "Scenen har innhold fra før. Det eksisterende bevares – ingenting overskrives."
+      },
+      "en": {
+        "text": "The scene already has content. The existing content is preserved – nothing is overwritten."
+      }
+    },
+    "sb5.setup-new-draft": {
+      "nb": {
+        "text": "Nytt utkast (nytt lagsett øverst)"
+      },
+      "en": {
+        "text": "New draft (new layer set on top)"
+      }
+    },
+    "sb5.setup-preview-background": {
+      "nb": {
+        "text": "Bakgrunnsfargen kopieres."
+      },
+      "en": {
+        "text": "The background color is copied."
+      }
+    },
+    "sb5.setup-preview-camera": {
+      "nb": {
+        "text": "Kameramerket blir kameraets utgangspunkt."
+      },
+      "en": {
+        "text": "The camera mark becomes the camera's starting point."
+      }
+    },
+    "sb5.setup-preview-copied": {
+      "nb": {
+        "text": "{count} lag kopieres med ressurs, plassering, skala, rotasjon og rekkefølge."
+      },
+      "en": {
+        "text": "{count} layers are copied with asset, position, scale, rotation and order."
+      }
+    },
+    "sb5.setup-preview-layers": {
+      "nb": {
+        "text": "Lagene legges øverst som et nytt lagsett; eksisterende lag, bakgrunn og kamera røres ikke."
+      },
+      "en": {
+        "text": "The layers are added on top as a new layer set; existing layers, background and camera are untouched."
+      }
+    },
+    "sb5.setup-preview-skipped": {
+      "nb": {
+        "text": "{notes} lapper og {arrows} piler følger ikke med – de vises i referansepanelet."
+      },
+      "en": {
+        "text": "{notes} notes and {arrows} arrows are not copied – they remain visible in the reference panel."
+      }
+    },
+    "sb5.setup-title": {
+      "nb": {
+        "text": "Opprett sceneoppsett fra storyboard"
+      },
+      "en": {
+        "text": "Create scene setup from storyboard"
+      }
+    },
+    "sb5.undo-setup": {
+      "nb": {
+        "text": "Opprett sceneoppsett fra storyboard"
+      },
+      "en": {
+        "text": "Create scene setup from storyboard"
+      }
+    },
+    "sb5.untitled-panel": {
+      "nb": {
+        "text": "Panel uten navn"
+      },
+      "en": {
+        "text": "Untitled panel"
+      }
+    },
     "script-explorer2.chip.menu": {
       "replaces": [],
       "nb": {
@@ -11468,2803 +14553,6 @@
       },
       "en": {
         "text": "{weekday} at {time}"
-      }
-    },
-    "g1b.poster.genre-film": {
-      "replaces": [],
-      "nb": {
-        "text": "Animasjonsfilm"
-      },
-      "en": {
-        "text": "Animated film"
-      }
-    },
-    "g1b.poster.genre-family": {
-      "replaces": [],
-      "nb": {
-        "text": "Animert familiefilm"
-      },
-      "en": {
-        "text": "Animated family film"
-      }
-    },
-    "g1b.poster.feature": {
-      "replaces": [],
-      "nb": {
-        "text": "Animert spillefilm"
-      },
-      "en": {
-        "text": "Animated feature"
-      }
-    },
-    "g1b.poster.approx-min": {
-      "replaces": [],
-      "nb": {
-        "text": "ca. {min} min"
-      },
-      "en": {
-        "text": "approx. {min} min"
-      }
-    },
-    "g1b.poster.fallback-placeholder": {
-      "replaces": [
-        "app-release-poster-dialogs.export-poster-dialog.option.2ba2c82ca3fa",
-        "app-release-poster-dialogs.export-poster-dialog.option.7d645d203fe3",
-        "app-release-poster-dialogs.new-poster-dialog.option.39e4c15e4b70",
-        "app-release-poster-dialogs.new-poster-dialog.option.e3870b997183",
-        "app-release-poster-inspector.bilingual.label.2f1aee6df04c",
-        "app-release-poster-inspector.bilingual.label.e68a78963db2",
-        "app-release-poster-inspector.bilingual.placeholder.701d079a0cb5",
-        "app-release-poster-inspector.poster-settings.option.cf6b065837cf",
-        "app-release-poster-inspector.poster-settings.option.e6ed30832c1c",
-        "app-release-poster-workspace.release.option.c8bb36bc83a1",
-        "app-release-poster-workspace.release.option.cad6bb633625"
-      ],
-      "nb": {
-        "text": "Tom: teksten på {language} brukes"
-      },
-      "en": {
-        "text": "Empty: the {language} text is used"
-      }
-    },
-    "g1b.poster.untranslated-one": {
-      "replaces": [
-        "core-presentation-poster.text.text.7c664d2f6b00"
-      ],
-      "nb": {
-        "text": "1 tekst finnes ikke på {language} og vises på et annet språk."
-      },
-      "en": {
-        "text": "1 text has no {language} version and is shown in another language."
-      }
-    },
-    "g1b.poster.untranslated-many": {
-      "replaces": [
-        "core-presentation-poster.text.text.fd87329d7c53"
-      ],
-      "nb": {
-        "text": "{length} tekster finnes ikke på {language} og vises på et annet språk."
-      },
-      "en": {
-        "text": "{length} texts have no {language} version and are shown in another language."
-      }
-    },
-    "google.sign-in.button": {
-      "replaces": [],
-      "nb": {
-        "text": "Fortsett med Google"
-      },
-      "en": {
-        "text": "Continue with Google"
-      }
-    },
-    "google.sign-in.or": {
-      "replaces": [],
-      "nb": {
-        "text": "eller"
-      },
-      "en": {
-        "text": "or"
-      }
-    },
-    "google.sign-in.failed": {
-      "replaces": [],
-      "nb": {
-        "text": "Innloggingen med Google ble ikke fullført. Prøv igjen."
-      },
-      "en": {
-        "text": "Signing in with Google was not completed. Please try again."
-      }
-    },
-    "google.account.methods": {
-      "replaces": [],
-      "nb": {
-        "text": "Innlogging"
-      },
-      "en": {
-        "text": "Sign-in"
-      }
-    },
-    "google.account.method-google": {
-      "replaces": [],
-      "nb": {
-        "text": "Google"
-      },
-      "en": {
-        "text": "Google"
-      }
-    },
-    "google.account.method-email": {
-      "replaces": [],
-      "nb": {
-        "text": "E-post og passord"
-      },
-      "en": {
-        "text": "Email and password"
-      }
-    },
-    "adapters-storage-commands-functions.quota-projects": {
-      "nb": {
-        "text": "Grensen for antall prosjekter er nådd. Slett et prosjekt eller kontakt administrator for å øke grensen."
-      },
-      "en": {
-        "text": "The project limit has been reached. Delete a project or contact the administrator to raise the limit."
-      }
-    },
-    "adapters-storage-commands-functions.quota-change-log": {
-      "nb": {
-        "text": "Endringsloggen er full. Kontakt administrator for å øke grensen."
-      },
-      "en": {
-        "text": "The change log is full. Contact the administrator to raise the limit."
-      }
-    },
-    "adapters-storage-commands-functions.quota-storage": {
-      "nb": {
-        "text": "Lagringskvoten er nådd. Slett filer du ikke trenger, eller kontakt administrator for å øke grensen."
-      },
-      "en": {
-        "text": "The storage quota has been reached. Delete files you no longer need, or contact the administrator to raise the limit."
-      }
-    },
-    "adapters-storage-commands-functions.quota-uploads": {
-      "nb": {
-        "text": "For mange opplastinger den siste timen. Vent litt og prøv igjen."
-      },
-      "en": {
-        "text": "Too many uploads in the last hour. Wait a moment and try again."
-      }
-    },
-    "adapters-mobile-mobile-functions.db-message.quota-storage": {
-      "nb": {
-        "text": "Lagringskvoten er nådd. Slett filer du ikke trenger, eller kontakt administrator for å øke grensen."
-      },
-      "en": {
-        "text": "The storage quota has been reached. Delete files you no longer need, or contact the administrator to raise the limit."
-      }
-    },
-    "adapters-mobile-mobile-functions.db-message.quota-uploads": {
-      "nb": {
-        "text": "For mange opplastinger den siste timen. Vent litt og prøv igjen."
-      },
-      "en": {
-        "text": "Too many uploads in the last hour. Wait a moment and try again."
-      }
-    },
-    "adapters-storage-commands-functions.rate-limited": {
-      "nb": {
-        "text": "For mange forespørsler på kort tid. Vent litt og prøv igjen."
-      },
-      "en": {
-        "text": "Too many requests in a short time. Wait a moment and try again."
-      }
-    },
-    "g9-demo.open": {
-      "nb": {
-        "text": "Åpne eksempelprosjektet"
-      },
-      "en": {
-        "text": "Open the example project"
-      }
-    },
-    "g9-demo.opening": {
-      "nb": {
-        "text": "Lager eksempelprosjektet …"
-      },
-      "en": {
-        "text": "Creating the example project…"
-      }
-    },
-    "g9-demo.failed": {
-      "nb": {
-        "text": "Eksempelprosjektet kunne ikke lages: {message}"
-      },
-      "en": {
-        "text": "The example project could not be created: {message}"
-      }
-    },
-    "g5-admin.cancel": {
-      "nb": {
-        "text": "Avbryt"
-      },
-      "en": {
-        "text": "Cancel"
-      }
-    },
-    "g5-admin.failed": {
-      "nb": {
-        "text": "Det gikk ikke. Prøv igjen."
-      },
-      "en": {
-        "text": "That didn't work. Try again."
-      }
-    },
-    "g5-admin.save": {
-      "nb": {
-        "text": "Lagre"
-      },
-      "en": {
-        "text": "Save"
-      }
-    },
-    "g5-admin.saved": {
-      "nb": {
-        "text": "Lagret."
-      },
-      "en": {
-        "text": "Saved."
-      }
-    },
-    "g5-admin.unavailable": {
-      "nb": {
-        "text": "Ikke tilgjengelig ennå (databasen er ikke oppdatert)."
-      },
-      "en": {
-        "text": "Not available yet (the database has not been updated)."
-      }
-    },
-    "g5-admin.log.title": {
-      "nb": {
-        "text": "Endringslogg"
-      },
-      "en": {
-        "text": "Change log"
-      }
-    },
-    "g5-admin.log.note": {
-      "nb": {
-        "text": "Full historikk beholdes i et antall dager eller endringer per prosjekt. Eldre endringer ryddes én gang i døgnet av bakgrunnsjobben, eller nå med knappen."
-      },
-      "en": {
-        "text": "Full history is kept for a number of days or changes per project. Older changes are cleaned up once a day by the background job, or now with the button."
-      }
-    },
-    "g5-admin.log.total": {
-      "nb": {
-        "text": "{rows} endringer i {projects} prosjekter"
-      },
-      "en": {
-        "text": "{rows} changes in {projects} projects"
-      }
-    },
-    "g5-admin.log.project": {
-      "nb": {
-        "text": "Prosjekt"
-      },
-      "en": {
-        "text": "Project"
-      }
-    },
-    "g5-admin.log.rows": {
-      "nb": {
-        "text": "Endringer"
-      },
-      "en": {
-        "text": "Changes"
-      }
-    },
-    "g5-admin.log.size": {
-      "nb": {
-        "text": "Størrelse"
-      },
-      "en": {
-        "text": "Size"
-      }
-    },
-    "g5-admin.log.days": {
-      "nb": {
-        "text": "Dager med full historikk"
-      },
-      "en": {
-        "text": "Days of full history"
-      }
-    },
-    "g5-admin.log.max-rows": {
-      "nb": {
-        "text": "Endringer per prosjekt"
-      },
-      "en": {
-        "text": "Changes per project"
-      }
-    },
-    "g5-admin.log.prune": {
-      "nb": {
-        "text": "Rydd nå"
-      },
-      "en": {
-        "text": "Clean up now"
-      }
-    },
-    "g5-admin.log.pruned": {
-      "nb": {
-        "text": "Ryddet. Slettede endringer: {count}."
-      },
-      "en": {
-        "text": "Cleaned up. Changes removed: {count}."
-      }
-    },
-    "g5-admin.log.invalid": {
-      "nb": {
-        "text": "Dager må være 1–3650 og endringer 100–10 000 000."
-      },
-      "en": {
-        "text": "Days must be 1–3650 and changes 100–10,000,000."
-      }
-    },
-    "g5-admin.quota.title": {
-      "nb": {
-        "text": "Kvoter"
-      },
-      "en": {
-        "text": "Quotas"
-      }
-    },
-    "g5-admin.quota.note": {
-      "nb": {
-        "text": "Grenser per arbeidsgruppe, eller per bruker for prosjekter uten arbeidsgruppe. Tomt felt betyr ingen grense. Databasen håndhever grensene."
-      },
-      "en": {
-        "text": "Limits per workspace, or per user for projects without a workspace. An empty field means no limit. The database enforces the limits."
-      }
-    },
-    "g5-admin.quota.none": {
-      "nb": {
-        "text": "Ingen kvoter er satt."
-      },
-      "en": {
-        "text": "No quotas have been set."
-      }
-    },
-    "g5-admin.quota.find-user": {
-      "nb": {
-        "text": "Finn bruker (e-post eller navn)"
-      },
-      "en": {
-        "text": "Find user (email or name)"
-      }
-    },
-    "g5-admin.quota.search": {
-      "nb": {
-        "text": "Søk"
-      },
-      "en": {
-        "text": "Search"
-      }
-    },
-    "g5-admin.quota.workspace-id": {
-      "nb": {
-        "text": "Arbeidsgruppens ID"
-      },
-      "en": {
-        "text": "Workspace ID"
-      }
-    },
-    "g5-admin.quota.add-workspace": {
-      "nb": {
-        "text": "Ny kvote for arbeidsgruppen"
-      },
-      "en": {
-        "text": "New quota for the workspace"
-      }
-    },
-    "g5-admin.quota.add-user": {
-      "nb": {
-        "text": "Ny kvote for {user}"
-      },
-      "en": {
-        "text": "New quota for {user}"
-      }
-    },
-    "g5-admin.quota.workspace": {
-      "nb": {
-        "text": "Arbeidsgruppe: {name}"
-      },
-      "en": {
-        "text": "Workspace: {name}"
-      }
-    },
-    "g5-admin.quota.user": {
-      "nb": {
-        "text": "Bruker: {name}"
-      },
-      "en": {
-        "text": "User: {name}"
-      }
-    },
-    "g5-admin.quota.storage": {
-      "nb": {
-        "text": "Lagring (GB)"
-      },
-      "en": {
-        "text": "Storage (GB)"
-      }
-    },
-    "g5-admin.quota.projects": {
-      "nb": {
-        "text": "Prosjekter"
-      },
-      "en": {
-        "text": "Projects"
-      }
-    },
-    "g5-admin.quota.log-rows": {
-      "nb": {
-        "text": "Endringer i loggen"
-      },
-      "en": {
-        "text": "Changes in the log"
-      }
-    },
-    "g5-admin.quota.uploads": {
-      "nb": {
-        "text": "Opplastinger per time"
-      },
-      "en": {
-        "text": "Uploads per hour"
-      }
-    },
-    "g5-admin.quota.unlimited": {
-      "nb": {
-        "text": "Ingen grense"
-      },
-      "en": {
-        "text": "No limit"
-      }
-    },
-    "g5-admin.quota.used": {
-      "nb": {
-        "text": "Brukt: {used}"
-      },
-      "en": {
-        "text": "Used: {used}"
-      }
-    },
-    "g5-admin.quota.remove": {
-      "nb": {
-        "text": "Fjern kvoten"
-      },
-      "en": {
-        "text": "Remove quota"
-      }
-    },
-    "g5-admin.quota.invalid": {
-      "nb": {
-        "text": "Bruk hele tall (lagring kan ha desimaler), eller la feltet stå tomt."
-      },
-      "en": {
-        "text": "Use whole numbers (storage may have decimals), or leave the field empty."
-      }
-    },
-    "g5-admin.rate.title": {
-      "nb": {
-        "text": "Hastighetsgrenser"
-      },
-      "en": {
-        "text": "Rate limits"
-      }
-    },
-    "g5-admin.rate.note": {
-      "nb": {
-        "text": "Hvor mange forespørsler som tillates i et tidsvindu, per bruker eller e-post og per IP-adresse. Over taket får brukeren «For mange forespørsler på kort tid»."
-      },
-      "en": {
-        "text": "How many requests are allowed in a time window, per user or email and per IP address. Above the limit the user sees “Too many requests in a short time”."
-      }
-    },
-    "g5-admin.rate.window": {
-      "nb": {
-        "text": "Vindu (sekunder)"
-      },
-      "en": {
-        "text": "Window (seconds)"
-      }
-    },
-    "g5-admin.rate.per-key": {
-      "nb": {
-        "text": "Per bruker/e-post"
-      },
-      "en": {
-        "text": "Per user/email"
-      }
-    },
-    "g5-admin.rate.per-ip": {
-      "nb": {
-        "text": "Per IP"
-      },
-      "en": {
-        "text": "Per IP"
-      }
-    },
-    "g6-bundle.publish": {
-      "nb": {
-        "text": "Publiser karakterknippe"
-      },
-      "en": {
-        "text": "Publish character bundle"
-      }
-    },
-    "g6-bundle.published": {
-      "nb": {
-        "text": "Knippe nr. {number} er publisert i arbeidsgruppen."
-      },
-      "en": {
-        "text": "Bundle no. {number} has been published to the workspace."
-      }
-    },
-    "g6-bundle.pull": {
-      "nb": {
-        "text": "Hent oppdatering (nr. {number})"
-      },
-      "en": {
-        "text": "Get update (no. {number})"
-      }
-    },
-    "g6-bundle.pull-label": {
-      "nb": {
-        "text": "Hent karakterknippe for {name}"
-      },
-      "en": {
-        "text": "Get character bundle for {name}"
-      }
-    },
-    "g6-bundle.pulled": {
-      "nb": {
-        "text": "Knippe nr. {number} er tatt inn. Du kan angre det i ett trinn."
-      },
-      "en": {
-        "text": "Bundle no. {number} has been brought in. You can undo it in one step."
-      }
-    },
-    "g6-bundle.plan-title": {
-      "nb": {
-        "text": "Hent knippe nr. {number} for {name}"
-      },
-      "en": {
-        "text": "Get bundle no. {number} for {name}"
-      }
-    },
-    "g6-bundle.plan-note": {
-      "nb": {
-        "text": "Dette tas inn felt for felt. Felt du har endret selv i prosjektet, beholdes. Ingenting tas i bruk før du bekrefter."
-      },
-      "en": {
-        "text": "This is brought in field by field. Fields you have changed yourself in the project are kept. Nothing is applied until you confirm."
-      }
-    },
-    "g6-bundle.cancel": {
-      "nb": {
-        "text": "Avbryt"
-      },
-      "en": {
-        "text": "Cancel"
-      }
-    },
-    "g6-bundle.confirm": {
-      "nb": {
-        "text": "Ta inn"
-      },
-      "en": {
-        "text": "Bring in"
-      }
-    },
-    "g6-bundle.apply": {
-      "nb": {
-        "text": "Oppdateres"
-      },
-      "en": {
-        "text": "Updated"
-      }
-    },
-    "g6-bundle.keep": {
-      "nb": {
-        "text": "Beholdes"
-      },
-      "en": {
-        "text": "Kept"
-      }
-    },
-    "g6-bundle.nothing": {
-      "nb": {
-        "text": "Ingenting å ta inn: prosjektet har allerede dette, eller du har endret alt selv."
-      },
-      "en": {
-        "text": "Nothing to bring in: the project already has this, or you have changed everything yourself."
-      }
-    },
-    "g6-bundle.field.voice": {
-      "nb": {
-        "text": "Stemmeprofil"
-      },
-      "en": {
-        "text": "Voice profile"
-      }
-    },
-    "g6-bundle.field.briefs": {
-      "nb": {
-        "text": "Tekstversjoner i faktaarket"
-      },
-      "en": {
-        "text": "Text versions in the fact sheet"
-      }
-    },
-    "g6-bundle.briefs-added": {
-      "nb": {
-        "text": "Legges til: {count}"
-      },
-      "en": {
-        "text": "Added: {count}"
-      }
-    },
-    "g6-bundle.field.active-brief": {
-      "nb": {
-        "text": "Aktiv tekstversjon"
-      },
-      "en": {
-        "text": "Active text version"
-      }
-    },
-    "g6-bundle.field.mouth": {
-      "nb": {
-        "text": "Munnsett ({set})"
-      },
-      "en": {
-        "text": "Mouth set ({set})"
-      }
-    },
-    "g6-bundle.field.rig": {
-      "nb": {
-        "text": "Rigg"
-      },
-      "en": {
-        "text": "Rig"
-      }
-    },
-    "g6-profiles.title": {
-      "nb": {
-        "text": "Profiler for prosjektene"
-      },
-      "en": {
-        "text": "Profiles for the projects"
-      }
-    },
-    "g6-profiles.note": {
-      "nb": {
-        "text": "Prosjekter i arbeidsgruppen arver standardprofilen av hver type når de ikke har en egen. En profil i prosjektet går alltid foran."
-      },
-      "en": {
-        "text": "Projects in the workspace inherit the default profile of each type when they have none of their own. A profile in the project always takes precedence."
-      }
-    },
-    "g6-profiles.unavailable": {
-      "nb": {
-        "text": "Profilene kunne ikke hentes."
-      },
-      "en": {
-        "text": "The profiles could not be loaded."
-      }
-    },
-    "g6-profiles.kind.style": {
-      "nb": {
-        "text": "Stilprofiler"
-      },
-      "en": {
-        "text": "Style profiles"
-      }
-    },
-    "g6-profiles.kind.quality": {
-      "nb": {
-        "text": "Kvalitetsprofiler"
-      },
-      "en": {
-        "text": "Quality profiles"
-      }
-    },
-    "g6-profiles.kind.font": {
-      "nb": {
-        "text": "Fonter"
-      },
-      "en": {
-        "text": "Fonts"
-      }
-    },
-    "g6-profiles.kind.template": {
-      "nb": {
-        "text": "Maler"
-      },
-      "en": {
-        "text": "Templates"
-      }
-    },
-    "g6-profiles.none": {
-      "nb": {
-        "text": "Ingen ennå."
-      },
-      "en": {
-        "text": "None yet."
-      }
-    },
-    "g6-profiles.default": {
-      "nb": {
-        "text": "Standard"
-      },
-      "en": {
-        "text": "Default"
-      }
-    },
-    "g6-profiles.make-default": {
-      "nb": {
-        "text": "Gjør til standard"
-      },
-      "en": {
-        "text": "Make default"
-      }
-    },
-    "g6-profiles.archive": {
-      "nb": {
-        "text": "Arkiver"
-      },
-      "en": {
-        "text": "Archive"
-      }
-    },
-    "g6-profiles.new-name": {
-      "nb": {
-        "text": "Navn på ny profil ({kind})"
-      },
-      "en": {
-        "text": "Name of new profile ({kind})"
-      }
-    },
-    "g6-profiles.add": {
-      "nb": {
-        "text": "Legg til"
-      },
-      "en": {
-        "text": "Add"
-      }
-    },
-    "g6-inherit.title": {
-      "nb": {
-        "text": "Arvet fra arbeidsgruppen {name}"
-      },
-      "en": {
-        "text": "Inherited from the workspace {name}"
-      }
-    },
-    "g6-inherit.none": {
-      "nb": {
-        "text": "Ingen"
-      },
-      "en": {
-        "text": "None"
-      }
-    },
-    "g6-inherit.paper": {
-      "nb": {
-        "text": "Papir"
-      },
-      "en": {
-        "text": "Paper"
-      }
-    },
-    "g6-inherit.currency": {
-      "nb": {
-        "text": "Valuta"
-      },
-      "en": {
-        "text": "Currency"
-      }
-    },
-    "g6-inherit.time-zone": {
-      "nb": {
-        "text": "Tidssone"
-      },
-      "en": {
-        "text": "Time zone"
-      }
-    },
-    "g6-inherit.units": {
-      "nb": {
-        "text": "Enheter"
-      },
-      "en": {
-        "text": "Units"
-      }
-    },
-    "g6-inherit.source.project": {
-      "nb": {
-        "text": "fra prosjektet"
-      },
-      "en": {
-        "text": "from the project"
-      }
-    },
-    "g6-inherit.source.workspace": {
-      "nb": {
-        "text": "fra arbeidsgruppen"
-      },
-      "en": {
-        "text": "from the workspace"
-      }
-    },
-    "g6-inherit.source.user": {
-      "nb": {
-        "text": "fra brukeren"
-      },
-      "en": {
-        "text": "from the user"
-      }
-    },
-    "g6-inherit.source.country": {
-      "nb": {
-        "text": "fra landet"
-      },
-      "en": {
-        "text": "from the country"
-      }
-    },
-    "g6-inherit.source.default": {
-      "nb": {
-        "text": "standard"
-      },
-      "en": {
-        "text": "default"
-      }
-    },
-    "sb1.schema": {
-      "nb": {
-        "text": "Databasen mangler storyboardgrunnmuren. Kjør migrasjon 0102 først."
-      },
-      "en": {
-        "text": "The database is missing the storyboard foundation. Run migration 0102 first."
-      }
-    },
-    "sb1.error.invalid-panel": {
-      "nb": {
-        "text": "Ugyldig storyboardpanel."
-      },
-      "en": {
-        "text": "Invalid storyboard panel."
-      }
-    },
-    "sb1.error.not-panel": {
-      "nb": {
-        "text": "Komposisjonen er ikke et storyboardpanel."
-      },
-      "en": {
-        "text": "The composition is not a storyboard panel."
-      }
-    },
-    "sb1.error.blocks-variant": {
-      "nb": {
-        "text": "Blokkene hører ikke til scenens variant."
-      },
-      "en": {
-        "text": "The blocks do not belong to the scene's variant."
-      }
-    },
-    "sb1.error.invalid-status": {
-      "nb": {
-        "text": "Ugyldig produksjonsstatus."
-      },
-      "en": {
-        "text": "Invalid production status."
-      }
-    },
-    "sb1.error.not-approved": {
-      "nb": {
-        "text": "Panelet må være godkjent før en ny revisjon kan startes."
-      },
-      "en": {
-        "text": "The panel must be approved before a new revision can start."
-      }
-    },
-    "sb1.error.invalid-layer": {
-      "nb": {
-        "text": "Ugyldig storyboardlag."
-      },
-      "en": {
-        "text": "Invalid storyboard layer."
-      }
-    },
-    "sb1.error.layer-kind": {
-      "nb": {
-        "text": "Lagtypen er bare tillatt i storyboardpaneler."
-      },
-      "en": {
-        "text": "The layer kind is only allowed in storyboard panels."
-      }
-    },
-    "sb1.layer-note": {
-      "nb": {
-        "text": "Lapp"
-      },
-      "en": {
-        "text": "Note"
-      }
-    },
-    "sb1.layer-arrow": {
-      "nb": {
-        "text": "Pil"
-      },
-      "en": {
-        "text": "Arrow"
-      }
-    },
-    "sb1.layer-camera-mark": {
-      "nb": {
-        "text": "Kameramerke"
-      },
-      "en": {
-        "text": "Camera mark"
-      }
-    },
-    "sb2.nav": {
-      "nb": {
-        "text": "Storyboard"
-      },
-      "en": {
-        "text": "Storyboard"
-      }
-    },
-    "sb2.route.title": {
-      "nb": {
-        "text": "Storyboard – Pen to Glass"
-      },
-      "en": {
-        "text": "Storyboard – Pen to Glass"
-      }
-    },
-    "sb2.route.description": {
-      "nb": {
-        "text": "Hele filmen som storyboardpaneler, i fortellerrekkefølge."
-      },
-      "en": {
-        "text": "The whole film as storyboard panels, in story order."
-      }
-    },
-    "sb2.loading": {
-      "nb": {
-        "text": "Laster storyboardet …"
-      },
-      "en": {
-        "text": "Loading the storyboard …"
-      }
-    },
-    "sb2.load-error": {
-      "nb": {
-        "text": "Storyboardet kunne ikke lastes."
-      },
-      "en": {
-        "text": "The storyboard could not be loaded."
-      }
-    },
-    "sb2.toolbar": {
-      "nb": {
-        "text": "Storyboardvisning"
-      },
-      "en": {
-        "text": "Storyboard view"
-      }
-    },
-    "sb2.production": {
-      "nb": {
-        "text": "Produksjon"
-      },
-      "en": {
-        "text": "Production"
-      }
-    },
-    "sb2.zoom": {
-      "nb": {
-        "text": "Zoom"
-      },
-      "en": {
-        "text": "Zoom"
-      }
-    },
-    "sb2.zoom-out": {
-      "nb": {
-        "text": "Zoom ut (oversikt)"
-      },
-      "en": {
-        "text": "Zoom out (overview)"
-      }
-    },
-    "sb2.zoom-in": {
-      "nb": {
-        "text": "Zoom inn (detalj)"
-      },
-      "en": {
-        "text": "Zoom in (detail)"
-      }
-    },
-    "sb2.panel-size": {
-      "nb": {
-        "text": "Panelstørrelse"
-      },
-      "en": {
-        "text": "Panel size"
-      }
-    },
-    "sb2.text-view": {
-      "nb": {
-        "text": "Tekstvisning"
-      },
-      "en": {
-        "text": "Text view"
-      }
-    },
-    "sb2.show-legend": {
-      "nb": {
-        "text": "Vis på kortene"
-      },
-      "en": {
-        "text": "Show on cards"
-      }
-    },
-    "sb2.show.name": {
-      "nb": {
-        "text": "Navn"
-      },
-      "en": {
-        "text": "Name"
-      }
-    },
-    "sb2.show.number": {
-      "nb": {
-        "text": "Nummer"
-      },
-      "en": {
-        "text": "Number"
-      }
-    },
-    "sb2.show.dialogue": {
-      "nb": {
-        "text": "Dialog"
-      },
-      "en": {
-        "text": "Dialogue"
-      }
-    },
-    "sb2.show.script": {
-      "nb": {
-        "text": "Manustekst"
-      },
-      "en": {
-        "text": "Script text"
-      }
-    },
-    "sb2.show.notes": {
-      "nb": {
-        "text": "Notater"
-      },
-      "en": {
-        "text": "Notes"
-      }
-    },
-    "sb2.show.timing": {
-      "nb": {
-        "text": "Timing"
-      },
-      "en": {
-        "text": "Timing"
-      }
-    },
-    "sb2.show.status": {
-      "nb": {
-        "text": "Status"
-      },
-      "en": {
-        "text": "Status"
-      }
-    },
-    "sb2.show-hidden": {
-      "nb": {
-        "text": "Vis skjulte og deaktiverte"
-      },
-      "en": {
-        "text": "Show hidden and deactivated"
-      }
-    },
-    "sb2.filter": {
-      "nb": {
-        "text": "Filter"
-      },
-      "en": {
-        "text": "Filter"
-      }
-    },
-    "sb2.filter-area": {
-      "nb": {
-        "text": "Fagområde for filteret"
-      },
-      "en": {
-        "text": "Area to filter on"
-      }
-    },
-    "sb2.filter-status": {
-      "nb": {
-        "text": "Status for filteret"
-      },
-      "en": {
-        "text": "Status to filter on"
-      }
-    },
-    "sb2.filter-none": {
-      "nb": {
-        "text": "Alle"
-      },
-      "en": {
-        "text": "All"
-      }
-    },
-    "sb2.jump-script": {
-      "nb": {
-        "text": "Hopp til manus"
-      },
-      "en": {
-        "text": "Jump to script"
-      }
-    },
-    "sb2.undo": {
-      "nb": {
-        "text": "Angre"
-      },
-      "en": {
-        "text": "Undo"
-      }
-    },
-    "sb2.redo": {
-      "nb": {
-        "text": "Gjør om"
-      },
-      "en": {
-        "text": "Redo"
-      }
-    },
-    "sb2.panel-actions": {
-      "nb": {
-        "text": "Valgt panel"
-      },
-      "en": {
-        "text": "Selected panel"
-      }
-    },
-    "sb2.selected": {
-      "nb": {
-        "text": "Panel {number} valgt"
-      },
-      "en": {
-        "text": "Panel {number} selected"
-      }
-    },
-    "sb2.none-selected": {
-      "nb": {
-        "text": "Ingen paneler valgt"
-      },
-      "en": {
-        "text": "No panel selected"
-      }
-    },
-    "sb2.add": {
-      "nb": {
-        "text": "Nytt panel"
-      },
-      "en": {
-        "text": "New panel"
-      }
-    },
-    "sb2.duplicate": {
-      "nb": {
-        "text": "Dupliser"
-      },
-      "en": {
-        "text": "Duplicate"
-      }
-    },
-    "sb2.hide": {
-      "nb": {
-        "text": "Skjul"
-      },
-      "en": {
-        "text": "Hide"
-      }
-    },
-    "sb2.show-panel": {
-      "nb": {
-        "text": "Vis"
-      },
-      "en": {
-        "text": "Show"
-      }
-    },
-    "sb2.deactivate": {
-      "nb": {
-        "text": "Deaktiver"
-      },
-      "en": {
-        "text": "Deactivate"
-      }
-    },
-    "sb2.restore": {
-      "nb": {
-        "text": "Gjeninnfør"
-      },
-      "en": {
-        "text": "Reinstate"
-      }
-    },
-    "sb2.move-to-scene": {
-      "nb": {
-        "text": "Flytt til scene …"
-      },
-      "en": {
-        "text": "Move to scene …"
-      }
-    },
-    "sb2.status-of": {
-      "nb": {
-        "text": "Status for {area}"
-      },
-      "en": {
-        "text": "Status for {area}"
-      }
-    },
-    "sb2.area.script": {
-      "nb": {
-        "text": "Manus"
-      },
-      "en": {
-        "text": "Script"
-      }
-    },
-    "sb2.area.storyboard": {
-      "nb": {
-        "text": "Storyboard"
-      },
-      "en": {
-        "text": "Storyboard"
-      }
-    },
-    "sb2.area.animation": {
-      "nb": {
-        "text": "Animasjon"
-      },
-      "en": {
-        "text": "Animation"
-      }
-    },
-    "sb2.area.sound": {
-      "nb": {
-        "text": "Lyd"
-      },
-      "en": {
-        "text": "Sound"
-      }
-    },
-    "sb2.area.film": {
-      "nb": {
-        "text": "Film"
-      },
-      "en": {
-        "text": "Film"
-      }
-    },
-    "sb2.area-short.script": {
-      "nb": {
-        "text": "M"
-      },
-      "en": {
-        "text": "S"
-      }
-    },
-    "sb2.area-short.storyboard": {
-      "nb": {
-        "text": "SB"
-      },
-      "en": {
-        "text": "SB"
-      }
-    },
-    "sb2.area-short.animation": {
-      "nb": {
-        "text": "A"
-      },
-      "en": {
-        "text": "A"
-      }
-    },
-    "sb2.area-short.sound": {
-      "nb": {
-        "text": "L"
-      },
-      "en": {
-        "text": "Snd"
-      }
-    },
-    "sb2.area-short.film": {
-      "nb": {
-        "text": "F"
-      },
-      "en": {
-        "text": "F"
-      }
-    },
-    "sb2.status.not-started": {
-      "nb": {
-        "text": "Ikke startet"
-      },
-      "en": {
-        "text": "Not started"
-      }
-    },
-    "sb2.status.in-progress": {
-      "nb": {
-        "text": "Under arbeid"
-      },
-      "en": {
-        "text": "In progress"
-      }
-    },
-    "sb2.status.review": {
-      "nb": {
-        "text": "Klar for gjennomgang"
-      },
-      "en": {
-        "text": "Ready for review"
-      }
-    },
-    "sb2.status.changes-requested": {
-      "nb": {
-        "text": "Endringer ønskes"
-      },
-      "en": {
-        "text": "Changes requested"
-      }
-    },
-    "sb2.status.done": {
-      "nb": {
-        "text": "Ferdig"
-      },
-      "en": {
-        "text": "Done"
-      }
-    },
-    "sb2.gallery": {
-      "nb": {
-        "text": "Storyboardpaneler"
-      },
-      "en": {
-        "text": "Storyboard panels"
-      }
-    },
-    "sb2.empty": {
-      "nb": {
-        "text": "Produksjonen har ingen aktive scener ennå."
-      },
-      "en": {
-        "text": "The production has no active scenes yet."
-      }
-    },
-    "sb2.drag-scene": {
-      "nb": {
-        "text": "Dra scenen – endrer filmens scenerekkefølge"
-      },
-      "en": {
-        "text": "Drag the scene – changes the film’s scene order"
-      }
-    },
-    "sb2.untitled-scene": {
-      "nb": {
-        "text": "Scene uten overskrift"
-      },
-      "en": {
-        "text": "Scene without heading"
-      }
-    },
-    "sb2.scene-order-warning": {
-      "nb": {
-        "text": "Flytting endrer filmens scenerekkefølge"
-      },
-      "en": {
-        "text": "Moving changes the film’s scene order"
-      }
-    },
-    "sb2.scene-earlier": {
-      "nb": {
-        "text": "Flytt scenen tidligere i filmen"
-      },
-      "en": {
-        "text": "Move the scene earlier in the film"
-      }
-    },
-    "sb2.scene-later": {
-      "nb": {
-        "text": "Flytt scenen senere i filmen"
-      },
-      "en": {
-        "text": "Move the scene later in the film"
-      }
-    },
-    "sb2.scene-order-changed": {
-      "nb": {
-        "text": "Filmens scenerekkefølge er endret. Manus og montering følger med. Kan angres."
-      },
-      "en": {
-        "text": "The film’s scene order changed. Script and edit follow. Can be undone."
-      }
-    },
-    "sb2.scene-empty": {
-      "nb": {
-        "text": "Ingen paneler i scenen."
-      },
-      "en": {
-        "text": "No panels in the scene."
-      }
-    },
-    "sb2.panel-label": {
-      "nb": {
-        "text": "Panel {number}, scene {scene}"
-      },
-      "en": {
-        "text": "Panel {number}, scene {scene}"
-      }
-    },
-    "sb2.notes-count": {
-      "nb": {
-        "text": "Notater: {count}"
-      },
-      "en": {
-        "text": "Notes: {count}"
-      }
-    },
-    "sb2.seed-title": {
-      "nb": {
-        "text": "Lag storyboardpaneler?"
-      },
-      "en": {
-        "text": "Create storyboard panels?"
-      }
-    },
-    "sb2.seed-body": {
-      "nb": {
-        "text": "Forslag: ett tomt panel per scene ({count} scener). Ingenting lages før du bekrefter, og det kan angres."
-      },
-      "en": {
-        "text": "Suggestion: one empty panel per scene ({count} scenes). Nothing is created until you confirm, and it can be undone."
-      }
-    },
-    "sb2.seed-confirm": {
-      "nb": {
-        "text": "Lag paneler"
-      },
-      "en": {
-        "text": "Create panels"
-      }
-    },
-    "sb2.seed-later": {
-      "nb": {
-        "text": "Ikke nå"
-      },
-      "en": {
-        "text": "Not now"
-      }
-    },
-    "sb2.move-title": {
-      "nb": {
-        "text": "Flytt panel til en annen scene"
-      },
-      "en": {
-        "text": "Move panel to another scene"
-      }
-    },
-    "sb2.move-body": {
-      "nb": {
-        "text": "Panel {number} flyttes og får ny forankring i manuset. Kan angres."
-      },
-      "en": {
-        "text": "Panel {number} is moved and gets a new anchor in the script. Can be undone."
-      }
-    },
-    "sb2.move-target": {
-      "nb": {
-        "text": "Målscene"
-      },
-      "en": {
-        "text": "Target scene"
-      }
-    },
-    "sb2.move-choose": {
-      "nb": {
-        "text": "Velg scene"
-      },
-      "en": {
-        "text": "Choose scene"
-      }
-    },
-    "sb2.move-anchor": {
-      "nb": {
-        "text": "Ny forankring i manuset (valgfritt)"
-      },
-      "en": {
-        "text": "New anchor in the script (optional)"
-      }
-    },
-    "sb2.move-no-blocks": {
-      "nb": {
-        "text": "Scenen har ingen replikker eller handling."
-      },
-      "en": {
-        "text": "The scene has no lines or action."
-      }
-    },
-    "sb2.move-confirm": {
-      "nb": {
-        "text": "Flytt"
-      },
-      "en": {
-        "text": "Move"
-      }
-    },
-    "sb2.cancel": {
-      "nb": {
-        "text": "Avbryt"
-      },
-      "en": {
-        "text": "Cancel"
-      }
-    },
-    "sb2.mark": {
-      "nb": {
-        "text": "Åpnet fra storyboardpanel {number} {name}"
-      },
-      "en": {
-        "text": "Opened from storyboard panel {number} {name}"
-      }
-    },
-    "sb2.mark-back": {
-      "nb": {
-        "text": "Tilbake til storyboardet"
-      },
-      "en": {
-        "text": "Back to the storyboard"
-      }
-    },
-    "sb2.undo.add": {
-      "nb": {
-        "text": "Nytt storyboardpanel"
-      },
-      "en": {
-        "text": "New storyboard panel"
-      }
-    },
-    "sb2.undo.duplicate": {
-      "nb": {
-        "text": "Dupliser panel"
-      },
-      "en": {
-        "text": "Duplicate panel"
-      }
-    },
-    "sb2.undo.hide": {
-      "nb": {
-        "text": "Skjul panel"
-      },
-      "en": {
-        "text": "Hide panel"
-      }
-    },
-    "sb2.undo.show": {
-      "nb": {
-        "text": "Vis panel"
-      },
-      "en": {
-        "text": "Show panel"
-      }
-    },
-    "sb2.undo.deactivate": {
-      "nb": {
-        "text": "Deaktiver panel"
-      },
-      "en": {
-        "text": "Deactivate panel"
-      }
-    },
-    "sb2.undo.activate": {
-      "nb": {
-        "text": "Gjeninnfør panel"
-      },
-      "en": {
-        "text": "Reinstate panel"
-      }
-    },
-    "sb2.undo.move": {
-      "nb": {
-        "text": "Flytt panel"
-      },
-      "en": {
-        "text": "Move panel"
-      }
-    },
-    "sb2.undo.move-scene": {
-      "nb": {
-        "text": "Endre filmens scenerekkefølge"
-      },
-      "en": {
-        "text": "Change the film’s scene order"
-      }
-    },
-    "sb2.undo.move-to-scene": {
-      "nb": {
-        "text": "Flytt panel til scene"
-      },
-      "en": {
-        "text": "Move panel to scene"
-      }
-    },
-    "sb2.undo.seed": {
-      "nb": {
-        "text": "Lag storyboardpaneler"
-      },
-      "en": {
-        "text": "Create storyboard panels"
-      }
-    },
-    "sb2.undo.status": {
-      "nb": {
-        "text": "Endre status"
-      },
-      "en": {
-        "text": "Change status"
-      }
-    },
-    "sb3.add-comment": {
-      "nb": {
-        "text": "Legg til kommentar"
-      },
-      "en": {
-        "text": "Add comment"
-      }
-    },
-    "sb3.add-field": {
-      "nb": {
-        "text": "Legg til felt"
-      },
-      "en": {
-        "text": "Add field"
-      }
-    },
-    "sb3.add-point": {
-      "nb": {
-        "text": "Legg til punkt"
-      },
-      "en": {
-        "text": "Add point"
-      }
-    },
-    "sb3.anchor": {
-      "nb": {
-        "text": "Forankring"
-      },
-      "en": {
-        "text": "Anchor"
-      }
-    },
-    "sb3.angle": {
-      "nb": {
-        "text": "Vinkel"
-      },
-      "en": {
-        "text": "Angle"
-      }
-    },
-    "sb3.category": {
-      "nb": {
-        "text": "Kategori"
-      },
-      "en": {
-        "text": "Category"
-      }
-    },
-    "sb3.color": {
-      "nb": {
-        "text": "Farge"
-      },
-      "en": {
-        "text": "Color"
-      }
-    },
-    "sb3.comment": {
-      "nb": {
-        "text": "Kommentar"
-      },
-      "en": {
-        "text": "Comment"
-      }
-    },
-    "sb3.comments": {
-      "nb": {
-        "text": "Kommentarer"
-      },
-      "en": {
-        "text": "Comments"
-      }
-    },
-    "sb3.confirm": {
-      "nb": {
-        "text": "Bekreft"
-      },
-      "en": {
-        "text": "Confirm"
-      }
-    },
-    "sb3.current": {
-      "nb": {
-        "text": "Gjeldende revisjon"
-      },
-      "en": {
-        "text": "Current revision"
-      }
-    },
-    "sb3.curved": {
-      "nb": {
-        "text": "Buet"
-      },
-      "en": {
-        "text": "Curved"
-      }
-    },
-    "sb3.custom-field": {
-      "nb": {
-        "text": "Egendefinert felt"
-      },
-      "en": {
-        "text": "Custom field"
-      }
-    },
-    "sb3.dialogue-links": {
-      "nb": {
-        "text": "Koblede replikker"
-      },
-      "en": {
-        "text": "Linked dialogue"
-      }
-    },
-    "sb3.down": {
-      "nb": {
-        "text": "Flytt ned"
-      },
-      "en": {
-        "text": "Move down"
-      }
-    },
-    "sb3.edit": {
-      "nb": {
-        "text": "Rediger storyboard"
-      },
-      "en": {
-        "text": "Edit storyboard"
-      }
-    },
-    "sb3.edit-approved": {
-      "nb": {
-        "text": "Rediger storyboard"
-      },
-      "en": {
-        "text": "Edit storyboard"
-      }
-    },
-    "sb3.focal": {
-      "nb": {
-        "text": "Brennvidde (mm)"
-      },
-      "en": {
-        "text": "Focal length (mm)"
-      }
-    },
-    "sb3.form": {
-      "nb": {
-        "text": "Form"
-      },
-      "en": {
-        "text": "Form"
-      }
-    },
-    "sb3.handled": {
-      "nb": {
-        "text": "Behandlet"
-      },
-      "en": {
-        "text": "Handled"
-      }
-    },
-    "sb3.height": {
-      "nb": {
-        "text": "Høyde"
-      },
-      "en": {
-        "text": "Height"
-      }
-    },
-    "sb3.help": {
-      "nb": {
-        "text": "Hjelp"
-      },
-      "en": {
-        "text": "Help"
-      }
-    },
-    "sb3.layer": {
-      "nb": {
-        "text": "Lag"
-      },
-      "en": {
-        "text": "Layer"
-      }
-    },
-    "sb3.layers": {
-      "nb": {
-        "text": "Lag"
-      },
-      "en": {
-        "text": "Layers"
-      }
-    },
-    "sb3.library": {
-      "nb": {
-        "text": "Bibliotek"
-      },
-      "en": {
-        "text": "Library"
-      }
-    },
-    "sb3.lock": {
-      "nb": {
-        "text": "Lås"
-      },
-      "en": {
-        "text": "Lock"
-      }
-    },
-    "sb3.lock-numbers": {
-      "nb": {
-        "text": "Lås nummer"
-      },
-      "en": {
-        "text": "Lock numbers"
-      }
-    },
-    "sb3.mask": {
-      "nb": {
-        "text": "Formatmaske"
-      },
-      "en": {
-        "text": "Aspect mask"
-      }
-    },
-    "sb3.movement": {
-      "nb": {
-        "text": "Kamerabevegelse"
-      },
-      "en": {
-        "text": "Camera movement"
-      }
-    },
-    "sb3.new": {
-      "nb": {
-        "text": "Nytt panel"
-      },
-      "en": {
-        "text": "New panel"
-      }
-    },
-    "sb3.next": {
-      "nb": {
-        "text": "Neste panel"
-      },
-      "en": {
-        "text": "Next panel"
-      }
-    },
-    "sb3.no-anchor": {
-      "nb": {
-        "text": "Ingen forankring"
-      },
-      "en": {
-        "text": "No anchor"
-      }
-    },
-    "sb3.note": {
-      "nb": {
-        "text": "Lapp"
-      },
-      "en": {
-        "text": "Note"
-      }
-    },
-    "sb3.note-type": {
-      "nb": {
-        "text": "Lapptype"
-      },
-      "en": {
-        "text": "Note type"
-      }
-    },
-    "sb3.notes-visible": {
-      "nb": {
-        "text": "Vis lapper"
-      },
-      "en": {
-        "text": "Show notes"
-      }
-    },
-    "sb3.panel": {
-      "nb": {
-        "text": "Panel"
-      },
-      "en": {
-        "text": "Panel"
-      }
-    },
-    "sb3.path-target": {
-      "nb": {
-        "text": "Lag i scenen"
-      },
-      "en": {
-        "text": "Scene layer"
-      }
-    },
-    "sb3.path-warning": {
-      "nb": {
-        "text": "Bruke pilen som bevegelsesbane i scenens utkast? Ferdig materiale beholdes uendret."
-      },
-      "en": {
-        "text": "Apply the arrow as a movement path in the scene draft? Finished material stays unchanged."
-      }
-    },
-    "sb3.previous": {
-      "nb": {
-        "text": "Forrige panel"
-      },
-      "en": {
-        "text": "Previous panel"
-      }
-    },
-    "sb3.project-format": {
-      "nb": {
-        "text": "Prosjektets format"
-      },
-      "en": {
-        "text": "Project format"
-      }
-    },
-    "sb3.properties": {
-      "nb": {
-        "text": "Egenskaper"
-      },
-      "en": {
-        "text": "Properties"
-      }
-    },
-    "sb3.readonly": {
-      "nb": {
-        "text": "Denne revisjonen kan bare leses."
-      },
-      "en": {
-        "text": "This revision is read-only."
-      }
-    },
-    "sb3.redo": {
-      "nb": {
-        "text": "Gjør om"
-      },
-      "en": {
-        "text": "Redo"
-      }
-    },
-    "sb3.region": {
-      "nb": {
-        "text": "Område"
-      },
-      "en": {
-        "text": "Region"
-      }
-    },
-    "sb3.remove": {
-      "nb": {
-        "text": "Fjern lag"
-      },
-      "en": {
-        "text": "Remove layer"
-      }
-    },
-    "sb3.renumber": {
-      "nb": {
-        "text": "Nummerer på nytt"
-      },
-      "en": {
-        "text": "Renumber"
-      }
-    },
-    "sb3.renumber-warning": {
-      "nb": {
-        "text": "Eksisterende låste nummer endres. Se gjennom endringene før du bekrefter."
-      },
-      "en": {
-        "text": "Existing locked numbers will change. Review the changes before confirming."
-      }
-    },
-    "sb3.reopen": {
-      "nb": {
-        "text": "Åpne igjen"
-      },
-      "en": {
-        "text": "Reopen"
-      }
-    },
-    "sb3.resolve": {
-      "nb": {
-        "text": "Behandle"
-      },
-      "en": {
-        "text": "Resolve"
-      }
-    },
-    "sb3.revision": {
-      "nb": {
-        "text": "Revisjon {number}"
-      },
-      "en": {
-        "text": "Revision {number}"
-      }
-    },
-    "sb3.revisions": {
-      "nb": {
-        "text": "Revisjoner"
-      },
-      "en": {
-        "text": "Revisions"
-      }
-    },
-    "sb3.safe": {
-      "nb": {
-        "text": "Sikre soner"
-      },
-      "en": {
-        "text": "Safe zones"
-      }
-    },
-    "sb3.shape": {
-      "nb": {
-        "text": "Figur"
-      },
-      "en": {
-        "text": "Shape"
-      }
-    },
-    "sb3.shortcuts": {
-      "nb": {
-        "text": "Hurtigtaster"
-      },
-      "en": {
-        "text": "Keyboard shortcuts"
-      }
-    },
-    "sb3.shot": {
-      "nb": {
-        "text": "Utsnittstype"
-      },
-      "en": {
-        "text": "Shot size"
-      }
-    },
-    "sb3.size": {
-      "nb": {
-        "text": "Tekststørrelse"
-      },
-      "en": {
-        "text": "Text size"
-      }
-    },
-    "sb3.straight": {
-      "nb": {
-        "text": "Rett"
-      },
-      "en": {
-        "text": "Straight"
-      }
-    },
-    "sb3.text": {
-      "nb": {
-        "text": "Tekst"
-      },
-      "en": {
-        "text": "Text"
-      }
-    },
-    "sb3.thickness": {
-      "nb": {
-        "text": "Tykkelse"
-      },
-      "en": {
-        "text": "Thickness"
-      }
-    },
-    "sb3.thirds": {
-      "nb": {
-        "text": "Tredjedelsrutenett"
-      },
-      "en": {
-        "text": "Rule of thirds"
-      }
-    },
-    "sb3.title": {
-      "nb": {
-        "text": "Tittel"
-      },
-      "en": {
-        "text": "Title"
-      }
-    },
-    "sb3.tools": {
-      "nb": {
-        "text": "Verktøy"
-      },
-      "en": {
-        "text": "Tools"
-      }
-    },
-    "sb3.undo": {
-      "nb": {
-        "text": "Angre"
-      },
-      "en": {
-        "text": "Undo"
-      }
-    },
-    "sb3.up": {
-      "nb": {
-        "text": "Flytt opp"
-      },
-      "en": {
-        "text": "Move up"
-      }
-    },
-    "sb3.use-path": {
-      "nb": {
-        "text": "Bruk som bevegelsesbane"
-      },
-      "en": {
-        "text": "Use as movement path"
-      }
-    },
-    "sb3.visibility": {
-      "nb": {
-        "text": "Synlighet"
-      },
-      "en": {
-        "text": "Visibility"
-      }
-    },
-    "sb3.width": {
-      "nb": {
-        "text": "Bredde"
-      },
-      "en": {
-        "text": "Width"
-      }
-    },
-    "sb3.tool.select": {
-      "nb": {
-        "text": "Velg"
-      },
-      "en": {
-        "text": "Select"
-      }
-    },
-    "sb3.tool.arrow": {
-      "nb": {
-        "text": "Pil"
-      },
-      "en": {
-        "text": "Arrow"
-      }
-    },
-    "sb3.tool.line": {
-      "nb": {
-        "text": "Linje"
-      },
-      "en": {
-        "text": "Line"
-      }
-    },
-    "sb3.tool.shape": {
-      "nb": {
-        "text": "Figur"
-      },
-      "en": {
-        "text": "Shape"
-      }
-    },
-    "sb3.tool.text": {
-      "nb": {
-        "text": "Tekst"
-      },
-      "en": {
-        "text": "Text"
-      }
-    },
-    "sb3.tool.camera": {
-      "nb": {
-        "text": "Kameramerke"
-      },
-      "en": {
-        "text": "Camera mark"
-      }
-    },
-    "sb3.tool.note": {
-      "nb": {
-        "text": "Lapp"
-      },
-      "en": {
-        "text": "Note"
-      }
-    },
-    "sb3.field.action": {
-      "nb": {
-        "text": "Handling"
-      },
-      "en": {
-        "text": "Action"
-      }
-    },
-    "sb3.field.dialogue": {
-      "nb": {
-        "text": "Dialog"
-      },
-      "en": {
-        "text": "Dialogue"
-      }
-    },
-    "sb3.field.sound": {
-      "nb": {
-        "text": "Lyd"
-      },
-      "en": {
-        "text": "Sound"
-      }
-    },
-    "sb3.field.camera": {
-      "nb": {
-        "text": "Kamera"
-      },
-      "en": {
-        "text": "Camera"
-      }
-    },
-    "sb3.field.notes": {
-      "nb": {
-        "text": "Notater"
-      },
-      "en": {
-        "text": "Notes"
-      }
-    },
-    "sb3.angle.eye": {
-      "nb": {
-        "text": "Øyehøyde"
-      },
-      "en": {
-        "text": "Eye level"
-      }
-    },
-    "sb3.angle.high": {
-      "nb": {
-        "text": "Høy"
-      },
-      "en": {
-        "text": "High"
-      }
-    },
-    "sb3.angle.low": {
-      "nb": {
-        "text": "Lav"
-      },
-      "en": {
-        "text": "Low"
-      }
-    },
-    "sb3.angle.bird": {
-      "nb": {
-        "text": "Fugleperspektiv"
-      },
-      "en": {
-        "text": "Bird’s eye"
-      }
-    },
-    "sb3.angle.dutch": {
-      "nb": {
-        "text": "Nederlandsk"
-      },
-      "en": {
-        "text": "Dutch"
-      }
-    },
-    "sb3.shape.rect": {
-      "nb": {
-        "text": "Rektangel"
-      },
-      "en": {
-        "text": "Rectangle"
-      }
-    },
-    "sb3.shape.ellipse": {
-      "nb": {
-        "text": "Ellipse"
-      },
-      "en": {
-        "text": "Ellipse"
-      }
-    },
-    "sb3.shape.line": {
-      "nb": {
-        "text": "Linje"
-      },
-      "en": {
-        "text": "Line"
-      }
-    },
-    "sb3.note-type.visual": {
-      "nb": {
-        "text": "Visuell lapp"
-      },
-      "en": {
-        "text": "Visual note"
-      }
-    },
-    "sb3.note-type.direction": {
-      "nb": {
-        "text": "Reginotat"
-      },
-      "en": {
-        "text": "Direction"
-      }
-    },
-    "sb3.note-type.camera": {
-      "nb": {
-        "text": "Kamerainstruksjon"
-      },
-      "en": {
-        "text": "Camera instruction"
-      }
-    },
-    "sb3.category.character": {
-      "nb": {
-        "text": "Karakter"
-      },
-      "en": {
-        "text": "Character"
-      }
-    },
-    "sb3.category.camera": {
-      "nb": {
-        "text": "Kamera"
-      },
-      "en": {
-        "text": "Camera"
-      }
-    },
-    "sb3.category.object": {
-      "nb": {
-        "text": "Objekt"
-      },
-      "en": {
-        "text": "Object"
-      }
-    },
-    "sb3.category.gaze": {
-      "nb": {
-        "text": "Blikk"
-      },
-      "en": {
-        "text": "Gaze"
-      }
-    },
-    "sb3.category.attention": {
-      "nb": {
-        "text": "Oppmerksomhet"
-      },
-      "en": {
-        "text": "Attention"
-      }
-    },
-    "sb3.transform.x": {
-      "nb": {
-        "text": "X"
-      },
-      "en": {
-        "text": "X"
-      }
-    },
-    "sb3.transform.y": {
-      "nb": {
-        "text": "Y"
-      },
-      "en": {
-        "text": "Y"
-      }
-    },
-    "sb3.transform.scaleX": {
-      "nb": {
-        "text": "Skala X"
-      },
-      "en": {
-        "text": "Scale X"
-      }
-    },
-    "sb3.transform.scaleY": {
-      "nb": {
-        "text": "Skala Y"
-      },
-      "en": {
-        "text": "Scale Y"
-      }
-    },
-    "sb3.transform.rotation": {
-      "nb": {
-        "text": "Rotasjon"
-      },
-      "en": {
-        "text": "Rotation"
-      }
-    },
-    "sb3.camera.zoom": {
-      "nb": {
-        "text": "Zoom"
-      },
-      "en": {
-        "text": "Zoom"
-      }
-    },
-    "sb3.camera.tilt": {
-      "nb": {
-        "text": "Tilt"
-      },
-      "en": {
-        "text": "Tilt"
-      }
-    },
-    "sb3.camera.pan-x": {
-      "nb": {
-        "text": "Panorering X"
-      },
-      "en": {
-        "text": "Pan X"
-      }
-    },
-    "sb3.camera.pan-y": {
-      "nb": {
-        "text": "Panorering Y"
-      },
-      "en": {
-        "text": "Pan Y"
-      }
-    },
-    "sb3.camera.frame-x": {
-      "nb": {
-        "text": "Ramme X"
-      },
-      "en": {
-        "text": "Frame X"
-      }
-    },
-    "sb3.camera.frame-y": {
-      "nb": {
-        "text": "Ramme Y"
-      },
-      "en": {
-        "text": "Frame Y"
-      }
-    },
-    "sb3.camera.frame-width": {
-      "nb": {
-        "text": "Rammebredde"
-      },
-      "en": {
-        "text": "Frame width"
-      }
-    },
-    "sb3.camera.frame-height": {
-      "nb": {
-        "text": "Rammehøyde"
-      },
-      "en": {
-        "text": "Frame height"
-      }
-    },
-    "sb4.play-film": {
-      "nb": {
-        "text": "Spill av storyboardfilmen"
-      },
-      "en": {
-        "text": "Play the storyboard film"
-      }
-    },
-    "sb4.film.title": {
-      "nb": {
-        "text": "Storyboardfilm"
-      },
-      "en": {
-        "text": "Storyboard film"
-      }
-    },
-    "sb4.film.description": {
-      "nb": {
-        "text": "Panelene spilles av med scenens lyd. Lyden er tidsmaster."
-      },
-      "en": {
-        "text": "The panels play with the scene's sound. The sound is the time master."
-      }
-    },
-    "sb4.film.empty": {
-      "nb": {
-        "text": "Ingen aktive paneler i filmen ennå."
-      },
-      "en": {
-        "text": "No active panels in the film yet."
-      }
-    },
-    "sb4.film.pause": {
-      "nb": {
-        "text": "Sett på pause"
-      },
-      "en": {
-        "text": "Pause"
-      }
-    },
-    "sb4.film.play": {
-      "nb": {
-        "text": "Spill av"
-      },
-      "en": {
-        "text": "Play"
-      }
-    },
-    "sb4.film.timeline": {
-      "nb": {
-        "text": "Tidslinje for storyboardfilmen"
-      },
-      "en": {
-        "text": "Storyboard film timeline"
-      }
-    },
-    "sb4.film.mute": {
-      "nb": {
-        "text": "Slå lyden av"
-      },
-      "en": {
-        "text": "Mute"
-      }
-    },
-    "sb4.film.unmute": {
-      "nb": {
-        "text": "Slå lyden på"
-      },
-      "en": {
-        "text": "Unmute"
-      }
-    },
-    "sb4.film.volume": {
-      "nb": {
-        "text": "Volum"
-      },
-      "en": {
-        "text": "Volume"
-      }
-    },
-    "sb4.film.fullscreen": {
-      "nb": {
-        "text": "Fullskjerm"
-      },
-      "en": {
-        "text": "Fullscreen"
-      }
-    },
-    "sb4.film.exit-fullscreen": {
-      "nb": {
-        "text": "Avslutt fullskjerm"
-      },
-      "en": {
-        "text": "Exit fullscreen"
-      }
-    },
-    "sb4.film.panel-label": {
-      "nb": {
-        "text": "Scene {scene}, panel {panel}: {name}"
-      },
-      "en": {
-        "text": "Scene {scene}, panel {panel}: {name}"
-      }
-    },
-    "sb4.export.image-source": {
-      "nb": {
-        "text": "Bildekilde"
-      },
-      "en": {
-        "text": "Image source"
-      }
-    },
-    "sb4.export.source-animation": {
-      "nb": {
-        "text": "Animasjon"
-      },
-      "en": {
-        "text": "Animation"
-      }
-    },
-    "sb4.export.source-film": {
-      "nb": {
-        "text": "Film"
-      },
-      "en": {
-        "text": "Film"
-      }
-    },
-    "sb4.export.source-storyboard": {
-      "nb": {
-        "text": "Storyboardpaneler"
-      },
-      "en": {
-        "text": "Storyboard panels"
-      }
-    },
-    "sb4.switch-view": {
-      "nb": {
-        "text": "Veksle arbeidsflate"
-      },
-      "en": {
-        "text": "Switch workspace"
-      }
-    },
-    "sb4.previous": {
-      "nb": {
-        "text": "Forrige panel"
-      },
-      "en": {
-        "text": "Previous panel"
-      }
-    },
-    "sb4.next": {
-      "nb": {
-        "text": "Neste panel"
-      },
-      "en": {
-        "text": "Next panel"
-      }
-    },
-    "sb4.stop": {
-      "nb": {
-        "text": "Stopp"
-      },
-      "en": {
-        "text": "Stop"
-      }
-    },
-    "sb4.temp-audio": {
-      "nb": {
-        "text": "Midlertidig lyd"
-      },
-      "en": {
-        "text": "Temporary audio"
-      }
-    },
-    "sb4.inherited": {
-      "nb": {
-        "text": "Timingkilde"
-      },
-      "en": {
-        "text": "Timing source"
-      }
-    },
-    "sb4.scene-timing": {
-      "nb": {
-        "text": "Arvet fra scenen"
-      },
-      "en": {
-        "text": "Inherited from scene"
-      }
-    },
-    "sb4.accept-timing": {
-      "nb": {
-        "text": "Godta timingforslag"
-      },
-      "en": {
-        "text": "Accept timing suggestion"
-      }
-    },
-    "sb4.accept-scene-timing": {
-      "nb": {
-        "text": "Godta timing for scenen"
-      },
-      "en": {
-        "text": "Accept timing for scene"
-      }
-    },
-    "sb4.scrub": {
-      "nb": {
-        "text": "Bla i scenens bilder"
-      },
-      "en": {
-        "text": "Scrub scene frames"
-      }
-    },
-    "sb4.use-scene": {
-      "nb": {
-        "text": "Bruk i scenen"
-      },
-      "en": {
-        "text": "Use in scene"
-      }
-    },
-    "sb4.audio-timing": {
-      "nb": {
-        "text": "Bruk lydens varighet"
-      },
-      "en": {
-        "text": "Use audio duration"
-      }
-    },
-    "sb4.mix-confirm": {
-      "nb": {
-        "text": "Legg den midlertidige lyden til scenens lyd? Eksisterende lyd beholdes."
-      },
-      "en": {
-        "text": "Add temporary audio to the scene sound? Existing audio is preserved."
-      }
-    },
-    "sb4.record": {
-      "nb": {
-        "text": "Ta opp midlertidig lyd"
-      },
-      "en": {
-        "text": "Record temporary audio"
-      }
-    },
-    "sb4.upload-audio": {
-      "nb": {
-        "text": "Last opp lyd"
-      },
-      "en": {
-        "text": "Upload audio"
-      }
-    },
-    "sb4.mobile-audio": {
-      "nb": {
-        "text": "Ta opp med mobilen"
-      },
-      "en": {
-        "text": "Record on mobile"
       }
     }
   }

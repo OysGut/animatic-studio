@@ -29,6 +29,7 @@ describe("rekkefølgen på panelene", () => {
       "script",
       "pages",
       "credits",
+      "storyboard",
     ]);
     expect(normalizeOrder([])).toEqual([...PANEL_IDS]);
   });
@@ -43,6 +44,7 @@ describe("rekkefølgen på panelene", () => {
       "script",
       "pages",
       "credits",
+      "storyboard",
       "notes",
     ]);
   });
@@ -57,9 +59,11 @@ describe("rekkefølgen på panelene", () => {
       "script",
       "pages",
       "credits",
+      "storyboard",
     ]);
     expect(movePanel(o, "assets", -1)).toEqual(o);
-    expect(movePanel(o, "credits", 1)).toEqual(o);
+    expect(movePanel(o, "storyboard", 1)).toEqual(o);
+    expect(movePanel(o, "credits", 1)[7]).toBe("credits");
   });
 
   it("dra og slipp: foran eller etter et annet panel", () => {
@@ -72,6 +76,7 @@ describe("rekkefølgen på panelene", () => {
       "script",
       "pages",
       "credits",
+      "storyboard",
     ]);
     expect(movePanelTo(o, "assets", "layers", "after")).toEqual([
       "nearbyAudio",
@@ -81,6 +86,7 @@ describe("rekkefølgen på panelene", () => {
       "script",
       "pages",
       "credits",
+      "storyboard",
     ]);
     expect(movePanelTo(o, "assets", "assets", "after")).toEqual(o);
   });
@@ -97,6 +103,7 @@ describe("rekkefølgen på panelene", () => {
       "script",
       "pages",
       "credits",
+      "storyboard",
     ]);
     expect(movePanelAmong(o, shown, "assets", -1)).toEqual(o);
   });

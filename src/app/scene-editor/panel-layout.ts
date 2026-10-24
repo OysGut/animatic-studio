@@ -6,7 +6,7 @@
  */
 
 /** Stabile ID-er for panelene. Lagres hos brukeren – endres aldri (nye legges til). */
-export const PANEL_IDS = ["assets", "nearbyAudio", "layers", "properties", "script", "pages", "credits"] as const;
+export const PANEL_IDS = ["assets", "nearbyAudio", "layers", "properties", "script", "pages", "credits", "storyboard"] as const;
 export type PanelId = (typeof PANEL_IDS)[number];
 
 /** Panelene som står i venstre kolonne i stablet visning (resten står til høyre, som før). */
