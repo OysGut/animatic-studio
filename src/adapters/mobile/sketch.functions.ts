@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { isUuid, type SketchStroke } from "@/core";
+import { isUuid } from "@/core";
+import type { SketchStroke } from "@/core/storyboard/sketch";
 import { t } from "@/core/i18n/keyed";
 import { sketchValid } from "@/core/storyboard/sketch";
 const fail=()=>new Error(t("sb8.session-error"));
