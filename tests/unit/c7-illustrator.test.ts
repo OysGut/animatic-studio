@@ -42,6 +42,10 @@ function harness() {
   s = mustApply(s, { type: "AddAssetVersion", versionId: v1, variantId, media: media(v1, b1), note: "" });
   s = mustApply(s, { type: "ApproveAssetVersion", variantId, versionId: v1 });
   s = mustApply(s, { type: "AddAssetVersion", versionId: v2, variantId, media: media(v2, b2), note: "" });
+  const prodId = tid<"production">(), occId = tid<"scene_occurrence">(), sceneVariantId = tid<"scene_variant">(), panelId = tid<"composition">();
+  s = mustApply(s, { type: "CreateProduction", productionId: prodId, kind: "main", name: "Hovedfilm", parentProductionId: null });
+  s = mustApply(s, { type: "CreateScene", productionId: prodId, sceneId: tid(), variantId: sceneVariantId, occurrenceId: occId, orderKey: "a1", heading: { intExt: "INT.", location: "STED", time: "DAG" }, blocks: [{ blockId: tid(), kind: "action", text: "A", orderKey: "a1" }], productionNumber: "1" });
+  s = mustApply(s, { type: "AddStoryboardPanel", panelId, occurrenceId: occId, variantId: sceneVariantId, orderKey: "a1" });
   let now = Date.parse("2026-10-24T12:00:00Z");
   const mem = memoryStore(s, { now: () => now });
   mem.files.set(media(v1, b1).path, b1); mem.files.set(media(v2, b2).path, b2);
@@ -85,7 +89,7 @@ function harness() {
   const host = cepHost(csi, fs, { fetch: fetchFn, random });
   const sdk = new PtgConnector({ baseUrl: "https://ptg.test", clientId: CLIENT_ID, fetch: fetchFn, random, tokens: fileTokenStore(host, TOKEN_FILE), now: () => now, sleep: async ms => { now += ms; } });
   const plugin = new IllustratorPlugin(host, cepIllustrator(host.evalScript), "https://ptg.test", sdk);
-  return { plugin, mem, files, text, calls, app, sdk, assetId, variantId, v1, v2, b1, projectId: s.project.id as string, state: s, putText };
+  return { plugin, mem, files, text, calls, app, sdk, assetId, variantId, v1, v2, b1, panelId: panelId as string, projectId: s.project.id as string, state: s, putText };
 }
 async function signIn(h: ReturnType<typeof harness>) {
   await h.plugin.beginSignIn();
@@ -191,14 +195,15 @@ describe("C-7 panelet mot falsk CEP/ExtendScript og falskt API", () => {
     await h.plugin.resolve("keep_both");
     expect(h.plugin.state.conflict).toBeNull();
   });
-  it("C-1-pakke for et storyboardpanel åpnes med lag og grupper; retur viser retursiden i stedet for opplasting", async () => {
+  it("C-1-pakke for et storyboardpanel åpnes med lag og grupper; retur går via C-0-mottaket som skjult kandidat", async () => {
     const h = harness();
     await signIn(h);
-    const panelId = tid();
+    const panelId = h.panelId;
+    const revision = h.mem.state.compositions[panelId as never]!.revision;
     const svg = buildIllustratorSvg({ ...DOC, width: 64, height: 40, link: null });
     const bytes = new TextEncoder().encode(svg);
     h.putText("/Users/x/Pakke/panel.svg", svg);
-    h.putText("/Users/x/Pakke/manifest.json", JSON.stringify({ manifestVersion: 1, createdAt: "2026-10-24T12:00:00.000Z", projectId: h.projectId, frameRate: { num: 25, den: 1 }, sampleRate: 48000, sourceApp: { name: "From Pen to Glass", version: "1" }, adapter: { id: "adobe-illustrator-cep", version: "1" }, items: [{ kind: "project", id: h.projectId }, { kind: "panel", id: panelId, name: "1A", revision: 2, base: { entity: "panel", id: panelId, revision: 2 }, files: [{ path: "panel.svg", sha256: sha256Hex(bytes), byteSize: bytes.length, mimeType: "image/svg+xml" }] }] }));
+    h.putText("/Users/x/Pakke/manifest.json", JSON.stringify({ manifestVersion: 1, createdAt: "2026-10-24T12:00:00.000Z", projectId: h.projectId, frameRate: { num: 25, den: 1 }, sampleRate: 48000, sourceApp: { name: "From Pen to Glass", version: "1" }, adapter: { id: "adobe-illustrator-cep", version: "1" }, items: [{ kind: "project", id: h.projectId }, { kind: "panel", id: panelId, name: "1A", revision, base: { entity: "panel", id: panelId, revision }, files: [{ path: "panel.svg", sha256: sha256Hex(bytes), byteSize: bytes.length, mimeType: "image/svg+xml" }] }] }));
     await h.plugin.openPackage();
     const doc = h.app.active!;
     expect(doc.svg.layers.map(l => l.name)).toEqual(["Bakgrunn & himmel", "Karakter", "Notater"]);
@@ -206,8 +211,15 @@ describe("C-7 panelet mot falsk CEP/ExtendScript og falskt API", () => {
     expect(doc.svg.layers[2]!.visible).toBe(false);
     expect(JSON.parse(doc.xmp!)).toMatchObject({ panelId, assetId: null });
     await h.plugin.sendBack();
-    expect(h.plugin.state.message?.text).toBe(tr("nb", "panelOnly"));
-    expect(h.mem.transfers.size).toBe(0);
+    expect(h.plugin.state.message?.text).toBe(tr("nb", "sentPanel", { width: 64, height: 40 }));
+    expect(h.mem.transfers.size).toBe(1);
+    // Kandidaten er et SKJULT lag i panelet (SB-7-regelen) og ingenting er godkjent.
+    const transfer = [...h.mem.transfers.values()][0]!;
+    expect(transfer.panelId).toBe(panelId);
+    expect(transfer.status).toBe("candidate");
+    const layer = Object.values(h.mem.state.layers ?? {}).find(l => l.compositionId === panelId && l.versionId === transfer.candidateVersionId);
+    expect(layer).toBeTruthy();
+    expect(layer!.visible).toBe(false);
   });
   it("pakke med endret SVG (feil sha) eller fra et annet prosjekt avvises", async () => {
     const h = harness();
