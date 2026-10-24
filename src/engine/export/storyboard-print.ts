@@ -73,7 +73,7 @@ export async function printImageRenderer(input: PrintExportInput) {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       if (input.source === "storyboard" && panel) {
         // Printed instructions remain visible: camera mark is not applied as a destructive crop.
-        const frame = renderFrame({ ...state, compositions: { ...state.compositions, [panel.id]: { ...panel, cameraShots: [] } } }, panel.id, 0);
+        const frame = renderFrame(state, panel.id, 0);
         drawFrame(ctx, frame, { view: [canvas.width / frame.width, 0, 0, canvas.height / frame.height, 0, 0], images: loaded.images, placeholders: true });
       } else if (clip) {
         const solo = { ...clip, startFrame: 0, transition: { kind: "cut" as const, frames: 0 }, overlapFrames: 0 };

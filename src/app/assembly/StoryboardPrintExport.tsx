@@ -13,7 +13,7 @@ import { signedUrls } from "@/app/library/asset-images";
 import { prepareDownload, type ReadyFile } from "@/app/download";
 
 export function printLabels(): Record<string, string> {
-  return { panel: t("sb6.panel"), scene: t("sb6.scene"), shot: t("sb6.shot"), duration: t("sb6.duration"), dialogue: t("sb6.dialogue"), action: t("sb6.action"), camera: t("sb6.camera"), movement: t("sb6.movement"), sound: t("sb6.sound"), notes: t("sb6.notes"), status: t("sb6.status"), durationFrames: t("sb6.frames"), timecode: t("sb6.timecode"), sketch: t("sb8.drawing"), note: t("sb6.note"), arrow: t("sb6.arrow"), camera_mark: t("sb6.camera-mark") };
+  return { panel: t("sb6.panel"), scene: t("sb6.scene"), shot: t("sb6.shot"), duration: t("sb6.duration"), dialogue: t("sb6.dialogue"), action: t("sb6.action"), camera: t("sb6.camera"), movement: t("sb6.movement"), sound: t("sb6.sound"), notes: t("sb6.notes"), status: t("sb6.status"), durationFrames: t("sb6.frames"), timecode: t("sb6.timecode"), sketch: t("sb8.canvas"), note: t("sb6.note"), arrow: t("sb6.arrow"), camera_mark: t("sb6.camera-mark") };
 }
 export function StoryboardPrintExport({ state, clips, imageSource, language, disabled }: {
   state: ProjectState; clips: readonly FilmClip[]; imageSource: ExportImageSource; language: string; disabled: boolean;
@@ -21,7 +21,7 @@ export function StoryboardPrintExport({ state, clips, imageSource, language, dis
   const account = useMyAccount();
   const [paper, setPaper] = useState<PrintPaper>("A4");
   const paperTouched = useRef(false);
-  useEffect(() => { if (!paperTouched.current) setPaper(resolveSettings({ country: account.data?.country }).paper.value); }, [account.data?.country]);
+  useEffect(() => { if (!paperTouched.current) setPaper(resolveSettings({ country: account.data?.country ?? null }).paper.value); }, [account.data?.country]);
   const [landscape, setLandscape] = useState(false);
   const [perPage, setPerPage] = useState<3 | 6 | 9>(6);
   const [fields, setFields] = useState<readonly PrintField[]>(PRINT_FIELDS);
@@ -50,7 +50,7 @@ export function StoryboardPrintExport({ state, clips, imageSource, language, dis
         options: { paper, landscape, perPage: kind === "pitch" ? 1 : perPage, fields: kind === "pitch" ? ["panel", "dialogue", "action"] : fields, layers },
         labels, language, version, date: new Intl.DateTimeFormat(getUiLanguage()).format(new Date()),
         signal: ctrl.signal, urls: paths => signedUrls([...paths], 3600), progress: report });
-      if (!ctrl.signal.aborted) setReady(prepareDownload([blob], `${state.project.name.replace(/[\\/:*?"<>|]/g, "-")}-storyboard-${kind}.${kind === "print" || kind === "pitch" ? "pdf" : kind}`, blob.type));
+      if (!ctrl.signal.aborted) setReady(prepareDownload([new Uint8Array(await blob.arrayBuffer())], `${state.project.name.replace(/[\\/:*?"<>|]/g, "-")}-storyboard-${kind}.${kind === "print" || kind === "pitch" ? "pdf" : kind}`, blob.type));
     } catch { if (!ctrl.signal.aborted) setError(true); }
     finally { abort.current = null; setProgress(null); }
   }
