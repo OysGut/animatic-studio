@@ -10,13 +10,11 @@
  * storyboardtidslinjen (samme klipp, samme versjoner). Lyden er tidsmaster – bildet følger lydklokken.
  */
 import type { FilmClip } from "../assembly/film";
-import { estimatedSceneFrames, filmDurationFrames } from "../assembly/film";
 import type { FilmAudioItem } from "../audio";
 import type { CameraShot, Composition, ProjectState, Transition } from "../model";
 import type { OccurrenceId } from "../ids";
 import { speechSeconds } from "../language";
 import { framesToSeconds, secondsToFrames } from "../time";
-import { orderedOccurrences } from "../views";
 import { panelBlockIds, panelTimingFrames, storyboardPanelsOf } from "./index";
 
 /** Standard panelvarighet når verken panel, scene eller estimat gir en varighet (s). */

@@ -120,3 +120,4 @@ export * from "./assembly/scene-marks";
 export * from "./assets/brief-versions";
 export * from "./sync/remote-log";
 export * from "./storyboard";
+export * from "./storyboard/playback";
