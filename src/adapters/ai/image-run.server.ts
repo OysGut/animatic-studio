@@ -333,7 +333,7 @@ export async function runImageGeneration(
 
   const finish = async (patch: Record<string, unknown>, receipt?: unknown) => {
     // Massejobb: kvitteringen lagres varig på jobben før noe annet, så et fakturert resultat aldri kjøres på nytt
-    const extra = batch && receipt ? { params: { ...batchParams, result: receipt } } : {};
+    const extra = (batch || opts.storyboardTrace) && receipt ? { params: { ...(batch ? batchParams : (jobRow["params"] as Record<string, unknown> ?? {})), result: receipt } } : {};
     await admin
       .from("generation_jobs")
       .update({ ...patch, ...extra, finished_at: new Date().toISOString() } as never)
@@ -458,7 +458,7 @@ export async function runImageGeneration(
         (e as Error).message || t("adapters-ai-image-run-server.message.scrub-secret.c72966a8534f"),
         secret,
       ).slice(0, 2000);
-      await finish({ status: charged ? "lost" : "failed", error: message });
+      await finish({ status: charged ? "lost" : "failed", error: opts.storyboardTrace ? "storyboard_provider_error" : message });
       return {
         ok: false,
         message: t("adapters-ai-image-run-server.message.message.eb194f33ae99", { message: String(message) }),
