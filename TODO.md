@@ -5,6 +5,14 @@ Ikke foreslå, ikke start og ikke bygg dette før Øystein uttrykkelig ber om de
 - Eget test- og produksjonsmiljø (Øystein 23.10.2026): en egen testkopi av prosjektet med egen database, der databaseendringer kjøres først. Mellomtrinnet er funksjonsbryterne (av, beta og på). Til da er forhåndsvisningen test og pentoglass.com produksjon, og Claude prøver migrasjoner på en lokal kopi før de kjøres i Cloud.
 
 
+## C-8 Krita og Blender – sikkerhet og gjenstående (24.10.2026)
+- Prøve begge tilleggene i ekte Krita 5.2+ og Blender 4.2+ etter sjekklisten i C8_REPORT.md.
+- Sikkerhet: tokenfilen (0600) er ukryptert; vurder systemets nøkkelring (krever pakke, spør Øystein).
+- Krita sender flat PNG; PSD med lag som egen versjon (samme spørsmål som C-2).
+- Panelretur fra Krita går via C-1-retursiden; panelbilder kan ikke hentes direkte fra API-et.
+- Videorendringer fra Blender har ingen innebygd tidskode.
+- Maskinoversatte tekster i plugins/python-common/ptg_strings.py må leses gjennom.
+
 ## C-7 Illustrator – sikkerhet og gjenstående (24.10.2026)
 - Krever Øystein: skal SVG/.ai kunne lagres som egen ressursversjon? Det krever renset SVG (ingen skript, hendelser eller eksterne lenker), visning i alle flater og plass i ASSET_MIME_TYPES. I dag sendes en flat PNG, og lagene blir liggende i .ai-filen hos brukeren.
 - Panelretur fra Illustrator går via C-1-retursiden; C-0-mottak for panelbilder mangler.

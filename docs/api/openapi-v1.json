@@ -898,6 +898,48 @@
           }
         }
       }
+    },
+    "/projects/{projectId}/blender/cameras": {
+      "get": {
+        "summary": "C-8: SB-9 camera keys (focal, sensor, aspect, field of view) per storyboard panel for one scene occurrence, for the Blender add-on (read only).",
+        "operationId": "blender_cameras",
+        "tags": [
+          "v1"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/projectId"
+          },
+          {
+            "$ref": "#/components/parameters/occurrenceId"
+          }
+        ],
+        "security": [
+          {
+            "bearer": [
+              "manifest:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Camera plan",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "invalid_request"
+          },
+          "404": {
+            "description": "not_found"
+          }
+        }
+      }
     }
   },
   "components": {
