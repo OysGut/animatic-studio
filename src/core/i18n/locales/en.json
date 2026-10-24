@@ -77801,5 +77801,182 @@
   },
   "c0.consent.paste-back-copied": {
     "text": "The address has been copied."
+  },
+  "c4.title": {
+    "text": "Boords"
+  },
+  "c4.intro": {
+    "text": "Send storyboard panels to Boords and bring changes and comments back. Changes from Boords become suggestions you decide whether to use."
+  },
+  "c4.paid-plan": {
+    "text": "The Boords API is in beta and requires a paid Boords plan."
+  },
+  "c4.can": {
+    "text": "The connection can: {list}."
+  },
+  "c4.cap.read": {
+    "text": "fetch changes"
+  },
+  "c4.cap.write": {
+    "text": "send panels with text and image"
+  },
+  "c4.cap.notes": {
+    "text": "comments both ways"
+  },
+  "c4.limit.paid-plan": {
+    "text": "Requires a paid Boords plan."
+  },
+  "c4.limit.beta": {
+    "text": "The API is in beta and may change."
+  },
+  "c4.limit.no-layers": {
+    "text": "No layers: Boords gets one flat image per panel."
+  },
+  "c4.limit.no-audio": {
+    "text": "No audio is sent."
+  },
+  "c4.limit.no-timeline": {
+    "text": "No timeline or durations."
+  },
+  "c4.limit.no-etag": {
+    "text": "Boords has no version check in its API, so Pen to Glass compares itself and shows conflicts."
+  },
+  "c4.limit.partial-webhooks": {
+    "text": "Only some changes in Boords are notified right away; the rest are fetched regularly."
+  },
+  "c4.limit.no-auto-apply": {
+    "text": "Nothing from Boords is used unless you choose it."
+  },
+  "c4.owner": {
+    "text": "Who the key is for"
+  },
+  "c4.owner.user": {
+    "text": "Me"
+  },
+  "c4.owner.workspace": {
+    "text": "Workspace"
+  },
+  "c4.owner.workspace-named": {
+    "text": "Workspace: {name}"
+  },
+  "c4.key": {
+    "text": "Boords API key"
+  },
+  "c4.webhook-secret": {
+    "text": "Webhook secret from Boords (optional)"
+  },
+  "c4.label": {
+    "text": "Name (optional)"
+  },
+  "c4.key-safety": {
+    "text": "The key is stored encrypted and never shown again. You only see the last four characters."
+  },
+  "c4.save": {
+    "text": "Save key"
+  },
+  "c4.remove": {
+    "text": "Remove"
+  },
+  "c4.removed": {
+    "text": "The key has been removed."
+  },
+  "c4.saved.ok": {
+    "text": "The key works and has been saved."
+  },
+  "c4.saved.untested": {
+    "text": "The key has been saved, but Boords did not answer. It will be tried on the first send."
+  },
+  "c4.status.ok": {
+    "text": "Working"
+  },
+  "c4.status.failed": {
+    "text": "Not working"
+  },
+  "c4.status.untested": {
+    "text": "Not tried"
+  },
+  "c4.last-sync": {
+    "text": "last fetched {date}"
+  },
+  "c4.webhook-url": {
+    "text": "Paste this address as the webhook in Boords:"
+  },
+  "c4.webhook-none": {
+    "text": "No webhook: changes are fetched regularly."
+  },
+  "c4.error": {
+    "text": "The Boords connection did not work. Try again."
+  },
+  "c4.error.owner": {
+    "text": "Only the workspace owner can add the key."
+  },
+  "c4.error.rate": {
+    "text": "Too many attempts. Wait a little and try again."
+  },
+  "c4.error.rejected": {
+    "text": "Boords did not accept the key. Check that it is correct and that the plan has API access."
+  },
+  "c4.send.open": {
+    "text": "Boords"
+  },
+  "c4.send.title": {
+    "text": "Send to Boords"
+  },
+  "c4.send.intro": {
+    "text": "The panels in this production are sent with text and image. Changes from Boords are fetched as suggestions."
+  },
+  "c4.send.no-connection": {
+    "text": "You have no Boords key yet."
+  },
+  "c4.send.to-account": {
+    "text": "Add it on the account page."
+  },
+  "c4.send.connection": {
+    "text": "Key"
+  },
+  "c4.send.fields": {
+    "text": "{count} panels are sent with the fields {fields} and an image."
+  },
+  "c4.send.button": {
+    "text": "Send to Boords"
+  },
+  "c4.send.done": {
+    "text": "Sent: {created} new and {updated} updated panels."
+  },
+  "c4.pull.button": {
+    "text": "Fetch changes"
+  },
+  "c4.pull.done": {
+    "text": "Fetched: {candidates} suggestions ({conflicts} conflicts) and {comments} comments."
+  },
+  "c4.cand.title": {
+    "text": "Suggestions from Boords"
+  },
+  "c4.cand.intro": {
+    "text": "Nothing has been used yet. Choose what to do with each suggestion."
+  },
+  "c4.cand.panel": {
+    "text": "Panel {panel}"
+  },
+  "c4.cand.conflict": {
+    "text": "changed in both places"
+  },
+  "c4.cand.image": {
+    "text": "New image from Boords. “Use incoming” adds it to the library without changing the panel."
+  },
+  "c4.image-name": {
+    "text": "Image from Boords"
+  },
+  "c4.incoming": {
+    "text": "Use change from Boords"
+  },
+  "c4.comments.title": {
+    "text": "Comments with Boords"
+  },
+  "c4.comments.in": {
+    "text": "From Boords"
+  },
+  "c4.comments.out": {
+    "text": "To Boords"
   }
 }
