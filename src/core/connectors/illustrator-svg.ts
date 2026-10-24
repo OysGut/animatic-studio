@@ -132,3 +132,18 @@ export function readIllustratorSvg(svg: string): IllustratorDoc {
 /** Målet for C-0-mottaket, eller null når pakken bare gjelder et panel (C-1-retursiden brukes da). */
 export const illustratorUploadTarget = (l: IllustratorLink) =>
   l.assetId && l.variantId ? { assetId: l.assetId, variantId: l.variantId, baseVersionId: l.versionId } : null;
+
+/** Pikselstørrelse for PNG og JPEG uten dekoding (så artboardet får ressursens nøyaktige størrelse). */
+export function imagePixelSize(b: Uint8Array): { width: number; height: number; mimeType: "image/png" | "image/jpeg" } | null {
+  const u32 = (o: number) => ((b[o]! << 24) >>> 0) + (b[o + 1]! << 16) + (b[o + 2]! << 8) + b[o + 3]!;
+  if (b.length >= 24 && b[0] === 0x89 && b[1] === 0x50 && b[2] === 0x4e && b[3] === 0x47) return { width: u32(16), height: u32(20), mimeType: "image/png" };
+  if (b[0] === 0xff && b[1] === 0xd8) {
+    for (let p = 2; p + 9 < b.length; ) {
+      if (b[p] !== 0xff) return null;
+      const m = b[p + 1]!, len = (b[p + 2]! << 8) + b[p + 3]!;
+      if (m >= 0xc0 && m <= 0xcf && m !== 0xc4 && m !== 0xc8 && m !== 0xcc) return { width: (b[p + 7]! << 8) + b[p + 8]!, height: (b[p + 5]! << 8) + b[p + 6]!, mimeType: "image/jpeg" };
+      p += 2 + len;
+    }
+  }
+  return null;
+}

@@ -12,6 +12,8 @@ import { validateManifest, type ConnectorManifest } from "../../../src/core/conn
 import type { AuditionPlan } from "../../../src/core/connectors/audition-session";
 
 export type { ConnectorManifest };
+/** C-7: delt, plattformnøytral SVG-/lenkemodell for Illustrator (CEP nå, UXP senere). */
+export * as illustrator from "../../../src/core/connectors/illustrator-svg";
 export interface TokenSet { accessToken: string; refreshToken: string; expiresAt: number; scope: string; projectId: string }
 export interface TokenStore { load(): Promise<TokenSet | null>; save(t: TokenSet | null): Promise<void> }
 export interface SdkOptions {

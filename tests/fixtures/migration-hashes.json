@@ -110,5 +110,7 @@
   "0109_c0_creative_connectors.sql": "2b0d27bf8818ac8d741016742beaea68",
   "0110_c1_handoffs.sql": "0ce46e169265a04c36f8534065dcef65",
   "0111_c0_security_fixes.sql": "cea8717fe4914fe2ed41d0c8319578a6",
-  "0112_c4_boords.sql": "2b7d809a42bca8158fb75980999bb166"
+  "0112_c4_boords.sql": "2b7d809a42bca8158fb75980999bb166",
+  "0113_c5_sbpro.sql": "899aeb5629551ca038123ca5a653b573",
+  "0114_c3_premiere.sql": "edabb669594e894b1a44f9fd61ca644a"
 }
