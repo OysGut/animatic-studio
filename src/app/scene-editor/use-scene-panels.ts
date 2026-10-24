@@ -55,5 +55,7 @@ export function panelTitle(id: PanelId): string {
       return t("app-scene-editor-use-scene-panels.panel-title.message.b8b718aaeaf2");
     case "credits":
       return t("app-scene-editor-use-scene-panels.panel-title.message.6e7ae7c45746");
+    case "storyboard":
+      return t("sb5.reference-title");
   }
 }
