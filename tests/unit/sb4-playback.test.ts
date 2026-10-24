@@ -89,7 +89,7 @@ describe("SB-4 timing med arv", () => {
     let { s, mainId, occs } = setup(1);
     const blocks = Object.values(s.blocks).filter((b) => b.variantId === s.occurrences[occs[0]! as never]!.variantId && b.kind === "dialogue" && !b.removed);
     const a = addPanel(s, occs[0]!, "a");
-    s = mustApply(a.s, { type: "AnchorStoryboardPanel", linkId: tid(), panelId: a.panelId, blockId: blocks[0]!.id, orderKey: "a" });
+    s = mustApply(a.s, { type: "UpdateStoryboardPanel", panelId: a.panelId, blocks: [{ linkId: tid(), blockId: blocks[0]!.id, orderKey: "a" }] });
     const b = addPanel(s, occs[0]!, "b");
     const before = b.s;
     const suggestions = suggestPanelTimings(b.s, filmClips(b.s, mainId), occs[0]! as never);
@@ -135,8 +135,8 @@ describe("SB-4 storyboardtidslinjen", () => {
     const a = addPanel(s, occs[0]!, "a", 40);
     const b = addPanel(a.s, occs[0]!, "b", 60);
     const c = addPanel(b.s, occs[0]!, "c", 80);
-    let st = mustApply(c.s, { type: "SetStoryboardPanelActive", panelId: b.panelId, active: false });
-    st = mustApply(st, { type: "SetStoryboardPanelHidden", panelId: c.panelId, hidden: true });
+    let st = mustApply(c.s, { type: "UpdateStoryboardPanel", panelId: b.panelId, active: false });
+    st = mustApply(st, { type: "UpdateStoryboardPanel", panelId: c.panelId, hidden: true });
     const shots = storyboardTimeline(st, filmClips(st, mainId));
     expect(shots.map((x) => x.panel.id)).toEqual([a.panelId]);
     expect(storyboardDurationFrames(shots)).toBe(40);
