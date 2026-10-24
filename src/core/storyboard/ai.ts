@@ -5,7 +5,7 @@ import type { ProviderModel } from "../generation/providers";
 import { maxAttachedImagesFor } from "../generation/image-prompt";
 import { assetsInScene } from "../library";
 import { layersOf, layerVersion } from "../composition/render";
-import { defaultLayerFields } from "../composition/fields";
+import { defaultLayerFields } from "../composition";
 import { newId } from "../ids";
 import { keyBetween } from "../order-key";
 import { panelDetails } from "./editing";

@@ -19,7 +19,7 @@ import { newId, keyBetween, layersOf, layerFieldsOf, layerVersion, versionImageP
 const ctl = "w-full min-w-0 rounded-sm border border-border-control bg-surface-1 px-2 py-1 text-[13px] text-text-primary";
 type Tool = "select" | "arrow" | "line" | "shape" | "text" | "note" | "camera";
 const tools = [{ id: "select", icon: MousePointer2, key: "v" }, { id: "arrow", icon: MoveUpRight, key: "a" }, { id: "line", icon: Minus, key: "l" }, { id: "shape", icon: Square, key: "s" }, { id: "text", icon: Type, key: "t" }, { id: "note", icon: StickyNote, key: "n" }, { id: "camera", icon: Scan, key: "c" }] as const;
-interface Guides { notes: boolean; thirds: boolean; safe: boolean; mask: string }
+interface Guides { notes: boolean; thirds: boolean; safe: boolean; mask: "project" | "2.39" | "1.85" | "16:9" | "9:16" | "1:1" }
 const defaultGuides: Guides = { notes: true, thirds: false, safe: false, mask: "project" };
 const guideValid = (v: unknown): v is Guides => !!v && typeof v === "object" && typeof (v as Guides).notes === "boolean" && typeof (v as Guides).thirds === "boolean" && typeof (v as Guides).safe === "boolean" && ["project", "2.39", "1.85", "16:9", "9:16", "1:1"].includes((v as Guides).mask);
 
@@ -137,7 +137,7 @@ export function PanelEditor({ state, panel, editable, cmds, projectId }: { state
           <Button size="icon" variant="ghost" aria-label={t("sb3.notes-visible")} aria-pressed={guides.notes} onClick={()=>setGuides({...guides,notes:!guides.notes})}>{guides.notes ? <StickyNote/> : <EyeOff/>}</Button>
           <label className="flex items-center gap-1 text-[11px]"><input type="checkbox" checked={guides.safe} onChange={e=>setGuides({...guides,safe:e.target.checked})}/>{t("sb3.safe")}</label>
           <label className="flex items-center gap-1 text-[11px]"><input type="checkbox" checked={guides.thirds} onChange={e=>setGuides({...guides,thirds:e.target.checked})}/>{t("sb3.thirds")}</label>
-          <select className={ctl+" max-w-32"} value={guides.mask} onChange={e=>setGuides({...guides,mask:e.target.value})} aria-label={t("sb3.mask")}>{["project","2.39","1.85","16:9","9:16","1:1"].map(v=><option key={v} value={v}>{v==="project" ? t("sb3.project-format") : v}</option>)}</select>
+          <select className={ctl+" max-w-32"} value={guides.mask} onChange={e=>setGuides({...guides,mask:e.target.value as Guides["mask"]})} aria-label={t("sb3.mask")}>{["project","2.39","1.85","16:9","9:16","1:1"].map(v=><option key={v} value={v}>{v==="project" ? t("sb3.project-format") : v}</option>)}</select>
         </div>
         <div className="relative flex min-h-0 flex-1" data-testid="sb3-stage" onDragOver={e=>{if(allowed && e.dataTransfer.types.includes("application/x-asset-studio-version"))e.preventDefault();}} onDrop={e=>{const raw=e.dataTransfer.getData("application/x-asset-studio-version");if(!raw)return;e.preventDefault();e.stopPropagation();try{const parsed=JSON.parse(raw);if(typeof parsed.versionId==="string")addResource(parsed.versionId);}catch{setError(t("sb1.error.invalid-panel"));}}}>
           <Stage state={drawingState} composition={viewPanel} editable={allowed} selectedLayerId={selected} onSelect={select} run={run} imageUrls={urls} selectedShotId={null} onSelectShot={()=>undefined} frame={0} playing={false} view="scene" onViewChange={()=>undefined} autoKey={false}/>

@@ -13,7 +13,7 @@ import { t } from "@/core/i18n/keyed";
 
 const ctl = "w-full min-w-0 rounded-sm border border-border-control bg-surface-1 px-2 py-1 text-[13px] text-text-primary";
 interface Candidate { versionId: string; media: AssetMedia; trace: unknown; assetId: string; variantId: string }
-export function PanelAi({ state, panel, cmds, editable, mask }: { state: ProjectState; panel: Composition; cmds: Commands; editable: boolean; mask: string }) {
+export function PanelAi({ state, panel, cmds, editable, mask }: { state: ProjectState; panel: Composition; cmds: Commands; editable: boolean; mask: StoryboardAiRequest["mask"] }) {
   const available = useProjectProviders(state.project.id);
   const ids = new Set((available.data?.providers ?? []).filter(id => id !== "lovable"));
   const imageChoices = providersFor("image", ids).flatMap(p => p.models.map(m => ({ key: `${p.provider.id}|${m.id}`, provider: p.provider.id, model: m })));
@@ -50,19 +50,19 @@ export function PanelAi({ state, panel, cmds, editable, mask }: { state: Project
       if (request.action === "image" || request.action === "clean") {
         assetId = newId<"asset">(); variantId = newId<"asset_variant">(); const group = newId();
         let e = await cmds.runAndWait({ type: "CreateAssets", assets: [{ assetId: assetId as never, fields: { kind: "other", name: panel.name || t("sb7.candidate"), names: [], description: "", category: "", tags: [] } }] }, t("sb7.candidate"), group);
-        if (e) throw Error(e);
+        if (e.error) throw Error(e.error);
         e = await cmds.runAndWait({ type: "CreateAssetVariant", assetId: assetId as never, variantId: variantId as never, fields: { name: t("sb7.candidate"), style: "other", appearance: "" } }, t("sb7.candidate"), group);
-        if (e) throw Error(e);
+        if (e.error) throw Error(e.error);
       }
       const result = await generate({ data: { ...request, assetId: assetId || null } });
       if ("candidates" in result && result.candidates) {
         for (const c of result.candidates) {
           const group = newId();
           const e = await cmds.runAndWait({ type: "AddAssetVersion", versionId: c.versionId as never, variantId: variantId as never, media: c.media, note: JSON.stringify(c.trace) }, t("sb7.candidate"), group);
-          if (e) throw Error(e);
+          if (e.error) throw Error(e.error);
           const fresh = cmds.current() ?? state;
           const p = fresh.compositions[panel.id];
-          if (p) { const error = await cmds.runAndWait(panelCandidateLayer(fresh, p, assetId, variantId, c.versionId), t("sb7.candidate"), group); if (error) throw Error(error); }
+          if (p) { const result = await cmds.runAndWait(panelCandidateLayer(fresh, p, assetId, variantId, c.versionId), t("sb7.candidate"), group); if (result.error) throw Error(result.error); }
           setCandidates(old => [...old, { versionId: c.versionId, media: c.media, trace: c.trace, assetId, variantId }]);
         }
       }
@@ -83,7 +83,7 @@ export function PanelAi({ state, panel, cmds, editable, mask }: { state: Project
         const panelId = newId<"composition">();
         commands.push({ type: "AddStoryboardPanel", panelId, occurrenceId: panel.occurrenceId, variantId: panel.variantId, name: row.title, orderKey: after });
         commands.push({ type: "SetStoryboardDetails", panelId, details: { ...panelDetails(panel), number: "", fields: {}, dialogueIds: [], shot: row.shot as never, angle: row.angle as never, movement: row.movement } });
-        commands.push({ type: "AddLayers", layers: [{ layerId: newId<"composition_layer">(), compositionId: panelId, fields: { ...defaultLayerFields(state, panel, { fill: null }), kind: "camera_mark", fill: null, cameraMark: { frame: { x: 0, y: 0, width: panel.width, height: panel.height }, zoom: 1, pan: { x: 0, y: 0 }, tilt: 0 } } }] });
+        commands.push({ type: "AddLayers", layers: [{ layerId: newId<"composition_layer">(), compositionId: panelId, fields: { ...defaultLayerFields(state, panel, {}), kind: "camera_mark", assetId: null, assetVariantId: null, versionId: null, fill: null, cameraMark: { frame: { x: 0, y: 0, width: panel.width, height: panel.height }, zoom: 1, pan: { x: 0, y: 0 }, tilt: 0 } } }] });
         after = keyBetween(after, null);
       }
       for (const c of commands) { const e = cmds.run(c, t("sb7.confirm"), group); if (e) throw Error(e); }
