@@ -51,9 +51,14 @@ export function insertedPanelNumber(previous: string | null, occupied: readonly 
 export interface NumberChange { readonly panelId: string; readonly before: string; readonly after: string; readonly sceneBefore: string; readonly sceneAfter: string }
 export function planPanelNumbers(s: ProjectState, productionId: string, renumber: boolean): NumberChange[] {
   const occurrences = Object.values(s.occurrences).filter(o => o.productionId === productionId && o.active).sort((a,b) => a.orderKey.localeCompare(b.orderKey));
+  const occupiedScenes=occurrences.map(o=>storyboardPanelsOf(s,o.id).map(p=>panelDetails(p).sceneNumber).find(Boolean)??o.productionNumber??"").filter(Boolean);
+  let previousScene:string|null=null;
+  const assignedScenes=new Set<string>();
   return occurrences.flatMap((o, si) => {
     const panels = storyboardPanelsOf(s, o.id);
-    const scene = renumber ? String(si + 1) : panels.map(p => panelDetails(p).sceneNumber).find(Boolean) ?? o.productionNumber ?? String(si + 1);
+    let scene = renumber ? String(si + 1) : panels.map(p => panelDetails(p).sceneNumber).find(Boolean) ?? o.productionNumber ?? "";
+    if(!scene||assignedScenes.has(scene)){scene=occupiedScenes.length?insertedPanelNumber(previousScene,occupiedScenes):String(si+1);occupiedScenes.push(scene);}
+    previousScene=scene;assignedScenes.add(scene);
     const occupied = panels.map(p => panelDetails(p).number).filter(Boolean);
     let previous: string | null = null;
     const assigned = new Set<string>();
