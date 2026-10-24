@@ -26,7 +26,7 @@ et falskt `/api/v1` (C-0). Ingen ekte eksterne kall i testene. Ikke publisert. M
 ## Tester
 - `tests/unit/c3-premiere.test.ts` (20): sekvens med markører, timing og SB-9-overgang; lydspor i begge formater; rundtur OTIO og XML; XML med `-1` ved overganger (slik Premiere eksporterer); kobling på ID ved nye navn/ny rekkefølge/filnavn; fremmede klipp og dubletter; forslag fra byttet rekkefølge og ny timing, godtatt forslag flytter innen scenen; panel i annen scene gir bare varighet; konflikt og utdatert forslag; ingen sletting; avvisning av feil adapter, hemmeligheter, tomme og doble paneler; minste antall flytt; hele panelflyten (PKCE, import, klipp, retur, idempotens) mot falsk Premiere og falskt API; tilbaketrukket tilgang; ticks → bilder; manifestkontroll; importregler for pluginkoden; tekster på alle ti språk; klient og kapabiliteter; 0114 uten begin/commit.
 - DB-test «0114 C-3 Premiere Pro» i `tests/db/run-db-tests.ts`: klienten finnes, kilde/type-sjekker, unik retur, RLS for medlem/ikke-medlem, ingen direkte oppdatering, valg per panel.
-- Resultater: se siste avsnitt.
+- Resultater: full Vitest 3157 bestått, 0 feilet, 10 hoppet over; DB 238/0; `npm run test:ssr` 8/8; tsc 0; i18n-sjekk og releasekontroll grønne.
 
 ## Begrensninger (ærlig)
 - **Ikke prøvd i Premiere.** Navnene i `premiere-host.ts` følger Adobes UXP-referanse for Premiere, men er ikke kjørt. Særlig usikkert: at `Markers.getMarkers` på klippets prosjektelement gir klippmarkørene fra FCP XML-importen, og at `getTrackItems(CLIP, false)` gir klippene i tidsrekkefølge. Filnavnet `panels/<id>.png` er reserve hvis markørene ikke følger med.
