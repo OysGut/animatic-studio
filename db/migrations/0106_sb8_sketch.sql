@@ -62,7 +62,7 @@ declare s public.sketch_sessions; cap jsonb; r jsonb;begin
  select * into s from public.sketch_sessions where token_hash=p_hash for update;
  cap:=public.sketch_session_lookup(p_hash);if cap is null then raise exception 'Sketch session expired' using errcode='42501';end if;
  perform 1 from public.projects where id=s.project_id for update;
- if exists(select 1 from public.change_log where project_id=s.project_id and command_id=p_id)then return;end if;
+ if exists(select 1 from public.change_log where project_id=s.project_id and id=p_id)then return;end if;
  if p_command->>'type' is distinct from 'UpdateLayers' or pg_catalog.jsonb_array_length(p_command->'layers')<>1 or p_command->'layers'->0->>'layerId' is distinct from s.layer_id::text
  or coalesce(p_changes->'inserts','{}')<>'{}'::jsonb or coalesce(p_changes->'deletes','{}')<>'{}'::jsonb or (select count(*) from pg_catalog.jsonb_object_keys(p_changes->'updates'))<>1 or pg_catalog.jsonb_array_length(p_changes->'updates'->'composition_layers')<>1 then raise exception 'Sketch scope denied' using errcode='42501';end if;
  r:=p_changes->'updates'->'composition_layers'->0;
