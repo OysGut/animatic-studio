@@ -16778,6 +16778,30 @@
       "en": {
         "text": "OTIO timeline"
       }
+    },
+    "c0.consent.paste-back": {
+      "nb": {
+        "text": "Hvis {client} ikke åpnet seg, kopier denne adressen og lim den inn i programmet:"
+      },
+      "en": {
+        "text": "If {client} did not open, copy this address and paste it into the program:"
+      }
+    },
+    "c0.consent.paste-back-copy": {
+      "nb": {
+        "text": "Kopier adressen"
+      },
+      "en": {
+        "text": "Copy the address"
+      }
+    },
+    "c0.consent.paste-back-copied": {
+      "nb": {
+        "text": "Adressen er kopiert."
+      },
+      "en": {
+        "text": "The address has been copied."
+      }
     }
   }
 }

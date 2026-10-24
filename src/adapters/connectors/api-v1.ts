@@ -4,11 +4,11 @@
  * Serveren sjekker alt: token-hash, utløp, tilbaketrekking, prosjekt, scope, fartsgrense, kvote,
  * idempotens, kontrollsum og innhold. Svar har alltid Cache-Control: no-store.
  */
-import type { ProjectState } from "@/core";
+import { ASSET_MIME_TYPES, type ProjectState } from "@/core";
 import {
   ACCESS_TTL_SECONDS, CLIENT_ID_RE, clientKnown, DEVICE_INTERVAL_SECONDS, DEVICE_TTL_SECONDS, REFRESH_TTL_SECONDS,
   Sha256, buildProjectManifest, checkIntake, checkReserve, checkSession, chunkCount, expectedChunkSize, idempotentReplay,
-  makeToken, makeUserCode, missingChunks, parseScopes, pkceMatches, reserveFingerprint, sha256Hex, tokenHash, tokenKind, toHex,
+  makeToken, makeUserCode, mimeForExtension, missingChunks, parseScopes, pkceMatches, reserveFingerprint, sha256Hex, tokenHash, tokenKind, toHex,
   type ConnectorScope, type ConnectorSessionRow, type ReserveRequest, type TransferStatus,
 } from "@/core/connectors";
 
@@ -39,6 +39,10 @@ export interface ConnectorStore {
   createCandidate(t: StoredTransfer, file: { bytes: Uint8Array[]; mimeType: string; sha256: string }, actor: string): Promise<{ versionId: string; conflictId: string | null }>;
   setTransferStatus(id: string, status: TransferStatus): Promise<void>;
   listConflicts(projectId: string): Promise<unknown[]>;
+  /** C-2: leser filen til en versjon (lagringssti fra prosjektdata). null hvis den mangler. */
+  readFile(projectId: string, path: string): Promise<Uint8Array | null>;
+  /** C-2: konfliktvalg for sesjonsbrukeren (keep_both, choose_current, reject); choose_incoming skjer i appen. */
+  resolveConflict(projectId: string, userId: string, id: string, choice: string, revision: number): Promise<"ok" | "stale" | "not_found" | "forbidden" | "choice">;
 }
 export interface ApiDeps { store: ConnectorStore; now: () => number; random: (n: number) => Uint8Array; ip: string }
 
@@ -169,6 +173,26 @@ export async function handleApiV1(req: Request, d: ApiDeps): Promise<Response> {
         if (!variants.size) return apiError(404, "not_found");
         return json({ versions: Object.values(st.assetVersions).filter(v => !v.removed && variants.has(v.variantId)).map(v => ({ id: v.id, variantId: v.variantId, number: v.number, mimeType: v.mimeType, byteSize: v.byteSize, sha256: v.sha256, approved: st.assetVariants[v.variantId]?.approvedVersionId === v.id, createdAt: v.createdAt })) });
       }
+      if (m === "GET" && rest[0] === "assets" && rest[2] === "versions" && rest[4] === "file" && rest.length === 5) {
+        const a = await authed(req, d, "assets:read", pid); if (a instanceof Response) return a;
+        const st = await d.store.loadState(pid);
+        const v = st.assetVersions[rest[3] as never];
+        const variant = v ? st.assetVariants[v.variantId] : undefined;
+        if (!v || v.removed || !variant || variant.assetId !== rest[1]) return apiError(404, "version_not_found");
+        const bytes = await d.store.readFile(pid, v.mediaPath);
+        if (!bytes) return apiError(404, "file_missing");
+        return new Response(bytes as BodyInit, { status: 200, headers: { "Content-Type": v.mimeType, "Content-Length": String(bytes.length), "X-Content-SHA256": v.sha256, "Cache-Control": "no-store", "Referrer-Policy": "no-referrer", "X-Content-Type-Options": "nosniff", "Content-Disposition": "attachment" } });
+      }
+      if (m === "POST" && rest[0] === "conflicts" && rest[2] === "resolve" && rest.length === 3) {
+        const a = await authed(req, d, "transfers:write", pid); if (a instanceof Response) return a;
+        const b = await body(req);
+        const choice = s(b["choice"]), revision = Number(b["revision"]);
+        if (choice === "choose_incoming") return apiError(409, "approve_in_app");
+        if (!["keep_both", "choose_current", "reject"].includes(choice) || !Number.isInteger(revision)) return apiError(400, "invalid_choice");
+        const r = await d.store.resolveConflict(pid, a.userId, rest[1]!, choice, revision);
+        if (r === "ok") return json({ resolved: true, choice });
+        return apiError(r === "stale" ? 409 : r === "forbidden" ? 403 : r === "not_found" ? 404 : 400, r === "not_found" ? "conflict_not_found" : r === "stale" ? "stale" : r);
+      }
       if (m === "GET" && rest[0] === "panels" && rest.length === 1) {
         const a = await authed(req, d, "panels:read", pid); if (a instanceof Response) return a;
         const st = await d.store.loadState(pid);
@@ -186,6 +210,10 @@ export async function handleApiV1(req: Request, d: ApiDeps): Promise<Response> {
           const r: ReserveRequest = { idempotencyKey: req.headers.get("idempotency-key") ?? "", fileName: s(b["fileName"]), byteSize: Number(b["byteSize"]), sha256: s(b["sha256"]), target: { assetId: s(target["assetId"]), variantId: s(target["variantId"]) }, base: { versionId: typeof base["versionId"] === "string" ? base["versionId"] : null } };
           const c = checkReserve(r);
           if (!c.ok) return apiError(c.reason === "file" ? 415 : 400, "invalid_" + c.reason);
+          // C-2: bildeformater prosjektmodellen ikke kan lagre som versjon (i dag PSD) avvises før noen byte sendes,
+          // så klienten kan sende en flat PNG i stedet. Se ASSET_MIME_TYPES og C2_REPORT.md.
+          const mime = mimeForExtension((/\.([A-Za-z0-9]{1,8})$/.exec(r.fileName)?.[1] ?? "").toLowerCase());
+          if (mime && mime.startsWith("image/") && !ASSET_MIME_TYPES.includes(mime)) return apiError(415, "unsupported_version_type");
           const fp = reserveFingerprint(r);
           const existing = await d.store.findTransfer(pid, r.idempotencyKey);
           const replay = idempotentReplay(existing, fp);

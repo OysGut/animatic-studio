@@ -59232,5 +59232,20 @@
     "text": "OTIOタイムライン",
     "sourceHash": "878fe644a15cdb4b9b41f769ff8da67824c17976837d8f168da3fb6d53b8d567",
     "review": "machine"
+  },
+  "c0.consent.paste-back": {
+    "text": "{client} が開かなかった場合は、このアドレスをコピーしてプログラムに貼り付けてください:",
+    "sourceHash": "3b390082b32bd7acded3c0f3743b17dddddb1237e16514af712088bf3d0004ef",
+    "review": "machine"
+  },
+  "c0.consent.paste-back-copy": {
+    "text": "アドレスをコピー",
+    "sourceHash": "0ec70fdb7e8f10b50efcf4bfa72b7847af01951a5e9958121c2147bc8e893565",
+    "review": "machine"
+  },
+  "c0.consent.paste-back-copied": {
+    "text": "アドレスをコピーしました。",
+    "sourceHash": "244a0f12127d2ea21ba27c88e240e713aa18d23b9561bcf146c97d03a6ef44cb",
+    "review": "machine"
   }
 }

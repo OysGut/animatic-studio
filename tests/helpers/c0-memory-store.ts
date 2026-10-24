@@ -76,12 +76,21 @@ export function memoryStore(state: ProjectState, opts: { now: () => number; rate
         s = r.state;
       }
       let conflictId: string | null = null;
-      if (plan.conflict) { conflictId = `c-${++n}`; conflicts.push({ id: conflictId, variantId: t.variantId, baseVersionId: t.baseVersionId, currentVersionId: variant.approvedVersionId, incomingVersionId: versionId, status: "open" }); }
+      if (plan.conflict) { conflictId = `c-${++n}`; conflicts.push({ id: conflictId, variantId: t.variantId, baseVersionId: t.baseVersionId, currentVersionId: variant.approvedVersionId, incomingVersionId: versionId, status: "open", revision: 1, choice: null }); }
       t.status = "candidate"; t.candidateVersionId = versionId; t.conflictId = conflictId;
       return { versionId, conflictId };
     },
     async setTransferStatus(id, st) { const t = transfers.get(id); if (t) t.status = st; },
     async listConflicts() { return conflicts; },
+    async readFile(projectId, path) { return path.startsWith(projectId + "/") ? files.get(path) ?? null : null; },
+    async resolveConflict(_p, _u, id, choice, revision) {
+      if (!["keep_both", "choose_current", "reject"].includes(choice)) return "choice";
+      const c = conflicts.find(x => x["id"] === id);
+      if (!c) return "not_found";
+      if (c["revision"] !== revision || c["status"] !== "open") return "stale";
+      Object.assign(c, { status: choice === "reject" ? "rejected" : "resolved", choice, revision: revision + 1 });
+      return "ok";
+    },
   };
   return {
     store,

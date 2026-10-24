@@ -94,9 +94,21 @@ export async function cloudConnectorStore(): Promise<ConnectorStore> {
       return { versionId, conflictId };
     },
     async setTransferStatus(id, status) { await db.from("connector_transfers").update({ status, updated_at: new Date().toISOString() }).eq("id", id); },
+    async readFile(projectId, path) {
+      if (!path.startsWith(projectId + "/")) return null; // bare filer i prosjektets egen mappe
+      const { data, error } = await db.storage.from("assets").download(path);
+      if (error || !data) return null;
+      return new Uint8Array(await data.arrayBuffer());
+    },
+    async resolveConflict(projectId, userId, id, choice, revision) {
+      const r = await db.rpc("connector_resolve_conflict_for", { p_user: userId, p_project: projectId, p_id: id, p_choice: choice, p_revision: revision });
+      if (r.error) return "not_found";
+      return r.data as "ok" | "stale" | "not_found" | "forbidden" | "choice";
+    },
     async listConflicts(projectId) {
       const { data } = await db.from("connector_conflicts").select("id,variant_id,base_version_id,current_version_id,incoming_version_id,status,choice,created_at,revision").eq("project_id", projectId).order("created_at", { ascending: false }).limit(200);
-      return data ?? [];
+      // Samme form som i OpenAPI (camelCase), så plugins leser én struktur.
+      return ((data ?? []) as Record<string, unknown>[]).map(r => ({ id: r["id"], variantId: r["variant_id"], baseVersionId: r["base_version_id"], currentVersionId: r["current_version_id"], incomingVersionId: r["incoming_version_id"], status: r["status"], choice: r["choice"], createdAt: r["created_at"], revision: r["revision"] }));
     },
   };
 }

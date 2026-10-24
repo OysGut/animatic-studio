@@ -1,7 +1,7 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "From Pen to Glass – Creative Connectors API",
+    "title": "From Pen to Glass \u2013 Creative Connectors API",
     "version": "1.0.0",
     "description": "C-0. Kortlivede bearer-tokens per prosjekt og scope (OAuth 2.0 Authorization Code + PKCE S256, eller enhetsflyt). Ingen hemmeligheter i plugins. Alle svar har Cache-Control: no-store."
   },
@@ -643,6 +643,140 @@
         },
         "security": []
       }
+    },
+    "/projects/{projectId}/assets/{assetId}/versions/{versionId}/file": {
+      "get": {
+        "summary": "Download the file of one asset version (C-2)",
+        "operationId": "download_version_file",
+        "tags": [
+          "v1"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/projectId"
+          },
+          {
+            "$ref": "#/components/parameters/assetId"
+          },
+          {
+            "$ref": "#/components/parameters/versionId"
+          }
+        ],
+        "security": [
+          {
+            "bearer": [
+              "assets:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "File bytes; X-Content-SHA256 carries the stored checksum",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "contentMediaType": "application/octet-stream"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/projects/{projectId}/conflicts/{conflictId}/resolve": {
+      "post": {
+        "summary": "Resolve a conflict for the session user: keep_both, choose_current or reject. choose_incoming answers 409 approve_in_app.",
+        "operationId": "resolve_conflict",
+        "tags": [
+          "v1"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/projectId"
+          },
+          {
+            "$ref": "#/components/parameters/conflictId"
+          }
+        ],
+        "security": [
+          {
+            "bearer": [
+              "transfers:write"
+            ]
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "choice",
+                  "revision"
+                ],
+                "properties": {
+                  "choice": {
+                    "type": "string",
+                    "enum": [
+                      "keep_both",
+                      "choose_current",
+                      "choose_incoming",
+                      "reject"
+                    ]
+                  },
+                  "revision": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Resolved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -712,6 +846,23 @@
         "schema": {
           "type": "string",
           "pattern": "^[A-Za-z0-9_-]{16,128}$"
+        }
+      },
+      "versionId": {
+        "name": "versionId",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "conflictId": {
+        "name": "conflictId",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string"
         }
       }
     },

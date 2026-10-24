@@ -1465,6 +1465,93 @@ export type Database = {
           },
         ]
       }
+      connector_handoffs: {
+        Row: {
+          adapter: string
+          asset_id: string | null
+          base_revision: number
+          base_version_id: string | null
+          candidate_version_id: string | null
+          created_at: string
+          created_by: string
+          expires_at: string
+          file_name: string
+          format: string
+          id: string
+          project_id: string
+          return_token_hash: string
+          revision: number
+          scene_id: string | null
+          status: string
+          target_id: string
+          target_kind: string
+          transfer_id: string | null
+          updated_at: string
+          variant_id: string | null
+        }
+        Insert: {
+          adapter: string
+          asset_id?: string | null
+          base_revision?: number
+          base_version_id?: string | null
+          candidate_version_id?: string | null
+          created_at?: string
+          created_by: string
+          expires_at: string
+          file_name: string
+          format: string
+          id: string
+          project_id: string
+          return_token_hash: string
+          revision?: number
+          scene_id?: string | null
+          status?: string
+          target_id: string
+          target_kind: string
+          transfer_id?: string | null
+          updated_at?: string
+          variant_id?: string | null
+        }
+        Update: {
+          adapter?: string
+          asset_id?: string | null
+          base_revision?: number
+          base_version_id?: string | null
+          candidate_version_id?: string | null
+          created_at?: string
+          created_by?: string
+          expires_at?: string
+          file_name?: string
+          format?: string
+          id?: string
+          project_id?: string
+          return_token_hash?: string
+          revision?: number
+          scene_id?: string | null
+          status?: string
+          target_id?: string
+          target_kind?: string
+          transfer_id?: string | null
+          updated_at?: string
+          variant_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "connector_handoffs_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "connector_handoffs_transfer_id_fkey"
+            columns: ["transfer_id"]
+            isOneToOne: false
+            referencedRelation: "connector_transfers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       connector_links: {
         Row: {
           client_id: string
@@ -1576,6 +1663,7 @@ export type Database = {
           direction: string
           file_name: string
           fingerprint: string
+          handoff_id: string | null
           id: string
           idempotency_key: string
           project_id: string
@@ -1596,6 +1684,7 @@ export type Database = {
           direction?: string
           file_name: string
           fingerprint: string
+          handoff_id?: string | null
           id: string
           idempotency_key: string
           project_id: string
@@ -1616,6 +1705,7 @@ export type Database = {
           direction?: string
           file_name?: string
           fingerprint?: string
+          handoff_id?: string | null
           id?: string
           idempotency_key?: string
           project_id?: string
@@ -1627,6 +1717,13 @@ export type Database = {
           variant_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "connector_transfers_handoff_id_fkey"
+            columns: ["handoff_id"]
+            isOneToOne: false
+            referencedRelation: "connector_handoffs"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "connector_transfers_project_id_fkey"
             columns: ["project_id"]
@@ -8207,6 +8304,30 @@ export type Database = {
           lat: number
           lon: number
         }[]
+      }
+      handoff_by_token: { Args: { p_hash: string }; Returns: Json }
+      handoff_create: {
+        Args: {
+          p_adapter: string
+          p_asset: string
+          p_base_revision: number
+          p_base_version: string
+          p_expires: string
+          p_file_name: string
+          p_format: string
+          p_id: string
+          p_project: string
+          p_scene: string
+          p_target_id: string
+          p_target_kind: string
+          p_token_hash: string
+          p_variant: string
+        }
+        Returns: undefined
+      }
+      handoff_set_status: {
+        Args: { p_id: string; p_status: string }
+        Returns: undefined
       }
       issue_print_copies: {
         Args: { p_job: string; p_project: string }

@@ -25,6 +25,10 @@ export interface SdkOptions {
 export class ConnectorError extends Error {
   constructor(readonly status: number, readonly code: string) { super(code); }
 }
+export interface ConflictInfo { id: string; variantId: string; baseVersionId: string | null; currentVersionId: string | null; incomingVersionId: string; status: string; choice: string | null; revision: number }
+export interface AssetInfo { id: string; kind: string; name: string; revision: number; variants: { id: string; name: string; approvedVersionId: string | null }[] }
+export interface VersionInfo { id: string; variantId: string; number: number; mimeType: string; byteSize: number; sha256: string; approved: boolean; createdAt: string }
+export interface PanelInfo { id: string; name: string; revision: number; occurrenceId: string | null; durationFrames: number; width: number; height: number }
 export interface TransferInfo { id: string; status: string; chunkCount: number; missingChunks: number[]; candidateVersionId: string | null; conflictId: string | null }
 
 export class PtgConnector {
@@ -87,7 +91,26 @@ export class PtgConnector {
     if (!r.ok) throw new ConnectorError(502, "invalid_manifest");
     return r.manifest;
   }
-  conflicts(projectId: string) { return this.json<{ conflicts: unknown[] }>("GET", `/api/v1/projects/${projectId}/conflicts`); }
+  conflicts(projectId: string) { return this.json<{ conflicts: ConflictInfo[] }>("GET", `/api/v1/projects/${projectId}/conflicts`); }
+  projects() { return this.json<{ projects: { id: string; name: string; revision: number }[] }>("GET", "/api/v1/projects"); }
+  assets(projectId: string) { return this.json<{ assets: AssetInfo[] }>("GET", `/api/v1/projects/${projectId}/assets`); }
+  versions(projectId: string, assetId: string) { return this.json<{ versions: VersionInfo[] }>("GET", `/api/v1/projects/${projectId}/assets/${assetId}/versions`); }
+  panels(projectId: string) { return this.json<{ panels: PanelInfo[] }>("GET", `/api/v1/projects/${projectId}/panels`); }
+  /** C-2: henter filen til en versjon og kontrollerer SHA-256 mot det serveren har lagret. */
+  async download(projectId: string, assetId: string, versionId: string): Promise<{ bytes: Uint8Array; mimeType: string; sha256: string }> {
+    const res = await this.raw("GET", `/api/v1/projects/${projectId}/assets/${assetId}/versions/${versionId}/file`, undefined, {});
+    const bytes = new Uint8Array(await res.arrayBuffer());
+    const sha256 = sha256Hex(bytes), declared = res.headers.get("x-content-sha256");
+    if (declared && declared !== sha256) throw new ConnectorError(502, "checksum_mismatch");
+    return { bytes, mimeType: res.headers.get("content-type") ?? "application/octet-stream", sha256 };
+  }
+  /**
+   * C-2: konfliktvalg for den innloggede brukeren. «Behold begge» og «Behold gjeldende» (og avvis) skjer her;
+   * «Bruk den nye» kaster `approve_in_app`, fordi bare brukerens egen godkjenning i appen bytter aktiv versjon.
+   */
+  resolveConflict(projectId: string, conflictId: string, choice: "keep_both" | "choose_current" | "choose_incoming" | "reject", revision: number) {
+    return this.json<{ resolved: boolean; choice: string }>("POST", `/api/v1/projects/${projectId}/conflicts/${conflictId}/resolve`, { choice, revision });
+  }
 
   /**
    * Sender en fil som ny kandidatversjon. Gjenopptakbar: samme idempotensnøkkel hopper over biter serveren

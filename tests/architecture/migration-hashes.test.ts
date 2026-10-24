@@ -13,11 +13,11 @@ const hashes: Record<string, string> = JSON.parse(
 const isMigration = (file: string) => /^\d{4}_.+\.sql$/.test(file);
 
 describe("Låste migrasjonsfiler", () => {
-  it("listen dekker alle migrasjoner til og med 0106 og ingen manglende filer", () => {
+  it("listen dekker alle migrasjoner til og med 0109 og ingen manglende filer", () => {
     const files = readdirSync(migrationDirectory).filter(isMigration);
-    const lockedFiles = files.filter((file) => Number(file.slice(0, 4)) <= 106).sort();
-    expect(lockedFiles.some((file) => file.startsWith("0106_"))).toBe(true);
-    expect(Object.keys(hashes).filter((file) => Number(file.slice(0, 4)) <= 106).sort()).toEqual(lockedFiles);
+    const lockedFiles = files.filter((file) => Number(file.slice(0, 4)) <= 109).sort();
+    expect(lockedFiles.some((file) => file.startsWith("0109_"))).toBe(true);
+    expect(Object.keys(hashes).filter((file) => Number(file.slice(0, 4)) <= 109).sort()).toEqual(lockedFiles);
     for (const file of Object.keys(hashes)) {
       expect(isMigration(file), file).toBe(true);
       expect(files, `Låst migrasjon mangler: ${file}`).toContain(file);

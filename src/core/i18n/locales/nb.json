@@ -77810,5 +77810,14 @@
   },
   "c1.format.otio": {
     "text": "OTIO-tidslinje"
+  },
+  "c0.consent.paste-back": {
+    "text": "Hvis {client} ikke åpnet seg, kopier denne adressen og lim den inn i programmet:"
+  },
+  "c0.consent.paste-back-copy": {
+    "text": "Kopier adressen"
+  },
+  "c0.consent.paste-back-copied": {
+    "text": "Adressen er kopiert."
   }
 }
