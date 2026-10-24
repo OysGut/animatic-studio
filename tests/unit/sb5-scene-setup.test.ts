@@ -13,6 +13,7 @@ import {
   orderedOccurrences,
   planSceneSetup,
   activePanelIdAtFrame,
+  layersOf,
   scenePanelReferences,
   panelTiming,
   type ProjectState,
@@ -101,8 +102,8 @@ describe("SB-5 planSceneSetup", () => {
       versionId: img.versionId as never,
       transform: { x: 500, y: 300, scaleX: 1.5, scaleY: 1.5, rotation: 15, opacity: 1 },
     }).s;
-    s = addPanelLayer(s, p.panelId, { kind: "note", fill: null, note: { text: "regi", color: "#fff", noteType: "direction", handled: false, anchor: null } }).s;
-    s = addPanelLayer(s, p.panelId, { kind: "arrow", fill: null, arrow: { points: [{ x: 0, y: 0, smooth: false }, { x: 10, y: 10, smooth: false }], form: "straight", thickness: 2, color: "#fff", category: "character", layerId: null } }).s;
+    s = addPanelLayer(s, p.panelId, { kind: "note", fill: null, note: { text: "regi", color: "#ffffff", noteType: "direction", handled: false, anchor: null } }).s;
+    s = addPanelLayer(s, p.panelId, { kind: "arrow", fill: null, arrow: { points: [{ x: 0, y: 0, smooth: false }, { x: 10, y: 10, smooth: false }], form: "straight", thickness: 2, color: "#ffffff", category: "character", layerId: null } }).s;
     s = addPanelLayer(s, p.panelId, { kind: "camera_mark", fill: null, cameraMark: { frame: { x: 100, y: 100, width: 400, height: 300 }, zoom: 2, pan: { x: 0, y: 0 }, tilt: 0 } }).s;
 
     const plan = planSceneSetup(s, filmClips(s, mainId), occurrenceId, p.panelId);
@@ -193,7 +194,7 @@ describe("SB-5 referansepanelet følger avspillingen", () => {
     const p = addPanel(s, occurrenceId, "a", 100);
     const img2 = withImage(p.s);
     s = addPanelLayer(img2.s, p.panelId, { assetId: img2.assetId as never, assetVariantId: img2.variantId as never, versionId: img2.versionId as never }).s;
-    s = addPanelLayer(s, p.panelId, { kind: "note", fill: null, note: { text: "x", color: "#fff", noteType: "visual", handled: false, anchor: null } }).s;
+    s = addPanelLayer(s, p.panelId, { kind: "note", fill: null, note: { text: "x", color: "#ffffff", noteType: "visual", handled: false, anchor: null } }).s;
     s = addPanelLayer(s, p.panelId, { kind: "camera_mark", fill: null, cameraMark: { frame: { x: 0, y: 0, width: 100, height: 100 }, zoom: 1, pan: { x: 0, y: 0 }, tilt: 0 } }).s;
     s = mustApply(s, {
       type: "AddAnnotation",
