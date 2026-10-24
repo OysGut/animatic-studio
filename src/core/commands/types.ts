@@ -192,6 +192,8 @@ export interface AssetVariantFields {
 
 /** Et nytt notat (DEC-0031). Enten blockId med tegnområde, eller variantId (nål på scenen). */
 export interface NewAnnotation {
+  readonly panelId?: CompositionId | null;
+  readonly layerId?: LayerId | null;
   readonly annotationId: AnnotationId;
   readonly resolved?: boolean;
   readonly blockId: BlockId | null;
@@ -258,6 +260,7 @@ export type Command = import("../animation/rig-commands").RigCommand
   | import("../interchange/mouth-commands").MouthCommand
   | import("../print/measure/commands").MeasureSetCommand
   | import("../print/job/commands").PrintJobCommand
+  | import("../storyboard/editing-commands").StoryboardEditingCommand
   | import("../rig/multiplane-commands").MultiplaneRigCommand
   | import("../animation/behavior-commands").BehaviorCommand
   | {
@@ -1077,7 +1080,7 @@ export type Command = import("../animation/rig-commands").RigCommand
   | { readonly type: "UpdateNoteFlag"; readonly flagId: string; readonly text?: string; readonly enabled?: boolean }
   | { readonly type: "SetNoteFlagRemoved"; readonly flagId: string; readonly removed: boolean }
   /** SB-1: storyboardgrunnmur (migrasjon 0102). Panelet er en komposisjon med kind «storyboard». */
-  | { readonly type: "AddStoryboardPanel"; readonly panelId: string; readonly occurrenceId: string; readonly variantId: string; readonly orderKey: string; readonly name?: string; readonly durationFrames?: number; readonly blocks?: readonly StoryboardBlockRef[] }
+  | { readonly type: "AddStoryboardPanel"; readonly details?: import("../storyboard/editing").PanelDetails; readonly panelId: string; readonly occurrenceId: string; readonly variantId: string; readonly orderKey: string; readonly name?: string; readonly durationFrames?: number; readonly blocks?: readonly StoryboardBlockRef[] }
   | { readonly type: "UndoAddStoryboardPanel"; readonly panelId: string }
   | { readonly type: "UpdateStoryboardPanel"; readonly panelId: string; readonly name?: string; readonly durationFrames?: number; readonly active?: boolean; readonly hidden?: boolean; readonly blocks?: readonly StoryboardBlockRef[] }
   | { readonly type: "SetStoryboardPanelRemoved"; readonly panelId: string; readonly removed: boolean }

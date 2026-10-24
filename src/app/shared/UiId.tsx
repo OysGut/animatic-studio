@@ -3,7 +3,7 @@
  * markerbart, skjult for skjermleser. Alt + klikk på merket kopierer koden (useUiIdCopy i rotsiden).
  * Nummeret slås alltid opp i registeret src/app/ui-ids.ts.
  */
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useMatches } from "@tanstack/react-router";
 import { BUILD_SHA_SHORT } from "@/app/build-info";
 import { uiIdEntry, uiIdForRoute } from "@/app/ui-ids";
@@ -36,8 +36,13 @@ export function useUiIdCopy(): void {
 /** Sidens merke: den dypeste ruten som står i registeret (nede til venstre, påvirker ikke innloggingsboksen). */
 export function RouteUiId() {
   const matches = useMatches();
+  const [mounted,setMounted]=useState(false);
+  useEffect(()=>setMounted(true),[]);
+  if(!mounted)return null;
   for (let i = matches.length - 1; i >= 0; i--) {
-    const entry = uiIdForRoute(matches[i]!.routeId);
+    const match=matches[i];
+    if(!match)continue;
+    const entry = uiIdForRoute(match.routeId);
     if (entry) return <UiId id={entry.id} page />;
   }
   return null;

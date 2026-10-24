@@ -4,6 +4,7 @@
  * per scene. Ingen ny lagring: alt bygges av ProjectState, og alle endringer er SB-1-kommandoer.
  */
 import type { Command } from "../commands/types";
+import {insertedPanelNumber} from "./editing";
 import { layerFieldsOf } from "../composition";
 import { newId } from "../ids";
 import type { Composition, ProjectState, SceneOccurrence } from "../model";
@@ -74,7 +75,7 @@ export function buildGallery(s: ProjectState, productionId: string, o: GalleryOp
     const heading = h ? formatHeading(h) : "";
     out.push({
       occurrence: occ,
-      number: sceneNumberOf(s, occ) ?? "",
+      number: panels.map(p=>p.panel.storyboard?.sceneNumber).find(Boolean) ?? sceneNumberOf(s, occ) ?? "",
       heading,
       statuses: sceneStatuses,
       panels,
@@ -136,10 +137,12 @@ export function planDuplicatePanel(s: ProjectState, panelId: string): Command[] 
   const layers = Object.values(s.layers)
     .filter((l) => !l.removed && l.compositionId === panelId)
     .sort((a, b) => a.orderKey.localeCompare(b.orderKey));
+  const remap = new Map<string, import("../ids").LayerId>(layers.map(l => [l.id, newId<"composition_layer">()]));
+  if (p.storyboard) cmds.push({type:"SetStoryboardDetails",panelId:id,details:{...p.storyboard,number:insertedPanelNumber(p.storyboard.number,storyboardPanelsOf(s,p.occurrenceId).map(p=>p.storyboard?.number??""))}});
   if (layers.length > 0)
     cmds.push({
       type: "AddLayers",
-      layers: layers.map((l) => ({ layerId: newId<"layer">() as never, compositionId: id as never, orderKey: l.orderKey, fields: layerFieldsOf(l) })),
+      layers: layers.map((l) => { const fields = layerFieldsOf(l); return { layerId: remap.get(l.id) as never, compositionId: id, orderKey: l.orderKey, fields: { ...fields, ...(l.groupId ? {groupId:remap.get(l.groupId)??null}:{}), ...(l.note?.anchor && "layerId" in l.note.anchor ? {note:{...l.note,anchor:{layerId:remap.get(l.note.anchor.layerId)??l.note.anchor.layerId}}}:{}), ...(l.arrow?.layerId ? {arrow:{...l.arrow,layerId:remap.get(l.arrow.layerId)??l.arrow.layerId}}:{}) } }; }),
     });
   return cmds;
 }

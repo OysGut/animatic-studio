@@ -123,7 +123,33 @@ function paintItem(ctx: Ctx2D, it: DrawItem, v: Matrix, opts: DrawOptions, place
   const x = -it.width / 2;
   const y = -it.height / 2;
   applyShadow(ctx, it);
-  if (it.kind === "text") {
+  if (it.note) {
+    ctx.fillStyle = it.note.color;
+    ctx.fillRect(x, y, it.width, it.height);
+    ctx.fillStyle = it.note.color.toLowerCase() === "#ffffff" ? "#000000" : "#ffffff";
+    ctx.font = `${Math.max(14, Math.min(36, it.height / 6))}px sans-serif`;
+    ctx.textBaseline = "top";
+    it.note.text.split("\n").forEach((line, i) => ctx.fillText(line, x + 12, y + 12 + i * Math.max(18, it.height / 5), Math.max(1, it.width - 24)));
+  } else if (it.arrow) {
+    const pts = it.arrow.points;
+    const first = pts[0];
+    if (first) {
+      ctx.strokeStyle = it.arrow.color; ctx.fillStyle = it.arrow.color; ctx.lineWidth = it.arrow.thickness;
+      ctx.beginPath(); ctx.moveTo(first.x, first.y);
+      for (let i = 1; i < pts.length; i++) { const p = pts[i]; if (p) { if (it.arrow.form === "curved") { const prev = pts[i - 1]; if (prev) ctx.quadraticCurveTo(prev.x, p.y, p.x, p.y); } else ctx.lineTo(p.x, p.y); } }
+      ctx.stroke();
+      const end = pts.at(-1), prev = pts.at(-2);
+      if (end && prev && !it.shape) {
+        const angle = Math.atan2(end.y - prev.y, end.x - prev.x), n = Math.max(12, it.arrow.thickness * 4);
+        ctx.beginPath(); ctx.moveTo(end.x, end.y); ctx.lineTo(end.x - n * Math.cos(angle - Math.PI / 6), end.y - n * Math.sin(angle - Math.PI / 6)); ctx.lineTo(end.x - n * Math.cos(angle + Math.PI / 6), end.y - n * Math.sin(angle + Math.PI / 6)); ctx.closePath(); ctx.fill();
+      }
+    }
+  } else if (it.cameraMark) {
+    const f = it.cameraMark.frame;
+    ctx.strokeStyle = it.fill ?? "#ffffff"; ctx.lineWidth = 4;
+    ctx.strokeRect(f.x, f.y, f.width, f.height);
+    ctx.font = "24px sans-serif"; ctx.fillStyle = ctx.strokeStyle; ctx.fillText(`${it.cameraMark.zoom}×`, f.x + 12, f.y + 30);
+  } else if (it.kind === "text") {
     paintText(ctx, it);
   } else if (it.kind === "fill") {
     paintFill(ctx, it, x, y);

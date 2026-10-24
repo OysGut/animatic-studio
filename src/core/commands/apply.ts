@@ -1,4 +1,6 @@
 import { canonicalLanguageTag } from "../translation/language-tags";
+import { EMPTY_PANEL_DETAILS, insertedPanelNumber, panelDetailsValid } from "../storyboard/editing";
+import { applyStoryboardEditing } from "../storyboard/editing-commands";
 import { briefVersionsError } from "../assets/brief-versions";
 import { applyMeasureSetCommand } from "../print/measure/commands";
 import { applyMouthCommand } from "../interchange/mouth-commands";
@@ -461,6 +463,11 @@ function normalizeVariantFields(f: AssetVariantFields): AssetVariantFields {
 // ---------- Notater ----------
 
 function normalizeAnnotation(s: ProjectState, n: NewAnnotation, now: string): Annotation {
+  if (n.panelId) {
+    const panel = s.compositions[n.panelId];
+    if (!panel || panel.removed || panel.kind !== "storyboard" || n.variantId !== panel.variantId || n.blockId !== null) fail("invalid", tk("sb1.error.invalid-panel"));
+    if (n.layerId && (!s.layers[n.layerId] || s.layers[n.layerId]?.compositionId !== panel.id)) fail("invalid", tk("sb1.error.invalid-panel"));
+  } else if (n.layerId) fail("invalid", tk("sb1.error.invalid-panel"));
   if (n.resolved !== undefined && typeof n.resolved !== "boolean")
     fail("invalid", tk("core-commands-apply.normalize-annotation.fail.6eabe261790c"));
   // Forsøksvis manusredigering (AS3, C2): bare på tekst, med foreslått tekst
@@ -538,6 +545,7 @@ function normalizeAnnotation(s: ProjectState, n: NewAnnotation, now: string): An
   function base(): Annotation {
     return {
       id: n.annotationId,
+      ...(n.panelId ? { panelId: n.panelId, layerId: n.layerId ?? null } : {}),
       revision: 1,
       variantId: n.variantId,
       blockId: n.blockId,
@@ -1959,6 +1967,9 @@ function run(
   });
 
   switch (c.type) {
+    case "SetStoryboardDetails": case "SetStoryboardFields": {
+      try { return applyStoryboardEditing(s, c); } catch (error) { fail("invalid", error instanceof Error ? error.message : tk("sb1.error.invalid-panel")); }
+    }
     case "SaveMouthSet": case "SaveMouthTrack": case "UndoMouthChange": {
       try { return applyMouthCommand(s, c); } catch (error) { fail("invalid", error instanceof Error ? error.message : tk("ptg4.invalid")); }
     }
@@ -6940,6 +6951,7 @@ function run(
         const a = need(s.annotations[id], tk("core-commands-apply.a.need.d46e4f867b8c"));
         back.push({
           annotationId: a.id,
+          ...(a.panelId ? { panelId: a.panelId, layerId: a.layerId ?? null } : {}),
           blockId: a.blockId,
           variantId: a.variantId,
           start: a.start,
@@ -7069,7 +7081,7 @@ function run(
         durationFrames: c.durationFrames ?? 0,
         background: DEFAULT_COMPOSITION.background,
       });
-      const comp: Composition = {
+      let comp: Composition = {
         id: c.panelId as never,
         revision: 1,
         variantId: c.variantId as never,
@@ -7083,6 +7095,11 @@ function run(
         hidden: false,
         producedFrom: { blockRevisions: currentBlockRevisions(s, c.variantId as never) },
       };
+      const siblings=Object.values(s.compositions).filter(p=>p.kind==="storyboard"&&!p.removed&&p.occurrenceId===occ.id).sort((a,b)=>(a.orderKey??"").localeCompare(b.orderKey??""));
+      const previous=siblings.filter(p=>(p.orderKey??"")<c.orderKey).at(-1);
+      const locked=siblings.find(p=>p.storyboard?.number);
+      if(c.details){if(!panelDetailsValid(s,comp,c.details))fail("invalid",tk("sb1.error.invalid-panel"));comp={...comp,storyboard:c.details};}
+      else if(locked)comp={...comp,storyboard:{...EMPTY_PANEL_DETAILS,number:insertedPanelNumber(previous?.storyboard?.number??null,siblings.map(p=>p.storyboard?.number??"")),sceneNumber:locked.storyboard?.sceneNumber??""}};
       const links = sbBlockLinks(s, comp, c.blocks ?? []);
       const panelBlocks = { ...s.panelBlocks };
       for (const l of links) panelBlocks[l.id] = l;
@@ -7111,6 +7128,7 @@ function run(
           name: comp.name,
           durationFrames: comp.durationFrames,
           blocks: panelBlockRefs(s, comp.id),
+          ...(comp.storyboard?{details:comp.storyboard}:{}),
         },
         affected: [comp.id],
       };
@@ -8117,6 +8135,11 @@ function run(
           removed: false,
         };
       }
+      for (const item of Object.values(layers)) {
+        if (item.removed) continue;
+        const linked = item.note?.anchor && "layerId" in item.note.anchor ? item.note.anchor.layerId : item.arrow?.layerId;
+        if (linked && layers[linked]?.compositionId !== item.compositionId) fail("invalid", tk("sb1.error.invalid-panel"));
+      }
       checkGroups(
         s,
         { ...s, layers },
@@ -8201,6 +8224,9 @@ function run(
             shape: l.shape ?? null,
             effects: l.effects ?? null,
             template: l.template ?? null,
+            note: l.note ?? null,
+            arrow: l.arrow ?? null,
+            cameraMark: l.cameraMark ?? null,
           },
         });
         const {
@@ -8219,6 +8245,11 @@ function run(
         if (layerKindInCompositionError(upFields.kind, s.compositions[l.compositionId]?.kind ?? "scene"))
           fail("invalid", tk("sb1.error.layer-kind"));
         layers[l.id] = { ...rest, ...upFields, revision: rev(l) };
+      }
+      for (const item of Object.values(layers)) {
+        if (item.removed) continue;
+        const linked = item.note?.anchor && "layerId" in item.note.anchor ? item.note.anchor.layerId : item.arrow?.layerId;
+        if (linked && layers[linked]?.compositionId !== item.compositionId) fail("invalid", tk("sb1.error.invalid-panel"));
       }
       checkGroups(
         s,

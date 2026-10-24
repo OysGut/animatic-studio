@@ -685,6 +685,10 @@ export const runCommand = createServerFn({ method: "POST" })
        if (schema.kind === "missing" || schema.version < 62) return { ok: false, code: "schema", message: tk("adapters-storage-commands-functions.message.message.b87bdd379b23") };
     }
     // SB-1: storyboardgrunnmuren krever migrasjon 0102
+    if (animationSteps.some(step => step.type === "SetStoryboardDetails" || step.type === "SetStoryboardFields")) {
+      const schema = await checkSchema(admin);
+      if (schema.kind === "missing" || schema.version < 104) return { ok: false, code: "schema", message: tk("sb1.schema") };
+    }
     if (["AddStoryboardPanel", "UndoAddStoryboardPanel", "UpdateStoryboardPanel", "SetStoryboardPanelRemoved", "MoveStoryboardPanel", "MoveStoryboardPanelToScene", "SeedStoryboardPanels", "UndoSeedStoryboardPanels", "SnapshotStoryboardPanel", "UndoSnapshotStoryboardPanel", "SetProductionStatus", "RevertProductionStatus"].includes(checked.type)) {
       const schema = await checkSchema(admin);
        if (schema.kind === "missing" || schema.version < 102) return { ok: false, code: "schema", message: tk("sb1.schema") };

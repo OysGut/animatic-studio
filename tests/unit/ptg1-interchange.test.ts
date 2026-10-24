@@ -93,6 +93,9 @@ describe("PTG1 utveksling", () => {
     expect(spin.shots.some(s => main.shots.some(m => m.id === s.id))).toBe(false);
     expect(new Set(main.shots.map(s => s.name)).size).toBe(main.shots.length);
   });
+  it("SB-3 fields join the existing shotlist by permanent occurrence ID",()=>{
+    const {state,mainId}=seedProject(2);const doc=buildInterchange(state,{productionId:mainId,language:"nb"});const shot=doc.shots[0];if(!shot)throw Error("fixture");const panels=[{occurrenceId:shot.id,panelId:"panel",panel:"12A",focalMm:50,weather:"Snow"}];const rows=shotlistRows(doc,"standard",panels);expect(rows[0]?.["Storyboard panel"]).toBe("12A");expect(rows[0]?.["Storyboard focalMm"]).toBe("50");expect(rows[0]?.["Storyboard weather"]).toBe("Snow");expect(rows[1]?.["Storyboard panel"]).toBe("");expect(shotlistCsv(doc,"standard",[])).toEqual(shotlistCsv(doc));
+  });
   it("CSV har BOM, relative PNG-stier og håndtak etter lengde", () => {
     const { state, mainId } = seedProject(2); const doc = buildInterchange(state, { productionId: mainId, language: "nb" });
     const bytes = shotlistCsv(doc); expect([...bytes.slice(0, 3)]).toEqual([239, 187, 191]);

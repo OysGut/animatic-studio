@@ -76427,5 +76427,329 @@
   },
   "sb2.undo.status": {
     "text": "[!! CChháánnggëë ssttááttüüss !!]"
+  },
+  "sb3.add-comment": {
+    "text": "[!! ÁÁdddd ccôômmmmëënntt !!]"
+  },
+  "sb3.add-field": {
+    "text": "[!! ÁÁdddd ffïïëëlldd !!]"
+  },
+  "sb3.add-point": {
+    "text": "[!! ÁÁdddd ppôôïïnntt !!]"
+  },
+  "sb3.anchor": {
+    "text": "[!! ÁÁnncchhôôrr !!]"
+  },
+  "sb3.angle": {
+    "text": "[!! ÁÁnnggllëë !!]"
+  },
+  "sb3.category": {
+    "text": "[!! CCááttëëggôôrryy !!]"
+  },
+  "sb3.color": {
+    "text": "[!! CCôôllôôrr !!]"
+  },
+  "sb3.comment": {
+    "text": "[!! CCôômmmmëënntt !!]"
+  },
+  "sb3.comments": {
+    "text": "[!! CCôômmmmëënnttss !!]"
+  },
+  "sb3.confirm": {
+    "text": "[!! CCôônnffïïrrmm !!]"
+  },
+  "sb3.current": {
+    "text": "[!! CCüürrrrëënntt rrëëvvïïssïïôônn !!]"
+  },
+  "sb3.curved": {
+    "text": "[!! CCüürrvvëëdd !!]"
+  },
+  "sb3.custom-field": {
+    "text": "[!! CCüüssttôômm ffïïëëlldd !!]"
+  },
+  "sb3.dialogue-links": {
+    "text": "[!! LLïïnnkkëëdd ddïïáállôôggüüëë !!]"
+  },
+  "sb3.down": {
+    "text": "[!! MMôôvvëë ddôôwwnn !!]"
+  },
+  "sb3.edit": {
+    "text": "[!! ËËddïïtt ssttôôrryybbôôáárrdd !!]"
+  },
+  "sb3.edit-approved": {
+    "text": "[!! ËËddïïtt ssttôôrryybbôôáárrdd !!]"
+  },
+  "sb3.focal": {
+    "text": "[!! FFôôccááll llëënnggtthh (mmmm) !!]"
+  },
+  "sb3.form": {
+    "text": "[!! FFôôrrmm !!]"
+  },
+  "sb3.handled": {
+    "text": "[!! HHáánnddllëëdd !!]"
+  },
+  "sb3.height": {
+    "text": "[!! HHëëïïgghhtt !!]"
+  },
+  "sb3.help": {
+    "text": "[!! HHëëllpp !!]"
+  },
+  "sb3.layer": {
+    "text": "[!! LLááyyëërr !!]"
+  },
+  "sb3.layers": {
+    "text": "[!! LLááyyëërrss !!]"
+  },
+  "sb3.library": {
+    "text": "[!! LLïïbbrráárryy !!]"
+  },
+  "sb3.lock": {
+    "text": "[!! LLôôcckk !!]"
+  },
+  "sb3.lock-numbers": {
+    "text": "[!! LLôôcckk nnüümmbbëërrss !!]"
+  },
+  "sb3.mask": {
+    "text": "[!! ÁÁssppëëcctt mmáásskk !!]"
+  },
+  "sb3.movement": {
+    "text": "[!! CCáámmëërráá mmôôvvëëmmëënntt !!]"
+  },
+  "sb3.new": {
+    "text": "[!! NNëëww ppáánnëëll !!]"
+  },
+  "sb3.next": {
+    "text": "[!! NNëëxxtt ppáánnëëll !!]"
+  },
+  "sb3.no-anchor": {
+    "text": "[!! NNôô áánncchhôôrr !!]"
+  },
+  "sb3.note": {
+    "text": "[!! NNôôttëë !!]"
+  },
+  "sb3.note-type": {
+    "text": "[!! NNôôttëë ttyyppëë !!]"
+  },
+  "sb3.notes-visible": {
+    "text": "[!! SShhôôww nnôôttëëss !!]"
+  },
+  "sb3.panel": {
+    "text": "[!! PPáánnëëll !!]"
+  },
+  "sb3.path-target": {
+    "text": "[!! SSccëënnëë llááyyëërr !!]"
+  },
+  "sb3.path-warning": {
+    "text": "[!! ÁÁppppllyy tthhëë áárrrrôôww ááss áá mmôôvvëëmmëënntt ppáátthh ïïnn tthhëë ssccëënnëë ddrrááfftt? FFïïnnïïsshhëëdd mmááttëërrïïááll ssttááyyss üünncchháánnggëëdd. !!]"
+  },
+  "sb3.previous": {
+    "text": "[!! PPrrëëvvïïôôüüss ppáánnëëll !!]"
+  },
+  "sb3.project-format": {
+    "text": "[!! PPrrôôjjëëcctt ffôôrrmmáátt !!]"
+  },
+  "sb3.properties": {
+    "text": "[!! PPrrôôppëërrttïïëëss !!]"
+  },
+  "sb3.readonly": {
+    "text": "[!! TThhïïss rrëëvvïïssïïôônn ïïss rrëëáádd-ôônnllyy. !!]"
+  },
+  "sb3.redo": {
+    "text": "[!! RRëëddôô !!]"
+  },
+  "sb3.region": {
+    "text": "[!! RRëëggïïôônn !!]"
+  },
+  "sb3.remove": {
+    "text": "[!! RRëëmmôôvvëë llááyyëërr !!]"
+  },
+  "sb3.renumber": {
+    "text": "[!! RRëënnüümmbbëërr !!]"
+  },
+  "sb3.renumber-warning": {
+    "text": "[!! ËËxxïïssttïïnngg llôôcckkëëdd nnüümmbbëërrss wwïïllll cchháánnggëë. RRëëvvïïëëww tthhëë cchháánnggëëss bbëëffôôrrëë ccôônnffïïrrmmïïnngg. !!]"
+  },
+  "sb3.reopen": {
+    "text": "[!! RRëëôôppëënn !!]"
+  },
+  "sb3.resolve": {
+    "text": "[!! RRëëssôôllvvëë !!]"
+  },
+  "sb3.revision": {
+    "text": "[!! RRëëvvïïssïïôônn {number} !!]"
+  },
+  "sb3.revisions": {
+    "text": "[!! RRëëvvïïssïïôônnss !!]"
+  },
+  "sb3.safe": {
+    "text": "[!! SSááffëë zzôônnëëss !!]"
+  },
+  "sb3.shape": {
+    "text": "[!! SShhááppëë !!]"
+  },
+  "sb3.shortcuts": {
+    "text": "[!! KKëëyybbôôáárrdd sshhôôrrttccüüttss !!]"
+  },
+  "sb3.shot": {
+    "text": "[!! SShhôôtt ssïïzzëë !!]"
+  },
+  "sb3.size": {
+    "text": "[!! TTëëxxtt ssïïzzëë !!]"
+  },
+  "sb3.straight": {
+    "text": "[!! SSttrrááïïgghhtt !!]"
+  },
+  "sb3.text": {
+    "text": "[!! TTëëxxtt !!]"
+  },
+  "sb3.thickness": {
+    "text": "[!! TThhïïcckknnëëssss !!]"
+  },
+  "sb3.thirds": {
+    "text": "[!! RRüüllëë ôôff tthhïïrrddss !!]"
+  },
+  "sb3.title": {
+    "text": "[!! TTïïttllëë !!]"
+  },
+  "sb3.tools": {
+    "text": "[!! TTôôôôllss !!]"
+  },
+  "sb3.undo": {
+    "text": "[!! ÜÜnnddôô !!]"
+  },
+  "sb3.up": {
+    "text": "[!! MMôôvvëë üüpp !!]"
+  },
+  "sb3.use-path": {
+    "text": "[!! ÜÜssëë ááss mmôôvvëëmmëënntt ppáátthh !!]"
+  },
+  "sb3.visibility": {
+    "text": "[!! VVïïssïïbbïïllïïttyy !!]"
+  },
+  "sb3.width": {
+    "text": "[!! WWïïddtthh !!]"
+  },
+  "sb3.tool.select": {
+    "text": "[!! SSëëllëëcctt !!]"
+  },
+  "sb3.tool.arrow": {
+    "text": "[!! ÁÁrrrrôôww !!]"
+  },
+  "sb3.tool.line": {
+    "text": "[!! LLïïnnëë !!]"
+  },
+  "sb3.tool.shape": {
+    "text": "[!! SShhááppëë !!]"
+  },
+  "sb3.tool.text": {
+    "text": "[!! TTëëxxtt !!]"
+  },
+  "sb3.tool.camera": {
+    "text": "[!! CCáámmëërráá mmáárrkk !!]"
+  },
+  "sb3.tool.note": {
+    "text": "[!! NNôôttëë !!]"
+  },
+  "sb3.field.action": {
+    "text": "[!! ÁÁccttïïôônn !!]"
+  },
+  "sb3.field.dialogue": {
+    "text": "[!! DDïïáállôôggüüëë !!]"
+  },
+  "sb3.field.sound": {
+    "text": "[!! SSôôüünndd !!]"
+  },
+  "sb3.field.camera": {
+    "text": "[!! CCáámmëërráá !!]"
+  },
+  "sb3.field.notes": {
+    "text": "[!! NNôôttëëss !!]"
+  },
+  "sb3.angle.eye": {
+    "text": "[!! ËËyyëë llëëvvëëll !!]"
+  },
+  "sb3.angle.high": {
+    "text": "[!! HHïïgghh !!]"
+  },
+  "sb3.angle.low": {
+    "text": "[!! LLôôww !!]"
+  },
+  "sb3.angle.bird": {
+    "text": "[!! BBïïrrdd’ss ëëyyëë !!]"
+  },
+  "sb3.angle.dutch": {
+    "text": "[!! DDüüttcchh !!]"
+  },
+  "sb3.shape.rect": {
+    "text": "[!! RRëëccttáánnggllëë !!]"
+  },
+  "sb3.shape.ellipse": {
+    "text": "[!! ËËllllïïppssëë !!]"
+  },
+  "sb3.shape.line": {
+    "text": "[!! LLïïnnëë !!]"
+  },
+  "sb3.note-type.visual": {
+    "text": "[!! VVïïssüüááll nnôôttëë !!]"
+  },
+  "sb3.note-type.direction": {
+    "text": "[!! DDïïrrëëccttïïôônn !!]"
+  },
+  "sb3.note-type.camera": {
+    "text": "[!! CCáámmëërráá ïïnnssttrrüüccttïïôônn !!]"
+  },
+  "sb3.category.character": {
+    "text": "[!! CChháárrááccttëërr !!]"
+  },
+  "sb3.category.camera": {
+    "text": "[!! CCáámmëërráá !!]"
+  },
+  "sb3.category.object": {
+    "text": "[!! ÔÔbbjjëëcctt !!]"
+  },
+  "sb3.category.gaze": {
+    "text": "[!! GGáázzëë !!]"
+  },
+  "sb3.category.attention": {
+    "text": "[!! ÁÁttttëënnttïïôônn !!]"
+  },
+  "sb3.transform.x": {
+    "text": "[!! XX !!]"
+  },
+  "sb3.transform.y": {
+    "text": "[!! YY !!]"
+  },
+  "sb3.transform.scaleX": {
+    "text": "[!! SSccáállëë XX !!]"
+  },
+  "sb3.transform.scaleY": {
+    "text": "[!! SSccáállëë YY !!]"
+  },
+  "sb3.transform.rotation": {
+    "text": "[!! RRôôttááttïïôônn !!]"
+  },
+  "sb3.camera.zoom": {
+    "text": "[!! ZZôôôômm !!]"
+  },
+  "sb3.camera.tilt": {
+    "text": "[!! TTïïlltt !!]"
+  },
+  "sb3.camera.pan-x": {
+    "text": "[!! PPáánn XX !!]"
+  },
+  "sb3.camera.pan-y": {
+    "text": "[!! PPáánn YY !!]"
+  },
+  "sb3.camera.frame-x": {
+    "text": "[!! FFrráámmëë XX !!]"
+  },
+  "sb3.camera.frame-y": {
+    "text": "[!! FFrráámmëë YY !!]"
+  },
+  "sb3.camera.frame-width": {
+    "text": "[!! FFrráámmëë wwïïddtthh !!]"
+  },
+  "sb3.camera.frame-height": {
+    "text": "[!! FFrráámmëë hhëëïïgghhtt !!]"
   }
 }

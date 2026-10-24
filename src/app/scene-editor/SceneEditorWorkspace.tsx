@@ -94,6 +94,7 @@ import { TextMouthTrack } from "./animation/TextMouthTrack";
 import { PatternStudio } from "./animation/PatternStudio";
 import { SceneTrackGroups } from "./animation/SceneTrackGroups";
 import { StoryboardPanelMark } from "@/app/storyboard/StoryboardPanelMark";
+import { PanelEditor } from "@/app/storyboard/PanelEditor";
 import { RhythmPanel } from "./animation/RhythmPanel";
 import { runGroup } from "@/app/storylab/canvas/run-group";
 import { t as tk } from "@/core/i18n/keyed";
@@ -143,6 +144,9 @@ export function SceneEditorWorkspace({
         ) : null}
       </div>
     );
+  const panel = initialPanelId ? query.data.compositions[initialPanelId] : undefined;
+  if (panel?.kind === "storyboard" && !panel.removed && panel.occurrenceId === initialOccurrenceId)
+    return <PanelEditor key={panel.id} projectId={projectId} state={query.data} panel={panel} editable={editable} cmds={cmds}/>;
   return (
     <>
     <StoryboardPanelMark state={query.data} panelId={initialPanelId} projectId={projectId} />

@@ -13138,6 +13138,870 @@
       "en": {
         "text": "Change status"
       }
+    },
+    "sb3.add-comment": {
+      "nb": {
+        "text": "Legg til kommentar"
+      },
+      "en": {
+        "text": "Add comment"
+      }
+    },
+    "sb3.add-field": {
+      "nb": {
+        "text": "Legg til felt"
+      },
+      "en": {
+        "text": "Add field"
+      }
+    },
+    "sb3.add-point": {
+      "nb": {
+        "text": "Legg til punkt"
+      },
+      "en": {
+        "text": "Add point"
+      }
+    },
+    "sb3.anchor": {
+      "nb": {
+        "text": "Forankring"
+      },
+      "en": {
+        "text": "Anchor"
+      }
+    },
+    "sb3.angle": {
+      "nb": {
+        "text": "Vinkel"
+      },
+      "en": {
+        "text": "Angle"
+      }
+    },
+    "sb3.category": {
+      "nb": {
+        "text": "Kategori"
+      },
+      "en": {
+        "text": "Category"
+      }
+    },
+    "sb3.color": {
+      "nb": {
+        "text": "Farge"
+      },
+      "en": {
+        "text": "Color"
+      }
+    },
+    "sb3.comment": {
+      "nb": {
+        "text": "Kommentar"
+      },
+      "en": {
+        "text": "Comment"
+      }
+    },
+    "sb3.comments": {
+      "nb": {
+        "text": "Kommentarer"
+      },
+      "en": {
+        "text": "Comments"
+      }
+    },
+    "sb3.confirm": {
+      "nb": {
+        "text": "Bekreft"
+      },
+      "en": {
+        "text": "Confirm"
+      }
+    },
+    "sb3.current": {
+      "nb": {
+        "text": "Gjeldende revisjon"
+      },
+      "en": {
+        "text": "Current revision"
+      }
+    },
+    "sb3.curved": {
+      "nb": {
+        "text": "Buet"
+      },
+      "en": {
+        "text": "Curved"
+      }
+    },
+    "sb3.custom-field": {
+      "nb": {
+        "text": "Egendefinert felt"
+      },
+      "en": {
+        "text": "Custom field"
+      }
+    },
+    "sb3.dialogue-links": {
+      "nb": {
+        "text": "Koblede replikker"
+      },
+      "en": {
+        "text": "Linked dialogue"
+      }
+    },
+    "sb3.down": {
+      "nb": {
+        "text": "Flytt ned"
+      },
+      "en": {
+        "text": "Move down"
+      }
+    },
+    "sb3.edit": {
+      "nb": {
+        "text": "Rediger storyboard"
+      },
+      "en": {
+        "text": "Edit storyboard"
+      }
+    },
+    "sb3.edit-approved": {
+      "nb": {
+        "text": "Rediger storyboard"
+      },
+      "en": {
+        "text": "Edit storyboard"
+      }
+    },
+    "sb3.focal": {
+      "nb": {
+        "text": "Brennvidde (mm)"
+      },
+      "en": {
+        "text": "Focal length (mm)"
+      }
+    },
+    "sb3.form": {
+      "nb": {
+        "text": "Form"
+      },
+      "en": {
+        "text": "Form"
+      }
+    },
+    "sb3.handled": {
+      "nb": {
+        "text": "Behandlet"
+      },
+      "en": {
+        "text": "Handled"
+      }
+    },
+    "sb3.height": {
+      "nb": {
+        "text": "Høyde"
+      },
+      "en": {
+        "text": "Height"
+      }
+    },
+    "sb3.help": {
+      "nb": {
+        "text": "Hjelp"
+      },
+      "en": {
+        "text": "Help"
+      }
+    },
+    "sb3.layer": {
+      "nb": {
+        "text": "Lag"
+      },
+      "en": {
+        "text": "Layer"
+      }
+    },
+    "sb3.layers": {
+      "nb": {
+        "text": "Lag"
+      },
+      "en": {
+        "text": "Layers"
+      }
+    },
+    "sb3.library": {
+      "nb": {
+        "text": "Bibliotek"
+      },
+      "en": {
+        "text": "Library"
+      }
+    },
+    "sb3.lock": {
+      "nb": {
+        "text": "Lås"
+      },
+      "en": {
+        "text": "Lock"
+      }
+    },
+    "sb3.lock-numbers": {
+      "nb": {
+        "text": "Lås nummer"
+      },
+      "en": {
+        "text": "Lock numbers"
+      }
+    },
+    "sb3.mask": {
+      "nb": {
+        "text": "Formatmaske"
+      },
+      "en": {
+        "text": "Aspect mask"
+      }
+    },
+    "sb3.movement": {
+      "nb": {
+        "text": "Kamerabevegelse"
+      },
+      "en": {
+        "text": "Camera movement"
+      }
+    },
+    "sb3.new": {
+      "nb": {
+        "text": "Nytt panel"
+      },
+      "en": {
+        "text": "New panel"
+      }
+    },
+    "sb3.next": {
+      "nb": {
+        "text": "Neste panel"
+      },
+      "en": {
+        "text": "Next panel"
+      }
+    },
+    "sb3.no-anchor": {
+      "nb": {
+        "text": "Ingen forankring"
+      },
+      "en": {
+        "text": "No anchor"
+      }
+    },
+    "sb3.note": {
+      "nb": {
+        "text": "Lapp"
+      },
+      "en": {
+        "text": "Note"
+      }
+    },
+    "sb3.note-type": {
+      "nb": {
+        "text": "Lapptype"
+      },
+      "en": {
+        "text": "Note type"
+      }
+    },
+    "sb3.notes-visible": {
+      "nb": {
+        "text": "Vis lapper"
+      },
+      "en": {
+        "text": "Show notes"
+      }
+    },
+    "sb3.panel": {
+      "nb": {
+        "text": "Panel"
+      },
+      "en": {
+        "text": "Panel"
+      }
+    },
+    "sb3.path-target": {
+      "nb": {
+        "text": "Lag i scenen"
+      },
+      "en": {
+        "text": "Scene layer"
+      }
+    },
+    "sb3.path-warning": {
+      "nb": {
+        "text": "Bruke pilen som bevegelsesbane i scenens utkast? Ferdig materiale beholdes uendret."
+      },
+      "en": {
+        "text": "Apply the arrow as a movement path in the scene draft? Finished material stays unchanged."
+      }
+    },
+    "sb3.previous": {
+      "nb": {
+        "text": "Forrige panel"
+      },
+      "en": {
+        "text": "Previous panel"
+      }
+    },
+    "sb3.project-format": {
+      "nb": {
+        "text": "Prosjektets format"
+      },
+      "en": {
+        "text": "Project format"
+      }
+    },
+    "sb3.properties": {
+      "nb": {
+        "text": "Egenskaper"
+      },
+      "en": {
+        "text": "Properties"
+      }
+    },
+    "sb3.readonly": {
+      "nb": {
+        "text": "Denne revisjonen kan bare leses."
+      },
+      "en": {
+        "text": "This revision is read-only."
+      }
+    },
+    "sb3.redo": {
+      "nb": {
+        "text": "Gjør om"
+      },
+      "en": {
+        "text": "Redo"
+      }
+    },
+    "sb3.region": {
+      "nb": {
+        "text": "Område"
+      },
+      "en": {
+        "text": "Region"
+      }
+    },
+    "sb3.remove": {
+      "nb": {
+        "text": "Fjern lag"
+      },
+      "en": {
+        "text": "Remove layer"
+      }
+    },
+    "sb3.renumber": {
+      "nb": {
+        "text": "Nummerer på nytt"
+      },
+      "en": {
+        "text": "Renumber"
+      }
+    },
+    "sb3.renumber-warning": {
+      "nb": {
+        "text": "Eksisterende låste nummer endres. Se gjennom endringene før du bekrefter."
+      },
+      "en": {
+        "text": "Existing locked numbers will change. Review the changes before confirming."
+      }
+    },
+    "sb3.reopen": {
+      "nb": {
+        "text": "Åpne igjen"
+      },
+      "en": {
+        "text": "Reopen"
+      }
+    },
+    "sb3.resolve": {
+      "nb": {
+        "text": "Behandle"
+      },
+      "en": {
+        "text": "Resolve"
+      }
+    },
+    "sb3.revision": {
+      "nb": {
+        "text": "Revisjon {number}"
+      },
+      "en": {
+        "text": "Revision {number}"
+      }
+    },
+    "sb3.revisions": {
+      "nb": {
+        "text": "Revisjoner"
+      },
+      "en": {
+        "text": "Revisions"
+      }
+    },
+    "sb3.safe": {
+      "nb": {
+        "text": "Sikre soner"
+      },
+      "en": {
+        "text": "Safe zones"
+      }
+    },
+    "sb3.shape": {
+      "nb": {
+        "text": "Figur"
+      },
+      "en": {
+        "text": "Shape"
+      }
+    },
+    "sb3.shortcuts": {
+      "nb": {
+        "text": "Hurtigtaster"
+      },
+      "en": {
+        "text": "Keyboard shortcuts"
+      }
+    },
+    "sb3.shot": {
+      "nb": {
+        "text": "Utsnittstype"
+      },
+      "en": {
+        "text": "Shot size"
+      }
+    },
+    "sb3.size": {
+      "nb": {
+        "text": "Tekststørrelse"
+      },
+      "en": {
+        "text": "Text size"
+      }
+    },
+    "sb3.straight": {
+      "nb": {
+        "text": "Rett"
+      },
+      "en": {
+        "text": "Straight"
+      }
+    },
+    "sb3.text": {
+      "nb": {
+        "text": "Tekst"
+      },
+      "en": {
+        "text": "Text"
+      }
+    },
+    "sb3.thickness": {
+      "nb": {
+        "text": "Tykkelse"
+      },
+      "en": {
+        "text": "Thickness"
+      }
+    },
+    "sb3.thirds": {
+      "nb": {
+        "text": "Tredjedelsrutenett"
+      },
+      "en": {
+        "text": "Rule of thirds"
+      }
+    },
+    "sb3.title": {
+      "nb": {
+        "text": "Tittel"
+      },
+      "en": {
+        "text": "Title"
+      }
+    },
+    "sb3.tools": {
+      "nb": {
+        "text": "Verktøy"
+      },
+      "en": {
+        "text": "Tools"
+      }
+    },
+    "sb3.undo": {
+      "nb": {
+        "text": "Angre"
+      },
+      "en": {
+        "text": "Undo"
+      }
+    },
+    "sb3.up": {
+      "nb": {
+        "text": "Flytt opp"
+      },
+      "en": {
+        "text": "Move up"
+      }
+    },
+    "sb3.use-path": {
+      "nb": {
+        "text": "Bruk som bevegelsesbane"
+      },
+      "en": {
+        "text": "Use as movement path"
+      }
+    },
+    "sb3.visibility": {
+      "nb": {
+        "text": "Synlighet"
+      },
+      "en": {
+        "text": "Visibility"
+      }
+    },
+    "sb3.width": {
+      "nb": {
+        "text": "Bredde"
+      },
+      "en": {
+        "text": "Width"
+      }
+    },
+    "sb3.tool.select": {
+      "nb": {
+        "text": "Velg"
+      },
+      "en": {
+        "text": "Select"
+      }
+    },
+    "sb3.tool.arrow": {
+      "nb": {
+        "text": "Pil"
+      },
+      "en": {
+        "text": "Arrow"
+      }
+    },
+    "sb3.tool.line": {
+      "nb": {
+        "text": "Linje"
+      },
+      "en": {
+        "text": "Line"
+      }
+    },
+    "sb3.tool.shape": {
+      "nb": {
+        "text": "Figur"
+      },
+      "en": {
+        "text": "Shape"
+      }
+    },
+    "sb3.tool.text": {
+      "nb": {
+        "text": "Tekst"
+      },
+      "en": {
+        "text": "Text"
+      }
+    },
+    "sb3.tool.camera": {
+      "nb": {
+        "text": "Kameramerke"
+      },
+      "en": {
+        "text": "Camera mark"
+      }
+    },
+    "sb3.tool.note": {
+      "nb": {
+        "text": "Lapp"
+      },
+      "en": {
+        "text": "Note"
+      }
+    },
+    "sb3.field.action": {
+      "nb": {
+        "text": "Handling"
+      },
+      "en": {
+        "text": "Action"
+      }
+    },
+    "sb3.field.dialogue": {
+      "nb": {
+        "text": "Dialog"
+      },
+      "en": {
+        "text": "Dialogue"
+      }
+    },
+    "sb3.field.sound": {
+      "nb": {
+        "text": "Lyd"
+      },
+      "en": {
+        "text": "Sound"
+      }
+    },
+    "sb3.field.camera": {
+      "nb": {
+        "text": "Kamera"
+      },
+      "en": {
+        "text": "Camera"
+      }
+    },
+    "sb3.field.notes": {
+      "nb": {
+        "text": "Notater"
+      },
+      "en": {
+        "text": "Notes"
+      }
+    },
+    "sb3.angle.eye": {
+      "nb": {
+        "text": "Øyehøyde"
+      },
+      "en": {
+        "text": "Eye level"
+      }
+    },
+    "sb3.angle.high": {
+      "nb": {
+        "text": "Høy"
+      },
+      "en": {
+        "text": "High"
+      }
+    },
+    "sb3.angle.low": {
+      "nb": {
+        "text": "Lav"
+      },
+      "en": {
+        "text": "Low"
+      }
+    },
+    "sb3.angle.bird": {
+      "nb": {
+        "text": "Fugleperspektiv"
+      },
+      "en": {
+        "text": "Bird’s eye"
+      }
+    },
+    "sb3.angle.dutch": {
+      "nb": {
+        "text": "Nederlandsk"
+      },
+      "en": {
+        "text": "Dutch"
+      }
+    },
+    "sb3.shape.rect": {
+      "nb": {
+        "text": "Rektangel"
+      },
+      "en": {
+        "text": "Rectangle"
+      }
+    },
+    "sb3.shape.ellipse": {
+      "nb": {
+        "text": "Ellipse"
+      },
+      "en": {
+        "text": "Ellipse"
+      }
+    },
+    "sb3.shape.line": {
+      "nb": {
+        "text": "Linje"
+      },
+      "en": {
+        "text": "Line"
+      }
+    },
+    "sb3.note-type.visual": {
+      "nb": {
+        "text": "Visuell lapp"
+      },
+      "en": {
+        "text": "Visual note"
+      }
+    },
+    "sb3.note-type.direction": {
+      "nb": {
+        "text": "Reginotat"
+      },
+      "en": {
+        "text": "Direction"
+      }
+    },
+    "sb3.note-type.camera": {
+      "nb": {
+        "text": "Kamerainstruksjon"
+      },
+      "en": {
+        "text": "Camera instruction"
+      }
+    },
+    "sb3.category.character": {
+      "nb": {
+        "text": "Karakter"
+      },
+      "en": {
+        "text": "Character"
+      }
+    },
+    "sb3.category.camera": {
+      "nb": {
+        "text": "Kamera"
+      },
+      "en": {
+        "text": "Camera"
+      }
+    },
+    "sb3.category.object": {
+      "nb": {
+        "text": "Objekt"
+      },
+      "en": {
+        "text": "Object"
+      }
+    },
+    "sb3.category.gaze": {
+      "nb": {
+        "text": "Blikk"
+      },
+      "en": {
+        "text": "Gaze"
+      }
+    },
+    "sb3.category.attention": {
+      "nb": {
+        "text": "Oppmerksomhet"
+      },
+      "en": {
+        "text": "Attention"
+      }
+    },
+    "sb3.transform.x": {
+      "nb": {
+        "text": "X"
+      },
+      "en": {
+        "text": "X"
+      }
+    },
+    "sb3.transform.y": {
+      "nb": {
+        "text": "Y"
+      },
+      "en": {
+        "text": "Y"
+      }
+    },
+    "sb3.transform.scaleX": {
+      "nb": {
+        "text": "Skala X"
+      },
+      "en": {
+        "text": "Scale X"
+      }
+    },
+    "sb3.transform.scaleY": {
+      "nb": {
+        "text": "Skala Y"
+      },
+      "en": {
+        "text": "Scale Y"
+      }
+    },
+    "sb3.transform.rotation": {
+      "nb": {
+        "text": "Rotasjon"
+      },
+      "en": {
+        "text": "Rotation"
+      }
+    },
+    "sb3.camera.zoom": {
+      "nb": {
+        "text": "Zoom"
+      },
+      "en": {
+        "text": "Zoom"
+      }
+    },
+    "sb3.camera.tilt": {
+      "nb": {
+        "text": "Tilt"
+      },
+      "en": {
+        "text": "Tilt"
+      }
+    },
+    "sb3.camera.pan-x": {
+      "nb": {
+        "text": "Panorering X"
+      },
+      "en": {
+        "text": "Pan X"
+      }
+    },
+    "sb3.camera.pan-y": {
+      "nb": {
+        "text": "Panorering Y"
+      },
+      "en": {
+        "text": "Pan Y"
+      }
+    },
+    "sb3.camera.frame-x": {
+      "nb": {
+        "text": "Ramme X"
+      },
+      "en": {
+        "text": "Frame X"
+      }
+    },
+    "sb3.camera.frame-y": {
+      "nb": {
+        "text": "Ramme Y"
+      },
+      "en": {
+        "text": "Frame Y"
+      }
+    },
+    "sb3.camera.frame-width": {
+      "nb": {
+        "text": "Rammebredde"
+      },
+      "en": {
+        "text": "Frame width"
+      }
+    },
+    "sb3.camera.frame-height": {
+      "nb": {
+        "text": "Rammehøyde"
+      },
+      "en": {
+        "text": "Frame height"
+      }
     }
   }
 }

@@ -57031,5 +57031,545 @@
     "text": "Status ändern",
     "sourceHash": "e88e1726d11b65fe5aa80e0cb9326b7c41233a29b976271f058ab652f5c57114",
     "review": "machine"
+  },
+  "sb3.add-comment": {
+    "text": "Kommentar hinzufügen",
+    "sourceHash": "a06e08d5a3a171e88025a06175aa159c8efe1d5ed4ff9da6a2e1b3f67799c549",
+    "review": "machine"
+  },
+  "sb3.add-field": {
+    "text": "Feld hinzufügen",
+    "sourceHash": "07915eab5c15799cc4374c95c12aef13c13d9f3106d70cd6515c664604715066",
+    "review": "machine"
+  },
+  "sb3.add-point": {
+    "text": "Punkt hinzufügen",
+    "sourceHash": "ced85621dc67641358dcc03c24e9cd47b057af1ff77cbed58082bcb4e4755a68",
+    "review": "machine"
+  },
+  "sb3.anchor": {
+    "text": "Anker",
+    "sourceHash": "adcd3ff3c2f2f71b8638024325e993ad03d5286f28e4ed6c7fb371d350791c3d",
+    "review": "machine"
+  },
+  "sb3.angle": {
+    "text": "Winkel",
+    "sourceHash": "9d20583dbcd0448e94da450618abf4cb6ac0ff7af1dff6b9f64242a8be560931",
+    "review": "machine"
+  },
+  "sb3.category": {
+    "text": "Kategorie",
+    "sourceHash": "375e9f59c64efe449443d8aa9a691bf219786c31b979b256c90df4d1e53dab1e",
+    "review": "machine"
+  },
+  "sb3.color": {
+    "text": "Farbe",
+    "sourceHash": "d593cfb84b3be5359b69c39b75088fbabf0c2321569398fc542079a82e184a94",
+    "review": "machine"
+  },
+  "sb3.comment": {
+    "text": "Kommentar",
+    "sourceHash": "6feb3d78e6c88501f8065ccad48127c35b149d1a1493ca5ee8452a243114edeb",
+    "review": "machine"
+  },
+  "sb3.comments": {
+    "text": "Kommentare",
+    "sourceHash": "80e1a5ead2da65bd3b75a346c04869e0641ff610783d11306b6ce0fe2e1be0d3",
+    "review": "machine"
+  },
+  "sb3.confirm": {
+    "text": "Bestätigen",
+    "sourceHash": "2ed89e59f7d3df3524efb751079a66b6744592dbe955b9a2c17cf625fd1e350f",
+    "review": "machine"
+  },
+  "sb3.current": {
+    "text": "Aktuelle Revision",
+    "sourceHash": "c762ad8fd2407dad875cc497b0c623ad24a6a8bd406cc59987fa2d67fd695565",
+    "review": "machine"
+  },
+  "sb3.curved": {
+    "text": "Gebogen",
+    "sourceHash": "c2a5522f7cbf229880298b7556ca03ef1189e7cc57feb8bf59294f03b34ffafe",
+    "review": "machine"
+  },
+  "sb3.custom-field": {
+    "text": "Benutzerdefiniertes Feld",
+    "sourceHash": "fad85ac91772bd9c1c163296d5034c2bbe2e835bb2ded501b87e27e1bcc3da62",
+    "review": "machine"
+  },
+  "sb3.dialogue-links": {
+    "text": "Verknüpfter Dialog",
+    "sourceHash": "6b50391667eaaeaa1fb65b6d7b63e200147742fed364d41ea825a10524738ef6",
+    "review": "machine"
+  },
+  "sb3.down": {
+    "text": "Nach unten verschieben",
+    "sourceHash": "fe279b4ff793ca7e51412dbfeb6b500d40ef79de5e265c2a20a94e78f137c27a",
+    "review": "machine"
+  },
+  "sb3.edit": {
+    "text": "Storyboard bearbeiten",
+    "sourceHash": "f3c7f671f97198869ee792fe7eea60d188935634248d37735be0964f31f5446b",
+    "review": "machine"
+  },
+  "sb3.edit-approved": {
+    "text": "Storyboard bearbeiten",
+    "sourceHash": "f3c7f671f97198869ee792fe7eea60d188935634248d37735be0964f31f5446b",
+    "review": "machine"
+  },
+  "sb3.focal": {
+    "text": "Brennweite (mm)",
+    "sourceHash": "f1af078c335f5346fe66079ffdae16ef40029131f882c208abd90915cb9f01b0",
+    "review": "machine"
+  },
+  "sb3.form": {
+    "text": "Formular",
+    "sourceHash": "1753d9908c176fdea98da6421fd7dd7f5f37256849172d134187d6b0f75b62f0",
+    "review": "machine"
+  },
+  "sb3.handled": {
+    "text": "Bearbeitet",
+    "sourceHash": "0501fcc7d415457b8843d7315e6e3dc25ca39b4394bd9954859aedf9a96ffaeb",
+    "review": "machine"
+  },
+  "sb3.height": {
+    "text": "Höhe",
+    "sourceHash": "7299e10d8ddb23b371a9eac063d2eaa694eab7aaecb78d1b226ca7ee8c213fec",
+    "review": "machine"
+  },
+  "sb3.help": {
+    "text": "Hilfe",
+    "sourceHash": "3a9616e38fa9810c5d01f51be7864457f1c529d4681b626ce22009d6066d8f2a",
+    "review": "machine"
+  },
+  "sb3.layer": {
+    "text": "Ebene",
+    "sourceHash": "e1fac1735d3ba2296a8d23009c64243eb09d93931357896fbe0804ec1ab0f6af",
+    "review": "machine"
+  },
+  "sb3.layers": {
+    "text": "Ebenen",
+    "sourceHash": "96c5cd64d83640d54a9be8f2141b82be537d2c6f8266ebee12e2b1382bca6bb2",
+    "review": "machine"
+  },
+  "sb3.library": {
+    "text": "Bibliothek",
+    "sourceHash": "d5a196793b151c5aa563e86ef95772576767de801da7a6b73798d3fab05d2e91",
+    "review": "machine"
+  },
+  "sb3.lock": {
+    "text": "Sperren",
+    "sourceHash": "7213d0868b5206e2160a84c56702d28ed4df5a830659e1057d4a171e0009a7c2",
+    "review": "machine"
+  },
+  "sb3.lock-numbers": {
+    "text": "Nummern sperren",
+    "sourceHash": "85d657f87f90e8ca8373ae066d8d3c6fe3248ea032a7b325876057a3016ee97c",
+    "review": "machine"
+  },
+  "sb3.mask": {
+    "text": "Seitenverhältnismaske",
+    "sourceHash": "a02e3d5ed281ed8dd5468b3df8d3ed02bb4a18bb2e1f542eacd2ed3daa29182c",
+    "review": "machine"
+  },
+  "sb3.movement": {
+    "text": "Kamerabewegung",
+    "sourceHash": "7c7c497e35fa243381af1df95875997d4e270042a79f24a981adae02efa61b61",
+    "review": "machine"
+  },
+  "sb3.new": {
+    "text": "Neues Panel",
+    "sourceHash": "1fc89ec10d44f3a3060a69c7eaf52a73332224517818340eeb0f3d9c268b5fac",
+    "review": "machine"
+  },
+  "sb3.next": {
+    "text": "Nächstes Panel",
+    "sourceHash": "8f5caf93552a0d4da50a6b0cfbba6d9b13381ccd1377f270632145a07311b036",
+    "review": "machine"
+  },
+  "sb3.no-anchor": {
+    "text": "Kein Anker",
+    "sourceHash": "a3597bc801e76c2a9c2338e5fe1460eb2467b9162307655603717a9b36bd5c3a",
+    "review": "machine"
+  },
+  "sb3.note": {
+    "text": "Notiz",
+    "sourceHash": "a14c6d6baf5bf0d6aa41ef9f8f07b6d8e7f4ac0bbf031612699b57a1195f506a",
+    "review": "machine"
+  },
+  "sb3.note-type": {
+    "text": "Notiztyp",
+    "sourceHash": "59a88a4bc4bf13df9f70c6a6d8690b5b16e7d2ca0869821bddd4049cd4c7ee71",
+    "review": "machine"
+  },
+  "sb3.notes-visible": {
+    "text": "Notizen anzeigen",
+    "sourceHash": "53cbfe7c9deae9ee40cde71ce590d4e696ae26710d431a7508a1d1015f80dbee",
+    "review": "machine"
+  },
+  "sb3.panel": {
+    "text": "Panel",
+    "sourceHash": "46da2692e83cefeca063204f5fcd27f34c96402d7e71ac3e2bcabab22e41743d",
+    "review": "machine"
+  },
+  "sb3.path-target": {
+    "text": "Szenenebene",
+    "sourceHash": "d246ab21fdaedb7fa83e87a7475ba7584a2c4884e48c5bbda66929cdd576865f",
+    "review": "machine"
+  },
+  "sb3.path-warning": {
+    "text": "Den Pfeil als Bewegungspfad im Szenenentwurf anwenden? Fertiges Material bleibt unverändert.",
+    "sourceHash": "a025b51aedbb86299e44140271cf509e89569ffdaafe407ad3dab1f5cd653575",
+    "review": "machine"
+  },
+  "sb3.previous": {
+    "text": "Vorheriges Panel",
+    "sourceHash": "7cc8e8dd050494c9c566f7867fd7baac7cf2cd7ed3b2d8afee19fe1458f0cd83",
+    "review": "machine"
+  },
+  "sb3.project-format": {
+    "text": "Projektformat",
+    "sourceHash": "580a9b0fe7b7edf6dc064b29315310401eb4bb22456054e118ffd271dd3aba44",
+    "review": "machine"
+  },
+  "sb3.properties": {
+    "text": "Eigenschaften",
+    "sourceHash": "c8830176abbcbf041f8a05d38c67acce8ef782832f4f5f51b69b1bd717b31ceb",
+    "review": "machine"
+  },
+  "sb3.readonly": {
+    "text": "Diese Revision ist schreibgeschützt.",
+    "sourceHash": "d8e6454cbb07c31d838c5d8adc4430aa112300997087a646b06aedeab78b5972",
+    "review": "machine"
+  },
+  "sb3.redo": {
+    "text": "Wiederholen",
+    "sourceHash": "07d542af33ec8c51702e27cac68762c9b44578896559db0aaeaf6da8b526b679",
+    "review": "machine"
+  },
+  "sb3.region": {
+    "text": "Bereich",
+    "sourceHash": "92f8cdcdeef9b93bb30e38aca94feaba4ce15b93b35fab82e7b4f4e7db13297e",
+    "review": "machine"
+  },
+  "sb3.remove": {
+    "text": "Ebene entfernen",
+    "sourceHash": "d9f190f1afd86de9a4a88cf5d1989735691bc8df7d1116c079bff1df763f0a33",
+    "review": "machine"
+  },
+  "sb3.renumber": {
+    "text": "Nummerieren",
+    "sourceHash": "889d0afb973f293363f525e0b2823fa5ef436452068e3abf5aa14daccb17a419",
+    "review": "machine"
+  },
+  "sb3.renumber-warning": {
+    "text": "Vorhandene gesperrte Nummern ändern sich. Prüfe die Änderungen vor der Bestätigung.",
+    "sourceHash": "4479adc876e3a1692450a5e204fe5ce44b495f86713dac1c2d68fcb71e96e728",
+    "review": "machine"
+  },
+  "sb3.reopen": {
+    "text": "Erneut öffnen",
+    "sourceHash": "7dc551115f7a3faa767891a75d065a1b78c09e0487ad86dfc03e2bfd0656b74a",
+    "review": "machine"
+  },
+  "sb3.resolve": {
+    "text": "Auflösen",
+    "sourceHash": "4cb293b791cf871180cece6463f7ebe93fa2b405529ecd8a02db55fc02d83f7f",
+    "review": "machine"
+  },
+  "sb3.revision": {
+    "text": "Revision {number}",
+    "sourceHash": "cbc3ee8f4c20a95bb79deda2acb9fa8e7ac5aa7d5987678bb1ebb6379883ccea",
+    "review": "machine"
+  },
+  "sb3.revisions": {
+    "text": "Revisionen",
+    "sourceHash": "48ea8b412ea513c52b0a9604ac4c6e6485a90904e98ce1c4e46491b2a2d27de9",
+    "review": "machine"
+  },
+  "sb3.safe": {
+    "text": "Sicherheitszonen",
+    "sourceHash": "e49c24cbd701cbd0fc678b8db34706708dc9a4e5f97241e42396337f11c95be4",
+    "review": "machine"
+  },
+  "sb3.shape": {
+    "text": "Form",
+    "sourceHash": "dbbb283565ed5d8d69214029afcc15c589ea8c555a65a456239a21142a9bbca2",
+    "review": "machine"
+  },
+  "sb3.shortcuts": {
+    "text": "Tastenkürzel",
+    "sourceHash": "1b54c05e78a6c11fe9e1591b8d321aa4c79854bba98c37bda0ce02b5ff7e38bf",
+    "review": "machine"
+  },
+  "sb3.shot": {
+    "text": "Einstellungsgröße",
+    "sourceHash": "034e7c82dd53ff96b173b2312f4c7f202b4f2ec2b04dcc95c81c6e7efd7eb227",
+    "review": "machine"
+  },
+  "sb3.size": {
+    "text": "Textgröße",
+    "sourceHash": "e36363640a04783094ea6aa65b8ef3c4c39d92248ace17bef81b5274a5b332cf",
+    "review": "machine"
+  },
+  "sb3.straight": {
+    "text": "Gerade",
+    "sourceHash": "b6df0bbaccf8a1b341bff5a30052f335ca0b247e5c300a07cf099c99240a3538",
+    "review": "machine"
+  },
+  "sb3.text": {
+    "text": "Text",
+    "sourceHash": "dac8687677f6288ba22025c6ce1822e602cea8e074dc05d7c938d356dc0e365f",
+    "review": "machine"
+  },
+  "sb3.thickness": {
+    "text": "Dicke",
+    "sourceHash": "b016836c26ec476a86acec2b8c096b68f05e8aa5491dc2c076ee3adcd49e67bd",
+    "review": "machine"
+  },
+  "sb3.thirds": {
+    "text": "Drittelregel",
+    "sourceHash": "065097655e2c5b19c2781e5efebce83a4f13f279b70ccc0b5d3eac0eda2cc5dd",
+    "review": "machine"
+  },
+  "sb3.title": {
+    "text": "Titel",
+    "sourceHash": "f8014454bf11e149d7db8af825fb9d11538afb69168e473103ba98be4f8e19bd",
+    "review": "machine"
+  },
+  "sb3.tools": {
+    "text": "Werkzeuge",
+    "sourceHash": "e8f6175136e1a96e2d07f43c3fe7318e9f7bb0f19f6928a0d65002b48b2b0dd7",
+    "review": "machine"
+  },
+  "sb3.undo": {
+    "text": "Rückgängig",
+    "sourceHash": "6881fe7857730412e31c41210c8e1f39ff952410fc5cb238c20cb07dc5c8ced0",
+    "review": "machine"
+  },
+  "sb3.up": {
+    "text": "Nach oben verschieben",
+    "sourceHash": "c5aac784cb6c4d41e16230780dab2580eb044ec690a2629ad2aa7044f1137055",
+    "review": "machine"
+  },
+  "sb3.use-path": {
+    "text": "Als Bewegungspfad verwenden",
+    "sourceHash": "686f682576b1aed215034e1ac6d462b5cea44feb4035dc841178a1877597ac11",
+    "review": "machine"
+  },
+  "sb3.visibility": {
+    "text": "Sichtbarkeit",
+    "sourceHash": "9d637b8e0258b3a4f83dec2370356ad9ba4bd6374c2ec83a7c28c1acef9604c0",
+    "review": "machine"
+  },
+  "sb3.width": {
+    "text": "Breite",
+    "sourceHash": "10f5bce73b4b7f79c2d947f642c3734d4baba08ba39816d1282d1b237a61c783",
+    "review": "machine"
+  },
+  "sb3.tool.select": {
+    "text": "Auswählen",
+    "sourceHash": "a23fe8351e37197ea5a018f2af18a6905bc8f47f2a155b426c99bfd1e2907d71",
+    "review": "machine"
+  },
+  "sb3.tool.arrow": {
+    "text": "Pfeil",
+    "sourceHash": "56055a29b3ff86d5c3f21401b33146af5a5bcb7267d7509a7562006eeb728c6d",
+    "review": "machine"
+  },
+  "sb3.tool.line": {
+    "text": "Linie",
+    "sourceHash": "9b0e92ee4aebdad3b9b036878243742349970ad4e1d16525fe0492cbf6727635",
+    "review": "machine"
+  },
+  "sb3.tool.shape": {
+    "text": "Form",
+    "sourceHash": "dbbb283565ed5d8d69214029afcc15c589ea8c555a65a456239a21142a9bbca2",
+    "review": "machine"
+  },
+  "sb3.tool.text": {
+    "text": "Text",
+    "sourceHash": "dac8687677f6288ba22025c6ce1822e602cea8e074dc05d7c938d356dc0e365f",
+    "review": "machine"
+  },
+  "sb3.tool.camera": {
+    "text": "Kameramarkierung",
+    "sourceHash": "1012cf412fcaac614e7bc72c99cb5328ac91145360a26f07d180d3513cce9d65",
+    "review": "machine"
+  },
+  "sb3.tool.note": {
+    "text": "Notiz",
+    "sourceHash": "a14c6d6baf5bf0d6aa41ef9f8f07b6d8e7f4ac0bbf031612699b57a1195f506a",
+    "review": "machine"
+  },
+  "sb3.field.action": {
+    "text": "Aktion",
+    "sourceHash": "c511f75d7319d2d785bdd0ab6a1a82143b9750a56875623e96ae2d046a656e2b",
+    "review": "machine"
+  },
+  "sb3.field.dialogue": {
+    "text": "Dialog",
+    "sourceHash": "d74f5425eb9a0ab831a15a4fbfeaf912fc4c959eecea292514df0aeffc73bb92",
+    "review": "machine"
+  },
+  "sb3.field.sound": {
+    "text": "Ton",
+    "sourceHash": "cf9ed75c62e6c4e4a5dc698f04d5080b4d55550169dbbbfcde332f5d14e7b4f3",
+    "review": "machine"
+  },
+  "sb3.field.camera": {
+    "text": "Kamera",
+    "sourceHash": "23cd5636b2217b19ed45cbb51a2421768c22a3f57720e4e5231af05d5aec03b9",
+    "review": "machine"
+  },
+  "sb3.field.notes": {
+    "text": "Notizen",
+    "sourceHash": "066c61b12326fabc5e195c15c5170d23909cadafaaa99d8ca22f9c9c5068d6ad",
+    "review": "machine"
+  },
+  "sb3.angle.eye": {
+    "text": "Augenhöhe",
+    "sourceHash": "0ce94818a9aeb2f1ba86d26699be944c29139264a44ce0f57eda19b0510c0616",
+    "review": "machine"
+  },
+  "sb3.angle.high": {
+    "text": "Hoch",
+    "sourceHash": "c98cb1ebef729f170793d0da0969315be1037444e05bc2aa6b5afbc47f5af902",
+    "review": "machine"
+  },
+  "sb3.angle.low": {
+    "text": "Niedrig",
+    "sourceHash": "89b2d48e35e0c7f23663b941b42a065ec287cad20edb6340c85da2a481dd59d4",
+    "review": "machine"
+  },
+  "sb3.angle.bird": {
+    "text": "Vogelperspektive",
+    "sourceHash": "8ae306e92d553b02dce69f2a273c7c55bb7429d731332ccc41aced01a5f43db4",
+    "review": "machine"
+  },
+  "sb3.angle.dutch": {
+    "text": "Dutch Angle",
+    "sourceHash": "8d304ce566915a024ff02c69b7e97e61dd0b684b4370c9bcb4991aed4e8739f3",
+    "review": "machine"
+  },
+  "sb3.shape.rect": {
+    "text": "Rechteck",
+    "sourceHash": "52fbbe69d56f0b8456edcf74a082e88fa0e73a72e2336fbe7dff40f492f20d6c",
+    "review": "machine"
+  },
+  "sb3.shape.ellipse": {
+    "text": "Ellipse",
+    "sourceHash": "96208585f17eafeb0741e37dddc5c1dc5ad72b2fe487d430804a269c8d872ccb",
+    "review": "machine"
+  },
+  "sb3.shape.line": {
+    "text": "Linie",
+    "sourceHash": "9b0e92ee4aebdad3b9b036878243742349970ad4e1d16525fe0492cbf6727635",
+    "review": "machine"
+  },
+  "sb3.note-type.visual": {
+    "text": "Visuelle Notiz",
+    "sourceHash": "0ad14febfd52dd9f36f34b0f2272a4085f11f33230c3296460e6170ecef5c374",
+    "review": "machine"
+  },
+  "sb3.note-type.direction": {
+    "text": "Richtung",
+    "sourceHash": "f4944f0e58bee5a316285b7a4bf86ece29b4edfdcd21ded0c7e7aa989b14f21d",
+    "review": "machine"
+  },
+  "sb3.note-type.camera": {
+    "text": "Kameraanweisung",
+    "sourceHash": "0181a01c98fd6818f5de3229ed7f356cd12a12ae4bcd98553fb6ef35db8f3a1e",
+    "review": "machine"
+  },
+  "sb3.category.character": {
+    "text": "Figur",
+    "sourceHash": "4f4a650cdc41931d714685042197b87c9411b38002e220232a5f1eb512514500",
+    "review": "machine"
+  },
+  "sb3.category.camera": {
+    "text": "Kamera",
+    "sourceHash": "23cd5636b2217b19ed45cbb51a2421768c22a3f57720e4e5231af05d5aec03b9",
+    "review": "machine"
+  },
+  "sb3.category.object": {
+    "text": "Objekt",
+    "sourceHash": "f4c37db3877c875d517fbb0af9968ebac2b94aa03428a766917475cb28570675",
+    "review": "machine"
+  },
+  "sb3.category.gaze": {
+    "text": "Blick",
+    "sourceHash": "d4e66440453b6e69c20cb068463cb81cd778c4a2e625922c4f1fe94626dfacc9",
+    "review": "machine"
+  },
+  "sb3.category.attention": {
+    "text": "Aufmerksamkeit",
+    "sourceHash": "981afda5cddba60651a113f67bb74ba713f96a77378d6ec120e76ff3ffecacd7",
+    "review": "machine"
+  },
+  "sb3.transform.x": {
+    "text": "X",
+    "sourceHash": "9d12a38737f4cef7d86c63389d07221aed595f0e5d73a71d2db55d02ee7e207d",
+    "review": "machine"
+  },
+  "sb3.transform.y": {
+    "text": "Y",
+    "sourceHash": "bd3118eb2977096063c6c3188559e57f62ca0b546d2714d765078850ab5d4c43",
+    "review": "machine"
+  },
+  "sb3.transform.scaleX": {
+    "text": "X",
+    "sourceHash": "bae05a771af42cbe44bcf7e61baeb1b84dafa37ddfbcf4de73e701ec6d67e4f2",
+    "review": "machine"
+  },
+  "sb3.transform.scaleY": {
+    "text": "Y",
+    "sourceHash": "3489d2d78b85f464e5e4b25d2bf8fd0d12429672f851b47beb2f4df5489eae9a",
+    "review": "machine"
+  },
+  "sb3.transform.rotation": {
+    "text": "Skalierung X",
+    "sourceHash": "f78e1364962000e6b9ff1da2a3b79a249dea5e0adf9b0a234865a426b38ee292",
+    "review": "machine"
+  },
+  "sb3.camera.zoom": {
+    "text": "Skalierung Y",
+    "sourceHash": "f44051e0ee06743b4e7e636d589762cf2e593daf2b4653e1066cf1db4527e3b1",
+    "review": "machine"
+  },
+  "sb3.camera.tilt": {
+    "text": "Drehung",
+    "sourceHash": "6e0cc0f319ea7290db55411bbc713ab3c1eb870d3db553078cd434fd695fc6ba",
+    "review": "machine"
+  },
+  "sb3.camera.pan-x": {
+    "text": "Zoom",
+    "sourceHash": "2d5133a1af9b0ccd6683bc24cd8cdd7e024d9fca38098416a4febab0b5647702",
+    "review": "machine"
+  },
+  "sb3.camera.pan-y": {
+    "text": "Neigung",
+    "sourceHash": "d2ffba2dc60020cd73131a38afda97b4b0de17a157b63e67f58d8f02a9ac2f91",
+    "review": "machine"
+  },
+  "sb3.camera.frame-x": {
+    "text": "Schwenk X",
+    "sourceHash": "c6dc2c301a64e3c901b7483fb8cbb696b3f451e7797dc112fbfcf888ac592920",
+    "review": "machine"
+  },
+  "sb3.camera.frame-y": {
+    "text": "Schwenk Y",
+    "sourceHash": "fd55c8efc998819eb7c15e97d91bebc433cac7d893f9fb3a49974c20d6663d7c",
+    "review": "machine"
+  },
+  "sb3.camera.frame-width": {
+    "text": "Bild X",
+    "sourceHash": "491c784818b07c7e9d4440c783a76f826ee6fd18f66cc7042db82893b030ecc3",
+    "review": "machine"
+  },
+  "sb3.camera.frame-height": {
+    "text": "Bild Y",
+    "sourceHash": "6b26a55c4e152aeecc54cc0a5bf7134a30ea3c63a6831c138d1c5b0585352464",
+    "review": "machine"
   }
 }

@@ -70,6 +70,7 @@ export interface Entity<I> {
 }
 
 export interface Project extends Entity<ProjectId> {
+  readonly storyboardFields?: readonly import("./storyboard/editing").PanelField[];
   readonly name: string;
   readonly code?: string | null;
   readonly capture?: import("./interchange/settings").CaptureSettings;
@@ -632,6 +633,8 @@ export interface ScenePlan {
  * Stempelet (navn og tidspunkt) vises i hjørnet; ved import fra fil beholdes originalens stempel.
  */
 export interface Annotation extends Entity<AnnotationId> {
+  readonly panelId?: CompositionId | null;
+  readonly layerId?: LayerId | null;
   /** Nål på scenen: scenevarianten (følger scenen dit den flyttes). null for notater på tekst. */
   readonly variantId: VariantId | null;
   /** Notat på tekst: blokken (scenen er blokkens variant). null for nål på scenen. */
@@ -824,6 +827,7 @@ export interface CompositionCamera {
 
 /** En 2D-scene for én scenevariant: lerretets format og kamera. Lagene er egne rader (samtidig redigering). */
 export interface Composition extends Entity<CompositionId> {
+  readonly storyboard?: import("./storyboard/editing").PanelDetails;
   readonly variantId: VariantId;
   readonly name: string;
   /** Bildeformatet i piksler (mandat 12.1). */

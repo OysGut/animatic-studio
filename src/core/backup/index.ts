@@ -606,6 +606,7 @@ export function restoredState(
       id: pid,
       revision: base.project.revision,
       name: base.project.name,
+      storyboard_fields: p["storyboard_fields"] ?? null,
       source_language: p["source_language"] ?? p["script_language"] ?? p["primary_language"] ?? base.project.sourceLanguage ?? "und",
       code: p["code"] ?? null,
       capture_mode: p["capture_mode"] ?? "ones",

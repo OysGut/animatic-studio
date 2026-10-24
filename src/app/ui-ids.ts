@@ -181,6 +181,10 @@ export const UI_IDS: readonly UiIdEntry[] = [
   {"id":"V-164","kind":"side","component":"StoryboardRoute","file":"src/routes/prosjekt.$projectId.storyboard.tsx","description":"Side «Storyboard – Pen to Glass» (/prosjekt/$projectId/storyboard)","route":"/prosjekt/$projectId/storyboard","status":"aktiv"},
   {"id":"V-165","kind":"dialog","component":"MovePanelDialog","file":"src/app/storyboard/StoryboardWorkspace.tsx","description":"Dialog i MovePanelDialog","status":"aktiv"},
   {"id":"V-166","kind":"dialog","component":"Gallery","file":"src/app/storyboard/StoryboardWorkspace.tsx","description":"Dialog i Gallery","status":"aktiv"},
+  {"id":"V-167","kind":"panel","component":"PanelEditor","file":"src/app/storyboard/PanelEditor.tsx","description":"Flytende panel i PanelEditor","status":"aktiv"},
+  {"id":"V-168","kind":"dialog","component":"PanelEditor","file":"src/app/storyboard/PanelEditor.tsx","description":"Dialog i PanelEditor","status":"aktiv"},
+  {"id":"V-169","kind":"dialog","component":"PanelEditor","file":"src/app/storyboard/PanelEditor.tsx","description":"Dialog i PanelEditor","status":"aktiv"},
+  {"id":"V-170","kind":"dialog","component":"PanelEditor","file":"src/app/storyboard/PanelEditor.tsx","description":"Dialog i PanelEditor","status":"aktiv"},
 ];
 
 const BY_ID = new Map(UI_IDS.map((e) => [e.id, e]));

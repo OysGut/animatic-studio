@@ -171,3 +171,7 @@ Merket nederst i hvert vindu viser «V-nnn · commit». Slå opp nummeret her.
 | V-164 | side | `src/routes/prosjekt.$projectId.storyboard.tsx` | StoryboardRoute | Side «Storyboard – Pen to Glass» (/prosjekt/$projectId/storyboard) | aktiv |
 | V-165 | dialog | `src/app/storyboard/StoryboardWorkspace.tsx` | MovePanelDialog | Dialog i MovePanelDialog | aktiv |
 | V-166 | dialog | `src/app/storyboard/StoryboardWorkspace.tsx` | Gallery | Dialog i Gallery | aktiv |
+| V-167 | panel | `src/app/storyboard/PanelEditor.tsx` | PanelEditor | Flytende panel i PanelEditor | aktiv |
+| V-168 | dialog | `src/app/storyboard/PanelEditor.tsx` | PanelEditor | Dialog i PanelEditor | aktiv |
+| V-169 | dialog | `src/app/storyboard/PanelEditor.tsx` | PanelEditor | Dialog i PanelEditor | aktiv |
+| V-170 | dialog | `src/app/storyboard/PanelEditor.tsx` | PanelEditor | Dialog i PanelEditor | aktiv |
