@@ -18,7 +18,15 @@ Ingen DB-endringer nødvendig – alt bygger på eksisterende kommandoer (Create
 - `tests/unit/scene-panels.test.ts` oppdatert med det nye panelet (10 tester grønne).
 - `tests/architecture/ui-ids.test.ts` grønn.
 - Typecheck: build OK (0 feil). i18n-sjekk grønn; 36 nye `sb5.*`-nøkler på nb/en + maskinoversatt (merket `review: "machine"`) til de, es, fr, it, ja, ko, pt-BR, ru.
-- **Ikke rukket**: full Vitest-kjøring, DB-suite og visuell nb/en-test (Claude kjører nettlesertestene).
+- **Ved første SB-5-leveranse ikke kjørt**: full Vitest, DB-suite og visuell nb/en-test. Dette var en ufullstendig verifisering, ikke en grønn fullsuite.
+
+### Retting og ny fullkontroll – 24.10.2026
+- Claudes rapport fra `3c67d97e` med to språkfeil er fulgt opp etter SB-7-inventarrettingen. På dagens kode består begge navngitte regresjoner: «finner ingen norsk tekst uten engelsk i src/» og «every raw expression and template segment survives regeneration». Målrettet kjøring: **23 bestått, 0 feilet**.
+- Inventaret er regenerert gjennom `node scripts/i18n/inventory.mjs` og kontrollert med `--check`. Regenereringen ga ingen nye filendringer: rettingen var allerede med i dagens inventar/kataloger. Ingen tekster eller tester er fjernet eller svekket.
+- `checkKeyedCatalogs()` fra `scripts/i18n/validate.mjs` er kjørt uttrykkelig: **0 feil for alle registrerte språk**, inklusive kildehash og plassholderkontroll. `check.mjs`: **0 tekster uten engelsk i 0 filer**. Releasekontrollen består også.
+- **Ny full Vitest-kjøring 24.10.2026 kl. 03:19:48 UTC: 2928 bestått, 0 feilet, 10 eksisterende hoppet over; 367 testfiler bestått, 2 hoppet over.** Varighet 142,21 sekunder. Dette er hele dagens kodebase, inklusive SB-7, ikke en historisk kjøring av `3c67d97e`.
+- SB-5-overføringsregelen ble rettet under SB-7: bare ressurslag og deres relevante grupper følger med; form- og tekstlag blir værende som instrukser. De seks SB-5-testene inngår i den grønne fullkjøringen.
+- Denne oppfølgingen endrer bare rapport og veikart. Ingen publisering eller databaseendring. Visuell SB-5-verifisering er fortsatt ikke bekreftet av denne kjøringen.
 
 ## Begrensninger / avvik
 - «Ny variant» som alternativ til «nytt lagsett» er ikke bygget: ForkVariant endrer manusstrukturen og krever produktvalg. «Nytt lagsett» dekker «nytt utkast» uten å overskrive.
