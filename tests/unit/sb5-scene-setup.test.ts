@@ -38,6 +38,22 @@ function addPanel(s: ProjectState, occurrenceId: string, orderKey: string, durat
   return { s: st, panelId };
 }
 
+function withImage(s: ProjectState) {
+  const assetId = tid<"asset">();
+  const variantId = tid<"asset_variant">();
+  const versionId = tid<"asset_version">();
+  s = mustApply(s, { type: "CreateAssets", assets: [{ assetId, fields: { kind: "character", name: "Figur", names: [], description: "", category: "", tags: [] } }] });
+  s = mustApply(s, { type: "CreateAssetVariant", variantId, assetId, fields: { name: "Figur", style: "other", appearance: "" } });
+  s = mustApply(s, {
+    type: "AddAssetVersion",
+    versionId,
+    variantId,
+    media: { path: `${s.project.id}/${assetId}/${versionId}/figur.png`, mimeType: "image/png", width: 100, height: 100, byteSize: 1000, sha256: "b".repeat(64), durationMs: null },
+    note: "",
+  });
+  return { s, assetId, variantId, versionId };
+}
+
 function addPanelLayer(s: ProjectState, panelId: string, over: Partial<import("@/core").LayerFields> = {}) {
   const layerId = tid<"composition_layer">();
   const st = mustApply(s, {
