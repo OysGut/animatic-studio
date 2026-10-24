@@ -17778,6 +17778,38 @@
       "en": {
         "text": "That did not work. Please try again."
       }
+    },
+    "notes-panel.show-resolved": {
+      "nb": {
+        "text": "Vis løste notater"
+      },
+      "en": {
+        "text": "Show resolved notes"
+      }
+    },
+    "notes-panel.hide-resolved": {
+      "nb": {
+        "text": "Skjul løste notater"
+      },
+      "en": {
+        "text": "Hide resolved notes"
+      }
+    },
+    "ai-cleanup.total": {
+      "nb": {
+        "text": "Totalt {size}"
+      },
+      "en": {
+        "text": "Total {size}"
+      }
+    },
+    "ai-cleanup.select-file": {
+      "nb": {
+        "text": "Velg {name}"
+      },
+      "en": {
+        "text": "Select {name}"
+      }
     }
   }
 }
