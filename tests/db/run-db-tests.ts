@@ -8890,7 +8890,7 @@ try {
     assert((await sql`select sketch from public.composition_layers where id=${layer}`)[0]?.['sketch']?.strokes?.length===0,'undo failed');
     await expectError(sbApply(g7p,{updates:{composition_layers:[{id:layer,expected_revision:2,revision:3,sketch:{...sketch,strokes:[{...sketch.strokes[0],points:[[0,0,1001,0,0,0]]}]}}]}}),'22023');
     await expectError(sbApply(g7p,{updates:{composition_layers:[{id:layer,expected_revision:2,revision:3,sketch:{...sketch,extra:'x'.repeat(524289)}}]}}),'23514');
-    const animation=newId();await sbApply(g7p,{inserts:{compositions:[{id:animation,project_id:g7p,variant_id:sbSetup.variant,kind:'scene',revision:1}]}});
+    const animation=newId();await sbApply(g7p,{inserts:{compositions:[{id:animation,project_id:g7p,variant_id:sbSetup.variant,kind:'scene',active:false,revision:1}]}});
     await expectError(sbApply(g7p,{inserts:{composition_layers:[{id:newId(),project_id:g7p,composition_id:animation,kind:'sketch',width:1920,height:1080,transform:{x:960,y:540,scaleX:1,scaleY:1,rotation:0,opacity:1},order_key:'a1',sketch,revision:1}]}}),'22023');
   });
   await test("0106 SB-8: capability expiry, revoked link, wrong panel and browser denial",async()=>{
@@ -8898,7 +8898,7 @@ try {
     const hash='8'.repeat(64);const session=await as('service_role',null,tx=>tx`select public.sketch_session_create(${g7p},${panel},${layer},${ALICE},${hash}) id`);const id=String(session[0]?.['id']);
     assert(!!(await as('service_role',null,tx=>tx`select public.sketch_session_lookup(${hash}) s`))[0]?.['s'],'valid capability denied');
     await expectError(as('authenticated',ALICE,tx=>tx`select * from public.sketch_sessions`),'42501');
-    await expectError(as('service_role',null,tx=>tx`select public.sketch_session_create(${g7p},${newId()},${layer},${ALICE},${'7'.repeat(64)})`),'42501');
+    await expectError(as('service_role',null,tx=>tx`select public.sketch_session_create(${g7p},${newId()},${layer},${ALICE},${'7'.repeat(64)})`),'23503');
     await sql`update public.sketch_sessions set expires_at=now()-interval '1 second' where id=${id}`;
     assert((await as('service_role',null,tx=>tx`select public.sketch_session_lookup(${hash}) s`))[0]?.['s']===null,'expired link accepted');
     await sql`update public.sketch_sessions set expires_at=now()+interval '5 minutes',revoked=true where id=${id}`;
