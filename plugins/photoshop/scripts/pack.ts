@@ -28,7 +28,7 @@ function icon(size: number): Uint8Array {
 
 rmSync(DIST, { recursive: true, force: true });
 mkdirSync(join(DIST, "icons"), { recursive: true });
-await build({ entryPoints: [join(DIR, "src/main.ts")], bundle: true, format: "iife", platform: "browser", target: "es2020", outfile: join(DIST, "main.js"), legalComments: "none", minify: false });
+await build({ entryPoints: [join(DIR, "src/main.ts")], bundle: true, format: "iife", platform: "browser", target: "es2020", outfile: join(DIST, "main.js"), legalComments: "none", minify: false, external: ["photoshop", "uxp"] });
 const files: { path: string; data: Uint8Array }[] = [
   { path: "manifest.json", data: readFileSync(join(DIR, "manifest.json")) },
   { path: "index.html", data: readFileSync(join(DIR, "index.html")) },
