@@ -52,6 +52,13 @@ async function body(req: Request): Promise<Record<string, unknown>> {
   if ((req.headers.get("content-type") ?? "").includes("application/x-www-form-urlencoded")) return Object.fromEntries(new URLSearchParams(text));
   try { const v = JSON.parse(text || "{}"); return v && typeof v === "object" && !Array.isArray(v) ? v : {}; } catch { return {}; }
 }
+/** UUID v4 fra 16 tilfeldige byte. */
+export function uuidFrom(r: Uint8Array): string {
+  const b = Uint8Array.from(r.slice(0, 16));
+  b[6] = (b[6]! & 0x0f) | 0x40; b[8] = (b[8]! & 0x3f) | 0x80;
+  const h = toHex(b);
+  return `${h.slice(0, 8)}-${h.slice(8, 12)}-${h.slice(12, 16)}-${h.slice(16, 20)}-${h.slice(20)}`;
+}
 const s = (v: unknown) => (typeof v === "string" ? v : "");
 const iso = (ms: number) => new Date(ms).toISOString();
 
@@ -188,7 +195,7 @@ export async function handleApiV1(req: Request, d: ApiDeps): Promise<Response> {
           const variant = st.assetVariants[r.target.variantId];
           if (!variant || variant.assetId !== r.target.assetId || st.assets[r.target.assetId]?.removed) return apiError(404, "target_not_found");
           if (!(await d.store.checkQuota(pid, r.byteSize))) return apiError(413, "quota_exceeded");
-          const t: StoredTransfer = { id: toHex(d.random(16)).replace(/^(.{8})(.{4})(.{4})(.{4})(.{12})$/, "$1-$2-4$3-a$4-$5").slice(0, 36), projectId: pid, sessionId: a.id, idempotencyKey: r.idempotencyKey, fingerprint: fp, fileName: r.fileName, byteSize: r.byteSize, sha256: r.sha256, assetId: r.target.assetId, variantId: r.target.variantId, baseVersionId: r.base.versionId, status: "reserved", candidateVersionId: null, conflictId: null };
+          const t: StoredTransfer = { id: uuidFrom(d.random(16)), projectId: pid, sessionId: a.id, idempotencyKey: r.idempotencyKey, fingerprint: fp, fileName: r.fileName, byteSize: r.byteSize, sha256: r.sha256, assetId: r.target.assetId, variantId: r.target.variantId, baseVersionId: r.base.versionId, status: "reserved", candidateVersionId: null, conflictId: null };
           await d.store.insertTransfer(t);
           return json(publicTransfer(t, []), 201);
         }
