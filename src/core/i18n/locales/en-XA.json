@@ -77156,5 +77156,20 @@
   },
   "sb8.session-error": {
     "text": "[!! TThhëë ddrrááwwïïnngg llïïnnkk ïïss üünnáávvááïïlláábbllëë, ëëxxppïïrrëëdd ôôrr ááccccëëssss wwááss ddëënnïïëëdd. !!]"
+  },
+  "sb7.native-format": {
+    "text": "[!! TThhëë ppáánnëëll mmáásskk ffôôrrmmáátt ïïss ssëënntt ttôô tthhëë mmôôddëëll. !!]"
+  },
+  "sb7.fit-format": {
+    "text": "[!! NNëëáárrëësstt ffôôrrmmáátt: {format}. FFïïttss tthhëë mmáásskk wwïïtthh ttrráánnssppáárrëënntt bbôôrrddëërrss; tthhëë ôôrrïïggïïnnááll ïïss pprrëëssëërrvvëëdd. !!]"
+  },
+  "sb7.native-mask": {
+    "text": "[!! NNááttïïvvëë mmôôddëëll mmáásskk !!]"
+  },
+  "sb7.no-mask": {
+    "text": "[!! NNôô mmôôddëëll mmáásskk !!]"
+  },
+  "sb7.recover": {
+    "text": "[!! RRëëccôôvvëërr ccáánnddïïddááttëë ffrrôômm rrëëccëëïïpptt !!]"
   }
 }

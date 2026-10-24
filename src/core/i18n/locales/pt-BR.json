@@ -58320,5 +58320,30 @@
     "text": "O link está indisponível, expirou ou o acesso foi negado.",
     "sourceHash": "63533280e3b83299228150c0ef0c66223bc44862c268b1902e454c24f9115faa",
     "review": "machine"
+  },
+  "sb7.native-format": {
+    "text": "O formato da máscara é enviado ao modelo.",
+    "sourceHash": "a2d59a0f33b1a44734d3356eafbe45d807f21eb905eb384da2e4dfc11bb6f9bc",
+    "review": "machine"
+  },
+  "sb7.fit-format": {
+    "text": "Formato mais próximo: {format}. Bordas transparentes; o original é preservado.",
+    "sourceHash": "fef5e4ae35474f2af3e6b35657ea00405bf4d7faedee5a2ee984821837e6789b",
+    "review": "machine"
+  },
+  "sb7.native-mask": {
+    "text": "Máscara nativa do modelo",
+    "sourceHash": "debd0babff8bed2c3a5ebe8643c93afb1d6efe69aeda27ae13976ccc29dc402a",
+    "review": "machine"
+  },
+  "sb7.no-mask": {
+    "text": "Sem máscara",
+    "sourceHash": "afaffac538762d0d5a45109bb1fd7853d08310ec91449ce51829bccec32fa47c",
+    "review": "machine"
+  },
+  "sb7.recover": {
+    "text": "Recuperar candidato pelo recibo",
+    "sourceHash": "2993861b3bfb12c0686a2daa9e16e5c19c1c27ed8a05981f9524ffb5b202ab67",
+    "review": "machine"
   }
 }

@@ -28,11 +28,14 @@ export interface ImageRequest {
   readonly size?: "1K" | "2K" | "4K";
   /** Sideforhold (DEC-0080: karakterark er brede); standard ut fra bruken (figur 2:3, bakgrunn 3:2). */
   readonly aspect?: ImageAspect;
+  readonly dimensions?: { readonly width: number; readonly height: number };
+  readonly mask?: Blob;
+  readonly sketch?: Blob;
   /** Negativ beskrivelse (bare modeller med eget felt for det, f.eks. Qwen). */
   readonly negativePrompt?: string;
 }
 
-export type ImageAspect = "2:3" | "3:2" | "1:1" | "16:9";
+export type ImageAspect = "2:3" | "3:2" | "1:1" | "16:9" | "9:16" | "3:4" | "4:3" | "4:5" | "5:4" | "21:9";
 
 /** Sideforholdet for forespørselen. */
 export function aspectOf(r: Pick<ImageRequest, "aspect" | "purpose">): ImageAspect {
@@ -41,7 +44,7 @@ export function aspectOf(r: Pick<ImageRequest, "aspect" | "purpose">): ImageAspe
 
 /** fal sine faste størrelser (Seedream, Qwen). */
 function falImageSize(a: ImageAspect): string {
-  return a === "2:3"
+  return a === "2:3" || a === "3:4"
     ? "portrait_4_3"
     : a === "1:1"
       ? "square_hd"
@@ -301,13 +304,14 @@ const openai = {
   },
   async image(r: ImageRequest) {
     const a = aspectOf(r);
-    const size = a === "2:3" ? "1024x1536" : a === "1:1" ? "1024x1024" : "1536x1024";
+    const size = r.dimensions ? `${r.dimensions.width}x${r.dimensions.height}` : a === "2:3" ? "1024x1536" : a === "1:1" ? "1024x1024" : "1536x1024";
     let res: Response;
     if (r.references.length) {
       const form = new FormData();
       form.append("model", r.model);
       form.append("prompt", r.prompt);
       form.append("size", size);
+      if (r.mask) form.append("mask", new File([r.mask], "mask.png", { type: "image/png" }));
       if (r.purpose === "cutout") form.append("background", "transparent");
       r.references.forEach((b, i) =>
         form.append(

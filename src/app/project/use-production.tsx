@@ -44,9 +44,13 @@ export function useActiveProduction(
       ? state.occurrences[preferOccurrenceId]?.productionId
       : null;
     if (fromLink) return fromLink;
-    const stored = typeof window === "undefined" ? null : read(projectId);
-    return stored && state.productions[stored] ? stored : fallback(state);
+    return fallback(state);
   });
+  useEffect(() => {
+    if (preferOccurrenceId && state.occurrences[preferOccurrenceId]) return;
+    const stored = read(projectId);
+    if (stored && state.productions[stored]) setId(stored);
+  }, [projectId, preferOccurrenceId, state.productions, state.occurrences]);
   const set = useCallback(
     (next: string) => {
       setId(next);

@@ -128,7 +128,7 @@ export function SceneEditorWorkspace({
   const members = useMembers(projectId);
   const role = members.data?.find((m) => m.user_id === userId)?.role;
   const editable = canEdit(role);
-  const cmds = useCommands(projectId, userId, editable);
+  const cmds = useCommands(projectId, userId, editable, undefined, false, true);
   if (query.isLoading)
     return (
       <p className="p-6 text-[13px] text-text-tertiary">
