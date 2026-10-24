@@ -136,6 +136,10 @@ describe("skriptene", () => {
     expect(ADAPTERS.find(a => a.id === SBPRO_ADAPTER.id)?.capabilities).toEqual(["read", "write", "audio", "timeline", "notes"]);
     expect(SBPRO_LIMITS).toContain("unverified");
   });
+  it("panelbilder fra returer vernes i oppryddingen (ORPHAN_REFERENCE_TABLES)", () => {
+    expect(readFileSync("src/adapters/storage/orphan-cleanup.server.ts", "utf8")).toMatch(/"connector_panel_candidates"/);
+    expect(readFileSync("db/migrations/0113_c5_sbpro.sql", "utf8")).toMatch(/media_path text/);
+  });
 });
 
 describe("import", () => {
