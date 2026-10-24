@@ -14,7 +14,6 @@ import type { Commands } from "@/app/project/use-commands";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ResizableDialogContent } from "@/app/shared/ResizableDialogContent";
-import { UiId } from "@/app/shared/UiId";
 
 interface Props {
   open: boolean;
@@ -62,7 +61,6 @@ export function SceneSetupDialog({ open, onOpenChange, state, productionId, occu
   return (
     <Dialog open={open} onOpenChange={(o) => !busy && onOpenChange(o)}>
       <ResizableDialogContent uiId="V-173" sizeKey="scene-setup" className="max-h-[86vh] max-w-[560px] overflow-y-auto border-border bg-surface-2">
-        <UiId id="V-173" />
         <DialogHeader>
           <DialogTitle>{tk("sb5.setup-title")}</DialogTitle>
           <DialogDescription>{tk("sb5.setup-description")}</DialogDescription>

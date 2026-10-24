@@ -63,7 +63,7 @@ function StoryboardRefRoute() {
       ) : (
         <p className="p-4 text-xs text-text-tertiary">{t("sb5.no-scene")}</p>
       )}
-      <UiId id="V-174" />
+      <UiId id="V-172" />
     </div>
   );
 }

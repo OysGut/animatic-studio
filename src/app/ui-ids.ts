@@ -186,9 +186,9 @@ export const UI_IDS: readonly UiIdEntry[] = [
   {"id":"V-169","kind":"dialog","component":"PanelEditor","file":"src/app/storyboard/PanelEditor.tsx","description":"Dialog i PanelEditor","status":"aktiv"},
   {"id":"V-170","kind":"dialog","component":"PanelEditor","file":"src/app/storyboard/PanelEditor.tsx","description":"Dialog i PanelEditor","status":"aktiv"},
   {"id":"V-171","kind":"dialog","component":"StoryboardFilm","file":"src/app/storyboard/StoryboardFilm.tsx","description":"Dialog «Storyboardfilm» i StoryboardFilm","status":"aktiv"},
-  {"id":"V-172","kind":"side","component":"StoryboardRefRoute","file":"src/app/scene-editor/StoryboardReferencePanel.tsx","description":"Side /prosjekt/$projectId/storyboardref","route":"/prosjekt/$projectId/storyboardref","status":"aktiv"},
+  {"id":"V-172","kind":"side","component":"StoryboardRefRoute","file":"src/routes/prosjekt.$projectId.storyboardref.tsx","description":"Side /prosjekt/$projectId/storyboardref","route":"/prosjekt/$projectId/storyboardref","status":"aktiv"},
   {"id":"V-173","kind":"dialog","component":"SceneSetupDialog","file":"src/app/scene-editor/SceneSetupDialog.tsx","description":"Dialog i SceneSetupDialog","status":"aktiv"},
-  {"id":"V-174","kind":"dialog","component":"StoryboardReferencePanel","file":"src/routes/prosjekt.$projectId.storyboardref.tsx","description":"Dialog i StoryboardReferencePanel","status":"aktiv"},
+  {"id":"V-174","kind":"dialog","component":"StoryboardReferencePanel","file":"src/app/scene-editor/StoryboardReferencePanel.tsx","description":"Dialog i StoryboardReferencePanel","status":"aktiv"},
 ];
 
 const BY_ID = new Map(UI_IDS.map((e) => [e.id, e]));

@@ -31,7 +31,6 @@ import { popupFeatures, validPopupPref, type PopupPref } from "@/app/script-expl
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ResizableDialogContent } from "@/app/shared/ResizableDialogContent";
-import { UiId } from "@/app/shared/UiId";
 import { runGroup } from "@/app/storylab/canvas/run-group";
 import type { Commands } from "@/app/project/use-commands";
 import type { Playback } from "./use-playback";
@@ -231,7 +230,6 @@ export function StoryboardReferencePanel(props: RefProps) {
       </div>
       <Dialog open={largeOpen} onOpenChange={setLargeOpen}>
         <ResizableDialogContent uiId="V-174" sizeKey="storyboard-reference" className="max-h-[86vh] max-w-[900px] overflow-y-auto border-border bg-surface-1">
-          <UiId id="V-172" />
           <DialogHeader>
             <DialogTitle>{tk("sb5.reference-title")}</DialogTitle>
             <DialogDescription>{tk("sb5.read-only")}</DialogDescription>
