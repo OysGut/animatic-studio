@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as DelingerRouteImport } from './routes/delinger'
 import { Route as InvitasjonRouteImport } from './routes/invitasjon'
+import { Route as KobleRouteImport } from './routes/koble'
 import { Route as KontoRouteImport } from './routes/konto'
 import { Route as PersonvernRouteImport } from './routes/personvern'
 import { Route as TilbakestillPassordRouteImport } from './routes/tilbakestill-passord'
@@ -55,6 +56,11 @@ const DelingerRoute = DelingerRouteImport.update({
 const InvitasjonRoute = InvitasjonRouteImport.update({
   id: '/invitasjon',
   path: '/invitasjon',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KobleRoute = KobleRouteImport.update({
+  id: '/koble',
+  path: '/koble',
   getParentRoute: () => rootRouteImport,
 } as any)
 const KontoRoute = KontoRouteImport.update({
@@ -184,6 +190,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRoute
   '/delinger': typeof DelingerRoute
   '/invitasjon': typeof InvitasjonRoute
+  '/koble': typeof KobleRoute
   '/konto': typeof KontoRoute
   '/personvern': typeof PersonvernRoute
   '/tilbakestill-passord': typeof TilbakestillPassordRoute
@@ -213,6 +220,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminRoute
   '/delinger': typeof DelingerRoute
   '/invitasjon': typeof InvitasjonRoute
+  '/koble': typeof KobleRoute
   '/konto': typeof KontoRoute
   '/personvern': typeof PersonvernRoute
   '/tilbakestill-passord': typeof TilbakestillPassordRoute
@@ -242,6 +250,7 @@ export interface FileRoutesById {
   '/admin': typeof AdminRoute
   '/delinger': typeof DelingerRoute
   '/invitasjon': typeof InvitasjonRoute
+  '/koble': typeof KobleRoute
   '/konto': typeof KontoRoute
   '/personvern': typeof PersonvernRoute
   '/tilbakestill-passord': typeof TilbakestillPassordRoute
@@ -273,6 +282,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/delinger'
     | '/invitasjon'
+    | '/koble'
     | '/konto'
     | '/personvern'
     | '/tilbakestill-passord'
@@ -302,6 +312,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/delinger'
     | '/invitasjon'
+    | '/koble'
     | '/konto'
     | '/personvern'
     | '/tilbakestill-passord'
@@ -330,6 +341,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/delinger'
     | '/invitasjon'
+    | '/koble'
     | '/konto'
     | '/personvern'
     | '/tilbakestill-passord'
@@ -360,6 +372,7 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRoute
   DelingerRoute: typeof DelingerRoute
   InvitasjonRoute: typeof InvitasjonRoute
+  KobleRoute: typeof KobleRoute
   KontoRoute: typeof KontoRoute
   PersonvernRoute: typeof PersonvernRoute
   TilbakestillPassordRoute: typeof TilbakestillPassordRoute
@@ -403,6 +416,13 @@ declare module '@tanstack/react-router' {
       path: '/invitasjon'
       fullPath: '/invitasjon'
       preLoaderRoute: typeof InvitasjonRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/koble': {
+      id: '/koble'
+      path: '/koble'
+      fullPath: '/koble'
+      preLoaderRoute: typeof KobleRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/konto': {
@@ -603,6 +623,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRoute,
   DelingerRoute: DelingerRoute,
   InvitasjonRoute: InvitasjonRoute,
+  KobleRoute: KobleRoute,
   KontoRoute: KontoRoute,
   PersonvernRoute: PersonvernRoute,
   TilbakestillPassordRoute: TilbakestillPassordRoute,
