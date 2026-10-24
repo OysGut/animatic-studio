@@ -121,7 +121,7 @@ export function StoryboardWorkspace({
   const members = useMembers(projectId);
   const role = members.data?.find((m) => m.user_id === userId)?.role;
   const editable = canEdit(role);
-  const cmds = useCommands(projectId, userId, editable);
+  const cmds = useCommands(projectId, userId, editable, undefined, true, true);
   if (query.isLoading) return <p className="p-6 text-[13px] text-text-tertiary">{tk("sb2.loading")}</p>;
   if (query.isError || !query.data)
     return (
@@ -164,7 +164,8 @@ export function Gallery({
   const navigate = useNavigate();
   const [prefs, setPrefs] = useUiPref<GalleryPrefs>("storyboard-gallery", DEFAULT_GALLERY_PREFS, isGalleryPrefs);
   const set = (p: Partial<GalleryPrefs>) => setPrefs({ ...prefs, ...p });
-  const savedPosition = currentPosition(projectId);
+  const [savedPosition, setSavedPosition] = useState<ReturnType<typeof currentPosition>>(null);
+  useEffect(() => { setSavedPosition(currentPosition(projectId)); }, [projectId]);
   const [productionId, setProductionId] = useActiveProduction(projectId, state, initialOccurrenceId ?? savedPosition?.occurrenceId);
   const filter = prefs.filterArea && prefs.filterStatus ? { area: prefs.filterArea, status: prefs.filterStatus } : null;
   const gallery = useMemo(
@@ -174,6 +175,7 @@ export function Gallery({
   );
   const flat = useMemo(() => flatPanels(gallery), [gallery]);
   const [selected, setSelected] = useState<string | null>(initialPanelId ?? savedPosition?.panelId ?? null);
+  useEffect(() => { if (!initialPanelId && savedPosition?.panelId) setSelected(savedPosition.panelId); }, [initialPanelId, savedPosition]);
   const [playingOccurrence, setPlayingOccurrence] = useState<string | null>(null);
   const selectPanel = useCallback((id: string) => {
     setSelected(id);
