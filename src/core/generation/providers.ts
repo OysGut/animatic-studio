@@ -54,7 +54,7 @@ export interface ProviderModel {
    */
   readonly maxInputImages?: number;
   /** Explicit storyboard controls; absent capabilities are never advertised as native support. */
-  readonly panelAi?: { readonly mask?: boolean; readonly sketch?: boolean };
+  readonly panelAi?: { readonly mask?: boolean; readonly sketch?: boolean; readonly customSize?: boolean; readonly aspects?: readonly string[] };
   /** Kan lage gjennomsiktig bakgrunn (frilagte figurer). */
   readonly transparent?: boolean;
   /** Innsatsnivået modellen passer best til (mandat 19.3, DEC-0070). */
@@ -223,6 +223,7 @@ export const PROVIDERS: readonly ProviderInfo[] = [
       textModel("gpt-5-mini", "GPT-5 mini", "fast", 0.25, 2, 400_000),
       {
         id: "gpt-image-2.5-flare",
+        panelAi: { customSize: true, mask: true },
         get label() {
           return t("core-generation-providers.models.models.2786815b0be6");
         },
@@ -237,6 +238,7 @@ export const PROVIDERS: readonly ProviderInfo[] = [
       },
       {
         id: "gpt-image-2.5-sunburst",
+        panelAi: { customSize: true, mask: true },
         get label() {
           return t("core-generation-providers.models.models.c3cbe6d08b4f");
         },
@@ -304,6 +306,7 @@ export const PROVIDERS: readonly ProviderInfo[] = [
       textModel("gemini-2.5-flash", "Gemini 2.5 Flash", "fast", 0.3, 2.5, 1_000_000),
       {
         id: "gemini-nano-banana-2.1",
+        panelAi: { aspects: ["1:1", "2:3", "3:2", "3:4", "4:3", "4:5", "5:4", "9:16", "16:9", "21:9"] },
         label: "Nano Banana 2.1",
         capability: "image",
         priceUsd: 0.04,
@@ -320,6 +323,7 @@ export const PROVIDERS: readonly ProviderInfo[] = [
       },
       {
         id: "gemini-3-pro-image",
+        panelAi: { aspects: ["1:1", "2:3", "3:2", "3:4", "4:3", "4:5", "5:4", "9:16", "16:9", "21:9"] },
         label: "Nano Banana Pro",
         capability: "image",
         priceUsd: 0.14,
