@@ -34495,6 +34495,114 @@
     "sb7.working": {
       "text": "Arbeider …"
     },
+    "sb8.add-layer": {
+      "text": "Legg til tegnelag"
+    },
+    "sb8.brush": {
+      "text": "Pensel"
+    },
+    "sb8.canvas": {
+      "text": "Tegnelerret"
+    },
+    "sb8.clean": {
+      "text": "Rentegning"
+    },
+    "sb8.ellipse": {
+      "text": "Ellipse"
+    },
+    "sb8.erase": {
+      "text": "Viskelær"
+    },
+    "sb8.export": {
+      "text": "Eksporter PNG-lag"
+    },
+    "sb8.fill": {
+      "text": "Fyll"
+    },
+    "sb8.flip": {
+      "text": "Vend lerretet"
+    },
+    "sb8.light": {
+      "text": "Lysbord"
+    },
+    "sb8.limit": {
+      "text": "Tegningen er for stor. Bruk et nytt lag."
+    },
+    "sb8.line": {
+      "text": "Rett linje"
+    },
+    "sb8.loading": {
+      "text": "Laster…"
+    },
+    "sb8.mobile": {
+      "text": "Tegn på nettbrett"
+    },
+    "sb8.mobile-title": {
+      "text": "From Pen to Glass – Tegning"
+    },
+    "sb8.onion": {
+      "text": "Løk-visning"
+    },
+    "sb8.onion-opacity": {
+      "text": "Løkopasitet"
+    },
+    "sb8.opacity": {
+      "text": "Opasitet"
+    },
+    "sb8.palette": {
+      "text": "Prosjektpalett"
+    },
+    "sb8.pan": {
+      "text": "Panorer"
+    },
+    "sb8.pencil": {
+      "text": "Blyant"
+    },
+    "sb8.pressure": {
+      "text": "Trykkurve"
+    },
+    "sb8.rect": {
+      "text": "Rektangel"
+    },
+    "sb8.retry": {
+      "text": "Prøv igjen"
+    },
+    "sb8.revoke": {
+      "text": "Tilbakekall tegnelenke"
+    },
+    "sb8.rotate": {
+      "text": "Roter visningen"
+    },
+    "sb8.rough": {
+      "text": "Grovtegning"
+    },
+    "sb8.saving": {
+      "text": "Lagrer…"
+    },
+    "sb8.session-error": {
+      "text": "Tegnelenken er utilgjengelig, utløpt eller tilgangen ble avvist."
+    },
+    "sb8.sketch": {
+      "text": "Tegnelag"
+    },
+    "sb8.smoothing": {
+      "text": "Utjevning"
+    },
+    "sb8.stroke": {
+      "text": "Tegn strøk"
+    },
+    "sb8.stroke-eraser": {
+      "text": "Visk hele strøk"
+    },
+    "sb8.tools": {
+      "text": "Tegneverktøy"
+    },
+    "sb8.zoom-in": {
+      "text": "Zoom inn"
+    },
+    "sb8.zoom-out": {
+      "text": "Zoom ut"
+    },
     "script-explorer2.chip.menu": {
       "text": "Valg for {name}"
     },
@@ -69129,6 +69237,114 @@
     },
     "sb7.working": {
       "text": "Working …"
+    },
+    "sb8.add-layer": {
+      "text": "Add drawing layer"
+    },
+    "sb8.brush": {
+      "text": "Brush"
+    },
+    "sb8.canvas": {
+      "text": "Drawing canvas"
+    },
+    "sb8.clean": {
+      "text": "Clean drawing"
+    },
+    "sb8.ellipse": {
+      "text": "Ellipse"
+    },
+    "sb8.erase": {
+      "text": "Eraser"
+    },
+    "sb8.export": {
+      "text": "Export PNG layer"
+    },
+    "sb8.fill": {
+      "text": "Fill"
+    },
+    "sb8.flip": {
+      "text": "Flip canvas"
+    },
+    "sb8.light": {
+      "text": "Lightbox"
+    },
+    "sb8.limit": {
+      "text": "The drawing is too large. Use another layer."
+    },
+    "sb8.line": {
+      "text": "Straight line"
+    },
+    "sb8.loading": {
+      "text": "Loading…"
+    },
+    "sb8.mobile": {
+      "text": "Draw on tablet"
+    },
+    "sb8.mobile-title": {
+      "text": "From Pen to Glass – Drawing"
+    },
+    "sb8.onion": {
+      "text": "Onion skin"
+    },
+    "sb8.onion-opacity": {
+      "text": "Onion opacity"
+    },
+    "sb8.opacity": {
+      "text": "Opacity"
+    },
+    "sb8.palette": {
+      "text": "Project palette"
+    },
+    "sb8.pan": {
+      "text": "Pan"
+    },
+    "sb8.pencil": {
+      "text": "Pencil"
+    },
+    "sb8.pressure": {
+      "text": "Pressure curve"
+    },
+    "sb8.rect": {
+      "text": "Rectangle"
+    },
+    "sb8.retry": {
+      "text": "Try again"
+    },
+    "sb8.revoke": {
+      "text": "Revoke drawing link"
+    },
+    "sb8.rotate": {
+      "text": "Rotate view"
+    },
+    "sb8.rough": {
+      "text": "Rough drawing"
+    },
+    "sb8.saving": {
+      "text": "Saving…"
+    },
+    "sb8.session-error": {
+      "text": "The drawing link is unavailable, expired or access was denied."
+    },
+    "sb8.sketch": {
+      "text": "Drawing layer"
+    },
+    "sb8.smoothing": {
+      "text": "Smoothing"
+    },
+    "sb8.stroke": {
+      "text": "Draw stroke"
+    },
+    "sb8.stroke-eraser": {
+      "text": "Erase whole strokes"
+    },
+    "sb8.tools": {
+      "text": "Drawing tools"
+    },
+    "sb8.zoom-in": {
+      "text": "Zoom in"
+    },
+    "sb8.zoom-out": {
+      "text": "Zoom out"
     },
     "script-explorer2.chip.menu": {
       "text": "Options for {name}"

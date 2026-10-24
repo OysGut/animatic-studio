@@ -77048,5 +77048,113 @@
   },
   "sb7.accept": {
     "text": "[!! CCôônnffïïrrmm áánndd üüssëë !!]"
+  },
+  "sb8.sketch": {
+    "text": "[!! DDrrááwwïïnngg llááyyëërr !!]"
+  },
+  "sb8.pencil": {
+    "text": "[!! PPëënnccïïll !!]"
+  },
+  "sb8.brush": {
+    "text": "[!! BBrrüüsshh !!]"
+  },
+  "sb8.erase": {
+    "text": "[!! ËËrráássëërr !!]"
+  },
+  "sb8.fill": {
+    "text": "[!! FFïïllll !!]"
+  },
+  "sb8.line": {
+    "text": "[!! SSttrrááïïgghhtt llïïnnëë !!]"
+  },
+  "sb8.rect": {
+    "text": "[!! RRëëccttáánnggllëë !!]"
+  },
+  "sb8.ellipse": {
+    "text": "[!! ËËllllïïppssëë !!]"
+  },
+  "sb8.pan": {
+    "text": "[!! PPáánn !!]"
+  },
+  "sb8.flip": {
+    "text": "[!! FFllïïpp ccáánnvvááss !!]"
+  },
+  "sb8.rotate": {
+    "text": "[!! RRôôttááttëë vvïïëëww !!]"
+  },
+  "sb8.zoom-in": {
+    "text": "[!! ZZôôôômm ïïnn !!]"
+  },
+  "sb8.zoom-out": {
+    "text": "[!! ZZôôôômm ôôüütt !!]"
+  },
+  "sb8.export": {
+    "text": "[!! ËËxxppôôrrtt PPNNGG llááyyëërr !!]"
+  },
+  "sb8.tools": {
+    "text": "[!! DDrrááwwïïnngg ttôôôôllss !!]"
+  },
+  "sb8.opacity": {
+    "text": "[!! ÔÔppááccïïttyy !!]"
+  },
+  "sb8.smoothing": {
+    "text": "[!! SSmmôôôôtthhïïnngg !!]"
+  },
+  "sb8.pressure": {
+    "text": "[!! PPrrëëssssüürrëë ccüürrvvëë !!]"
+  },
+  "sb8.onion-opacity": {
+    "text": "[!! ÔÔnnïïôônn ôôppááccïïttyy !!]"
+  },
+  "sb8.onion": {
+    "text": "[!! ÔÔnnïïôônn sskkïïnn !!]"
+  },
+  "sb8.light": {
+    "text": "[!! LLïïgghhttbbôôxx !!]"
+  },
+  "sb8.stroke-eraser": {
+    "text": "[!! ËËrráássëë wwhhôôllëë ssttrrôôkkëëss !!]"
+  },
+  "sb8.rough": {
+    "text": "[!! RRôôüügghh ddrrááwwïïnngg !!]"
+  },
+  "sb8.clean": {
+    "text": "[!! CCllëëáánn ddrrááwwïïnngg !!]"
+  },
+  "sb8.canvas": {
+    "text": "[!! DDrrááwwïïnngg ccáánnvvááss !!]"
+  },
+  "sb8.palette": {
+    "text": "[!! PPrrôôjjëëcctt ppáállëëttttëë !!]"
+  },
+  "sb8.add-layer": {
+    "text": "[!! ÁÁdddd ddrrááwwïïnngg llááyyëërr !!]"
+  },
+  "sb8.stroke": {
+    "text": "[!! DDrrááww ssttrrôôkkëë !!]"
+  },
+  "sb8.limit": {
+    "text": "[!! TThhëë ddrrááwwïïnngg ïïss ttôôôô lláárrggëë. ÜÜssëë áánnôôtthhëërr llááyyëërr. !!]"
+  },
+  "sb8.mobile": {
+    "text": "[!! DDrrááww ôônn ttáábbllëëtt !!]"
+  },
+  "sb8.mobile-title": {
+    "text": "[!! FFrrôômm PPëënn ttôô GGlláássss – DDrrááwwïïnngg !!]"
+  },
+  "sb8.saving": {
+    "text": "[!! SSáávvïïnngg… !!]"
+  },
+  "sb8.loading": {
+    "text": "[!! LLôôááddïïnngg… !!]"
+  },
+  "sb8.retry": {
+    "text": "[!! TTrryy áággááïïnn !!]"
+  },
+  "sb8.revoke": {
+    "text": "[!! RRëëvvôôkkëë ddrrááwwïïnngg llïïnnkk !!]"
+  },
+  "sb8.session-error": {
+    "text": "[!! TThhëë ddrrááwwïïnngg llïïnnkk ïïss üünnáávvááïïlláábbllëë, ëëxxppïïrrëëdd ôôrr ááccccëëssss wwááss ddëënnïïëëdd. !!]"
   }
 }
