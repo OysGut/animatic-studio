@@ -198,6 +198,7 @@ export const UI_IDS: readonly UiIdEntry[] = [
   {"id":"V-181","kind":"side","component":"ReturnRoute","file":"src/routes/r.$token.tsx","description":"Side «Send tilbake – From Pen to Glass» (/r/$token)","route":"/r/$token","status":"aktiv"},
   {"id":"V-182","kind":"side","component":"SignedInReturn","file":"src/routes/retur.tsx","description":"Side «Send tilbake – From Pen to Glass» (/retur)","route":"/retur","status":"aktiv"},
   {"id":"V-183","kind":"dialog","component":"BoordsDialog","file":"src/app/storyboard/BoordsSend.tsx","description":"Dialog «Send til Boords» (C-4)","status":"aktiv"},
+  {"id":"V-184","kind":"dialog","component":"SbproDialog","file":"src/app/storyboard/SbproSend.tsx","description":"Dialog «Toon Boom Storyboard Pro» (C-5)","status":"aktiv"},
 ];
 
 const BY_ID = new Map(UI_IDS.map((e) => [e.id, e]));

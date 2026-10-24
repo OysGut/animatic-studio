@@ -38,6 +38,13 @@ function SbproInner(props: Props) {
   );
 }
 
+const KIND_LABEL: Record<SbproCandidateView["kind"], () => string> = {
+  text: () => t("c5.kind.text"), timing: () => t("c5.kind.timing"), image: () => t("c5.kind.image"), new_panel: () => t("c5.kind.new_panel"), conform: () => t("c5.kind.conform"),
+};
+const REASON_LABEL: Record<string, () => string> = {
+  new: () => t("c5.reason.new"), missing: () => t("c5.reason.missing"), "moved-scene": () => t("c5.reason.moved-scene"),
+  conflict: () => t("c5.reason.conflict"), "unknown-scene": () => t("c5.reason.unknown-scene"), fps: () => t("c5.reason.fps"),
+};
 const fromB64 = (b: string) => Uint8Array.from(atob(b), c => c.charCodeAt(0));
 const ext = (mime: string) => (mime.includes("wav") ? "wav" : mime.includes("mpeg") ? "mp3" : mime.includes("ogg") ? "ogg" : "bin");
 
@@ -124,7 +131,7 @@ function SbproDialog({ open, onOpenChange, state, projectId, productionId, cmds 
   const label = (c: SbproCandidateView) => {
     const p = c.panelId ? state.compositions[c.panelId as never] : undefined;
     const name = p ? panelDetails(p).number || p.name || t("c1.panel") : t("c1.panel");
-    return `${t(`c5.kind.${c.kind}`)} · ${c.kind === "conform" ? t("c5.all-panels") : name}`;
+    return `${KIND_LABEL[c.kind]()} · ${c.kind === "conform" ? t("c5.all-panels") : name}`;
   };
   const list = cands.data ?? [];
 
@@ -153,7 +160,7 @@ function SbproDialog({ open, onOpenChange, state, projectId, productionId, cmds 
                     </div>
                     {c.kind === "text" ? <p dir="auto" className="mt-1 whitespace-pre-wrap text-text-secondary">{Object.entries(c.incoming).map(([k, v]) => `${k}: ${String(v)}`).join("\n")}</p> : null}
                     {c.kind === "timing" ? <p className="mt-1 text-text-secondary">{t("c5.timing", { from: String(c.incoming["current"] ?? ""), to: String(c.incoming["durationFrames"] ?? "") })}</p> : null}
-                    {suggestion ? <p className="mt-1 text-text-secondary">{t("c5.suggestion", { reasons: ((c.incoming["reasons"] as string[]) ?? []).map(r => t(`c5.reason.${r}`)).join(", ") })}</p> : null}
+                    {suggestion ? <p className="mt-1 text-text-secondary">{t("c5.suggestion", { reasons: ((c.incoming["reasons"] as string[]) ?? []).map(r => REASON_LABEL[r]?.() ?? r).join(", ") })}</p> : null}
                     <div className="mt-2 flex flex-wrap gap-2">
                       {!suggestion ? <Button size="sm" disabled={busy} onClick={() => void choose(c, "choose_incoming")}>{t("c5.use-incoming")}</Button> : null}
                       {!suggestion ? <Button size="sm" variant="outline" disabled={busy} onClick={() => void choose(c, "keep_both")}>{t("c5.keep-both")}</Button> : null}
