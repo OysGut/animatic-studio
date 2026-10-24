@@ -1,5 +1,13 @@
 # Veikart
 
+## SB-6 – Utskrift, pitch og skuddliste (pågår)
+- [ ] Nye kort i eksisterende ExportAnimaticDialog, felles bildekildevalg
+- [ ] PDF 3/6/9, pitch, fem papirformater, feltvalg, topp/bunntekst, Noto/RTL
+- [ ] CSV med BOM og XLSX med typede kolonner, én rad per panel
+- [ ] Tegnelag og valg av note/arrow/camera_mark
+- [ ] Bitvis eksport med fremdrift/avbryt, 500-paneltest, visuelt nb/en desktop/mobil
+- [ ] Full Vitest/DB/i18n og rapport SB6_REPORT.md; ikke publiser
+
 ## SB-8 – Tegning i appen (pågår)
 - [x] Storyboard-only sketch-lag, delta-komprimerte vektorstrøk, trykk/tilt/tid og størrelsesvalidering
 - [x] Blyant/pensel, område-/strøkviskelær, sammenhengende fyll, linje/Shift/figurer, prosjektpalett og strøkvis angre
