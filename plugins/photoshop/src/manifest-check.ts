@@ -8,7 +8,7 @@ const SECRET = /(secret|password|token|api[_-]?key|sb_secret_|sk_live)/i;
 
 export function checkUxpManifest(m: unknown, opts: { allowedDomains: readonly string[]; panelIds: readonly string[] }): ManifestIssue[] {
   const out: ManifestIssue[] = [];
-  const o = (m ?? {}) as Record<string, any>;
+  const o = (m ?? {}) as any;
   if (o.manifestVersion !== 5) out.push({ path: "manifestVersion", problem: "must be 5" });
   if (typeof o.id !== "string" || !/^[a-z0-9.]+$/i.test(o.id)) out.push({ path: "id", problem: "required" });
   if (typeof o.version !== "string" || !/^\d+\.\d+\.\d+$/.test(o.version)) out.push({ path: "version", problem: "semver x.y.z" });

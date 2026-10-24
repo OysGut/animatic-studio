@@ -10,7 +10,7 @@ import { storedZip } from "../../../src/core/handoff/bytes";
 import { encodePng } from "../../../src/core/handoff/png";
 import { checkUxpManifest } from "../src/manifest-check";
 
-const DIR = join(import.meta.dir, "..");
+const DIR = join(new URL(".", import.meta.url).pathname, "..");
 const DIST = join(DIR, "dist");
 const manifest = JSON.parse(readFileSync(join(DIR, "manifest.json"), "utf8"));
 const issues = checkUxpManifest(manifest, { allowedDomains: ["https://pentoglass.com"], panelIds: ["ptgPanel"] });
