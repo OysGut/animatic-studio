@@ -56,6 +56,7 @@ create table public.boords_project_links (
  revision integer not null default 1,
  unique(project_id,connection_id)
 );
+revoke all on public.boords_project_links from public,anon,authenticated;
 grant select on public.boords_project_links to authenticated;
 grant all on public.boords_project_links to service_role;
 alter table public.boords_project_links enable row level security;
@@ -69,6 +70,7 @@ create table public.boords_frame_state (
  their_image text check(their_image is null or length(their_image)<=2000),
  updated_at timestamptz not null default now()
 );
+revoke all on public.boords_frame_state from public,anon,authenticated;
 grant select on public.boords_frame_state to authenticated;
 grant all on public.boords_frame_state to service_role;
 alter table public.boords_frame_state enable row level security;
@@ -94,6 +96,7 @@ create table public.boords_candidates (
  created_at timestamptz not null default now(),
  unique(link_id,kind,incoming_hash)
 );
+revoke all on public.boords_candidates from public,anon,authenticated;
 grant select on public.boords_candidates to authenticated;
 grant all on public.boords_candidates to service_role;
 alter table public.boords_candidates enable row level security;
@@ -113,6 +116,7 @@ create table public.boords_comments (
  unique(project_id,boords_comment_id)
 );
 create unique index c4_comments_feedback_once on public.boords_comments(feedback_id) where feedback_id is not null;
+revoke all on public.boords_comments from public,anon,authenticated;
 grant select on public.boords_comments to authenticated;
 grant all on public.boords_comments to service_role;
 alter table public.boords_comments enable row level security;
