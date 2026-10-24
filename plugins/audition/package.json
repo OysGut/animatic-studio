@@ -1,0 +1,9 @@
+{
+  "name": "@pentoglass/audition-panel",
+  "version": "0.1.0",
+  "private": true,
+  "description": "From Pen to Glass for Adobe Audition (CEP panel + ExtendScript, Audition 24+). Built, not verified in Audition.",
+  "scripts": {
+    "pack": "bun scripts/pack.ts"
+  }
+}
