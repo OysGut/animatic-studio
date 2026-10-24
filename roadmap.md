@@ -1,5 +1,13 @@
 # Veikart
 
+## SB-10 – Gjennomgang med kunde og team (pågår)
+- [ ] Hashbasert deling med utvalg, utløp, passord og tilbakekalling
+- [ ] Gjestespiller, nålkommentarer og uavhengig godkjenning
+- [ ] Teamliste, svar, løsning, oppgavekobling og eksplisitt statusvalg
+- [ ] Revisjonssammenligning; alle språk; visuell nb/en desktop/mobil
+- [ ] Migrasjon og DB-tester skrives, men kjøres ikke; full Vitest; rapport
+- [ ] Ingen publisering
+
 ## SB-9 – Kontinuitet og blokking (delvis bygget; se SB9_REPORT.md)
 - [x] Lås 0090–0106 med Claudes MD5-er; ingen låst migrasjon endret
 - [x] Panel-lokal plantegning, karakterer/kameraer og angrebar blokking
