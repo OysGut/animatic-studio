@@ -5,8 +5,8 @@
  * conflicts against the revision base. Nothing is approved or shown automatically.
  */
 import { applyCommand, newId, type Command, type ProjectState } from "@/core";
-import { Sha256, checkIntake, mimeForExtension, planCandidate, toHex, MAX_TRANSFER_BYTES } from "@/core/connectors";
-import { FORMAT_FACTS, recognizeReturn, type HandoffFormat, type HandoffTarget } from "@/core/handoff";
+import { Sha256, checkIntake, mimeForExtension, planCandidate, readSbproReturn, planSbproReturn, toHex, MAX_TRANSFER_BYTES, type SbproCandidate } from "@/core/connectors";
+import { FORMAT_FACTS, readStoredZip, recognizeReturn, fromUtf8, type HandoffFormat, type HandoffTarget } from "@/core/handoff";
 import { panelCandidateLayer } from "@/core/storyboard/ai";
 
 export const RETURN_CHUNK_BYTES = 4 * 1024 * 1024;
@@ -44,7 +44,10 @@ export interface HandoffStore {
   /** Runs each command through apply_changes as `actor`, returning the final state. */
   applyCommands(projectId: string, actor: string, state: ProjectState, commands: readonly Command[]): Promise<ProjectState>;
   insertConflict(c: { projectId: string; transferId: string; variantId: string; baseVersionId: string | null; currentVersionId: string | null; incomingVersionId: string }): Promise<string>;
-  markHandoff(id: string, patch: { status: "returned" | "conflict"; transferId: string; candidateVersionId: string }): Promise<void>;
+  markHandoff(id: string, patch: { status: "returned" | "conflict"; transferId: string; candidateVersionId: string | null }): Promise<void>;
+  /** C-5: lagrer en Storyboard Pro-retur som kandidatrader (idempotent på manifest-hash). */
+  saveSbproReturn(r: { projectId: string; productionId: string; userId: string; hash: string; panelCount: number; candidates: readonly SbproCandidate[] }): Promise<{ returnId: string; uploads: { candidateId: string; key: string; sha256: string; byteSize: number }[] }>;
+  putSbproImage(projectId: string, returnId: string, candidateId: string, bytes: Uint8Array): Promise<"ok" | "sha" | "done" | "not_found">;
 }
 
 export class ReturnError extends Error {
@@ -61,10 +64,13 @@ export async function beginReturn(store: HandoffStore, h: HandoffRecord, actor: 
   if (!FORMAT_FACTS[h.format].returnable || h.targetKind === "scene") throw new ReturnError("format");
   if (!KEY_RE.test(f.idempotencyKey) || !SHA_RE.test(f.sha256) || typeof f.fileName !== "string" || f.fileName.length < 1 || f.fileName.length > 255 || /[\\/]/.test(f.fileName)) throw new ReturnError("unknown");
   if (!Number.isInteger(f.byteSize) || f.byteSize < 1 || f.byteSize > MAX_TRANSFER_BYTES) throw new ReturnError("size");
-  if (!mimeForExtension(extOf(f.fileName))) throw new ReturnError("extension");
+  // En .ptgsb-pakke (lagret ZIP) er bare gyldig for et produksjonsmål; ellers gjelder den vanlige hvitelisten.
+  if (h.format === "sbpro" ? !["ptgsb", "zip"].includes(extOf(f.fileName)) : !mimeForExtension(extOf(f.fileName))) throw new ReturnError("extension");
   if (!(await store.checkQuota(h.projectId, f.byteSize))) throw new ReturnError("quota");
   let assetId = h.assetId, variantId = h.variantId;
   if (h.targetKind === "panel") { assetId = random(); variantId = random(); }
+  // Produksjonsreturer lager ingen ressurs på forhånd; kolonnene krever likevel en uuid.
+  if (h.targetKind === "production") { assetId = random(); variantId = random(); }
   if (h.targetKind === "clip" && !variantId) {
     const st = await store.loadState(h.projectId);
     variantId = Object.values(st.assetVariants).find((v) => v.assetId === h.assetId && !v.archived)?.id ?? null;
