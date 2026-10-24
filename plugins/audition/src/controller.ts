@@ -167,6 +167,7 @@ export class AuditionPlugin {
       this.set({ lastExport: { folder, files, skipped, manifestId: plan.manifestId, truncated: plan.truncated } });
       const parts = [this.t("exported", { count: files.length })];
       if (skipped) parts.push(this.t("skipped", { count: skipped }));
+      if (converted) parts.push(this.t("converted", { count: converted }));
       if (plan.truncated) parts.push(this.t("truncated"));
       if (files.length) parts.push(this.t((await this.host.evalScript(`ptgOpenSession(${jsxArg(sesx)})`)) === "ok" ? "sessionOpened" : "sessionFailed"));
       this.say(plan.truncated || skipped ? "error" : "info", parts.join(" "));
