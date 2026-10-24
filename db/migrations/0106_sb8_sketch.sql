@@ -67,6 +67,8 @@ declare s public.sketch_sessions; cap jsonb; r jsonb;begin
  or coalesce(p_changes->'inserts','{}')<>'{}'::jsonb or coalesce(p_changes->'deletes','{}')<>'{}'::jsonb or (select count(*) from pg_catalog.jsonb_object_keys(p_changes->'updates'))<>1 or pg_catalog.jsonb_array_length(p_changes->'updates'->'composition_layers')<>1 then raise exception 'Sketch scope denied' using errcode='42501';end if;
  r:=p_changes->'updates'->'composition_layers'->0;
  if r->>'id' is distinct from s.layer_id::text or exists(select 1 from pg_catalog.jsonb_object_keys(r) k where k not in('id','revision','expected_revision','sketch'))then raise exception 'Sketch scope denied' using errcode='42501';end if;
+ if (r->>'expected_revision')::integer is distinct from (select revision from public.composition_layers where id=s.layer_id)
+ or (r->>'revision')::integer is distinct from (r->>'expected_revision')::integer+1 then raise exception 'Sketch revision conflict' using errcode='40001';end if;
  perform public.apply_changes(s.project_id,s.actor,p_id,p_command,p_inverse,p_changes);
  update public.sketch_sessions set operations=operations+1 where id=s.id;
 end $$;

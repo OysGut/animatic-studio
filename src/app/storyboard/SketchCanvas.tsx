@@ -4,8 +4,9 @@ import { Button } from "@/components/ui/button";
 import { t } from "@/core/i18n/keyed";
 import { appendStroke, packSamples, unpackSamples, MAX_SKETCH_POINTS, type SketchSpec, type SketchStroke, type SketchTool, type PenSample } from "@/core/storyboard/sketch";
 import { paintStroke } from "@/engine/compositor/sketch";
-import { drawFrame } from "@/engine/compositor/canvas";
-import type { Frame } from "@/core";
+import { drawFrame, type ImageSource } from "@/engine/compositor/canvas";
+import { versionImagePath, type Frame } from "@/core";
+import { useImageUrls } from "@/app/library/asset-images";
 
 const toolNames={pencil:()=>t("sb8.pencil"),brush:()=>t("sb8.brush"),erase:()=>t("sb8.erase"),fill:()=>t("sb8.fill"),line:()=>t("sb8.line"),rect:()=>t("sb8.rect"),ellipse:()=>t("sb8.ellipse")};
 const tools=[{id:"pencil",Icon:Pencil},{id:"brush",Icon:Paintbrush},{id:"erase",Icon:Eraser},{id:"fill",Icon:PaintBucket},{id:"line",Icon:Minus},{id:"rect",Icon:Square},{id:"ellipse",Icon:Circle}] as const;
@@ -32,7 +33,14 @@ export function SketchCanvas({width,height,spec,save,disabled=false,palette=[],b
   const finish=(e:React.PointerEvent<HTMLCanvasElement>,cancel=false)=>{if(pointer.current!==e.pointerId)return;pointer.current=null;penActive.current=false;if(!cancel&&!pan&&live.current){let nextSpec:SketchSpec|null;if(tool==="erase"&&eraseMode==="stroke"){const samples=pending.current;nextSpec={...spec,strokes:spec.strokes.filter(st=>!unpackSamples(st.points).some(p=>samples.some(s=>Math.hypot(s.x-p.x,s.y-p.y)<size)))};}else nextSpec=appendStroke(spec,live.current);if(nextSpec)save(nextSpec);else setError(t("sb8.limit"));}live.current=null;pending.current=[];schedule();};
   const exportPng=()=>{const el=canvas.current;if(!el)return;el.toBlob(blob=>{if(!blob)return;const url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="sketch.png";a.click();URL.revokeObjectURL(url);},"image/png");};
   const layers=useRef<HTMLCanvasElement>(null);
-  useEffect(()=>{const ctx=layers.current?.getContext("2d");if(!ctx)return;ctx.clearRect(0,0,width,height);if(backdrop){drawFrame(ctx,backdrop,{images:new Map()});}if(light)ctx.globalAlpha=.25; if(onion){for(const frame of [previous,next])if(frame){ctx.save();ctx.globalAlpha=onionOpacity;const temp=document.createElement("canvas");temp.width=width;temp.height=height;const c=temp.getContext("2d");if(c){drawFrame(c,frame,{images:new Map(),background:"transparent",placeholders:false});ctx.drawImage(temp,0,0);}ctx.restore();}}},[backdrop,previous,next,light,onion,onionOpacity,width,height]);
+  const paths=[backdrop,previous,next].flatMap(f=>f?.items.flatMap(i=>i.version?[versionImagePath(i.version,"display")]:[])??[]);
+  const urls=useImageUrls(paths).data;
+  const [images,setImages]=useState<ReadonlyMap<string,ImageSource>>(new Map());
+  useEffect(()=>{let active=true;void Promise.all(Object.entries(urls??{}).map(([path,url])=>new Promise<[string,ImageSource]|null>(resolve=>{const image=new Image();image.crossOrigin="anonymous";image.onload=()=>resolve([path,image]);image.onerror=()=>resolve(null);image.src=url;}))).then(rows=>{if(active)setImages(new Map(rows.filter((r):r is [string,ImageSource]=>r!==null)));});return()=>{active=false;};},[urls]);
+  useEffect(()=>{const ctx=layers.current?.getContext("2d");if(!ctx)return;ctx.clearRect(0,0,width,height);ctx.globalAlpha=1;
+    const paint=(frame:Frame,alpha:number)=>{const temp=document.createElement("canvas");temp.width=width;temp.height=height;const c=temp.getContext("2d");if(!c)return;drawFrame(c,frame,{images,background:"transparent",placeholders:false});ctx.save();ctx.globalAlpha=alpha;ctx.drawImage(temp,0,0);ctx.restore();};
+    if(backdrop)paint(backdrop,light?.25:1);if(onion)for(const frame of [previous,next])if(frame)paint(frame,onionOpacity);
+  },[backdrop,previous,next,light,onion,onionOpacity,width,height,images]);
   return <div className="flex min-h-0 flex-1 flex-col bg-surface-0" data-testid="sb8-drawing">
     <div role="toolbar" aria-label={t("sb8.tools")} className="flex flex-wrap items-center gap-1 border-b border-border p-2">
       {tools.map(({id,Icon})=><Button key={id} size="icon" variant={tool===id&&!pan?"secondary":"ghost"} title={toolNames[id]()} aria-label={toolNames[id]()} aria-pressed={tool===id&&!pan} disabled={disabled} onClick={()=>{setTool(id);setPan(false);}}><Icon/></Button>)}
