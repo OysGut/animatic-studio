@@ -210,6 +210,10 @@ export async function handleApiV1(req: Request, d: ApiDeps): Promise<Response> {
           const r: ReserveRequest = { idempotencyKey: req.headers.get("idempotency-key") ?? "", fileName: s(b["fileName"]), byteSize: Number(b["byteSize"]), sha256: s(b["sha256"]), target: { assetId: s(target["assetId"]), variantId: s(target["variantId"]) }, base: { versionId: typeof base["versionId"] === "string" ? base["versionId"] : null } };
           const c = checkReserve(r);
           if (!c.ok) return apiError(c.reason === "file" ? 415 : 400, "invalid_" + c.reason);
+          // C-2: bildeformater prosjektmodellen ikke kan lagre som versjon (i dag PSD) avvises før noen byte sendes,
+          // så klienten kan sende en flat PNG i stedet. Se ASSET_MIME_TYPES og C2_REPORT.md.
+          const mime = mimeForExtension((/\.([A-Za-z0-9]{1,8})$/.exec(r.fileName)?.[1] ?? "").toLowerCase());
+          if (mime && mime.startsWith("image/") && !ASSET_MIME_TYPES.includes(mime)) return apiError(415, "unsupported_version_type");
           const fp = reserveFingerprint(r);
           const existing = await d.store.findTransfer(pid, r.idempotencyKey);
           const replay = idempotentReplay(existing, fp);
@@ -254,8 +258,7 @@ export async function handleApiV1(req: Request, d: ApiDeps): Promise<Response> {
       }
     }
     return apiError(404, "not_found");
-  } catch (e) {
-    if ((globalThis as any).__C2DBG) console.error("DBG", e);
+  } catch {
     return apiError(500, "server_error");
   }
 }
