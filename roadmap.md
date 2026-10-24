@@ -1,5 +1,18 @@
 # Veikart
 
+## C-5 – Toon Boom Storyboard Pro (skriptpakke) (bygget, ikke verifisert i Storyboard Pro)
+- [x] 0110/0111 låst i migration-hashes.json; låsetesten dekker til og med 0111
+- [x] 0113 (skrevet, ikke kjørt): klient ptg.toonboom-sbpro, connector_returns + connector_panel_candidates (RLS, per prosjekt), valgfunksjon
+- [x] Skriptpakke plugins/toonboom-sbpro (ES5): PtG_Login (enhetsflyt), PtG_Import, PtG_Export, PtG_Logout; ingen hemmeligheter
+- [x] Import: paneler, bilder, timing, Dialogue/Action Notes/Notes (CaptionManager), kamera (caption), lyd (SoundTrackManager), styrt av manifest v1
+- [x] Eksport: paneler, timing, tekstfelt + manifest via C-0-token til /api/v1/projects/:id/sbpro/returns; bilder med sha-sjekk
+- [x] Retur = kandidater; tre valg + avvis; konflikt på panelrevisjon; ingenting brukes automatisk
+- [x] Conformation: ett angrebart steg bare når tapsfri, ellers forslag med grunner
+- [x] «Storyboard Pro»-vindu i storyboardet (V-184): last ned pakke, kandidater
+- [x] Tester: 19 enhet (falsk SBPro-API + falskt API), 1 DB; full Vitest 3137/0/10, DB 237/0, test:ssr 8/8
+- [ ] Verifisering i ekte Storyboard Pro (krever lisens) – se sjekklisten i C5_REPORT.md
+- [ ] Retur via C-1-retursiden (bare token-veien er bygget)
+
 ## C-4 – Boords-kobling (API) (bygget, ikke prøvd mot ekte Boords)
 - [x] 0112 (skrevet, ikke kjørt): tilkoblinger per bruker/arbeidsgruppe, kryptert nøkkel + webhook-hemmelighet, kolonnetilgang uten chiffer
 - [x] Innstillinger på kontosiden: egen nøkkel, betalt plan, kan/kan ikke, webhook-adresse, fjerning

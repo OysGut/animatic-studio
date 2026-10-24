@@ -5,6 +5,13 @@ Ikke foreslå, ikke start og ikke bygg dette før Øystein uttrykkelig ber om de
 - Eget test- og produksjonsmiljø (Øystein 23.10.2026): en egen testkopi av prosjektet med egen database, der databaseendringer kjøres først. Mellomtrinnet er funksjonsbryterne (av, beta og på). Til da er forhåndsvisningen test og pentoglass.com produksjon, og Claude prøver migrasjoner på en lokal kopi før de kjøres i Cloud.
 
 
+## C-5 Storyboard Pro – sikkerhet og gjenstående (24.10.2026)
+- API-navnene i `PtG.sbpro` (PtG_lib.js) er ikke prøvd i Storyboard Pro: `StoryboardManager.createScene/appendPanel/setPanelDuration/getPanelDuration/frameRate`, `ImportManager.importImageToPanel`, `ExportManager.exportPanelToPNG`, `SoundTrackManager.addSoundTrack/importSound`. Rett navnene der om de avviker (ett sted).
+- Tilgangen lagres i `~/.pentoglass/sbpro-session.json` uten kryptering (Storyboard Pro har ikke sikkert lager). Filrettigheter bør settes til bare brukeren.
+- curl i standardverten skriver forespørselens kropp til en midlertidig fil; tokenet sendes som header i prosesslisten (synlig for andre prosesser på samme maskin).
+- Retur via C-1-retursiden (uten innlogging i skriptet) er ikke bygget; bare enhetsflyten.
+- Paneler som slettes i Storyboard Pro blir bare forslag; nye paneler blir kandidater uten bilde dersom bildet ikke er lastet opp.
+
 ## C-4 Boords – sikkerhet og gjenstående (24.10.2026)
 - Bekreft mot ekte Boords-beta: endepunktene i `BOORDS_ENDPOINTS`, feltnavn (action/sound/dialogue/image_url/updated_at) og webhook-headere/signaturformat (`x-boords-signature`, `x-boords-timestamp`, `x-boords-event-id`, HMAC over `timestamp.body`). Antatt, ikke dokumentert i detalj.
 - Fartsgrensen 120/min holdes per serverinstans; flere instanser kan til sammen overskride den (429 håndteres med tilbakeoff).
