@@ -137,6 +137,14 @@ export class PtgConnector {
   sendPremiereReturn(projectId: string, manifest: ConnectorManifest) {
     return this.json<{ returnId: string; proposals: number; conflicts: number; missing: number; unknown: number }>("POST", `/api/v1/projects/${projectId}/premiere/returns`, manifest);
   }
+  /**
+   * C-6: lydplanen for én scene (sceneforekomst) eller ett panel til Audition: klipp med ressurs-, variant- og
+   * versjons-ID, roller og markører for panel og replikk. Bare lesing.
+   */
+  auditionPlan(projectId: string, occurrenceId: string, panelId?: string | null) {
+    const q = new URLSearchParams({ occurrenceId }); if (panelId) q.set("panelId", panelId);
+    return this.json<import("../../../src/core/connectors/audition-session").AuditionPlan>("GET", `/api/v1/projects/${projectId}/audition/plan?${q}`);
+  }
   /** Stabil idempotensnøkkel for en fil og et mål (samme fil til samme mål gjenopptas). */
   static idempotencyKey(fileSha256: string, target: { variantId: string; baseVersionId: string | null }): string {
     return base64Url(new Sha256().update(new TextEncoder().encode(`${fileSha256}|${target.variantId}|${target.baseVersionId ?? ""}`)).digest()).slice(0, 43);
