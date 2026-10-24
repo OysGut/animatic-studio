@@ -12,8 +12,10 @@
  */
 import { ConnectorError, PtgConnector } from "../../../packages/ptg-connector-sdk/src/index";
 import {
-  AUDITION_CLIENT_ID, auditionFileName, auditionSesx, auditionUploadTarget, readAuditionReturn, tagAuditionWav, type AuditionPlan,
+  AUDITION_CLIENT_ID, AUDITION_MAX_CONVERT_SECONDS, auditionConvertedFileName, auditionConvertedMeta, auditionFileName,
+  auditionSesx, auditionUploadTarget, convertibleAudioFrom, readAuditionReturn, tagAuditionWav, type AuditionPlan,
 } from "../../../src/core/connectors/audition-session";
+import { encodeBwf } from "../../../src/core/handoff/wav";
 import type { Host } from "./host";
 import { jsxArg } from "./cep-host";
 import { fileTokenStore } from "./token-store";
