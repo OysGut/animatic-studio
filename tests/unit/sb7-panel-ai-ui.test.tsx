@@ -3,6 +3,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { setLanguage, orderedOccurrences, applyCommand, layersOf, type Command } from "@/core";
 import { seedProject, mustApply, tid } from "../helpers/fixtures";
 import type { Commands } from "@/app/project/use-commands";
+Object.defineProperty(HTMLElement.prototype,"scrollIntoView",{configurable:true,value:vi.fn()});
 const { estimate, generate, adopt, recover }=vi.hoisted(()=>({estimate:vi.fn(),generate:vi.fn(),adopt:vi.fn(),recover:vi.fn()}));
 vi.mock("@tanstack/react-start",()=>({useServerFn:(fn:unknown)=>fn}));
 vi.mock("@/adapters/ai/storyboard.functions",()=>({estimateStoryboardAi:estimate,generateStoryboardAi:generate,recoverStoryboardCandidate:recover}));
