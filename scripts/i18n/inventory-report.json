@@ -7,7 +7,7 @@
   "templatePairs": 1272,
   "dynamicPairs": 18,
   "references": 12310,
-  "candidates": 40120,
+  "candidates": 40119,
   "conflicts": [
     {
       "kind": "parameter-contract",
