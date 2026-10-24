@@ -57719,5 +57719,90 @@
     "text": "Кадр Y",
     "sourceHash": "6b26a55c4e152aeecc54cc0a5bf7134a30ea3c63a6831c138d1c5b0585352464",
     "review": "machine"
+  },
+  "sb4.play-film": {
+    "text": "Воспроизвести раскадровку",
+    "sourceHash": "c194580f06cc98745a46424ccac52d59706267f09ebd5997056566dc66df161a",
+    "review": "machine"
+  },
+  "sb4.film.title": {
+    "text": "Раскадровка",
+    "sourceHash": "eb21aefa015c4a5d325c82640dd5140a45386a3d98639ea54a2cb3c83a1ad2e1",
+    "review": "machine"
+  },
+  "sb4.film.description": {
+    "text": "Панели воспроизводятся со звуком сцены. Звук — эталон времени.",
+    "sourceHash": "89c346ceb00e668763ada2e5523c263ea4d2a34aca6b2e98582e9b6109b6ce9a",
+    "review": "machine"
+  },
+  "sb4.film.empty": {
+    "text": "В фильме пока нет активных панелей.",
+    "sourceHash": "469463177a510511450cb46697ee7c39ddf704ec769a2169eef41af97a06a1bc",
+    "review": "machine"
+  },
+  "sb4.film.pause": {
+    "text": "Пауза",
+    "sourceHash": "b9ed6e1d2a15198be9d7e47eac8dd6ee51aab368b5e5da3f02311d4549e8c7e4",
+    "review": "machine"
+  },
+  "sb4.film.play": {
+    "text": "Воспроизвести",
+    "sourceHash": "52095392c01e9127feb65594c77d3af1ff6a648de8750b70e22ede3a79c18a3e",
+    "review": "machine"
+  },
+  "sb4.film.timeline": {
+    "text": "Шкала времени раскадровки",
+    "sourceHash": "7d6f665b681395bb7dd11c59ece1ab9e5ce6d337d73d69d306a018d8537f8fce",
+    "review": "machine"
+  },
+  "sb4.film.mute": {
+    "text": "Выключить звук",
+    "sourceHash": "8a16520a8116d778d6fafdbbbd1291258f9c1c0897ab694cf9f9008806c38ed3",
+    "review": "machine"
+  },
+  "sb4.film.unmute": {
+    "text": "Включить звук",
+    "sourceHash": "9aa04ca4cd95c578a07e1e71ca14e1bea3bc97722c80a37d92799af2487818f2",
+    "review": "machine"
+  },
+  "sb4.film.volume": {
+    "text": "Громкость",
+    "sourceHash": "64d389b5b2af8b84660cbb830c04db439d93e9f7a80ad0f0dc4e1088bc5ad41c",
+    "review": "machine"
+  },
+  "sb4.film.fullscreen": {
+    "text": "Полный экран",
+    "sourceHash": "61ea796084d8f2a52470a4fd7e4dc0bd81e26d27a62c8df50e12c11588ab5057",
+    "review": "machine"
+  },
+  "sb4.film.exit-fullscreen": {
+    "text": "Выйти из полноэкранного режима",
+    "sourceHash": "15eab0742f57614dff8b2d1f0040a4318199a685c24244bc22a51dcc3df12385",
+    "review": "machine"
+  },
+  "sb4.film.panel-label": {
+    "text": "Сцена {scene}, панель {panel}: {name}",
+    "sourceHash": "b2de2b38d8adf08de57f42a073238c15a8226efbdeed89ce6f7f031aeb8221db",
+    "review": "machine"
+  },
+  "sb4.export.image-source": {
+    "text": "Источник изображения",
+    "sourceHash": "a9359315e2e528331322f693eefafa1d3357d5338930584eafdba7b2a7297513",
+    "review": "machine"
+  },
+  "sb4.export.source-animation": {
+    "text": "Анимация",
+    "sourceHash": "cb9e3fffc952209e79f1dbf1aed029f66b44524d07b1e5643f16d563a53729e5",
+    "review": "machine"
+  },
+  "sb4.export.source-film": {
+    "text": "Фильм",
+    "sourceHash": "4331761179120caa296be77a6736b20ea07c1527ed0924cc07188bff0233dece",
+    "review": "machine"
+  },
+  "sb4.export.source-storyboard": {
+    "text": "Панели раскадровки",
+    "sourceHash": "d77b960e3e992a9cc4f9ff7f26adcb01735e5ace70bf4577c498842c33e2bac9",
+    "review": "machine"
   }
 }
