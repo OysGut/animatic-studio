@@ -56,7 +56,8 @@ class ClientCore(unittest.TestCase):
                 continue
             for f in files:
                 if f.endswith((".py", ".toml", ".desktop")):
-                    txt = open(os.path.join(base, f), encoding="utf-8").read()
+                    with open(os.path.join(base, f), encoding="utf-8") as fh:
+                        txt = fh.read()
                     self.assertNotRegex(txt, r"(ptgc_|ptgr_|sb_secret_|sk-)[A-Za-z0-9]{8,}", f)
 
     def test_strings_have_all_languages(self):
@@ -98,8 +99,6 @@ class Krita(unittest.TestCase):
         doc = krita.open_handoff(self.app, client, z, self.tmp)
         self.assertEqual(krita.read_link(doc)["variantId"], "va1")
         self.assertTrue(doc.path.endswith("a1.psd"))
-        with zipfile.ZipFile(z, "a") as f:
-            pass
         bad = os.path.join(self.tmp, "bad.zip")
         with zipfile.ZipFile(bad, "w") as f:
             f.writestr("helt-annet-navn.psd", b"endret"); f.writestr("manifest.json", json.dumps(m))
@@ -117,7 +116,8 @@ class Krita(unittest.TestCase):
 
     def _file(self, name, data):
         p = os.path.join(self.tmp, name)
-        open(p, "wb").write(data)
+        with open(p, "wb") as fh:
+            fh.write(data)
         return p
 
 

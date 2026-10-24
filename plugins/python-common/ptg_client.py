@@ -23,6 +23,7 @@ MANIFEST_VERSION = 1
 MAX_MANIFEST_ITEMS = 5000
 SCOPES = "project:read manifest:read assets:read panels:read transfers:write conflicts:read"
 _SECRET_KEY = re.compile(r"(^|_|-)(token|secret|password|passwd|authorization|api[_-]?key|access[_-]?key|refresh|cookie|bearer|code[_-]?verifier)($|_|-)", re.I)
+_SECRET_KEY_CAMEL = re.compile(r"(token|secret|password|passwd|authorization|apikey|accesskey|codeverifier|cookie|bearer)$", re.I)
 _SECRET_VALUE = re.compile(r"^(ptgc_|ptgr_|ptgd_|sr_|sk[-_]|sb_secret_|ghp_|xox[abp]-|Bearer\s)|^eyJ[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}\.")
 _KINDS = {"project", "production", "scene", "occurrence", "panel", "asset", "version"}
 
@@ -85,7 +86,7 @@ def validate_manifest(m) -> list[str]:
     def walk(v, path):
         if isinstance(v, dict):
             for k, x in v.items():
-                if _SECRET_KEY.search(k):
+                if _SECRET_KEY.search(k) or _SECRET_KEY_CAMEL.search(k):
                     issues.append(f"{path}.{k}:secret")
                 walk(x, f"{path}.{k}")
         elif isinstance(v, list):
