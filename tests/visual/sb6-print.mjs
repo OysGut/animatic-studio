@@ -25,6 +25,22 @@ for (const lang of ['nb', 'en']) await h.scenario(`sb6-${lang}`, h.fx.occurrence
     if (!row) throw new Error('No storyboard fixture');
     const base = { state, clips, source: 'storyboard', options: { paper: 'A4', landscape: false, perPage: 1, fields: ['dialogue'], layers: { sketch: true, note: true, arrow: true, camera_mark: true } }, labels: { dialogue: '', panel: '' }, version: '1', date: '2026-10-24', urls: async () => ({}) };
     const checks = [];
+    const panel = state.compositions[row.panelId];
+    const sketch = await import('/src/core/storyboard/sketch.ts');
+    for (const kind of ['sketch', 'note', 'arrow', 'camera_mark']) {
+      const layerId = `sb6-${kind}`;
+      const fields = { ...core.defaultLayerFields(state, panel, { fill: null }), kind, width: 400, height: 400, x: panel.width / 2, y: panel.height / 2 };
+      if (kind === 'sketch') fields.sketch = { version: 1, role: 'rough', strokes: [{ id: 'test', tool: 'line', color: '#ff0000', size: 24, opacity: 1, curve: 1, smoothing: 0, points: sketch.packSamples([{ x: 20, y: 20, pressure: 1, tiltX: 0, tiltY: 0, time: 0 }, { x: 380, y: 380, pressure: 1, tiltX: 0, tiltY: 0, time: 10 }]) }] };
+      if (kind === 'note') fields.note = { noteType: 'direction', text: 'Note', color: '#ff0000', handled: false, anchor: null };
+      if (kind === 'arrow') fields.arrow = { points: [{ x: -100, y: -100 }, { x: 100, y: 100 }], form: 'straight', thickness: 24, color: '#ff0000', category: 'camera', layerId: null };
+      if (kind === 'camera_mark') { fields.fill = '#ff0000'; fields.cameraMark = { frame: { x: -150, y: -150, width: 300, height: 300 }, zoom: 1, pan: { x: 0, y: 0 }, tilt: 0 }; }
+      const layerState = { ...state, layers: { [layerId]: { ...fields, id: layerId, revision: 1, compositionId: panel.id, orderKey: 'a', removed: false } } };
+      const image = async enabled => {
+        const renderer = await ex.printImageRenderer({ ...base, state: layerState, options: { ...base.options, layers: { sketch: false, note: false, arrow: false, camera_mark: false, [kind]: enabled } } });
+        try { return await renderer.render(row); } finally { await renderer.close(); }
+      };
+      checks.push([await image(true) !== await image(false), `${kind}: visible raster and layer toggle`]);
+    }
     for (const [language, text] of [['ja', '日本語の絵コンテ'], ['ar', 'مرحبا بالعالم'], ['he', 'שלום עולם'], ['hi', 'नमस्ते दुनिया'], ['th', 'สวัสดีโลก']]) {
       const blob = await ex.storyboardPdf({ ...base, rows: [{ ...row, dialogue: text }], language, signal: new AbortController().signal });
       const bytes = new Uint8Array(await blob.arrayBuffer());
