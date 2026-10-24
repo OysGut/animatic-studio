@@ -6596,19 +6596,15 @@ try {
     await expectError(as("authenticated", ALICE, (tx) => tx`select public.film_share_lookup(${ta})`), "42501");
     await expectError(as("anon", null, (tx) => tx`select public.film_share_lookup(${ta})`), "42501");
     await expectError(as("authenticated", ALICE, (tx) => tx`select pepper from private.film_share_secret`), "42501");
-    // Eldre deling (slik 0047 lagret den): klartekst + usaltet hash, ingen digest
+    // Eldre deling slik den ser ut etter 0097/0116: ingen klartekst, bare usaltet hash, ingen digest
     const b = await mk(); const tb = "ab".repeat(32);
-    await sql`update public.film_shares set status='ready', activated_at=now(), token=${tb}, token_hash=encode(sha256(convert_to(${tb}, 'UTF8')), 'hex') where id = ${b}`;
+    await sql`update public.film_shares set status='ready', activated_at=now(), token_hash=encode(sha256(convert_to(${tb}, 'UTF8')), 'hex') where id = ${b}`;
     assert((await sql`select public.film_share_lookup(${tb}) as id`)[0]!["id"] === b, "eldre lenke virker");
-    const filled = (await sql`select token_digest, token from public.film_shares where id = ${b}`)[0]!;
-    assert(typeof filled["token_digest"] === "string" && filled["token"] === tb, "fylt ved første oppslag, klartekst ikke fjernet");
+    const filled = (await sql`select token_digest from public.film_shares where id = ${b}`)[0]!;
+    assert(typeof filled["token_digest"] === "string", "digest fylt ved første oppslag");
     assert((await sql`select public.film_share_lookup(${tb}) as id`)[0]!["id"] === b, "eldre lenke virker etter utfylling");
-    assert((await as("authenticated", ALICE, async (tx) => (await tx`select public.film_share_token(${b}) as t`)[0]!["t"])) === tb, "QR for eldre deling");
-    // Eksplisitt utfylling
-    const c = await mk(); const tc = "cd".repeat(32);
-    await sql`update public.film_shares set status='ready', activated_at=now(), token=${tc}, token_hash=encode(sha256(convert_to(${tc}, 'UTF8')), 'hex') where id = ${c}`;
-    assert(Number((await sql`select private.film_share_backfill_digests() n`)[0]!["n"]) >= 1, "utfylling");
-    assert((await sql`select token_digest from public.film_shares where id = ${c}`)[0]!["token_digest"] !== null, "c fylt");
+    // QR kan ikke vises igjen for en eldre deling uten avledet nøkkel, men lenken virker via oppslag
+    assert((await as("authenticated", ALICE, async (tx) => (await tx`select public.film_share_token(${b}) as t`)[0]!["t"])) === null, "ingen lagret nøkkel å vise for eldre deling");
     // Tilbakekalling stopper oppslaget i serveren (status), og QR forsvinner
     await as("authenticated", ALICE, (tx) => tx`select public.revoke_film_share(${a})`);
     assert((await as("authenticated", ALICE, async (tx) => (await tx`select public.film_share_token(${a}) as t`)[0]!["t"])) === null, "ingen QR etter tilbakekalling");
@@ -8166,12 +8162,25 @@ try {
     await sql`delete from public.app_admins where user_id = ${CAROL}`;
   });
   // ---------- G-5 (0097): delingslenker uten klartekst ----------
-  await test("0097 G-5.3: film_shares.token er fjernet fra alle rader og merket DEPRECATED", async () => {
-    const plain = Number((await sql`select count(*) n from public.film_shares where token is not null`)[0]!["n"]);
-    assert(plain === 0, `${plain} rader har fortsatt klartekstnøkkel`);
-    const att = Number((await sql`select attnum from pg_attribute where attrelid = 'public.film_shares'::regclass and attname = 'token'`)[0]!["attnum"]);
-    const desc = String((await sql`select col_description('public.film_shares'::regclass, ${att}) d`)[0]!["d"]);
-    assert(desc.startsWith("DEPRECATED"), `kolonnen mangler DEPRECATED-merke: '${desc}'`);
+  await test("0116 D1: klartekstkolonnen film_shares.token er fjernet; deling virker via pepret hash", async () => {
+    assert(Number((await sql`select max(version) v from public.schema_version`)[0]?.["v"]) >= 116, "schema version 116");
+    const gone = await sql`select 1 from pg_attribute where attrelid = 'public.film_shares'::regclass and attname = 'token' and not attisdropped`;
+    assert(gone.length === 0, "klartekstkolonnen finnes fortsatt");
+    const bf = await sql`select 1 from pg_proc p join pg_namespace n on n.oid = p.pronamespace where n.nspname = 'private' and p.proname = 'film_share_backfill_digests'`;
+    assert(bf.length === 0, "utfyllingshjelperen finnes fortsatt");
+    // Rundtur: opprett, aktiver, QR igjen, oppslag, tilbakekalling – alt uten klartekstkolonnen
+    const p = await as("authenticated", ALICE, async (tx) => (await tx`select public.create_project('D1 hash', 25, 1) as id`)[0]!["id"] as string);
+    const prod = (await sql`select id from public.productions where project_id = ${p} limit 1`)[0]!["id"] as string;
+    const rec = await as("authenticated", ALICE, async (tx) => (await tx`select public.record_export(${p}, ${prod}, 'film', 'film.mp4', '{}', '{}') as id`)[0]!["id"] as string);
+    const r = (await as("authenticated", ALICE, async (tx) => (await tx`select public.create_film_share(${p}, ${rec}, 'Film', 1000, 5000, 1920, 1080, 30) as r`)[0]!["r"] as { id: string }));
+    const t = await as("authenticated", ALICE, async (tx) => (await tx`select public.activate_film_share(${r.id}, 1000) as t`)[0]!["t"] as string);
+    assert(/^[0-9a-f]{64}$/.test(t), "nøkkelen");
+    assert((await as("authenticated", ALICE, async (tx) => (await tx`select public.film_share_token(${r.id}) as t`)[0]!["t"])) === t, "QR igjen uten lagret klartekst");
+    assert(!JSON.stringify(await sql`select * from public.film_shares where id = ${r.id}`).includes(t), "nøkkelen finnes ikke i raden");
+    assert((await sql`select public.film_share_lookup(${t}) as id`)[0]!["id"] === r.id, "oppslag via hash");
+    await as("authenticated", ALICE, (tx) => tx`select public.revoke_film_share(${r.id})`);
+    assert((await sql`select status from public.film_shares where id = ${r.id}`)[0]!["status"] === "revoked", "tilbakekalt uten token-kolonne");
+    await sql`select public.delete_project(${p}, ${ALICE})`;
   });
   // ---------- G-5 (0097): alle jsonb-kolonner har størrelsestak ----------
   await test("0097 G-5.4: hver jsonb-kolonne i public har et pg_column_size-tak", async () => {
