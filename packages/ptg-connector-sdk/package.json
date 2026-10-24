@@ -1,0 +1,9 @@
+{
+  "name": "@pentoglass/connector-sdk",
+  "version": "1.0.0",
+  "private": true,
+  "description": "From Pen to Glass Connector SDK (C-0): PKCE/device login, manifest, resumable idempotent transfers and conflicts. Platform-neutral TypeScript, no React.",
+  "type": "module",
+  "main": "src/index.ts",
+  "sideEffects": false
+}

@@ -301,6 +301,8 @@ B-087: REQ-0879–REQ-0895 (Rigg & 2D-utskrift, A1–A17) og REQ-0896–REQ-0915
 ## Samlet åpent (N7, 22.10.2026)
 
 ### Krever Øystein
+- C-0 sikkerhet: skal eksterne programmer kunne kobles til av alle brukere, eller bare eiere/redaktører (i dag kreves redaktør for scopes som skriver, ellers lesetilgang)? Skal klient-ID-er registreres på forhånd (i dag godtas alle offentlige klient-ID-er med https- eller loopback-adresse)? Levetider: tilgang 15 min, refresh 30 dager (maks 90). Bekreft før lansering.
+- C-0 sikkerhet: tilbaketrekking gjelder straks for nye kall, men filer som allerede er lastet ned av et program kan ikke trekkes tilbake.
 - G-8 lagring: skal bøttene få faste filtyper (allowed_mime_types)? Forslag: «sources» = pdf/docx/fountain/fdx/tekst; «assets» = bilde/lyd/video/mp4/zip. I dag finnes bare størrelsestak (100 MB / 2 GB) og typekontroll i koden; en for streng liste kan stoppe eksisterende importflyter.
 - G-8 hastighetsgrenser: takene i private.rate_limit_rules (0100) er satt romslig; Øystein bør bekrefte nivåene for KI (400 jobber/10 min per bruker) og invitasjoner (50/time) før lansering.
 - G-8 avhengigheter: fire funn står igjen fordi de krever hovedversjonsbytte (vitest/@vitest/mocker, esbuild 0.18 i drizzle-kit, uuid 8 i exceljs, brace-expansion); bare utviklingsverktøy eller ubrukt API. Ta stilling til større oppgradering.

@@ -1,0 +1,999 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "From Pen to Glass – Creative Connectors API",
+    "version": "1.0.0",
+    "description": "C-0. Kortlivede bearer-tokens per prosjekt og scope (OAuth 2.0 Authorization Code + PKCE S256, eller enhetsflyt). Ingen hemmeligheter i plugins. Alle svar har Cache-Control: no-store."
+  },
+  "servers": [
+    {
+      "url": "https://pentoglass.com/api/v1"
+    }
+  ],
+  "paths": {
+    "/oauth/token": {
+      "post": {
+        "summary": "Token",
+        "operationId": "token",
+        "tags": [
+          "v1"
+        ],
+        "responses": {
+          "200": {
+            "description": "Tokens",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/TokenRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TokenRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/oauth/device": {
+      "post": {
+        "summary": "Device authorization",
+        "operationId": "device_authorization",
+        "tags": [
+          "v1"
+        ],
+        "responses": {
+          "200": {
+            "description": "Device code",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeviceResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "client_id",
+                  "scope"
+                ],
+                "properties": {
+                  "client_id": {
+                    "type": "string"
+                  },
+                  "scope": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/oauth/revoke": {
+      "post": {
+        "summary": "Revoke",
+        "operationId": "revoke",
+        "tags": [
+          "v1"
+        ],
+        "responses": {
+          "200": {
+            "description": "Always OK (RFC 7009)"
+          }
+        },
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "token"
+                ],
+                "properties": {
+                  "token": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/session": {
+      "get": {
+        "summary": "Get session",
+        "operationId": "get_session",
+        "tags": [
+          "v1"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": [
+          {
+            "bearer": [
+              "project:read"
+            ]
+          }
+        ]
+      }
+    },
+    "/projects": {
+      "get": {
+        "summary": "List projects",
+        "operationId": "list_projects",
+        "tags": [
+          "v1"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": [
+          {
+            "bearer": [
+              "project:read"
+            ]
+          }
+        ]
+      }
+    },
+    "/projects/{projectId}/manifest": {
+      "get": {
+        "summary": "Get manifest",
+        "operationId": "get_manifest",
+        "tags": [
+          "v1"
+        ],
+        "responses": {
+          "200": {
+            "description": "Manifest v1",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Manifest"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/projectId"
+          }
+        ],
+        "security": [
+          {
+            "bearer": [
+              "manifest:read"
+            ]
+          }
+        ]
+      }
+    },
+    "/projects/{projectId}/assets": {
+      "get": {
+        "summary": "List assets",
+        "operationId": "list_assets",
+        "tags": [
+          "v1"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/projectId"
+          }
+        ],
+        "security": [
+          {
+            "bearer": [
+              "assets:read"
+            ]
+          }
+        ]
+      }
+    },
+    "/projects/{projectId}/assets/{assetId}/versions": {
+      "get": {
+        "summary": "List versions",
+        "operationId": "list_versions",
+        "tags": [
+          "v1"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/projectId"
+          },
+          {
+            "$ref": "#/components/parameters/assetId"
+          }
+        ],
+        "security": [
+          {
+            "bearer": [
+              "assets:read"
+            ]
+          }
+        ]
+      }
+    },
+    "/projects/{projectId}/panels": {
+      "get": {
+        "summary": "List panels",
+        "operationId": "list_panels",
+        "tags": [
+          "v1"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/projectId"
+          }
+        ],
+        "security": [
+          {
+            "bearer": [
+              "panels:read"
+            ]
+          }
+        ]
+      }
+    },
+    "/projects/{projectId}/conflicts": {
+      "get": {
+        "summary": "List conflicts",
+        "operationId": "list_conflicts",
+        "tags": [
+          "v1"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/projectId"
+          }
+        ],
+        "security": [
+          {
+            "bearer": [
+              "conflicts:read"
+            ]
+          }
+        ]
+      }
+    },
+    "/projects/{projectId}/transfers": {
+      "post": {
+        "summary": "Reserve transfer",
+        "operationId": "reserve_transfer",
+        "tags": [
+          "v1"
+        ],
+        "responses": {
+          "201": {
+            "description": "Reserved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Transfer"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Idempotent replay",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Transfer"
+                }
+              }
+            }
+          },
+          "409": {
+            "$ref": "#/components/responses/Error"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error"
+          },
+          "415": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/projectId"
+          },
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          }
+        ],
+        "security": [
+          {
+            "bearer": [
+              "transfers:write"
+            ]
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReserveRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/{projectId}/transfers/{transferId}": {
+      "get": {
+        "summary": "Get transfer",
+        "operationId": "get_transfer",
+        "tags": [
+          "v1"
+        ],
+        "responses": {
+          "200": {
+            "description": "Transfer",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Transfer"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/projectId"
+          },
+          {
+            "$ref": "#/components/parameters/transferId"
+          }
+        ],
+        "security": [
+          {
+            "bearer": [
+              "transfers:write"
+            ]
+          }
+        ]
+      }
+    },
+    "/projects/{projectId}/transfers/{transferId}/chunks/{index}": {
+      "put": {
+        "summary": "Upload chunk",
+        "operationId": "upload_chunk",
+        "tags": [
+          "v1"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/projectId"
+          },
+          {
+            "$ref": "#/components/parameters/transferId"
+          },
+          {
+            "$ref": "#/components/parameters/index"
+          }
+        ],
+        "security": [
+          {
+            "bearer": [
+              "transfers:write"
+            ]
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/octet-stream": {
+              "schema": {
+                "type": "string",
+                "contentMediaType": "application/octet-stream"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/{projectId}/transfers/{transferId}/complete": {
+      "post": {
+        "summary": "Complete transfer",
+        "operationId": "complete_transfer",
+        "tags": [
+          "v1"
+        ],
+        "responses": {
+          "200": {
+            "description": "Candidate version created (never approved)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Transfer"
+                }
+              }
+            }
+          },
+          "409": {
+            "$ref": "#/components/responses/Error"
+          },
+          "415": {
+            "$ref": "#/components/responses/Error"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/projectId"
+          },
+          {
+            "$ref": "#/components/parameters/transferId"
+          }
+        ],
+        "security": [
+          {
+            "bearer": [
+              "transfers:write"
+            ]
+          }
+        ]
+      }
+    },
+    "/openapi.json": {
+      "get": {
+        "summary": "OpenAPI",
+        "operationId": "openapi",
+        "tags": [
+          "v1"
+        ],
+        "responses": {
+          "200": {
+            "description": "This document"
+          }
+        },
+        "security": []
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "type": "oauth2",
+        "flows": {
+          "authorizationCode": {
+            "authorizationUrl": "https://pentoglass.com/koble",
+            "tokenUrl": "https://pentoglass.com/api/v1/oauth/token",
+            "refreshUrl": "https://pentoglass.com/api/v1/oauth/token",
+            "scopes": {
+              "project:read": "project:read",
+              "manifest:read": "manifest:read",
+              "assets:read": "assets:read",
+              "panels:read": "panels:read",
+              "transfers:write": "transfers:write",
+              "conflicts:read": "conflicts:read",
+              "notes:write": "notes:write"
+            }
+          }
+        }
+      }
+    },
+    "parameters": {
+      "projectId": {
+        "name": "projectId",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "assetId": {
+        "name": "assetId",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "transferId": {
+        "name": "transferId",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "index": {
+        "name": "index",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 7
+        }
+      },
+      "IdempotencyKey": {
+        "name": "Idempotency-Key",
+        "in": "header",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{16,128}$"
+        }
+      }
+    },
+    "responses": {
+      "Error": {
+        "description": "Error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "Error": {
+        "type": "object",
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "string"
+          }
+        }
+      },
+      "TokenRequest": {
+        "type": "object",
+        "required": [
+          "grant_type"
+        ],
+        "properties": {
+          "grant_type": {
+            "enum": [
+              "authorization_code",
+              "refresh_token",
+              "urn:ietf:params:oauth:grant-type:device_code"
+            ]
+          },
+          "code": {
+            "type": "string"
+          },
+          "code_verifier": {
+            "type": "string"
+          },
+          "redirect_uri": {
+            "type": "string"
+          },
+          "client_id": {
+            "type": "string"
+          },
+          "refresh_token": {
+            "type": "string"
+          },
+          "device_code": {
+            "type": "string"
+          }
+        }
+      },
+      "TokenResponse": {
+        "type": "object",
+        "required": [
+          "access_token",
+          "token_type",
+          "expires_in",
+          "refresh_token",
+          "scope",
+          "project_id"
+        ],
+        "properties": {
+          "access_token": {
+            "type": "string"
+          },
+          "token_type": {
+            "const": "Bearer"
+          },
+          "expires_in": {
+            "type": "integer"
+          },
+          "refresh_token": {
+            "type": "string"
+          },
+          "scope": {
+            "type": "string"
+          },
+          "project_id": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "DeviceResponse": {
+        "type": "object",
+        "required": [
+          "device_code",
+          "user_code",
+          "verification_uri",
+          "expires_in",
+          "interval"
+        ],
+        "properties": {
+          "device_code": {
+            "type": "string"
+          },
+          "user_code": {
+            "type": "string"
+          },
+          "verification_uri": {
+            "type": "string"
+          },
+          "verification_uri_complete": {
+            "type": "string"
+          },
+          "expires_in": {
+            "type": "integer"
+          },
+          "interval": {
+            "type": "integer"
+          }
+        }
+      },
+      "ReserveRequest": {
+        "type": "object",
+        "required": [
+          "fileName",
+          "byteSize",
+          "sha256",
+          "target",
+          "base"
+        ],
+        "properties": {
+          "fileName": {
+            "type": "string"
+          },
+          "byteSize": {
+            "type": "integer",
+            "maximum": 67108864
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "target": {
+            "type": "object",
+            "required": [
+              "assetId",
+              "variantId"
+            ],
+            "properties": {
+              "assetId": {
+                "type": "string"
+              },
+              "variantId": {
+                "type": "string"
+              }
+            }
+          },
+          "base": {
+            "type": "object",
+            "properties": {
+              "versionId": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "Transfer": {
+        "type": "object",
+        "required": [
+          "id",
+          "status",
+          "chunkCount",
+          "missingChunks"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "reserved",
+              "uploading",
+              "received",
+              "candidate",
+              "rejected",
+              "failed"
+            ]
+          },
+          "fileName": {
+            "type": "string"
+          },
+          "byteSize": {
+            "type": "integer"
+          },
+          "sha256": {
+            "type": "string"
+          },
+          "chunkCount": {
+            "type": "integer"
+          },
+          "missingChunks": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          },
+          "candidateVersionId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "conflictId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      },
+      "Manifest": {
+        "type": "object",
+        "required": [
+          "manifestVersion",
+          "createdAt",
+          "projectId",
+          "frameRate",
+          "sampleRate",
+          "sourceApp",
+          "adapter",
+          "items"
+        ],
+        "additionalProperties": true,
+        "properties": {
+          "manifestVersion": {
+            "const": 1
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "projectId": {
+            "type": "string"
+          },
+          "frameRate": {
+            "type": "object",
+            "required": [
+              "num",
+              "den"
+            ],
+            "properties": {
+              "num": {
+                "type": "integer"
+              },
+              "den": {
+                "type": "integer"
+              }
+            }
+          },
+          "sampleRate": {
+            "type": "integer"
+          },
+          "sourceApp": {
+            "type": "object"
+          },
+          "adapter": {
+            "type": "object"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": true
+            }
+          }
+        }
+      }
+    }
+  }
+}

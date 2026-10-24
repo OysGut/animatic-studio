@@ -193,6 +193,7 @@ export const UI_IDS: readonly UiIdEntry[] = [
   {"id":"V-176","kind":"panel","component":"StoryboardReviewPage","file":"src/app/share/StoryboardReviewPage.tsx","description":"Flytende panel i StoryboardReviewPage","status":"aktiv"},
   {"id":"V-177","kind":"dialog","component":"StoryboardReview","file":"src/app/storyboard/StoryboardReview.tsx","description":"Dialog i StoryboardReview","status":"aktiv"},
   {"id":"V-178","kind":"dialog","component":"StoryboardReview","file":"src/app/storyboard/StoryboardReview.tsx","description":"Dialog i StoryboardReview","status":"aktiv"},
+  {"id":"V-179","kind":"side","component":"ConnectRoute","file":"src/routes/koble.tsx","description":"Side «Koble til et program – From Pen to Glass» (/koble)","route":"/koble","status":"aktiv"},
 ];
 
 const BY_ID = new Map(UI_IDS.map((e) => [e.id, e]));

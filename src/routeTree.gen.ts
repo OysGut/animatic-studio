@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as DelingerRouteImport } from './routes/delinger'
 import { Route as InvitasjonRouteImport } from './routes/invitasjon'
+import { Route as KobleRouteImport } from './routes/koble'
 import { Route as KontoRouteImport } from './routes/konto'
 import { Route as PersonvernRouteImport } from './routes/personvern'
 import { Route as TilbakestillPassordRouteImport } from './routes/tilbakestill-passord'
@@ -24,6 +25,7 @@ import { Route as ProsjektProjectIdRouteImport } from './routes/prosjekt.$projec
 import { Route as PtgIRouteImport } from './routes/ptg.i'
 import { Route as ReviewTokenRouteImport } from './routes/review.$token'
 import { Route as SeTokenRouteImport } from './routes/se.$token'
+import { Route as ApiV1SplatRouteImport } from './routes/api/v1/$'
 import { Route as ProsjektProjectIdIndexRouteImport } from './routes/prosjekt.$projectId.index'
 import { Route as ProsjektProjectIdBibliotekRouteImport } from './routes/prosjekt.$projectId.bibliotek'
 import { Route as ProsjektProjectIdManusRouteImport } from './routes/prosjekt.$projectId.manus'
@@ -54,6 +56,11 @@ const DelingerRoute = DelingerRouteImport.update({
 const InvitasjonRoute = InvitasjonRouteImport.update({
   id: '/invitasjon',
   path: '/invitasjon',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KobleRoute = KobleRouteImport.update({
+  id: '/koble',
+  path: '/koble',
   getParentRoute: () => rootRouteImport,
 } as any)
 const KontoRoute = KontoRouteImport.update({
@@ -109,6 +116,11 @@ const ReviewTokenRoute = ReviewTokenRouteImport.update({
 const SeTokenRoute = SeTokenRouteImport.update({
   id: '/se/$token',
   path: '/se/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiV1SplatRoute = ApiV1SplatRouteImport.update({
+  id: '/api/v1/$',
+  path: '/api/v1/$',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProsjektProjectIdIndexRoute = ProsjektProjectIdIndexRouteImport.update({
@@ -178,6 +190,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRoute
   '/delinger': typeof DelingerRoute
   '/invitasjon': typeof InvitasjonRoute
+  '/koble': typeof KobleRoute
   '/konto': typeof KontoRoute
   '/personvern': typeof PersonvernRoute
   '/tilbakestill-passord': typeof TilbakestillPassordRoute
@@ -189,6 +202,7 @@ export interface FileRoutesByFullPath {
   '/ptg/i': typeof PtgIRoute
   '/review/$token': typeof ReviewTokenRoute
   '/se/$token': typeof SeTokenRoute
+  '/api/v1/$': typeof ApiV1SplatRoute
   '/prosjekt/$projectId/bibliotek': typeof ProsjektProjectIdBibliotekRoute
   '/prosjekt/$projectId/manus': typeof ProsjektProjectIdManusRoute
   '/prosjekt/$projectId/montering': typeof ProsjektProjectIdMonteringRoute
@@ -206,6 +220,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminRoute
   '/delinger': typeof DelingerRoute
   '/invitasjon': typeof InvitasjonRoute
+  '/koble': typeof KobleRoute
   '/konto': typeof KontoRoute
   '/personvern': typeof PersonvernRoute
   '/tilbakestill-passord': typeof TilbakestillPassordRoute
@@ -216,6 +231,7 @@ export interface FileRoutesByTo {
   '/ptg/i': typeof PtgIRoute
   '/review/$token': typeof ReviewTokenRoute
   '/se/$token': typeof SeTokenRoute
+  '/api/v1/$': typeof ApiV1SplatRoute
   '/prosjekt/$projectId/bibliotek': typeof ProsjektProjectIdBibliotekRoute
   '/prosjekt/$projectId/manus': typeof ProsjektProjectIdManusRoute
   '/prosjekt/$projectId/montering': typeof ProsjektProjectIdMonteringRoute
@@ -234,6 +250,7 @@ export interface FileRoutesById {
   '/admin': typeof AdminRoute
   '/delinger': typeof DelingerRoute
   '/invitasjon': typeof InvitasjonRoute
+  '/koble': typeof KobleRoute
   '/konto': typeof KontoRoute
   '/personvern': typeof PersonvernRoute
   '/tilbakestill-passord': typeof TilbakestillPassordRoute
@@ -245,6 +262,7 @@ export interface FileRoutesById {
   '/ptg/i': typeof PtgIRoute
   '/review/$token': typeof ReviewTokenRoute
   '/se/$token': typeof SeTokenRoute
+  '/api/v1/$': typeof ApiV1SplatRoute
   '/prosjekt/$projectId/bibliotek': typeof ProsjektProjectIdBibliotekRoute
   '/prosjekt/$projectId/manus': typeof ProsjektProjectIdManusRoute
   '/prosjekt/$projectId/montering': typeof ProsjektProjectIdMonteringRoute
@@ -264,6 +282,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/delinger'
     | '/invitasjon'
+    | '/koble'
     | '/konto'
     | '/personvern'
     | '/tilbakestill-passord'
@@ -275,6 +294,7 @@ export interface FileRouteTypes {
     | '/ptg/i'
     | '/review/$token'
     | '/se/$token'
+    | '/api/v1/$'
     | '/prosjekt/$projectId/bibliotek'
     | '/prosjekt/$projectId/manus'
     | '/prosjekt/$projectId/montering'
@@ -292,6 +312,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/delinger'
     | '/invitasjon'
+    | '/koble'
     | '/konto'
     | '/personvern'
     | '/tilbakestill-passord'
@@ -302,6 +323,7 @@ export interface FileRouteTypes {
     | '/ptg/i'
     | '/review/$token'
     | '/se/$token'
+    | '/api/v1/$'
     | '/prosjekt/$projectId/bibliotek'
     | '/prosjekt/$projectId/manus'
     | '/prosjekt/$projectId/montering'
@@ -319,6 +341,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/delinger'
     | '/invitasjon'
+    | '/koble'
     | '/konto'
     | '/personvern'
     | '/tilbakestill-passord'
@@ -330,6 +353,7 @@ export interface FileRouteTypes {
     | '/ptg/i'
     | '/review/$token'
     | '/se/$token'
+    | '/api/v1/$'
     | '/prosjekt/$projectId/bibliotek'
     | '/prosjekt/$projectId/manus'
     | '/prosjekt/$projectId/montering'
@@ -348,6 +372,7 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRoute
   DelingerRoute: typeof DelingerRoute
   InvitasjonRoute: typeof InvitasjonRoute
+  KobleRoute: typeof KobleRoute
   KontoRoute: typeof KontoRoute
   PersonvernRoute: typeof PersonvernRoute
   TilbakestillPassordRoute: typeof TilbakestillPassordRoute
@@ -359,6 +384,7 @@ export interface RootRouteChildren {
   PtgIRoute: typeof PtgIRoute
   ReviewTokenRoute: typeof ReviewTokenRoute
   SeTokenRoute: typeof SeTokenRoute
+  ApiV1SplatRoute: typeof ApiV1SplatRoute
   ApiPublicCronAiJobsRoute: typeof ApiPublicCronAiJobsRoute
 }
 
@@ -390,6 +416,13 @@ declare module '@tanstack/react-router' {
       path: '/invitasjon'
       fullPath: '/invitasjon'
       preLoaderRoute: typeof InvitasjonRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/koble': {
+      id: '/koble'
+      path: '/koble'
+      fullPath: '/koble'
+      preLoaderRoute: typeof KobleRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/konto': {
@@ -467,6 +500,13 @@ declare module '@tanstack/react-router' {
       path: '/se/$token'
       fullPath: '/se/$token'
       preLoaderRoute: typeof SeTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/v1/$': {
+      id: '/api/v1/$'
+      path: '/api/v1/$'
+      fullPath: '/api/v1/$'
+      preLoaderRoute: typeof ApiV1SplatRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/prosjekt/$projectId/': {
@@ -583,6 +623,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRoute,
   DelingerRoute: DelingerRoute,
   InvitasjonRoute: InvitasjonRoute,
+  KobleRoute: KobleRoute,
   KontoRoute: KontoRoute,
   PersonvernRoute: PersonvernRoute,
   TilbakestillPassordRoute: TilbakestillPassordRoute,
@@ -594,6 +635,7 @@ const rootRouteChildren: RootRouteChildren = {
   PtgIRoute: PtgIRoute,
   ReviewTokenRoute: ReviewTokenRoute,
   SeTokenRoute: SeTokenRoute,
+  ApiV1SplatRoute: ApiV1SplatRoute,
   ApiPublicCronAiJobsRoute: ApiPublicCronAiJobsRoute,
 }
 export const routeTree = rootRouteImport

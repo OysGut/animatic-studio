@@ -77495,5 +77495,143 @@
   },
   "sb10.team": {
     "text": "[!! TTëëáámm !!]"
+  },
+  "c0.error": {
+    "text": "[!! SSôômmëëtthhïïnngg wwëënntt wwrrôônngg. TTrryy áággááïïnn. !!]"
+  },
+  "c0.account.title": {
+    "text": "[!! CCôônnnnëëccttëëdd ááppppss !!]"
+  },
+  "c0.account.intro": {
+    "text": "[!! ÁÁppppss yyôôüü hháávvëë ggïïvvëënn ááccccëëssss ttôô ôônnëë pprrôôjjëëcctt. YYôôüü ccáánn rrëëvvôôkkëë ááccccëëssss áátt áánnyy ttïïmmëë. !!]"
+  },
+  "c0.account.none": {
+    "text": "[!! NNôô ááppppss áárrëë ccôônnnnëëccttëëdd. !!]"
+  },
+  "c0.account.project": {
+    "text": "[!! PPrrôôjjëëcctt: {name} !!]"
+  },
+  "c0.account.scopes": {
+    "text": "[!! PPëërrmmïïssssïïôônnss: {scopes} !!]"
+  },
+  "c0.account.used": {
+    "text": "[!! LLáásstt üüssëëdd: {date} !!]"
+  },
+  "c0.account.expires": {
+    "text": "[!! ËËxxppïïrrëëss: {date} !!]"
+  },
+  "c0.account.revoke": {
+    "text": "[!! RRëëvvôôkkëë !!]"
+  },
+  "c0.account.revoke-aria": {
+    "text": "[!! RRëëvvôôkkëë ááccccëëssss ffôôrr {name} !!]"
+  },
+  "c0.account.revoked": {
+    "text": "[!! ÁÁccccëëssss rrëëvvôôkkëëdd. !!]"
+  },
+  "c0.conflict.title": {
+    "text": "[!! RRëëccëëïïvvëëdd ffïïllëëss wwïïtthh áá ccôônnffllïïcctt !!]"
+  },
+  "c0.conflict.intro": {
+    "text": "[!! TThhëë ffïïllëë ïïss bbáássëëdd ôônn áánn ôôllddëërr vvëërrssïïôônn tthháánn tthhëë ôônnëë áápppprrôôvvëëdd nnôôww. BBôôtthh vvëërrssïïôônnss áárrëë kkëëpptt wwhhááttëëvvëërr yyôôüü cchhôôôôssëë. !!]"
+  },
+  "c0.conflict.versions": {
+    "text": "[!! ÁÁpppprrôôvvëëdd nnôôww: vv{current} · ÏÏnnccôômmïïnngg: vv{incoming} · MMááddëë ffrrôômm: vv{base} !!]"
+  },
+  "c0.conflict.compare": {
+    "text": "[!! CCôômmppáárrëë ïïnn tthhëë llïïbbrráárryy !!]"
+  },
+  "c0.conflict.keep-both": {
+    "text": "[!! KKëëëëpp bbôôtthh !!]"
+  },
+  "c0.conflict.current": {
+    "text": "[!! KKëëëëpp ccüürrrrëënntt !!]"
+  },
+  "c0.conflict.incoming": {
+    "text": "[!! ÜÜssëë ïïnnccôômmïïnngg !!]"
+  },
+  "c0.conflict.reject": {
+    "text": "[!! RRëëjjëëcctt !!]"
+  },
+  "c0.conflict.done": {
+    "text": "[!! YYôôüürr cchhôôïïccëë ïïss ssáávvëëdd. NNôô vvëërrssïïôônnss wwëërrëë ddëëllëëttëëdd. !!]"
+  },
+  "c0.consent.page-title": {
+    "text": "[!! CCôônnnnëëcctt áánn áápppp – FFrrôômm PPëënn ttôô GGlláássss !!]"
+  },
+  "c0.consent.page-description": {
+    "text": "[!! GGïïvvëë áánn ëëxxttëërrnnááll áápppp ááccccëëssss ttôô ôônnëë pprrôôjjëëcctt. !!]"
+  },
+  "c0.consent.trail": {
+    "text": "[!! CCôônnnnëëcctt áápppp !!]"
+  },
+  "c0.consent.title": {
+    "text": "[!! CCôônnnnëëcctt {client} ttôô FFrrôômm PPëënn ttôô GGlláássss !!]"
+  },
+  "c0.consent.title-device": {
+    "text": "[!! CCôônnnnëëcctt áánn áápppp !!]"
+  },
+  "c0.consent.signed-in": {
+    "text": "[!! SSïïggnnëëdd ïïnn ááss {email} !!]"
+  },
+  "c0.consent.code-label": {
+    "text": "[!! TThhëë ccôôddëë sshhôôwwnn ïïnn tthhëë áápppp !!]"
+  },
+  "c0.consent.continue": {
+    "text": "[!! CCôônnttïïnnüüëë !!]"
+  },
+  "c0.consent.bad-code": {
+    "text": "[!! TThhëë ccôôddëë ïïss ïïnnvváállïïdd ôôrr hhááss ëëxxppïïrrëëdd. !!]"
+  },
+  "c0.consent.explain": {
+    "text": "[!! {client} ccáánn üüssëë tthhëë pprrôôjjëëcctt yyôôüü cchhôôôôssëë, ááss yyôôüü, wwïïtthh tthhëë ppëërrmmïïssssïïôônnss bbëëllôôww. !!]"
+  },
+  "c0.consent.redirect": {
+    "text": "[!! SSëënnddss tthhëë áánnsswwëërr ttôô {uri} !!]"
+  },
+  "c0.consent.project": {
+    "text": "[!! PPrrôôjjëëcctt !!]"
+  },
+  "c0.consent.pick-project": {
+    "text": "[!! CChhôôôôssëë áá pprrôôjjëëcctt !!]"
+  },
+  "c0.consent.boundary": {
+    "text": "[!! TThhïïss ddôôëëss nnôôtt bbyyppáássss yyôôüürr rrôôllëë ïïnn tthhëë pprrôôjjëëcctt. RRëëccëëïïvvëëdd ffïïllëëss áállwwááyyss bbëëccôômmëë nnëëww vvëërrssïïôônnss tthháátt yyôôüü áápppprrôôvvëë yyôôüürrssëëllff. !!]"
+  },
+  "c0.consent.approve": {
+    "text": "[!! ÁÁpppprrôôvvëë !!]"
+  },
+  "c0.consent.deny": {
+    "text": "[!! CCáánnccëëll ccôônnnnëëccttïïôônn !!]"
+  },
+  "c0.consent.device-done": {
+    "text": "[!! ÁÁpppprrôôvvëëdd. YYôôüü ccáánn rrëëttüürrnn ttôô tthhëë áápppp. !!]"
+  },
+  "c0.consent.denied": {
+    "text": "[!! TThhëë ccôônnnnëëccttïïôônn wwááss ddëëccllïïnnëëdd. !!]"
+  },
+  "c0.scope.project-read": {
+    "text": "[!! SSëëëë tthhëë pprrôôjjëëcctt nnáámmëë áánndd ffrráámmëë rrááttëë !!]"
+  },
+  "c0.scope.manifest-read": {
+    "text": "[!! RRëëáádd tthhëë pprrôôjjëëcctt ôôvvëërrvvïïëëww (mmáánnïïffëësstt) !!]"
+  },
+  "c0.scope.assets-read": {
+    "text": "[!! RRëëáádd áássssëëttss áánndd vvëërrssïïôônnss !!]"
+  },
+  "c0.scope.panels-read": {
+    "text": "[!! RRëëáádd ssttôôrryybbôôáárrdd ppáánnëëllss !!]"
+  },
+  "c0.scope.transfers-write": {
+    "text": "[!! SSëënndd ffïïllëëss ááss nnëëww ccáánnddïïddááttëë vvëërrssïïôônnss !!]"
+  },
+  "c0.scope.conflicts-read": {
+    "text": "[!! SSëëëë ccôônnffllïïccttss ffôôrr rrëëccëëïïvvëëdd ffïïllëëss !!]"
+  },
+  "c0.scope.notes-write": {
+    "text": "[!! WWrrïïttëë nnôôttëëss !!]"
+  },
+  "c0.scope.other": {
+    "text": "[!! ÔÔtthhëërr ppëërrmmïïssssïïôônn: {scope} !!]"
   }
 }

@@ -1,5 +1,18 @@
 # Veikart
 
+## C-0 – Kjernen for Creative Connectors (bygget i kode; DB og Cloud gjenstår)
+- [x] Manifest v1 med validator, rundtur med ukjente felt og hemmelighetssperre
+- [x] 0109: connector_sessions/links/transfers/conflicts med RLS, indekser og service-RPC-er (skrevet, ikke kjørt)
+- [x] Mottak: reservasjon, biter, SHA-256, hviteliste + innholdssjekk, alltid kandidatversjon
+- [x] Konflikter med fire valg uten tap; valg på Konto-siden
+- [x] PKCE + enhetsflyt, kortlivede tokens per prosjekt/scope, rotasjon, tilbaketrekking, fartsgrenser og kvote
+- [x] API v1 og OpenAPI 3.1; Connector SDK; kapabilitetsmodell; ni skills
+- [x] Tester: kjerne, API/SDK mot falsk server, OpenAPI, visuelt Konto nb/en desktop/mobil; full Vitest 3059/0/10
+- [ ] DB-test og 0109 i Cloud (Claude)
+- [ ] Ende-til-ende mot Cloud med ekte innlogging og lagring
+- [ ] Filer over 64 MB (direkte opplasting med signert URL)
+- [ ] API for connector_links og notes:write (med første plugin)
+
 ## SB-10 – Gjennomgang med kunde og team (bygget i kode; DB og enkelte ende-til-ende-kontroller gjenstår)
 - [x] Hashbasert deling med sceneutvalg, revisjonsvalg, utløp, passord og tilbakekalling
 - [x] Gjestespiller, nålkommentarer og uavhengig godkjenning; nb/en desktop/mobil 12/0 med falske tjenester

@@ -8956,6 +8956,55 @@ try {
     await comment(key,'One','none');await comment(key,'Two','none');await expectError(comment(key,'Three','none'),'PTG15');
     await sql`update private.rate_limit_rules set per_key=120 where scope='storyboard_review'`;
   });
+  await test("0109 C-0: tokenhash, engangskode, enhetsflyt, rotasjon, tilbaketrekking, RLS og konfliktvalg", async () => {
+    const h=(c:string)=>c.repeat(64).slice(0,64), ch="E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM";
+    await as("authenticated",ALICE,tx=>tx`select public.connector_approve_code(${g7p},'ptg.photoshop','http://127.0.0.1:7777/cb',${ch},array['project:read','transfers:write'],${h('1')})`);
+    await expectError(as("authenticated",CAROL,tx=>tx`select public.connector_approve_code(${g7p},'ptg.photoshop','http://127.0.0.1:7777/cb',${ch},array['project:read'],${h('2')})`),'42501');
+    await expectError(as("anon",ALICE,tx=>tx`select public.connector_consume_code(${h('1')})`),'42501');
+    await expectError(as("authenticated",ALICE,tx=>tx`select public.connector_consume_code(${h('1')})`),'42501');
+    const first=(await as("service_role",ALICE,tx=>tx`select public.connector_consume_code(${h('1')}) v`))[0]?.['v'];
+    assert(first?.projectId===g7p,'code not consumed');
+    assert((await as("service_role",ALICE,tx=>tx`select public.connector_consume_code(${h('1')}) v`))[0]?.['v']===null,'code reused');
+    const sid=(await sql`insert into public.connector_sessions(project_id,user_id,client_id,scopes,access_hash,refresh_hash,access_expires_at,refresh_expires_at) values(${g7p},${ALICE},'ptg.photoshop',array['project:read'],${h('a')},${h('b')},now()+interval '15 minutes',now()+interval '30 days') returning id`)[0]?.['id'];
+    await expectError(as("authenticated",ALICE,tx=>tx`select access_hash from public.connector_sessions where id=${sid}`),'42501');
+    assert((await as("authenticated",ALICE,tx=>tx`select id from public.connector_sessions where id=${sid}`)).length===1,'owner cannot list own session');
+    assert((await as("authenticated",BOB,tx=>tx`select id from public.connector_sessions where id=${sid}`)).length===0,'other user sees session');
+    assert((await as("service_role",ALICE,tx=>tx`select public.connector_session_by_access(${h('a')}) v`))[0]?.['v']?.id===sid,'lookup failed');
+    const rot=(await as("service_role",ALICE,tx=>tx`select public.connector_rotate_refresh(${h('b')},${h('c')},${h('d')},now()+interval '15 minutes',now()+interval '30 days') v`))[0]?.['v'];
+    assert(rot?.id===sid,'rotation failed');
+    assert((await as("service_role",ALICE,tx=>tx`select public.connector_rotate_refresh(${h('b')},${h('e')},${h('f')},now(),now()) v`))[0]?.['v']===null,'refresh reuse accepted');
+    assert((await sql`select revoked_at from public.connector_sessions where id=${sid}`)[0]?.['revoked_at']!==null,'reuse did not revoke');
+    await sql`update public.connector_sessions set revoked_at=null where id=${sid}`;
+    await expectError(as("authenticated",BOB,tx=>tx`select public.connector_revoke_session(${sid})`),'42501');
+    await as("authenticated",ALICE,tx=>tx`select public.connector_revoke_session(${sid})`);
+    assert((await sql`select revoked_at from public.connector_sessions where id=${sid}`)[0]?.['revoked_at']!==null,'revoke failed');
+    await as("service_role",ALICE,tx=>tx`select public.connector_create_device(${h('7')},'BCDF-GHJK','ptg.cli',array['project:read'],now()+interval '10 minutes')`);
+    assert((await as("service_role",ALICE,tx=>tx`select public.connector_poll_device(${h('7')}) v`))[0]?.['v']?.status==='pending','device not pending');
+    assert((await as("authenticated",ALICE,tx=>tx`select public.connector_device_lookup('BCDF-GHJK') v`))[0]?.['v']?.client_id==='ptg.cli','device lookup');
+    await as("authenticated",ALICE,tx=>tx`select public.connector_approve_device('BCDF-GHJK',${g7p},true)`);
+    assert((await as("service_role",ALICE,tx=>tx`select public.connector_poll_device(${h('7')}) v`))[0]?.['v']?.status==='approved','device not approved');
+    assert((await as("service_role",ALICE,tx=>tx`select public.connector_poll_device(${h('7')}) v`))[0]?.['v']===null,'device code reused');
+    await as("service_role",ALICE,tx=>tx`select public.connector_create_device(${h('8')},'BCDF-GHJL','ptg.cli',array['project:read'],now()-interval '1 second')`);
+    assert((await as("service_role",ALICE,tx=>tx`select public.connector_poll_device(${h('8')}) v`))[0]?.['v']?.status==='expired','expired device');
+    const tr=newId();
+    await sql`insert into public.connector_transfers(id,project_id,sender,idempotency_key,fingerprint,file_name,byte_size,sha256,asset_id,variant_id) values(${tr},${g7p},${ALICE},${'k'.repeat(20)},'f','a.png',10,${h('9')},${newId()},${newId()})`;
+    await expectError(sql`insert into public.connector_transfers(id,project_id,sender,idempotency_key,fingerprint,file_name,byte_size,sha256,asset_id,variant_id) values(${newId()},${g7p},${ALICE},${'k'.repeat(20)},'f','a.png',10,${h('9')},${newId()},${newId()})`,'23505');
+    assert((await as("authenticated",CAROL,tx=>tx`select id from public.connector_transfers where id=${tr}`)).length===0,'nonmember sees transfer');
+    for(const choice of ['keep_both','choose_current','reject']){
+      const cid=(await sql`insert into public.connector_conflicts(project_id,transfer_id,variant_id,incoming_version_id) values(${g7p},${tr},${newId()},${newId()}) returning id`)[0]?.['id'];
+      await expectError(as("authenticated",CAROL,tx=>tx`select public.connector_resolve_conflict(${cid},${choice},1)`),'42501');
+      await as("authenticated",ALICE,tx=>tx`select public.connector_resolve_conflict(${cid},${choice},1)`);
+      assert((await sql`select choice from public.connector_conflicts where id=${cid}`)[0]?.['choice']===choice,'choice not stored');
+      await expectError(as("authenticated",ALICE,tx=>tx`select public.connector_resolve_conflict(${cid},${choice},1)`),'40001');
+    }
+    const ci=(await sql`insert into public.connector_conflicts(project_id,transfer_id,variant_id,incoming_version_id) values(${g7p},${tr},${newId()},${newId()}) returning id`)[0]?.['id'];
+    await expectError(as("authenticated",ALICE,tx=>tx`select public.connector_resolve_conflict(${ci},'choose_incoming',1)`),'P0001');
+    await sql`update private.rate_limit_rules set per_key=1 where scope='connector_approve'`;
+    await sql`delete from private.rate_limit_hits where scope='connector_approve'`;
+    await as("authenticated",ALICE,tx=>tx`select public.connector_approve_code(${g7p},'ptg.photoshop','http://127.0.0.1:7777/cb',${ch},array['project:read'],${h('3')})`);
+    await expectError(as("authenticated",ALICE,tx=>tx`select public.connector_approve_code(${g7p},'ptg.photoshop','http://127.0.0.1:7777/cb',${ch},array['project:read'],${h('4')})`),'PTG15');
+    await sql`update private.rate_limit_rules set per_key=60 where scope='connector_approve'`;
+  });
   await test("alle SECURITY DEFINER-funksjoner i public/private har search_path=''", async () => {
     const rows = await sql`
       select n.nspname as ns, p.proname as name

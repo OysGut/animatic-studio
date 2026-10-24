@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import { CostReportView } from "./CostReportView";
 import { RegionSettings } from "./RegionCard";
 import { WorkspacesCard } from "@/app/workspaces/WorkspacesCard";
+import { ConnectorsCard } from "./ConnectorsCard";
 import { MY_ACCOUNT_KEY, PrivacyLink, useMyAccount } from "./use-account";
 import { t } from "@/core/i18n/keyed";
 import { useSession } from "@/app/auth/use-session";
@@ -233,6 +234,7 @@ function AccountPageForUser({ email, userId }: { email: string; userId?: string 
       </Card>
 
       {userId ? <WorkspacesCard userId={userId} /> : null}
+      <ConnectorsCard />
 
       <Card title={t("app-account-account-page.account-page.title.2cb4e1640f71")}>
         <p className="text-[13px] text-text-secondary">
