@@ -179,7 +179,8 @@ export function Gallery({
     setSelected(id);
     const panel = state.compositions[id];
     if (!panel?.occurrenceId) return;
-    const p = panelPosition(state, panel.occurrenceId, id, null);
+    const saved = currentPosition(projectId);
+    const p = panelPosition(state, panel.occurrenceId, id, null, saved?.panelId === id ? saved.timeMs ?? 0 : 0);
     if (p) rememberPosition(projectId, p);
   }, [projectId, state]);
   const followPanel = useCallback((id: string) => { focusPending.current = true; setSelected(id); }, []);
@@ -568,7 +569,7 @@ export function Gallery({
                       onDrop={onDropPanel(p, scene)}
                       onClick={() => selectPanel(p.panel.id)}
                       onDoubleClick={() => open(p)}
-                      onFocus={() => setSelected(p.panel.id)}
+                      onFocus={() => selectPanel(p.panel.id)}
                       aria-label={tk("sb2.panel-label", { number: String(p.index + 1), scene: scene.number || scene.heading })}
                       className={
                         "flex shrink-0 flex-col overflow-hidden rounded border bg-surface-1 text-[12px] outline-none focus-visible:outline-2 focus-visible:outline-focus-ring " +

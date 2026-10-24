@@ -3,6 +3,7 @@
 import { describe, expect, it } from "vitest";
 import {
   BACKUP_FORMAT,
+  assertSelfContained,
   backupFiles,
   backupIdMap,
   backupReadme,
@@ -95,6 +96,11 @@ function freshProject(): ProjectState {
 const mainOf = (s: ProjectState) => Object.values(s.productions).find((p) => p.kind === "main")!;
 
 describe("sikkerhetskopi", () => {
+  it("SB-4 avviser midlertidig panellyd som mangler i sikkerhetskopien", () => {
+    const b=backup();
+    b.tables["compositions"]=[...(b.tables["compositions"]??[]),{id:"panel",storyboard:{tempAudio:{assetId:"foreign",versionId:"missing"}}}];
+    expect(()=>assertSelfContained(b,new Map([["panel","new-panel"]]))).toThrow();
+  });
   it("tar med alle prosjektdata, manusversjoner, historikk og en liste over alle filer", () => {
     const b = backup();
     expect(b.format).toBe(BACKUP_FORMAT);
