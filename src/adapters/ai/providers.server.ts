@@ -44,7 +44,7 @@ export function aspectOf(r: Pick<ImageRequest, "aspect" | "purpose">): ImageAspe
 
 /** fal sine faste størrelser (Seedream, Qwen). */
 function falImageSize(a: ImageAspect): string {
-  return a === "2:3"
+  return a === "2:3" || a === "3:4"
     ? "portrait_4_3"
     : a === "1:1"
       ? "square_hd"

@@ -395,6 +395,7 @@ export const PROVIDERS: readonly ProviderInfo[] = [
       {
         id: "fal-ai/flux-pro/kontext",
         label: "FLUX Kontext Pro",
+        panelAi: { aspects: ["1:1", "2:3", "3:2", "16:9", "9:16"] },
         capability: "image",
         priceUsd: 0.04,
         priceUnit: "image",
@@ -410,6 +411,7 @@ export const PROVIDERS: readonly ProviderInfo[] = [
       {
         id: "fal-ai/bytedance/seedream/v4.5",
         label: "Seedream 4.5 (ByteDance)",
+        panelAi: { aspects: ["1:1", "3:4", "4:3", "16:9"] },
         capability: "image",
         priceUsd: 0.04,
         priceUnit: "image",
@@ -430,6 +432,7 @@ export const PROVIDERS: readonly ProviderInfo[] = [
       {
         id: "fal-ai/qwen-image-edit-plus",
         label: "Qwen-Image-Edit (Alibaba)",
+        panelAi: { aspects: ["1:1", "3:4", "4:3", "16:9"] },
         capability: "image",
         // $0,03 per megapiksel; bildene er ca. 1 megapiksel
         priceUsd: 0.03,
