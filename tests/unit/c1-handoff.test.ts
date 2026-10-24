@@ -92,7 +92,7 @@ function project() {
   const assetId = tid<"asset">(), variantId = tid<"asset_variant">(), v1 = tid<"asset_version">();
   s = mustApply(s, { type: "CreateAssets", assets: [{ assetId, fields: { kind: "character", name: "Kite", names: [], description: "", category: "", tags: [] } }] });
   s = mustApply(s, { type: "CreateAssetVariant", variantId, assetId, fields: { name: "Main", style: "illustrated", appearance: "" } });
-  s = mustApply(s, { type: "AddAssetVersion", versionId: v1, variantId, media: { path: "p/a.png", mimeType: "image/png", width: 1, height: 1, byteSize: 1, sha256: "a".repeat(64) }, note: "" });
+  s = mustApply(s, { type: "AddAssetVersion", versionId: v1, variantId, media: { path: `${s.project.id}/${assetId}/${v1}/a.png`, mimeType: "image/png", width: 1, height: 1, byteSize: 1, sha256: "a".repeat(64) }, note: "" });
   s = mustApply(s, { type: "ApproveAssetVersion", variantId, versionId: v1 });
   return { s, assetId, variantId, v1 };
 }
