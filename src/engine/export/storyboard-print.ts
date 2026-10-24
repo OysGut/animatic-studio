@@ -60,7 +60,9 @@ export interface PrintExportInput {
 /** Loads only one panel/scene's images at a time; shared compositor includes SB-8 strokes. */
 export async function printImageRenderer(input: PrintExportInput) {
   const adapted = exportImageSource(input.state, input.clips, input.source);
-  const layers = Object.fromEntries(Object.entries(adapted.state.layers).map(([id, l]) => [id,
+  // The film adapter hides camera marks after converting them to camera motion. Print keeps instructions.
+  const sourceLayers = input.source === "storyboard" ? input.state.layers : adapted.state.layers;
+  const layers = Object.fromEntries(Object.entries(sourceLayers).map(([id, l]) => [id,
     l.kind in input.options.layers && !input.options.layers[l.kind as keyof PrintOptions["layers"]] ? { ...l, visible: false } : l]));
   const state = { ...adapted.state, layers };
   const videoPaths = [...new Set(adapted.clips.flatMap(c => c.parts.flatMap(p => p.take?.mediaRef ? [p.take.mediaRef] : [])))];
