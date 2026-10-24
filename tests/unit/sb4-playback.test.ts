@@ -148,8 +148,9 @@ describe("SB-4 storyboardtidslinjen", () => {
     expect(shotAtFrame(shots, 0)!.shot.panel.id).toBe(panels[0]);
     expect(shotAtFrame(shots, 60)!.shot.panel.id).toBe(panels[1]);
     expect(shotAtFrame(shots, 60)!.localFrame).toBe(10);
-    // Overlappen: de 10 siste bildene av panel 2 hører fortsatt til panel 2
-    expect(shotAtFrame(shots, 120)!.shot.panel.id).toBe(panels[1]);
+    // Overlappen (115–124): det innkommende panelet er aktivt, som i drawFilmFrame
+    expect(shotAtFrame(shots, 114)!.shot.panel.id).toBe(panels[1]);
+    expect(shotAtFrame(shots, 120)!.shot.panel.id).toBe(panels[2]);
     expect(shotAtFrame(shots, 125)!.shot.panel.id).toBe(panels[2]);
     // Utenfor slutten: siste bilde i siste panel
     expect(shotAtFrame(shots, 9999)!.localFrame).toBe(24);
