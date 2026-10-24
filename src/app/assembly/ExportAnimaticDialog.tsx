@@ -46,10 +46,15 @@ import { exportQueue } from "./export-queue";
 import { QualityProfilePicker, useQualityProfile } from "@/app/ai/QualityProfilePicker";
 import { AlphaExportDialog } from "./AlphaExportDialog";
 import { ShotlistExport } from "./ShotlistExport";
-import { t } from "@/core/i18n/keyed";
+import { t, tLocalized } from "@/core/i18n/keyed";
 
 type Scope = ExportScope;
 type Size = "full" | "half";
+const IMAGE_SOURCE_KEY = tLocalized<ExportImageSource>({
+  animation: "sb4.export.source-animation",
+  film: "sb4.export.source-film",
+  storyboard: "sb4.export.source-storyboard",
+});
 
 interface Check {
   readonly level: "ok" | "info" | "warn";
@@ -827,7 +832,7 @@ export function ExportAnimaticDialog({
                   className="mt-1"
                   data-testid={`export-source-${src}`}
                 />
-                <span>{t(`sb4.export.source-${src}`)}</span>
+                <span>{IMAGE_SOURCE_KEY[src]}</span>
               </label>
             ))}
           </fieldset>
