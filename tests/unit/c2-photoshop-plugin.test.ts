@@ -51,6 +51,9 @@ function fakeHost(fetchFn: typeof fetch, language = "nb-NO") {
         saveAs: { async psd(target, options, asCopy) {
           calls.saveOptions.push({ options, asCopy });
           await target.write(Uint8Array.from([...new TextEncoder().encode("8BPS"), 0, 1, ...new TextEncoder().encode(doc.layers.join("|"))]).buffer, { format: BINARY });
+        }, async png(target, options, asCopy) {
+          calls.saveOptions.push({ png: options, asCopy });
+          await target.write(Uint8Array.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, ...new TextEncoder().encode("flat:" + doc.layers.join("|"))]).buffer, { format: BINARY });
         } },
       };
       docs.push(doc); app.activeDocument = doc;
@@ -164,7 +167,6 @@ describe("C-2 tekster", () => {
   });
 });
 
-(globalThis as any).__C2DBG = 1;
 describe("C-2 flyt mot falsk server og falsk Photoshop", () => {
   it("PKCE via nettleseren: tokens bare i secureStorage, panelet viser prosjekt, ressurser og notater", async () => {
     const h = harness();
@@ -207,7 +209,7 @@ describe("C-2 flyt mot falsk server og falsk Photoshop", () => {
     for (const [k, v] of h.mem.files) if (k.includes(h.v1)) h.mem.files.set(k, Uint8Array.from(v, (b, i) => (i === 50 ? b ^ 1 : b)));
     await expect(h.sdk.download(h.projectId, h.assetId, h.v1)).rejects.toMatchObject({ code: "checksum_mismatch" });
   });
-  it("«Send tilbake»: PSD med lag, alfa og fargeprofil som ny kandidat med revisjonsgrunnlag; ingenting tas i bruk", async () => {
+  it("«Send tilbake»: lagrer PSD med lag, alfa og fargeprofil; prosjektet avviser PSD som versjon før opplasting, så en flat PNG blir kandidat med revisjonsgrunnlag", async () => {
     const h = harness();
     await signIn(h);
     await h.plugin.selectAsset(h.assetId);
@@ -215,22 +217,31 @@ describe("C-2 flyt mot falsk server og falsk Photoshop", () => {
     h.fake.app.activeDocument!.layers.push("Linjer", "Farge"); // brukeren endrer lag
     const before = Object.keys(h.mem.state.assetVersions).length;
     await h.plugin.sendBack();
-    expect(h.plugin.state.message?.text).toBe(tr("nb", "sent"));
-    expect(h.fake.calls.saveOptions.at(-1)).toEqual({ options: { embedColorProfile: true, alphaChannels: true, layers: true, maximizeCompatibility: true }, asCopy: true });
-    expect(h.fake.calls.modal).toContain(tr("nb", "sendBack"));
-    const t = [...h.mem.transfers.values()].at(-1)!;
+    expect(h.plugin.state.message?.text).toBe(tr("nb", "sentFlat"));
+    expect(h.fake.calls.saveOptions[0]).toEqual({ options: { embedColorProfile: true, alphaChannels: true, layers: true, maximizeCompatibility: true }, asCopy: true });
+    expect(h.fake.calls.saveOptions[1]).toEqual({ png: { compression: 6, interlaced: false }, asCopy: true });
+    expect(h.fake.calls.modal.filter(c => c === tr("nb", "sendBack"))).toHaveLength(2);
+    expect(h.mem.transfers.size).toBe(1); // PSD-reservasjonen ble avvist uten å lage overføring
+    const t = [...h.mem.transfers.values()][0]!;
     expect(t.baseVersionId).toBe(h.v1);
-    expect(t.fileName).toMatch(/\.psd$/);
+    expect(t.fileName).toMatch(/\.png$/);
     const v = h.mem.state.assetVersions[t.candidateVersionId as never]!;
-    expect(v.mimeType).toBe("image/vnd.adobe.photoshop");
-    expect(new TextDecoder().decode(h.mem.files.get(v.mediaPath)!)).toContain("Background|Linjer|Farge");
+    expect(v.mimeType).toBe("image/png");
+    expect(new TextDecoder().decode(h.mem.files.get(v.mediaPath)!)).toContain("flat:Background|Linjer|Farge");
     expect(Object.keys(h.mem.state.assetVersions)).toHaveLength(before + 1);
-    expect(h.mem.state.assetVariants[h.variantId]!.approvedVersionId).toBe(h.v1);
+    expect(h.mem.state.assetVariants[h.variantId]!.approvedVersionId).toBe(h.v1); // ikke tatt i bruk
     expect(h.plugin.state.conflict).toBeNull();
-    expect(h.plugin.state.message?.text).toBe(tr("nb", "sent"));
+    expect(h.fake.app.activeDocument!.layers).toEqual(["Background", "Linjer", "Farge"]); // lagene er urørt
     // Samme fil igjen gjenopptar samme overføring (idempotent), ingen ny versjon.
     await h.plugin.sendBack();
     expect(Object.keys(h.mem.state.assetVersions)).toHaveLength(before + 1);
+  });
+  it("API-et avviser PSD som versjonstype ved reservasjon (415), før noen byte sendes", async () => {
+    const h = harness();
+    await signIn(h);
+    const psd = Uint8Array.from([...new TextEncoder().encode("8BPS"), 0, 1, 2, 3]);
+    await expect(h.sdk.upload(h.projectId, { name: "d.psd", bytes: psd }, { assetId: h.assetId, variantId: h.variantId, baseVersionId: h.v1 }, "p".repeat(20))).rejects.toMatchObject({ status: 415, code: "unsupported_version_type" });
+    expect(h.mem.transfers.size).toBe(0);
   });
   it("uten koblet dokument sendes ingenting", async () => {
     const h = harness();
