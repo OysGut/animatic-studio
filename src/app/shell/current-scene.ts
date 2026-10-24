@@ -68,7 +68,7 @@ export function rememberScene(projectId: string, occurrenceId: string | null | u
   if (typeof window !== "undefined") {
     const channel = bus(projectId);
     const old = channel.get();
-    channel.publish(occurrenceId, sceneId, old?.occurrenceId === occurrenceId ? { productionId: old.productionId, panelId: old.panelId, blockId: old.blockId, timeMs: old.timeMs } : {});
+    channel.publish(occurrenceId, sceneId, old?.occurrenceId === occurrenceId ? { productionId: old.productionId ?? null, panelId: old.panelId ?? null, blockId: old.blockId ?? null, timeMs: old.timeMs ?? 0 } : {});
   }
 }
 
