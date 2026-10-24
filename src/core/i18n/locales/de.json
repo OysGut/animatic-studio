@@ -57736,5 +57736,185 @@
     "text": "Mit Mobilgerät aufnehmen",
     "sourceHash": "462511f986141e10563f47818457d1f1f8b95d8cb21f67d9d28442a47abb8abf",
     "review": "machine"
+  },
+  "sb5.reference-title": {
+    "text": "Storyboard",
+    "sourceHash": "815c898f681324d6b377c380c0b224b82d227dc0e2f76a876f70080892191e5e",
+    "review": "machine"
+  },
+  "sb5.untitled-panel": {
+    "text": "Panel ohne Namen",
+    "sourceHash": "c4984c4bd443eec38c1052ad1d5cb209dc897cac29846a216faeb173cac03a04",
+    "review": "machine"
+  },
+  "sb5.read-only": {
+    "text": "Schreibgeschützt",
+    "sourceHash": "71dcff406b59d8b0a96343a4dc68fdd5f36de659f07cf687762b7f89740e5d0c",
+    "review": "machine"
+  },
+  "sb5.edit-storyboard": {
+    "text": "Storyboard bearbeiten",
+    "sourceHash": "f3c7f671f97198869ee792fe7eea60d188935634248d37735be0964f31f5446b",
+    "review": "machine"
+  },
+  "sb5.back-to-scene": {
+    "text": "Zurück zur Szene",
+    "sourceHash": "55354a1b60d51c281563f7ca2a825dc1c5665b94fa3cee95394abc97e14c81da",
+    "review": "machine"
+  },
+  "sb5.create-setup": {
+    "text": "Szenenaufbau aus Storyboard erstellen",
+    "sourceHash": "8d8c8e91fad980c486636a9accfa3a0d078fd7a2e932d533df5938afd24a2da6",
+    "review": "machine"
+  },
+  "sb5.open-large": {
+    "text": "Vergrößern",
+    "sourceHash": "98d74209f279652f0e3c5e07d5893b7999259994116a88ac3f37624461dfb27f",
+    "review": "machine"
+  },
+  "sb5.open-popup": {
+    "text": "In eigenem Fenster öffnen",
+    "sourceHash": "1fa4da4a4b1ebc69894ff1f9e23eaa59901d1d4672ba92720e8795f74808914a",
+    "review": "machine"
+  },
+  "sb5.popup-blocked": {
+    "text": "Der Browser hat das Popup-Fenster blockiert.",
+    "sourceHash": "feb5daa6aa54f2ab1c8daf0b524e1f821d429d81d3d46044d9362e4cbdbcfd05",
+    "review": "machine"
+  },
+  "sb5.open-link": {
+    "text": "Trotzdem öffnen",
+    "sourceHash": "f4dbb75ba696f205e9f4da55e6ffa4000c0d75637d4e1cb8f05a8852169c204e",
+    "review": "machine"
+  },
+  "sb5.no-panels": {
+    "text": "Noch keine Storyboard-Panels in dieser Szene.",
+    "sourceHash": "836fd97b4bde85984165ed0a4b057dd3cad5519ea9d3f1b1f9c4a14ead42ea42",
+    "review": "machine"
+  },
+  "sb5.figures": {
+    "text": "{count} Figuren",
+    "sourceHash": "c298662adf7e10a1d6c17bee187dc79c1a61f6eefed0641c631eefdf64e45e26",
+    "review": "machine"
+  },
+  "sb5.notes": {
+    "text": "{count} Notizen",
+    "sourceHash": "3fb0b5d9d97fa5bf0c1cc5c31a987746573343e947e83839434bf81116b89be6",
+    "review": "machine"
+  },
+  "sb5.arrows": {
+    "text": "{count} Pfeile",
+    "sourceHash": "90caa83bc7e1c3db835bc0c5255fdaa401dd3e9f61e8e5c37f89bc0a0f87b1c7",
+    "review": "machine"
+  },
+  "sb5.camera-mark": {
+    "text": "Kameramarke",
+    "sourceHash": "1012cf412fcaac614e7bc72c99cb5328ac91145360a26f07d180d3513cce9d65",
+    "review": "machine"
+  },
+  "sb5.dialogue": {
+    "text": "{count} Dialogzeilen",
+    "sourceHash": "15280395479af93406b0df9eed3aa34504b0a323a56f6941955e0e37279a0178",
+    "review": "machine"
+  },
+  "sb5.comments": {
+    "text": "{count} Kommentare",
+    "sourceHash": "5ea580d1402da40d7eb506918119bfcefe7bcde0023209abce3aebf076f41452",
+    "review": "machine"
+  },
+  "sb5.setup-title": {
+    "text": "Szenenaufbau aus Storyboard erstellen",
+    "sourceHash": "8d8c8e91fad980c486636a9accfa3a0d078fd7a2e932d533df5938afd24a2da6",
+    "review": "machine"
+  },
+  "sb5.setup-description": {
+    "text": "Vorschau, bevor etwas erstellt wird. Alles lässt sich als ein Befehl rückgängig machen.",
+    "sourceHash": "07d29c60eb4ec9af79eb8cd81c47b7db85aa05bf13eed6ab3e1f9432bdc38e72",
+    "review": "machine"
+  },
+  "sb5.setup-choose-panel": {
+    "text": "Wählen Sie, welches Panel als Ausgangspunkt dient",
+    "sourceHash": "267a08ca922a3f8de584dc975cc36a3e93ada2ab1b850f056dfa273d4b14821c",
+    "review": "machine"
+  },
+  "sb5.setup-has-content": {
+    "text": "Die Szene hat bereits Inhalt. Der vorhandene Inhalt bleibt erhalten – nichts wird überschrieben.",
+    "sourceHash": "2addaa68161de37aefc1fd491bb97e3da0fa7db4ebee43a8e87fc8b85ac8c9db",
+    "review": "machine"
+  },
+  "sb5.setup-new-draft": {
+    "text": "Neuer Entwurf (neue Ebenengruppe oben)",
+    "sourceHash": "fe4d74ed7fd9b2a3f5925a88f32a378b48f0f35af9da6b9b3ffd7496041c4ece",
+    "review": "machine"
+  },
+  "sb5.setup-preview-copied": {
+    "text": "{count} Ebenen werden mit Asset, Position, Skalierung, Drehung und Reihenfolge kopiert.",
+    "sourceHash": "364c71ee1403ae83826fd10d9e3b33bc21072bd18b2c67a58686bc58e0186b67",
+    "review": "machine"
+  },
+  "sb5.setup-preview-skipped": {
+    "text": "{notes} Notizen und {arrows} Pfeile werden nicht kopiert – sie bleiben im Referenzpanel sichtbar.",
+    "sourceHash": "6e42095e568550539abb29ec8026f6446ec2ebce8fe28070ebd27621fab2325d",
+    "review": "machine"
+  },
+  "sb5.setup-preview-camera": {
+    "text": "Die Kameramarke wird zum Ausgangspunkt der Kamera.",
+    "sourceHash": "30cee9ff23b050ff8a0acb5aea1a4a24cfb66c5b2d960ca1aaa7d40f1c4daa7e",
+    "review": "machine"
+  },
+  "sb5.setup-preview-background": {
+    "text": "Die Hintergrundfarbe wird kopiert.",
+    "sourceHash": "9f76eb94461764a523b607732d71577d0b54d8b215750943ba3fb049fc5ed546",
+    "review": "machine"
+  },
+  "sb5.setup-preview-layers": {
+    "text": "Die Ebenen werden oben als neue Ebenengruppe hinzugefügt; vorhandene Ebenen, Hintergrund und Kamera bleiben unverändert.",
+    "sourceHash": "1aeae8c4778d95811cf95cce4a77ccc3c861d9de879fe71a46f49ab43cc48181",
+    "review": "machine"
+  },
+  "sb5.setup-cancel": {
+    "text": "Abbrechen",
+    "sourceHash": "a69ea29ae854ab93e4967572b360e5a50e1c854ae20c4ae9b47ee3b1368bab86",
+    "review": "machine"
+  },
+  "sb5.setup-confirm": {
+    "text": "Erstellen",
+    "sourceHash": "7a39398b67812f2934f839760b6757605c06664af13d973f63ac77b015345208",
+    "review": "machine"
+  },
+  "sb5.setup-failed": {
+    "text": "Der Szenenaufbau konnte nicht erstellt werden.",
+    "sourceHash": "87bc96b59a5517de5bc6d6b0abb23f304100c1e9b886a03c60893fbf77234625",
+    "review": "machine"
+  },
+  "sb5.undo-setup": {
+    "text": "Szenenaufbau aus Storyboard erstellen",
+    "sourceHash": "8d8c8e91fad980c486636a9accfa3a0d078fd7a2e932d533df5938afd24a2da6",
+    "review": "machine"
+  },
+  "sb5.route.title": {
+    "text": "Storyboard-Referenz",
+    "sourceHash": "1a2c560124468a79bb8a863d5f3b38ed5ed2d6b108c83ab92b239bdb98359974",
+    "review": "machine"
+  },
+  "sb5.route.description": {
+    "text": "Die Storyboard-Panels der Szene in einem eigenen Fenster, schreibgeschützt.",
+    "sourceHash": "8a870dfdb6e31a37eaacb7d3d1efe71bfb7041b3ed845e2a9b23ded52801145e",
+    "review": "machine"
+  },
+  "sb5.loading": {
+    "text": "Wird geladen …",
+    "sourceHash": "9afa6b4550a416f8b1bf9a4d708a82a427e1f6ff70e25ef9d52769b406cf65ef",
+    "review": "machine"
+  },
+  "sb5.load-error": {
+    "text": "Das Projekt konnte nicht geladen werden.",
+    "sourceHash": "7d8887e78fa57c566e6f6ac3fcb0960ea11f8311e77ae3fd6af811409d2d6088",
+    "review": "machine"
+  },
+  "sb5.no-scene": {
+    "text": "Die Szene existiert nicht.",
+    "sourceHash": "8eaf3b74fdec8f2c680ad380a4dbef546022ea89dff78588e886cf1df9cf2ff3",
+    "review": "machine"
   }
 }

@@ -76868,5 +76868,113 @@
   },
   "sb4.mobile-audio": {
     "text": "Ta opp med mobilen"
+  },
+  "sb5.reference-title": {
+    "text": "Storyboard"
+  },
+  "sb5.untitled-panel": {
+    "text": "Panel uten navn"
+  },
+  "sb5.read-only": {
+    "text": "Låst for redigering"
+  },
+  "sb5.edit-storyboard": {
+    "text": "Rediger storyboard"
+  },
+  "sb5.back-to-scene": {
+    "text": "Tilbake til scenen"
+  },
+  "sb5.create-setup": {
+    "text": "Opprett sceneoppsett fra storyboard"
+  },
+  "sb5.open-large": {
+    "text": "Forstørr"
+  },
+  "sb5.open-popup": {
+    "text": "Åpne i eget vindu"
+  },
+  "sb5.popup-blocked": {
+    "text": "Nettleseren blokkerte popup-vinduet."
+  },
+  "sb5.open-link": {
+    "text": "Åpne likevel"
+  },
+  "sb5.no-panels": {
+    "text": "Ingen storyboardpaneler i denne scenen ennå."
+  },
+  "sb5.figures": {
+    "text": "{count} figurer"
+  },
+  "sb5.notes": {
+    "text": "{count} lapper"
+  },
+  "sb5.arrows": {
+    "text": "{count} piler"
+  },
+  "sb5.camera-mark": {
+    "text": "Kameramerke"
+  },
+  "sb5.dialogue": {
+    "text": "{count} replikker"
+  },
+  "sb5.comments": {
+    "text": "{count} kommentarer"
+  },
+  "sb5.setup-title": {
+    "text": "Opprett sceneoppsett fra storyboard"
+  },
+  "sb5.setup-description": {
+    "text": "Forhåndsvisning før noe opprettes. Alt kan angres som én kommando."
+  },
+  "sb5.setup-choose-panel": {
+    "text": "Velg hvilket panel som skal være utgangspunkt"
+  },
+  "sb5.setup-has-content": {
+    "text": "Scenen har innhold fra før. Det eksisterende bevares – ingenting overskrives."
+  },
+  "sb5.setup-new-draft": {
+    "text": "Nytt utkast (nytt lagsett øverst)"
+  },
+  "sb5.setup-preview-copied": {
+    "text": "{count} lag kopieres med ressurs, plassering, skala, rotasjon og rekkefølge."
+  },
+  "sb5.setup-preview-skipped": {
+    "text": "{notes} lapper og {arrows} piler følger ikke med – de vises i referansepanelet."
+  },
+  "sb5.setup-preview-camera": {
+    "text": "Kameramerket blir kameraets utgangspunkt."
+  },
+  "sb5.setup-preview-background": {
+    "text": "Bakgrunnsfargen kopieres."
+  },
+  "sb5.setup-preview-layers": {
+    "text": "Lagene legges øverst som et nytt lagsett; eksisterende lag, bakgrunn og kamera røres ikke."
+  },
+  "sb5.setup-cancel": {
+    "text": "Avbryt"
+  },
+  "sb5.setup-confirm": {
+    "text": "Opprett"
+  },
+  "sb5.setup-failed": {
+    "text": "Kunne ikke opprette sceneoppsettet."
+  },
+  "sb5.undo-setup": {
+    "text": "Opprett sceneoppsett fra storyboard"
+  },
+  "sb5.route.title": {
+    "text": "Storyboard-referanse"
+  },
+  "sb5.route.description": {
+    "text": "Scenens storyboardpaneler i eget vindu, låst for redigering."
+  },
+  "sb5.loading": {
+    "text": "Laster …"
+  },
+  "sb5.load-error": {
+    "text": "Kunne ikke laste prosjektet."
+  },
+  "sb5.no-scene": {
+    "text": "Scenen finnes ikke."
   }
 }
