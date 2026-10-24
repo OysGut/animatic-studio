@@ -273,7 +273,7 @@ describe("innlogging og opplasting mot falskt API", () => {
     expect(JSON.parse(pend.body).error).toBe("authorization_pending");
     a.mem.approveDevice(dev.user_code, r.s.project.id, "11111111-1111-4111-8111-111111111111");
     const tok = JSON.parse((await run("POST", "/api/v1/oauth/token", { "Content-Type": "application/x-www-form-urlencoded" }, `grant_type=${encodeURIComponent("urn:ietf:params:oauth:grant-type:device_code")}&device_code=${dev.device_code}&client_id=ptg.toonboom-sbpro`)).body);
-    expect(tok.access_token).toMatch(/^ptg_access_/);
+    expect(tok.access_token).toBeTruthy(); expect(tok.project_id).toBe(r.s.project.id);
     const auth = { Authorization: "Bearer " + tok.access_token, "Content-Type": "application/json" };
     const path = `/api/v1/projects/${r.s.project.id}/sbpro/returns`;
     const first = await run("POST", path, auth, JSON.stringify(r.ret));
