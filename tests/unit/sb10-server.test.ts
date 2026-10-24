@@ -1,0 +1,19 @@
+// @vitest-environment node
+import { describe,it,expect,vi } from 'vitest';
+const mocks=vi.hoisted(()=>({rpc:vi.fn(),from:vi.fn(),header:vi.fn(),urls:vi.fn()}));
+vi.mock('@tanstack/react-start',()=>({createServerFn:()=>{let validator=(d:unknown)=>d;const b={middleware:()=>b,inputValidator:(v:typeof validator)=>{validator=v;return b;},handler:(fn:(d:{data:unknown;context:unknown})=>unknown)=>async(input:{data:unknown;context?:unknown})=>fn({data:validator(input.data),context:input.context??{}})};return b;}}));
+vi.mock('@tanstack/react-start/server',()=>({setResponseHeader:mocks.header,getRequestHeader:()=>undefined}));
+vi.mock('@/integrations/supabase/auth-middleware',()=>({requireSupabaseAuth:{}}));
+vi.mock('@/integrations/supabase/client.server',()=>({supabaseAdmin:{rpc:mocks.rpc,from:mocks.from,storage:{from:()=>({createSignedUrls:mocks.urls})}}}));
+import { readReview,postReview } from '@/adapters/review/review.functions';
+import { passwordHash } from '@/adapters/review/crypto.server';
+const token='sr_'+'a'.repeat(43);
+function fakeRow(password_hash:string|null=null){return{id:'share',title:'Review',expires_at:new Date(Date.now()+3600000).toISOString(),password_hash,video_key:'project/review.mp4',fps:24,allow_comments:true,allow_approval:true,manifest:[{key:'p1',label:'One',revision:3,durationFrames:48,startFrame:0,image_key:'project/p1.png',panelId:'private',snapshot:{secret:true}}]};}
+function setup(row:ReturnType<typeof fakeRow>|null){mocks.rpc.mockReset();mocks.rpc.mockImplementation(async(name:string)=>({data:name==='storyboard_review_lookup'?row:null,error:null}));const chain:{[key:string]:unknown}={};for(const k of ['select','eq','order'])chain[k]=()=>chain;chain['then']=(resolve:(d:unknown)=>void)=>resolve({data:[],error:null});mocks.from.mockReturnValue(chain);mocks.urls.mockResolvedValue({data:[{path:'project/review.mp4',signedUrl:'https://test/video'},{path:'project/p1.png',signedUrl:'https://test/image'}],error:null});}
+describe('SB10 server boundaries with fake storage',()=>{
+ it('returns only DTO selection without identities, snapshots or paths',async()=>{setup(fakeRow());const result=await readReview({data:{token}});expect(result.panels).toHaveLength(1);expect(result.panels[0]?.key).toBe('p1');expect(JSON.stringify(result)).not.toContain('private');expect(JSON.stringify(result)).not.toContain('secret');expect(JSON.stringify(result)).not.toContain('project/');expect(mocks.header).toHaveBeenCalledWith('Cache-Control','no-store');});
+ it('rejects unknown, expired or revoked lookup results uniformly',async()=>{setup(null);await expect(readReview({data:{token}})).rejects.toThrow();});
+ it('checks password before signing media or posting feedback',async()=>{setup(fakeRow(await passwordHash('secret')));mocks.urls.mockClear();await expect(readReview({data:{token,password:'wrong'}})).rejects.toThrow();expect(mocks.urls).not.toHaveBeenCalled();const good=await readReview({data:{token,password:'secret'}});expect(good.title).toBe('Review');});
+ it('posts guest feedback without auth and sanitizes before service RPC',async()=>{setup(fakeRow());await postReview({data:{token,password:'',key:'p1',name:'<b>Guest</b>',email:'',text:'<i>Change</i>',decision:'changes',x:.2,y:.5}});expect(mocks.rpc).toHaveBeenCalledWith('storyboard_review_comment',expect.objectContaining({p_name:'Guest',p_text:'Change',p_key:'p1',p_decision:'changes'}));});
+ it('stops at G8 rate limit before any write or signed URL',async()=>{setup(fakeRow());mocks.rpc.mockImplementation(async()=>({data:null,error:{code:'PTG15'}}));await expect(postReview({data:{token,password:'',key:'p1',name:'Guest',email:'',text:'Comment',decision:'none',x:null,y:null}})).rejects.toThrow();expect(mocks.rpc.mock.calls.some(([name])=>name==='storyboard_review_comment')).toBe(false);});
+});
