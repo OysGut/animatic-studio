@@ -47,7 +47,10 @@ async function prepare(d: StoryboardAiRequest, context: { supabase: unknown; use
     if (meta.kind !== "storyboard-structure" || meta.panelId !== panel.id || meta.panelRevision !== panel.revision || meta.basis !== d.basis || JSON.stringify(meta.layers) !== JSON.stringify(layers)) throw Error(t("sb7.stale"));
   }
   if (d.sketchLayerId) { const l = state.layers[d.sketchLayerId]; if (!l || l.removed || l.compositionId !== panel.id || !l.sketch?.strokes.length) throw Error(t("sb7.stale")); }
-  if (d.maskVersionId && (!model?.panelAi?.mask || !state.assetVersions[d.maskVersionId]?.mimeType.startsWith("image/png"))) throw Error(t("sb7.unavailable"));
+  if (d.maskVersionId) {
+    const mask = state.assetVersions[d.maskVersionId], first = input.references[0] ? state.assetVersions[input.references[0].id] : null;
+    if (!model?.panelAi?.mask || !mask || mask.removed || mask.mimeType !== "image/png" || !first || mask.width !== first.width || mask.height !== first.height) throw Error(t("sb7.unavailable"));
+  }
   if (d.sketchVersionId && (!state.assetVersions[d.sketchVersionId] || state.assetVersions[d.sketchVersionId]?.removed || !state.assetVersions[d.sketchVersionId]?.mimeType.startsWith("image/"))) throw Error(t("sb7.unavailable"));
   if (d.references.some(id => !input.references.some(r => r.id === id))) throw Error(t("sb7.unavailable"));
   if (image && model) {
@@ -60,7 +63,7 @@ async function prepare(d: StoryboardAiRequest, context: { supabase: unknown; use
   if (d.action === "between") {
     const second = d.secondPanelId ? state.compositions[d.secondPanelId] : null;
     if (!second || second.removed || second.occurrenceId !== panel.occurrenceId || second.id === panel.id) throw Error(t("sb7.unavailable"));
-    text += `\nEnd panel:\n${buildPanelAiInput(state, second, d).text}`;
+    text += `\nEnd panel:\n${buildPanelAiInput(state, second, { ...d, structureVersionId: null, sketchVersionId: null, references: [] }).text}`;
   }
   const textCost = estimateTextCostUsd(d.textProvider, d.textModel, Math.ceil(text.length / 2), 4000);
   const studyCost = missing.reduce((sum, a) => sum + estimateTextCostUsd(d.textProvider, d.textModel, Math.ceil(factSheetStudy(state, a).text.length / 2), 4000), 0);

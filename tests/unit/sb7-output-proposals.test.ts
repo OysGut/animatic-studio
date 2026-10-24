@@ -1,0 +1,16 @@
+// @vitest-environment node
+import { describe, expect, it } from "vitest";
+import { orderedOccurrences, defaultLayerFields, layersOf, panelDetails, type ProviderModel } from "@/core";
+import { panelOutputPlan, containGeometry, panelStructureFrame } from "@/core/storyboard/ai-output";
+import { planAiPanels } from "@/core/storyboard/ai-proposals";
+import { sceneCoverageText } from "@/core/storyboard/ai";
+import { seedProject, mustApply, tid } from "../helpers/fixtures";
+function setup() { const seed = seedProject(1), o = orderedOccurrences(seed.state, seed.mainId)[0]; if (!o) throw Error("fixture"); const id = tid<"composition">(); const s = mustApply(seed.state, { type: "AddStoryboardPanel", panelId: id, occurrenceId: o.id, variantId: o.variantId, orderKey: "a1" }); const p = s.compositions[id]; if (!p) throw Error("panel"); return { s, p }; }
+describe("SB-7 output and acceptance policy", () => {
+  it("9:16 uses exact native size when supported", () => { const { p } = setup(); const r = panelOutputPlan(p, "9:16", { panelAi: { customSize: true } } as ProviderModel); expect(r.width / r.height).toBe(9 / 16); expect(r.width % 16).toBe(0); expect(r.height % 16).toBe(0); expect(r.adaptation).toBe("native"); });
+  it("2.39 uses nearest supported ratio without removing source pixels", () => { const { p } = setup(); const r = panelOutputPlan(p, "2.39", { panelAi: { aspects: ["1:1", "16:9"] } } as ProviderModel); expect(r.aspect).toBe("16:9"); expect(r.adaptation).toBe("contain"); const box = containGeometry(1600, 900, 2.39); expect(box.width).toBe(2151); expect(box.height).toBe(900); expect(box.x).toBe(275); });
+  it("structure raster excludes shape, text, arrow and note", () => { let { s, p } = setup(); for (const kind of ["shape", "text", "arrow", "note"] as const) s = mustApply(s, { type: "AddLayers", layers: [{ layerId: tid<"composition_layer">(), compositionId: p.id, fields: { ...defaultLayerFields(s, p, { fill: p.background }), kind } }] }); expect(panelStructureFrame(s, p, "composition").items).toHaveLength(0); });
+  it("proposal acceptance retains job and concrete camera frame", () => { let { s, p } = setup(); const commands = planAiPanels(s, p, JSON.stringify({ panels: [{ title: "Door", shot: "CU", angle: "low", movement: "push in", focalMm: 85, tilt: 5, frame: { x: .25, y: .25, width: .5, height: .5 } }] }), "job-receipt"); const add = commands[0]; if (!add || add.type !== "AddStoryboardPanel") throw Error("plan"); for (const c of commands) s = mustApply(s, c); const created = s.compositions[add.panelId]; if (!created) throw Error("created"); expect(panelDetails(created).fields.ai_job).toBe("job-receipt"); expect(layersOf(s, created.id)[0]?.cameraMark?.frame.width).toBe(p.width / 2); expect(layersOf(s, created.id)[0]?.cameraMark?.tilt).toBe(5); });
+  it("proposal outside panel bounds is rejected", () => { const { s, p } = setup(); expect(() => planAiPanels(s, p, JSON.stringify({ panels: [{ title: "bad", shot: "MS", angle: "eye", movement: "", focalMm: 35, tilt: 0, frame: { x: .8, y: 0, width: .5, height: 1 } }] }), "job")).toThrow(); });
+  it("coverage contains scene text even without panel anchors", () => { const { s, p } = setup(); expect(sceneCoverageText(s, p)).toContain("Scenen begynner"); });
+});

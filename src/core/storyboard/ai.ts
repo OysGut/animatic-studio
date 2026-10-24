@@ -28,7 +28,7 @@ export interface PanelAiOptions {
 }
 export function panelAiCapabilities(model: ProviderModel) {
   return { imageToImage: !!model.acceptsImage, references: model.acceptsImage ? maxAttachedImagesFor(model) : 0,
-    sketch: !!model.acceptsImage, mask: model.panelAi?.mask === true };
+    sketch: !!model.acceptsImage && model.panelAi?.sketch !== false, mask: model.panelAi?.mask === true };
 }
 export function panelResourceLayers(s: ProjectState, p: Composition): CompositionLayer[] {
   return layersOf(s, p.id).filter(l => l.visible && l.assetId && !l.shape && !l.text && !l.note && !l.arrow && !l.cameraMark);
