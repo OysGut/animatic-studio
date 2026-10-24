@@ -13,7 +13,7 @@ import type { FilmClip } from "../assembly/film";
 import type { FilmAudioItem } from "../audio";
 import type { CameraShot, Composition, ProjectState, Transition } from "../model";
 import type { OccurrenceId } from "../ids";
-import { speechSeconds } from "../language";
+import { speechSeconds } from "../language/text-metrics";
 import { framesToSeconds, secondsToFrames } from "../time";
 import { panelBlockIds, panelTimingFrames, storyboardPanelsOf } from "./index";
 
@@ -230,7 +230,7 @@ export function storyboardClips(s: ProjectState, clips: readonly FilmClip[], sho
     const scene = byOccurrence.get(shot.occurrenceId);
     return {
       occurrenceId: shot.occurrenceId,
-      sceneId: scene?.sceneId ?? shot.panel.variantId,
+      sceneId: scene?.sceneId ?? (s.occurrences[shot.occurrenceId]?.sceneId ?? ("" as never)),
       variantId: shot.panel.variantId,
       compositionId: shot.panel.id,
       source: "composition" as const,
@@ -303,8 +303,8 @@ export function storyboardViewState(s: ProjectState, shots: readonly StoryboardS
     if (!panel) continue;
     compositions[shot.panel.id] = { ...panel, camera: { shots: [shot.camera] } };
     for (const l of Object.values(layers)) {
-      if (l.compositionId === shot.panel.id && l.cameraMark && !l.hidden)
-        layers[l.id] = { ...l, hidden: true };
+      if (l.compositionId === shot.panel.id && l.cameraMark && l.visible)
+        layers[l.id] = { ...l, visible: false };
     }
   }
   return { ...s, compositions, layers };
