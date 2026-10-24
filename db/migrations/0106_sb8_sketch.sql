@@ -14,11 +14,15 @@ begin
  where a.project_id=p_project and a.kind='sketch' and a.id in(select (r->>'id')::uuid from pg_catalog.jsonb_array_elements(coalesce(p_changes->'inserts'->'composition_layers','[]')||coalesce(p_changes->'updates'->'composition_layers','[]'))r)
  loop
   if not exists(select 1 from public.compositions c where c.id=l.composition_id and c.project_id=p_project and c.kind='storyboard') or l.asset_id is not null or l.fill is not null
-   or l.sketch->>'version'<>'1' or l.sketch->>'role' not in('rough','clean') or pg_catalog.jsonb_typeof(l.sketch->'strokes') is distinct from 'array' or pg_catalog.jsonb_array_length(l.sketch->'strokes')>1024 then raise exception 'Invalid sketch' using errcode='22023'; end if;
+   or l.sketch->'version' is distinct from '1'::jsonb or coalesce(l.sketch->>'role','') not in('rough','clean') or pg_catalog.jsonb_typeof(l.sketch->'strokes') is distinct from 'array' then raise exception 'Invalid sketch' using errcode='22023'; end if;
+  if pg_catalog.jsonb_array_length(l.sketch->'strokes')>1024 or exists(select 1 from pg_catalog.jsonb_object_keys(l.sketch) k where k not in('version','role','strokes')) then raise exception 'Invalid sketch' using errcode='22023';end if;
   seen:='{}';
   for st in select * from pg_catalog.jsonb_array_elements(l.sketch->'strokes') loop
+   if pg_catalog.jsonb_typeof(st) is distinct from 'object' then raise exception 'Invalid sketch stroke' using errcode='22023';end if;
+   if exists(select 1 from pg_catalog.jsonb_object_keys(st) k where k not in('id','tool','color','size','opacity','curve','smoothing','points'))
+   or exists(select 1 from (values('size'),('opacity'),('curve'),('smoothing')) v(k) where pg_catalog.jsonb_typeof(st->v.k) is distinct from 'number') then raise exception 'Invalid sketch stroke' using errcode='22023';end if;
    if pg_catalog.jsonb_typeof(st->'id') is distinct from 'string' or pg_catalog.length(st->>'id') not between 1 and 64 or st->>'id'=any(seen)
-    or st->>'tool' not in('pencil','brush','erase','fill','line','rect','ellipse') or coalesce(st->>'color','')!~'^#[0-9a-fA-F]{6}$'
+    or coalesce(st->>'tool','') not in('pencil','brush','erase','fill','line','rect','ellipse') or coalesce(st->>'color','')!~'^#[0-9a-fA-F]{6}$'
     or coalesce((st->>'size')::numeric,-1) not between .1 and 512 or coalesce((st->>'opacity')::numeric,-1) not between 0 and 1
     or coalesce((st->>'curve')::numeric,-1) not between .1 and 4 or coalesce((st->>'smoothing')::numeric,-1) not between 0 and 1
     or pg_catalog.jsonb_typeof(st->'points') is distinct from 'array' or pg_catalog.jsonb_array_length(st->'points') not between 1 and 8192 then raise exception 'Invalid sketch stroke' using errcode='22023';end if;
