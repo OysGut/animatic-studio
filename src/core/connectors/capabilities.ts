@@ -1,0 +1,32 @@
+/**
+ * C-0 kapabilitetsmodell: hver adapter sier hva den faktisk kan. Brukerflaten viser bare det som virker,
+ * og ellers «Eksporter for …» (eksisterende eksport), aldri en knapp som feiler.
+ */
+export const CAPABILITIES = ["read", "write", "layers", "audio", "timeline", "notes"] as const;
+export type Capability = (typeof CAPABILITIES)[number];
+
+export interface AdapterDescriptor {
+  readonly id: string;
+  readonly name: string;
+  readonly capabilities: readonly Capability[];
+  /** Eksportformat i eksisterende eksportvindu som brukes når en kapabilitet mangler. */
+  readonly exportFallback: string;
+}
+
+export const ADAPTERS: readonly AdapterDescriptor[] = [
+  { id: "adobe-photoshop-uxp", name: "Adobe Photoshop", capabilities: ["read", "write", "layers", "notes"], exportFallback: "psd" },
+  { id: "adobe-premiere-uxp", name: "Adobe Premiere Pro", capabilities: ["read", "write", "audio", "timeline", "notes"], exportFallback: "fcp7" },
+  { id: "adobe-after-effects-legacy", name: "Adobe After Effects", capabilities: ["read", "layers", "timeline"], exportFallback: "ae" },
+  { id: "procreate-handoff", name: "Procreate", capabilities: ["read", "write"], exportFallback: "png" },
+  { id: "daw-roundtrip", name: "DAW", capabilities: ["read", "write", "audio", "timeline"], exportFallback: "wav" },
+  { id: "storyboard-interchange", name: "Storyboard Pro / OTIO", capabilities: ["read", "timeline", "notes"], exportFallback: "otio" },
+];
+
+export type ActionOffer = { readonly kind: "action"; readonly capability: Capability } | { readonly kind: "export"; readonly format: string };
+
+/** Hva brukerflaten skal vise for en ønsket handling mot en adapter. */
+export function offerFor(adapter: AdapterDescriptor, wanted: Capability): ActionOffer {
+  return adapter.capabilities.includes(wanted) ? { kind: "action", capability: wanted } : { kind: "export", format: adapter.exportFallback };
+}
+export const validDescriptor = (a: AdapterDescriptor): boolean =>
+  /^[a-z0-9-]{3,64}$/.test(a.id) && a.capabilities.length > 0 && a.capabilities.every(c => (CAPABILITIES as readonly string[]).includes(c)) && new Set(a.capabilities).size === a.capabilities.length;
