@@ -339,6 +339,7 @@ export const TRANSITION_KINDS: readonly TransitionKind[] = [
 
 export interface Transition {
   readonly kind: TransitionKind;
+  readonly direction?: "left" | "right" | "up" | "down";
   /** Lengde i bilder (0 for kutt). */
   readonly frames: number;
   /**

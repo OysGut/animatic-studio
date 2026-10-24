@@ -87,5 +87,22 @@
   "0086_community_security.sql": "d7c9128796395b87a5c44c82f3948691",
   "0087_showcase.sql": "1a92ef6a1cfaeddc60ba1fdd7d7f1efe",
   "0088_n1_atomic_scene_ids_global_versions.sql": "483127585e30a2fbef6f466fb6c11290",
-  "0089_brief_versions.sql": "4300b445e13fb49db4487924beb0b8e9"
+  "0089_brief_versions.sql": "4300b445e13fb49db4487924beb0b8e9",
+  "0090_language_neutral_foundation.sql": "1f8d58351b9f1601c6137c14b425c5aa",
+  "0091_fdx_import_format.sql": "2f0f6140cce3a5e6ece67c7082e6f958",
+  "0092_google_sign_in.sql": "93152c8417fd52e0d3fdd0a62cc24520",
+  "0093_g2_scale.sql": "a378caca68a69fd45807b4c0e84dfbf3",
+  "0094_g3_global.sql": "a4bfda40b2a88108e28f0840cb18fcfd",
+  "0095_g3_budget_timezones.sql": "09a979aa67d492114e7e971b70962377",
+  "0096_g4_search.sql": "99273de3fedf5d0457ad1fa548a9b044",
+  "0097_g5_growth_quotas.sql": "6314b4e86148fa21a9cb9fc5b37f7763",
+  "0098_g6_cross_project_reuse.sql": "6f1f89be68e9812ea282b9569adfa8f7",
+  "0099_g7_apply_changes_core.sql": "9e449b04832ad17f8c260c23954445a1",
+  "0100_g8_rate_limits.sql": "12176ea1f147c699a0405fe46841354f",
+  "0101_g5_g6_admin_and_search_escape.sql": "9ec2955f4cfa9b46021124ffabf97474",
+  "0102_sb1_storyboard.sql": "522256d6fa8248008d20f3a679722ab5",
+  "0103_apply_changes_table_registry.sql": "f7483240d396db02d2a444cfc1593171",
+  "0104_sb3_panel_editing.sql": "4c01aa042a216f068bd5f45464a2f036",
+  "0105_sb4_temp_audio_safety.sql": "43b3b576d63df575e92ca57fc57aee00",
+  "0106_sb8_sketch.sql": "81793900cf3a143f4613cb08a8086d04"
 }

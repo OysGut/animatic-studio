@@ -17,6 +17,7 @@ import { speechSeconds } from "../language/text-metrics";
 import { sourceLanguageOf } from "../dialogue/languages";
 import { framesToSeconds, secondsToFrames } from "../time";
 import { panelBlockIds, panelTimingFrames, storyboardPanelsOf } from "./index";
+import { panelTransition } from "./blocking";
 
 /** Standard panelvarighet når verken panel, scene eller estimat gir en varighet (s). */
 export const DEFAULT_PANEL_SECONDS = 2;
@@ -164,7 +165,7 @@ export function storyboardTimeline(s: ProjectState, clips: readonly FilmClip[]):
     for (const panel of panels) {
       const timing = panelTiming(s, clips, panel);
       const durationFrames = timing.frames;
-      const transition = first ? clip.transition : CUT;
+      const transition = panelTransition(panel) ?? (first ? clip.transition : CUT);
       const overlapFrames =
         index > 0 && transition.overlap === true && transition.kind !== "cut"
           ? Math.max(0, Math.min(transition.frames, prevFree - 1, durationFrames - 1, cursor - prevIn - 1))

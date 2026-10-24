@@ -58485,5 +58485,150 @@
     "text": "Marcas de cámara",
     "sourceHash": "b1185d637e48929d2c461dac51457a1c5c843ac37f2624e65986ed62bddf161d",
     "review": "machine"
+  },
+  "sb9.plan": {
+    "text": "Plano de planta",
+    "sourceHash": "ac87b665bf18739000cb11a77e1daefe903fdab8e15a9cc031ce27fb60159cfb",
+    "review": "machine"
+  },
+  "sb9.create": {
+    "text": "Crear plano",
+    "sourceHash": "ac735ece6a5ceabd6ae68ea2f2e03e48fcaa92c0d7699f9d7dcf91915bb53261",
+    "review": "machine"
+  },
+  "sb9.previous": {
+    "text": "Copiar bloqueo anterior",
+    "sourceHash": "5cdcc97b54276528d0a792408a364dcabaf7ca2d8d0f24dcc1cb40b9de98c3c7",
+    "review": "machine"
+  },
+  "sb9.width": {
+    "text": "Ancho (m)",
+    "sourceHash": "a2031401fe6f7d8a5a52cbe8eb71ff570cfc7b0cac8c4733e610e8295877955c",
+    "review": "machine"
+  },
+  "sb9.height": {
+    "text": "Alto (m)",
+    "sourceHash": "bf324360f90ea0ef9b1d57907b03bfe49327ab619a0b335a9d1b2bbb4a9effe2",
+    "review": "machine"
+  },
+  "sb9.object": {
+    "text": "Objeto",
+    "sourceHash": "f4c37db3877c875d517fbb0af9968ebac2b94aa03428a766917475cb28570675",
+    "review": "machine"
+  },
+  "sb9.character": {
+    "text": "Personaje",
+    "sourceHash": "4f4a650cdc41931d714685042197b87c9411b38002e220232a5f1eb512514500",
+    "review": "machine"
+  },
+  "sb9.camera": {
+    "text": "Cámara",
+    "sourceHash": "23cd5636b2217b19ed45cbb51a2421768c22a3f57720e4e5231af05d5aec03b9",
+    "review": "machine"
+  },
+  "sb9.axis": {
+    "text": "Eje de acción",
+    "sourceHash": "be3258909877131d96aa09c68a561b16feb9c03ef13eeb4c4d3e5e3a657a5890",
+    "review": "machine"
+  },
+  "sb9.facing": {
+    "text": "Orientación (grados)",
+    "sourceHash": "032514e7471bda6864f734f569fe52eec2ddf6d01caa48a24d35d9a01aef56da",
+    "review": "machine"
+  },
+  "sb9.movement": {
+    "text": "Movimiento (grados)",
+    "sourceHash": "da94ea8ecf0ab0b2278ec82acdc4c8d0a1549c5d347676605b1a6c029a2a29f3",
+    "review": "machine"
+  },
+  "sb9.sensor": {
+    "text": "Ancho del sensor (mm)",
+    "sourceHash": "f96778f81c89a1fcaa724dd6e481697f89649f28c75912f0018839b5e87cd382",
+    "review": "machine"
+  },
+  "sb9.transition": {
+    "text": "Transición",
+    "sourceHash": "fec6f3bdc4e2f5988488d8e3edf525c20b7d3e35b7a00fd8f3411026070ee610",
+    "review": "machine"
+  },
+  "sb9.inherit": {
+    "text": "Heredar de la escena",
+    "sourceHash": "51d368917d59d16b26c0f1cbb25b753ade0d986c115cc02e769f7a238f35d108",
+    "review": "machine"
+  },
+  "sb9.cut": {
+    "text": "Corte",
+    "sourceHash": "0f8c6ed5b23245520c07fc7a5cd5c25b6c12281bfff5caedc6af7b98a6ec09ef",
+    "review": "machine"
+  },
+  "sb9.dissolve": {
+    "text": "Disolución",
+    "sourceHash": "fae12180e6e6374bdef610a07d007adaa0b2e7efc2a968f8eed4d3f79eca1636",
+    "review": "machine"
+  },
+  "sb9.black": {
+    "text": "A negro",
+    "sourceHash": "7e151d944622c50b7d983909fe9882ab46536de59f43f9c3bd978f77a17a7f1f",
+    "review": "machine"
+  },
+  "sb9.white": {
+    "text": "A blanco",
+    "sourceHash": "f5ea1cc1f69d7e23569555ce2767fc3b112f5424e92a1a0b112376e73633495a",
+    "review": "machine"
+  },
+  "sb9.wipe": {
+    "text": "Barrido",
+    "sourceHash": "59587ce36a96a7a7dfd54ec1b1a40e6750330b5eb03c2a8946905073a79871f8",
+    "review": "machine"
+  },
+  "sb9.direction": {
+    "text": "Dirección",
+    "sourceHash": "f4944f0e58bee5a316285b7a4bf86ece29b4edfdcd21ded0c7e7aa989b14f21d",
+    "review": "machine"
+  },
+  "sb9.left": {
+    "text": "Izquierda",
+    "sourceHash": "728edd78fa9396613a4aa87a4d650b43af57a7b64db8b1920eb07b8fb1de4e2e",
+    "review": "machine"
+  },
+  "sb9.right": {
+    "text": "Derecha",
+    "sourceHash": "847df7f48741a6d8ef97260361d6cace556945ffb3db4445d80902f8bc067307",
+    "review": "machine"
+  },
+  "sb9.center": {
+    "text": "Centrado",
+    "sourceHash": "c16d29ec7aac510d441b7d2ae5823773d88508be0835eb9e74633ece477ec158",
+    "review": "machine"
+  },
+  "sb9.continuity": {
+    "text": "Continuidad",
+    "sourceHash": "2e7c9ed589bb487ab1e3a5e5ae127c4462d7ad71a6185847d807809a418d23d6",
+    "review": "machine"
+  },
+  "sb9.crossing": {
+    "text": "Cruza el eje de acción",
+    "sourceHash": "3504cfca794c74b65821d4225cb0ca22ef2678b3263b6d53a970ff9e740e7a0f",
+    "review": "machine"
+  },
+  "sb9.gaze": {
+    "text": "Desajuste de mirada",
+    "sourceHash": "ecafe88e353703a73f3e24d341a6f376fc8a45002fe5b3d839621792fcd2ab16",
+    "review": "machine"
+  },
+  "sb9.motion-break": {
+    "text": "Desajuste de movimiento",
+    "sourceHash": "c2a4ade0c740e2c040c43054fcd732550f843e446c7379437ecb1ca5799726f7",
+    "review": "machine"
+  },
+  "sb9.approve": {
+    "text": "Aprobar intencionalmente",
+    "sourceHash": "4daa1b577eef510cf650307bf41b8279fd2a0de676f3cd9aff4ec01086e5ee71",
+    "review": "machine"
+  },
+  "sb9.reason": {
+    "text": "Motivo",
+    "sourceHash": "226d6efbe32332067b8c8a69519ae2e583df164e02b4d433ef20d372a8642c5c",
+    "review": "machine"
   }
 }

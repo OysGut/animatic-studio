@@ -15346,6 +15346,238 @@
       "en": {
         "text": "Camera marks"
       }
+    },
+    "sb9.plan": {
+      "nb": {
+        "text": "Plantegning"
+      },
+      "en": {
+        "text": "Floor plan"
+      }
+    },
+    "sb9.create": {
+      "nb": {
+        "text": "Opprett plantegning"
+      },
+      "en": {
+        "text": "Create floor plan"
+      }
+    },
+    "sb9.previous": {
+      "nb": {
+        "text": "Kopier forrige blokking"
+      },
+      "en": {
+        "text": "Copy previous blocking"
+      }
+    },
+    "sb9.width": {
+      "nb": {
+        "text": "Bredde (m)"
+      },
+      "en": {
+        "text": "Width (m)"
+      }
+    },
+    "sb9.height": {
+      "nb": {
+        "text": "Høyde (m)"
+      },
+      "en": {
+        "text": "Height (m)"
+      }
+    },
+    "sb9.object": {
+      "nb": {
+        "text": "Objekt"
+      },
+      "en": {
+        "text": "Object"
+      }
+    },
+    "sb9.character": {
+      "nb": {
+        "text": "Karakter"
+      },
+      "en": {
+        "text": "Character"
+      }
+    },
+    "sb9.camera": {
+      "nb": {
+        "text": "Kamera"
+      },
+      "en": {
+        "text": "Camera"
+      }
+    },
+    "sb9.axis": {
+      "nb": {
+        "text": "Handlingsakse"
+      },
+      "en": {
+        "text": "Action axis"
+      }
+    },
+    "sb9.facing": {
+      "nb": {
+        "text": "Retning (grader)"
+      },
+      "en": {
+        "text": "Facing (degrees)"
+      }
+    },
+    "sb9.movement": {
+      "nb": {
+        "text": "Bevegelse (grader)"
+      },
+      "en": {
+        "text": "Movement (degrees)"
+      }
+    },
+    "sb9.sensor": {
+      "nb": {
+        "text": "Sensorbredde (mm)"
+      },
+      "en": {
+        "text": "Sensor width (mm)"
+      }
+    },
+    "sb9.transition": {
+      "nb": {
+        "text": "Overgang"
+      },
+      "en": {
+        "text": "Transition"
+      }
+    },
+    "sb9.inherit": {
+      "nb": {
+        "text": "Arv fra scenen"
+      },
+      "en": {
+        "text": "Inherit from scene"
+      }
+    },
+    "sb9.cut": {
+      "nb": {
+        "text": "Kutt"
+      },
+      "en": {
+        "text": "Cut"
+      }
+    },
+    "sb9.dissolve": {
+      "nb": {
+        "text": "Overtoning"
+      },
+      "en": {
+        "text": "Dissolve"
+      }
+    },
+    "sb9.black": {
+      "nb": {
+        "text": "Via svart"
+      },
+      "en": {
+        "text": "Through black"
+      }
+    },
+    "sb9.white": {
+      "nb": {
+        "text": "Via hvitt"
+      },
+      "en": {
+        "text": "Through white"
+      }
+    },
+    "sb9.wipe": {
+      "nb": {
+        "text": "Wipe"
+      },
+      "en": {
+        "text": "Wipe"
+      }
+    },
+    "sb9.direction": {
+      "nb": {
+        "text": "Retning"
+      },
+      "en": {
+        "text": "Direction"
+      }
+    },
+    "sb9.left": {
+      "nb": {
+        "text": "Venstre"
+      },
+      "en": {
+        "text": "Left"
+      }
+    },
+    "sb9.right": {
+      "nb": {
+        "text": "Høyre"
+      },
+      "en": {
+        "text": "Right"
+      }
+    },
+    "sb9.center": {
+      "nb": {
+        "text": "Sentrert"
+      },
+      "en": {
+        "text": "Centered"
+      }
+    },
+    "sb9.continuity": {
+      "nb": {
+        "text": "Kontinuitet"
+      },
+      "en": {
+        "text": "Continuity"
+      }
+    },
+    "sb9.crossing": {
+      "nb": {
+        "text": "Krysser handlingsaksen"
+      },
+      "en": {
+        "text": "Crosses action axis"
+      }
+    },
+    "sb9.gaze": {
+      "nb": {
+        "text": "Brudd på blikkretning"
+      },
+      "en": {
+        "text": "Eyeline mismatch"
+      }
+    },
+    "sb9.motion-break": {
+      "nb": {
+        "text": "Brudd på bevegelsesretning"
+      },
+      "en": {
+        "text": "Movement direction mismatch"
+      }
+    },
+    "sb9.approve": {
+      "nb": {
+        "text": "Godkjenn bevisst"
+      },
+      "en": {
+        "text": "Approve intentionally"
+      }
+    },
+    "sb9.reason": {
+      "nb": {
+        "text": "Begrunnelse"
+      },
+      "en": {
+        "text": "Reason"
+      }
     }
   }
 }

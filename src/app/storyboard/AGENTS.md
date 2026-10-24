@@ -1,4 +1,5 @@
 - Panel editing stores metadata through core/storyboard/editing-commands and ordinary layer commands; approved panels remain read-only until a grouped snapshot/status command preserves the approval.
 - Shared renderFrame/drawFrame renders panel graphics so editing and subsequent exports use the same appearance; overlay guides are view-only.
+- SB-9 blocking and transitions are panel-local metadata saved through SetStoryboardDetails; continuity uses narrative time and never moves layers, while export shots retain panel identity within scene-scoped reservations.
 - SB-8 sketch samples are delta-coded in core/storyboard/sketch and persisted by ordinary layer commands once per pen lift; compositor/sketch rasterizes each isolated layer so erasing never removes another layer.
 - SB-7 image results use ordinary asset versions and hidden resource layers persisted server-side before the next paid call; grouped adoptServerHistory and receipt recovery reuse their inverses without provider calls. Core output/proposal plans are pure; browser rasterization uses the shared compositor and creates separate mask-fit derivatives, so originals and instructions remain intact.

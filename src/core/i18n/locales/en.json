@@ -77255,5 +77255,92 @@
   },
   "sb6.camera-mark": {
     "text": "Camera marks"
+  },
+  "sb9.plan": {
+    "text": "Floor plan"
+  },
+  "sb9.create": {
+    "text": "Create floor plan"
+  },
+  "sb9.previous": {
+    "text": "Copy previous blocking"
+  },
+  "sb9.width": {
+    "text": "Width (m)"
+  },
+  "sb9.height": {
+    "text": "Height (m)"
+  },
+  "sb9.object": {
+    "text": "Object"
+  },
+  "sb9.character": {
+    "text": "Character"
+  },
+  "sb9.camera": {
+    "text": "Camera"
+  },
+  "sb9.axis": {
+    "text": "Action axis"
+  },
+  "sb9.facing": {
+    "text": "Facing (degrees)"
+  },
+  "sb9.movement": {
+    "text": "Movement (degrees)"
+  },
+  "sb9.sensor": {
+    "text": "Sensor width (mm)"
+  },
+  "sb9.transition": {
+    "text": "Transition"
+  },
+  "sb9.inherit": {
+    "text": "Inherit from scene"
+  },
+  "sb9.cut": {
+    "text": "Cut"
+  },
+  "sb9.dissolve": {
+    "text": "Dissolve"
+  },
+  "sb9.black": {
+    "text": "Through black"
+  },
+  "sb9.white": {
+    "text": "Through white"
+  },
+  "sb9.wipe": {
+    "text": "Wipe"
+  },
+  "sb9.direction": {
+    "text": "Direction"
+  },
+  "sb9.left": {
+    "text": "Left"
+  },
+  "sb9.right": {
+    "text": "Right"
+  },
+  "sb9.center": {
+    "text": "Centered"
+  },
+  "sb9.continuity": {
+    "text": "Continuity"
+  },
+  "sb9.crossing": {
+    "text": "Crosses action axis"
+  },
+  "sb9.gaze": {
+    "text": "Eyeline mismatch"
+  },
+  "sb9.motion-break": {
+    "text": "Movement direction mismatch"
+  },
+  "sb9.approve": {
+    "text": "Approve intentionally"
+  },
+  "sb9.reason": {
+    "text": "Reason"
   }
 }

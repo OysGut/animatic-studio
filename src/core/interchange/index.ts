@@ -19,6 +19,7 @@ import { sceneCode, shotName } from "./naming";
 import { buildCameraTrack } from "./camera";
 import { multiplaneRigSpecError, resolveSceneRig } from "../rig/multiplane";
 import type { EventTime, FileRef, InterchangeDoc, Shot } from "./types";
+import { exportImageSource, type ExportImageSource } from "../storyboard/playback";
 
 export * from "./types";
 export * from "./settings";
@@ -34,6 +35,7 @@ export function eventTime(startSeconds: number, endSeconds: number, shot: Pick<S
 }
 
 export interface InterchangeOptions {
+  readonly imageSource?: ExportImageSource;
   readonly productionId: string;
   readonly language: string | { readonly dialogue: string; readonly subtitles: string | null };
   readonly occurrenceIds?: readonly string[];
@@ -45,14 +47,17 @@ export interface InterchangeOptions {
 
 export function buildInterchange(state: ProjectState, o: InterchangeOptions): InterchangeDoc {
   const lang = typeof o.language === "string" ? { dialogue: o.language, subtitles: null } : o.language;
-  const s = languageState(state, lang.dialogue);
+  const translated = languageState(state, lang.dialogue);
   const capture = o.capture ?? (o.captureFps ? { mode: o.captureFps.num / o.captureFps.den === 12 ? "twos" as const : "custom" as const, fps: o.captureFps } : state.project.capture ?? DEFAULT_CAPTURE);
   validateFps(capture.fps);
   if (!captureSettingsValid(capture)) throw new Error(t("ptg1.invalid-settings"));
   const { fps, exposureStep } = captureTimeline(capture);
-  const sourceFps = s.project.fps;
-  const all = filmClips(s, o.productionId);
-  const clips = o.occurrenceIds ? filmSelection(all, new Set(o.occurrenceIds)).clips : all;
+  const sourceFps = translated.project.fps;
+  const all = filmClips(translated, o.productionId);
+  const selected = o.occurrenceIds ? filmSelection(all, new Set(o.occurrenceIds)).clips : all;
+  const adapted = exportImageSource(translated, selected, o.imageSource ?? "animation");
+  const s = adapted.state;
+  const clips = adapted.clips;
   const frame = (f: number) => secondsToFrames(framesToSeconds(f, sourceFps), fps);
   const refs = new Map<string, FileRef>();
   const ref = (v: AssetVersion | null): string | null => {
@@ -82,13 +87,13 @@ export function buildInterchange(state: ProjectState, o: InterchangeOptions): In
     const local = (f: number) => frame(c.startFrame + f) - startFrame;
     const assets = assetsInScene(s, o.productionId, c.occurrenceId).map(x => x.asset);
     const layers = c.compositionId ? layersOf(s, c.compositionId) : [];
-    return { id: c.occurrenceId, sceneId: c.sceneId, sceneNumber: number, shotNumber, version, name,
+    return { id: o.imageSource === "storyboard" ? c.compositionId ?? c.occurrenceId : c.occurrenceId, sceneId: c.sceneId, sceneNumber: number, shotNumber, version, name,
       startFrame, lengthFrames: endFrame - startFrame,
       timecodeIn: formatTimecode(startFrame, fps), timecodeOut: formatTimecode(endFrame, fps),
       handleIn: Math.max(0, startFrame - frame(c.startFrame)),
       handleOut: Math.max(0, frame(c.startFrame + c.durationFrames) - endFrame),
       frameIn: frame(c.startFrame), frameOut: frame(c.startFrame + c.durationFrames),
-      transition: { type: c.transition.kind, lengthFrames: c.transition.kind === "cut" ? 0 : frame(c.startFrame + (c.overlapFrames || c.transition.frames)) - frame(c.startFrame), overlap: c.overlapFrames > 0 },
+      transition: { type: c.transition.kind, lengthFrames: c.transition.kind === "cut" ? 0 : frame(c.startFrame + (c.overlapFrames || c.transition.frames)) - frame(c.startFrame), overlap: c.overlapFrames > 0, ...(c.transition.direction ? { direction: c.transition.direction } : {}) },
       sourceStartFrame: c.startFrame, sourceLengthFrames: c.durationFrames, compositionId: c.compositionId,
       thumbnail: { path: `thumbnails/${name}.png`, sourceFrame: Math.max(0, Math.floor(c.durationFrames / 2)) },
       description: [c.heading.intExt, c.heading.location, c.heading.time].filter(Boolean).join(" "),

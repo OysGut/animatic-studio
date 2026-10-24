@@ -8335,6 +8335,7 @@ try {
       "composition_layers|private.validate_sb3_layer_links||103",
       "compositions|private.validate_sb4_temp_audio||104",
       "composition_layers|private.validate_sb8_sketch||108",
+      "compositions|private.validate_sb9_blocking||110",
     ]), `registeret avviker: ${JSON.stringify(rows)}`);
     // Alle registrerte funksjoner finnes med riktig signatur
     for (const fn of ["validate_translation_line_links", "validate_style_harmonizations", "validate_style_preferred_references",
@@ -8909,6 +8910,20 @@ try {
     assert((await as('service_role',null,tx=>tx`select public.sketch_session_lookup(${hash}) s`))[0]?.['s']===null,'expired link accepted');
     await sql`update public.sketch_sessions set expires_at=now()+interval '5 minutes',revoked=true where id=${id}`;
     assert((await as('service_role',null,tx=>tx`select public.sketch_session_lookup(${hash}) s`))[0]?.['s']===null,'revoked link accepted');
+  });
+  await test("0107 SB-9: blocking and transitions validate directly through apply_changes", async () => {
+    const panel=newId();
+    const { EMPTY_BLOCKING }=await import('../../src/core/storyboard/blocking');
+    const details={number:'',sceneNumber:'',fields:{},dialogueIds:[],shot:null,angle:null,focalMm:null,movement:'',blocking:EMPTY_BLOCKING,transition:{kind:'wipe',frames:12,overlap:true,direction:'left'}};
+    await sbApply(g7p,{inserts:{compositions:[{id:panel,project_id:g7p,variant_id:sbSetup.variant,kind:'storyboard',occurrence_id:sbSetup.occurrence,order_key:'zza',revision:1,storyboard:details}]}});
+    assert((await sql`select storyboard->'transition'->>'direction' d from public.compositions where id=${panel}`)[0]?.['d']==='left','wipe direction lost');
+    for(const blocking of [{...EMPTY_BLOCKING,width:0},{...EMPTY_BLOCKING,characters:[{id:newId(),x:1,y:1,facing:0,movement:null}]},{...EMPTY_BLOCKING,cameraId:'missing'},{...EMPTY_BLOCKING,objects:Array.from({length:51},()=>({name:'object',x:0,y:0,width:1,height:1}))},{...EMPTY_BLOCKING,approvals:{x:''}}]) {
+      await expectError(sbApply(g7p,{updates:{compositions:[{id:panel,expected_revision:1,revision:2,storyboard:{...details,blocking}}]}}),'22023');
+    }
+    for(const transition of [{kind:'wipe',frames:601,overlap:true},{kind:'cut',frames:12,overlap:true},{kind:'wipe',frames:1,overlap:true,direction:'diagonal'}]) {
+      await expectError(sbApply(g7p,{updates:{compositions:[{id:panel,expected_revision:1,revision:2,storyboard:{...details,transition}}]}}),'22023');
+    }
+    await expectError(sbApply(g7p,{updates:{compositions:[{id:panel,expected_revision:2,revision:3,storyboard:details}]}}),'P0409');
   });
   await test("alle SECURITY DEFINER-funksjoner i public/private har search_path=''", async () => {
     const rows = await sql`

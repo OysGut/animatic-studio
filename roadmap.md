@@ -1,5 +1,17 @@
 # Veikart
 
+## SB-9 – Kontinuitet og blokking (delvis bygget; se SB9_REPORT.md)
+- [x] Lås 0090–0106 med Claudes MD5-er; ingen låst migrasjon endret
+- [x] Panel-lokal plantegning, karakterer/kameraer og angrebar blokking
+- [x] Kontinuitet i fortellingstid, galleriflagg og begrunnet godkjenning
+- [x] Paneloverganger i storyboardfilm/felles kompositor og eksportserialisering
+- [ ] Overgangsblanding i gallerikort; felles scenegrunnriss med egen paneltidslinje
+- [x] Kjerne/angre/grenser; visuelt nb/en desktop/mobil 10/0; lokal DB 231/0
+- [x] Endelig full Vitest 3020/0/10; i18n grønne
+- [ ] Separat tsc bekreftes av Claude
+- [ ] Cloud 0107 venter på Claude; ekte import i klippeprogrammer ikke verifisert
+- [x] Ingen publisering; rapport med begrensninger og endrede filer
+
 ## SB-6 – Utskrift, pitch og skuddliste (bygget; separate kontroller gjenstår)
 - [x] Nye kort i eksisterende ExportAnimaticDialog, felles bildekildevalg
 - [x] PDF 3/6/9, pitch, fem papirformater, feltvalg, topp/bunntekst, Noto/RTL
