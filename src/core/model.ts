@@ -687,7 +687,8 @@ export type LayerKind =
   /** SB-1 (migrasjon 0102): lapp, pil og kameramerke. Bare tillatt i storyboardkomposisjoner. */
   | "note"
   | "arrow"
-  | "camera_mark";
+  | "camera_mark"
+  | "sketch";
 
 /** Plassering av et lag i scenen. Posisjon er midtpunktet i scenens koordinater (piksler). */
 export interface LayerTransform {
@@ -931,6 +932,7 @@ export interface CompositionLayer extends Entity<LayerId> {
   readonly arrow?: import("./storyboard").ArrowSpec | null;
   /** Kameramerke (SB-1). Bare lagtypen «camera_mark» i storyboardkomposisjoner. */
   readonly cameraMark?: import("./storyboard").CameraMarkSpec | null;
+  readonly sketch?: import("./storyboard/sketch").SketchSpec | null;
   readonly removed: boolean;
 }
 

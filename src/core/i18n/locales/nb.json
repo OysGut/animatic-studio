@@ -77066,5 +77066,113 @@
   },
   "sb7.accept": {
     "text": "Bekreft og bruk"
+  },
+  "sb8.sketch": {
+    "text": "Tegnelag"
+  },
+  "sb8.pencil": {
+    "text": "Blyant"
+  },
+  "sb8.brush": {
+    "text": "Pensel"
+  },
+  "sb8.erase": {
+    "text": "Viskelær"
+  },
+  "sb8.fill": {
+    "text": "Fyll"
+  },
+  "sb8.line": {
+    "text": "Rett linje"
+  },
+  "sb8.rect": {
+    "text": "Rektangel"
+  },
+  "sb8.ellipse": {
+    "text": "Ellipse"
+  },
+  "sb8.pan": {
+    "text": "Panorer"
+  },
+  "sb8.flip": {
+    "text": "Vend lerretet"
+  },
+  "sb8.rotate": {
+    "text": "Roter visningen"
+  },
+  "sb8.zoom-in": {
+    "text": "Zoom inn"
+  },
+  "sb8.zoom-out": {
+    "text": "Zoom ut"
+  },
+  "sb8.export": {
+    "text": "Eksporter PNG-lag"
+  },
+  "sb8.tools": {
+    "text": "Tegneverktøy"
+  },
+  "sb8.opacity": {
+    "text": "Opasitet"
+  },
+  "sb8.smoothing": {
+    "text": "Utjevning"
+  },
+  "sb8.pressure": {
+    "text": "Trykkurve"
+  },
+  "sb8.onion-opacity": {
+    "text": "Løkopasitet"
+  },
+  "sb8.onion": {
+    "text": "Løk-visning"
+  },
+  "sb8.light": {
+    "text": "Lysbord"
+  },
+  "sb8.stroke-eraser": {
+    "text": "Visk hele strøk"
+  },
+  "sb8.rough": {
+    "text": "Grovtegning"
+  },
+  "sb8.clean": {
+    "text": "Rentegning"
+  },
+  "sb8.canvas": {
+    "text": "Tegnelerret"
+  },
+  "sb8.palette": {
+    "text": "Prosjektpalett"
+  },
+  "sb8.add-layer": {
+    "text": "Legg til tegnelag"
+  },
+  "sb8.stroke": {
+    "text": "Tegn strøk"
+  },
+  "sb8.limit": {
+    "text": "Tegningen er for stor. Bruk et nytt lag."
+  },
+  "sb8.mobile": {
+    "text": "Tegn på nettbrett"
+  },
+  "sb8.mobile-title": {
+    "text": "From Pen to Glass – Tegning"
+  },
+  "sb8.saving": {
+    "text": "Lagrer…"
+  },
+  "sb8.loading": {
+    "text": "Laster…"
+  },
+  "sb8.retry": {
+    "text": "Prøv igjen"
+  },
+  "sb8.revoke": {
+    "text": "Tilbakekall tegnelenke"
+  },
+  "sb8.session-error": {
+    "text": "Tegnelenken er utilgjengelig, utløpt eller tilgangen ble avvist."
   }
 }

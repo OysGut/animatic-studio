@@ -57992,5 +57992,185 @@
     "text": "확인 후 사용",
     "sourceHash": "630b9a6e206a4f487e9422dfaf65f84bbce4e3777a744d079d6de585b0ff5df3",
     "review": "machine"
+  },
+  "sb8.sketch": {
+    "text": "그림 레이어",
+    "sourceHash": "434bbf26337978eb0c061052f3972a11fcd71556d3ea366743cf01b0dcbda3f5",
+    "review": "machine"
+  },
+  "sb8.pencil": {
+    "text": "연필",
+    "sourceHash": "6e12a0e7c3a83b0fd5d0da3f913d72360a3233f026def20f6208b1efc9c69685",
+    "review": "machine"
+  },
+  "sb8.brush": {
+    "text": "브러시",
+    "sourceHash": "8ed8f4681e49392e6248f9854621ba0e2ce499138cf4f79ede52b7c841f02d6c",
+    "review": "machine"
+  },
+  "sb8.erase": {
+    "text": "지우개",
+    "sourceHash": "d990e6efb90424dfff5c72553d35e48e7944ee8277410e4e3c2bb66ea7f00175",
+    "review": "machine"
+  },
+  "sb8.fill": {
+    "text": "채우기",
+    "sourceHash": "006a1e8a0ceca295dd29e953f4a5b0da08f778d4dec843ad85f15953be557a7a",
+    "review": "machine"
+  },
+  "sb8.line": {
+    "text": "직선",
+    "sourceHash": "0122ab9e90fa01baa6561eb0626071f452f234b649106150acfa357dc7cd8dd8",
+    "review": "machine"
+  },
+  "sb8.rect": {
+    "text": "사각형",
+    "sourceHash": "52fbbe69d56f0b8456edcf74a082e88fa0e73a72e2336fbe7dff40f492f20d6c",
+    "review": "machine"
+  },
+  "sb8.ellipse": {
+    "text": "타원",
+    "sourceHash": "96208585f17eafeb0741e37dddc5c1dc5ad72b2fe487d430804a269c8d872ccb",
+    "review": "machine"
+  },
+  "sb8.pan": {
+    "text": "이동",
+    "sourceHash": "b9ce75b99860558c615c01cf9c6387dd1ff69374a5a60b2a9818ef98c7624636",
+    "review": "machine"
+  },
+  "sb8.flip": {
+    "text": "캔버스 뒤집기",
+    "sourceHash": "ab2e8b8275eefc1c993e3af938dd5d8745a1b4fa03fea52704119e29b20b27cf",
+    "review": "machine"
+  },
+  "sb8.rotate": {
+    "text": "보기 회전",
+    "sourceHash": "798bea0b94d57205fc356a35dbc95b6f5bdf45d709e517ff1bbbd8dfe627f6c0",
+    "review": "machine"
+  },
+  "sb8.zoom-in": {
+    "text": "확대",
+    "sourceHash": "daa69390a91383237d87a499eda82b5c976a571efd20c850b30dd56edef99e1e",
+    "review": "machine"
+  },
+  "sb8.zoom-out": {
+    "text": "축소",
+    "sourceHash": "8cd0bafa3d915528382481eed7e3b200ea045994ad728bb25a4bf50e4ab21508",
+    "review": "machine"
+  },
+  "sb8.export": {
+    "text": "PNG 레이어 내보내기",
+    "sourceHash": "39a7befa886748a77510c8f58a8b8dc8df687963d5c55e30855ed3bdfa5727a0",
+    "review": "machine"
+  },
+  "sb8.tools": {
+    "text": "그리기 도구",
+    "sourceHash": "62a1f14fbf1037e8b38e6b56017558b97ba31861af4e970a1f8cbdd275122df1",
+    "review": "machine"
+  },
+  "sb8.opacity": {
+    "text": "불투명도",
+    "sourceHash": "db3a971d7510a3e414f3796b59acd6ed978c8899fb79877f83ada7a0913d48eb",
+    "review": "machine"
+  },
+  "sb8.smoothing": {
+    "text": "보정",
+    "sourceHash": "631bf3611f6d0bd83347af373f7a13fa199035514457113f3748c96a55a86925",
+    "review": "machine"
+  },
+  "sb8.pressure": {
+    "text": "필압 곡선",
+    "sourceHash": "e7a51413c07ce095638cc93f7bc027a4c8ec3b8b9fed4d91676c24f1c27d9306",
+    "review": "machine"
+  },
+  "sb8.onion-opacity": {
+    "text": "어니언 스킨 불투명도",
+    "sourceHash": "76672c4ce458977a8c5058b63d308edf0021d4cff9a7ff128828cafca9a977e9",
+    "review": "machine"
+  },
+  "sb8.onion": {
+    "text": "어니언 스킨",
+    "sourceHash": "d8a3e847b087736a7c48f69b264e9ca87b313b4da45704f8820ee39275591a42",
+    "review": "machine"
+  },
+  "sb8.light": {
+    "text": "라이트박스",
+    "sourceHash": "abf247bd60d2f70414be44d7532eec1b13162e969687b7e2334d7163ab63eb5e",
+    "review": "machine"
+  },
+  "sb8.stroke-eraser": {
+    "text": "전체 획 지우기",
+    "sourceHash": "bf985bef59109a054a63ac771416e8179683968958f1b8bf12114c35fffb3486",
+    "review": "machine"
+  },
+  "sb8.rough": {
+    "text": "러프 그림",
+    "sourceHash": "9dd751b8afd83b458314068bcda122784105bc6d2ffd3ad7ac836652b04ba2ad",
+    "review": "machine"
+  },
+  "sb8.clean": {
+    "text": "정리된 그림",
+    "sourceHash": "34de72d26ea999f007b45700230d6ec61a1c2bb6a66d8722c5328f4adb2a8797",
+    "review": "machine"
+  },
+  "sb8.canvas": {
+    "text": "그리기 캔버스",
+    "sourceHash": "d22dba82ec2af7bc3800f85e4716502aef1cb51881e0cf01240b185ec5d8b854",
+    "review": "machine"
+  },
+  "sb8.palette": {
+    "text": "프로젝트 팔레트",
+    "sourceHash": "968db6de82d3669413ea464e3fe148fb5b5cd88b13ceacb3f66048af2cfb862d",
+    "review": "machine"
+  },
+  "sb8.add-layer": {
+    "text": "그림 레이어 추가",
+    "sourceHash": "a394c912c1b2e362db52f877e28b3c9820653d832e83190c3df95eb21d23ba9f",
+    "review": "machine"
+  },
+  "sb8.stroke": {
+    "text": "획 그리기",
+    "sourceHash": "e6166d11c473d6e82beb200c0d1f57e11edf1298f3940ac2e931df7fad7275cf",
+    "review": "machine"
+  },
+  "sb8.limit": {
+    "text": "그림이 너무 큽니다. 다른 레이어를 사용하세요.",
+    "sourceHash": "7995ca17a4c58e281d6525f0ad130ae03b0f74a63188e2ffc24650da67921b4b",
+    "review": "machine"
+  },
+  "sb8.mobile": {
+    "text": "태블릿에서 그리기",
+    "sourceHash": "57b45648e1edcc8d948651c2ea1af1e75f02dc49800ec4c50b21dc59117b5df3",
+    "review": "machine"
+  },
+  "sb8.mobile-title": {
+    "text": "From Pen to Glass – 그리기",
+    "sourceHash": "e114b96f3f111b987f4d764669cc0fadcb62fab08c7d887c9063566b96424c14",
+    "review": "machine"
+  },
+  "sb8.saving": {
+    "text": "저장 중…",
+    "sourceHash": "95c2632543d5300cc11605952b0d0312649c969d9183353579aa7a488b7dd5f3",
+    "review": "machine"
+  },
+  "sb8.loading": {
+    "text": "불러오는 중…",
+    "sourceHash": "cfb25ae49ca62249084f7154c718b2be142de5beb26f1f78b55e8beb646b803f",
+    "review": "machine"
+  },
+  "sb8.retry": {
+    "text": "다시 시도",
+    "sourceHash": "d9e949c5c342cf66a13e8b0c74f61da560c11f6357a5a910ff650880c0e98647",
+    "review": "machine"
+  },
+  "sb8.revoke": {
+    "text": "그리기 링크 취소",
+    "sourceHash": "4e6c128f85c1b8bfd794449b46305796296f876491d997afa29147f742e127b4",
+    "review": "machine"
+  },
+  "sb8.session-error": {
+    "text": "그리기 링크를 사용할 수 없거나 만료되었거나 접근이 거부되었습니다.",
+    "sourceHash": "63533280e3b83299228150c0ef0c66223bc44862c268b1902e454c24f9115faa",
+    "review": "machine"
   }
 }

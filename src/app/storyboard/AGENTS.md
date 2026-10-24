@@ -1,3 +1,4 @@
 - Panel editing stores metadata through core/storyboard/editing-commands and ordinary layer commands; approved panels remain read-only until a grouped snapshot/status command preserves the approval.
 - Shared renderFrame/drawFrame renders panel graphics so editing and subsequent exports use the same appearance; overlay guides are view-only.
+- SB-8 sketch samples are delta-coded in core/storyboard/sketch and persisted by ordinary layer commands once per pen lift; compositor/sketch rasterizes each isolated layer so erasing never removes another layer.
 - SB-7 image results use ordinary asset versions and hidden resource layers persisted server-side before the next paid call; explicit layer visibility accepts a candidate without replacing storyboard instructions.

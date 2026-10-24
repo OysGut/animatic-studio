@@ -1,5 +1,16 @@
 # Veikart
 
+## SB-8 – Tegning i appen (pågår)
+- [x] Storyboard-only sketch-lag, delta-komprimerte vektorstrøk, trykk/tilt/tid og størrelsesvalidering
+- [x] Blyant/pensel, område-/strøkviskelær, sammenhengende fyll, linje/Shift/figurer, prosjektpalett og strøkvis angre
+- [x] Grov/rentegningslag, lysbord/løk med opasitet, vend/zoom/pan/rotasjon kun i visningen
+- [x] Pointer Events, koalesserte hendelser, rAF og avvisning av berøring under aktiv penn
+- [x] Kortlivet panelavgrenset mobiltegning via QR, lokal migrasjon 0106; DB-utløp/revokering/scope/revisjonsvern testet
+- [x] Felles rasterisering/PNG-alfa og eksplisitt PNG-versjon som skisse til SB-7
+- [x] Kjerne/backup/DB/visuelt nb/en desktop/mobil, full Vitest 0 feil og rapport SB8_REPORT.md
+- [ ] Ekte iPad/Apple Pencil: håndflate, dobbelttrykk og ytelse må verifiseres på fysisk enhet; nettlesertesten har ikke slik maskinvare
+- [ ] Ekte QR-flyt med lagring som leses tilbake i et prosjekt: venter på at Claude kjører 0106 i Cloud; ikke erstattet av mock-test
+
 ## SB-4 (bygget, verifisert)
 - [x] Felles posisjon, timing, midlertidig panellyd, galleriscrubbing/avspilling, eksportkilde
 

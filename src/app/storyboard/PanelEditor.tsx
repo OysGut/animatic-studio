@@ -8,6 +8,7 @@ import { UiId } from "@/app/shared/UiId";
 import { Thumbnail } from "@/app/shared/Thumbnail";
 import { PanelAudio } from "./PanelAudio";
 import { PanelAi } from "./PanelAi";
+import { PanelDrawing } from "./PanelDrawing";
 import { currentPosition, rememberPosition } from "@/app/shell/current-scene";
 import { panelPosition } from "@/core/storyboard/position";
 import { useImageUrls } from "@/app/library/asset-images";
@@ -27,6 +28,7 @@ export function PanelEditor({ state, panel, editable, cmds, projectId }: { state
   const navigate = useNavigate();
   const [selected, select] = useState<string | null>(null);
   const [tool, setTool] = useState<Tool>("select");
+  const [drawing, setDrawing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [help, showHelp] = useState(false);
   const [renumber, showRenumber] = useState(false);
@@ -127,21 +129,21 @@ export function PanelEditor({ state, panel, editable, cmds, projectId }: { state
     </header>
     {error ? <p role="alert" className="px-3 text-[13px] text-status-danger">{error}</p> : null}
     <div className="flex min-h-0 flex-1 flex-wrap lg:flex-nowrap">
-      <aside className="w-44 shrink-0 overflow-auto border-e border-border p-2" aria-label={t("sb3.library")}>
+      <aside className={(drawing?"hidden lg:block ":"")+"w-44 shrink-0 overflow-auto border-e border-border p-2"} aria-label={t("sb3.library")}>
         <input type="search" className={ctl} placeholder={t("attach.picker.search")} aria-label={t("attach.picker.search")} value={search} onChange={e=>setSearch(e.target.value)}/>
         <div className="mt-2 grid grid-cols-2 gap-1">{library.map(v=>{const version = state.assetVersions[v.versionId];const path = version ? versionImagePath(version,"thumbnail") : "";return <Button key={v.versionId} variant="ghost" className="h-auto min-w-0 flex-col p-1" disabled={!allowed} draggable={allowed} onDragStart={e=>{e.dataTransfer.setData("application/x-asset-studio-version",JSON.stringify({assetId:v.assetId,assetVariantId:version?.variantId,versionId:v.versionId}));e.dataTransfer.effectAllowed="copy";}} onClick={()=>addResource(v.versionId)} title={`${v.assetName} v${v.number}`} data-testid="sb3-resource"><span className="block aspect-[4/3] w-full">{urls[path] ? <Thumbnail src={urls[path]} alt=""/> : <Square className="size-6"/>}</span><span className="w-full truncate text-[11px]" dir="auto">{v.assetName}</span></Button>;})}</div>
       </aside>
-      <div className="flex min-h-[440px] min-w-0 flex-1 flex-col">
+      <div className={"flex min-h-[440px] min-w-0 flex-1 flex-col "+(drawing?"basis-full lg:basis-auto":"")}>
         <div className="flex flex-wrap gap-1 border-b border-border p-1" role="toolbar" aria-label={t("sb3.tools")}>
           {tools.map(item=><Button key={item.id} size="icon" variant={tool===item.id ? "secondary" : "ghost"} aria-label={panelLabel(`sb3.tool.${item.id}`)} title={panelLabel(`sb3.tool.${item.id}`)} aria-pressed={tool===item.id} disabled={item.id!=="select" && !allowed} onClick={()=>addTool(item.id)} data-testid={`sb3-tool-${item.id}`}><item.icon/></Button>)}
+          <Button size="sm" variant={drawing?"secondary":"ghost"} onClick={()=>setDrawing(!drawing)} aria-pressed={drawing}>{t("sb8.sketch")}</Button>
           <Button size="icon" variant="ghost" aria-label={t("sb3.notes-visible")} aria-pressed={guides.notes} onClick={()=>setGuides({...guides,notes:!guides.notes})}>{guides.notes ? <StickyNote/> : <EyeOff/>}</Button>
           <label className="flex items-center gap-1 text-[11px]"><input type="checkbox" checked={guides.safe} onChange={e=>setGuides({...guides,safe:e.target.checked})}/>{t("sb3.safe")}</label>
           <label className="flex items-center gap-1 text-[11px]"><input type="checkbox" checked={guides.thirds} onChange={e=>setGuides({...guides,thirds:e.target.checked})}/>{t("sb3.thirds")}</label>
           <select className={ctl+" max-w-32"} value={guides.mask} onChange={e=>setGuides({...guides,mask:e.target.value as Guides["mask"]})} aria-label={t("sb3.mask")}>{["project","2.39","1.85","16:9","9:16","1:1"].map(v=><option key={v} value={v}>{v==="project" ? t("sb3.project-format") : v}</option>)}</select>
         </div>
         <div className="relative flex min-h-0 flex-1" data-testid="sb3-stage" onDragOver={e=>{if(allowed && e.dataTransfer.types.includes("application/x-asset-studio-version"))e.preventDefault();}} onDrop={e=>{const raw=e.dataTransfer.getData("application/x-asset-studio-version");if(!raw)return;e.preventDefault();e.stopPropagation();try{const parsed=JSON.parse(raw);if(typeof parsed.versionId==="string")addResource(parsed.versionId);}catch{setError(t("sb1.error.invalid-panel"));}}}>
-          <Stage state={drawingState} composition={viewPanel} editable={allowed} selectedLayerId={selected} onSelect={select} run={run} imageUrls={urls} selectedShotId={null} onSelectShot={()=>undefined} frame={0} playing={false} view="scene" onViewChange={()=>undefined} autoKey={false}/>
-          <PanelGuides width={panel.width} height={panel.height} guides={guides}/>
+          {drawing?<PanelDrawing state={viewState} panel={viewPanel} allowed={allowed} cmds={cmds} panels={allPanels}/>:<><Stage state={drawingState} composition={viewPanel} editable={allowed} selectedLayerId={selected} onSelect={select} run={run} imageUrls={urls} selectedShotId={null} onSelectShot={()=>undefined} frame={0} playing={false} view="scene" onViewChange={()=>undefined} autoKey={false}/><PanelGuides width={panel.width} height={panel.height} guides={guides}/></>}
         </div>
         <div className="max-h-40 overflow-auto border-t border-border p-2" aria-label={t("sb3.layers")}>{[...layers].reverse().map((l,i)=><div key={l.id} className="flex items-center gap-1 text-[13px]" data-testid="sb3-layer"><Button size="sm" variant={l.id===selected ? "secondary" : "ghost"} className="min-w-0 flex-1 justify-start truncate" onClick={()=>select(l.id)}>{l.name}</Button><Button size="icon" variant="ghost" aria-label={t("sb3.visibility")} disabled={!allowed} onClick={()=>updateLayer(l,{visible:!l.visible})}>{l.visible?<Eye/>:<EyeOff/>}</Button><Button size="icon" variant="ghost" aria-label={t("sb3.lock")} disabled={!allowed} onClick={()=>updateLayer(l,{locked:!l.locked})}>{l.locked?<Lock/>:<Unlock/>}</Button><Button size="icon" variant="ghost" aria-label={t("sb3.up")} disabled={!allowed||i===0} onClick={()=>{const index=layers.findIndex(x=>x.id===l.id);run({type:"MoveLayer",layerId:l.id,beforeLayerId:layers[index+2]?.id??null});}}><ArrowUp/></Button><Button size="icon" variant="ghost" aria-label={t("sb3.down")} disabled={!allowed||i===layers.length-1} onClick={()=>{const index=layers.findIndex(x=>x.id===l.id);run({type:"MoveLayer",layerId:l.id,beforeLayerId:layers[index-1]?.id??null});}}><ArrowDown/></Button><Button size="icon" variant="ghost" aria-label={t("sb3.remove")} disabled={!allowed||l.locked} onClick={()=>run({type:"SetLayersRemoved",layerIds:[l.id],removed:true})}><Trash2/></Button></div>)}</div>
       </div>

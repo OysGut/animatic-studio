@@ -8334,6 +8334,7 @@ try {
       "script_annotations|private.validate_sb3_annotations||102",
       "composition_layers|private.validate_sb3_layer_links||103",
       "compositions|private.validate_sb4_temp_audio||104",
+      "composition_layers|private.validate_sb8_sketch||108",
     ]), `registeret avviker: ${JSON.stringify(rows)}`);
     // Alle registrerte funksjoner finnes med riktig signatur
     for (const fn of ["validate_translation_line_links", "validate_style_harmonizations", "validate_style_preferred_references",
@@ -8881,6 +8882,34 @@ try {
   });
 
   // ---------- search_path: alle SECURITY DEFINER-funksjoner skal ha search_path='' ----------
+  await test("0106 SB-8: sketch via apply_changes, storyboard-only, points and byte cap", async()=>{
+    const panel=newId(),layer=newId();const sketch={version:1,role:'rough',strokes:[{id:'s1',tool:'pencil',color:'#203040',size:4,opacity:1,curve:1,smoothing:.3,points:[[100,200,500,10,-10,0],[10,10,600,0,0,16]]}]};
+    await sbApply(g7p,{inserts:{compositions:[{id:panel,project_id:g7p,variant_id:sbSetup.variant,kind:'storyboard',occurrence_id:sbSetup.occurrence,order_key:'zzz1',revision:1}],composition_layers:[{id:layer,project_id:g7p,composition_id:panel,kind:'sketch',width:1920,height:1080,transform:{x:960,y:540,scaleX:1,scaleY:1,rotation:0,opacity:1},order_key:'a1',sketch,revision:1}]}});
+    assert((await sql`select sketch from public.composition_layers where id=${layer}`)[0]?.['sketch']?.strokes?.length===1,'stroke missing');
+    await sbApply(g7p,{updates:{composition_layers:[{id:layer,expected_revision:1,revision:2,sketch:{...sketch,strokes:[]}}]}});
+    assert((await sql`select sketch from public.composition_layers where id=${layer}`)[0]?.['sketch']?.strokes?.length===0,'undo failed');
+    await expectError(sbApply(g7p,{updates:{composition_layers:[{id:layer,expected_revision:2,revision:3,sketch:{...sketch,strokes:[{...sketch.strokes[0],points:[[0,0,1001,0,0,0]]}]}}]}}),'22023');
+    await expectError(sbApply(g7p,{updates:{composition_layers:[{id:layer,expected_revision:2,revision:3,sketch:{...sketch,extra:'x'.repeat(524289)}}]}}),'23514');
+    await expectError(sbApply(g7p,{updates:{composition_layers:[{id:layer,expected_revision:2,revision:3,sketch:{...sketch,version:null}}]}}),'22023');
+    await expectError(sbApply(g7p,{updates:{composition_layers:[{id:layer,expected_revision:2,revision:3,sketch:{...sketch,strokes:[{...sketch.strokes[0],size:'bad'}]}}]}}),'22023');
+    const animation=String((await sql`select id from public.compositions where project_id=${g7p} and variant_id=${sbSetup.variant} and kind='scene' limit 1`)[0]?.['id']);
+    await expectError(sbApply(g7p,{inserts:{composition_layers:[{id:newId(),project_id:g7p,composition_id:animation,kind:'sketch',width:1920,height:1080,transform:{x:960,y:540,scaleX:1,scaleY:1,rotation:0,opacity:1},order_key:'a1',sketch,revision:1}]}}),'22023');
+  });
+  await test("0106 SB-8: capability expiry, revoked link, wrong panel and browser denial",async()=>{
+    const panel=newId(),layer=newId();await sbApply(g7p,{inserts:{compositions:[{id:panel,project_id:g7p,variant_id:sbSetup.variant,kind:'storyboard',occurrence_id:sbSetup.occurrence,order_key:'zzz2',revision:1}],composition_layers:[{id:layer,project_id:g7p,composition_id:panel,kind:'sketch',width:1920,height:1080,transform:{x:960,y:540,scaleX:1,scaleY:1,rotation:0,opacity:1},order_key:'a1',sketch:{version:1,role:'rough',strokes:[]},revision:1}]}});
+    const hash='8'.repeat(64);const session=await as('service_role',null,tx=>tx`select public.sketch_session_create(${g7p},${panel},${layer},${ALICE},${hash}) id`);const id=String(session[0]?.['id']);
+    assert(!!(await as('service_role',null,tx=>tx`select public.sketch_session_lookup(${hash}) s`))[0]?.['s'],'valid capability denied');
+    const command={type:'UpdateLayers',layers:[{layerId:layer,fields:{sketch:{version:1,role:'clean',strokes:[]}}}]};
+    const changes={updates:{composition_layers:[{id:layer,expected_revision:1,revision:2,sketch:{version:1,role:'clean',strokes:[]}}]}};
+    await as('service_role',null,tx=>tx`select public.sketch_session_apply(${hash},${newId()},${tx.json(command)},${tx.json(command)},${tx.json(changes)})`);
+    await expectError(as('service_role',null,tx=>tx`select public.sketch_session_apply(${hash},${newId()},${tx.json(command)},${tx.json(command)},${tx.json(changes)})`),'40001');
+    await expectError(as('authenticated',ALICE,tx=>tx`select * from public.sketch_sessions`),'42501');
+    await expectError(as('service_role',null,tx=>tx`select public.sketch_session_create(${g7p},${newId()},${layer},${ALICE},${'7'.repeat(64)})`),'23503');
+    await sql`update public.sketch_sessions set expires_at=now()-interval '1 second' where id=${id}`;
+    assert((await as('service_role',null,tx=>tx`select public.sketch_session_lookup(${hash}) s`))[0]?.['s']===null,'expired link accepted');
+    await sql`update public.sketch_sessions set expires_at=now()+interval '5 minutes',revoked=true where id=${id}`;
+    assert((await as('service_role',null,tx=>tx`select public.sketch_session_lookup(${hash}) s`))[0]?.['s']===null,'revoked link accepted');
+  });
   await test("alle SECURITY DEFINER-funksjoner i public/private har search_path=''", async () => {
     const rows = await sql`
       select n.nspname as ns, p.proname as name

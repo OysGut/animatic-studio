@@ -32,6 +32,7 @@ export function panelResourceLayers(s: ProjectState, p: Composition): Compositio
   return layersOf(s, p.id).filter(l => l.visible && l.assetId && !l.shape && !l.text && !l.note && !l.arrow && !l.cameraMark);
 }
 export function automaticPanelBasis(s: ProjectState, p: Composition): PanelAiBasis {
+  if(layersOf(s,p.id).some(l=>l.visible&&l.sketch?.strokes.length))return "sketch";
   const resources = panelResourceLayers(s, p);
   if (resources.some(l => s.assets[l.assetId ?? ""]?.kind === "character" || s.assets[l.assetId ?? ""]?.kind === "object") || resources.length > 1) return "composition";
   return resources.length ? "sketch" : "script";

@@ -14794,6 +14794,294 @@
       "en": {
         "text": "Confirm and use"
       }
+    },
+    "sb8.sketch": {
+      "nb": {
+        "text": "Tegnelag"
+      },
+      "en": {
+        "text": "Drawing layer"
+      }
+    },
+    "sb8.pencil": {
+      "nb": {
+        "text": "Blyant"
+      },
+      "en": {
+        "text": "Pencil"
+      }
+    },
+    "sb8.brush": {
+      "nb": {
+        "text": "Pensel"
+      },
+      "en": {
+        "text": "Brush"
+      }
+    },
+    "sb8.erase": {
+      "nb": {
+        "text": "Viskelær"
+      },
+      "en": {
+        "text": "Eraser"
+      }
+    },
+    "sb8.fill": {
+      "nb": {
+        "text": "Fyll"
+      },
+      "en": {
+        "text": "Fill"
+      }
+    },
+    "sb8.line": {
+      "nb": {
+        "text": "Rett linje"
+      },
+      "en": {
+        "text": "Straight line"
+      }
+    },
+    "sb8.rect": {
+      "nb": {
+        "text": "Rektangel"
+      },
+      "en": {
+        "text": "Rectangle"
+      }
+    },
+    "sb8.ellipse": {
+      "nb": {
+        "text": "Ellipse"
+      },
+      "en": {
+        "text": "Ellipse"
+      }
+    },
+    "sb8.pan": {
+      "nb": {
+        "text": "Panorer"
+      },
+      "en": {
+        "text": "Pan"
+      }
+    },
+    "sb8.flip": {
+      "nb": {
+        "text": "Vend lerretet"
+      },
+      "en": {
+        "text": "Flip canvas"
+      }
+    },
+    "sb8.rotate": {
+      "nb": {
+        "text": "Roter visningen"
+      },
+      "en": {
+        "text": "Rotate view"
+      }
+    },
+    "sb8.zoom-in": {
+      "nb": {
+        "text": "Zoom inn"
+      },
+      "en": {
+        "text": "Zoom in"
+      }
+    },
+    "sb8.zoom-out": {
+      "nb": {
+        "text": "Zoom ut"
+      },
+      "en": {
+        "text": "Zoom out"
+      }
+    },
+    "sb8.export": {
+      "nb": {
+        "text": "Eksporter PNG-lag"
+      },
+      "en": {
+        "text": "Export PNG layer"
+      }
+    },
+    "sb8.tools": {
+      "nb": {
+        "text": "Tegneverktøy"
+      },
+      "en": {
+        "text": "Drawing tools"
+      }
+    },
+    "sb8.opacity": {
+      "nb": {
+        "text": "Opasitet"
+      },
+      "en": {
+        "text": "Opacity"
+      }
+    },
+    "sb8.smoothing": {
+      "nb": {
+        "text": "Utjevning"
+      },
+      "en": {
+        "text": "Smoothing"
+      }
+    },
+    "sb8.pressure": {
+      "nb": {
+        "text": "Trykkurve"
+      },
+      "en": {
+        "text": "Pressure curve"
+      }
+    },
+    "sb8.onion-opacity": {
+      "nb": {
+        "text": "Løkopasitet"
+      },
+      "en": {
+        "text": "Onion opacity"
+      }
+    },
+    "sb8.onion": {
+      "nb": {
+        "text": "Løk-visning"
+      },
+      "en": {
+        "text": "Onion skin"
+      }
+    },
+    "sb8.light": {
+      "nb": {
+        "text": "Lysbord"
+      },
+      "en": {
+        "text": "Lightbox"
+      }
+    },
+    "sb8.stroke-eraser": {
+      "nb": {
+        "text": "Visk hele strøk"
+      },
+      "en": {
+        "text": "Erase whole strokes"
+      }
+    },
+    "sb8.rough": {
+      "nb": {
+        "text": "Grovtegning"
+      },
+      "en": {
+        "text": "Rough drawing"
+      }
+    },
+    "sb8.clean": {
+      "nb": {
+        "text": "Rentegning"
+      },
+      "en": {
+        "text": "Clean drawing"
+      }
+    },
+    "sb8.canvas": {
+      "nb": {
+        "text": "Tegnelerret"
+      },
+      "en": {
+        "text": "Drawing canvas"
+      }
+    },
+    "sb8.palette": {
+      "nb": {
+        "text": "Prosjektpalett"
+      },
+      "en": {
+        "text": "Project palette"
+      }
+    },
+    "sb8.add-layer": {
+      "nb": {
+        "text": "Legg til tegnelag"
+      },
+      "en": {
+        "text": "Add drawing layer"
+      }
+    },
+    "sb8.stroke": {
+      "nb": {
+        "text": "Tegn strøk"
+      },
+      "en": {
+        "text": "Draw stroke"
+      }
+    },
+    "sb8.limit": {
+      "nb": {
+        "text": "Tegningen er for stor. Bruk et nytt lag."
+      },
+      "en": {
+        "text": "The drawing is too large. Use another layer."
+      }
+    },
+    "sb8.mobile": {
+      "nb": {
+        "text": "Tegn på nettbrett"
+      },
+      "en": {
+        "text": "Draw on tablet"
+      }
+    },
+    "sb8.mobile-title": {
+      "nb": {
+        "text": "From Pen to Glass – Tegning"
+      },
+      "en": {
+        "text": "From Pen to Glass – Drawing"
+      }
+    },
+    "sb8.saving": {
+      "nb": {
+        "text": "Lagrer…"
+      },
+      "en": {
+        "text": "Saving…"
+      }
+    },
+    "sb8.loading": {
+      "nb": {
+        "text": "Laster…"
+      },
+      "en": {
+        "text": "Loading…"
+      }
+    },
+    "sb8.retry": {
+      "nb": {
+        "text": "Prøv igjen"
+      },
+      "en": {
+        "text": "Try again"
+      }
+    },
+    "sb8.revoke": {
+      "nb": {
+        "text": "Tilbakekall tegnelenke"
+      },
+      "en": {
+        "text": "Revoke drawing link"
+      }
+    },
+    "sb8.session-error": {
+      "nb": {
+        "text": "Tegnelenken er utilgjengelig, utløpt eller tilgangen ble avvist."
+      },
+      "en": {
+        "text": "The drawing link is unavailable, expired or access was denied."
+      }
     }
   }
 }
