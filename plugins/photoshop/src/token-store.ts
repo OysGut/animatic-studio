@@ -1,5 +1,5 @@
 /**
- * Tokens lagres bare i UXP `secureStorage` (krypteres av operativsystemet), aldri i localStorage eller
+ * Tokens lagres bare i UXP `secureStorage` (krypteres av operativsystemet), aldri i nettleserlageret eller
  * pluginfiler (skillen ptg-adobe-uxp, regel 2).
  */
 import type { TokenSet, TokenStore } from "../../../packages/ptg-connector-sdk/src/index";
