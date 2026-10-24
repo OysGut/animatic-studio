@@ -780,23 +780,21 @@
     },
     "/projects/{projectId}/premiere/returns": {
       "post": {
-        "summary": "C-3: send klipperytme fra Premiere som forslag per panel (aldri automatisk bruk)",
-        "operationId": "sendPremiereReturn",
+        "summary": "C-3: send the Premiere edit back as per-panel proposals (never applied automatically).",
+        "operationId": "premiere_return",
+        "tags": [
+          "v1"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/projectId"
+          }
+        ],
         "security": [
           {
             "bearer": [
               "transfers:write"
             ]
-          }
-        ],
-        "parameters": [
-          {
-            "name": "projectId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
           }
         ],
         "requestBody": {
