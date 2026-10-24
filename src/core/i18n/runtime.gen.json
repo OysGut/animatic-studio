@@ -33622,6 +33622,9 @@
     "sb10.cancel": {
       "text": "Avbryt"
     },
+    "sb10.changed": {
+      "text": "Endret"
+    },
     "sb10.changes": {
       "text": "Endring ønsket"
     },
@@ -33676,6 +33679,9 @@
     "sb10.name": {
       "text": "Navn"
     },
+    "sb10.new": {
+      "text": "Nytt"
+    },
     "sb10.none": {
       "text": "Ingen status"
     },
@@ -33700,6 +33706,9 @@
     "sb10.rate": {
       "text": "For mange forespørsler. Prøv igjen senere."
     },
+    "sb10.removed": {
+      "text": "Fjernet"
+    },
     "sb10.reopen": {
       "text": "Gjenåpne"
     },
@@ -33723,6 +33732,9 @@
     },
     "sb10.revoked": {
       "text": "Tilbakekalt"
+    },
+    "sb10.same": {
+      "text": "Uendret"
     },
     "sb10.send": {
       "text": "Send"
@@ -68692,6 +68704,9 @@
     "sb10.cancel": {
       "text": "Cancel"
     },
+    "sb10.changed": {
+      "text": "Changed"
+    },
     "sb10.changes": {
       "text": "Changes requested"
     },
@@ -68746,6 +68761,9 @@
     "sb10.name": {
       "text": "Name"
     },
+    "sb10.new": {
+      "text": "New"
+    },
     "sb10.none": {
       "text": "No status"
     },
@@ -68770,6 +68788,9 @@
     "sb10.rate": {
       "text": "Too many requests. Try again later."
     },
+    "sb10.removed": {
+      "text": "Removed"
+    },
     "sb10.reopen": {
       "text": "Reopen"
     },
@@ -68793,6 +68814,9 @@
     },
     "sb10.revoked": {
       "text": "Revoked"
+    },
+    "sb10.same": {
+      "text": "Unchanged"
     },
     "sb10.send": {
       "text": "Send"
