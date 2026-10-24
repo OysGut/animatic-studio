@@ -77156,5 +77156,20 @@
   },
   "sb8.session-error": {
     "text": "The drawing link is unavailable, expired or access was denied."
+  },
+  "sb7.native-format": {
+    "text": "The panel mask format is sent to the model."
+  },
+  "sb7.fit-format": {
+    "text": "Nearest format: {format}. Fits the mask with transparent borders; the original is preserved."
+  },
+  "sb7.native-mask": {
+    "text": "Native model mask"
+  },
+  "sb7.no-mask": {
+    "text": "No model mask"
+  },
+  "sb7.recover": {
+    "text": "Recover candidate from receipt"
   }
 }

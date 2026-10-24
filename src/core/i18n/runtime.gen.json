@@ -34450,6 +34450,9 @@
     "sb7.estimate": {
       "text": "Vis kostnadsanslag"
     },
+    "sb7.fit-format": {
+      "text": "Nærmeste format: {format}. Tilpasses masken med gjennomsiktige kanter; originalen bevares."
+    },
     "sb7.grey": {
       "text": "Grå tegning"
     },
@@ -34461,6 +34464,18 @@
     },
     "sb7.model": {
       "text": "Bildemodell"
+    },
+    "sb7.native-format": {
+      "text": "Panelmaskens format sendes til modellen."
+    },
+    "sb7.native-mask": {
+      "text": "Modellens maske"
+    },
+    "sb7.no-mask": {
+      "text": "Ingen modellmaske"
+    },
+    "sb7.recover": {
+      "text": "Gjenopprett kandidat fra kvittering"
     },
     "sb7.references": {
       "text": "Godkjente stilforbilder (anbefalt 1–3, maks. {limit})"
@@ -69193,6 +69208,9 @@
     "sb7.estimate": {
       "text": "Show cost estimate"
     },
+    "sb7.fit-format": {
+      "text": "Nearest format: {format}. Fits the mask with transparent borders; the original is preserved."
+    },
     "sb7.grey": {
       "text": "Grey drawing"
     },
@@ -69204,6 +69222,18 @@
     },
     "sb7.model": {
       "text": "Image model"
+    },
+    "sb7.native-format": {
+      "text": "The panel mask format is sent to the model."
+    },
+    "sb7.native-mask": {
+      "text": "Native model mask"
+    },
+    "sb7.no-mask": {
+      "text": "No model mask"
+    },
+    "sb7.recover": {
+      "text": "Recover candidate from receipt"
     },
     "sb7.references": {
       "text": "Approved style references (recommended 1–3, maximum {limit})"

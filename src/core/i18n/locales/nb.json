@@ -77174,5 +77174,20 @@
   },
   "sb8.session-error": {
     "text": "Tegnelenken er utilgjengelig, utløpt eller tilgangen ble avvist."
+  },
+  "sb7.native-format": {
+    "text": "Panelmaskens format sendes til modellen."
+  },
+  "sb7.fit-format": {
+    "text": "Nærmeste format: {format}. Tilpasses masken med gjennomsiktige kanter; originalen bevares."
+  },
+  "sb7.native-mask": {
+    "text": "Modellens maske"
+  },
+  "sb7.no-mask": {
+    "text": "Ingen modellmaske"
+  },
+  "sb7.recover": {
+    "text": "Gjenopprett kandidat fra kvittering"
   }
 }
