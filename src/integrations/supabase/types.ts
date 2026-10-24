@@ -1402,6 +1402,247 @@ export type Database = {
           },
         ]
       }
+      connector_conflicts: {
+        Row: {
+          base_version_id: string | null
+          choice: string | null
+          created_at: string
+          current_version_id: string | null
+          id: string
+          incoming_version_id: string
+          project_id: string
+          resolved_at: string | null
+          resolved_by: string | null
+          revision: number
+          status: string
+          transfer_id: string
+          variant_id: string
+        }
+        Insert: {
+          base_version_id?: string | null
+          choice?: string | null
+          created_at?: string
+          current_version_id?: string | null
+          id?: string
+          incoming_version_id: string
+          project_id: string
+          resolved_at?: string | null
+          resolved_by?: string | null
+          revision?: number
+          status?: string
+          transfer_id: string
+          variant_id: string
+        }
+        Update: {
+          base_version_id?: string | null
+          choice?: string | null
+          created_at?: string
+          current_version_id?: string | null
+          id?: string
+          incoming_version_id?: string
+          project_id?: string
+          resolved_at?: string | null
+          resolved_by?: string | null
+          revision?: number
+          status?: string
+          transfer_id?: string
+          variant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "connector_conflicts_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "connector_conflicts_transfer_id_fkey"
+            columns: ["transfer_id"]
+            isOneToOne: false
+            referencedRelation: "connector_transfers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      connector_links: {
+        Row: {
+          client_id: string
+          created_at: string
+          created_by: string
+          entity: string
+          entity_id: string
+          external_id: string
+          id: string
+          project_id: string
+          removed: boolean
+          revision: number
+        }
+        Insert: {
+          client_id: string
+          created_at?: string
+          created_by: string
+          entity: string
+          entity_id: string
+          external_id: string
+          id?: string
+          project_id: string
+          removed?: boolean
+          revision?: number
+        }
+        Update: {
+          client_id?: string
+          created_at?: string
+          created_by?: string
+          entity?: string
+          entity_id?: string
+          external_id?: string
+          id?: string
+          project_id?: string
+          removed?: boolean
+          revision?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "connector_links_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      connector_sessions: {
+        Row: {
+          access_expires_at: string
+          access_hash: string
+          client_id: string
+          created_at: string
+          id: string
+          last_used_at: string | null
+          project_id: string
+          refresh_expires_at: string
+          refresh_hash: string
+          revoked_at: string | null
+          scopes: string[]
+          user_id: string
+        }
+        Insert: {
+          access_expires_at: string
+          access_hash: string
+          client_id: string
+          created_at?: string
+          id?: string
+          last_used_at?: string | null
+          project_id: string
+          refresh_expires_at: string
+          refresh_hash: string
+          revoked_at?: string | null
+          scopes: string[]
+          user_id: string
+        }
+        Update: {
+          access_expires_at?: string
+          access_hash?: string
+          client_id?: string
+          created_at?: string
+          id?: string
+          last_used_at?: string | null
+          project_id?: string
+          refresh_expires_at?: string
+          refresh_hash?: string
+          revoked_at?: string | null
+          scopes?: string[]
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "connector_sessions_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      connector_transfers: {
+        Row: {
+          asset_id: string
+          base_version_id: string | null
+          byte_size: number
+          candidate_version_id: string | null
+          conflict_id: string | null
+          created_at: string
+          direction: string
+          file_name: string
+          fingerprint: string
+          id: string
+          idempotency_key: string
+          project_id: string
+          sender: string
+          session_id: string | null
+          sha256: string
+          status: string
+          updated_at: string
+          variant_id: string
+        }
+        Insert: {
+          asset_id: string
+          base_version_id?: string | null
+          byte_size: number
+          candidate_version_id?: string | null
+          conflict_id?: string | null
+          created_at?: string
+          direction?: string
+          file_name: string
+          fingerprint: string
+          id: string
+          idempotency_key: string
+          project_id: string
+          sender: string
+          session_id?: string | null
+          sha256: string
+          status?: string
+          updated_at?: string
+          variant_id: string
+        }
+        Update: {
+          asset_id?: string
+          base_version_id?: string | null
+          byte_size?: number
+          candidate_version_id?: string | null
+          conflict_id?: string | null
+          created_at?: string
+          direction?: string
+          file_name?: string
+          fingerprint?: string
+          id?: string
+          idempotency_key?: string
+          project_id?: string
+          sender?: string
+          session_id?: string | null
+          sha256?: string
+          status?: string
+          updated_at?: string
+          variant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "connector_transfers_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "connector_transfers_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "connector_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       content_reports: {
         Row: {
           created_at: string
@@ -6258,6 +6499,75 @@ export type Database = {
           },
         ]
       }
+      storyboard_feedback: {
+        Row: {
+          created_at: string
+          decision: string
+          guest_email: string | null
+          guest_name: string
+          id: string
+          panel_key: string
+          pin_x: number | null
+          pin_y: number | null
+          project_id: string
+          replies: Json
+          resolved: boolean
+          revision: number
+          share_id: string
+          task_id: string | null
+          text: string
+        }
+        Insert: {
+          created_at?: string
+          decision?: string
+          guest_email?: string | null
+          guest_name: string
+          id?: string
+          panel_key: string
+          pin_x?: number | null
+          pin_y?: number | null
+          project_id: string
+          replies?: Json
+          resolved?: boolean
+          revision?: number
+          share_id: string
+          task_id?: string | null
+          text?: string
+        }
+        Update: {
+          created_at?: string
+          decision?: string
+          guest_email?: string | null
+          guest_name?: string
+          id?: string
+          panel_key?: string
+          pin_x?: number | null
+          pin_y?: number | null
+          project_id?: string
+          replies?: Json
+          resolved?: boolean
+          revision?: number
+          share_id?: string
+          task_id?: string | null
+          text?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "storyboard_feedback_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "storyboard_feedback_share_id_fkey"
+            columns: ["share_id"]
+            isOneToOne: false
+            referencedRelation: "storyboard_shares"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       storyboard_panel_blocks: {
         Row: {
           block_id: string
@@ -6360,6 +6670,71 @@ export type Database = {
           },
           {
             foreignKeyName: "storyboard_panel_snapshots_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      storyboard_shares: {
+        Row: {
+          allow_approval: boolean
+          allow_comments: boolean
+          created_at: string
+          created_by: string
+          expires_at: string
+          fps: number
+          id: string
+          manifest: Json
+          password_hash: string | null
+          project_id: string
+          ready: boolean
+          revoked: boolean
+          title: string
+          token_hash: string
+          video_bytes: number | null
+          video_key: string
+        }
+        Insert: {
+          allow_approval?: boolean
+          allow_comments?: boolean
+          created_at?: string
+          created_by: string
+          expires_at: string
+          fps: number
+          id?: string
+          manifest: Json
+          password_hash?: string | null
+          project_id: string
+          ready?: boolean
+          revoked?: boolean
+          title: string
+          token_hash: string
+          video_bytes?: number | null
+          video_key: string
+        }
+        Update: {
+          allow_approval?: boolean
+          allow_comments?: boolean
+          created_at?: string
+          created_by?: string
+          expires_at?: string
+          fps?: number
+          id?: string
+          manifest?: Json
+          password_hash?: string | null
+          project_id?: string
+          ready?: boolean
+          revoked?: boolean
+          title?: string
+          token_hash?: string
+          video_bytes?: number | null
+          video_key?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "storyboard_shares_project_id_fkey"
             columns: ["project_id"]
             isOneToOne: false
             referencedRelation: "projects"
@@ -7540,6 +7915,55 @@ export type Database = {
         Args: { p_batch: string; p_project: string }
         Returns: string
       }
+      connector_approve_code: {
+        Args: {
+          p_challenge: string
+          p_client: string
+          p_code_hash: string
+          p_project: string
+          p_redirect: string
+          p_scopes: string[]
+        }
+        Returns: undefined
+      }
+      connector_approve_device: {
+        Args: { p_approve: boolean; p_project: string; p_user_code: string }
+        Returns: undefined
+      }
+      connector_check_quota: {
+        Args: { p_bytes: number; p_project: string }
+        Returns: boolean
+      }
+      connector_consume_code: { Args: { p_hash: string }; Returns: Json }
+      connector_create_device: {
+        Args: {
+          p_client: string
+          p_expires: string
+          p_hash: string
+          p_scopes: string[]
+          p_user_code: string
+        }
+        Returns: undefined
+      }
+      connector_device_lookup: { Args: { p_user_code: string }; Returns: Json }
+      connector_poll_device: { Args: { p_hash: string }; Returns: Json }
+      connector_resolve_conflict: {
+        Args: { p_choice: string; p_id: string; p_revision: number }
+        Returns: undefined
+      }
+      connector_revoke_session: { Args: { p_id: string }; Returns: undefined }
+      connector_revoke_token: { Args: { p_hash: string }; Returns: undefined }
+      connector_rotate_refresh: {
+        Args: {
+          p_access: string
+          p_access_exp: string
+          p_old: string
+          p_refresh: string
+          p_refresh_exp: string
+        }
+        Returns: Json
+      }
+      connector_session_by_access: { Args: { p_hash: string }; Returns: Json }
       consume_my_bookmark: {
         Args: { p_project: string; p_updated_at: string }
         Returns: boolean
@@ -8212,6 +8636,25 @@ export type Database = {
           id: string
           storage_key: string
         }[]
+      }
+      storyboard_review_comment: {
+        Args: {
+          p_decision: string
+          p_email: string
+          p_hash: string
+          p_ip: string
+          p_key: string
+          p_name: string
+          p_text: string
+          p_x: number
+          p_y: number
+        }
+        Returns: string
+      }
+      storyboard_review_lookup: { Args: { p_hash: string }; Returns: Json }
+      storyboard_review_path_writable: {
+        Args: { p_name: string }
+        Returns: boolean
       }
       touch_activity: { Args: never; Returns: undefined }
       transition_dialogue_batch_item: {

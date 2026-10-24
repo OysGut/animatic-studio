@@ -13,15 +13,17 @@ import { tmpdir } from "node:os";
 import { resolve } from "node:path";
 
 const PORT = Number(process.env.SSR_PORT ?? 8799);
-const PATHS = ["/", "/nb", "/konto", "/koble", "/prosjekt/00000000-0000-7000-8000-000000000001", "/prosjekt/00000000-0000-7000-8000-000000000001/storyboard"];
+const PATHS = ["/", "/nb", "/konto", "/koble", "/retur", "/r/ptgh_AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "/prosjekt/00000000-0000-7000-8000-000000000001", "/prosjekt/00000000-0000-7000-8000-000000000001/storyboard"];
 const BAD_TEXT = ["The page could not be shown", "\"unhandled\":true"];
-const CONFIG = [".output/server/wrangler.json", "dist/server/wrangler.json"].find((p) => existsSync(p)) ?? ".output/server/wrangler.json";
+const findConfig = () => [".output/server/wrangler.json", "dist/server/wrangler.json"].find((p) => existsSync(p)) ?? ".output/server/wrangler.json";
+let CONFIG = findConfig();
 
 if (!process.env.SSR_SKIP_BUILD) {
   console.log("· vite build");
   const b = spawnSync("npx", ["vite", "build"], { stdio: "inherit" });
   if (b.status !== 0) { console.error("FEIL: vite build feilet"); process.exit(1); }
 }
+CONFIG = findConfig(); // the build may write to .output/ or dist/ depending on the preset
 if (!existsSync(CONFIG)) { console.error(`FEIL: fant ikke ${CONFIG}`); process.exit(1); }
 
 const log = [];

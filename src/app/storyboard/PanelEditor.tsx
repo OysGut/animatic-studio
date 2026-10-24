@@ -10,6 +10,8 @@ import { Thumbnail } from "@/app/shared/Thumbnail";
 import { PanelAudio } from "./PanelAudio";
 import { PanelAi } from "./PanelAi";
 import { PanelDrawing } from "./PanelDrawing";
+import { SendToButton } from "@/app/handoff/SendToDialog";
+import { HandoffStatus } from "@/app/handoff/HandoffStatus";
 import { PanelBlocking } from "./PanelBlocking";
 import { currentPosition, rememberPosition } from "@/app/shell/current-scene";
 import { panelPosition } from "@/core/storyboard/position";
@@ -151,6 +153,7 @@ export function PanelEditor({ state, panel, editable, cmds, projectId }: { state
         <div className="max-h-40 overflow-auto border-t border-border p-2" aria-label={t("sb3.layers")}>{[...layers].reverse().map((l,i)=><div key={l.id} className="flex items-center gap-1 text-[13px]" data-testid="sb3-layer"><Button size="sm" variant={l.id===selected ? "secondary" : "ghost"} className="min-w-0 flex-1 justify-start truncate" onClick={()=>select(l.id)}>{l.name}</Button><Button size="icon" variant="ghost" aria-label={t("sb3.visibility")} disabled={!allowed} onClick={()=>updateLayer(l,{visible:!l.visible})}>{l.visible?<Eye/>:<EyeOff/>}</Button><Button size="icon" variant="ghost" aria-label={t("sb3.lock")} disabled={!allowed} onClick={()=>updateLayer(l,{locked:!l.locked})}>{l.locked?<Lock/>:<Unlock/>}</Button><Button size="icon" variant="ghost" aria-label={t("sb3.up")} disabled={!allowed||i===0} onClick={()=>{const index=layers.findIndex(x=>x.id===l.id);run({type:"MoveLayer",layerId:l.id,beforeLayerId:layers[index+2]?.id??null});}}><ArrowUp/></Button><Button size="icon" variant="ghost" aria-label={t("sb3.down")} disabled={!allowed||i===layers.length-1} onClick={()=>{const index=layers.findIndex(x=>x.id===l.id);run({type:"MoveLayer",layerId:l.id,beforeLayerId:layers[index-1]?.id??null});}}><ArrowDown/></Button><Button size="icon" variant="ghost" aria-label={t("sb3.remove")} disabled={!allowed||l.locked} onClick={()=>run({type:"SetLayersRemoved",layerIds:[l.id],removed:true})}><Trash2/></Button></div>)}</div>
       </div>
       <aside className="w-full shrink-0 space-y-3 overflow-auto border-s border-border p-3 lg:w-72" aria-label={t("sb3.properties")}>
+        <div className="flex flex-wrap items-center gap-2" data-testid="panel-handoff"><SendToButton state={state} target={{ kind: "panel", panelId: panel.id }} disabled={!allowed} /><HandoffStatus projectId={projectId} target={{ kind: "panel", id: panel.id }} /></div>
         <PanelBlocking key={`blocking-${panel.id}`} state={state} panel={panel} allowed={allowed} save={saveDetails}/>
         <PanelAi key={panel.id} state={state} panel={panel} cmds={cmds} editable={allowed} mask={guides.mask}/>
         <PanelAudio key={panel.id} projectId={projectId} state={state} panel={panel} cmds={cmds} allowed={allowed} save={saveDetails}/>

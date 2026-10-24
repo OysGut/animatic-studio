@@ -59189,5 +59189,270 @@
     "text": "Другое разрешение: {scope}",
     "sourceHash": "378f60603d87c902070afe3b77ac167d31c8ba39fdd39519ca1df241f0fcce4e",
     "review": "machine"
+  },
+  "c1.build-failed": {
+    "text": "Не удалось создать файл.",
+    "sourceHash": "029090105d1838d556aee3336980d990c6343174d07218d4332b71a17705902b",
+    "review": "machine"
+  },
+  "c1.error": {
+    "text": "Что-то пошло не так. Попробуйте снова.",
+    "sourceHash": "3d739fa3b7d9c39b4ca225ed4f5c15dc9c343517420aa17b19f4ad679dfbad3e",
+    "review": "machine"
+  },
+  "c1.fact.audio": {
+    "text": "Звук с метаданными (таймкод, сцена и ID ресурса).",
+    "sourceHash": "882592e52273b6f2b3b161ec11a45ee23d915f8e14c3273ce18f06adf955ffea",
+    "review": "machine"
+  },
+  "c1.fact.flat": {
+    "text": "Только плоское изображение без слоёв.",
+    "sourceHash": "cdfedd55c2ae27b20dd1a2fbe7b6b976f21a8b4e866107e674087facdba70527",
+    "review": "machine"
+  },
+  "c1.fact.layers": {
+    "text": "Редактируемые слои с именами, видимостью, непрозрачностью и альфой.",
+    "sourceHash": "b671dc5c068dbb9bf8424223215fbeadd726c51a47a615aecd3e4bb57919840e",
+    "review": "machine"
+  },
+  "c1.fact.not-returnable": {
+    "text": "Нельзя вернуть сюда. Для возврата используйте PNG или PSD.",
+    "sourceHash": "f01e907cc6a9f2d83ebb09be3654f8d4a5ff75722db30d8d0dfd9b202e279063",
+    "review": "machine"
+  },
+  "c1.fact.returnable": {
+    "text": "Можно вернуть — станет новой версией-кандидатом.",
+    "sourceHash": "552b517b4878bd413ac48c8b55f254f0f2f927d45ee946b6cfef2d220d0b0fc3",
+    "review": "machine"
+  },
+  "c1.fact.text-raster": {
+    "text": "Текст и заметки становятся пикселями, а не редактируемым текстом.",
+    "sourceHash": "45be13b6c2e793e7e5b5a3fc53e2ff94d8deaaa7bc716f80f30f95c0e317a928",
+    "review": "machine"
+  },
+  "c1.fact.timeline": {
+    "text": "Таймлайн с клипами и таймингом, без медиафайлов.",
+    "sourceHash": "015e5cbd8d0babdcf4bcefae1d4e754ae229c02a0f0853ed2cdaddf2797d5269",
+    "review": "machine"
+  },
+  "c1.no-image": {
+    "text": "У ресурса нет версии изображения для отправки.",
+    "sourceHash": "f8d127ee27134a62ea5683b0d939b01f83d996716cecdd2979c47d96d2c94929",
+    "review": "machine"
+  },
+  "c1.panel": {
+    "text": "Кадр",
+    "sourceHash": "46da2692e83cefeca063204f5fcd27f34c96402d7e71ac3e2bcabab22e41743d",
+    "review": "machine"
+  },
+  "c1.scene": {
+    "text": "Сцена",
+    "sourceHash": "8e78c9759cd21e214716a22af84715427ca71b525a20d44da165b454e15e7fac",
+    "review": "machine"
+  },
+  "c1.readme": {
+    "text": "Отредактируйте файл в {app}. Загрузите его снова по ссылке ниже. Файл распознаётся по внутренней метке, а не по имени.",
+    "sourceHash": "ba0c3f56f05d57fda2e3e3db71e60fa160a854e26a77cd02619d4a847c529397",
+    "review": "machine"
+  },
+  "c1.return.boundary": {
+    "text": "Ничего не применяется автоматически. Команда сравнивает и выбирает активную версию.",
+    "sourceHash": "411487cf146cbf6faccda9b8b60602fe67498420fed1dcfc0e0b7120206ec240",
+    "review": "machine"
+  },
+  "c1.return.done": {
+    "text": "Получено. Файл — новая версия-кандидат, ожидающая утверждения.",
+    "sourceHash": "813bd590b0d7523560d6202adae29fa016711a0a7ba6d95997082c1de370b03e",
+    "review": "machine"
+  },
+  "c1.return.done-conflict": {
+    "text": "Получено, но оригинал изменился после отправки. Команда должна выбрать, что применить.",
+    "sourceHash": "0102fc8a110d5d1492f7929811bcd3f5964c96b14758653179af71afabd2dd9a",
+    "review": "machine"
+  },
+  "c1.return.err-checksum": {
+    "text": "Файл повреждён при загрузке. Попробуйте снова.",
+    "sourceHash": "b1b752c8e4ccd04a510f7e644198082759ff42d3338d1839df0bfe7c786a848a",
+    "review": "machine"
+  },
+  "c1.return.err-filename": {
+    "text": "В файле нет метки From Pen to Glass. Используйте ссылку или QR-код из отправки.",
+    "sourceHash": "9e1467f450fee684cf779ff56c30502548654769678098fc7c69dc483e243e69",
+    "review": "machine"
+  },
+  "c1.return.err-format": {
+    "text": "Формат файла отличается от отправленного.",
+    "sourceHash": "b0d51c9db7801f0589c16b1938fc1112d9138476bbfeb9a9b951b7f8280da796",
+    "review": "machine"
+  },
+  "c1.return.err-rate": {
+    "text": "Слишком много попыток. Подождите и попробуйте снова.",
+    "sourceHash": "8d70a7fecb8fade72330f34bf96e50d74bdf1c90a2890bc4fc32257e4251067a",
+    "review": "machine"
+  },
+  "c1.return.err-size": {
+    "text": "Файл слишком большой или квота исчерпана.",
+    "sourceHash": "b0409784171b4339cdf3bec0a74584dba370f875e5893280960c5c62d49e2616",
+    "review": "machine"
+  },
+  "c1.return.err-type": {
+    "text": "Тип или содержимое файла не разрешены.",
+    "sourceHash": "8851f0fc01e13c699ab76682b616a40954385e794869af681377e55deb22ae31",
+    "review": "machine"
+  },
+  "c1.return.err-unavailable": {
+    "text": "Ссылка недействительна, истекла или отозвана.",
+    "sourceHash": "f2743c3eaefeb52419b726ad102c206192a1f76507eed93c9af0f924b6d9f39b",
+    "review": "machine"
+  },
+  "c1.return.err-unknown": {
+    "text": "Файл не относится к этой отправке.",
+    "sourceHash": "07dfa00e0055e22e3b68b90522da379071f48ff842f8e1387e77835c09b1296c",
+    "review": "machine"
+  },
+  "c1.return.for": {
+    "text": "Вернуть: {file}",
+    "sourceHash": "56f176ddba96096b2d3e77c971822a44409ed501fc84edb4abffa185d2b5f970",
+    "review": "machine"
+  },
+  "c1.return.loading": {
+    "text": "Загрузка…",
+    "sourceHash": "9afa6b4550a416f8b1bf9a4d708a82a427e1f6ff70e25ef9d52769b406cf65ef",
+    "review": "machine"
+  },
+  "c1.return.page-description": {
+    "text": "Верните отредактированный файл в From Pen to Glass.",
+    "sourceHash": "0c62695ac71ac051dc3d9aed32cf713bcf7508c7608571023e72a4f6300b7a77",
+    "review": "machine"
+  },
+  "c1.return.page-description-signed": {
+    "text": "Верните файлы с меткой From Pen to Glass.",
+    "sourceHash": "fe7bc7882f2217b267a1fee3fe92f03061cc30e9e95483125f5aa0b37333e690",
+    "review": "machine"
+  },
+  "c1.return.page-title": {
+    "text": "Вернуть файл – From Pen to Glass",
+    "sourceHash": "c124aa757a97aa591da1324377c2bb4d657b30970b3ac44a7e30318e0a498a91",
+    "review": "machine"
+  },
+  "c1.return.pick": {
+    "text": "Выберите отредактированный файл",
+    "sourceHash": "b882768b200231baf428165556409642127de41ae51830251a0ca3ac5e234386",
+    "review": "machine"
+  },
+  "c1.return.progress": {
+    "text": "Загрузка… {percent}%",
+    "sourceHash": "8251755ca0ab699186f481c2b1ebd284ab1fb1d582ead02d099090f94ddf7341",
+    "review": "machine"
+  },
+  "c1.return.signed-intro": {
+    "text": "Загрузите файл, отправленный из одного из ваших проектов. Он распознаётся по метке внутри файла.",
+    "sourceHash": "56a674ab42a6dfdc293d954bfac4a3cb54dfa42d19346b28c4cf7eeb4f7ad7f4",
+    "review": "machine"
+  },
+  "c1.return.title": {
+    "text": "Вернуть файл",
+    "sourceHash": "c5cfa7ce65a5423323c9826bbafb1300005bd49d14b7ccd7679b0421d6e7d94f",
+    "review": "machine"
+  },
+  "c1.return.types": {
+    "text": "Разрешённые типы файлов: {types}",
+    "sourceHash": "6fdd419d6455e1176efd034b78b71006f0da536426601fa958033038152a4efa",
+    "review": "machine"
+  },
+  "c1.send.busy": {
+    "text": "Создаём файл…",
+    "sourceHash": "1712dc1dcdde9dba49d1aa87d489b0da7e10fea1699a0d25504402ca2c8fb626",
+    "review": "machine"
+  },
+  "c1.send.button": {
+    "text": "Отправить в…",
+    "sourceHash": "8351db7d118d305478bade70860d605da62d721f9ea9d6fe90747c1ba5005c86",
+    "review": "machine"
+  },
+  "c1.send.copy": {
+    "text": "Копировать ссылку",
+    "sourceHash": "c02c5db20168bdd5c3f87428863673a2e834c141ed0a0a633bf92362a08ceed8",
+    "review": "machine"
+  },
+  "c1.send.done": {
+    "text": "Пакет скачан. Верните файл по QR-коду или ссылке.",
+    "sourceHash": "11e729b125260ad8d140d5034b311154861eb14849dece541a29264001a629a5",
+    "review": "machine"
+  },
+  "c1.send.expires": {
+    "text": "Ссылка действует до {date}.",
+    "sourceHash": "474208a02efd80f8d4f0b538664ff69d24751be28f97175e592f6f2464936679",
+    "review": "machine"
+  },
+  "c1.send.for": {
+    "text": "для {app}",
+    "sourceHash": "240786b847148091458e7438c7eb507ea1e3dd2d80d90a6f342f8a696682b4e4",
+    "review": "machine"
+  },
+  "c1.send.format": {
+    "text": "Формат",
+    "sourceHash": "5c30e50c15a19af80fbdcd13b0d5fcace8fc7f673e660bc42dc9f03879d9f6c7",
+    "review": "machine"
+  },
+  "c1.send.go": {
+    "text": "Создать и скачать",
+    "sourceHash": "54c9ece70b1a0e303205b1f19da7665b89cffc000cb4f546449512d9ee814e83",
+    "review": "machine"
+  },
+  "c1.send.intro": {
+    "text": "Выберите формат. Вы увидите, что получит адресат. Файл возвращается по QR-коду или ссылке.",
+    "sourceHash": "36988c33914e97679bbd933951bc197ef72d1594bf0c3b03407b6e3780c04c6a",
+    "review": "machine"
+  },
+  "c1.send.ipad": {
+    "text": "На iPad (Procreate): Поделиться → Сохранить в «Файлы», откройте ссылку в браузере и выберите файл.",
+    "sourceHash": "a7f56f824d00f499a48fdb85349dd94e49969ba7b086e93d33e6c2f09a4e766a",
+    "review": "machine"
+  },
+  "c1.send.title": {
+    "text": "Отправить – {name}",
+    "sourceHash": "798a3184c207481a16cfc217f98a9e774e866ce9bc374659ae88939f993c7157",
+    "review": "machine"
+  },
+  "c1.status.conflict": {
+    "text": "Конфликт при возврате",
+    "sourceHash": "d2dc4fa013b5e097f7d5a7dbeb9ce3ca5a7be2a0b88ec7bf08b4b1708dfbecf0",
+    "review": "machine"
+  },
+  "c1.status.out": {
+    "text": "В работе в {app}",
+    "sourceHash": "9766c9e861ade396a7beac1f44c6905042693360fe4cb4d583026c52ccd71b59",
+    "review": "machine"
+  },
+  "c1.status.returned": {
+    "text": "Возвращено, ожидает утверждения",
+    "sourceHash": "fff07be76ce2181ab04808a3a89c6db777f0d9ce66e7a480f560a48d02a6b522",
+    "review": "machine"
+  },
+  "c1.format.psd": {
+    "text": "PSD со слоями",
+    "sourceHash": "458c4108c4d28c17d676e6d3ebfb9e846744185c9f94bc71db4b43bf57921e01",
+    "review": "machine"
+  },
+  "c1.format.png": {
+    "text": "PNG",
+    "sourceHash": "815c67080bf958b8f7de8cf90047a150b354a95fe02cde26a88b4923b25d033d",
+    "review": "machine"
+  },
+  "c1.format.svg": {
+    "text": "SVG",
+    "sourceHash": "390134ffe7c502b1043eb651dfabc32ff6dc8ef5ea16fa3f17d3df05aefeace1",
+    "review": "machine"
+  },
+  "c1.format.wav": {
+    "text": "WAV/BWF",
+    "sourceHash": "d116b9f4b70a4d2bbc09798e5b3aed45a4adfa0a01627253dadc6f1d90c71c67",
+    "review": "machine"
+  },
+  "c1.format.otio": {
+    "text": "Таймлайн OTIO",
+    "sourceHash": "878fe644a15cdb4b9b41f769ff8da67824c17976837d8f168da3fb6d53b8d567",
+    "review": "machine"
   }
 }

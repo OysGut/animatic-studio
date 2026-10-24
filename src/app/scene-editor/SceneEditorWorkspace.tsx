@@ -99,6 +99,8 @@ import { PanelEditor } from "@/app/storyboard/PanelEditor";
 import { RhythmPanel } from "./animation/RhythmPanel";
 import { runGroup } from "@/app/storylab/canvas/run-group";
 import { StoryboardReferencePanel, StoryboardStatusBadge } from "./StoryboardReferencePanel";
+import { SendToButton } from "@/app/handoff/SendToDialog";
+import { HandoffStatus } from "@/app/handoff/HandoffStatus";
 import { t as tk } from "@/core/i18n/keyed";
 
 export function SceneEditorWorkspace({
@@ -866,6 +868,8 @@ function Editor({
         <ToolbarGroup priority={8}>
           <SceneMarkControls state={state} occurrence={occurrence ?? undefined} editable={editable} run={cmds.run} />
           {occurrence ? <StoryboardStatusBadge state={state} occurrenceId={occurrence.id} /> : null}
+          {occurrence ? <HandoffStatus projectId={state.project.id} target={{ kind: "scene", id: occurrence.sceneId }} /> : null}
+          {occurrence ? <SendToButton state={state} target={{ kind: "scene", occurrenceId: occurrence.id }} /> : null}
         </ToolbarGroup>
         <ToolbarSeparator />
         <ToolbarGroup priority={7}>

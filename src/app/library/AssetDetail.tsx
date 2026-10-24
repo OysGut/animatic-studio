@@ -46,6 +46,8 @@ import { GenerateSoundPanel } from "./GenerateSoundPanel";
 import { ImageCompareDialog } from "./ImageCompareDialog";
 import { SoundLinksSection } from "./SoundLinksSection";
 import { MobileCameraButton } from "@/app/mobile/MobileImportDialog";
+import { SendToButton } from "@/app/handoff/SendToDialog";
+import { HandoffStatus } from "@/app/handoff/HandoffStatus";
 import { TakesMicButton } from "@/app/audio/AudioTakesDialog";
 import { CharacterVoiceSection } from "./CharacterVoiceSection";
 import { ContextNamesSection } from "./ContextNamesSection";
@@ -675,6 +677,10 @@ function Variants({
           ) : null}
         </div>
       ) : null}
+      <div className="flex flex-wrap items-center gap-2" data-testid="asset-handoff">
+        <SendToButton state={state} target={{ kind: "asset", assetId: asset.id }} disabled={!editable} />
+        <HandoffStatus projectId={state.project.id} target={{ kind: "asset", id: asset.id }} />
+      </div>
       <div className="flex items-center gap-2">
         <h2 className="shrink-0 whitespace-nowrap text-sm font-medium text-text-primary">
           {asset.kind === "sound"

@@ -16354,6 +16354,430 @@
       "en": {
         "text": "Other permission: {scope}"
       }
+    },
+    "c1.build-failed": {
+      "nb": {
+        "text": "Filen kunne ikke lages."
+      },
+      "en": {
+        "text": "The file could not be created."
+      }
+    },
+    "c1.error": {
+      "nb": {
+        "text": "Noe gikk galt. Prøv igjen."
+      },
+      "en": {
+        "text": "Something went wrong. Try again."
+      }
+    },
+    "c1.fact.audio": {
+      "nb": {
+        "text": "Lyd med metadata (tidskode, scene og ressurs-ID)."
+      },
+      "en": {
+        "text": "Audio with metadata (timecode, scene and asset ID)."
+      }
+    },
+    "c1.fact.flat": {
+      "nb": {
+        "text": "Bare et flatt bilde, uten lag."
+      },
+      "en": {
+        "text": "Only a flat image, without layers."
+      }
+    },
+    "c1.fact.layers": {
+      "nb": {
+        "text": "Redigerbare lag med navn, synlighet, opasitet og alfa."
+      },
+      "en": {
+        "text": "Editable layers with names, visibility, opacity and alpha."
+      }
+    },
+    "c1.fact.not-returnable": {
+      "nb": {
+        "text": "Kan ikke sendes tilbake hit. Bruk PNG eller PSD for retur."
+      },
+      "en": {
+        "text": "Cannot be returned here. Use PNG or PSD to return."
+      }
+    },
+    "c1.fact.returnable": {
+      "nb": {
+        "text": "Kan sendes tilbake og blir en ny kandidatversjon."
+      },
+      "en": {
+        "text": "Can be returned and becomes a new candidate version."
+      }
+    },
+    "c1.fact.text-raster": {
+      "nb": {
+        "text": "Tekst og lapper blir bilde, ikke redigerbar tekst."
+      },
+      "en": {
+        "text": "Text and notes become pixels, not editable text."
+      }
+    },
+    "c1.fact.timeline": {
+      "nb": {
+        "text": "Tidslinje med klipp og tider, uten mediefilene."
+      },
+      "en": {
+        "text": "Timeline with clips and timing, without the media files."
+      }
+    },
+    "c1.no-image": {
+      "nb": {
+        "text": "Ressursen har ingen bildeversjon å sende."
+      },
+      "en": {
+        "text": "The asset has no image version to send."
+      }
+    },
+    "c1.panel": {
+      "nb": {
+        "text": "Panel"
+      },
+      "en": {
+        "text": "Panel"
+      }
+    },
+    "c1.scene": {
+      "nb": {
+        "text": "Scene"
+      },
+      "en": {
+        "text": "Scene"
+      }
+    },
+    "c1.readme": {
+      "nb": {
+        "text": "Rediger filen i {app}. Last den opp igjen via lenken under. Filen gjenkjennes ved merket inni den, ikke ved navnet."
+      },
+      "en": {
+        "text": "Edit the file in {app}. Upload it again through the link below. The file is recognized by the marker inside it, not by its name."
+      }
+    },
+    "c1.return.boundary": {
+      "nb": {
+        "text": "Ingenting tas i bruk automatisk. Teamet sammenligner og velger aktiv versjon."
+      },
+      "en": {
+        "text": "Nothing is used automatically. The team compares and chooses the active version."
+      }
+    },
+    "c1.return.done": {
+      "nb": {
+        "text": "Mottatt. Filen er en ny kandidatversjon som venter på godkjenning."
+      },
+      "en": {
+        "text": "Received. The file is a new candidate version awaiting approval."
+      }
+    },
+    "c1.return.done-conflict": {
+      "nb": {
+        "text": "Mottatt, men originalen er endret siden den ble sendt. Teamet må velge hva som skal gjelde."
+      },
+      "en": {
+        "text": "Received, but the original changed after it was sent. The team must choose what applies."
+      }
+    },
+    "c1.return.err-checksum": {
+      "nb": {
+        "text": "Filen ble skadet under opplastingen. Prøv igjen."
+      },
+      "en": {
+        "text": "The file was damaged during upload. Try again."
+      }
+    },
+    "c1.return.err-filename": {
+      "nb": {
+        "text": "Filen har ikke merket fra From Pen to Glass. Bruk lenken eller QR-koden fra utsendelsen."
+      },
+      "en": {
+        "text": "The file has no From Pen to Glass marker. Use the link or QR code from the hand-off."
+      }
+    },
+    "c1.return.err-format": {
+      "nb": {
+        "text": "Filen har et annet format enn det som ble sendt ut."
+      },
+      "en": {
+        "text": "The file has a different format than the one sent out."
+      }
+    },
+    "c1.return.err-rate": {
+      "nb": {
+        "text": "For mange forsøk. Vent litt og prøv igjen."
+      },
+      "en": {
+        "text": "Too many attempts. Wait a moment and try again."
+      }
+    },
+    "c1.return.err-size": {
+      "nb": {
+        "text": "Filen er for stor eller kvoten er brukt opp."
+      },
+      "en": {
+        "text": "The file is too large or the quota is used up."
+      }
+    },
+    "c1.return.err-type": {
+      "nb": {
+        "text": "Filtypen eller innholdet er ikke tillatt."
+      },
+      "en": {
+        "text": "The file type or content is not allowed."
+      }
+    },
+    "c1.return.err-unavailable": {
+      "nb": {
+        "text": "Lenken er ugyldig, utløpt eller trukket tilbake."
+      },
+      "en": {
+        "text": "The link is invalid, expired or revoked."
+      }
+    },
+    "c1.return.err-unknown": {
+      "nb": {
+        "text": "Filen hører ikke til denne utsendelsen."
+      },
+      "en": {
+        "text": "The file does not belong to this hand-off."
+      }
+    },
+    "c1.return.for": {
+      "nb": {
+        "text": "Send tilbake: {file}"
+      },
+      "en": {
+        "text": "Return: {file}"
+      }
+    },
+    "c1.return.loading": {
+      "nb": {
+        "text": "Laster …"
+      },
+      "en": {
+        "text": "Loading …"
+      }
+    },
+    "c1.return.page-description": {
+      "nb": {
+        "text": "Send en redigert fil tilbake til From Pen to Glass."
+      },
+      "en": {
+        "text": "Return an edited file to From Pen to Glass."
+      }
+    },
+    "c1.return.page-description-signed": {
+      "nb": {
+        "text": "Send filer tilbake som er merket fra From Pen to Glass."
+      },
+      "en": {
+        "text": "Return files that carry a From Pen to Glass marker."
+      }
+    },
+    "c1.return.page-title": {
+      "nb": {
+        "text": "Send tilbake – From Pen to Glass"
+      },
+      "en": {
+        "text": "Return file – From Pen to Glass"
+      }
+    },
+    "c1.return.pick": {
+      "nb": {
+        "text": "Velg den redigerte filen"
+      },
+      "en": {
+        "text": "Choose the edited file"
+      }
+    },
+    "c1.return.progress": {
+      "nb": {
+        "text": "Laster opp … {percent} %"
+      },
+      "en": {
+        "text": "Uploading … {percent}%"
+      }
+    },
+    "c1.return.signed-intro": {
+      "nb": {
+        "text": "Last opp en fil som har vært sendt ut fra et av prosjektene dine. Den gjenkjennes ved merket inni filen."
+      },
+      "en": {
+        "text": "Upload a file that was sent out from one of your projects. It is recognized by the marker inside the file."
+      }
+    },
+    "c1.return.title": {
+      "nb": {
+        "text": "Send fil tilbake"
+      },
+      "en": {
+        "text": "Return a file"
+      }
+    },
+    "c1.return.types": {
+      "nb": {
+        "text": "Tillatte filtyper: {types}"
+      },
+      "en": {
+        "text": "Allowed file types: {types}"
+      }
+    },
+    "c1.send.busy": {
+      "nb": {
+        "text": "Lager filen …"
+      },
+      "en": {
+        "text": "Creating the file …"
+      }
+    },
+    "c1.send.button": {
+      "nb": {
+        "text": "Send til …"
+      },
+      "en": {
+        "text": "Send to …"
+      }
+    },
+    "c1.send.copy": {
+      "nb": {
+        "text": "Kopier lenke"
+      },
+      "en": {
+        "text": "Copy link"
+      }
+    },
+    "c1.send.done": {
+      "nb": {
+        "text": "Pakken er lastet ned. Bruk QR-koden eller lenken for å sende filen tilbake."
+      },
+      "en": {
+        "text": "The package has been downloaded. Use the QR code or link to return the file."
+      }
+    },
+    "c1.send.expires": {
+      "nb": {
+        "text": "Lenken gjelder til {date}."
+      },
+      "en": {
+        "text": "The link is valid until {date}."
+      }
+    },
+    "c1.send.for": {
+      "nb": {
+        "text": "for {app}"
+      },
+      "en": {
+        "text": "for {app}"
+      }
+    },
+    "c1.send.format": {
+      "nb": {
+        "text": "Format"
+      },
+      "en": {
+        "text": "Format"
+      }
+    },
+    "c1.send.go": {
+      "nb": {
+        "text": "Lag og last ned"
+      },
+      "en": {
+        "text": "Create and download"
+      }
+    },
+    "c1.send.intro": {
+      "nb": {
+        "text": "Velg format. Du ser hva mottakeren får. Filen sendes tilbake med QR-koden eller lenken."
+      },
+      "en": {
+        "text": "Choose a format. You see what the receiver gets. The file is returned with the QR code or link."
+      }
+    },
+    "c1.send.ipad": {
+      "nb": {
+        "text": "På iPad (Procreate): Del → Arkiver i Filer, åpne lenken i nettleseren og velg filen."
+      },
+      "en": {
+        "text": "On iPad (Procreate): Share → Save to Files, open the link in the browser and pick the file."
+      }
+    },
+    "c1.send.title": {
+      "nb": {
+        "text": "Send til … – {name}"
+      },
+      "en": {
+        "text": "Send to … – {name}"
+      }
+    },
+    "c1.status.conflict": {
+      "nb": {
+        "text": "Konflikt ved retur"
+      },
+      "en": {
+        "text": "Conflict on return"
+      }
+    },
+    "c1.status.out": {
+      "nb": {
+        "text": "Til behandling i {app}"
+      },
+      "en": {
+        "text": "In progress in {app}"
+      }
+    },
+    "c1.status.returned": {
+      "nb": {
+        "text": "Returnert, venter på godkjenning"
+      },
+      "en": {
+        "text": "Returned, awaiting approval"
+      }
+    },
+    "c1.format.psd": {
+      "nb": {
+        "text": "PSD med lag"
+      },
+      "en": {
+        "text": "PSD with layers"
+      }
+    },
+    "c1.format.png": {
+      "nb": {
+        "text": "PNG"
+      },
+      "en": {
+        "text": "PNG"
+      }
+    },
+    "c1.format.svg": {
+      "nb": {
+        "text": "SVG"
+      },
+      "en": {
+        "text": "SVG"
+      }
+    },
+    "c1.format.wav": {
+      "nb": {
+        "text": "WAV/BWF"
+      },
+      "en": {
+        "text": "WAV/BWF"
+      }
+    },
+    "c1.format.otio": {
+      "nb": {
+        "text": "OTIO-tidslinje"
+      },
+      "en": {
+        "text": "OTIO timeline"
+      }
     }
   }
 }

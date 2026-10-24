@@ -184,3 +184,6 @@ Merket nederst i hvert vindu viser «V-nnn · commit». Slå opp nummeret her.
 | V-177 | dialog | `src/app/storyboard/StoryboardReview.tsx` | StoryboardReview | Dialog i StoryboardReview | aktiv |
 | V-178 | dialog | `src/app/storyboard/StoryboardReview.tsx` | StoryboardReview | Dialog i StoryboardReview | aktiv |
 | V-179 | side | `src/routes/koble.tsx` | ConnectRoute | Side «Koble til et program – From Pen to Glass» (/koble) | aktiv |
+| V-180 | dialog | `src/app/handoff/SendToDialog.tsx` | SendToDialog | Dialog «Send til …» (C-1) | aktiv |
+| V-181 | side | `src/routes/r.$token.tsx` | ReturnRoute | Side «Send tilbake – From Pen to Glass» (/r/$token) | aktiv |
+| V-182 | side | `src/routes/retur.tsx` | SignedInReturn | Side «Send tilbake – From Pen to Glass» (/retur) | aktiv |
