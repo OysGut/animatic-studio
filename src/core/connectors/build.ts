@@ -16,7 +16,7 @@ export function buildProjectManifest(state: ProjectState, nowIso: string, adapte
   for (const o of Object.values(state.occurrences)) items.push({ kind: "occurrence", id: o.id, parentId: o.productionId, revision: o.revision, sceneId: o.sceneId, active: o.active });
   for (const c of Object.values(state.compositions)) {
     if (c.removed || c.kind !== "storyboard") continue;
-    const scriptRefs = Object.values(state.panelBlocks).filter(l => (l as { panelId?: string }).panelId === c.id).map(l => String((l as { blockId?: string }).blockId ?? "")).filter(Boolean);
+    const scriptRefs = Object.values(state.panelBlocks).filter(l => l.panelId === c.id && !(l as { removed?: boolean }).removed).map(l => String(l.blockId));
     items.push({ kind: "panel", id: c.id, parentId: c.occurrenceId ?? c.variantId, name: c.name, revision: c.revision, durationFrames: c.durationFrames, timecode: framesToTimecode(c.durationFrames, p.fps), scriptRefs });
   }
   for (const a of Object.values(state.assets)) {
