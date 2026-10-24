@@ -14,6 +14,17 @@ export async function saveStoryboardCandidate(db: AnyClient, projectId: string, 
   if (!state.assetVersions[versionId]) commands.push({ type: "AddAssetVersion", versionId: versionId as never, variantId: variant.id, media, note: JSON.stringify(trace) });
   if (!Object.values(state.layers).some(l => !l.removed && l.compositionId === panelId && l.versionId === versionId)) commands.push(panelCandidateLayer(state, panel, assetId, variant.id, versionId));
   const history: { commandId: string; inverse: Command; affected: readonly string[]; group: string }[] = [];
+  // Recovery also adopts commands committed before a later attachment failed.
+  if (existing) {
+    const { data, error } = await db.from("change_log").select("id,inverse,affected_ids,command").eq("project_id", projectId).eq("actor", userId).in("command_type", ["AddAssetVersion", "AddLayers"]).order("project_seq", { ascending: true });
+    if (error) throw Error(t("sb7.stale"));
+    for (const row of data ?? []) {
+      const command = row.command as Command;
+      if ((command.type === "AddAssetVersion" && command.versionId === versionId) || (command.type === "AddLayers" && command.layers.some(l => l.compositionId === panelId && l.fields.versionId === versionId))) {
+        if (row.inverse) history.push({ commandId: row.id, inverse: row.inverse as Command, affected: row.affected_ids ?? [], group: versionId });
+      }
+    }
+  }
   for (const command of commands) {
     const id = newId<"command">();
     const result = applyCommand(state, { id, actor: userId as never, at: new Date().toISOString(), command });
