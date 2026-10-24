@@ -4,7 +4,7 @@ import { exportImageSource, type ExportImageSource } from "@/core/storyboard/pla
 import { printLayout, printTable, type PanelPrintRow, type PrintOptions } from "@/core/storyboard/print";
 import { layerVersions, renderFrame } from "@/core/composition/render";
 import { notoScriptsNeeded } from "@/core/typography/pdf-scripts";
-import { isRtlText } from "@/core/language/direction";
+import { isRtlText } from "@/core/rtl";
 import { loadNotoFonts, registerNotoFonts, drawRuns, runsWidth } from "./pdf-fonts";
 import { drawFrame } from "../compositor/canvas";
 import { drawFilmFrame } from "../compositor/film";
@@ -74,7 +74,7 @@ export async function printImageRenderer(input: PrintExportInput) {
       if (input.source === "storyboard" && panel) {
         // Printed instructions remain visible: camera mark is not applied as a destructive crop.
         const frame = renderFrame({ ...state, compositions: { ...state.compositions, [panel.id]: { ...panel, cameraShots: [] } } }, panel.id, 0);
-        drawFrame(ctx, frame, { width: canvas.width, height: canvas.height, images: loaded.images, placeholders: true });
+        drawFrame(ctx, frame, { view: [canvas.width / frame.width, 0, 0, canvas.height / frame.height, 0, 0], images: loaded.images, placeholders: true });
       } else if (clip) {
         const solo = { ...clip, startFrame: 0, transition: { kind: "cut" as const, frames: 0 }, overlapFrames: 0 };
         const localFrame = Math.min(clip.durationFrames - 1, Math.max(0, row.startFrame - (input.rows.find(r => r.occurrenceId === row.occurrenceId)?.startFrame ?? 0)));
@@ -94,6 +94,7 @@ export async function storyboardPdf(input: PrintExportInput): Promise<Blob> {
   const texts = input.rows.flatMap(row => input.options.fields.map(k => `${input.labels[k]}: ${row[k]}`));
   const fonts = registerNotoFonts(doc, await loadNotoFonts(notoScriptsNeeded([input.state.project.name, input.version, input.date, ...texts], input.language)), "StoryboardNoto");
   const renderer = await printImageRenderer(input);
+  const overflow: { number: string; lines: string[] }[] = [];
   doc.setProperties({ title: input.state.project.name, subject: t("sb6.print"), creator: "From Pen to Glass" });
   const lineHeight = 3.2;
   function wrap(text: string, width: number): string[] {
@@ -152,5 +153,4 @@ export async function storyboardPdf(input: PrintExportInput): Promise<Blob> {
     if (input.signal.aborted) throw new DOMException(t("ptg1.cancelled"), "AbortError");
     return doc.output("blob");
   } finally { await renderer.close(); }
-  // Declared before async work begins; kept local to this document.
 }

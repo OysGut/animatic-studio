@@ -46,6 +46,7 @@ import { exportQueue } from "./export-queue";
 import { QualityProfilePicker, useQualityProfile } from "@/app/ai/QualityProfilePicker";
 import { AlphaExportDialog } from "./AlphaExportDialog";
 import { ShotlistExport } from "./ShotlistExport";
+import { StoryboardPrintExport } from "./StoryboardPrintExport";
 import { t, tLocalized } from "@/core/i18n/keyed";
 
 type Scope = ExportScope;
@@ -1130,6 +1131,7 @@ export function ExportAnimaticDialog({
 
         </div>
         <ShotlistExport state={state} productionId={productionId} clips={sel.clips} language={language} disabled={busy} />
+        <StoryboardPrintExport state={state} clips={clips.filter(c => sel.clips.some(selected => selected.occurrenceId === c.occurrenceId))} imageSource={imageSource} language={language.dialogue} disabled={busy} />
         </div>
         <details data-testid="export-history-section" className="rounded-sm border border-border bg-surface-1 px-3 py-2">
           <summary className="cursor-pointer text-xs font-medium text-text-secondary">{t("ptg.layout.history")}</summary>
