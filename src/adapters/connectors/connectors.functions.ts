@@ -17,7 +17,7 @@ async function noStore() { const { setResponseHeader } = await import("@tanstack
 
 export const approveConnectorCode = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth])
   .inputValidator((d: { projectId: string; clientId: string; redirectUri: string; challenge: string; method: string; scope: string; state: string }) => {
-    if (!d || !isUuid(d.projectId) || !CLIENT_ID_RE.test(d.clientId) || !redirectAllowed(d.redirectUri) || d.method !== "S256" || !CHALLENGE_RE.test(d.challenge) || !parseScopes(d.scope) || typeof d.state !== "string" || d.state.length > 500) throw fail();
+    if (!d || !isUuid(d.projectId) || !CLIENT_ID_RE.test(d.clientId) || !redirectAllowed(d.redirectUri, d.clientId) || d.method !== "S256" || !CHALLENGE_RE.test(d.challenge) || !parseScopes(d.scope) || typeof d.state !== "string" || d.state.length > 500) throw fail();
     return d;
   })
   .handler(async ({ data, context }) => {

@@ -104,7 +104,7 @@ async function token(req: Request, d: ApiDeps): Promise<Response> {
 async function device(req: Request, d: ApiDeps, origin: string): Promise<Response> {
   const b = await body(req);
   const clientId = s(b["client_id"]), scopes = parseScopes(s(b["scope"]));
-  if (!CLIENT_ID_RE.test(clientId)) return apiError(400, "invalid_client");
+  if (!CLIENT_ID_RE.test(clientId) || !clientKnown(clientId)) return apiError(400, "invalid_client");
   if (!scopes) return apiError(400, "invalid_scope");
   if (!(await d.store.rateLimit("connector_device", ["ip:" + sha256Hex(d.ip)]))) return apiError(429, "slow_down");
   const deviceCode = makeToken("device", d.random(32)), userCode = makeUserCode(d.random(8));

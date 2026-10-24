@@ -8998,13 +8998,13 @@ try {
     await expectError(as("authenticated",BOB,tx=>tx`select public.connector_revoke_session(${sid})`),'42501');
     await as("authenticated",ALICE,tx=>tx`select public.connector_revoke_session(${sid})`);
     assert((await sql`select revoked_at from public.connector_sessions where id=${sid}`)[0]?.['revoked_at']!==null,'revoke failed');
-    await as("service_role",ALICE,tx=>tx`select public.connector_create_device(${h('7')},'BCDF-GHJK','ptg.cli',array['project:read'],now()+interval '10 minutes')`);
+    await as("service_role",ALICE,tx=>tx`select public.connector_create_device(${h('7')},'BCDF-GHJK','ptg.generic-loopback',array['project:read'],now()+interval '10 minutes')`);
     assert((await as("service_role",ALICE,tx=>tx`select public.connector_poll_device(${h('7')}) v`))[0]?.['v']?.status==='pending','device not pending');
-    assert((await as("authenticated",ALICE,tx=>tx`select public.connector_device_lookup('BCDF-GHJK') v`))[0]?.['v']?.client_id==='ptg.cli','device lookup');
+    assert((await as("authenticated",ALICE,tx=>tx`select public.connector_device_lookup('BCDF-GHJK') v`))[0]?.['v']?.client_id==='ptg.generic-loopback','device lookup');
     await as("authenticated",ALICE,tx=>tx`select public.connector_approve_device('BCDF-GHJK',${g7p},true)`);
     assert((await as("service_role",ALICE,tx=>tx`select public.connector_poll_device(${h('7')}) v`))[0]?.['v']?.status==='approved','device not approved');
     assert((await as("service_role",ALICE,tx=>tx`select public.connector_poll_device(${h('7')}) v`))[0]?.['v']===null,'device code reused');
-    await as("service_role",ALICE,tx=>tx`select public.connector_create_device(${h('8')},'BCDF-GHJL','ptg.cli',array['project:read'],now()-interval '1 second')`);
+    await as("service_role",ALICE,tx=>tx`select public.connector_create_device(${h('8')},'BCDF-GHJL','ptg.generic-loopback',array['project:read'],now()-interval '1 second')`);
     assert((await as("service_role",ALICE,tx=>tx`select public.connector_poll_device(${h('8')}) v`))[0]?.['v']?.status==='expired','expired device');
     const tr=newId();
     await sql`insert into public.connector_transfers(id,project_id,sender,idempotency_key,fingerprint,file_name,byte_size,sha256,asset_id,variant_id) values(${tr},${g7p},${ALICE},${'k'.repeat(20)},'f','a.png',10,${h('9')},${newId()},${newId()})`;
