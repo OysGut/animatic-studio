@@ -4,6 +4,7 @@
     "src/**/*.tsx",
     "tests/**/*.ts",
     "tests/**/*.tsx",
+    "packages/**/*.ts",
     "vite.config.ts",
     "vitest.config.ts",
     "eslint.config.js"
