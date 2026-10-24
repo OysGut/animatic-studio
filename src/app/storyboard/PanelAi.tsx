@@ -29,7 +29,9 @@ export function PanelAi({ state, panel, cmds, editable, mask }: { state: Project
   const [refs, setRefs] = useState<string[]>([]); const [sketch, setSketch] = useState(""); const [second, setSecond] = useState("");
   const [busy, setBusy] = useState(false); const [error, setError] = useState<string | null>(null);
   const [quote, setQuote] = useState<{ cost: number; studyCost: number; request: StoryboardAiRequest } | null>(null);
-  const [candidates, setCandidates] = useState<Candidate[]>([]); const [text, setText] = useState("");
+  const [received, setReceived] = useState<Candidate[]>([]); const [text, setText] = useState("");
+  const savedCandidates = layersOf(state, panel.id).flatMap(l => { const v = l.versionId ? state.assetVersions[l.versionId] : null; if (!v || !l.assetId || !l.assetVariantId) return []; try { const trace = JSON.parse(v.note) as { panelId?: string }; if (trace.panelId !== panel.id) return []; return [{ versionId: v.id, assetId: l.assetId, variantId: l.assetVariantId, trace, media: { path: v.mediaPath, mimeType: v.mimeType, width: v.width, height: v.height, byteSize: v.byteSize, sha256: v.sha256, durationMs: v.durationMs } }]; } catch { return []; } });
+  const candidates = [...savedCandidates, ...received.filter(c => !savedCandidates.some(s => s.versionId === c.versionId))];
   const estimate = useServerFn(estimateStoryboardAi); const generate = useServerFn(generateStoryboardAi);
   const versions = Object.values(state.assetVersions).filter(v => !v.removed && v.mimeType.startsWith("image/"));
   const approved = versions.filter(v => state.assetVariants[v.variantId]?.approvedVersionId === v.id);
@@ -37,7 +39,7 @@ export function PanelAi({ state, panel, cmds, editable, mask }: { state: Project
   const makeRequest = (): StoryboardAiRequest => ({ projectId: state.project.id, panelId: panel.id, revision: panel.revision, action, secondPanelId: second || null, basis, style, visualNotes, sketchVersionId: sketch || panelResourceLayers(state, panel).flatMap(l => { const v = layerVersion(state, l); return v ? [v.id] : []; })[0] || null, references: refs, mask, provider: choice?.provider ?? "", model: choice?.model.id ?? "", textProvider: textChoice?.provider ?? "", textModel: textChoice?.model.id ?? "", count, assetId: null, approved: false });
   const getQuote = async () => {
     setBusy(true); setError(null);
-    try { await cmds.whenIdle(); const request = makeRequest(); const r = await estimate({ data: request }); if (r.ok && r.cost !== null) setQuote({ cost: r.cost, studyCost: r.studyCost, request }); else setError(r.ok ? t("sb7.unavailable") : r.message); }
+    try { await cmds.whenIdle(); const request = makeRequest(); const r = await estimate({ data: request }); if (r.ok && r.cost !== null) setQuote({ cost: r.cost, studyCost: r.studyCost, request: { ...request, quoteHash: r.quoteHash, maxCost: r.cost } }); else setError(r.ok ? t("sb7.unavailable") : r.message); }
     catch (e) { setError((e as Error).message); } finally { setBusy(false); }
   };
   const execute = async () => {
@@ -57,13 +59,7 @@ export function PanelAi({ state, panel, cmds, editable, mask }: { state: Project
       const result = await generate({ data: { ...request, assetId: assetId || null } });
       if ("candidates" in result && result.candidates) {
         for (const c of result.candidates) {
-          const group = newId();
-          const e = await cmds.runAndWait({ type: "AddAssetVersion", versionId: c.versionId as never, variantId: variantId as never, media: c.media, note: JSON.stringify(c.trace) }, t("sb7.candidate"), group);
-          if (e.error) throw Error(e.error);
-          const fresh = cmds.current() ?? state;
-          const p = fresh.compositions[panel.id];
-          if (p) { const result = await cmds.runAndWait(panelCandidateLayer(fresh, p, assetId, variantId, c.versionId), t("sb7.candidate"), group); if (result.error) throw Error(result.error); }
-          setCandidates(old => [...old, { versionId: c.versionId, media: c.media, trace: c.trace, assetId, variantId }]);
+          setReceived(old => [...old, { versionId: c.versionId, media: c.media, trace: c.trace, assetId, variantId }]);
         }
       }
       if (!result.ok) setError(result.message);
