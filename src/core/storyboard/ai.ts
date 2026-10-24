@@ -12,7 +12,7 @@ import { panelDetails } from "./editing";
 import { panelBlockIds } from "./index";
 import { panelLines } from "./gallery";
 import { styleProfileFor, composeStyleText } from "../generation/style";
-import { blocksOfVariant } from "../script";
+import { blocksOfVariant } from "../views";
 
 export type PanelAiBasis = "composition" | "sketch" | "script";
 export type PanelAiStyle = "line" | "grey" | "color";

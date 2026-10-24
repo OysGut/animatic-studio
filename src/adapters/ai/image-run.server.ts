@@ -33,7 +33,7 @@ async function sha256(b: Uint8Array): Promise<string> {
 export async function runImageGeneration(
   data: GenerateImageInput,
   ctx: { userId: string; supabase: unknown },
-  opts: { existingJobId?: string; storyboardTrace?: Readonly<Record<string, unknown>> } = {},
+  opts: { existingJobId?: string; storyboardTrace?: Readonly<Record<string, unknown>>; panelDimensions?: { width: number; height: number }; panelAspect?: import("./providers.server").ImageAspect; panelMask?: Blob; panelSketch?: Blob } = {},
 ): Promise<GenerateImageResult> {
   const batch = !!opts.existingJobId;
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -376,6 +376,10 @@ export async function runImageGeneration(
         purpose: data.purpose,
         ...(size ? { size } : {}),
         ...(data.aspect ? { aspect: data.aspect } : {}),
+        ...(opts.panelAspect ? { aspect: opts.panelAspect } : {}),
+        ...(opts.panelDimensions ? { dimensions: opts.panelDimensions } : {}),
+        ...(opts.panelMask ? { mask: opts.panelMask } : {}),
+        ...(opts.panelSketch ? { sketch: opts.panelSketch } : {}),
         ...(data.negativePrompt ? { negativePrompt: data.negativePrompt } : {}),
       };
       let out: { bytes: Uint8Array; mimeType: string };
