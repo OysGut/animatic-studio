@@ -133,7 +133,7 @@ export function premiereXml(seq: PremiereSequence): string {
   const video = seq.panels.map((p, i) => {
     const t = i > 0 && p.transition && p.transition.kind !== "cut" && p.transition.frames > 0 ? p.transition : null;
     const half = t ? Math.floor(t.frames / 2) : 0;
-    const effect = t ? (t.kind === "wipe" ? "Wipe" : t.kind === "dissolve" ? "Cross Dissolve" : "Dip to Color Dissolve") : "";
+    const effect = t ? ({ wipe: "Wipe", dissolve: "Cross Dissolve", dip: "Dip to Black", dipWhite: "Dip to White", iris: "Iris Round", push: "Push", cut: "" } as const)[t.kind] : "";
     const trans = t ? `<transitionitem><start>${p.startFrame - half}</start><end>${p.startFrame - half + t.frames}</end><alignment>center</alignment>${rate}<effect><name>${esc(t.kind)}</name><effectid>${effect}</effectid><effecttype>transition</effecttype><mediatype>video</mediatype></effect></transitionitem>` : "";
     return `${trans}<clipitem id="panel-${i + 1}"><name>${esc(p.label)}</name>${rate}<duration>${p.durationFrames}</duration><start>${p.startFrame}</start><end>${p.startFrame + p.durationFrames}</end><in>0</in><out>${p.durationFrames}</out><file id="file-panel-${i + 1}"><name>${esc(p.panelId)}.png</name><pathurl>${esc(p.image)}</pathurl>${rate}<duration>${p.durationFrames}</duration><media><video><samplecharacteristics><width>${seq.width}</width><height>${seq.height}</height></samplecharacteristics></video></media></file>${markersFor(p, firsts[i]!).map(m => marker(m)).join("")}</clipitem>`;
   }).join("\n");
