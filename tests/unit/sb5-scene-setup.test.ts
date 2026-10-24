@@ -197,18 +197,19 @@ describe("SB-5 referansepanelet følger avspillingen", () => {
     s = addPanelLayer(s, p.panelId, { kind: "note", fill: null, note: { text: "x", color: "#ffffff", noteType: "visual", handled: false, anchor: null } }).s;
     s = addPanelLayer(s, p.panelId, { kind: "camera_mark", fill: null, cameraMark: { frame: { x: 0, y: 0, width: 100, height: 100 }, zoom: 1, pan: { x: 0, y: 0 }, tilt: 0 } }).s;
     s = mustApply(s, {
-      type: "AddAnnotation",
-      annotationId: tid<"annotation">(),
-      variantId: s.occurrences[occurrenceId as never]!.variantId,
-      blockId: null,
-      panelId: p.panelId,
-      start: 0,
-      end: 0,
-      quote: "",
-      text: "Sjekk lyset",
-      authorName: "Test",
-      stampAt: "2026-10-24T00:00:00.000Z",
-    } as never);
+      type: "AddAnnotations",
+      annotations: [{
+        annotationId: tid<"annotation">(),
+        variantId: s.occurrences[occurrenceId as never]!.variantId,
+        blockId: null,
+        panelId: p.panelId as never,
+        start: 0,
+        end: 0,
+        quote: "",
+        text: "Sjekk lyset",
+        authorName: "Test",
+      }],
+    });
     const info = scenePanelReferences(s, occurrenceId)[0]!;
     expect(info).toMatchObject({ figures: 1, notes: 1, arrows: 0, cameraMark: true, comments: 1 });
   });
