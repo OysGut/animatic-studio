@@ -7,6 +7,7 @@ vi.mock('@tanstack/react-router',()=>({useNavigate:()=>vi.fn(),Link:()=>null}));
 vi.mock('@/app/library/asset-images',()=>({useImageUrls:()=>({data:{}})}));
 vi.mock('@/app/account/ui-prefs',()=>({useUiPref:(_key:string,fallback:unknown)=>[fallback,vi.fn()]}));
 vi.mock('@/app/scene-editor/Stage',()=>({Stage:()=>null}));
+vi.mock('@/app/storyboard/PanelAi',()=>({PanelAi:()=>null}));
 import {PanelEditor} from '@/app/storyboard/PanelEditor';
 import type {Commands} from '@/app/project/use-commands';
 const captured:Command[]=[];
