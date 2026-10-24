@@ -74,7 +74,8 @@ describe("SB-5 planSceneSetup", () => {
   it("oppretter ny 2D-scene med riktige felter når scenen ikke har en", () => {
     let { s, mainId, occurrenceId } = setup();
     const p = addPanel(s, occurrenceId, "a", 120);
-    s = addPanelLayer(p.s, p.panelId, { assetId: tid<"asset">() as never }).s;
+    const img = withImage(p.s);
+    s = addPanelLayer(img.s, p.panelId, { assetId: img.assetId as never, assetVariantId: img.variantId as never, versionId: img.versionId as never }).s;
     const plan = planSceneSetup(s, filmClips(s, mainId), occurrenceId, p.panelId);
     expect(plan.ok).toBe(true);
     if (!plan.ok) return;
@@ -92,11 +93,12 @@ describe("SB-5 planSceneSetup", () => {
   it("kopierer ressurslag med ID/versjon og transformasjon; hopper over lapp, pil og kameramerke", () => {
     let { s, mainId, occurrenceId } = setup();
     const p = addPanel(s, occurrenceId, "a", 100);
-    const assetId = tid<"asset">();
-    s = addPanelLayer(p.s, p.panelId, {
+    const img = withImage(p.s);
+    const assetId = img.assetId;
+    s = addPanelLayer(img.s, p.panelId, {
       assetId: assetId as never,
-      assetVariantId: tid<"asset_variant">() as never,
-      versionId: tid<"asset_version">() as never,
+      assetVariantId: img.variantId as never,
+      versionId: img.versionId as never,
       transform: { x: 500, y: 300, scaleX: 1.5, scaleY: 1.5, rotation: 15, opacity: 1 },
     }).s;
     s = addPanelLayer(s, p.panelId, { kind: "note", fill: null, note: { text: "regi", color: "#fff", noteType: "direction", handled: false, anchor: null } }).s;
