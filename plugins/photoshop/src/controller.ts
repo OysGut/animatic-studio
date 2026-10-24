@@ -9,7 +9,7 @@
 import { ConnectorError, PtgConnector, type AssetInfo, type PanelInfo, type VersionInfo } from "../../../packages/ptg-connector-sdk/src/index";
 import type { ConnectorManifest } from "../../../packages/ptg-connector-sdk/src/index";
 import type { Host, PsDocument } from "./host";
-import { describe, openBytes, savePsdCopy, type DocInfo } from "./photoshop-doc";
+import { describe, openBytes, savePngCopy, savePsdCopy, type DocInfo } from "./photoshop-doc";
 import { linkFileName, linkKey, loadLinks, rememberLink, saveLinks, type DocLink } from "./links";
 import { secureTokenStore } from "./token-store";
 import { pickLang, tr, type Lang, type StringKey } from "./strings";
@@ -158,18 +158,25 @@ export class PhotoshopPlugin {
       const link = doc ? this.links[linkKey(doc.name)] : undefined;
       if (!doc || !link) { this.info("noDoc"); return; }
       const docInfo = await describe(this.host, doc);
-      const name = linkKey(link.fileName) + ".psd";
-      const bytes = await savePsdCopy(this.host, doc, name, this.t("sendBack"));
       const target = { assetId: link.assetId, variantId: link.variantId, baseVersionId: link.baseVersionId };
-      const key = PtgConnector.idempotencyKey(PtgConnector.checksum(bytes), target);
-      const r = await this.sdk.upload(link.projectId, { name, bytes }, target, key, (done, total) => this.set({ progress: { done, total } }));
+      const send = async (name: string, bytes: Uint8Array) =>
+        this.sdk.upload(link.projectId, { name, bytes }, target, PtgConnector.idempotencyKey(PtgConnector.checksum(bytes), target), (done, total) => this.set({ progress: { done, total } }));
+      // PSD med lag først. Kan ikke prosjektet lagre PSD som versjon (415 unsupported_version_type, avvist før
+      // noen byte sendes), sendes en flat PNG med gjennomsiktighet; lagene blir liggende i dokumentet her.
+      let flat = false, r;
+      try { r = await send(linkKey(link.fileName) + ".psd", await savePsdCopy(this.host, doc, linkKey(link.fileName) + ".psd", this.t("sendBack"))); }
+      catch (e) {
+        if (!(e instanceof ConnectorError && e.code === "unsupported_version_type")) throw e;
+        flat = true;
+        r = await send(linkKey(link.fileName) + ".png", await savePngCopy(this.host, doc, linkKey(link.fileName) + ".png", this.t("sendBack")));
+      }
       let conflict: PluginState["conflict"] = null;
       if (r.conflictId) {
         const list = await this.sdk.conflicts(link.projectId);
         const c = list.conflicts.find(x => x.id === r.conflictId);
         conflict = { id: r.conflictId, revision: c?.revision ?? 1 };
       }
-      this.set({ docInfo, conflict, message: conflict ? { kind: "info", text: this.t("conflict") } : { kind: "info", text: this.t("sent") } });
+      this.set({ docInfo, conflict, message: conflict ? { kind: "info", text: this.t("conflict") } : { kind: "info", text: this.t(flat ? "sentFlat" : "sent") } });
     });
   }
   /** De tre valgene fra C-0. «Bruk min» åpner appen: bare brukerens egen godkjenning bytter aktiv versjon. */

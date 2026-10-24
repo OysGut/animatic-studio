@@ -9,7 +9,10 @@ export interface UxpFile { name: string; nativePath?: string; read(o: { format: 
 export interface UxpFolder { createFile(name: string, o: { overwrite: boolean }): Promise<UxpFile>; getEntry(name: string): Promise<UxpFile> }
 export interface PsDocument {
   id: number; name: string; width: number; height: number; resolution: number; mode?: string;
-  saveAs: { psd(file: UxpFile, options: { embedColorProfile: boolean; alphaChannels: boolean; layers: boolean; maximizeCompatibility?: boolean }, asCopy: boolean): Promise<void> };
+  saveAs: {
+    psd(file: UxpFile, options: { embedColorProfile: boolean; alphaChannels: boolean; layers: boolean; maximizeCompatibility?: boolean }, asCopy: boolean): Promise<void>;
+    png(file: UxpFile, options: { compression?: number; interlaced?: boolean }, asCopy: boolean): Promise<void>;
+  };
 }
 export interface PhotoshopModule {
   app: { activeDocument: PsDocument | null; open(file: UxpFile): Promise<PsDocument> };

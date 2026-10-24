@@ -39,3 +39,13 @@ export async function savePsdCopy(host: Host, doc: PsDocument, fileName: string,
   if (typeof data === "string") throw new Error("binary");
   return new Uint8Array(data);
 }
+
+/** Flat PNG-kopi med gjennomsiktighet (reserve når prosjektet ikke kan lagre PSD som versjon). */
+export async function savePngCopy(host: Host, doc: PsDocument, fileName: string, commandName: string): Promise<Uint8Array> {
+  const tmp = await host.uxp.storage.localFileSystem.getTemporaryFolder();
+  const file: UxpFile = await tmp.createFile(fileName, { overwrite: true });
+  await host.ps.core.executeAsModal(() => doc.saveAs.png(file, { compression: 6, interlaced: false }, true), { commandName });
+  const data = await file.read({ format: host.uxp.storage.formats.binary });
+  if (typeof data === "string") throw new Error("binary");
+  return new Uint8Array(data);
+}
