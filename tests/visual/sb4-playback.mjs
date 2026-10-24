@@ -13,8 +13,7 @@ for(const lang of ['nb','en']){
   await scrub.press('End');h.check(Number(await scrub.getAttribute('aria-valuenow'))>0,`${lang}: tastatur scrubbing flytter tiden`);
   h.check((await page.getByTestId('sb4-gallery-play').getAttribute('aria-label'))===(lang==='nb'?'Spill av':'Play'),`${lang}: scrubbing starter ikke lyd`);
   await page.getByTestId('sb4-gallery-play').click();
-  await page.waitForTimeout(200);
-  h.check((await page.getByTestId('sb4-gallery-play').getAttribute('aria-label'))===(lang==='nb'?'Pause':'Pause'),`${lang}: avspilling startet`);
+  h.check(await h.eventually(async()=>await page.getByTestId('sb4-gallery-play').getAttribute('aria-label')==='Pause',3000),`${lang}: avspilling startet`);
   await scrub.press('Home');await page.waitForTimeout(100);
   h.check((await page.getByTestId('sb4-gallery-play').getAttribute('aria-label'))===(lang==='nb'?'Spill av':'Play'),`${lang}: scrubbing stopper avspilling`);
   await page.screenshot({path:`${h.out}/${lang}.png`});

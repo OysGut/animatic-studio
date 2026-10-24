@@ -168,6 +168,8 @@ function Workspace({
     () => {
       if (!selection.occurrenceId) return;
       const old = currentPosition(projectId);
+      // Restoring a view is not a new line click: retain the exact shared time.
+      if (old?.occurrenceId === selection.occurrenceId && old.blockId === selection.blockId) return;
       const p = panelPosition(state, selection.occurrenceId, null, selection.blockId, old?.occurrenceId === selection.occurrenceId ? old.timeMs ?? 0 : 0);
       if (p) rememberPosition(projectId, p);
     },
