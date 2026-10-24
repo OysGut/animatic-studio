@@ -3,7 +3,7 @@
  * gjenbruksdeteksjon, tilbaketrekking, fartsgrense, kvote). Brukes av API- og SDK-testene; ingen nettverk.
  */
 import { applyCommand, type ProjectState } from "@/core";
-import { planCandidate, sha256Hex, type SbproCandidate } from "@/core/connectors";
+import { planCandidate, sha256Hex, type PremiereEdit, type SbproCandidate } from "@/core/connectors";
 import type { ConnectorStore, StoredTransfer } from "@/adapters/connectors/api-v1";
 
 type Pending = { kind: "code" | "device"; userCode?: string; clientId: string; redirectUri?: string; challenge?: string; projectId?: string; userId?: string; scopes: string[]; status: "pending" | "approved" | "denied" | "used"; expiresAt: string };
@@ -21,6 +21,7 @@ export function memoryStore(state: ProjectState, opts: { now: () => number; rate
   const files = new Map<string, Uint8Array>();
   const sbproReturns: { id: string; projectId: string; hash: string; userId: string }[] = [];
   const sbproCandidates: (SbproCandidate & { id: string; returnId: string; status: string; mediaPath: string | null })[] = [];
+  const premiereProposals: { id: string; returnId: string; edit: PremiereEdit; conflict: boolean; status: string }[] = [];
   let n = 0;
   const view = (x: Session) => ({ id: x.id, projectId: x.projectId, userId: x.userId, scopes: x.scopes, expiresAt: x.accessExpiresAt, revokedAt: x.revokedAt });
   const store: ConnectorStore = {
