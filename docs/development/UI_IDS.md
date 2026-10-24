@@ -189,3 +189,4 @@ Merket nederst i hvert vindu viser «V-nnn · commit». Slå opp nummeret her.
 | V-182 | side | `src/routes/retur.tsx` | SignedInReturn | Side «Send tilbake – From Pen to Glass» (/retur) | aktiv |
 | V-183 | dialog | `src/app/storyboard/BoordsSend.tsx` | BoordsDialog | Dialog «Send til Boords» (C-4) | aktiv |
 | V-184 | dialog | `src/app/storyboard/SbproSend.tsx` | SbproDialog | Dialog «Toon Boom Storyboard Pro» (C-5) | aktiv |
+| V-185 | dialog | `src/app/storyboard/PremiereSend.tsx` | PremiereDialog | Dialog «Premiere Pro» (C-3) | aktiv |

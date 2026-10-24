@@ -9124,6 +9124,22 @@ try {
     const wait=(await sql`insert into public.connector_panel_candidates(project_id,return_id,item_key,kind,status,media_sha256,media_bytes) values(${g7p},${ret},'p3','image','awaiting_file',${h('e')},10) returning id`)[0]?.['id'];
     assert((await as("authenticated",ALICE,tx=>tx`select public.connector_resolve_panel_candidate(${wait},'choose_incoming',1) r`))[0]?.['r']==='stale','awaiting file resolved');
   });
+  await test("0114 C-3 Premiere Pro: kilde premiere, forslagstype edit, valg per panel", async () => {
+    const h=(c:string)=>c.repeat(64).slice(0,64);
+    assert((await sql`select private.connector_client_known('ptg.premiere') v`)[0]?.['v']===true,'client unknown');
+    const ret=(await sql`insert into public.connector_returns(project_id,production_id,source,created_by,manifest_hash,panel_count) values(${g7p},${newId()},'premiere',${ALICE},${h('f')},3) returning id`)[0]?.['id'];
+    await expectError(sql`insert into public.connector_returns(project_id,production_id,source,created_by,manifest_hash,panel_count) values(${g7p},${newId()},'premiere',${ALICE},${h('f')},3)`,'23505');
+    await expectError(sql`insert into public.connector_returns(project_id,production_id,source,created_by,manifest_hash,panel_count) values(${g7p},${newId()},'avid',${ALICE},${h('9')},3)`,'23514');
+    const cand=(await sql`insert into public.connector_panel_candidates(project_id,return_id,item_key,panel_id,kind,incoming) values(${g7p},${ret},'p1',${newId()},'edit','{"durationFrames":42}') returning id`)[0]?.['id'];
+    await expectError(sql`insert into public.connector_panel_candidates(project_id,return_id,item_key,kind) values(${g7p},${ret},'p2','reorder')`,'23514');
+    assert((await as("authenticated",ALICE,tx=>tx`select id from public.connector_panel_candidates where id=${cand}`)).length===1,'member cannot read');
+    assert((await as("authenticated",CAROL,tx=>tx`select id from public.connector_panel_candidates where id=${cand}`)).length===0,'nonmember reads');
+    await expectError(as("authenticated",ALICE,tx=>tx`update public.connector_panel_candidates set status='resolved' where id=${cand}`),'42501');
+    assert((await as("authenticated",CAROL,tx=>tx`select public.connector_resolve_panel_candidate(${cand},'choose_incoming',1) r`))[0]?.['r']==='forbidden','nonmember resolved');
+    assert((await as("authenticated",ALICE,tx=>tx`select public.connector_resolve_panel_candidate(${cand},'reject',1) r`))[0]?.['r']==='ok','reject');
+    assert((await sql`select status from public.connector_panel_candidates where id=${cand}`)[0]?.['status']==='rejected','not rejected');
+    assert((await sql`select max(version)::int v from public.schema_version`)[0]?.['v']>=114,'schema version');
+  });
   await test("alle SECURITY DEFINER-funksjoner i public/private har search_path=''", async () => {
     const rows = await sql`
       select n.nspname as ns, p.proname as name
