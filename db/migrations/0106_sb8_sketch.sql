@@ -4,7 +4,7 @@ alter table public.composition_layers drop constraint composition_layers_kind_ch
 alter table public.composition_layers add constraint composition_layers_kind_check check(kind in ('background','midground','foreground','character','object','effect','other','group','text','page','note','arrow','camera_mark','sketch'));
 alter table public.composition_layers drop constraint composition_layers_shows_something;
 alter table public.composition_layers add constraint composition_layers_shows_something check(kind in ('group','page','note','arrow','camera_mark','sketch') or (kind='text' and text_spec is not null) or asset_id is not null or fill is not null);
-alter table public.composition_layers add constraint sketch_size check(sketch is null or (pg_catalog.jsonb_typeof(sketch)='object' and pg_catalog.octet_length(sketch::text)<=524288));
+alter table public.composition_layers add constraint sketch_size check(sketch is null or (pg_catalog.jsonb_typeof(sketch)='object' and pg_catalog.octet_length(sketch::text)<=524288 and pg_catalog.pg_column_size(sketch)<=524288));
 alter table public.composition_layers add constraint sketch_kind check((kind='sketch')=(sketch is not null));
 create function private.validate_sb8_sketch(p_project uuid,p_changes jsonb,p_ids uuid[]) returns void
 language plpgsql security definer set search_path='' as $$
@@ -36,6 +36,7 @@ insert into private.apply_change_validators(table_name,validator,sort_order)valu
 
 -- Capability rows are service-only, never project data. Parent deletion removes capabilities.
 create table public.sketch_sessions(id uuid primary key default pg_catalog.gen_random_uuid(),project_id uuid not null references public.projects(id) on delete cascade,panel_id uuid not null references public.compositions(id) on delete cascade,layer_id uuid not null references public.composition_layers(id) on delete cascade,actor uuid not null,token_hash text not null unique check(token_hash~'^[0-9a-f]{64}$'),expires_at timestamptz not null,revoked boolean not null default false,operations integer not null default 0 check(operations between 0 and 1000));
+revoke all on public.sketch_sessions from public,anon,authenticated;
 grant all on public.sketch_sessions to service_role;
 alter table public.sketch_sessions enable row level security;
 create policy sketch_sessions_service on public.sketch_sessions to service_role using(true) with check(true);

@@ -8334,6 +8334,7 @@ try {
       "script_annotations|private.validate_sb3_annotations||102",
       "composition_layers|private.validate_sb3_layer_links||103",
       "compositions|private.validate_sb4_temp_audio||104",
+      "composition_layers|private.validate_sb8_sketch||108",
     ]), `registeret avviker: ${JSON.stringify(rows)}`);
     // Alle registrerte funksjoner finnes med riktig signatur
     for (const fn of ["validate_translation_line_links", "validate_style_harmonizations", "validate_style_preferred_references",
