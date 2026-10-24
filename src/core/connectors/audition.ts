@@ -36,7 +36,7 @@ export function auditionPlan(s: ProjectState, occurrenceId: string, panelId: str
   const panelWindow = (p: (typeof shots)[number]) => ({ startMs: msOf(p.startFrame - sceneStart), endMs: msOf(p.startFrame - sceneStart + p.durationFrames) });
   const only = panelId ? shots.find(x => x.panel.id === panelId) : null;
   if (panelId && !only) return null;
-  const sceneDurationMs = film ? msOf(film.durationFrames) : shots.reduce((m, p) => Math.max(m, panelWindow(p).endMs), 0);
+  const sceneDurationMs = Math.max(film ? msOf(film.durationFrames) : 0, shots.reduce((m, p) => Math.max(m, panelWindow(p).endMs), 0));
   const win = only ? panelWindow(only) : { startMs: 0, endMs: sceneDurationMs };
   const lang = sourceLanguageOf(s);
   const panelAt = (ms: number) => shots.find(p => { const w = panelWindow(p); return ms >= w.startMs && ms < w.endMs; })?.panel.id ?? null;

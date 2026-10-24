@@ -32,7 +32,8 @@ let seed = 23;
 const random = (n: number) => { const b = new Uint8Array(n); for (let i = 0; i < n; i++) b[i] = (seed = (seed * 1103515245 + 12345) >>> 0) >>> 24; return b; };
 const tone = (n: number) => [Float32Array.from({ length: n }, (_, i) => Math.sin(i / 7) * 0.5), Float32Array.from({ length: n }, (_, i) => Math.cos(i / 9) * 0.25)];
 const plainWav = (n = 4800) => encodeBwf(tone(n), 48000, { description: "", originator: "", originatorReference: "", timeReference: 0, scene: "", assetId: "", timecode: "00:00:00:00", frameRate: { num: 25, den: 1 } });
-const pcmOf = (b: Uint8Array) => { const i = b.findIndex((_, k) => b[k] === 0x64 && b[k + 1] === 0x61 && b[k + 2] === 0x74 && b[k + 3] === 0x61 && k > 11); return b.subarray(i); };
+/** Datadelen funnet ved å gå gjennom RIFF-bitene (ikke tekstsøk, siden «data» også står i cue-biten). */
+const pcmOf = (b: Uint8Array) => { const v = new DataView(b.buffer, b.byteOffset); let p = 12; while (p + 8 <= b.length) { const id = String.fromCharCode(...b.subarray(p, p + 4)), len = v.getUint32(p + 4, true); if (id === "data") return b.subarray(p + 8, p + 8 + len); p += 8 + len + (len % 2); } throw new Error("no data"); };
 
 /** Én scene med tre paneler, dialogklipp (låst versjon v2, ikke godkjent), musikk (godkjent v1) og midlertidig panellyd. */
 function setup() {
@@ -144,7 +145,6 @@ describe("C-6 lydplan fra prosjektet", () => {
   it("roller, låst/godkjent versjon, midlertidig panellyd og panelmarkører; ID-er, ikke navn", () => {
     const r = setup();
     const plan = auditionPlan(r.s, r.occ.id)!;
-    console.log("DBG", JSON.stringify(plan.clips.map(c => [c.role, c.offsetMs, c.panelId])), JSON.stringify(plan.markers));
     const byRole = Object.fromEntries(plan.clips.map(c => [c.role, c]));
     expect(byRole["dialogue"]).toMatchObject({ clipId: r.dlg, versionId: r.v2, variantId: r.variantId, offsetMs: 1200, panelId: r.panels[1] });
     expect(byRole["music"]).toMatchObject({ clipId: r.mus, versionId: r.v1 });
