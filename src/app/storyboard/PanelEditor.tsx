@@ -129,11 +129,11 @@ export function PanelEditor({ state, panel, editable, cmds, projectId }: { state
     </header>
     {error ? <p role="alert" className="px-3 text-[13px] text-status-danger">{error}</p> : null}
     <div className="flex min-h-0 flex-1 flex-wrap lg:flex-nowrap">
-      <aside className="w-44 shrink-0 overflow-auto border-e border-border p-2" aria-label={t("sb3.library")}>
+      <aside className={(drawing?"hidden lg:block ":"")+"w-44 shrink-0 overflow-auto border-e border-border p-2"} aria-label={t("sb3.library")}>
         <input type="search" className={ctl} placeholder={t("attach.picker.search")} aria-label={t("attach.picker.search")} value={search} onChange={e=>setSearch(e.target.value)}/>
         <div className="mt-2 grid grid-cols-2 gap-1">{library.map(v=>{const version = state.assetVersions[v.versionId];const path = version ? versionImagePath(version,"thumbnail") : "";return <Button key={v.versionId} variant="ghost" className="h-auto min-w-0 flex-col p-1" disabled={!allowed} draggable={allowed} onDragStart={e=>{e.dataTransfer.setData("application/x-asset-studio-version",JSON.stringify({assetId:v.assetId,assetVariantId:version?.variantId,versionId:v.versionId}));e.dataTransfer.effectAllowed="copy";}} onClick={()=>addResource(v.versionId)} title={`${v.assetName} v${v.number}`} data-testid="sb3-resource"><span className="block aspect-[4/3] w-full">{urls[path] ? <Thumbnail src={urls[path]} alt=""/> : <Square className="size-6"/>}</span><span className="w-full truncate text-[11px]" dir="auto">{v.assetName}</span></Button>;})}</div>
       </aside>
-      <div className="flex min-h-[440px] min-w-0 flex-1 flex-col">
+      <div className={"flex min-h-[440px] min-w-0 flex-1 flex-col "+(drawing?"basis-full lg:basis-auto":"")}>
         <div className="flex flex-wrap gap-1 border-b border-border p-1" role="toolbar" aria-label={t("sb3.tools")}>
           {tools.map(item=><Button key={item.id} size="icon" variant={tool===item.id ? "secondary" : "ghost"} aria-label={panelLabel(`sb3.tool.${item.id}`)} title={panelLabel(`sb3.tool.${item.id}`)} aria-pressed={tool===item.id} disabled={item.id!=="select" && !allowed} onClick={()=>addTool(item.id)} data-testid={`sb3-tool-${item.id}`}><item.icon/></Button>)}
           <Button size="sm" variant={drawing?"secondary":"ghost"} onClick={()=>setDrawing(!drawing)} aria-pressed={drawing}>{t("sb8.sketch")}</Button>
