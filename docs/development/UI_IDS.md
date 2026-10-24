@@ -175,3 +175,4 @@ Merket nederst i hvert vindu viser «V-nnn · commit». Slå opp nummeret her.
 | V-168 | dialog | `src/app/storyboard/PanelEditor.tsx` | PanelEditor | Dialog i PanelEditor | aktiv |
 | V-169 | dialog | `src/app/storyboard/PanelEditor.tsx` | PanelEditor | Dialog i PanelEditor | aktiv |
 | V-170 | dialog | `src/app/storyboard/PanelEditor.tsx` | PanelEditor | Dialog i PanelEditor | aktiv |
+| V-171 | dialog | `src/app/storyboard/StoryboardFilm.tsx` | StoryboardFilm | Dialog «Storyboardfilm» i StoryboardFilm | aktiv |

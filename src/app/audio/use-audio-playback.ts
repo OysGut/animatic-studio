@@ -46,6 +46,7 @@ export function useAudioPlayback({
   mutedClipIds,
   previewBuffers,
   clock,
+  volume,
 }: {
   items: readonly FilmAudioItem[];
   /** Mediesti → lenke for lydfilene. */
@@ -60,6 +61,8 @@ export function useAudioPlayback({
   previewBuffers?: ReadonlyMap<string, AudioBuffer> | undefined;
   /** REQ-0210 (N2): fylles med avspillingshodet etter lydklokken, så bildet kan følge lyden. */
   clock?: { current: (() => number | null) | null };
+  /** Hovedvolum for denne avspillingen (0–1, SB-4). Mangler = 1. */
+  volume?: number;
 }) {
   const ctxRef = useRef<AudioContext | null>(null);
   const masterRef = useRef<GainNode | null>(null);
@@ -67,6 +70,11 @@ export function useAudioPlayback({
   const loaded = useAudioLoaded();
   const latest = useRef({ items, mutedKinds, mutedClipIds, time });
   latest.current = { items, mutedKinds, mutedClipIds, time };
+
+  // Hovedvolumet (SB-4): justeres uten å starte lyden på nytt
+  useEffect(() => {
+    if (masterRef.current) masterRef.current.gain.value = Math.min(1, Math.max(0, volume ?? 1));
+  }, [volume]);
 
   if (clock)
     clock.current = () => {

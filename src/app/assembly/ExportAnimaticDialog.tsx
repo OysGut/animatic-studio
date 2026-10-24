@@ -9,7 +9,7 @@ import { SceneSelect, mainOccurrenceOfScene } from "@/app/shell/SceneSelect";
 import { SceneMark } from "@/app/shell/SceneMark";
 import { AlertTriangle, CheckCircle2, Download, Info } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { filmMediaPaths, filmRange, shiftAudioItems, shiftCues, formatHeading, formatTimecode, framesToSeconds, layerVersion, layerVersions, layersOf, orderedOccurrences, LANGUAGE_LABEL, MAIN_LANGUAGE, type SubtitleCue, type AudioKind, type FilmAudioItem, type ExportSettings, type FilmClip, type ProjectState, qualityProfileSnapshot, locale, languageWord, toSrt, toVtt } from "@/core";
+import { filmMediaPaths, filmRange, shiftAudioItems, shiftCues, formatHeading, formatTimecode, framesToSeconds, layerVersion, layerVersions, layersOf, orderedOccurrences, LANGUAGE_LABEL, MAIN_LANGUAGE, exportImageSource, storyboardAudioItems, type ExportImageSource, type SubtitleCue, type AudioKind, type FilmAudioItem, type ExportSettings, type FilmClip, type ProjectState, qualityProfileSnapshot, locale, languageWord, toSrt, toVtt } from "@/core";
 import { useTextFonts } from "@/engine/typography/fonts";
 import type { TextSpec } from "@/core";
 import { ExportError, canExportVideo, exportAnimatic, loadImages } from "@/engine/export/animatic";
@@ -46,10 +46,15 @@ import { exportQueue } from "./export-queue";
 import { QualityProfilePicker, useQualityProfile } from "@/app/ai/QualityProfilePicker";
 import { AlphaExportDialog } from "./AlphaExportDialog";
 import { ShotlistExport } from "./ShotlistExport";
-import { t } from "@/core/i18n/keyed";
+import { t, tLocalized } from "@/core/i18n/keyed";
 
 type Scope = ExportScope;
 type Size = "full" | "half";
+const IMAGE_SOURCE_KEY = tLocalized<ExportImageSource>({
+  animation: "sb4.export.source-animation",
+  film: "sb4.export.source-film",
+  storyboard: "sb4.export.source-storyboard",
+});
 
 interface Check {
   readonly level: "ok" | "info" | "warn";
@@ -128,6 +133,8 @@ export function ExportAnimaticDialog({
   // R4: ProRes-profilen for filmeksport (422 HQ som standard; 422, LT og Proxy valgfritt)
   const [proresKind, setProresKind] = useState<ProResKind>("hq");
   const [scope, setScope] = useState<Scope>("film");
+  // SB-4: bildet i eksporten kan komme fra animasjonen (som før), importert film eller storyboardpanelene.
+  const [imageSource, setImageSource] = useState<ExportImageSource>("animation");
   const [alphaOpen, setAlphaOpen] = useState(false);
   const alphaClip = clips.find(c => c.occurrenceId === selectedId);
   const alphaComposition = alphaClip?.compositionId ? state.compositions[alphaClip.compositionId] : undefined;
@@ -201,14 +208,23 @@ export function ExportAnimaticDialog({
   }, [quality.profile, open]);
 
   const fps = state.project.fps;
+  // SB-4: bildekilden velges her; «animasjon» er dagens oppførsel uendret. Adapteren gir en visning
+  // (state + klipp) – prosjektdata endres aldri. Lyden er alltid den samme filmlyden, flyttet i tid.
+  const adapted = useMemo(() => exportImageSource(state, clips, imageSource), [state, clips, imageSource]);
+  const exState = adapted.state;
+  const exClips = adapted.clips;
+  const exAudioItems = useMemo(
+    () => (imageSource === "storyboard" ? storyboardAudioItems(clips, adapted.shots, allAudioItems, fps) : allAudioItems),
+    [imageSource, clips, adapted, allAudioItems, fps],
+  );
   // Alle utvalg unntatt hele filmen går gjennom filmSelection: lyd og undertekster følger scenen sin, så lyd
   // fra scenen før ikke lekker inn i overlappen (KI-85, som «Valgte scener» etter KI-172)
   const exportClips = useMemo(
     () =>
       includeCredits
-        ? clips
-        : clips.filter((c) => state.occurrences[c.occurrenceId] !== undefined && occurrenceKind(state.occurrences[c.occurrenceId]!) !== "credits"),
-    [clips, includeCredits, state],
+        ? exClips
+        : exClips.filter((c) => exState.occurrences[c.occurrenceId] !== undefined && occurrenceKind(exState.occurrences[c.occurrenceId]!) !== "credits"),
+    [exClips, includeCredits, exState],
   );
   const partSel = useMemo(
     () => exportSelection(exportClips, scope, { selectedId, fromId, toId, picked }),
@@ -219,9 +235,9 @@ export function ExportAnimaticDialog({
   const audioItems = useMemo(
     () =>
       partSel
-        ? shiftAudioItems(allAudioItems, partSel.shiftOf, fps, partSel.runEndOf)
-        : allAudioItems,
-    [partSel, allAudioItems, fps],
+        ? shiftAudioItems(exAudioItems, partSel.shiftOf, fps, partSel.runEndOf)
+        : exAudioItems,
+    [partSel, exAudioItems, fps],
   );
   const subtitles = useMemo(
     () =>
@@ -250,7 +266,7 @@ export function ExportAnimaticDialog({
           : t("app-assembly-export-animatic-dialog.text.text.75885539b60d"),
     });
     if (scope === "film") {
-      const inactive = orderedOccurrences(state, productionId).filter((o) => !o.active).length;
+      const inactive = orderedOccurrences(exState, productionId).filter((o) => !o.active).length;
       if (inactive > 0)
         out.push({
           level: "info",
@@ -280,10 +296,10 @@ export function ExportAnimaticDialog({
     let missingVersions = 0;
     for (const c of sel.clips) {
       if (!c.compositionId || !c.parts.some((p) => p.source === "composition")) continue;
-      for (const l of layersOf(state, c.compositionId)) {
+      for (const l of layersOf(exState, c.compositionId)) {
         if (!l.visible) continue;
         if (l.kind === "text" && l.text) texts.push(l.text);
-        const vs = layerVersions(state, l);
+        const vs = layerVersions(exState, l);
         for (const v of vs) need.add(v.mediaPath);
         if (vs.length === 0 && l.assetId !== null) missingVersions++;
       }
@@ -353,7 +369,7 @@ export function ExportAnimaticDialog({
   }, [
     sel,
     scope,
-    state,
+    exState,
     productionId,
     fps,
     audioItems,
@@ -413,6 +429,14 @@ export function ExportAnimaticDialog({
         const u = urls?.[p];
         if (u) subset[p] = u;
         else missingUrl.push(p);
+      }
+      // SB-4: storyboardpanelenes bilder er ikke med i monteringens lenkesett – hent dem her
+      if (missingUrl.length > 0 && imageSource === "storyboard") {
+        try {
+          const fresh = await signedUrls(missingUrl, 4 * 60 * 60);
+          for (const p of missingUrl) if (fresh[p]) { subset[p] = fresh[p]; }
+        } catch { /* telles som tapt under */ }
+        for (let i = missingUrl.length - 1; i >= 0; i--) if (subset[missingUrl[i]!]) missingUrl.splice(i, 1);
       }
       const audioSubset: Record<string, string> = {};
       for (const p of audioPaths) {
@@ -477,7 +501,7 @@ export function ExportAnimaticDialog({
         const sink = await openAlphaSink(name, "video/quicktime");
         try {
           const res = await exportProResFilm({
-            state, clips: sel.clips, startFrame: sel.startFrame, endFrame: sel.endFrame, width: outW, height: outH, fps,
+            state: exState, clips: sel.clips, startFrame: sel.startFrame, endFrame: sel.endFrame, width: outW, height: outH, fps,
             monochrome: mono, images, signal: ctrl.signal, sink, profile: proresKind,
             audio: { items: audioItems, bank: audioBank, mutedKinds },
             filmUrls: await freshFilmUrls(sel.clips, filmUrls),
@@ -502,7 +526,7 @@ export function ExportAnimaticDialog({
         return;
       }
       const file = await exportAnimatic({
-        state,
+        state: exState,
         // Bare utvalget: et utsnitt begynner og slutter rent (ingen overgang fra scener utenfor)
         clips: sel.clips,
         startFrame: sel.startFrame,
@@ -538,7 +562,7 @@ export function ExportAnimaticDialog({
       setReady({ ...f, bytes: file.bytes.byteLength });
       if (separateLayers) {
         const layers = await exportAnimatic({
-          state, clips: sel.clips, startFrame: sel.startFrame, endFrame: sel.endFrame, width: outW, height: outH, fps,
+          state: exState, clips: sel.clips, startFrame: sel.startFrame, endFrame: sel.endFrame, width: outW, height: outH, fps,
           images, signal: ctrl.signal, mp4: container === "mp4", webm: container === "webm", characterPass: "separate",
         });
         if (abort.current !== ctrl || ctrl.signal.aborted) return;
@@ -794,6 +818,23 @@ export function ExportAnimaticDialog({
                 </span>
               </div>
             ) : null}
+          </fieldset>
+
+          <fieldset className="flex flex-col gap-2 rounded-sm border border-border bg-surface-1 p-3" disabled={busy} data-testid="export-image-source">
+            <legend className={legend}>{t("sb4.export.image-source")}</legend>
+            {(["animation", "film", "storyboard"] as const).map((src) => (
+              <label key={src} className={radio}>
+                <input
+                  type="radio"
+                  name="imageSource"
+                  checked={imageSource === src}
+                  onChange={() => setImageSource(src)}
+                  className="mt-1"
+                  data-testid={`export-source-${src}`}
+                />
+                <span>{IMAGE_SOURCE_KEY[src]}</span>
+              </label>
+            ))}
           </fieldset>
 
           <fieldset className="flex flex-col gap-2 rounded-sm border border-border bg-surface-1 p-3" disabled={busy}>

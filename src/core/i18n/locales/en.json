@@ -76751,5 +76751,56 @@
   },
   "sb3.camera.frame-height": {
     "text": "Frame height"
+  },
+  "sb4.play-film": {
+    "text": "Play the storyboard film"
+  },
+  "sb4.film.title": {
+    "text": "Storyboard film"
+  },
+  "sb4.film.description": {
+    "text": "The panels play with the scene's sound. The sound is the time master."
+  },
+  "sb4.film.empty": {
+    "text": "No active panels in the film yet."
+  },
+  "sb4.film.pause": {
+    "text": "Pause"
+  },
+  "sb4.film.play": {
+    "text": "Play"
+  },
+  "sb4.film.timeline": {
+    "text": "Storyboard film timeline"
+  },
+  "sb4.film.mute": {
+    "text": "Mute"
+  },
+  "sb4.film.unmute": {
+    "text": "Unmute"
+  },
+  "sb4.film.volume": {
+    "text": "Volume"
+  },
+  "sb4.film.fullscreen": {
+    "text": "Fullscreen"
+  },
+  "sb4.film.exit-fullscreen": {
+    "text": "Exit fullscreen"
+  },
+  "sb4.film.panel-label": {
+    "text": "Scene {scene}, panel {panel}: {name}"
+  },
+  "sb4.export.image-source": {
+    "text": "Image source"
+  },
+  "sb4.export.source-animation": {
+    "text": "Animation"
+  },
+  "sb4.export.source-film": {
+    "text": "Film"
+  },
+  "sb4.export.source-storyboard": {
+    "text": "Storyboard panels"
   }
 }

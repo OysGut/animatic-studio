@@ -185,6 +185,7 @@ export const UI_IDS: readonly UiIdEntry[] = [
   {"id":"V-168","kind":"dialog","component":"PanelEditor","file":"src/app/storyboard/PanelEditor.tsx","description":"Dialog i PanelEditor","status":"aktiv"},
   {"id":"V-169","kind":"dialog","component":"PanelEditor","file":"src/app/storyboard/PanelEditor.tsx","description":"Dialog i PanelEditor","status":"aktiv"},
   {"id":"V-170","kind":"dialog","component":"PanelEditor","file":"src/app/storyboard/PanelEditor.tsx","description":"Dialog i PanelEditor","status":"aktiv"},
+  {"id":"V-171","kind":"dialog","component":"StoryboardFilm","file":"src/app/storyboard/StoryboardFilm.tsx","description":"Dialog «Storyboardfilm» i StoryboardFilm","status":"aktiv"},
 ];
 
 const BY_ID = new Map(UI_IDS.map((e) => [e.id, e]));

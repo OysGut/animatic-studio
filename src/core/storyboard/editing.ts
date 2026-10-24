@@ -9,6 +9,13 @@ export const SHOT_TYPES = ["ECU", "CU", "MCU", "MS", "MWS", "WS", "EWS", "OTS", 
 export const SHOT_ANGLES = ["eye", "high", "low", "bird", "dutch"] as const;
 export const STANDARD_PANEL_FIELDS = ["action", "dialogue", "sound", "camera", "notes"] as const;
 export interface PanelField { readonly id: string; readonly name: string; readonly kind: "text" | "dialogue" }
+/** SB-4: midlertidig lyd på et panel (opptak/opplasting). Blandes aldri inn i scenens lyd uten bekreftelse. */
+export interface PanelTempAudio {
+  readonly assetId: string;
+  readonly versionId: string;
+  readonly name: string;
+  readonly durationMs: number;
+}
 export interface PanelDetails {
   readonly number: string;
   readonly sceneNumber: string;
@@ -18,8 +25,9 @@ export interface PanelDetails {
   readonly angle: typeof SHOT_ANGLES[number] | null;
   readonly focalMm: number | null;
   readonly movement: string;
+  readonly tempAudio?: PanelTempAudio | null;
 }
-export const EMPTY_PANEL_DETAILS: PanelDetails = { number: "", sceneNumber: "", fields: {}, dialogueIds: [], shot: null, angle: null, focalMm: null, movement: "" };
+export const EMPTY_PANEL_DETAILS: PanelDetails = { number: "", sceneNumber: "", fields: {}, dialogueIds: [], shot: null, angle: null, focalMm: null, movement: "", tempAudio: null };
 export function panelDetails(p: Composition): PanelDetails { return p.storyboard ?? EMPTY_PANEL_DETAILS; }
 export function panelFields(s: ProjectState): readonly PanelField[] {
   return s.project.storyboardFields ?? STANDARD_PANEL_FIELDS.map(id => ({ id, name: "", kind: id === "dialogue" ? "dialogue" : "text" }));
@@ -32,6 +40,13 @@ export function panelDetailsValid(s: ProjectState, p: Composition, d: PanelDetai
   if (typeof d.movement !== "string" || d.movement.length > 10000 || !d.fields || typeof d.fields !== "object" || Array.isArray(d.fields)) return false;
   if (Object.entries(d.fields).some(([k, v]) => !/^[a-z][a-z0-9_-]{0,63}$/.test(k) || typeof v !== "string" || v.length > 10000)) return false;
   if (!Array.isArray(d.dialogueIds) || d.dialogueIds.length > 1000 || new Set(d.dialogueIds).size !== d.dialogueIds.length) return false;
+  if (d.tempAudio !== undefined && d.tempAudio !== null) {
+    const a = d.tempAudio;
+    if (!a || typeof a !== "object" || typeof a.name !== "string" || a.name.length > 500 || !Number.isFinite(a.durationMs) || a.durationMs <= 0 || a.durationMs > 3600000) return false;
+    if (!s.assets[a.assetId] || s.assets[a.assetId]!.removed) return false;
+    const v = s.assetVersions[a.versionId];
+    if (!v || v.removed || s.assetVariants[v.variantId]?.assetId !== a.assetId) return false;
+  }
   return d.dialogueIds.every(id => { const b = s.blocks[id]; return b && !b.removed && b.variantId === p.variantId && b.kind === "dialogue"; });
 }
 function suffix(n: number): string {
