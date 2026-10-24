@@ -8,8 +8,8 @@ import type { Host } from "./host";
 
 export const TOKEN_FILE = "audition-session.json";
 
-export function fileTokenStore(host: Host): TokenStore {
-  const path = `${host.userDataDir}/${TOKEN_FILE}`;
+export function fileTokenStore(host: Host, file = TOKEN_FILE): TokenStore {
+  const path = `${host.userDataDir}/${file}`;
   return {
     async load() {
       try {
