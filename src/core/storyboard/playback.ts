@@ -88,8 +88,8 @@ export function suggestPanelTimings(
  * ramme (zoom/pan/tilt) over panelets varighet. Merket er fortsatt en instruksjon i prosjektdata;
  * skuddet lages ved visning/eksport og lagres aldri.
  */
-export function panelCameraShot(panel: Composition, durationFrames: number): CameraShot | null {
-  const mark = panelCameraMark(panel);
+export function panelCameraShot(s: ProjectState, panel: Composition, durationFrames: number): CameraShot | null {
+  const mark = panelCameraMark(s, panel);
   if (!mark) return null;
   return {
     id: `sb4-${panel.id}`,
@@ -109,17 +109,11 @@ export function panelCameraShot(panel: Composition, durationFrames: number): Cam
 }
 
 /** Kameramerket på panelet, om noen (første i lagsrekkefølgen). */
-function panelCameraMark(panel: Composition): NonNullable<import("../model").CompositionLayer["cameraMark"]> | null {
-  const layers = panelLayers(panel);
-  for (const l of layers) if (l.cameraMark) return l.cameraMark;
-  return null;
-}
-
-/** Lagene på et panel (sortert), uten å gå gjennom ProjectState. */
-function panelLayers(panel: Composition): readonly import("../model").CompositionLayer[] {
-  // Panelet kjenner ikke lagene selv; de hentes fra state der state finnes. For kameraskuddet brukes
-  // storyboardTimeline som har state. Denne hjelperen brukes bare via storyboardTimeline.
-  return (panel as { __layers?: import("../model").CompositionLayer[] }).__layers ?? [];
+function panelCameraMark(s: ProjectState, panel: Composition): NonNullable<import("../model").CompositionLayer["cameraMark"]> | null {
+  const layers = Object.values(s.layers)
+    .filter((l) => !l.removed && l.compositionId === panel.id && l.cameraMark)
+    .sort((a, b) => a.orderKey.localeCompare(b.orderKey));
+  return layers[0]?.cameraMark ?? null;
 }
 
 /** Ett skudd i storyboardfilmen: ett synlig, aktivt panel med arvet timing. */
