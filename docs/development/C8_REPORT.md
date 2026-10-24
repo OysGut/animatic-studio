@@ -61,4 +61,7 @@
 8. Logg ut: tilgangen er trukket tilbake.
 
 ## Verifikasjon
-Se slutten av denne filen (fylles ut etter kjøringene).
+- Full vitest: 3197 bestått, 0 feilet, 10 hoppet over. (En kjøring før dette hadde 2 feil som ikke kom igjen; den første hadde 2 i18n-feil fra utdatert tekstoversikt, som er regenerert.)
+- Python-enhetstester: 14/14 (kjøres fra `tests/unit/c8-python.test.ts`), kontraktstest mot `/api/v1` grønn.
+- DB-tester: 238 bestått, 0 feilet (ingen ny migrasjon).
+- `npm run test:ssr`: 8 bestått, 0 feilet. `tsc --noEmit`: 0 feil. i18n-kontroll: grønn.
