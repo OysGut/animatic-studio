@@ -25124,6 +25124,21 @@
     "c1.fact.timeline": {
       "text": "Tidslinje med klipp og tider, uten mediefilene."
     },
+    "c1.format.otio": {
+      "text": "OTIO-tidslinje"
+    },
+    "c1.format.png": {
+      "text": "PNG"
+    },
+    "c1.format.psd": {
+      "text": "PSD med lag"
+    },
+    "c1.format.svg": {
+      "text": "SVG"
+    },
+    "c1.format.wav": {
+      "text": "WAV/BWF"
+    },
     "c1.no-image": {
       "text": "Ressursen har ingen bildeversjon å sende."
     },
@@ -60487,6 +60502,21 @@
     },
     "c1.fact.timeline": {
       "text": "Timeline with clips and timing, without the media files."
+    },
+    "c1.format.otio": {
+      "text": "OTIO timeline"
+    },
+    "c1.format.png": {
+      "text": "PNG"
+    },
+    "c1.format.psd": {
+      "text": "PSD with layers"
+    },
+    "c1.format.svg": {
+      "text": "SVG"
+    },
+    "c1.format.wav": {
+      "text": "WAV/BWF"
     },
     "c1.no-image": {
       "text": "The asset has no image version to send."

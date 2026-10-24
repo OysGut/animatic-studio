@@ -49,6 +49,10 @@ export function resolveTarget(s: ProjectState, target: SendTarget): Resolved | n
   return { kind: "scene", id: o.id, name: t("c1.scene"), revision: o.revision, assetId: null, variantId: null, sceneId: o.sceneId, baseVersionId: null, formats: FORMATS_FOR.scene };
 }
 
+export function formatLabel(f: HandoffFormat): string {
+  return { psd: t("c1.format.psd"), png: t("c1.format.png"), svg: t("c1.format.svg"), wav: t("c1.format.wav"), otio: t("c1.format.otio") }[f];
+}
+
 export function factLines(format: HandoffFormat): string[] {
   const f = FORMAT_FACTS[format];
   return [
