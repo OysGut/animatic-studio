@@ -4,11 +4,11 @@
  * Serveren sjekker alt: token-hash, utløp, tilbaketrekking, prosjekt, scope, fartsgrense, kvote,
  * idempotens, kontrollsum og innhold. Svar har alltid Cache-Control: no-store.
  */
-import type { ProjectState } from "@/core";
+import { ASSET_MIME_TYPES, type ProjectState } from "@/core";
 import {
   ACCESS_TTL_SECONDS, CLIENT_ID_RE, clientKnown, DEVICE_INTERVAL_SECONDS, DEVICE_TTL_SECONDS, REFRESH_TTL_SECONDS,
   Sha256, buildProjectManifest, checkIntake, checkReserve, checkSession, chunkCount, expectedChunkSize, idempotentReplay,
-  makeToken, makeUserCode, missingChunks, parseScopes, pkceMatches, reserveFingerprint, sha256Hex, tokenHash, tokenKind, toHex,
+  makeToken, makeUserCode, mimeForExtension, missingChunks, parseScopes, pkceMatches, reserveFingerprint, sha256Hex, tokenHash, tokenKind, toHex,
   type ConnectorScope, type ConnectorSessionRow, type ReserveRequest, type TransferStatus,
 } from "@/core/connectors";
 
