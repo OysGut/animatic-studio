@@ -113346,27 +113346,27 @@
   {
     "file": "src/app/storyboard/StoryboardWorkspace.tsx",
     "line": 480,
-    "column": 83,
-    "start": 22407,
-    "end": 22426,
-    "scope": "gallery",
-    "context": "span",
-    "kind": "t",
-    "raw": "tk(\"sb4.inherited\")",
-    "key": "sb4.inherited",
-    "parameterNames": []
-  },
-  {
-    "file": "src/app/storyboard/StoryboardWorkspace.tsx",
-    "line": 480,
-    "column": 171,
-    "start": 22495,
-    "end": 22510,
+    "column": 147,
+    "start": 22471,
+    "end": 22486,
     "scope": "gallery",
     "context": "span",
     "kind": "t",
     "raw": "tk(\"sb3.panel\")",
     "key": "sb3.panel",
+    "parameterNames": []
+  },
+  {
+    "file": "src/app/storyboard/StoryboardWorkspace.tsx",
+    "line": 480,
+    "column": 165,
+    "start": 22489,
+    "end": 22508,
+    "scope": "gallery",
+    "context": "span",
+    "kind": "t",
+    "raw": "tk(\"sb4.inherited\")",
+    "key": "sb4.inherited",
     "parameterNames": []
   },
   {
