@@ -76751,5 +76751,56 @@
   },
   "sb3.camera.frame-height": {
     "text": "[!! FFrráámmëë hhëëïïgghhtt !!]"
+  },
+  "sb4.play-film": {
+    "text": "[!! PPllááyy tthhëë ssttôôrryybbôôáárrdd ffïïllmm !!]"
+  },
+  "sb4.film.title": {
+    "text": "[!! SSttôôrryybbôôáárrdd ffïïllmm !!]"
+  },
+  "sb4.film.description": {
+    "text": "[!! TThhëë ppáánnëëllss ppllááyy wwïïtthh tthhëë ssccëënnëë'ss ssôôüünndd. TThhëë ssôôüünndd ïïss tthhëë ttïïmmëë mmáássttëërr. !!]"
+  },
+  "sb4.film.empty": {
+    "text": "[!! NNôô ááccttïïvvëë ppáánnëëllss ïïnn tthhëë ffïïllmm yyëëtt. !!]"
+  },
+  "sb4.film.pause": {
+    "text": "[!! PPááüüssëë !!]"
+  },
+  "sb4.film.play": {
+    "text": "[!! PPllááyy !!]"
+  },
+  "sb4.film.timeline": {
+    "text": "[!! SSttôôrryybbôôáárrdd ffïïllmm ttïïmmëëllïïnnëë !!]"
+  },
+  "sb4.film.mute": {
+    "text": "[!! MMüüttëë !!]"
+  },
+  "sb4.film.unmute": {
+    "text": "[!! ÜÜnnmmüüttëë !!]"
+  },
+  "sb4.film.volume": {
+    "text": "[!! VVôôllüümmëë !!]"
+  },
+  "sb4.film.fullscreen": {
+    "text": "[!! FFüüllllssccrrëëëënn !!]"
+  },
+  "sb4.film.exit-fullscreen": {
+    "text": "[!! ËËxxïïtt ffüüllllssccrrëëëënn !!]"
+  },
+  "sb4.film.panel-label": {
+    "text": "[!! SSccëënnëë {scene}, ppáánnëëll {panel}: {name} !!]"
+  },
+  "sb4.export.image-source": {
+    "text": "[!! ÏÏmmáággëë ssôôüürrccëë !!]"
+  },
+  "sb4.export.source-animation": {
+    "text": "[!! ÁÁnnïïmmááttïïôônn !!]"
+  },
+  "sb4.export.source-film": {
+    "text": "[!! FFïïllmm !!]"
+  },
+  "sb4.export.source-storyboard": {
+    "text": "[!! SSttôôrryybbôôáárrdd ppáánnëëllss !!]"
   }
 }

@@ -76769,5 +76769,56 @@
   },
   "sb3.camera.frame-height": {
     "text": "Rammehøyde"
+  },
+  "sb4.play-film": {
+    "text": "Spill av storyboardfilmen"
+  },
+  "sb4.film.title": {
+    "text": "Storyboardfilm"
+  },
+  "sb4.film.description": {
+    "text": "Panelene spilles av med scenens lyd. Lyden er tidsmaster."
+  },
+  "sb4.film.empty": {
+    "text": "Ingen aktive paneler i filmen ennå."
+  },
+  "sb4.film.pause": {
+    "text": "Sett på pause"
+  },
+  "sb4.film.play": {
+    "text": "Spill av"
+  },
+  "sb4.film.timeline": {
+    "text": "Tidslinje for storyboardfilmen"
+  },
+  "sb4.film.mute": {
+    "text": "Slå lyden av"
+  },
+  "sb4.film.unmute": {
+    "text": "Slå lyden på"
+  },
+  "sb4.film.volume": {
+    "text": "Volum"
+  },
+  "sb4.film.fullscreen": {
+    "text": "Fullskjerm"
+  },
+  "sb4.film.exit-fullscreen": {
+    "text": "Avslutt fullskjerm"
+  },
+  "sb4.film.panel-label": {
+    "text": "Scene {scene}, panel {panel}: {name}"
+  },
+  "sb4.export.image-source": {
+    "text": "Bildekilde"
+  },
+  "sb4.export.source-animation": {
+    "text": "Animasjon"
+  },
+  "sb4.export.source-film": {
+    "text": "Film"
+  },
+  "sb4.export.source-storyboard": {
+    "text": "Storyboardpaneler"
   }
 }

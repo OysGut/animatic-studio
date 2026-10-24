@@ -14002,6 +14002,142 @@
       "en": {
         "text": "Frame height"
       }
+    },
+    "sb4.play-film": {
+      "nb": {
+        "text": "Spill av storyboardfilmen"
+      },
+      "en": {
+        "text": "Play the storyboard film"
+      }
+    },
+    "sb4.film.title": {
+      "nb": {
+        "text": "Storyboardfilm"
+      },
+      "en": {
+        "text": "Storyboard film"
+      }
+    },
+    "sb4.film.description": {
+      "nb": {
+        "text": "Panelene spilles av med scenens lyd. Lyden er tidsmaster."
+      },
+      "en": {
+        "text": "The panels play with the scene's sound. The sound is the time master."
+      }
+    },
+    "sb4.film.empty": {
+      "nb": {
+        "text": "Ingen aktive paneler i filmen ennå."
+      },
+      "en": {
+        "text": "No active panels in the film yet."
+      }
+    },
+    "sb4.film.pause": {
+      "nb": {
+        "text": "Sett på pause"
+      },
+      "en": {
+        "text": "Pause"
+      }
+    },
+    "sb4.film.play": {
+      "nb": {
+        "text": "Spill av"
+      },
+      "en": {
+        "text": "Play"
+      }
+    },
+    "sb4.film.timeline": {
+      "nb": {
+        "text": "Tidslinje for storyboardfilmen"
+      },
+      "en": {
+        "text": "Storyboard film timeline"
+      }
+    },
+    "sb4.film.mute": {
+      "nb": {
+        "text": "Slå lyden av"
+      },
+      "en": {
+        "text": "Mute"
+      }
+    },
+    "sb4.film.unmute": {
+      "nb": {
+        "text": "Slå lyden på"
+      },
+      "en": {
+        "text": "Unmute"
+      }
+    },
+    "sb4.film.volume": {
+      "nb": {
+        "text": "Volum"
+      },
+      "en": {
+        "text": "Volume"
+      }
+    },
+    "sb4.film.fullscreen": {
+      "nb": {
+        "text": "Fullskjerm"
+      },
+      "en": {
+        "text": "Fullscreen"
+      }
+    },
+    "sb4.film.exit-fullscreen": {
+      "nb": {
+        "text": "Avslutt fullskjerm"
+      },
+      "en": {
+        "text": "Exit fullscreen"
+      }
+    },
+    "sb4.film.panel-label": {
+      "nb": {
+        "text": "Scene {scene}, panel {panel}: {name}"
+      },
+      "en": {
+        "text": "Scene {scene}, panel {panel}: {name}"
+      }
+    },
+    "sb4.export.image-source": {
+      "nb": {
+        "text": "Bildekilde"
+      },
+      "en": {
+        "text": "Image source"
+      }
+    },
+    "sb4.export.source-animation": {
+      "nb": {
+        "text": "Animasjon"
+      },
+      "en": {
+        "text": "Animation"
+      }
+    },
+    "sb4.export.source-film": {
+      "nb": {
+        "text": "Film"
+      },
+      "en": {
+        "text": "Film"
+      }
+    },
+    "sb4.export.source-storyboard": {
+      "nb": {
+        "text": "Storyboardpaneler"
+      },
+      "en": {
+        "text": "Storyboard panels"
+      }
     }
   }
 }

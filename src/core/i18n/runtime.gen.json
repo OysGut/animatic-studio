@@ -34198,6 +34198,57 @@
     "sb3.width": {
       "text": "Bredde"
     },
+    "sb4.export.image-source": {
+      "text": "Bildekilde"
+    },
+    "sb4.export.source-animation": {
+      "text": "Animasjon"
+    },
+    "sb4.export.source-film": {
+      "text": "Film"
+    },
+    "sb4.export.source-storyboard": {
+      "text": "Storyboardpaneler"
+    },
+    "sb4.film.description": {
+      "text": "Panelene spilles av med scenens lyd. Lyden er tidsmaster."
+    },
+    "sb4.film.empty": {
+      "text": "Ingen aktive paneler i filmen ennå."
+    },
+    "sb4.film.exit-fullscreen": {
+      "text": "Avslutt fullskjerm"
+    },
+    "sb4.film.fullscreen": {
+      "text": "Fullskjerm"
+    },
+    "sb4.film.mute": {
+      "text": "Slå lyden av"
+    },
+    "sb4.film.panel-label": {
+      "text": "Scene {scene}, panel {panel}: {name}"
+    },
+    "sb4.film.pause": {
+      "text": "Sett på pause"
+    },
+    "sb4.film.play": {
+      "text": "Spill av"
+    },
+    "sb4.film.timeline": {
+      "text": "Tidslinje for storyboardfilmen"
+    },
+    "sb4.film.title": {
+      "text": "Storyboardfilm"
+    },
+    "sb4.film.unmute": {
+      "text": "Slå lyden på"
+    },
+    "sb4.film.volume": {
+      "text": "Volum"
+    },
+    "sb4.play-film": {
+      "text": "Spill av storyboardfilmen"
+    },
     "script-explorer2.chip.menu": {
       "text": "Valg for {name}"
     },
@@ -68535,6 +68586,57 @@
     },
     "sb3.width": {
       "text": "Width"
+    },
+    "sb4.export.image-source": {
+      "text": "Image source"
+    },
+    "sb4.export.source-animation": {
+      "text": "Animation"
+    },
+    "sb4.export.source-film": {
+      "text": "Film"
+    },
+    "sb4.export.source-storyboard": {
+      "text": "Storyboard panels"
+    },
+    "sb4.film.description": {
+      "text": "The panels play with the scene's sound. The sound is the time master."
+    },
+    "sb4.film.empty": {
+      "text": "No active panels in the film yet."
+    },
+    "sb4.film.exit-fullscreen": {
+      "text": "Exit fullscreen"
+    },
+    "sb4.film.fullscreen": {
+      "text": "Fullscreen"
+    },
+    "sb4.film.mute": {
+      "text": "Mute"
+    },
+    "sb4.film.panel-label": {
+      "text": "Scene {scene}, panel {panel}: {name}"
+    },
+    "sb4.film.pause": {
+      "text": "Pause"
+    },
+    "sb4.film.play": {
+      "text": "Play"
+    },
+    "sb4.film.timeline": {
+      "text": "Storyboard film timeline"
+    },
+    "sb4.film.title": {
+      "text": "Storyboard film"
+    },
+    "sb4.film.unmute": {
+      "text": "Unmute"
+    },
+    "sb4.film.volume": {
+      "text": "Volume"
+    },
+    "sb4.play-film": {
+      "text": "Play the storyboard film"
     },
     "script-explorer2.chip.menu": {
       "text": "Options for {name}"
