@@ -477,7 +477,7 @@ export function Gallery({
         </span>
         {sel && editable ? (
           <>
-            <span className="text-text-tertiary" data-testid="sb4-timing-source">{tk("sb4.inherited")} · {panelTiming(state, timingClips, sel.panel).source === "panel" ? tk("sb3.panel") : tk("sb4.scene-timing")}</span>
+            <span className="text-text-tertiary" data-testid="sb4-timing-source">{panelTiming(state, timingClips, sel.panel).source === "panel" ? tk("sb3.panel") : tk("sb4.inherited")} · {tk("sb4.scene-timing")}</span>
             {timingSuggestions.find(s => s.panelId === selected) ? <Button size="sm" variant="ghost" onClick={() => acceptTiming(false)} data-testid="sb4-accept-panel">{tk("sb4.accept-timing")} · {fmtSeconds(timingSuggestions.find(s => s.panelId === selected)?.frames ?? 0, fps)}</Button> : null}
             {timingSuggestions.length ? <Button size="sm" variant="ghost" onClick={() => acceptTiming(true)} data-testid="sb4-accept-scene">{tk("sb4.accept-scene-timing")}</Button> : null}
             <Button size="sm" variant="ghost" onClick={() => selScene && addPanel(selScene, sel.panel.id)} data-testid="sb-add"><Plus /> {tk("sb2.add")}</Button>
