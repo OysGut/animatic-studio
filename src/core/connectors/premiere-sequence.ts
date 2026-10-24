@@ -14,7 +14,7 @@ export const PREMIERE_ADAPTER = { id: "adobe-premiere-uxp", version: "1" } as co
 /** Takhøyde per retur (ikke global). */
 export const PREMIERE_MAX_PANELS = 5000;
 
-export type PremiereTransitionKind = "cut" | "dissolve" | "dip" | "dipWhite" | "wipe";
+export type PremiereTransitionKind = "cut" | "dissolve" | "dip" | "dipWhite" | "wipe" | "iris" | "push";
 export interface PremierePanelClip {
   readonly panelId: string;
   readonly revision: number;
