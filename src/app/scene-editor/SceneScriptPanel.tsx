@@ -199,8 +199,10 @@ export const SceneScriptPanel = memo(function SceneScriptPanel({
           before.setEnd(range.startContainer, range.startOffset);
           const start = before.toString().length;
           const end = start + range.toString().length;
-          if (end > start && end <= block.text.length)
-            setNoteTarget({ blockId: block.id, variantId: null, start, end, quote: block.text.slice(start, end) });
+          // KI-226: et utvalg inni et ord utvides til hele ordet, så notatet følger ordet
+          const wr = wordRange(block.text, start, end);
+          if (wr.end > wr.start && wr.end <= block.text.length)
+            setNoteTarget({ blockId: block.id, variantId: null, start: wr.start, end: wr.end, quote: block.text.slice(wr.start, wr.end) });
         }}
         className="px-3 pb-3 font-script text-[12px] leading-[1.35] text-text-primary"
       >
