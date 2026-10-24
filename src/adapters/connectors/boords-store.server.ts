@@ -2,7 +2,8 @@
  * C-4: BoordsStore mot Lovable Cloud (service role, bare på serveren) og oppslag av tilkoblingen med
  * dekryptert nøkkel. Nøkkelen forlater aldri denne modulen annet enn til BoordsClient.
  */
-import { newId, sha256Hex, BOORDS_CLIENT_ID, type PanelLike, type ProjectState } from "@/core";
+import { newId, type ProjectState } from "@/core";
+import { sha256Hex, BOORDS_CLIENT_ID, type PanelLike } from "@/core/connectors";
 import { loadProjectState, type AnyClient } from "@/adapters/storage/project-rows";
 import type { BoordsStore } from "./boords.server";
 

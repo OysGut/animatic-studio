@@ -8,6 +8,7 @@
  */
 import { Sha256, toHex, utf8 } from "./sha256";
 import type { ConflictChoice } from "./conflict";
+import { constantTimeEqual } from "./auth";
 
 export const BOORDS_CLIENT_ID = "boords";
 export const BOORDS_RATE_PER_MINUTE = 120;
@@ -39,14 +40,6 @@ export function hmacSha256(key: Uint8Array | string, message: Uint8Array | strin
   return new Sha256().update(opad).update(inner).digest();
 }
 export const hmacSha256Hex = (key: Uint8Array | string, message: Uint8Array | string): string => toHex(hmacSha256(key, message));
-
-/** Sammenligner uten å avsløre hvor tidlig strengene skiller seg (lengden avsløres, ikke innholdet). */
-export function constantTimeEqual(a: string, b: string): boolean {
-  const n = Math.max(a.length, b.length);
-  let diff = a.length ^ b.length;
-  for (let i = 0; i < n; i++) diff |= (a.charCodeAt(i) || 0) ^ (b.charCodeAt(i) || 0);
-  return diff === 0;
-}
 
 export type WebhookCheck = { ok: true; eventId: string; timestampSec: number } | { ok: false; reason: "format" | "signature" | "stale" };
 

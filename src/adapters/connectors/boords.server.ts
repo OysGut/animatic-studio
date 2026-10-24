@@ -54,7 +54,7 @@ export class BoordsClient {
       if (body !== undefined && !isForm) headers["Content-Type"] = "application/json";
       let res: Response;
       try {
-        res = await f(`${this.opts.base ?? BOORDS_API_BASE}${path}`, { method, headers, body: body === undefined ? undefined : isForm ? (body as FormData) : JSON.stringify(body) });
+        res = await f(`${this.opts.base ?? BOORDS_API_BASE}${path}`, { method, headers, body: body === undefined ? null : isForm ? (body as FormData) : JSON.stringify(body) });
       } catch (e) {
         if (attempt >= BOORDS_MAX_RETRIES) throw new BoordsError(0, scrub(e instanceof Error ? e.message : "network", this.apiKey));
         await clock.sleep(backoffMs(attempt)); continue;
