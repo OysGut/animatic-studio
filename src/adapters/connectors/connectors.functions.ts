@@ -54,7 +54,7 @@ export interface ConnectorSessionView { id: string; projectId: string; projectNa
 export const myConnectorSessions = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth]).handler(async ({ context }) => {
   await noStore();
   const db = context.supabase as AnyClient;
-  const { data, error } = await db.from("connector_sessions").select("id,project_id,client_id,scopes,created_at,last_used_at,refresh_expires_at,revoked_at").order("created_at", { ascending: false }).limit(200);
+  const { data, error } = await db.from("connector_sessions").select("id,project_id,client_id,scopes,created_at,last_used_at,refresh_expires_at,revoked_at").order("created_at", { ascending: false }).limit(200); // i18n-ignore: kolonnenavn
   if (error) throw fail();
   const ids = [...new Set((data ?? []).map((r: Record<string, unknown>) => String(r["project_id"])))];
   const names = new Map<string, string>();
