@@ -1,6 +1,10 @@
 /** Fixed synthetic inputs; server and storage mocked by existing harness. */
 import { harness } from './mts-harness.mjs';
 const h=harness('/tmp/browser/sb4/screenshots');
+h.hooks.navigate=async page=>{
+ await page.goto(`${h.base}${h.P}/storyboard`,{waitUntil:'domcontentloaded'}).catch(error=>{if(!String(error).includes('ERR_ABORTED'))throw error;});
+ await page.getByTestId('sb4-gallery-playback').waitFor({timeout:60000});
+};
 for(const lang of ['nb','en']){
  await h.scenario(`sb4-${lang}`,h.fx.occurrenceId,lang,async page=>{
   await page.goto(`${h.base}${h.P}/storyboard`,{waitUntil:'networkidle'});
