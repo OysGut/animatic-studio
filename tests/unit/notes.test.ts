@@ -17,6 +17,7 @@ import {
   planImportNotes,
   resolveRange,
   scriptPages,
+  wordRange,
   scriptView,
   searchHits,
   type Command,
