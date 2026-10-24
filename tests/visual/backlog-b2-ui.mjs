@@ -45,11 +45,21 @@ for (const lang of ["nb", "en"]) await h.scenario(`b2-${lang}`, occ.id, lang, as
   await cleanup.getByRole("button").click();
   await page.getByRole("alertdialog").waitFor();
   h.check(calls.length === 0, "preview does not delete");
-  await page.getByRole("button", { name: byLang(lang, "Avbryt", "Cancel"), exact: true }).click();
+  // KI-207: hver fil vises med størrelse, og brukeren velger selv hvilke som ryddes
+  const dialog = page.getByRole("alertdialog");
+  h.check(await dialog.getByText("3 MB").count() >= 1, "file size is shown");
+  h.check((await page.getByTestId("ai-cleanup-select").count()) === 2, "each file has its own checkbox");
+  h.check((await page.getByTestId("ai-cleanup-total").innerText()).includes("3 MB"), "total size is shown");
+  await dialog.getByRole("button", { name: byLang(lang, "Avbryt", "Cancel"), exact: true }).click();
   h.check(calls.length === 0, "cancel does not delete");
   await cleanup.getByRole("button").click();
+  await page.getByRole("alertdialog").waitFor();
+  // Fjern den lille filen fra utvalget: bare den store skal sendes til sletting
+  await page.locator(`[data-testid="ai-cleanup-select"][data-path$="test-old.mp4"]`).click();
+  h.check((await page.getByTestId("ai-cleanup-total").innerText()).includes("3 MB"), "total follows the selection");
   await page.getByRole("button", { name: byLang(lang, "Slett for godt", "Delete permanently") }).click();
   h.check(await h.eventually(() => calls.length === 1), "confirmation deletes once");
+  h.check(!calls[0].includes("test-old.mp4") && calls[0].includes("test-big.mp4"), "only the selected file is deleted");
   await page.screenshot({ path: `${h.out}/source-cleanup-${lang}.png` });
 });
 await h.finish();
