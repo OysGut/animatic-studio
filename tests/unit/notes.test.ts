@@ -514,7 +514,7 @@ describe("KI-226: notat på enkeltord forankres til ordets grenser", () => {
     expect(wordRange("Maja setter den blå vasen", 5, 11)).toEqual({ start: 5, end: 11 });
   });
   it("wordRange håndterer tekst med aksenter og utvalg ved kantene", () => {
-    expect(wordRange("Blåbær syltetøy", 2, 5)).toEqual({ start: 0, end: 7 });
+    expect(wordRange("Blåbær syltetøy", 2, 5)).toEqual({ start: 0, end: 6 });
     expect(wordRange("Hei", 0, 3)).toEqual({ start: 0, end: 3 });
   });
   it("resolveRange velger treff på ordgrenser foran treff inni et lengre ord", () => {
@@ -537,7 +537,7 @@ describe("KI-226: notat på enkeltord forankres til ordets grenser", () => {
     const r = resolveRange(a as never, "soloppgangen var vakker, og sol steg");
     expect(r.found).toBe(true);
     expect("soloppgangen var vakker, og sol steg".slice(r.start, r.end)).toBe("sol");
-    expect(r.start).toBe(27);
+    expect(r.start).toBe(28);
   });
   it("notatet på ordet tåler redigering av teksten rundt", () => {
     const { s: s0, mainId, cmd } = project();
