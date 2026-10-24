@@ -292,6 +292,61 @@ export function storyboardAudioItems(
 }
 
 /**
+ * Midlertidig panellyd (SB-4): opptak/opplasting på panelet spilles ved panelets start i
+ * storyboardavspillingen. Lyden ligger i panelets detaljer og blandes ALDRI inn i scenens lyd eller
+ * eksporten automatisk – brukeren velger «bruk i scenen» eksplisitt (egen kommando, kan angres).
+ */
+export function storyboardTempAudioItems(
+  s: ProjectState,
+  shots: readonly StoryboardShot[],
+  fps: ProjectState["project"]["fps"],
+): FilmAudioItem[] {
+  const out: FilmAudioItem[] = [];
+  for (const shot of shots) {
+    const temp = shot.panel.storyboard?.tempAudio;
+    if (!temp) continue;
+    const version = s.versions[temp.versionId as never];
+    if (!version || version.removed) continue;
+    const length = temp.durationMs / 1000;
+    out.push({
+      clip: {
+        id: `sb4temp-${shot.panel.id}` as never,
+        occurrenceId: shot.occurrenceId,
+        kind: "sfx",
+        name: temp.name,
+        assetId: temp.assetId as never,
+        assetVariantId: null,
+        versionId: temp.versionId as never,
+        blockId: null,
+        offsetMs: 0,
+        sourceInMs: 0,
+        lengthMs: temp.durationMs,
+        gainDb: 0,
+        fadeInMs: 0,
+        fadeOutMs: 0,
+        muted: false,
+        continues: false,
+        keys: [],
+        revision: 0,
+        createdAt: "",
+        createdBy: "" as never,
+        removed: false,
+      },
+      version,
+      start: framesToSeconds(shot.startFrame, fps),
+      length,
+      sourceIn: 0,
+      gain: 1,
+      fadeIn: 0,
+      fadeOut: 0,
+      keys: [],
+      fullLength: length,
+    });
+  }
+  return out;
+}
+
+/**
  * Prosjektvisningen for storyboardavspilling og -eksport: panelene får kameraskuddet sitt (fra
  * kameramerket) og kameramerkelaget skjules, slik at eksisterende tegning (view «camera») animerer
  * bevegelsen i stedet for å vise merket. Originaltilstanden endres aldri.
