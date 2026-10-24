@@ -26,7 +26,7 @@ import { useFilmVideo } from "@/app/assembly/film-video";
 import { FilmViewer } from "@/app/assembly/FilmViewer";
 import { useImageUrls } from "@/app/library/asset-images";
 import { useUiPref } from "@/app/account/ui-prefs";
-import { sourceWindowId } from "@/app/shell/current-scene";
+import { sourceWindowId, useActiveSceneInfo } from "@/app/shell/current-scene";
 import { popupFeatures, validPopupPref, type PopupPref } from "@/app/script-explorer/window-geometry";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
