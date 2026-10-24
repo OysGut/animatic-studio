@@ -4,7 +4,7 @@
  * Kilder: Adobe Illustrator Scripting Reference (JavaScript): app.open, Document.saveAs/IllustratorSaveOptions,
  * Document.exportFile/ExportOptionsPNG24, Document.rasterEffectSettings, Document.XMPString og XMPScript (XMPMeta).
  */
-var PTG_NS = "http://pentoglass.com/ns/ptg/1.0/";
+var PTG_NS = "urn:ptg:ns:1.0/";
 
 function ptgXmpLib() {
   if (typeof XMPMeta === "undefined") new ExternalObject("lib:AdobeXMPScript");

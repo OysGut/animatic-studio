@@ -11,7 +11,7 @@
  */
 export const ILLUSTRATOR_CLIENT_ID = "ptg.illustrator";
 export const ILLUSTRATOR_ADAPTER = { id: "adobe-illustrator-cep", version: "1" } as const;
-export const ILLUSTRATOR_XMP_NS = "http://pentoglass.com/ns/ptg/1.0/";
+export const ILLUSTRATOR_XMP_NS = "urn:ptg:ns:1.0/";
 export const ILLUSTRATOR_MAX_LAYERS = 500;
 export const ILLUSTRATOR_MAX_DEPTH = 16;
 export const ILLUSTRATOR_MAX_SVG_BYTES = 64 * 1024 * 1024;
