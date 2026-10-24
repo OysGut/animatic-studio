@@ -1158,6 +1158,7 @@ export type Database = {
           rig_plate_depth_mm: number
           rig_plate_id: string | null
           shape: Json | null
+          sketch: Json | null
           template_instance_id: string | null
           template_key: string | null
           template_slot: string | null
@@ -1203,6 +1204,7 @@ export type Database = {
           rig_plate_depth_mm?: number
           rig_plate_id?: string | null
           shape?: Json | null
+          sketch?: Json | null
           template_instance_id?: string | null
           template_key?: string | null
           template_slot?: string | null
@@ -1248,6 +1250,7 @@ export type Database = {
           rig_plate_depth_mm?: number
           rig_plate_id?: string | null
           shape?: Json | null
+          sketch?: Json | null
           template_instance_id?: string | null
           template_key?: string | null
           template_slot?: string | null
@@ -5732,6 +5735,64 @@ export type Database = {
         }
         Relationships: []
       }
+      sketch_sessions: {
+        Row: {
+          actor: string
+          expires_at: string
+          id: string
+          layer_id: string
+          operations: number
+          panel_id: string
+          project_id: string
+          revoked: boolean
+          token_hash: string
+        }
+        Insert: {
+          actor: string
+          expires_at: string
+          id?: string
+          layer_id: string
+          operations?: number
+          panel_id: string
+          project_id: string
+          revoked?: boolean
+          token_hash: string
+        }
+        Update: {
+          actor?: string
+          expires_at?: string
+          id?: string
+          layer_id?: string
+          operations?: number
+          panel_id?: string
+          project_id?: string
+          revoked?: boolean
+          token_hash?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sketch_sessions_layer_id_fkey"
+            columns: ["layer_id"]
+            isOneToOne: false
+            referencedRelation: "composition_layers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sketch_sessions_panel_id_fkey"
+            columns: ["panel_id"]
+            isOneToOne: false
+            referencedRelation: "compositions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sketch_sessions_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       storage_cleanups: {
         Row: {
           actor: string
@@ -8117,6 +8178,27 @@ export type Database = {
         Returns: boolean
       }
       showcase_media: { Args: { p_item: string }; Returns: Json }
+      sketch_session_apply: {
+        Args: {
+          p_changes: Json
+          p_command: Json
+          p_hash: string
+          p_id: string
+          p_inverse: Json
+        }
+        Returns: undefined
+      }
+      sketch_session_create: {
+        Args: {
+          p_actor: string
+          p_hash: string
+          p_layer: string
+          p_panel: string
+          p_project: string
+        }
+        Returns: string
+      }
+      sketch_session_lookup: { Args: { p_hash: string }; Returns: Json }
       stale_global_reservations: {
         Args: { p_workspace: string }
         Returns: {
