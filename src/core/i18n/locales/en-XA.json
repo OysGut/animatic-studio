@@ -77342,5 +77342,158 @@
   },
   "sb9.reason": {
     "text": "[!! RRëëáássôônn !!]"
+  },
+  "sb10.error": {
+    "text": "[!! TThhëë rrëëvvïïëëww ccôôüülldd nnôôtt bbëë ôôppëënnëëdd ôôrr ssáávvëëdd. !!]"
+  },
+  "sb10.rate": {
+    "text": "[!! TTôôôô mmáánnyy rrëëqqüüëëssttss. TTrryy áággááïïnn llááttëërr. !!]"
+  },
+  "sb10.cancel": {
+    "text": "[!! CCáánnccëëll !!]"
+  },
+  "sb10.title": {
+    "text": "[!! SSttôôrryybbôôáárrdd rrëëvvïïëëww !!]"
+  },
+  "sb10.description": {
+    "text": "[!! PPrrïïvvááttëë rrëëvvïïëëww ôôff sshháárrëëdd ssttôôrryybbôôáárrdd ppáánnëëllss. !!]"
+  },
+  "sb10.unavailable": {
+    "text": "[!! TThhïïss llïïnnkk ïïss üünnáávvááïïlláábbllëë, ëëxxppïïrrëëdd ôôrr rrëëqqüüïïrrëëss áá ppáásssswwôôrrdd. !!]"
+  },
+  "sb10.password": {
+    "text": "[!! PPáásssswwôôrrdd (ôôppttïïôônnááll) !!]"
+  },
+  "sb10.open": {
+    "text": "[!! ÔÔppëënn !!]"
+  },
+  "sb10.playback": {
+    "text": "[!! PPllááyybbáácckk !!]"
+  },
+  "sb10.panels": {
+    "text": "[!! PPáánnëëllss !!]"
+  },
+  "sb10.pin": {
+    "text": "[!! PPllááccëë ccôômmmmëënntt ppïïnn !!]"
+  },
+  "sb10.name": {
+    "text": "[!! NNáámmëë !!]"
+  },
+  "sb10.email": {
+    "text": "[!! ËËmmááïïll (ôôppttïïôônnááll) !!]"
+  },
+  "sb10.comment": {
+    "text": "[!! CCôômmmmëënntt !!]"
+  },
+  "sb10.decision": {
+    "text": "[!! DDëëccïïssïïôônn !!]"
+  },
+  "sb10.none": {
+    "text": "[!! NNôô ssttááttüüss !!]"
+  },
+  "sb10.approved": {
+    "text": "[!! ÁÁpppprrôôvvëëdd !!]"
+  },
+  "sb10.changes": {
+    "text": "[!! CChháánnggëëss rrëëqqüüëëssttëëdd !!]"
+  },
+  "sb10.send": {
+    "text": "[!! SSëënndd !!]"
+  },
+  "sb10.resolved": {
+    "text": "[!! RRëëssôôllvvëëdd !!]"
+  },
+  "sb10.compare": {
+    "text": "[!! CCôômmppáárrëë rrëëvvïïssïïôônnss !!]"
+  },
+  "sb10.current": {
+    "text": "[!! CCüürrrrëënntt !!]"
+  },
+  "sb10.before": {
+    "text": "[!! BBëëffôôrrëë !!]"
+  },
+  "sb10.after": {
+    "text": "[!! ÁÁffttëërr !!]"
+  },
+  "sb10.mode": {
+    "text": "[!! VVïïëëww !!]"
+  },
+  "sb10.side": {
+    "text": "[!! SSïïddëë bbyy ssïïddëë !!]"
+  },
+  "sb10.overlay": {
+    "text": "[!! ÔÔvvëërrllááyy !!]"
+  },
+  "sb10.difference": {
+    "text": "[!! DDïïffffëërrëënnccëë !!]"
+  },
+  "sb10.new": {
+    "text": "[!! NNëëww !!]"
+  },
+  "sb10.removed": {
+    "text": "[!! RRëëmmôôvvëëdd !!]"
+  },
+  "sb10.same": {
+    "text": "[!! ÜÜnncchháánnggëëdd !!]"
+  },
+  "sb10.changed": {
+    "text": "[!! CChháánnggëëdd !!]"
+  },
+  "sb10.revision": {
+    "text": "[!! RRëëvvïïssïïôônn !!]"
+  },
+  "sb10.review": {
+    "text": "[!! CCllïïëënntt áánndd ttëëáámm !!]"
+  },
+  "sb10.share": {
+    "text": "[!! SShháárrëë ssttôôrryybbôôáárrdd !!]"
+  },
+  "sb10.expires": {
+    "text": "[!! ËËxxppïïrryy ddááttëë !!]"
+  },
+  "sb10.comments": {
+    "text": "[!! ÁÁllllôôww ccôômmmmëënnttss !!]"
+  },
+  "sb10.approval": {
+    "text": "[!! ÁÁllllôôww áápppprrôôvvááll !!]"
+  },
+  "sb10.create": {
+    "text": "[!! CCrrëëááttëë rrëëvvïïëëww llïïnnkk !!]"
+  },
+  "sb10.link": {
+    "text": "[!! RRëëvvïïëëww llïïnnkk !!]"
+  },
+  "sb10.copy": {
+    "text": "[!! CCôôppyy !!]"
+  },
+  "sb10.revoked": {
+    "text": "[!! RRëëvvôôkkëëdd !!]"
+  },
+  "sb10.revoke": {
+    "text": "[!! RRëëvvôôkkëë !!]"
+  },
+  "sb10.feedback": {
+    "text": "[!! FFëëëëddbbáácckk !!]"
+  },
+  "sb10.reply": {
+    "text": "[!! RRëëppllyy !!]"
+  },
+  "sb10.reopen": {
+    "text": "[!! RRëëôôppëënn !!]"
+  },
+  "sb10.resolve": {
+    "text": "[!! RRëëssôôllvvëë !!]"
+  },
+  "sb10.task": {
+    "text": "[!! LLïïnnkk ttôô ttáásskk !!]"
+  },
+  "sb10.apply": {
+    "text": "[!! ÜÜssëë ááss ssttááttüüss !!]"
+  },
+  "sb10.confirm": {
+    "text": "[!! CChháánnggëë ssttôôrryybbôôáárrdd ssttááttüüss bbáássëëdd ôônn tthhïïss ddëëccïïssïïôônn? !!]"
+  },
+  "sb10.team": {
+    "text": "[!! TTëëáámm !!]"
   }
 }

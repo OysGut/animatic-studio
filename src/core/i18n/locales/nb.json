@@ -77360,5 +77360,158 @@
   },
   "sb9.reason": {
     "text": "Begrunnelse"
+  },
+  "sb10.error": {
+    "text": "Gjennomgangen kunne ikke åpnes eller lagres."
+  },
+  "sb10.rate": {
+    "text": "For mange forespørsler. Prøv igjen senere."
+  },
+  "sb10.cancel": {
+    "text": "Avbryt"
+  },
+  "sb10.title": {
+    "text": "Storyboardgjennomgang"
+  },
+  "sb10.description": {
+    "text": "Privat gjennomgang av delte storyboardpaneler."
+  },
+  "sb10.unavailable": {
+    "text": "Lenken er utilgjengelig, utløpt eller krever passord."
+  },
+  "sb10.password": {
+    "text": "Passord (valgfritt)"
+  },
+  "sb10.open": {
+    "text": "Åpne"
+  },
+  "sb10.playback": {
+    "text": "Avspilling"
+  },
+  "sb10.panels": {
+    "text": "Paneler"
+  },
+  "sb10.pin": {
+    "text": "Plasser kommentarnål"
+  },
+  "sb10.name": {
+    "text": "Navn"
+  },
+  "sb10.email": {
+    "text": "E-post (valgfritt)"
+  },
+  "sb10.comment": {
+    "text": "Kommentar"
+  },
+  "sb10.decision": {
+    "text": "Vurdering"
+  },
+  "sb10.none": {
+    "text": "Ingen status"
+  },
+  "sb10.approved": {
+    "text": "Godkjent"
+  },
+  "sb10.changes": {
+    "text": "Endring ønsket"
+  },
+  "sb10.send": {
+    "text": "Send"
+  },
+  "sb10.resolved": {
+    "text": "Løst"
+  },
+  "sb10.compare": {
+    "text": "Sammenlign revisjoner"
+  },
+  "sb10.current": {
+    "text": "Gjeldende"
+  },
+  "sb10.before": {
+    "text": "Før"
+  },
+  "sb10.after": {
+    "text": "Etter"
+  },
+  "sb10.mode": {
+    "text": "Visning"
+  },
+  "sb10.side": {
+    "text": "Side om side"
+  },
+  "sb10.overlay": {
+    "text": "Overlegg"
+  },
+  "sb10.difference": {
+    "text": "Differanse"
+  },
+  "sb10.new": {
+    "text": "Nytt"
+  },
+  "sb10.removed": {
+    "text": "Fjernet"
+  },
+  "sb10.same": {
+    "text": "Uendret"
+  },
+  "sb10.changed": {
+    "text": "Endret"
+  },
+  "sb10.revision": {
+    "text": "Revisjon"
+  },
+  "sb10.review": {
+    "text": "Kunde og team"
+  },
+  "sb10.share": {
+    "text": "Del storyboard"
+  },
+  "sb10.expires": {
+    "text": "Utløpsdato"
+  },
+  "sb10.comments": {
+    "text": "Tillat kommentarer"
+  },
+  "sb10.approval": {
+    "text": "Tillat godkjenning"
+  },
+  "sb10.create": {
+    "text": "Opprett delingslenke"
+  },
+  "sb10.link": {
+    "text": "Delingslenke"
+  },
+  "sb10.copy": {
+    "text": "Kopier"
+  },
+  "sb10.revoked": {
+    "text": "Tilbakekalt"
+  },
+  "sb10.revoke": {
+    "text": "Trekk tilbake"
+  },
+  "sb10.feedback": {
+    "text": "Tilbakemeldinger"
+  },
+  "sb10.reply": {
+    "text": "Svar"
+  },
+  "sb10.reopen": {
+    "text": "Gjenåpne"
+  },
+  "sb10.resolve": {
+    "text": "Løs"
+  },
+  "sb10.task": {
+    "text": "Koble til oppgave"
+  },
+  "sb10.apply": {
+    "text": "Ta i bruk som status"
+  },
+  "sb10.confirm": {
+    "text": "Endre storyboardstatus etter denne vurderingen?"
+  },
+  "sb10.team": {
+    "text": "Team"
   }
 }
