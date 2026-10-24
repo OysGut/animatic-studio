@@ -14,6 +14,12 @@ import { Button } from "@/components/ui/button";
 import { t } from "@/core/i18n/keyed";
 
 const KEY = ["boords-connections"] as const;
+const capLabel = (c: string): string => ({ read: t("c4.cap.read"), write: t("c4.cap.write"), notes: t("c4.cap.notes") } as Record<string, string>)[c] ?? c;
+const limitLabel = (l: (typeof BOORDS_LIMITS)[number]): string => ({
+  "paid-plan": t("c4.limit.paid-plan"), beta: t("c4.limit.beta"), "no-layers": t("c4.limit.no-layers"), "no-audio": t("c4.limit.no-audio"),
+  "no-timeline": t("c4.limit.no-timeline"), "no-etag": t("c4.limit.no-etag"), "partial-webhooks": t("c4.limit.partial-webhooks"), "no-auto-apply": t("c4.limit.no-auto-apply"),
+})[l];
+const statusLabel = (s: string): string => (s === "ok" ? t("c4.status.ok") : s === "failed" ? t("c4.status.failed") : t("c4.status.untested"));
 const input = "h-8 w-full rounded-sm border border-border-control bg-surface-3 px-2 text-[13px] text-text-primary";
 
 export function BoordsCard({ userId }: { userId: string }) {
@@ -50,15 +56,15 @@ export function BoordsCard({ userId }: { userId: string }) {
       <p className="text-[13px] text-text-secondary">{t("c4.intro")}</p>
       <p className="text-[13px] font-medium text-text-primary" data-testid="c4-paid">{t("c4.paid-plan")}</p>
       <div className="text-[13px] text-text-secondary">
-        <p>{t("c4.can", { list: caps.map(c => t(`c4.cap.${c}`)).join(", ") })}</p>
-        <ul className="list-disc ps-5" data-testid="c4-limits">{BOORDS_LIMITS.map(l => <li key={l}>{t(`c4.limit.${l}`)}</li>)}</ul>
+        <p>{t("c4.can", { list: caps.map(c => capLabel(c)).join(", ") })}</p>
+        <ul className="list-disc ps-5" data-testid="c4-limits">{BOORDS_LIMITS.map(l => <li key={l}>{limitLabel(l)}</li>)}</ul>
       </div>
       <ul className="flex flex-col gap-2">
         {(conns.data ?? []).map(c => (
           <li key={c.id} data-testid="c4-connection-row" className="flex flex-wrap items-center justify-between gap-2 rounded-sm border border-border p-2 text-[13px]">
             <div className="flex min-w-0 flex-col">
               <span className="font-medium text-text-primary" dir="auto">{c.ownerKind === "workspace" ? t("c4.owner.workspace") : t("c4.owner.user")} · {c.keyHint}{c.label ? ` · ${c.label}` : ""}</span>
-              <span className="text-text-secondary">{t(`c4.status.${c.status}`)}{c.lastSyncAt ? ` · ${t("c4.last-sync", { date: new Date(c.lastSyncAt).toLocaleString() })}` : ""}</span>
+              <span className="text-text-secondary">{statusLabel(c.status)}{c.lastSyncAt ? ` · ${t("c4.last-sync", { date: new Date(c.lastSyncAt).toLocaleString() })}` : ""}</span>
               {c.webhook ? <span className="break-all text-text-secondary">{t("c4.webhook-url")} <code>{`${origin}/api/public/boords/webhook/${c.id}`}</code></span> : <span className="text-text-secondary">{t("c4.webhook-none")}</span>}
             </div>
             <Button size="sm" variant="outline" disabled={busy} onClick={() => void doRemove(c.id)}>{t("c4.remove")}</Button>
