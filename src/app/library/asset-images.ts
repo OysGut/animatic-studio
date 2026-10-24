@@ -45,7 +45,8 @@ async function imageSize(file: File): Promise<{ width: number | null; height: nu
 }
 
 /** Filtypene bildevelgerne godtar: bildeformatene + TIFF (gjøres om til PNG ved opplasting). */
-export const IMAGE_ACCEPT = [...ASSET_MIME_TYPES, "image/tiff", ".tif", ".tiff"].join(",");
+export const imageAccept = (): string =>
+  [...ASSET_MIME_TYPES, "image/tiff", ".tif", ".tiff"].join(",");
 
 export function checkImageFile(file: File): string | null {
   if (file.type.startsWith("video/") || /\.(mp4|mov|m4v|webm|mkv|avi)$/i.test(file.name))

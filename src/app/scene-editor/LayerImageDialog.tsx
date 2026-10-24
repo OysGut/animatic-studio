@@ -25,7 +25,7 @@ import { useMemo, useRef, useState } from "react";
 import { briefHighlight, ASSET_KIND_LABEL, coverVersion, layerFieldsOf, layerVersion, newId, partLayers, sortedAssets, variantsOf, versionsOf, type AssetMedia, type AssetVariant, type AssetVersion, type CompositionLayer, type LayerFields, type ProjectState, workingImageMaxSide, collation } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
 import {
-  IMAGE_ACCEPT,
+  imageAccept,
   type UploadedImage,
   uploadAssetImage,
   useImageUrls,
@@ -562,7 +562,7 @@ function Body({
               <input
                 ref={fileRef}
                 type="file"
-                accept={IMAGE_ACCEPT}
+                accept={imageAccept()}
                 className="sr-only"
                 aria-label={t("app-scene-editor-layer-image-dialog.body.aria-label.4d4c8a4fe30b")}
                 onChange={(e) => {
