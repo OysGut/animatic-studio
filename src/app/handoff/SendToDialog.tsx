@@ -116,7 +116,7 @@ export function SendToDialog({ open, onOpenChange, state, target }: { open: bool
                 <label key={f} className="flex items-start gap-2 rounded border border-border p-2 text-sm">
                   <input type="radio" name="handoff-format" value={f} checked={fmt === f} onChange={() => setFormat(f)} data-testid={`format-${f}`} />
                   <span>
-                    <span className="font-medium">{t(`c1.format.${f}`)}</span> · {t("c1.send.for", { app: adapterFor(f).name })}
+                    <span className="font-medium">{formatLabel(f)}</span> · {t("c1.send.for", { app: adapterFor(f).name })}
                     <ul className="mt-1 list-disc ps-4 text-xs text-muted-foreground" data-testid={`facts-${f}`}>{factLines(f).map((l) => <li key={l}>{l}</li>)}</ul>
                   </span>
                 </label>
