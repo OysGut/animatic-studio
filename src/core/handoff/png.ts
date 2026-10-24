@@ -16,15 +16,26 @@ function zlibStored(raw: Uint8Array): Uint8Array {
   return w.u32be(adler32(raw)).done();
 }
 
+/** Filter-0 scanlines (the bytes a zlib compressor gets for IDAT). */
+export function pngRaw(width: number, height: number, rgba: Uint8Array): Uint8Array {
+  if (rgba.length !== width * height * 4) throw new Error("png size");
+  const raw = new Uint8Array(height * (width * 4 + 1));
+  for (let y = 0; y < height; y++) raw.set(rgba.subarray(y * width * 4, (y + 1) * width * 4), y * (width * 4 + 1) + 1);
+  return raw;
+}
+
 export function encodePng(width: number, height: number, rgba: Uint8Array, text: Record<string, string> = {}): Uint8Array {
+  return encodePngWith(width, height, rgba, text, zlibStored);
+}
+
+/** Same as encodePng, but IDAT comes from an injected zlib compressor (for example CompressionStream in an adapter). */
+export function encodePngWith(width: number, height: number, rgba: Uint8Array, text: Record<string, string>, zlib: (raw: Uint8Array) => Uint8Array): Uint8Array {
   if (rgba.length !== width * height * 4) throw new Error("png size");
   const w = new ByteWriter();
   w.bytes(Uint8Array.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]));
   chunk(w, "IHDR", new ByteWriter().u32be(width).u32be(height).u8(8).u8(6).u8(0).u8(0).u8(0).done());
   for (const [k, v] of Object.entries(text)) chunk(w, "tEXt", new ByteWriter().ascii(k.slice(0, 79)).u8(0).ascii(v).done());
-  const raw = new Uint8Array(height * (width * 4 + 1));
-  for (let y = 0; y < height; y++) raw.set(rgba.subarray(y * width * 4, (y + 1) * width * 4), y * (width * 4 + 1) + 1);
-  chunk(w, "IDAT", zlibStored(raw));
+  chunk(w, "IDAT", zlib(pngRaw(width, height, rgba)));
   chunk(w, "IEND", new Uint8Array(0));
   return w.done();
 }
