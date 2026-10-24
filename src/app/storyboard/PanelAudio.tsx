@@ -5,7 +5,7 @@ import { usePanelAudioPlan } from "@/core/storyboard/temp-audio";
 import { useRecorder } from "@/app/audio/use-recorder";
 import { createSoundAsset, nameFromFile, audioMediaFromStoredFile } from "@/app/library/asset-audio";
 import { MobileImportDialog } from "@/app/mobile/MobileImportDialog";
-import { claimMobileImport, linkMobileImport, type MobileImportRow } from "@/adapters/browser/mobile-import";
+import { attachMobileDraft, claimMobileImport, linkMobileImport, type MobileImportRow } from "@/adapters/browser/mobile-import";
 import { Button } from "@/components/ui/button";
 import type { Commands } from "@/app/project/use-commands";
 import { t } from "@/core/i18n/keyed";
@@ -58,6 +58,8 @@ export function PanelAudio({ projectId, state, panel, cmds, allowed, save }: { p
       if (r.error) throw new Error(r.error);
       const linked = await linkMobileImport(row.id, { assetId, versionId });
       if (linked) throw new Error(linked.message);
+      const attached = await attachMobileDraft(projectId, `sb4-${panel.id}`, assetId);
+      if (attached) throw new Error(attached.message);
     } catch (e) { setError(e instanceof Error ? e.message : t("sb2.load-error")); }
     finally { setBusy(false); }
   };
