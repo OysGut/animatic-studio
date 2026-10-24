@@ -27,6 +27,7 @@
 - [x] SB-5 språkoppfølging 24.10: inventar regenerert/kontrollert, alle registrerte språk 0 feil; full Vitest 2928 bestått, 0 feilet, 10 hoppet over. Rapportens tidligere manglende fullkjøring er dokumentert historisk.
 
 ## SB-7 – AI fra storyboardpanelet (pågår)
+- [ ] Restleveranse 24.10: faktisk maskeformat/native kontroller, rasterisert layout og direkte sketch/QR, falsk bilde-E2E, DV5/gjenoppretting, forslagsspor/kamerageometri, feilfri nb/en-oppstart og check_kb; full Vitest/DB før avkrysning
 - [x] SB-5-retting: bare ressurslag og deres grupper overføres; test former/tekst
 - [x] Utgangspunkt komposisjon/skisse/manus, instruksjoner som tekst, faktaark og valgte stilforbilder (kjerne og brukerflate; ikke ekte leverandørverifisert)
 - [ ] Varianter 1–4, stil, maskens format og modellkapabiliteter
