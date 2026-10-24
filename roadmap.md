@@ -13,6 +13,7 @@
 - [x] Storyboardstatus i sceneeditorens topp med de andre fagområdene
 - [x] Ingen DB-endring nødvendig (0106 utgår) ved behov (0105 låst); tester kjerne/angre/ikke-overskriving/avspillingsfølging/navigasjon; visuelt nb/en
 - [x] Rapport docs/development/SB5_REPORT.md
+- [x] SB-5 språkoppfølging 24.10: inventar regenerert/kontrollert, alle registrerte språk 0 feil; full Vitest 2928 bestått, 0 feilet, 10 hoppet over. Rapportens tidligere manglende fullkjøring er dokumentert historisk.
 
 ## SB-7 – AI fra storyboardpanelet (pågår)
 - [x] SB-5-retting: bare ressurslag og deres grupper overføres; test former/tekst
