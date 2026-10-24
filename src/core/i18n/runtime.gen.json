@@ -25073,8 +25073,29 @@
     "c0.error": {
       "text": "Noe gikk galt. Prøv igjen."
     },
+    "c0.scope.assets-read": {
+      "text": "Lese ressurser og versjoner"
+    },
+    "c0.scope.conflicts-read": {
+      "text": "Se konflikter for mottatte filer"
+    },
+    "c0.scope.manifest-read": {
+      "text": "Lese prosjektoversikten (manifest)"
+    },
+    "c0.scope.notes-write": {
+      "text": "Skrive notater"
+    },
     "c0.scope.other": {
       "text": "Annen tilgang: {scope}"
+    },
+    "c0.scope.panels-read": {
+      "text": "Lese storyboardpaneler"
+    },
+    "c0.scope.project-read": {
+      "text": "Se prosjektets navn og bildefrekvens"
+    },
+    "c0.scope.transfers-write": {
+      "text": "Sende filer som nye kandidatversjoner"
     },
     "components-ui-dialog.dialog-content.span.4e9257a0bdea": {
       "text": "Lukk"
@@ -60272,8 +60293,29 @@
     "c0.error": {
       "text": "Something went wrong. Try again."
     },
+    "c0.scope.assets-read": {
+      "text": "Read assets and versions"
+    },
+    "c0.scope.conflicts-read": {
+      "text": "See conflicts for received files"
+    },
+    "c0.scope.manifest-read": {
+      "text": "Read the project overview (manifest)"
+    },
+    "c0.scope.notes-write": {
+      "text": "Write notes"
+    },
     "c0.scope.other": {
       "text": "Other permission: {scope}"
+    },
+    "c0.scope.panels-read": {
+      "text": "Read storyboard panels"
+    },
+    "c0.scope.project-read": {
+      "text": "See the project name and frame rate"
+    },
+    "c0.scope.transfers-write": {
+      "text": "Send files as new candidate versions"
     },
     "components-ui-dialog.dialog-content.span.4e9257a0bdea": {
       "text": "Close"

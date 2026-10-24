@@ -15,10 +15,18 @@ import { t } from "@/core/i18n/keyed";
 
 export interface ConsentSearch { client_id?: string; redirect_uri?: string; code_challenge?: string; code_challenge_method?: string; scope?: string; state?: string; user_code?: string }
 
-const SCOPE_KEYS: Record<string, string> = {
-  "project:read": "c0.scope.project-read", "manifest:read": "c0.scope.manifest-read", "assets:read": "c0.scope.assets-read",
-  "panels:read": "c0.scope.panels-read", "transfers:write": "c0.scope.transfers-write", "conflicts:read": "c0.scope.conflicts-read", "notes:write": "c0.scope.notes-write",
-};
+function scopeLabel(scope: string): string {
+  switch (scope) {
+    case "project:read": return t("c0.scope.project-read");
+    case "manifest:read": return t("c0.scope.manifest-read");
+    case "assets:read": return t("c0.scope.assets-read");
+    case "panels:read": return t("c0.scope.panels-read");
+    case "transfers:write": return t("c0.scope.transfers-write");
+    case "conflicts:read": return t("c0.scope.conflicts-read");
+    case "notes:write": return t("c0.scope.notes-write");
+    default: return t("c0.scope.other", { scope });
+  }
+}
 const input = "h-8 w-full rounded-sm border border-border-control bg-surface-3 px-2 text-[13px] text-text-primary";
 
 export function ConnectorConsent({ search, email }: { search: ConsentSearch; email: string }) {
@@ -71,7 +79,7 @@ export function ConnectorConsent({ search, email }: { search: ConsentSearch; ema
           <p className="text-[13px] text-text-primary">{t("c0.consent.explain", { client: clientId })}</p>
           {pkce ? <p className="text-[13px] text-text-secondary" dir="ltr">{t("c0.consent.redirect", { uri: new URL(search.redirect_uri!).origin })}</p> : null}
           <ul className="list-disc ps-5 text-[13px] text-text-primary">
-            {scopes.map(s => <li key={s}>{SCOPE_KEYS[s] ? t(SCOPE_KEYS[s]!) : t("c0.scope.other", { scope: s })}</li>)}
+            {scopes.map(s => <li key={s}>{scopeLabel(s)}</li>)}
           </ul>
           <label className="text-[13px] text-text-primary" htmlFor="c0-project">{t("c0.consent.project")}</label>
           <select id="c0-project" className={input} value={projectId} onChange={e => setProjectId(e.target.value)}>

@@ -183,3 +183,4 @@ Merket nederst i hvert vindu viser «V-nnn · commit». Slå opp nummeret her.
 | V-176 | panel | `src/app/share/StoryboardReviewPage.tsx` | StoryboardReviewPage | Flytende panel i StoryboardReviewPage | aktiv |
 | V-177 | dialog | `src/app/storyboard/StoryboardReview.tsx` | StoryboardReview | Dialog i StoryboardReview | aktiv |
 | V-178 | dialog | `src/app/storyboard/StoryboardReview.tsx` | StoryboardReview | Dialog i StoryboardReview | aktiv |
+| V-179 | side | `src/routes/koble.tsx` | ConnectRoute | Side «Koble til et program – From Pen to Glass» (/koble) | aktiv |
