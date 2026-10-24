@@ -168,6 +168,13 @@ export async function handleApiV1(req: Request, d: ApiDeps): Promise<Response> {
         const a = await authed(req, d, "manifest:read", pid); if (a instanceof Response) return a;
         return json(buildProjectManifest(await d.store.loadState(pid), iso(d.now()), { id: "api-v1", version: "1" }));
       }
+      if (m === "GET" && rest[0] === "audition" && rest[1] === "plan" && rest.length === 2) {
+        const a = await authed(req, d, "manifest:read", pid); if (a instanceof Response) return a;
+        const occ = url.searchParams.get("occurrenceId") ?? "", panel = url.searchParams.get("panelId");
+        if (!/^[0-9a-zA-Z_-]{1,80}$/.test(occ) || (panel !== null && !/^[0-9a-zA-Z_-]{1,80}$/.test(panel))) return apiError(400, "invalid_request");
+        const plan = auditionPlan(await d.store.loadState(pid), occ, panel);
+        return plan ? json(plan) : apiError(404, "not_found");
+      }
       if (rest[0] === "sbpro" && rest[1] === "returns") {
         const a = await authed(req, d, "transfers:write", pid); if (a instanceof Response) return a;
         if (!d.store.saveSbproReturn || !d.store.putSbproImage) return apiError(501, "not_available");
