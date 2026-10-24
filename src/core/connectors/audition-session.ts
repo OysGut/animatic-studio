@@ -113,7 +113,7 @@ export function auditionSesx(plan: AuditionPlan, files: readonly string[]): stri
   const markers = plan.markers.slice(0, AUDITION_MAX_MARKERS).map((m, i) =>
     `<marker id="${i}" name="${xmlEsc(m.label || m.kind)}" comment="ptg:${m.kind}:${xmlEsc(m.id)}" startPoint="${samples(m.ms, sr)}" duration="0" type="${m.kind === "panel" ? "Cue" : "Subclip"}"/>`).join("");
   const fileList = files.map((f, i) => `<file id="${i}" relativePath="${xmlEsc(f)}"/>`).join("");
-  return `<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n<!DOCTYPE sesx>\n<sesx version="1.9"><session audioChannelType="stereo" bitDepth="32" sampleRate="${sr}" duration="${samples(plan.durationMs, sr)}"><name>${xmlEsc(plan.sceneLabel)}</name><tracks>${tracks}</tracks><Markers>${markers}</Markers><xmpMetadata><ptg manifest="${xmlEsc(plan.manifestId)}" project="${xmlEsc(plan.projectId)}" occurrence="${xmlEsc(plan.occurrenceId)}"/></xmpMetadata></session><files>${fileList}</files></sesx>\n`;
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE sesx>\n<sesx version="1.9"><session audioChannelType="stereo" bitDepth="32" sampleRate="${sr}" duration="${samples(plan.durationMs, sr)}"><name>${xmlEsc(plan.sceneLabel)}</name><tracks>${tracks}</tracks><Markers>${markers}</Markers><xmpMetadata><ptg manifest="${xmlEsc(plan.manifestId)}" project="${xmlEsc(plan.projectId)}" occurrence="${xmlEsc(plan.occurrenceId)}"/></xmpMetadata></session><files>${fileList}</files></sesx>\n`;
 }
 
 export interface AuditionReturnRef {
