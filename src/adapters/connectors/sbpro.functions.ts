@@ -22,7 +22,7 @@ export const sbproCandidatesFor = createServerFn({ method: "POST" }).middleware(
   .handler(async ({ data, context }): Promise<SbproCandidateView[]> => {
     const user = context.supabase as unknown as AnyClient;
     const r = await user.from("connector_panel_candidates").select("id,return_id,panel_id,kind,incoming,conflict,revision,created_at,media_path,media_sha256,media_bytes")
-      .eq("project_id", data.projectId).eq("status", "open").order("created_at").limit(500);
+      .eq("project_id", data.projectId).eq("status", "open").neq("kind", "edit").order("created_at").limit(500);
     if (r.error) return [];
     return ((r.data as Record<string, any>[]) ?? []).map(x => ({
       id: x["id"], returnId: x["return_id"], panelId: x["panel_id"], kind: x["kind"], incoming: x["incoming"] ?? {}, conflict: !!x["conflict"],
