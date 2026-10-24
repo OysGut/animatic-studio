@@ -41,7 +41,10 @@ import { useUiPref } from "@/app/account/ui-prefs";
 import { useImageUrls } from "@/app/library/asset-images";
 import { Thumbnail } from "@/app/shared/Thumbnail";
 import { SceneSelect } from "@/app/shell/SceneSelect";
-import { rememberScene } from "@/app/shell/current-scene";
+import { currentPosition, rememberPosition } from "@/app/shell/current-scene";
+import { panelPosition } from "@/core/storyboard/position";
+import { filmClips, suggestPanelTimings, panelTiming } from "@/core/storyboard/playback";
+import { GalleryPlayback, ScrubPreview } from "./GalleryPlayback";
 import { StoryboardFilm } from "./StoryboardFilm";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -160,7 +163,8 @@ export function Gallery({
   const navigate = useNavigate();
   const [prefs, setPrefs] = useUiPref<GalleryPrefs>("storyboard-gallery", DEFAULT_GALLERY_PREFS, isGalleryPrefs);
   const set = (p: Partial<GalleryPrefs>) => setPrefs({ ...prefs, ...p });
-  const [productionId, setProductionId] = useActiveProduction(projectId, state, initialOccurrenceId);
+  const savedPosition = currentPosition(projectId);
+  const [productionId, setProductionId] = useActiveProduction(projectId, state, initialOccurrenceId ?? savedPosition?.occurrenceId);
   const filter = prefs.filterArea && prefs.filterStatus ? { area: prefs.filterArea, status: prefs.filterStatus } : null;
   const gallery = useMemo(
     () => buildGallery(state, productionId, { showHidden: prefs.showHidden, filter }),
@@ -168,7 +172,16 @@ export function Gallery({
     [state, productionId, prefs.showHidden, prefs.filterArea, prefs.filterStatus],
   );
   const flat = useMemo(() => flatPanels(gallery), [gallery]);
-  const [selected, setSelected] = useState<string | null>(initialPanelId);
+  const [selected, setSelected] = useState<string | null>(initialPanelId ?? savedPosition?.panelId ?? null);
+  const [playingOccurrence, setPlayingOccurrence] = useState<string | null>(null);
+  const selectPanel = useCallback((id: string) => {
+    setSelected(id);
+    const panel = state.compositions[id];
+    if (!panel?.occurrenceId) return;
+    const p = panelPosition(state, panel.occurrenceId, id, null);
+    if (p) rememberPosition(projectId, p);
+  }, [projectId, state]);
+  const followPanel = useCallback((id: string) => { focusPending.current = true; setSelected(id); }, []);
   const [error, setError] = useState<string | null>(null);
   const [moveOpen, setMoveOpen] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
@@ -200,7 +213,8 @@ export function Gallery({
   const open = useCallback(
     (p: GalleryPanel) => {
       if (!p.panel.occurrenceId) return;
-      rememberScene(projectId, p.panel.occurrenceId);
+      const position = panelPosition(state, p.panel.occurrenceId, p.panel.id, null);
+      if (position) rememberPosition(projectId, position);
       void navigate({ to: "/prosjekt/$projectId/scene", params: { projectId }, search: { scene: p.panel.occurrenceId, panel: p.panel.id } as never });
     },
     [navigate, projectId],
@@ -208,7 +222,7 @@ export function Gallery({
   const jumpToScript = () => {
     const occ = sel?.panel.occurrenceId ?? gallery[0]?.occurrence.id;
     if (!occ) return;
-    const blokk = sel?.blockIds[0];
+    const blokk = sel?.panel.storyboard?.dialogueIds[0] ?? sel?.blockIds[0];
     void navigate({ to: "/prosjekt/$projectId/manus", params: { projectId }, search: { scene: occ, ...(blokk ? { blokk } : {}) } });
   };
 
@@ -379,6 +393,16 @@ export function Gallery({
   const urls = useImageUrls(textView ? [] : visiblePanels.map(thumbPath).filter((x): x is string => !!x)).data;
 
   const productions = Object.values(state.productions).filter((p) => !(p as { removed?: boolean }).removed);
+  const timingClips = useMemo(() => filmClips(state, productionId), [state, productionId]);
+  const timingSuggestions = useMemo(() => sel?.panel.occurrenceId ? suggestPanelTimings(state, timingClips, sel.panel.occurrenceId) : [], [state, timingClips, sel?.panel.occurrenceId]);
+  const acceptTiming = (wholeScene: boolean) => {
+    const group = newId();
+    for (const suggestion of timingSuggestions.filter(s => wholeScene || s.panelId === selected)) {
+      const panel = state.compositions[suggestion.panelId];
+      if (!panel || productionStatusOf(state, "storyboard", { compositionId: panel.id })?.status === "done") continue;
+      if (run({ type: "UpdateStoryboardPanel", panelId: panel.id, durationFrames: suggestion.frames }, tk("sb4.accept-timing"), group)) break;
+    }
+  };
 
   return (
     <div className="flex h-full min-h-0 flex-col" data-testid="storyboard-workspace">
@@ -444,12 +468,16 @@ export function Gallery({
         </div>
       </div>
       {/* Handlinger for valgt panel */}
+      <GalleryPlayback key={productionId} state={state} projectId={projectId} productionId={productionId} selected={selected} onCurrent={followPanel} onPlaying={setPlayingOccurrence}/>
       <div className="flex flex-wrap items-center gap-2 border-b border-border bg-surface-1 px-4 py-1.5 text-[13px]" role="toolbar" aria-label={tk("sb2.panel-actions")}>
         <span className="text-text-secondary" aria-live="polite" data-testid="sb-selected">
           {sel ? tk("sb2.selected", { number: String(sel.index + 1) }) : tk("sb2.none-selected")}
         </span>
         {sel && editable ? (
           <>
+            <span className="text-text-tertiary" data-testid="sb4-timing-source">{tk("sb4.inherited")} · {panelTiming(state, timingClips, sel.panel).source === "panel" ? tk("sb3.panel") : tk("sb4.scene-timing")}</span>
+            {timingSuggestions.find(s => s.panelId === selected) ? <Button size="sm" variant="ghost" onClick={() => acceptTiming(false)} data-testid="sb4-accept-panel">{tk("sb4.accept-timing")} · {fmtSeconds(timingSuggestions.find(s => s.panelId === selected)?.frames ?? 0, fps)}</Button> : null}
+            {timingSuggestions.length ? <Button size="sm" variant="ghost" onClick={() => acceptTiming(true)} data-testid="sb4-accept-scene">{tk("sb4.accept-scene-timing")}</Button> : null}
             <Button size="sm" variant="ghost" onClick={() => selScene && addPanel(selScene, sel.panel.id)} data-testid="sb-add"><Plus /> {tk("sb2.add")}</Button>
             <Button size="sm" variant="ghost" onClick={() => duplicate(sel)} data-testid="sb-duplicate"><Copy /> {tk("sb2.duplicate")}</Button>
             <Button size="sm" variant="ghost" onClick={() => toggleHidden(sel)} data-testid="sb-hide">{sel.panel.hidden ? <Eye /> : <EyeOff />} {sel.panel.hidden ? tk("sb2.show-panel") : tk("sb2.hide")}</Button>
@@ -536,20 +564,20 @@ export function Gallery({
                       onDragStart={onDragStart("panel", p.panel.id)}
                       onDragOver={(e) => drag.current?.kind === "panel" && e.preventDefault()}
                       onDrop={onDropPanel(p, scene)}
-                      onClick={() => setSelected(p.panel.id)}
+                      onClick={() => selectPanel(p.panel.id)}
                       onDoubleClick={() => open(p)}
                       onFocus={() => setSelected(p.panel.id)}
                       aria-label={tk("sb2.panel-label", { number: String(p.index + 1), scene: scene.number || scene.heading })}
                       className={
                         "flex shrink-0 flex-col overflow-hidden rounded border bg-surface-1 text-[12px] outline-none focus-visible:outline-2 focus-visible:outline-focus-ring " +
                         (on ? "border-accent-brand ring-2 ring-accent-selection " : "border-border ") +
-                        (p.panel.hidden || p.panel.active === false ? "opacity-50" : "")
+                        (playingOccurrence && playingOccurrence !== p.panel.occurrenceId ? "opacity-40" : p.panel.hidden || p.panel.active === false ? "opacity-50" : "")
                       }
                       style={{ width: cardW, height: r.height - GAP }}
                     >
                       {!textView ? (
                         <div className="shrink-0 bg-surface-3" style={{ height: imageH }}>
-                          {url ? <Thumbnail src={url} /> : <div className="flex size-full items-center justify-center font-mono text-text-tertiary">{p.index + 1}</div>}
+                          <ScrubPreview state={state} projectId={projectId} productionId={productionId} panelId={p.panel.id} onSeek={(_frame, id) => setSelected(id)}/>
                         </div>
                       ) : null}
                       <div className="flex min-h-0 flex-col gap-0.5 px-2 py-1">

@@ -9,7 +9,7 @@ export function panelPosition(s: ProjectState, occurrenceId: string, panelId: st
   if (!occ) return null;
   const clips = filmClips(s, occ.productionId);
   const shots = storyboardTimeline(s, clips).filter(shot => shot.occurrenceId === occurrenceId);
-  const contains = (id: string, block: string) => panelBlockIds(s, id).includes(block as never) || s.compositions[id]?.storyboard?.dialogueIds.includes(block);
+  const contains = (id: string, block: string) => panelBlockIds(s, id as never).includes(block as never) || s.compositions[id]?.storyboard?.dialogueIds.includes(block);
   const shot = (panelId ? shots.find(x => x.panel.id === panelId) : null)
     ?? (blockId ? shots.find(x => contains(x.panel.id, blockId)) : null)
     ?? shots.find(x => timeMs >= (x.startFrame - (shots[0]?.startFrame ?? 0)) * 1000 * s.project.fps.den / s.project.fps.num && timeMs < (x.startFrame - (shots[0]?.startFrame ?? 0) + x.durationFrames) * 1000 * s.project.fps.den / s.project.fps.num);

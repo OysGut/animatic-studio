@@ -14,6 +14,7 @@ import type { FilmAudioItem } from "../audio";
 import type { CameraShot, Composition, ProjectState, Transition } from "../model";
 import type { OccurrenceId } from "../ids";
 import { speechSeconds } from "../language/text-metrics";
+import { sourceLanguageOf } from "../dialogue/languages";
 import { framesToSeconds, secondsToFrames } from "../time";
 import { panelBlockIds, panelTimingFrames, storyboardPanelsOf } from "./index";
 
@@ -71,9 +72,10 @@ export function suggestPanelTimings(
   const out: PanelTimingSuggestion[] = [];
   for (const p of panels) {
     let seconds = 0;
-    for (const blockId of panelBlockIds(s, p.id)) {
+    const ids = [...new Set([...panelBlockIds(s, p.id), ...(p.storyboard?.dialogueIds ?? [])])];
+    for (const blockId of ids) {
       const b = s.blocks[blockId];
-      if (b && !b.removed && b.kind === "dialogue") seconds += speechSeconds(b.text);
+      if (b && !b.removed && (b.kind === "dialogue" || b.kind === "action")) seconds += speechSeconds(b.text, sourceLanguageOf(s));
     }
     if (seconds > 0) out.push({ panelId: p.id, frames: Math.max(1, secondsToFrames(seconds, fps)), basis: "dialogue" });
     else if (audioFrames > 0) out.push({ panelId: p.id, frames: perPanel, basis: "audio" });
