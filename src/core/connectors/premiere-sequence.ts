@@ -262,6 +262,8 @@ export function readPremiereReturn(input: unknown, byteLength?: number): Premier
   }
   if (items.length === 0) return { ok: false, reason: "empty" };
   if (items.length > PREMIERE_MAX_PANELS) return { ok: false, reason: "too-many" };
-  const hash = toHex(new Sha256().update(new TextEncoder().encode(canonicalJson(input))).digest());
+  // Idempotens: samme klipp gir samme retur, også når panelet sender på nytt senere (tidsstempelet teller ikke).
+  const { createdAt: _c, ...stable } = input as Record<string, unknown>;
+  const hash = toHex(new Sha256().update(new TextEncoder().encode(canonicalJson(stable))).digest());
   return { ok: true, value: { projectId: m.projectId, productionId, fps: { num: m.frameRate.num, den: m.frameRate.den }, items: items.sort((a, b) => a.order - b.order).map(({ order: _o, ...r }) => r), hash } };
 }
