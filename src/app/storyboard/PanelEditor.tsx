@@ -7,6 +7,7 @@ import { Stage } from "@/app/scene-editor/Stage";
 import { UiId } from "@/app/shared/UiId";
 import { Thumbnail } from "@/app/shared/Thumbnail";
 import { PanelAudio } from "./PanelAudio";
+import { PanelAi } from "./PanelAi";
 import { currentPosition, rememberPosition } from "@/app/shell/current-scene";
 import { panelPosition } from "@/core/storyboard/position";
 import { useImageUrls } from "@/app/library/asset-images";
@@ -18,7 +19,7 @@ import { newId, keyBetween, layersOf, layerFieldsOf, layerVersion, versionImageP
 const ctl = "w-full min-w-0 rounded-sm border border-border-control bg-surface-1 px-2 py-1 text-[13px] text-text-primary";
 type Tool = "select" | "arrow" | "line" | "shape" | "text" | "note" | "camera";
 const tools = [{ id: "select", icon: MousePointer2, key: "v" }, { id: "arrow", icon: MoveUpRight, key: "a" }, { id: "line", icon: Minus, key: "l" }, { id: "shape", icon: Square, key: "s" }, { id: "text", icon: Type, key: "t" }, { id: "note", icon: StickyNote, key: "n" }, { id: "camera", icon: Scan, key: "c" }] as const;
-interface Guides { notes: boolean; thirds: boolean; safe: boolean; mask: string }
+interface Guides { notes: boolean; thirds: boolean; safe: boolean; mask: "project" | "2.39" | "1.85" | "16:9" | "9:16" | "1:1" }
 const defaultGuides: Guides = { notes: true, thirds: false, safe: false, mask: "project" };
 const guideValid = (v: unknown): v is Guides => !!v && typeof v === "object" && typeof (v as Guides).notes === "boolean" && typeof (v as Guides).thirds === "boolean" && typeof (v as Guides).safe === "boolean" && ["project", "2.39", "1.85", "16:9", "9:16", "1:1"].includes((v as Guides).mask);
 
@@ -136,7 +137,7 @@ export function PanelEditor({ state, panel, editable, cmds, projectId }: { state
           <Button size="icon" variant="ghost" aria-label={t("sb3.notes-visible")} aria-pressed={guides.notes} onClick={()=>setGuides({...guides,notes:!guides.notes})}>{guides.notes ? <StickyNote/> : <EyeOff/>}</Button>
           <label className="flex items-center gap-1 text-[11px]"><input type="checkbox" checked={guides.safe} onChange={e=>setGuides({...guides,safe:e.target.checked})}/>{t("sb3.safe")}</label>
           <label className="flex items-center gap-1 text-[11px]"><input type="checkbox" checked={guides.thirds} onChange={e=>setGuides({...guides,thirds:e.target.checked})}/>{t("sb3.thirds")}</label>
-          <select className={ctl+" max-w-32"} value={guides.mask} onChange={e=>setGuides({...guides,mask:e.target.value})} aria-label={t("sb3.mask")}>{["project","2.39","1.85","16:9","9:16","1:1"].map(v=><option key={v} value={v}>{v==="project" ? t("sb3.project-format") : v}</option>)}</select>
+          <select className={ctl+" max-w-32"} value={guides.mask} onChange={e=>setGuides({...guides,mask:e.target.value as Guides["mask"]})} aria-label={t("sb3.mask")}>{["project","2.39","1.85","16:9","9:16","1:1"].map(v=><option key={v} value={v}>{v==="project" ? t("sb3.project-format") : v}</option>)}</select>
         </div>
         <div className="relative flex min-h-0 flex-1" data-testid="sb3-stage" onDragOver={e=>{if(allowed && e.dataTransfer.types.includes("application/x-asset-studio-version"))e.preventDefault();}} onDrop={e=>{const raw=e.dataTransfer.getData("application/x-asset-studio-version");if(!raw)return;e.preventDefault();e.stopPropagation();try{const parsed=JSON.parse(raw);if(typeof parsed.versionId==="string")addResource(parsed.versionId);}catch{setError(t("sb1.error.invalid-panel"));}}}>
           <Stage state={drawingState} composition={viewPanel} editable={allowed} selectedLayerId={selected} onSelect={select} run={run} imageUrls={urls} selectedShotId={null} onSelectShot={()=>undefined} frame={0} playing={false} view="scene" onViewChange={()=>undefined} autoKey={false}/>
@@ -145,6 +146,7 @@ export function PanelEditor({ state, panel, editable, cmds, projectId }: { state
         <div className="max-h-40 overflow-auto border-t border-border p-2" aria-label={t("sb3.layers")}>{[...layers].reverse().map((l,i)=><div key={l.id} className="flex items-center gap-1 text-[13px]" data-testid="sb3-layer"><Button size="sm" variant={l.id===selected ? "secondary" : "ghost"} className="min-w-0 flex-1 justify-start truncate" onClick={()=>select(l.id)}>{l.name}</Button><Button size="icon" variant="ghost" aria-label={t("sb3.visibility")} disabled={!allowed} onClick={()=>updateLayer(l,{visible:!l.visible})}>{l.visible?<Eye/>:<EyeOff/>}</Button><Button size="icon" variant="ghost" aria-label={t("sb3.lock")} disabled={!allowed} onClick={()=>updateLayer(l,{locked:!l.locked})}>{l.locked?<Lock/>:<Unlock/>}</Button><Button size="icon" variant="ghost" aria-label={t("sb3.up")} disabled={!allowed||i===0} onClick={()=>{const index=layers.findIndex(x=>x.id===l.id);run({type:"MoveLayer",layerId:l.id,beforeLayerId:layers[index+2]?.id??null});}}><ArrowUp/></Button><Button size="icon" variant="ghost" aria-label={t("sb3.down")} disabled={!allowed||i===layers.length-1} onClick={()=>{const index=layers.findIndex(x=>x.id===l.id);run({type:"MoveLayer",layerId:l.id,beforeLayerId:layers[index-1]?.id??null});}}><ArrowDown/></Button><Button size="icon" variant="ghost" aria-label={t("sb3.remove")} disabled={!allowed||l.locked} onClick={()=>run({type:"SetLayersRemoved",layerIds:[l.id],removed:true})}><Trash2/></Button></div>)}</div>
       </div>
       <aside className="w-full shrink-0 space-y-3 overflow-auto border-s border-border p-3 lg:w-72" aria-label={t("sb3.properties")}>
+        <PanelAi key={panel.id} state={state} panel={panel} cmds={cmds} editable={allowed} mask={guides.mask}/>
         <PanelAudio key={panel.id} projectId={projectId} state={state} panel={panel} cmds={cmds} allowed={allowed} save={saveDetails}/>
         {layer ? <LayerProperties layer={layer} layers={layers} disabled={!allowed||layer.locked} update={patch=>updateLayer(layer,patch)}/> : null}
         {layer?.arrow ? <div className="space-y-1"><select className={ctl} value={pathTarget} onChange={e=>setPathTarget(e.target.value)} aria-label={t("sb3.path-target")}><option value="">{t("sb3.path-target")}</option>{pathLayers.map(l=><option key={l.id} value={l.id}>{l.name}</option>)}</select><Button size="sm" disabled={!allowed||!pathTarget} onClick={()=>showPath(true)} data-testid="sb3-use-path">{t("sb3.use-path")}</Button></div> : null}

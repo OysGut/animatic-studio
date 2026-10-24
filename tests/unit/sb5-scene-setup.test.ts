@@ -9,6 +9,7 @@ import {
   DEFAULT_COMPOSITION,
   applyCommand,
   defaultLayerFields,
+  textLayerFields,
   filmClips,
   orderedOccurrences,
   planSceneSetup,
@@ -91,7 +92,7 @@ describe("SB-5 planSceneSetup", () => {
     expect(comp.durationFrames).toBe(120);
   });
 
-  it("kopierer ressurslag med ID/versjon og transformasjon; hopper over lapp, pil og kameramerke", () => {
+  it("kopierer bare ressurslag med ID/versjon; former, tekst, lapper og piler blir værende", () => {
     let { s, mainId, occurrenceId } = setup();
     const p = addPanel(s, occurrenceId, "a", 100);
     const img = withImage(p.s);
@@ -105,6 +106,8 @@ describe("SB-5 planSceneSetup", () => {
     s = addPanelLayer(s, p.panelId, { kind: "note", fill: null, note: { text: "regi", color: "#ffffff", noteType: "direction", handled: false, anchor: null } }).s;
     s = addPanelLayer(s, p.panelId, { kind: "arrow", fill: null, arrow: { points: [{ x: 0, y: 0, smooth: false }, { x: 10, y: 10, smooth: false }], form: "straight", thickness: 2, color: "#ffffff", category: "character", layerId: null } }).s;
     s = addPanelLayer(s, p.panelId, { kind: "camera_mark", fill: null, cameraMark: { frame: { x: 100, y: 100, width: 400, height: 300 }, zoom: 2, pan: { x: 0, y: 0 }, tilt: 0 } }).s;
+    s = addPanelLayer(s, p.panelId, { kind: "other", fill: "#ffffff", shape: { type: "rect", radius: 0, stroke: null } }).s;
+    s = addPanelLayer(s, p.panelId, textLayerFields(s.compositions[p.panelId]!, "Instruction", "Text")).s;
 
     const plan = planSceneSetup(s, filmClips(s, mainId), occurrenceId, p.panelId);
     expect(plan.ok).toBe(true);
@@ -115,6 +118,7 @@ describe("SB-5 planSceneSetup", () => {
     for (const c of plan.commands) st = mustApply(st, c);
     const newLayers = layersOf(st, plan.compositionId);
     expect(newLayers).toHaveLength(1);
+    expect(layersOf(st, p.panelId)).toHaveLength(6);
     const layer = newLayers[0]!;
     expect(layer.assetId).toBe(assetId);
     expect(layer.transform).toEqual({ x: 500, y: 300, scaleX: 1.5, scaleY: 1.5, rotation: 15, opacity: 1 });

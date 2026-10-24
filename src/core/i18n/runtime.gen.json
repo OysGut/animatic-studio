@@ -34405,6 +34405,96 @@
     "sb5.untitled-panel": {
       "text": "Panel uten navn"
     },
+    "sb7.accept": {
+      "text": "Bekreft og bruk"
+    },
+    "sb7.action": {
+      "text": "Oppgave"
+    },
+    "sb7.basis": {
+      "text": "Utgangspunkt"
+    },
+    "sb7.between": {
+      "text": "Mellompaneler"
+    },
+    "sb7.candidate": {
+      "text": "Bildekandidat"
+    },
+    "sb7.clean": {
+      "text": "Grovskisse til ren strek"
+    },
+    "sb7.color": {
+      "text": "Ferdig farge"
+    },
+    "sb7.composition": {
+      "text": "Komposisjon med ressurser"
+    },
+    "sb7.confirm": {
+      "text": "Bekreft kostnad og generer"
+    },
+    "sb7.cost": {
+      "text": "Anslag: USD {cost}, inkludert USD {study} for manglende faktaark."
+    },
+    "sb7.count": {
+      "text": "Antall varianter (1–4)"
+    },
+    "sb7.coverage": {
+      "text": "Foreslå dekning"
+    },
+    "sb7.describe": {
+      "text": "Beskriv panelet"
+    },
+    "sb7.end-panel": {
+      "text": "Sluttpanel"
+    },
+    "sb7.estimate": {
+      "text": "Vis kostnadsanslag"
+    },
+    "sb7.grey": {
+      "text": "Grå tegning"
+    },
+    "sb7.image": {
+      "text": "Generer bilde fra panelet"
+    },
+    "sb7.line": {
+      "text": "Storyboard-strek"
+    },
+    "sb7.model": {
+      "text": "Bildemodell"
+    },
+    "sb7.references": {
+      "text": "Godkjente stilforbilder (anbefalt 1–3, maks. {limit})"
+    },
+    "sb7.result": {
+      "text": "Forslag"
+    },
+    "sb7.script": {
+      "text": "Manusutdrag"
+    },
+    "sb7.sketch": {
+      "text": "Håndtegnet skisse"
+    },
+    "sb7.stale": {
+      "text": "Innholdet eller prisen har endret seg. Hent et nytt anslag."
+    },
+    "sb7.style": {
+      "text": "Stil"
+    },
+    "sb7.text-model": {
+      "text": "Tekstmodell"
+    },
+    "sb7.title": {
+      "text": "KI fra storyboard"
+    },
+    "sb7.unavailable": {
+      "text": "Valget er ikke tilgjengelig med dine tilkoblede modeller."
+    },
+    "sb7.visual-notes": {
+      "text": "Ta med visuelle lapper"
+    },
+    "sb7.working": {
+      "text": "Arbeider …"
+    },
     "script-explorer2.chip.menu": {
       "text": "Valg for {name}"
     },
@@ -68949,6 +69039,96 @@
     },
     "sb5.untitled-panel": {
       "text": "Untitled panel"
+    },
+    "sb7.accept": {
+      "text": "Confirm and use"
+    },
+    "sb7.action": {
+      "text": "Task"
+    },
+    "sb7.basis": {
+      "text": "Starting point"
+    },
+    "sb7.between": {
+      "text": "Intermediate panels"
+    },
+    "sb7.candidate": {
+      "text": "Image candidate"
+    },
+    "sb7.clean": {
+      "text": "Rough sketch to clean lines"
+    },
+    "sb7.color": {
+      "text": "Finished color"
+    },
+    "sb7.composition": {
+      "text": "Resource composition"
+    },
+    "sb7.confirm": {
+      "text": "Confirm cost and generate"
+    },
+    "sb7.cost": {
+      "text": "Estimate: USD {cost}, including USD {study} for missing fact sheets."
+    },
+    "sb7.count": {
+      "text": "Variants (1–4)"
+    },
+    "sb7.coverage": {
+      "text": "Suggest coverage"
+    },
+    "sb7.describe": {
+      "text": "Describe panel"
+    },
+    "sb7.end-panel": {
+      "text": "End panel"
+    },
+    "sb7.estimate": {
+      "text": "Show cost estimate"
+    },
+    "sb7.grey": {
+      "text": "Grey drawing"
+    },
+    "sb7.image": {
+      "text": "Generate image from panel"
+    },
+    "sb7.line": {
+      "text": "Storyboard lines"
+    },
+    "sb7.model": {
+      "text": "Image model"
+    },
+    "sb7.references": {
+      "text": "Approved style references (recommended 1–3, maximum {limit})"
+    },
+    "sb7.result": {
+      "text": "Suggestion"
+    },
+    "sb7.script": {
+      "text": "Script excerpt"
+    },
+    "sb7.sketch": {
+      "text": "Hand-drawn sketch"
+    },
+    "sb7.stale": {
+      "text": "Content or price has changed. Request a new estimate."
+    },
+    "sb7.style": {
+      "text": "Style"
+    },
+    "sb7.text-model": {
+      "text": "Text model"
+    },
+    "sb7.title": {
+      "text": "AI from storyboard"
+    },
+    "sb7.unavailable": {
+      "text": "This choice is unavailable with your connected models."
+    },
+    "sb7.visual-notes": {
+      "text": "Include visual notes"
+    },
+    "sb7.working": {
+      "text": "Working …"
     },
     "script-explorer2.chip.menu": {
       "text": "Options for {name}"

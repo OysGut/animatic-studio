@@ -76958,5 +76958,95 @@
   },
   "time.weekday-at": {
     "text": "[!! {weekday} áátt {time} !!]"
+  },
+  "sb7.title": {
+    "text": "[!! ÁÁÏÏ ffrrôômm ssttôôrryybbôôáárrdd !!]"
+  },
+  "sb7.action": {
+    "text": "[!! TTáásskk !!]"
+  },
+  "sb7.image": {
+    "text": "[!! GGëënnëërrááttëë ïïmmáággëë ffrrôômm ppáánnëëll !!]"
+  },
+  "sb7.coverage": {
+    "text": "[!! SSüüggggëësstt ccôôvvëërráággëë !!]"
+  },
+  "sb7.between": {
+    "text": "[!! ÏÏnnttëërrmmëëddïïááttëë ppáánnëëllss !!]"
+  },
+  "sb7.clean": {
+    "text": "[!! RRôôüügghh sskkëëttcchh ttôô ccllëëáánn llïïnnëëss !!]"
+  },
+  "sb7.describe": {
+    "text": "[!! DDëëssccrrïïbbëë ppáánnëëll !!]"
+  },
+  "sb7.model": {
+    "text": "[!! ÏÏmmáággëë mmôôddëëll !!]"
+  },
+  "sb7.basis": {
+    "text": "[!! SSttáárrttïïnngg ppôôïïnntt !!]"
+  },
+  "sb7.script": {
+    "text": "[!! SSccrrïïpptt ëëxxccëërrpptt !!]"
+  },
+  "sb7.composition": {
+    "text": "[!! RRëëssôôüürrccëë ccôômmppôôssïïttïïôônn !!]"
+  },
+  "sb7.sketch": {
+    "text": "[!! HHáánndd-ddrrááwwnn sskkëëttcchh !!]"
+  },
+  "sb7.style": {
+    "text": "[!! SSttyyllëë !!]"
+  },
+  "sb7.line": {
+    "text": "[!! SSttôôrryybbôôáárrdd llïïnnëëss !!]"
+  },
+  "sb7.grey": {
+    "text": "[!! GGrrëëyy ddrrááwwïïnngg !!]"
+  },
+  "sb7.color": {
+    "text": "[!! FFïïnnïïsshhëëdd ccôôllôôrr !!]"
+  },
+  "sb7.references": {
+    "text": "[!! ÁÁpppprrôôvvëëdd ssttyyllëë rrëëffëërrëënnccëëss (rrëëccôômmmmëënnddëëdd 1–3, mmááxxïïmmüümm {limit}) !!]"
+  },
+  "sb7.visual-notes": {
+    "text": "[!! ÏÏnnccllüüddëë vvïïssüüááll nnôôttëëss !!]"
+  },
+  "sb7.end-panel": {
+    "text": "[!! ËËnndd ppáánnëëll !!]"
+  },
+  "sb7.text-model": {
+    "text": "[!! TTëëxxtt mmôôddëëll !!]"
+  },
+  "sb7.count": {
+    "text": "[!! VVáárrïïáánnttss (1–4) !!]"
+  },
+  "sb7.cost": {
+    "text": "[!! ËËssttïïmmááttëë: ÜÜSSDD {cost}, ïïnnccllüüddïïnngg ÜÜSSDD {study} ffôôrr mmïïssssïïnngg ffáácctt sshhëëëëttss. !!]"
+  },
+  "sb7.confirm": {
+    "text": "[!! CCôônnffïïrrmm ccôôsstt áánndd ggëënnëërrááttëë !!]"
+  },
+  "sb7.unavailable": {
+    "text": "[!! TThhïïss cchhôôïïccëë ïïss üünnáávvááïïlláábbllëë wwïïtthh yyôôüürr ccôônnnnëëccttëëdd mmôôddëëllss. !!]"
+  },
+  "sb7.stale": {
+    "text": "[!! CCôônnttëënntt ôôrr pprrïïccëë hhááss cchháánnggëëdd. RRëëqqüüëësstt áá nnëëww ëëssttïïmmááttëë. !!]"
+  },
+  "sb7.candidate": {
+    "text": "[!! ÏÏmmáággëë ccáánnddïïddááttëë !!]"
+  },
+  "sb7.working": {
+    "text": "[!! WWôôrrkkïïnngg … !!]"
+  },
+  "sb7.estimate": {
+    "text": "[!! SShhôôww ccôôsstt ëëssttïïmmááttëë !!]"
+  },
+  "sb7.result": {
+    "text": "[!! SSüüggggëëssttïïôônn !!]"
+  },
+  "sb7.accept": {
+    "text": "[!! CCôônnffïïrrmm áánndd üüssëë !!]"
   }
 }
