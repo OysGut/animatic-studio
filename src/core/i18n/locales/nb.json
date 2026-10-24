@@ -78185,5 +78185,17 @@
   },
   "c3.error": {
     "text": "Det gikk ikke. Prøv igjen."
+  },
+  "notes-panel.show-resolved": {
+    "text": "Vis løste notater"
+  },
+  "notes-panel.hide-resolved": {
+    "text": "Skjul løste notater"
+  },
+  "ai-cleanup.total": {
+    "text": "Totalt {size}"
+  },
+  "ai-cleanup.select-file": {
+    "text": "Velg {name}"
   }
 }
