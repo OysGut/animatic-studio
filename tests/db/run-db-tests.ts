@@ -8930,6 +8930,10 @@ try {
     await sql`insert into public.storyboard_shares(id,project_id,created_by,token_hash,expires_at,title,manifest,video_key,fps,ready,allow_approval) values(${share},${g7p},${ALICE},${hash},now()+interval '1 day','Review',${sql.json([{key,panelId:newId()}])},${g7p+'/reviews/'+share+'/film.mp4'},24,true,true)`;
     const lookup=async()=>as("service_role",ALICE,tx=>tx`select public.storyboard_review_lookup(${hash}) value`);
     assert(!!(await lookup())[0]?.['value'],'ready share not found');
+    const frozenPath=g7p+'/reviews/'+share+'/p1.png';
+    assert((await as('authenticated',ALICE,tx=>tx`select public.storyboard_review_path_writable(${frozenPath}) v`))[0]?.['v']===false,'finalized review path writable');
+    assert((await as('authenticated',ALICE,tx=>tx`select public.storyboard_review_path_writable(${g7p+'/unrelated.png'}) v`))[0]?.['v']===true,'unrelated path blocked');
+    assert((await sql`select count(*) n from pg_policies where schemaname='storage' and policyname like 'sb10_frozen_review_%' and permissive='RESTRICTIVE'`)[0]?.['n']==='3','missing restrictive policies');
     await expectError(as("anon",ALICE,tx=>tx`select public.storyboard_review_lookup(${hash})`),'42501');
     await expectError(as("authenticated",ALICE,tx=>tx`select token_hash from public.storyboard_shares where id=${share}`),'42501');
     assert((await as("authenticated",CAROL,tx=>tx`select id from public.storyboard_feedback where share_id=${share}`)).length===0,'nonmember feedback leak');

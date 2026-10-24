@@ -48,5 +48,20 @@ declare s public.storyboard_shares;v_id uuid;begin
  insert into public.storyboard_feedback(share_id,project_id,panel_key,guest_name,guest_email,text,decision,pin_x,pin_y)values(s.id,s.project_id,p_key,p_name,nullif(p_email,''),p_text,p_decision,p_x,p_y) returning id into v_id;return v_id;end $$;
 revoke all on function public.storyboard_review_comment(text,text,text,text,text,text,double precision,double precision) from public,anon,authenticated;
 grant execute on function public.storyboard_review_comment(text,text,text,text,text,text,double precision,double precision) to service_role;
+-- Restrictive policies prevent member changes to finalized review media; service-only purge still works.
+create function public.storyboard_review_path_writable(p_name text) returns boolean
+language sql stable security definer set search_path='' as $$
+ select not exists(select 1 from public.storyboard_shares s where s.ready
+   and p_name like s.project_id::text||'/reviews/'||s.id::text||'/%');
+$$;
+revoke all on function public.storyboard_review_path_writable(text) from public,anon;
+grant execute on function public.storyboard_review_path_writable(text) to authenticated;
+create policy sb10_frozen_review_insert on storage.objects as restrictive for insert to authenticated
+ with check(bucket_id<>'assets' or public.storyboard_review_path_writable(name));
+create policy sb10_frozen_review_update on storage.objects as restrictive for update to authenticated
+ using(bucket_id<>'assets' or public.storyboard_review_path_writable(name))
+ with check(bucket_id<>'assets' or public.storyboard_review_path_writable(name));
+create policy sb10_frozen_review_delete on storage.objects as restrictive for delete to authenticated
+ using(bucket_id<>'assets' or public.storyboard_review_path_writable(name));
 insert into public.schema_version(version,description)values(108,'SB-10 storyboard guest review');
 commit;
