@@ -12,7 +12,7 @@ import type { Composition } from "../index";
 import { keysEvenly } from "../order-key";
 import { panelDetails } from "../storyboard/editing";
 import { storyboardPanelsOf } from "../storyboard";
-import { framesToTimecode, validateManifest, canonicalJson, type ConnectorManifest, type ManifestItem } from "./manifest";
+import { framesToTimecode, validateManifest, canonicalJson, type ConnectorManifest, type ManifestFile, type ManifestItem } from "./manifest";
 import { DEFAULT_SAMPLE_RATE } from "./build";
 import { Sha256, toHex } from "./sha256";
 
@@ -63,9 +63,9 @@ export function buildSbproPackage(s: ProjectState, i: SbproPackageInput): Connec
       items.push({ kind: "occurrence", id: occurrenceId, parentId: i.productionId, revision: o.revision, sceneId: o.sceneId, active: true });
     }
     const d = panelDetails(panel);
-    const files: SbproPackageFile[] = [];
-    const img = i.images.get(panel.id); if (img) files.push(img);
-    const snd = d.tempAudio ? i.sounds.get(d.tempAudio.versionId) : undefined; if (snd) files.push(snd);
+    const files: ManifestFile[] = [];
+    const img = i.images.get(panel.id); if (img) files.push({ ...img });
+    const snd = d.tempAudio ? i.sounds.get(d.tempAudio.versionId) : undefined; if (snd) files.push({ ...snd });
     const captions = Object.fromEntries(SBPRO_FIELDS.map(f => [f, d.fields[f] ?? ""]));
     items.push({
       kind: "panel", id: panel.id, parentId: occurrenceId, name: panel.name, revision: panel.revision,

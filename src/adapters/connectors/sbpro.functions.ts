@@ -13,7 +13,8 @@ const fail = () => new Error(t("c5.error"));
 
 export interface SbproCandidateView {
   id: string; returnId: string; panelId: string | null; kind: "text" | "timing" | "image" | "new_panel" | "conform";
-  incoming: Record<string, unknown>; conflict: boolean; revision: number; createdAt: string; mediaPath: string | null; mediaSha256: string | null; mediaBytes: number | null;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- JSON fra databasen
+  incoming: Record<string, any>; conflict: boolean; revision: number; createdAt: string; mediaPath: string | null; mediaSha256: string | null; mediaBytes: number | null;
 }
 
 export const sbproCandidatesFor = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth])

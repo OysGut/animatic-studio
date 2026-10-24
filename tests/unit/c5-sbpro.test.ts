@@ -19,7 +19,8 @@ import { envelope, mustApply, seedProject, tid } from "../helpers/fixtures";
 
 const DIR = "plugins/toonboom-sbpro/scripts";
 const LIB = readFileSync(`${DIR}/PtG_lib.js`, "utf8");
-type Lib = Record<string, any>;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type Lib = any;
 
 function loadLib(): Lib {
   const sandbox: Record<string, unknown> = { module: { exports: {} } };
