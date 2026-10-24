@@ -38,7 +38,7 @@ Prosjektmodellen godtar bare PNG/JPEG/WebP/GIF som bildeversjon. Det gjelder `AS
 - `tests/unit/c2-photoshop-plugin.test.ts` (19): manifestkontroll (godkjent og sju avvisninger), importgrense og ingen hemmeligheter/nettleserlager/HTML-innsetting, tekster på alle språk med like plassholdere, språkvalg, trygge filnavn og koblingstak. Mot falsk server og falsk Photoshop: PKCE-innlogging, CSRF/feil adresse, åpning med sjekksum og `executeAsModal`, ødelagt sjekksum, send tilbake (PSD-valg, PNG-reserve, revisjonsgrunnlag, ingen automatisk bruk, lag urørt, idempotent), PSD-avvisning før opplasting, ingen sending uten koblet dokument, konflikt med tre valg, `approve_in_app`/stale i API-et, tilbaketrekking, enhetsflyt, oppstart med og uten lagrede tokens, og utlogging med tilbaketrekking på serveren.
 - DB-test: `connector_resolve_conflict_for` (bare service_role, ikke choose_incoming, prosjekt/rolle/revisjon, avvisning).
 - **DB: 235 bestått, 0 feilet** (hele kjeden til og med 0111, med 0109 slik den ble kjørt).
-- **Full Vitest:** se sluttlinjen nederst. tsc 0. i18n: 0 tekster uten engelsk, inventar regenerert. **`npm run test:ssr`: 8/8.**
+- **Full Vitest: 3097 bestått, 0 feilet, 10 hoppet over.** tsc 0. i18n: 0 tekster uten engelsk, inventar regenerert. **`npm run test:ssr`: 8/8.**
 
 ## 4. Sjekkliste for ekte prøving (Øystein eller en tester)
 Bruk macOS og Windows med Photoshop 27 eller nyere, og en testkonto med redigeringstilgang i et prøveprosjekt (ikke «Jula på Dovre»).
