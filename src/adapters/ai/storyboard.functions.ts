@@ -27,8 +27,10 @@ async function prepare(d: StoryboardAiRequest, context: { supabase: unknown; use
   const state = await loadProjectState(context.supabase as never, d.projectId);
   const panel = state.compositions[d.panelId];
   if (!panel || panel.removed || panel.kind !== "storyboard" || panel.revision !== d.revision) throw Error(t("sb7.stale"));
-  const model = providerModel(d.provider, d.model);
-  const textModel = providerModel(d.textProvider, d.textModel);
+  const { loadModelSettings } = await import("@/adapters/account/ai-models.server");
+  const settings = (await loadModelSettings(context.supabase as never)).settings;
+  const model = providerModel(d.provider, d.model, settings);
+  const textModel = providerModel(d.textProvider, d.textModel, settings);
   if (!isTextProviderId(d.textProvider) || textModel?.capability !== "text") throw Error(t("sb7.unavailable"));
   const image = d.action === "image" || d.action === "clean";
   if (image && (d.provider === "lovable" || model?.capability !== "image")) throw Error(t("sb7.unavailable"));
@@ -48,7 +50,8 @@ async function prepare(d: StoryboardAiRequest, context: { supabase: unknown; use
   }
   const textCost = estimateTextCostUsd(d.textProvider, d.textModel, Math.ceil(text.length / 2), 4000);
   const studyCost = missing.reduce((sum, a) => sum + estimateTextCostUsd(d.textProvider, d.textModel, Math.ceil(factSheetStudy(state, a).text.length / 2), 4000), 0);
-  const imageCost = image ? estimateCostUsd(d.provider, d.model, { images: d.count }) : 0;
+  const imageUnit = image ? estimateCostUsd(d.provider, d.model, {}) : 0;
+  const imageCost = imageUnit === null ? null : imageUnit * d.count;
   const cost = imageCost === null ? null : imageCost + studyCost + (image ? 0 : textCost);
   const { sha256Hex } = await import("@/adapters/storage/fact-sheet.server");
   const quoteHash = await sha256Hex(JSON.stringify({ text, references: input.references, characters: panelCharacters(state, panel).map(a => [a.id, a.revision, a.visualBrief]), cost, count: d.count, model: d.model, textModel: d.textModel }));

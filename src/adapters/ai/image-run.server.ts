@@ -229,7 +229,7 @@ export async function runImageGeneration(
     id: jobId,
     project_id: data.projectId,
     kind: "image",
-    ...(trace || data.qualityProfile
+    ...(trace || data.qualityProfile || opts.storyboardTrace
       ? {
           params: {
             ...(trace ? { trace } : {}),
