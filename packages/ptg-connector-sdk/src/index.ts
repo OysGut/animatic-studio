@@ -129,6 +129,14 @@ export class PtgConnector {
     }
     return this.json<TransferInfo>("POST", `/api/v1/projects/${projectId}/transfers/${t.id}/complete`, {});
   }
+  /**
+   * C-3: sender klipperytmen fra Premiere tilbake som forslag (manifest v1, adapter «adobe-premiere-uxp»).
+   * Serveren lager ett forslag per endret panel; ingenting tas i bruk før brukeren godtar det i appen.
+   * Samme manifest to ganger gir samme retur (idempotent).
+   */
+  sendPremiereReturn(projectId: string, manifest: ConnectorManifest) {
+    return this.json<{ returnId: string; proposals: number; conflicts: number; missing: number; unknown: number }>("POST", `/api/v1/projects/${projectId}/premiere/returns`, manifest);
+  }
   /** Stabil idempotensnøkkel for en fil og et mål (samme fil til samme mål gjenopptas). */
   static idempotencyKey(fileSha256: string, target: { variantId: string; baseVersionId: string | null }): string {
     return base64Url(new Sha256().update(new TextEncoder().encode(`${fileSha256}|${target.variantId}|${target.baseVersionId ?? ""}`)).digest()).slice(0, 43);

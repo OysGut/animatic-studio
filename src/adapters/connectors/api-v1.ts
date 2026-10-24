@@ -9,7 +9,7 @@ import {
   ACCESS_TTL_SECONDS, CLIENT_ID_RE, clientKnown, DEVICE_INTERVAL_SECONDS, DEVICE_TTL_SECONDS, REFRESH_TTL_SECONDS,
   Sha256, buildProjectManifest, checkIntake, checkReserve, checkSession, chunkCount, expectedChunkSize, idempotentReplay,
   makeToken, makeUserCode, mimeForExtension, missingChunks, parseScopes, pkceMatches, reserveFingerprint, sha256Hex, tokenHash, tokenKind, toHex,
-  planSbproReturn, readSbproReturn, SBPRO_MAX_IMAGE_BYTES, MAX_MANIFEST_BYTES, type SbproCandidate,
+  planSbproReturn, readSbproReturn, planPremiereProposal, readPremiereReturn, type PremiereEdit, SBPRO_MAX_IMAGE_BYTES, MAX_MANIFEST_BYTES, type SbproCandidate,
   type ConnectorScope, type ConnectorSessionRow, type ReserveRequest, type TransferStatus,
 } from "@/core/connectors";
 
@@ -45,6 +45,8 @@ export interface ConnectorStore {
   /** C-2: konfliktvalg for sesjonsbrukeren (keep_both, choose_current, reject); choose_incoming skjer i appen. */
   resolveConflict(projectId: string, userId: string, id: string, choice: string, revision: number): Promise<"ok" | "stale" | "not_found" | "forbidden" | "choice">;
   /** C-5: lagrer en Storyboard Pro-retur som kandidater (idempotent på manifest-hash per prosjekt). */
+  /** C-3: forslag fra Premiere (ett per panel, typen «edit»). Samme tabeller som C-5, kilde «premiere». */
+  savePremiereReturn?(r: { projectId: string; productionId: string; sessionId: string; userId: string; hash: string; panelCount: number; edits: readonly PremiereEdit[]; conflicts: readonly string[] }): Promise<{ returnId: string; replayed: boolean }>;
   saveSbproReturn?(r: { projectId: string; productionId: string; sessionId: string; userId: string; hash: string; panelCount: number; candidates: readonly SbproCandidate[] }): Promise<{ returnId: string; replayed: boolean; uploads: { candidateId: string; key: string; sha256: string; byteSize: number }[] }>;
   /** C-5: panelbilde til en bildekandidat som venter på fil. */
   putSbproImage?(projectId: string, returnId: string, candidateId: string, bytes: Uint8Array): Promise<"ok" | "not_found" | "done" | "sha">;
@@ -196,6 +198,21 @@ export async function handleApiV1(req: Request, d: ApiDeps): Promise<Response> {
           return json({ ok: true });
         }
         return apiError(404, "not_found");
+      }
+      if (m === "POST" && rest[0] === "premiere" && rest[1] === "returns" && rest.length === 2) {
+        const a = await authed(req, d, "transfers:write", pid); if (a instanceof Response) return a;
+        if (!d.store.savePremiereReturn) return apiError(501, "not_available");
+        const text = await req.text();
+        if (text.length > MAX_MANIFEST_BYTES) return apiError(413, "too_large");
+        let raw: unknown; try { raw = JSON.parse(text); } catch { return apiError(400, "invalid_json"); }
+        const r = readPremiereReturn(raw, text.length);
+        if (!r.ok) return json({ error: "invalid_manifest", reason: r.reason }, 422);
+        if (r.value.projectId !== pid) return apiError(403, "wrong_project");
+        const st = await d.store.loadState(pid);
+        if (!st.productions[r.value.productionId as never]) return apiError(404, "production_not_found");
+        const plan = planPremiereProposal(st, r.value.productionId, r.value);
+        const saved = await d.store.savePremiereReturn({ projectId: pid, productionId: r.value.productionId, sessionId: a.id, userId: a.userId, hash: r.value.hash, panelCount: r.value.items.length, edits: plan.edits, conflicts: plan.conflicts });
+        return json({ returnId: saved.returnId, proposals: plan.edits.length, conflicts: plan.conflicts.length, missing: plan.missing, unknown: plan.unknown }, saved.replayed ? 200 : 201, saved.replayed ? { "Idempotent-Replayed": "true" } : {});
       }
       if (m === "GET" && rest[0] === "assets" && rest.length === 1) {
         const a = await authed(req, d, "assets:read", pid); if (a instanceof Response) return a;

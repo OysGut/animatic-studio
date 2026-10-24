@@ -1,5 +1,16 @@
 # Veikart
 
+## C-3 – Premiere Pro (UXP-panel) (bygget, ikke verifisert i Premiere Pro)
+- [x] 0114 (skrevet, ikke kjørt): kilde «premiere» og forslagstype «edit» i C-5-tabellene; 0113 og eldre urørt
+- [x] Plugin plugins/premiere (UXP v5, Premiere 25.6+): PKCE (ptg.premiere) + enhetsflyt, ingen hemmeligheter
+- [x] Sekvens ut: FCP XML + OTIO med panel-/skudd-/scenemarkører, timing, SB-9-overganger, SB-4-lyd (dialog/musikk/effekter)
+- [x] Tilbake: rekkefølge og klipperytme som forslag per panel, side om side i V-185; kobling bare på ID; aldri scenebytte, sletting eller manusendring
+- [x] .ccx-pakking og README nb/en
+- [x] Tester: 20 enhet (falsk UXP/Premiere + falskt API), 1 DB
+- [x] After Effects-avsnitt i C3_REPORT.md (ingen UXP-panel før GA)
+- [ ] Verifisering i ekte Premiere Pro – sjekklisten i C3_REPORT.md
+- [ ] Visuell nettlesertest av V-185
+
 ## C-5 – Toon Boom Storyboard Pro (skriptpakke) (bygget, ikke verifisert i Storyboard Pro)
 - [x] 0110/0111 låst i migration-hashes.json; låsetesten dekker til og med 0111
 - [x] 0113 (skrevet, ikke kjørt): klient ptg.toonboom-sbpro, connector_returns + connector_panel_candidates (RLS, per prosjekt), valgfunksjon

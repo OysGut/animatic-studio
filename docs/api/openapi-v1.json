@@ -1,7 +1,7 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "From Pen to Glass \u2013 Creative Connectors API",
+    "title": "From Pen to Glass – Creative Connectors API",
     "version": "1.0.0",
     "description": "C-0. Kortlivede bearer-tokens per prosjekt og scope (OAuth 2.0 Authorization Code + PKCE S256, eller enhetsflyt). Ingen hemmeligheter i plugins. Alle svar har Cache-Control: no-store."
   },
@@ -774,6 +774,82 @@
           },
           "429": {
             "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/projects/{projectId}/premiere/returns": {
+      "post": {
+        "summary": "C-3: send the Premiere edit back as per-panel proposals (never applied automatically).",
+        "operationId": "premiere_return",
+        "tags": [
+          "v1"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/projectId"
+          }
+        ],
+        "security": [
+          {
+            "bearer": [
+              "transfers:write"
+            ]
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "description": "Manifest v1, adapter.id = adobe-premiere-uxp"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Samme retur allerede mottatt (Idempotent-Replayed)"
+          },
+          "201": {
+            "description": "Forslag laget",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "returnId": {
+                      "type": "string"
+                    },
+                    "proposals": {
+                      "type": "integer"
+                    },
+                    "conflicts": {
+                      "type": "integer"
+                    },
+                    "missing": {
+                      "type": "integer"
+                    },
+                    "unknown": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Feil prosjekt"
+          },
+          "404": {
+            "description": "Produksjonen finnes ikke"
+          },
+          "413": {
+            "description": "For stort"
+          },
+          "422": {
+            "description": "Ugyldig manifest"
           }
         }
       }

@@ -17586,6 +17586,198 @@
       "en": {
         "text": "Built, not verified in Storyboard Pro."
       }
+    },
+    "c3.open": {
+      "nb": {
+        "text": "Premiere Pro"
+      },
+      "en": {
+        "text": "Premiere Pro"
+      }
+    },
+    "c3.title": {
+      "nb": {
+        "text": "Adobe Premiere Pro"
+      },
+      "en": {
+        "text": "Adobe Premiere Pro"
+      }
+    },
+    "c3.intro": {
+      "nb": {
+        "text": "Send storyboardet til Premiere som sekvens, og hent klipperytmen tilbake som forslag du godtar eller avviser per panel."
+      },
+      "en": {
+        "text": "Send the storyboard to Premiere as a sequence, and bring the edit back as suggestions you accept or reject panel by panel."
+      }
+    },
+    "c3.download.info": {
+      "nb": {
+        "text": "Pakken inneholder {count} paneler, {audio} lydklipp, sekvensen som FCP XML og OTIO, og markører med panelenes ID-er."
+      },
+      "en": {
+        "text": "The package contains {count} panels, {audio} audio clips, the sequence as FCP XML and OTIO, and markers with the panel IDs."
+      }
+    },
+    "c3.download": {
+      "nb": {
+        "text": "Last ned sekvenspakke"
+      },
+      "en": {
+        "text": "Download sequence package"
+      }
+    },
+    "c3.progress": {
+      "nb": {
+        "text": "Lager panel {done} av {total} …"
+      },
+      "en": {
+        "text": "Preparing panel {done} of {total} …"
+      }
+    },
+    "c3.download.done": {
+      "nb": {
+        "text": "Pakken med {count} paneler er lastet ned. Pakk den ut og åpne den fra Pen to Glass-panelet i Premiere."
+      },
+      "en": {
+        "text": "The package with {count} panels has been downloaded. Unzip it and open it from the Pen to Glass panel in Premiere."
+      }
+    },
+    "c3.login-info": {
+      "nb": {
+        "text": "Premiere-panelet logger inn via nettleseren. Du godkjenner tilgangen her i Pen to Glass, og kan trekke den tilbake under Konto."
+      },
+      "en": {
+        "text": "The Premiere panel signs in through your browser. You approve access here in Pen to Glass and can revoke it under Account."
+      }
+    },
+    "c3.proposals": {
+      "nb": {
+        "text": "Forslag fra Premiere"
+      },
+      "en": {
+        "text": "Suggestions from Premiere"
+      }
+    },
+    "c3.rule": {
+      "nb": {
+        "text": "Bare rekkefølge innenfor scenen og varighet kan godtas. Scener, scenenumre og manus endres aldri."
+      },
+      "en": {
+        "text": "Only order within a scene and duration can be accepted. Scenes, scene numbers and the script never change."
+      }
+    },
+    "c3.none": {
+      "nb": {
+        "text": "Ingen åpne forslag. Send sekvensen tilbake fra Premiere-panelet."
+      },
+      "en": {
+        "text": "No open suggestions. Send the sequence back from the Premiere panel."
+      }
+    },
+    "c3.col.current": {
+      "nb": {
+        "text": "Nå"
+      },
+      "en": {
+        "text": "Now"
+      }
+    },
+    "c3.col.premiere": {
+      "nb": {
+        "text": "Fra Premiere"
+      },
+      "en": {
+        "text": "From Premiere"
+      }
+    },
+    "c3.col.choice": {
+      "nb": {
+        "text": "Valg"
+      },
+      "en": {
+        "text": "Choice"
+      }
+    },
+    "c3.position": {
+      "nb": {
+        "text": "Plass {n}"
+      },
+      "en": {
+        "text": "Position {n}"
+      }
+    },
+    "c3.duration": {
+      "nb": {
+        "text": "{tc} ({frames} bilder)"
+      },
+      "en": {
+        "text": "{tc} ({frames} frames)"
+      }
+    },
+    "c3.moved-scene": {
+      "nb": {
+        "text": "Ligger i scene {scene} i Premiere. Scenen endres ikke; bare varigheten kan godtas."
+      },
+      "en": {
+        "text": "Sits in scene {scene} in Premiere. The scene does not change; only the duration can be accepted."
+      }
+    },
+    "c3.conflict": {
+      "nb": {
+        "text": "Endret siden eksport"
+      },
+      "en": {
+        "text": "Changed since export"
+      }
+    },
+    "c3.accept": {
+      "nb": {
+        "text": "Godta"
+      },
+      "en": {
+        "text": "Accept"
+      }
+    },
+    "c3.reject": {
+      "nb": {
+        "text": "Avvis"
+      },
+      "en": {
+        "text": "Reject"
+      }
+    },
+    "c3.accepted": {
+      "nb": {
+        "text": "Forslaget er tatt i bruk. Du kan angre det."
+      },
+      "en": {
+        "text": "The suggestion has been applied. You can undo it."
+      }
+    },
+    "c3.rejected": {
+      "nb": {
+        "text": "Forslaget er avvist. Ingenting er endret."
+      },
+      "en": {
+        "text": "The suggestion has been rejected. Nothing has changed."
+      }
+    },
+    "c3.stale": {
+      "nb": {
+        "text": "Panelet er endret siden forslaget. Send sekvensen på nytt fra Premiere."
+      },
+      "en": {
+        "text": "The panel has changed since the suggestion. Send the sequence again from Premiere."
+      }
+    },
+    "c3.error": {
+      "nb": {
+        "text": "Det gikk ikke. Prøv igjen."
+      },
+      "en": {
+        "text": "That did not work. Please try again."
+      }
     }
   }
 }

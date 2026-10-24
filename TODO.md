@@ -5,6 +5,12 @@ Ikke foreslå, ikke start og ikke bygg dette før Øystein uttrykkelig ber om de
 - Eget test- og produksjonsmiljø (Øystein 23.10.2026): en egen testkopi av prosjektet med egen database, der databaseendringer kjøres først. Mellomtrinnet er funksjonsbryterne (av, beta og på). Til da er forhåndsvisningen test og pentoglass.com produksjon, og Claude prøver migrasjoner på en lokal kopi før de kjøres i Cloud.
 
 
+## C-3 Premiere Pro – sikkerhet og gjenstående (24.10.2026)
+- API-navnene i `plugins/premiere/src/premiere-host.ts` er ikke prøvd i Premiere: `Project.getActiveProject/importFiles/getActiveSequence`, `getVideoTrack`, `getTrackItems`, `ClipProjectItem.cast/getMediaFilePath`, `Markers.getMarkers`. Rett dem der om de avviker (ett sted).
+- Bare første videospor leses; overlappende lyd på samme spor ligger bare i XML-en, ikke i OTIO.
+- Sekvenspakken må pakkes ut manuelt før «Åpne sekvenspakke».
+- After Effects: C-1-returlenke/QR med token for render tilbake uten innlogging er ikke bygget (krever Øystein: ønskes det, og ny klient `ptg.after-effects` når UXP for AE er GA).
+
 ## C-5 Storyboard Pro – sikkerhet og gjenstående (24.10.2026)
 - API-navnene i `PtG.sbpro` (PtG_lib.js) er ikke prøvd i Storyboard Pro: `StoryboardManager.createScene/appendPanel/setPanelDuration/getPanelDuration/frameRate`, `ImportManager.importImageToPanel`, `ExportManager.exportPanelToPNG`, `SoundTrackManager.addSoundTrack/importSound`. Rett navnene der om de avviker (ett sted).
 - Tilgangen lagres i `~/.pentoglass/sbpro-session.json` uten kryptering (Storyboard Pro har ikke sikkert lager). Filrettigheter bør settes til bare brukeren.

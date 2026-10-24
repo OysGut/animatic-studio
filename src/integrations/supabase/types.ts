@@ -1001,6 +1001,322 @@ export type Database = {
           },
         ]
       }
+      boords_candidates: {
+        Row: {
+          choice: string | null
+          conflict: boolean
+          created_at: string
+          frame_id: string
+          id: string
+          incoming: Json
+          incoming_hash: string
+          kind: string
+          link_id: string
+          media_path: string | null
+          media_sha256: string | null
+          panel_id: string
+          project_id: string
+          resolved_at: string | null
+          resolved_by: string | null
+          revision: number
+          status: string
+        }
+        Insert: {
+          choice?: string | null
+          conflict?: boolean
+          created_at?: string
+          frame_id: string
+          id?: string
+          incoming?: Json
+          incoming_hash: string
+          kind: string
+          link_id: string
+          media_path?: string | null
+          media_sha256?: string | null
+          panel_id: string
+          project_id: string
+          resolved_at?: string | null
+          resolved_by?: string | null
+          revision?: number
+          status?: string
+        }
+        Update: {
+          choice?: string | null
+          conflict?: boolean
+          created_at?: string
+          frame_id?: string
+          id?: string
+          incoming?: Json
+          incoming_hash?: string
+          kind?: string
+          link_id?: string
+          media_path?: string | null
+          media_sha256?: string | null
+          panel_id?: string
+          project_id?: string
+          resolved_at?: string | null
+          resolved_by?: string | null
+          revision?: number
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "boords_candidates_link_id_fkey"
+            columns: ["link_id"]
+            isOneToOne: false
+            referencedRelation: "connector_links"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "boords_candidates_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      boords_comments: {
+        Row: {
+          author: string
+          boords_comment_id: string
+          created_at: string
+          direction: string
+          feedback_id: string | null
+          id: string
+          panel_id: string | null
+          project_id: string
+          text: string
+        }
+        Insert: {
+          author?: string
+          boords_comment_id: string
+          created_at?: string
+          direction: string
+          feedback_id?: string | null
+          id?: string
+          panel_id?: string | null
+          project_id: string
+          text: string
+        }
+        Update: {
+          author?: string
+          boords_comment_id?: string
+          created_at?: string
+          direction?: string
+          feedback_id?: string | null
+          id?: string
+          panel_id?: string | null
+          project_id?: string
+          text?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "boords_comments_feedback_id_fkey"
+            columns: ["feedback_id"]
+            isOneToOne: false
+            referencedRelation: "storyboard_feedback"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "boords_comments_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      boords_connections: {
+        Row: {
+          ciphertext: string
+          created_at: string
+          id: string
+          iv: string
+          key_hint: string
+          key_version: number
+          label: string
+          last_sync_at: string | null
+          owner_kind: string
+          status: string
+          status_message: string | null
+          sync_cursor: string | null
+          updated_at: string
+          user_id: string
+          webhook_ciphertext: string | null
+          webhook_iv: string | null
+          webhook_key_version: number | null
+          workspace_id: string | null
+        }
+        Insert: {
+          ciphertext: string
+          created_at?: string
+          id: string
+          iv: string
+          key_hint: string
+          key_version?: number
+          label?: string
+          last_sync_at?: string | null
+          owner_kind: string
+          status?: string
+          status_message?: string | null
+          sync_cursor?: string | null
+          updated_at?: string
+          user_id: string
+          webhook_ciphertext?: string | null
+          webhook_iv?: string | null
+          webhook_key_version?: number | null
+          workspace_id?: string | null
+        }
+        Update: {
+          ciphertext?: string
+          created_at?: string
+          id?: string
+          iv?: string
+          key_hint?: string
+          key_version?: number
+          label?: string
+          last_sync_at?: string | null
+          owner_kind?: string
+          status?: string
+          status_message?: string | null
+          sync_cursor?: string | null
+          updated_at?: string
+          user_id?: string
+          webhook_ciphertext?: string | null
+          webhook_iv?: string | null
+          webhook_key_version?: number | null
+          workspace_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "boords_connections_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      boords_frame_state: {
+        Row: {
+          link_id: string
+          our_hash: string | null
+          project_id: string
+          their_hash: string | null
+          their_image: string | null
+          updated_at: string
+        }
+        Insert: {
+          link_id: string
+          our_hash?: string | null
+          project_id: string
+          their_hash?: string | null
+          their_image?: string | null
+          updated_at?: string
+        }
+        Update: {
+          link_id?: string
+          our_hash?: string | null
+          project_id?: string
+          their_hash?: string | null
+          their_image?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "boords_frame_state_link_id_fkey"
+            columns: ["link_id"]
+            isOneToOne: true
+            referencedRelation: "connector_links"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "boords_frame_state_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      boords_project_links: {
+        Row: {
+          connection_id: string
+          created_at: string
+          created_by: string
+          id: string
+          manifest_id: string
+          production_id: string | null
+          project_id: string
+          revision: number
+          storyboard_id: string
+        }
+        Insert: {
+          connection_id: string
+          created_at?: string
+          created_by: string
+          id?: string
+          manifest_id: string
+          production_id?: string | null
+          project_id: string
+          revision?: number
+          storyboard_id: string
+        }
+        Update: {
+          connection_id?: string
+          created_at?: string
+          created_by?: string
+          id?: string
+          manifest_id?: string
+          production_id?: string | null
+          project_id?: string
+          revision?: number
+          storyboard_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "boords_project_links_connection_id_fkey"
+            columns: ["connection_id"]
+            isOneToOne: false
+            referencedRelation: "boords_connections"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "boords_project_links_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      boords_webhook_events: {
+        Row: {
+          connection_id: string
+          event_id: string
+          received_at: string
+        }
+        Insert: {
+          connection_id: string
+          event_id: string
+          received_at?: string
+        }
+        Update: {
+          connection_id?: string
+          event_id?: string
+          received_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "boords_webhook_events_connection_id_fkey"
+            columns: ["connection_id"]
+            isOneToOne: false
+            referencedRelation: "boords_connections"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       change_log: {
         Row: {
           actor: string
@@ -7975,6 +8291,15 @@ export type Database = {
         Returns: number
       }
       block_user: { Args: { p_user: string }; Returns: undefined }
+      boords_cleanup: { Args: never; Returns: number }
+      boords_resolve_candidate: {
+        Args: { p_choice: string; p_id: string; p_revision: number }
+        Returns: string
+      }
+      boords_webhook_once: {
+        Args: { p_connection: string; p_event: string }
+        Returns: boolean
+      }
       cancel_showcase_item: {
         Args: { p_actor: string; p_reservation: string }
         Returns: undefined

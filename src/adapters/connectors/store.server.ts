@@ -105,6 +105,17 @@ export async function cloudConnectorStore(): Promise<ConnectorStore> {
       if (r.error) return "not_found";
       return r.data as "ok" | "stale" | "not_found" | "forbidden" | "choice";
     },
+    async savePremiereReturn(r) {
+      const prev = await db.from("connector_returns").select("id").eq("project_id", r.projectId).eq("source", "premiere").eq("manifest_hash", r.hash).maybeSingle();
+      if (prev.data?.["id"]) return { returnId: String(prev.data["id"]), replayed: true };
+      const ins = await db.from("connector_returns").insert({ project_id: r.projectId, production_id: r.productionId, source: "premiere", session_id: r.sessionId, created_by: r.userId, manifest_hash: r.hash, panel_count: r.panelCount }).select("id").single();
+      if (ins.error) throw ins.error;
+      const returnId = String(ins.data["id"]);
+      const conflicts = new Set(r.conflicts);
+      const rows = r.edits.map(e => ({ project_id: r.projectId, return_id: returnId, item_key: e.panelId, panel_id: e.panelId, kind: "edit", incoming: { ...e }, conflict: conflicts.has(e.panelId), status: "open" }));
+      for (let i = 0; i < rows.length; i += 500) { const up = await db.from("connector_panel_candidates").insert(rows.slice(i, i + 500)); if (up.error) throw up.error; }
+      return { returnId, replayed: false };
+    },
     async saveSbproReturn(r) {
       const prev = await db.from("connector_returns").select("id").eq("project_id", r.projectId).eq("source", "sbpro").eq("manifest_hash", r.hash).maybeSingle();
       let returnId = prev.data?.["id"] as string | undefined;

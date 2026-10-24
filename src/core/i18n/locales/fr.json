@@ -59885,5 +59885,125 @@
     "text": "Construit, non vérifié dans Storyboard Pro.",
     "sourceHash": "0ef593be5caea8c07bf42a600622428606115d63a27593bd41a0d07435812552",
     "review": "machine"
+  },
+  "c3.open": {
+    "text": "Premiere Pro",
+    "sourceHash": "d25d1d194990354844e1740cec2cd5a38623d72ad41426b5067b87d633121d84",
+    "review": "machine"
+  },
+  "c3.title": {
+    "text": "Adobe Premiere Pro",
+    "sourceHash": "bf2265551ce37383b2f07d7f1702061a744aab8f0a5abd1bc170490ec310f457",
+    "review": "machine"
+  },
+  "c3.intro": {
+    "text": "Envoyez le storyboard à Premiere sous forme de séquence, puis récupérez le montage sous forme de suggestions à accepter ou refuser panneau par panneau.",
+    "sourceHash": "ae1af5e0d198b19ed209663310c050124a4f74805b9caca8f8655c021e0d6628",
+    "review": "machine"
+  },
+  "c3.download.info": {
+    "text": "Le paquet contient {count} panneaux, {audio} clips audio, la séquence en FCP XML et OTIO, et des marqueurs avec les ID des panneaux.",
+    "sourceHash": "06a746cd9b1c69fca2d24b00013dc6ba724bd12dac93891a7320d32f1df8766f",
+    "review": "machine"
+  },
+  "c3.download": {
+    "text": "Télécharger le paquet de séquence",
+    "sourceHash": "b4289bd524a36de4b0c5a18c4a19471c3b9ae2957614ae41f4adbb0c1c3b65cc",
+    "review": "machine"
+  },
+  "c3.progress": {
+    "text": "Préparation du panneau {done} sur {total} …",
+    "sourceHash": "6b3aa9b9fc9b07a29fcb97612b177c900a78682b1c973a1bb322ed889a360979",
+    "review": "machine"
+  },
+  "c3.download.done": {
+    "text": "Le paquet de {count} panneaux a été téléchargé. Décompressez-le et ouvrez-le depuis le panneau Pen to Glass dans Premiere.",
+    "sourceHash": "d944bf60262d56dc9864afb9b548412fe02a1e4db2ccceaff511cb687f246d67",
+    "review": "machine"
+  },
+  "c3.login-info": {
+    "text": "Le panneau Premiere se connecte via votre navigateur. Vous approuvez l'accès ici dans Pen to Glass et pouvez le révoquer sous Compte.",
+    "sourceHash": "ad7184683a552a3e25c4157760fa0cc5638875860fbb1c967058976e995988f0",
+    "review": "machine"
+  },
+  "c3.proposals": {
+    "text": "Suggestions de Premiere",
+    "sourceHash": "9a054498d858b7755628242151ddf7e062005c93fc49927bec498bc5e0f6a3de",
+    "review": "machine"
+  },
+  "c3.rule": {
+    "text": "Seuls l'ordre au sein d'une scène et la durée peuvent être acceptés. Les scènes, leurs numéros et le scénario ne changent jamais.",
+    "sourceHash": "dc2a2dd261fe058b1fb9bb1fb0d529349256b56499a08d351e2a9ef0d6d2e1cd",
+    "review": "machine"
+  },
+  "c3.none": {
+    "text": "Aucune suggestion en attente. Renvoyez la séquence depuis le panneau Premiere.",
+    "sourceHash": "a9104cab5b4d8eae8ccab51fc3f30af7aa7ae3b25189de6228844c464457bb5d",
+    "review": "machine"
+  },
+  "c3.col.current": {
+    "text": "Actuel",
+    "sourceHash": "d822afe2088496ac420ccb40fb31093f1a86e8b2721fc060b65b6c7774640fc5",
+    "review": "machine"
+  },
+  "c3.col.premiere": {
+    "text": "Depuis Premiere",
+    "sourceHash": "143189d1c076f9e809716e331e5e938045321a721413d82129dd285691769e8a",
+    "review": "machine"
+  },
+  "c3.col.choice": {
+    "text": "Choix",
+    "sourceHash": "d75aab2a840eb2043f4a83aa47c9f8c555543882a1ac04867470d091c638a40e",
+    "review": "machine"
+  },
+  "c3.position": {
+    "text": "Position {n}",
+    "sourceHash": "fe93dfd312ae7c0829cc69b078d3e41ae8ac344a818dde97fd3a265d16fed1ea",
+    "review": "machine"
+  },
+  "c3.duration": {
+    "text": "{tc} ({frames} images)",
+    "sourceHash": "bd5515f2cb81277b3bef8941124e7d7d1805972a8ea689ced659ba232f7d4451",
+    "review": "machine"
+  },
+  "c3.moved-scene": {
+    "text": "Se trouve dans la scène {scene} dans Premiere. La scène ne change pas ; seule la durée peut être acceptée.",
+    "sourceHash": "f6600dc4024c2cfca7e5fc7a77ff1258f4223ceb30e1530a11b0b9be1e1a7d7b",
+    "review": "machine"
+  },
+  "c3.conflict": {
+    "text": "Modifié depuis l'export",
+    "sourceHash": "fba02caaa35b67822cf270a49cfe959151d090c765a474bf4d29eda96e195881",
+    "review": "machine"
+  },
+  "c3.accept": {
+    "text": "Accepter",
+    "sourceHash": "67979df50006dc13c1608fe178a15d90fcf1f04fb057ec0abb6c9ab92044614d",
+    "review": "machine"
+  },
+  "c3.reject": {
+    "text": "Refuser",
+    "sourceHash": "d3a48b52dbff252243bf3b1ee4cce1a85c466f1f84948cae80235c43cf3ccb78",
+    "review": "machine"
+  },
+  "c3.accepted": {
+    "text": "La suggestion a été appliquée. Vous pouvez l'annuler.",
+    "sourceHash": "1c9dd2590da646d656b694978129b13ae3a3c56e4dd3755f8623476c0b3abe6c",
+    "review": "machine"
+  },
+  "c3.rejected": {
+    "text": "La suggestion a été refusée. Rien n'a changé.",
+    "sourceHash": "5c527c29769d7122a65585ce2af3a3da5fe790ed9f82a5903a6d3b1e0dffc56b",
+    "review": "machine"
+  },
+  "c3.stale": {
+    "text": "Le panneau a changé depuis la suggestion. Renvoyez la séquence depuis Premiere.",
+    "sourceHash": "5325844274f7e52d598c3649fe5bedeef881e413d8ade4e19672b1b4dd44cfb5",
+    "review": "machine"
+  },
+  "c3.error": {
+    "text": "Cela n'a pas fonctionné. Veuillez réessayer.",
+    "sourceHash": "7a753b3c4814ad89538705e5bbf573676df703cef65d7d6cf49c2eb2bae5974f",
+    "review": "machine"
   }
 }
