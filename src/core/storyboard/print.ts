@@ -2,7 +2,7 @@
 import type { ProjectState } from "../model";
 import type { FilmClip } from "../assembly/film";
 import { panelDetails } from "./editing";
-import { panelBlockIds } from "./index";
+import { panelBlockIds, PRODUCTION_AREAS } from "./index";
 import { storyboardTimeline } from "./playback";
 import { formatTimecode, framesToSeconds } from "../time";
 
@@ -35,7 +35,7 @@ export interface PanelPrintRow {
   panel: string; scene: string; shot: string; duration: number; dialogue: string; action: string;
   camera: string; movement: string; sound: string; notes: string; status: string;
 }
-export function panelPrintRows(s: ProjectState, clips: readonly FilmClip[]): PanelPrintRow[] {
+export function panelPrintRows(s: ProjectState, clips: readonly FilmClip[], statusLabel: (area: string, status: string) => string = (area, status) => `${area}: ${status}`): PanelPrintRow[] {
   return storyboardTimeline(s, clips).map(sh => {
     const p = sh.panel, d = panelDetails(p);
     const ids = new Set([...panelBlockIds(s, p.id), ...d.dialogueIds]);
@@ -49,8 +49,8 @@ export function panelPrintRows(s: ProjectState, clips: readonly FilmClip[]): Pan
       dialogue: blocks.filter(b => b.kind === "dialogue").map(b => b.text).join("\n") || d.fields["dialogue"] || "",
       action: d.fields["action"] || blocks.filter(b => b.kind === "action").map(b => b.text).join("\n"),
       camera: [d.shot, d.angle, d.focalMm ? `${d.focalMm} mm` : "", d.fields["camera"]].filter(Boolean).join(" · "),
-      movement: d.movement, sound: d.fields["sound"] ?? "", notes: [d.fields["notes"], ...notes].filter(Boolean).join("\n"),
-      status: statuses.map(v => `${v.area}: ${v.status}`).join("\n") };
+      movement: d.movement, sound: [d.fields["sound"], ...Object.values(s.audioClips).filter(a => !a.removed && !a.muted && a.occurrenceId === sh.occurrenceId && a.offsetMs < framesToSeconds(sh.startFrame - (storyboardTimeline(s, clips).find(v => v.occurrenceId === sh.occurrenceId)?.startFrame ?? 0) + sh.durationFrames, s.project.fps) * 1000 && a.offsetMs + a.lengthMs > framesToSeconds(sh.startFrame - (storyboardTimeline(s, clips).find(v => v.occurrenceId === sh.occurrenceId)?.startFrame ?? 0), s.project.fps) * 1000).map(a => a.name)].filter(Boolean).join("\n"), notes: [d.fields["notes"], ...notes].filter(Boolean).join("\n"),
+      status: PRODUCTION_AREAS.map(area => { const v = statuses.find(v => v.area === area && v.compositionId === p.id) ?? statuses.find(v => v.area === area); return statusLabel(area, v?.status ?? "not_started"); }).join("\n") };
   });
 }
 export function printTable(rows: readonly PanelPrintRow[], fields: readonly PrintField[], labels: Readonly<Record<string, string>>) {

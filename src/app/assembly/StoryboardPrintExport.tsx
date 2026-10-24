@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import type { ProjectState } from "@/core/model";
 import type { FilmClip } from "@/core/assembly/film";
 import type { ExportImageSource } from "@/core/storyboard/playback";
-import { PRINT_FIELDS, PRINT_PAPERS, panelPrintRows, printCsv, printTable, type PrintField, type PrintOptions, type PrintPaper } from "@/core/storyboard/print";
+import { PRINT_FIELDS, PRINT_PAPERS, panelPrintRows, printTable, type PrintField, type PrintOptions, type PrintPaper } from "@/core/storyboard/print";
 import { t } from "@/core/i18n/keyed";
 import { getUiLanguage } from "@/core/i18n";
 import { resolveSettings } from "@/core/settings/resolve";
@@ -31,21 +31,20 @@ export function StoryboardPrintExport({ state, clips, imageSource, language, dis
   const [ready, setReady] = useState<ReadyFile | null>(null);
   const [error, setError] = useState(false);
   const abort = useRef<AbortController | null>(null);
-  const rows = useMemo(() => panelPrintRows(state, clips), [state, clips]);
+  const uiLanguage = getUiLanguage();
+  const rows = useMemo(() => panelPrintRows(state, clips, (area, status) => `${t(`sb2.area.${area}`)}: ${t(`sb2.status.${status.replaceAll("_", "-")}`)}`), [state, clips, uiLanguage]);
   const labels = printLabels();
   useEffect(() => () => { if (ready) URL.revokeObjectURL(ready.url); }, [ready]);
   useEffect(() => () => abort.current?.abort(), []);
   async function start(kind: "print" | "pitch" | "csv" | "xlsx") {
     const ctrl = new AbortController(); abort.current = ctrl; setReady(null); setError(false); setProgress({ done: 0, total: rows.length });
     try {
-      const { storyboardPdf, storyboardXlsx, exportChunks } = await import("@/engine/export/storyboard-print");
+      const { storyboardPdf, storyboardXlsx, storyboardCsv } = await import("@/engine/export/storyboard-print");
       const report = (done: number, total: number) => setProgress({ done, total });
       const table = printTable(rows, fields, labels);
       let blob: Blob;
-      if (kind === "csv") {
-        await exportChunks(table.rows, ctrl.signal, async () => undefined, report);
-        blob = new Blob([printCsv(table) as BlobPart], { type: "text/csv;charset=utf-8" });
-      } else if (kind === "xlsx") blob = await storyboardXlsx(table, ctrl.signal, report);
+      if (kind === "csv") blob = await storyboardCsv(table, ctrl.signal, report);
+      else if (kind === "xlsx") blob = await storyboardXlsx(table, ctrl.signal, report);
       else blob = await storyboardPdf({ state, clips, source: imageSource, rows,
         options: { paper, landscape, perPage: kind === "pitch" ? 1 : perPage, fields: kind === "pitch" ? ["panel", "dialogue", "action"] : fields, layers },
         labels, language, version, date: new Intl.DateTimeFormat(getUiLanguage()).format(new Date()),

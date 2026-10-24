@@ -1,7 +1,7 @@
 import type { ProjectState } from "@/core/model";
 import type { FilmClip } from "@/core/assembly/film";
 import { exportImageSource, type ExportImageSource } from "@/core/storyboard/playback";
-import { printLayout, printTable, type PanelPrintRow, type PrintOptions } from "@/core/storyboard/print";
+import { printLayout, printTable, printCsv, type PanelPrintRow, type PrintOptions } from "@/core/storyboard/print";
 import { layerVersions, renderFrame } from "@/core/composition/render";
 import { notoScriptsNeeded, scriptRuns, RTL_SCRIPTS } from "@/core/typography/pdf-scripts";
 import { isRtlText } from "@/core/rtl";
@@ -40,6 +40,15 @@ export async function storyboardXlsx(table: ReturnType<typeof printTable>, signa
   return new Blob([bytes as BlobPart], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
 }
 
+export async function storyboardCsv(table: ReturnType<typeof printTable>, signal: AbortSignal, progress?: (done: number, total: number) => void): Promise<Blob> {
+  const parts: BlobPart[] = [printCsv({ header: table.header, rows: [] }) as BlobPart];
+  await exportChunks(table.rows, signal, async row => {
+    // Remove the per-fragment BOM and empty header, retaining the encoded row.
+    parts.push(printCsv({ header: [], rows: [row] }).slice(5) as BlobPart);
+  }, progress);
+  return new Blob(parts, { type: "text/csv;charset=utf-8" });
+}
+
 export interface PrintExportInput {
   state: ProjectState; clips: readonly FilmClip[]; source: ExportImageSource; rows: readonly PanelPrintRow[];
   options: PrintOptions; labels: Readonly<Record<string, string>>; language: string;
@@ -73,9 +82,11 @@ export async function printImageRenderer(input: PrintExportInput) {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       if (input.source === "storyboard" && panel) {
         // Printed instructions remain visible: camera mark is not applied as a destructive crop.
-        const frame = renderFrame(state, panel.id, 0);
+        canvas.height = Math.round(canvas.width * panel.height / panel.width);
+        const frame = renderFrame({ ...state, compositions: { ...state.compositions, [panel.id]: { ...panel, camera: { shots: [] } } } }, panel.id, 0);
         drawFrame(ctx, frame, { view: [canvas.width / frame.width, 0, 0, canvas.height / frame.height, 0, 0], images: loaded.images, placeholders: true });
       } else if (clip) {
+        canvas.height = Math.round(canvas.width * state.project.frameHeight / state.project.frameWidth);
         const solo = { ...clip, startFrame: 0, transition: { kind: "cut" as const, frames: 0 }, overlapFrames: 0 };
         const localFrame = Math.min(clip.durationFrames - 1, Math.max(0, row.startFrame - (input.rows.find(r => r.occurrenceId === row.occurrenceId)?.startFrame ?? 0)));
         await videos.prepare(state, [solo], localFrame);
@@ -147,7 +158,7 @@ export async function storyboardPdf(input: PrintExportInput): Promise<Blob> {
         const row = input.rows[cell.index]; if (!row) continue;
         const image = await renderer.render(row);
         const panel = input.state.compositions[row.panelId];
-        const aspect = (panel?.width ?? input.state.project.frameWidth) / (panel?.height ?? input.state.project.frameHeight);
+        const aspect = input.source === "storyboard" && panel ? panel.width / panel.height : input.state.project.frameWidth / input.state.project.frameHeight;
         doc.setFontSize(input.options.perPage === 1 ? 11 : 8);
         const lines = input.options.fields.flatMap(k => wrap(`${input.labels[k]}: ${row[k]}`, cell.width));
         const imageH = Math.min(cell.height * (input.options.perPage === 1 ? .72 : .55), cell.width / aspect);
