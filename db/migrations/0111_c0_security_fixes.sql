@@ -14,6 +14,29 @@ create table private.connector_clients (
  redirect_patterns text[] not null check(cardinality(redirect_patterns) between 1 and 8)
 );
 revoke all on private.connector_clients from public,anon,authenticated;
+insert into private.connector_clients(client_id,name,redirect_patterns) values
+ ('ptg.photoshop','Photoshop',array['^http://(127\.0\.0\.1|\[::1\]):[0-9]{1,5}(/[^#]*)?$','^ptg-photoshop://[^#]*$']),
+ ('ptg.premiere','Premiere Pro',array['^http://(127\.0\.0\.1|\[::1\]):[0-9]{1,5}(/[^#]*)?$','^ptg-premiere://[^#]*$']),
+ ('ptg.audition','Audition',array['^http://(127\.0\.0\.1|\[::1\]):[0-9]{1,5}(/[^#]*)?$','^ptg-audition://[^#]*$']),
+ ('ptg.illustrator','Illustrator',array['^http://(127\.0\.0\.1|\[::1\]):[0-9]{1,5}(/[^#]*)?$','^ptg-illustrator://[^#]*$']),
+ ('ptg.krita','Krita',array['^http://(127\.0\.0\.1|\[::1\]):[0-9]{1,5}(/[^#]*)?$','^ptg-krita://[^#]*$']),
+ ('ptg.blender','Blender',array['^http://(127\.0\.0\.1|\[::1\]):[0-9]{1,5}(/[^#]*)?$','^ptg-blender://[^#]*$']),
+ ('ptg.generic-loopback','Generic desktop program',array['^http://(127\.0\.0\.1|\[::1\]):[0-9]{1,5}(/[^#]*)?$']);
+create function private.connector_client_known(p_client text) returns boolean
+language sql stable security definer set search_path='' as $$
+ select exists(select 1 from private.connector_clients where client_id=p_client);
+$$;
+create function private.connector_redirect_ok(p_client text,p_uri text) returns boolean
+language sql stable security definer set search_path='' as $$
+ select p_uri is not null and length(p_uri)<=500 and exists(
+  select 1 from private.connector_clients c, unnest(c.redirect_patterns) pat where c.client_id=p_client and p_uri ~ pat);
+$$;
+create function private.connector_scopes_ok(p_scopes text[]) returns boolean
+language sql immutable set search_path='' as $$
+ select p_scopes is not null and cardinality(p_scopes) between 1 and 7 and array_position(p_scopes,null) is null
+  and p_scopes <@ array['project:read','manifest:read','assets:read','panels:read','transfers:write','conflicts:read','notes:write']::text[];
+$$;
+revoke all on function private.connector_client_known(text),private.connector_redirect_ok(text,text),private.connector_scopes_ok(text[]) from public,anon,authenticated;
 
 insert into private.rate_limit_rules(scope,window_seconds,per_key,per_ip) values ('connector_device_lookup',600,20,40)
  on conflict(scope) do nothing;

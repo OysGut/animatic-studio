@@ -61,8 +61,8 @@ export const Route = createFileRoute("/api/public/cron/ai-jobs")({
             const { purgeDueAccounts } = await import("@/adapters/account/admin.functions");
             run.purged = await purgeDueAccounts(db);
           }
-          // C-0 (0109): utløpte koder og brukte refresh-hasher eldre enn 90 dager
-          if (schema.version >= 109) {
+          // C-0 (0111): utløpte koder og brukte refresh-hasher eldre enn 90 dager
+          if (schema.version >= 111) {
             const { error } = await (db as unknown as { rpc: (f: string) => Promise<{ error: unknown }> }).rpc("connector_cleanup");
             if (error) console.error("connector_cleanup failed");
           }
