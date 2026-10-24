@@ -47,3 +47,16 @@ Testene dekker: manifestvalidering og rundtur med ukjente felt, hemmeligheter, t
 - `packages/ptg-connector-sdk/{package.json,README.md,src/index.ts}`
 - `.claude/skills/ptg-*/SKILL.md` (9), `.claude/skills/README.md`
 - `tests/unit/c0-connectors.test.ts`, `tests/helpers/c0-memory-store.ts`, `tests/db/run-db-tests.ts`, `tests/visual/c0-account.mjs`
+
+## Retting av 0109 før kjøring (24.10)
+0109 var ikke kjørt eller låst, så filen er endret direkte:
+1. `begin;`/`commit;` er fjernet (kjøreren pakker hver migrasjon i sin egen transaksjon).
+2. `connector_session_by_access` gir null i SQL når sesjonen er trukket tilbake eller `access_expires_at` er passert. `last_used_at` oppdateres bare for gyldige sesjoner (etter medlemskapssjekken).
+3. `connector_device_lookup` har rate limit per bruker i egen scope `connector_device_lookup` (20 per 10 min, 40 per IP-nøkkel).
+4. `connector_approve_code` og `connector_create_device` avviser tomme scope-lister og alt utenfor de sju tillatte (`private.connector_scopes_ok`).
+5. Klientliste `private.connector_clients` (Photoshop, Premiere, Audition, Illustrator, Krita, Blender, generic-loopback). Ukjent `client_id` avvises i SQL og i serverkoden. Redirect må være loopback-http med port (`127.0.0.1` eller `[::1]`, RFC 8252) eller programmets eget skjema `ptg-<navn>://`. `localhost`, adresser uten port og fritt valgte https-verter avvises. Kjernen (`CONNECTOR_CLIENTS`, `redirectAllowed(uri, clientId)`) har samme mønstre.
+6. `public.connector_cleanup()` (bare service_role) sletter utløpte rader i `private.connector_pending` og brukte refresh-hasher eldre enn 90 dager. Den kalles av den faste serverjobben (`/api/public/cron/ai-jobs`) når skjemaet er 109 eller nyere.
+
+Testene bruker nå `ptg.generic-loopback` i stedet for den uregistrerte `ptg.cli`. Forventningene er ikke endret.
+
+Kontroller: DB-tester 234/0 (lokal Postgres, alle migrasjoner til og med 0110, ny test for punktene 2–6), full Vitest 3075/0/10, tsc 0, i18n grønn, `npm run test:ssr` 8/8.
