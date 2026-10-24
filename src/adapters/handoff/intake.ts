@@ -137,7 +137,6 @@ export async function finishReturn(store: HandoffStore, h: HandoffRecord, t: Ret
   if (!check.ok) return reject(check.reason === "checksum" ? "checksum" : check.reason === "extension" ? "extension" : check.reason === "mismatch" ? "content" : check.reason === "content" ? "content" : "size");
 
   let state = await store.loadState(h.projectId);
-  const sha256Of = (b: Uint8Array) => { const x = new Sha256(); x.update(b); return toHex(x.digest()); };
   // The returned bytes are always kept unchanged as their own version. A PSD also gets a PNG preview
   // version (from its composite) so it can be shown, compared and used as an SB-7 sketch. Both are candidates.
   const isPanel = h.targetKind === "panel";
