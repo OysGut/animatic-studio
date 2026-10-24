@@ -8937,7 +8937,7 @@ try {
     await expectError(as("anon",ALICE,tx=>tx`select public.storyboard_review_lookup(${hash})`),'42501');
     await expectError(as("authenticated",ALICE,tx=>tx`select token_hash from public.storyboard_shares where id=${share}`),'42501');
     assert((await as("authenticated",CAROL,tx=>tx`select id from public.storyboard_feedback where share_id=${share}`)).length===0,'nonmember feedback leak');
-    const comment=(target:string,text='Review',decision='approved',x:number|null=.25,y:number|null=.75)=>as("service_role",ALICE,tx=>tx`select public.storyboard_review_comment(${hash},${target},'Guest','',${text},${decision},${x},${y})`);
+    const comment=(target:string,text='Review',decision='approved',x:number|null=.25,y:number|null=.75,ip='1'.repeat(64))=>as("service_role",ALICE,tx=>tx`select public.storyboard_review_comment(${hash},${target},'Guest','',${text},${decision},${x},${y},${ip})`);
     await comment(key);
     assert((await sql`select guest_email,decision,pin_x from public.storyboard_feedback where share_id=${share}`)[0]?.['guest_email']===null,'unprovided email stored');
     await expectError(comment('p2'),'P0001');
@@ -8954,7 +8954,25 @@ try {
     await sql`update private.rate_limit_rules set per_key=2 where scope='storyboard_review'`;
     await sql`delete from private.rate_limit_hits where scope='storyboard_review'`;
     await comment(key,'One','none');await comment(key,'Two','none');await expectError(comment(key,'Three','none'),'PTG15');
-    await sql`update private.rate_limit_rules set per_key=120 where scope='storyboard_review'`;
+    await sql`update private.rate_limit_rules set per_key=600 where scope='storyboard_review'`;
+    // Per IP: one guest is stopped while another guest on the same share still gets through.
+    await sql`update private.rate_limit_rules set per_ip=2 where scope='storyboard_review'`;
+    await sql`delete from private.rate_limit_hits where scope='storyboard_review'`;
+    const ipA='a'.repeat(64),ipB='b'.repeat(64);
+    await comment(key,'A1','none',null,null,ipA);await comment(key,'A2','none',null,null,ipA);
+    await expectError(comment(key,'A3','none',null,null,ipA),'PTG15');
+    await comment(key,'B1','none',null,null,ipB);
+    await expectError(comment(key,'No IP','none',null,null,'unknown'),'P0001');
+    await sql`update private.rate_limit_rules set per_ip=60 where scope='storyboard_review'`;
+    assert((await sql`select per_key,per_ip from private.rate_limit_rules where scope='storyboard_review'`)[0]?.['per_ip']===60,'per-IP limit missing');
+    // G-5: manifest cap fits 500 panels (2 MB), not 150 MB.
+    const big=Array.from({length:2},(_,i)=>({key:'p'+(i+1),pad:'x'.repeat(1100000)}));
+    await expectError(sql`insert into public.storyboard_shares(project_id,created_by,token_hash,expires_at,title,manifest,video_key,fps) values(${g7p},${ALICE},${'c'.repeat(64)},now()+interval '1 day','Big',${sql.json(big)},'v',24)`,'23514');
+    // Real storage RLS: the restrictive policy blocks members from overwriting a finalized review file.
+    await sql`insert into storage.buckets(id,name,public) values('assets','assets',false) on conflict do nothing`;
+    await expectError(as('authenticated',ALICE,tx=>tx`insert into storage.objects(bucket_id,name,owner) values('assets',${frozenPath},${ALICE})`),'42501');
+    await as('authenticated',ALICE,tx=>tx`insert into storage.objects(bucket_id,name,owner) values('assets',${g7p+'/sb10-free.png'},${ALICE})`);
+    await sql`delete from storage.objects where name=${g7p+'/sb10-free.png'}`;
   });
   await test("0109 C-0: tokenhash, engangskode, enhetsflyt, rotasjon, tilbaketrekking, RLS og konfliktvalg", async () => {
     const h=(c:string)=>c.repeat(64).slice(0,64), ch="E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM";

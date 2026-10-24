@@ -1,11 +1,10 @@
 -- SB-10: immutable storyboard review capabilities. Written only; Claude runs tests and Cloud.
-begin;
 create table public.storyboard_shares (
  id uuid primary key default gen_random_uuid(),project_id uuid not null references public.projects(id) on delete cascade,
  created_by uuid not null,created_at timestamptz not null default now(),token_hash text not null unique check(token_hash ~ '^[0-9a-f]{64}$'),
  password_hash text,expires_at timestamptz not null,revoked boolean not null default false,ready boolean not null default false,
  title text not null check(length(title)<=500),allow_comments boolean not null default true,allow_approval boolean not null default false,
- manifest jsonb not null check(jsonb_typeof(manifest)='array' and jsonb_array_length(manifest) between 1 and 500 and octet_length(manifest::text)<=150000000),
+ manifest jsonb not null check(jsonb_typeof(manifest)='array' and jsonb_array_length(manifest) between 1 and 500 and octet_length(manifest::text)<=2000000),
  video_key text not null,video_bytes bigint, fps double precision not null check(fps>0 and fps<=240)
 );
 grant select on public.storyboard_shares to authenticated;
@@ -30,24 +29,26 @@ alter table public.storyboard_feedback enable row level security;
 create policy sb10_feedback_member_read on public.storyboard_feedback for select to authenticated using(project_id in(select private.my_project_ids()));
 create index sb10_feedback_project on public.storyboard_feedback(project_id,created_at);
 create index sb10_share_project on public.storyboard_shares(project_id,created_at);
-insert into private.rate_limit_rules(scope,window_seconds,per_key,per_ip) values('storyboard_review',3600,120,240),('storyboard_review_read',60,120,240) on conflict(scope) do nothing;
+insert into private.rate_limit_rules(scope,window_seconds,per_key,per_ip) values('storyboard_review',3600,600,60),('storyboard_review_read',60,120,240) on conflict(scope) do nothing;
 create function public.storyboard_review_lookup(p_hash text) returns jsonb language plpgsql security definer set search_path='' as $$
 declare s public.storyboard_shares;begin
  select sh.* into s from public.storyboard_shares sh join public.projects p on p.id=sh.project_id where sh.token_hash=p_hash and sh.ready and not sh.revoked and sh.expires_at>now() and p.deleted_at is null and private.member_role_rank(sh.project_id,sh.created_by)>=private.role_rank('editor');
  if not found then return null;end if;return to_jsonb(s);end $$;
 revoke all on function public.storyboard_review_lookup(text) from public,anon,authenticated;
 grant execute on function public.storyboard_review_lookup(text) to service_role;
-create function public.storyboard_review_comment(p_hash text,p_key text,p_name text,p_email text,p_text text,p_decision text,p_x double precision,p_y double precision) returns uuid language plpgsql security definer set search_path='' as $$
+create function public.storyboard_review_comment(p_hash text,p_key text,p_name text,p_email text,p_text text,p_decision text,p_x double precision,p_y double precision,p_ip text) returns uuid language plpgsql security definer set search_path='' as $$
 declare s public.storyboard_shares;v_id uuid;begin
  select * into s from public.storyboard_shares where token_hash=p_hash for update;
  if not found or public.storyboard_review_lookup(p_hash) is null then raise exception 'review unavailable';end if;
- perform private.rate_limit_hit('storyboard_review',array['s:'||s.id::text]);
+ -- G-8: both per share and per guest IP (hashed by the server), so one guest cannot use up the share's quota.
+ if p_ip is null or p_ip !~ '^[0-9a-f]{64}$' then raise exception 'review ip';end if;
+ perform private.rate_limit_hit('storyboard_review',array['s:'||s.id::text,'ip:'||p_ip]);
  if not exists(select 1 from jsonb_array_elements(s.manifest) m where m->>'key'=p_key) then raise exception 'review selection';end if;
  if(p_text<>'' and not s.allow_comments) or(p_decision<>'none' and not s.allow_approval) or(p_text='' and p_decision='none')then raise exception 'review permission';end if;
  if p_name~'<[^>]*>' or coalesce(p_email,'')~'<[^>]*>' then raise exception 'review text';end if;
  insert into public.storyboard_feedback(share_id,project_id,panel_key,guest_name,guest_email,text,decision,pin_x,pin_y)values(s.id,s.project_id,p_key,p_name,nullif(p_email,''),p_text,p_decision,p_x,p_y) returning id into v_id;return v_id;end $$;
-revoke all on function public.storyboard_review_comment(text,text,text,text,text,text,double precision,double precision) from public,anon,authenticated;
-grant execute on function public.storyboard_review_comment(text,text,text,text,text,text,double precision,double precision) to service_role;
+revoke all on function public.storyboard_review_comment(text,text,text,text,text,text,double precision,double precision,text) from public,anon,authenticated;
+grant execute on function public.storyboard_review_comment(text,text,text,text,text,text,double precision,double precision,text) to service_role;
 -- Restrictive policies prevent member changes to finalized review media; service-only purge still works.
 create function public.storyboard_review_path_writable(p_name text) returns boolean
 language sql stable security definer set search_path='' as $$
@@ -64,4 +65,3 @@ create policy sb10_frozen_review_update on storage.objects as restrictive for up
 create policy sb10_frozen_review_delete on storage.objects as restrictive for delete to authenticated
  using(bucket_id<>'assets' or public.storyboard_review_path_writable(name));
 insert into public.schema_version(version,description)values(108,'SB-10 storyboard guest review');
-commit;
