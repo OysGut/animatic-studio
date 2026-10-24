@@ -14138,6 +14138,134 @@
       "en": {
         "text": "Storyboard panels"
       }
+    },
+    "sb4.switch-view": {
+      "nb": {
+        "text": "Veksle arbeidsflate"
+      },
+      "en": {
+        "text": "Switch workspace"
+      }
+    },
+    "sb4.previous": {
+      "nb": {
+        "text": "Forrige panel"
+      },
+      "en": {
+        "text": "Previous panel"
+      }
+    },
+    "sb4.next": {
+      "nb": {
+        "text": "Neste panel"
+      },
+      "en": {
+        "text": "Next panel"
+      }
+    },
+    "sb4.stop": {
+      "nb": {
+        "text": "Stopp"
+      },
+      "en": {
+        "text": "Stop"
+      }
+    },
+    "sb4.temp-audio": {
+      "nb": {
+        "text": "Midlertidig lyd"
+      },
+      "en": {
+        "text": "Temporary audio"
+      }
+    },
+    "sb4.inherited": {
+      "nb": {
+        "text": "Timingkilde"
+      },
+      "en": {
+        "text": "Timing source"
+      }
+    },
+    "sb4.scene-timing": {
+      "nb": {
+        "text": "Arvet fra scenen"
+      },
+      "en": {
+        "text": "Inherited from scene"
+      }
+    },
+    "sb4.accept-timing": {
+      "nb": {
+        "text": "Godta timingforslag"
+      },
+      "en": {
+        "text": "Accept timing suggestion"
+      }
+    },
+    "sb4.accept-scene-timing": {
+      "nb": {
+        "text": "Godta timing for scenen"
+      },
+      "en": {
+        "text": "Accept timing for scene"
+      }
+    },
+    "sb4.scrub": {
+      "nb": {
+        "text": "Bla i scenens bilder"
+      },
+      "en": {
+        "text": "Scrub scene frames"
+      }
+    },
+    "sb4.use-scene": {
+      "nb": {
+        "text": "Bruk i scenen"
+      },
+      "en": {
+        "text": "Use in scene"
+      }
+    },
+    "sb4.audio-timing": {
+      "nb": {
+        "text": "Bruk lydens varighet"
+      },
+      "en": {
+        "text": "Use audio duration"
+      }
+    },
+    "sb4.mix-confirm": {
+      "nb": {
+        "text": "Legg den midlertidige lyden til scenens lyd? Eksisterende lyd beholdes."
+      },
+      "en": {
+        "text": "Add temporary audio to the scene sound? Existing audio is preserved."
+      }
+    },
+    "sb4.record": {
+      "nb": {
+        "text": "Ta opp midlertidig lyd"
+      },
+      "en": {
+        "text": "Record temporary audio"
+      }
+    },
+    "sb4.upload-audio": {
+      "nb": {
+        "text": "Last opp lyd"
+      },
+      "en": {
+        "text": "Upload audio"
+      }
+    },
+    "sb4.mobile-audio": {
+      "nb": {
+        "text": "Ta opp med mobilen"
+      },
+      "en": {
+        "text": "Record on mobile"
+      }
     }
   }
 }
