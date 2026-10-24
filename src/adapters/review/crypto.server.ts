@@ -1,0 +1,6 @@
+export const tokenPattern=/^sr_[A-Za-z0-9_-]{43}$/;
+export function newReviewToken(){const bytes=crypto.getRandomValues(new Uint8Array(32));return 'sr_'+btoa(String.fromCharCode(...bytes)).replaceAll('+','-').replaceAll('/','_').replaceAll('=','');}
+export async function reviewHash(text:string){return Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(text)))).map(b=>b.toString(16).padStart(2,'0')).join('');}
+async function derive(password:string,salt:string){const key=await crypto.subtle.importKey('raw',new TextEncoder().encode(password),'PBKDF2',false,['deriveBits']);const bits=await crypto.subtle.deriveBits({name:'PBKDF2',salt:new TextEncoder().encode(salt),iterations:100000,hash:'SHA-256'},key,256);return Array.from(new Uint8Array(bits)).map(b=>b.toString(16).padStart(2,'0')).join('');}
+export async function passwordHash(password:string){if(!password)return null;const salt=newReviewToken();return salt+':'+await derive(password,salt);}
+export async function passwordMatches(password:string,stored:string|null){if(!stored)return true;const[salt,hash]=stored.split(':');if(!salt||!hash)return false;const supplied=await derive(password,salt);let difference=supplied.length^hash.length;for(let i=0;i<hash.length;i++)difference|=hash.charCodeAt(i)^(supplied.charCodeAt(i)??0);return difference===0;}
