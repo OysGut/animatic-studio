@@ -8,7 +8,7 @@ from PyQt5.QtWidgets import QFileDialog, QInputDialog, QMessageBox  # type: igno
 
 from . import logic
 from . import ptg_client
-from .strings import tr
+from .ptg_strings import tr
 
 BASE_URL = os.environ.get("PTG_BASE_URL", "https://pentoglass.com")
 

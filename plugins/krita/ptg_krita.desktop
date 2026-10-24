@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Service
+ServiceTypes=Krita/PythonPlugin
+X-KDE-Library=ptg_krita
+X-Python-2-Compatible=false
+X-Krita-Manual=README.md
+Name=From Pen to Glass
+Comment=Open assets and panels from From Pen to Glass and send them back as candidate versions
