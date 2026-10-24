@@ -256,7 +256,7 @@ describe("innlogging og opplasting mot falskt API", () => {
       calls.push(`${method} ${new URL(url).pathname}`);
       const payload = bodyFile ? r.fake.files.get(bodyFile)! : body ?? undefined;
       let out: { status: number; body: string } = { status: 0, body: "" };
-      const req = new Request(url, { method, headers, body: payload as BodyInit | undefined });
+      const req = new Request(url, { method, headers, body: (payload ?? null) as BodyInit | null });
       // Synkron fasade for skriptet (curl er synkront i Storyboard Pro): kjør handleren og vent i testen.
       pending.push(handleApiV1(req, { store: mem.store, now: () => now, random, ip: "198.51.100.7" }).then(async res => { out = { status: res.status, body: await res.text() }; }));
       return new Proxy({}, { get: (_t, k) => (out as Record<string, unknown>)[k as string] }) as { status: number; body: string };
@@ -308,7 +308,7 @@ describe("innlogging og opplasting mot falskt API", () => {
 
   it("skriptets innlogging, fornyelse og opplasting mot en synkron falsk server", () => {
     const r = roundtrip(f => { f.panels[1]!.duration = 30; });
-    const P = r.P, host = r.h.host as Record<string, any>;
+    const P = r.P, host: Lib = r.h.host;
     let polls = 0, access = "ptg_access_one", puts: string[] = [], posted: any = null, refreshed = 0;
     host.http = (method: string, url: string, headers: Record<string, string>, body: string | null, file?: string) => {
       const u = new URL(url).pathname;
@@ -333,7 +333,7 @@ describe("innlogging og opplasting mot falskt API", () => {
     expect(r.h.session).toBeNull();
   });
   it("avviser opplasting til et annet prosjekt enn innloggingen", () => {
-    const r = roundtrip(), host = r.h.host as Record<string, any>;
+    const r = roundtrip(), host: Lib = r.h.host;
     host.saveSession({ baseUrl: "https://ptg.test", accessToken: "a", refreshToken: "b", projectId: "annet", expiresAt: Date.now() + 1e9 });
     expect(() => r.P.upload(host, r.ret, "/out")).toThrow("wrong_project");
   });
