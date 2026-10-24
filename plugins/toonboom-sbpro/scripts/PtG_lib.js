@@ -24,6 +24,7 @@ var PtG = (function () {
   P.REF_CAPTION = "PtG Ref";
   P.CAMERA_CAPTION = "Camera";
   P.MAX_PANELS = 5000;
+  P.DEFAULT_BASE_URL = "https://pentoglass.com";
 
   // ---------- Tekster (nb/en; engelsk er reserve) ----------
   var STR = {
