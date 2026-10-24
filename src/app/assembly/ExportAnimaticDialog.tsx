@@ -230,9 +230,9 @@ export function ExportAnimaticDialog({
   const audioItems = useMemo(
     () =>
       partSel
-        ? shiftAudioItems(allAudioItems, partSel.shiftOf, fps, partSel.runEndOf)
-        : allAudioItems,
-    [partSel, allAudioItems, fps],
+        ? shiftAudioItems(exAudioItems, partSel.shiftOf, fps, partSel.runEndOf)
+        : exAudioItems,
+    [partSel, exAudioItems, fps],
   );
   const subtitles = useMemo(
     () =>
@@ -261,7 +261,7 @@ export function ExportAnimaticDialog({
           : t("app-assembly-export-animatic-dialog.text.text.75885539b60d"),
     });
     if (scope === "film") {
-      const inactive = orderedOccurrences(state, productionId).filter((o) => !o.active).length;
+      const inactive = orderedOccurrences(exState, productionId).filter((o) => !o.active).length;
       if (inactive > 0)
         out.push({
           level: "info",
@@ -291,10 +291,10 @@ export function ExportAnimaticDialog({
     let missingVersions = 0;
     for (const c of sel.clips) {
       if (!c.compositionId || !c.parts.some((p) => p.source === "composition")) continue;
-      for (const l of layersOf(state, c.compositionId)) {
+      for (const l of layersOf(exState, c.compositionId)) {
         if (!l.visible) continue;
         if (l.kind === "text" && l.text) texts.push(l.text);
-        const vs = layerVersions(state, l);
+        const vs = layerVersions(exState, l);
         for (const v of vs) need.add(v.mediaPath);
         if (vs.length === 0 && l.assetId !== null) missingVersions++;
       }
@@ -364,7 +364,7 @@ export function ExportAnimaticDialog({
   }, [
     sel,
     scope,
-    state,
+    exState,
     productionId,
     fps,
     audioItems,
@@ -488,7 +488,7 @@ export function ExportAnimaticDialog({
         const sink = await openAlphaSink(name, "video/quicktime");
         try {
           const res = await exportProResFilm({
-            state, clips: sel.clips, startFrame: sel.startFrame, endFrame: sel.endFrame, width: outW, height: outH, fps,
+            state: exState, clips: sel.clips, startFrame: sel.startFrame, endFrame: sel.endFrame, width: outW, height: outH, fps,
             monochrome: mono, images, signal: ctrl.signal, sink, profile: proresKind,
             audio: { items: audioItems, bank: audioBank, mutedKinds },
             filmUrls: await freshFilmUrls(sel.clips, filmUrls),
@@ -513,7 +513,7 @@ export function ExportAnimaticDialog({
         return;
       }
       const file = await exportAnimatic({
-        state,
+        state: exState,
         // Bare utvalget: et utsnitt begynner og slutter rent (ingen overgang fra scener utenfor)
         clips: sel.clips,
         startFrame: sel.startFrame,
@@ -549,7 +549,7 @@ export function ExportAnimaticDialog({
       setReady({ ...f, bytes: file.bytes.byteLength });
       if (separateLayers) {
         const layers = await exportAnimatic({
-          state, clips: sel.clips, startFrame: sel.startFrame, endFrame: sel.endFrame, width: outW, height: outH, fps,
+          state: exState, clips: sel.clips, startFrame: sel.startFrame, endFrame: sel.endFrame, width: outW, height: outH, fps,
           images, signal: ctrl.signal, mp4: container === "mp4", webm: container === "webm", characterPass: "separate",
         });
         if (abort.current !== ctrl || ctrl.signal.aborted) return;
