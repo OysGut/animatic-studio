@@ -1,110 +1,15 @@
 # Veikart
 
-## G-5 vekst og misbruk (23.10.2026)
-- [ ] 1. change_log-oppbevaring: 90 dager / 20 000 endringer, komprimering til øyeblikksbilder, project_seq/synk bevart, cron eller admin-knapp
-- [ ] 2. Kvoter per arbeidsgruppe/bruker: lagring, prosjekter, change_log-rader, opplastinger/time; admin-styrt, servertvang, oversatte meldinger
-- [ ] 3. film_shares.token: bare hash/digest, kryptering for QR-gjenvisning med nøkkelversjon
-- [ ] 4. Tak på jsonb-kolonner (95 stk): liste per kolonne + test for nye kolonner
-- [ ] Rapport docs/development/G5_VEKST_REPORT.md; migrasjon 0097; tsc/vitest/DB grønne
+## SB-4 (bygget, verifisert)
+- [x] Felles posisjon, timing, midlertidig panellyd, galleriscrubbing/avspilling, eksportkilde
 
-## G-4 skriftsystemer (23.10.2026)
-- [ ] 1. RTL: dir=auto på brukertekst, logisk CSS, manusvisning/PDF speilet + shaping, tekstlag, tester ar/he
-- [x] 2. Søk: 0096 unaccent+pg_trgm, indekser, CJK, admin_find_users, kjerne-fold NFKC, måling 50k blokker
-- [x] 3. NFC-normalisering i apply_changes-klientveien og import, med test
-- [x] Rapport docs/development/G4_SKRIFT_REPORT.md (delvis; full vitest/i18n gjenstår)
-
-## G-3 global bruk (23.10.2026)
-- [x] 1. Intl.Segmenter for ord/grafemer (film, forecast, varighet, plakat, globalt søk) + talehastighet per språk
-- [x] 2. Sceneoverskrifter per språk, prosjektord, tvungen overskrift alltid
-- [x] 3/4/7. Kjerne: resolver bruker → arbeidsgruppe → prosjekt med kilde; papir/manusformat fra land
-- [x] 6. 0094: tidssone på profil/arbeidsgruppe, private.budget_period_start (DB-test Auckland/LA)
-- [x] 8. workspaces.region (0094)
-- [x] 5. fx_rates-tabell (0094)
-- [ ] Leveranse 2: koble kvotefunksjonene til budget_period_start (ny migrasjon med siste definisjoner ordrett)
-- [ ] Leveranse 2: valutaomregning (serverhenting fra gratis kilde + visning/eksport)
-- [ ] Leveranse 2: innstillingsflater (konto, arbeidsgruppe, prosjekt via apply_changes) og papirvalg i rigg/plakat/X-sheet/PDF
-- [ ] 9. E-post på mottakerens språk (avhenger av Lovable Clouds e-postmaler)
-- [ ] Claude: kjør 0094 i Cloud
-
-## G-2 skala (23.10.2026)
-- [x] A3 indekser, A4 RLS, A1 innlasting/øyeblikksbilde, A2 synk via project_seq, g1-triggere (0093)
-- [ ] Claude: kjør 0093 i Cloud og mål åpning av et stort prosjekt der
-
-## G-1b (pågår)
-- [x] 1. Kildevelger ved oppretting + advarsel ved bytte (LanguageVersionsDialog)
-- [x] 2. Import (Fountain/FDX/Word/PDF): språkforslag + bekreftelse
-- [x] 3. Bred kontroll av norske standarder + arkitekturtest nb/no + fjern PRIMARY_LANGUAGE-symbol
-- [x] 4. Samordne BCP-47-validering (Intl vs kjerne-regex; ev. 0091 for DB)
-- [x] 5. Manus-PDF: Noto per skriftsystem, OFL dokumentert, lazy-lasting
-- [x] 6. Rundtur ja/en/nb: backup, gjenoppretting, avvik, faktisk eksportfil
-- [x] 7. Brukerflyt-test: oppretting, bekreftet import, ja-manus med nb/en-mål
-- [x] 8. Kravoversikter: check_kb grønn (PyYAML eller JS-variant)
-- [x] Rapport: oppdater docs/development/G1_SPRAKNOYTRAL_REPORT.md
-- [ ] Full vitest + i18n + DB-tester grønne
-
-## G-8 sikkerhetsrunde 2 (23.10.2026)
-- [x] 1. Lagring: bøtter, policyer, signerte URL-er og opplasting gjennomgått (valg om filtyper ført i TODO «Krever Øystein»)
-- [x] 2. Felles hastighetsgrenser i databasen (0100, PTG15) + innlogging/pass med IP på serveren
-- [x] 3. Hemmeligheter maskeres i feilrapportering; no-store på serverfunksjoner, API og tokensider
-- [x] 4. RLS-/anon-test og matrise i rapporten
-- [x] 5. Sårbarhetssjekk: 19 av 23 rettet innenfor tillatte versjoner
-- [x] tsc 0, full vitest grønn, DB 216/0; Claude: kjør 0100 i Cloud
-
-## G-7 robust lagring (23.10.2026)
-- [x] Migrasjon 0099: del apply_changes i liten kjerne + private.validate_<domene> registrert i register-tabell
-- [x] Oppførsel nøyaktig lik: DB-suite før (201/0) og etter (211/0), nye tester per validering (G-7.1–G-7.10)
-- [x] Ytelsesmål: 10 000 blokker før (902/860 ms) og etter (946/942 ms), ~5–9 % innenfor støy
-- [x] AGENTS-regel i docs/agents/APPLY_CHANGES.md (AGENTS.md-peker droppet pga. 12 288-bytebudsjettet)
-- [x] Rapport docs/development/G7_APPLY_CHANGES_REPORT.md; DB-tester og search_path='' grønne
-- [x] tsc 0, full vitest 2838/0, DB-tester 211/0, i18n grønn (i vitest-suiten); Claude: kjør 0099 i Cloud
-
-## G-6 gjenbruk på tvers av prosjekter (23.10.2026)
-- [~] 1. Globale karakterknipper: migrasjon 0098, kjerne (plan/publisering/innhentingskommandoer) og adaptere ferdig og testet — UI-kobling (publiser/hent-knapper) gjenstår; rigg i knippe venter på produktvalg (rigg er scenebundet)
-- [~] 2. Arbeidsgruppeprofiler: tabell, RPC-er og kjerneoppløsning ferdig og testet — profil-UI og kobling til resolveSettings gjenstår
-- [x] 3. Tilgang: RLS bare for arbeidsgruppemedlemmer; roller eier/redaktør/leser; RLS-tester grønne
-- [x] 4. Backup: innhentede knipper materialiseres som prosjektrader i BACKUP_STATE_TABLES; rundtur-testet
-- [~] Rapport docs/development/G6_GJENBRUK_REPORT.md skrevet; tsc 0, DB 201/0, fokuserte vitest 18/0 — full vitest og i18n gjenstår; 0098 ikke kjørt i Cloud
-
-- [x] G-9 Eksempelprosjekt på flere språk (rapport: docs/development/G9_DEMO_REPORT.md; ende-til-ende mot Cloud ikke kjørt)
-- [x] Rest G-5/G-6 (0101, adminpaneler, knippe-UI, profiler, arv, snapshot i sikkerhetskopi)
-
-## SB-1 storyboardgrunnmur (23.10.2026)
-- [x] Kjerne + migrasjon 0102; tsc 0, full Vitest 2868/0/10, DB 224/0, i18n grønn, rapport docs/development/SB1_REPORT.md
-- [ ] Claude: gjennomgå og kjør 0102 i Cloud
-
-## SB-2 storyboardgalleri og navigasjon (23.10.2026) – kjøres etter SB-1
-- [x] 0103: tabellrekkefølgen i apply_changes flyttet til private.apply_change_tables (DB 226/0; ikke kjørt i Cloud)
-- [x] Fane «Storyboard» + rute prosjekt/$projectId/storyboard med vindu-ID
-- [x] Galleri i fortellerrekkefølge per produksjon, gruppert per scene, felles Thumbnail
-- [x] Kontroller: panelstørrelse/zoom, vis-skjul, tekstvisning, filter, «Hopp til manus», husket per bruker
-- [x] Klikk/dobbeltklikk/Enter-navigasjon med panel-markering (URL-parameter)
-- [x] Omorganisering: paneldrag, scenedrag via MoveOccurrence med tydelig varsel og angre (13 SB-2-tester). Legg til/dupliser/skjul/deaktiver/gjeninnfør og flytt til scene med angre er testet.
-- [x] Første åpning: forslag ett tomt panel per scene med bekreftelse
-- [x] Statusmerker per fagområde + redigering
-- [x] Tilgjengelighet (piltaster, aria, RTL), virtualisering for 2 000 paneler
-- [x] Tester jsdom (13) + rapport; typekontroll/i18n grønne, DB 227/0. Full Vitest gjentatt uten feil (2892/0/10); visuell nb/en kontroll videreført i SB-3.
-
-## SB-3 panelredigering (23.10.2026) – kjøres etter SB-2
-- [x] Panelflate: dra inn ressurser (ID+versjon, proporsjoner), flytt/skaler/roter/ordne/lås/skjul
-- [x] Verktøy: pil/linje, figur, tekst, kameramerke, lapp (type, forankring, behandlet), vis/skjul notater; tråder via notatsystemet
-- [x] «Bruk som bevegelsesbane» (eksplisitt, utkast)
-- [x] Revisjoner: «Rediger storyboard» på godkjent panel lager ny revisjon; vis tidligere
-- [x] Låst nummerering (12, 12A) + angrebar «Nummerer på nytt» med forhåndsvisning
-- [x] Egendefinerte felt per prosjekt; dialog koblet til replikker
-- [x] Kamera/utsnitt per panel, formatmasker, sikre soner, tredjedeler
-- [x] Hurtigtaster i «?»-hjelpen
-- [x] Tester + rapport docs/development/SB3_REPORT.md; full Vitest 2894/0/10, DB 227/0, i18n og forhåndsvisningskontroll grønne, nettleser nb/en 16/0 med mobil. 0104 bare lokalt; Claude må kjøre den før Cloud-lagring av nye felt kan verifiseres. 0103 og eldre er låst; ingen publisering.
-
-## SB-4 tid, avspilling, storyboardfilm og sømløs veksling (23.10.2026) – kjøres etter SB-3
-- [ ] Restoppdrag 24.10: funksjoner implementert, men full femflate-/mobil-/eksport-E2E og separat sekvens-/produksjonsarv gjenstår; se SB4_REPORT.md.
-- [x] Lyd fra scenen som én kilde (filmAudio/audioBank, ingen kopi, over scenegrenser, av/på + volum husket, lyd er tidsmaster)
-- [ ] Timing med arv (panel/scene/sekvens/produksjon), forslag fra manus/dialog/lyd, aldri trimming av ferdig film
-- [x] Scrubbing over kort (RTL-speilet tid, mus/berøring/tastatur, ingen autolyd)
-- [x] Avspilling i galleriet (kontroller, 40 % for inaktive, fokus følger, hopper over deaktiverte)
-- [x] Storyboardfilm i fullskjerm med overganger
-- [x] Kamerabevegelse fra kameramerke (start/slutt-ramme)
-- [x] Midlertidig lyd per panel (opptak/QR/opplasting), aldri blandet inn uten bekreftelse
-- [ ] Felles posisjon og hurtigtast bygget; storyboard→scene nb/en og kjerne verifisert. Full femflate-/tilbake-/replikk-E2E gjenstår.
-- [x] Tester + rapport docs/development/SB4_REPORT.md: DB 228/0, nettleser nb/en 18/0, alle språk grønne; endelig full Vitest 2913/0/10. 0105 bare lokalt.
-- [x] Presisering (Øystein): eksport via eksisterende ExportAnimaticDialog/«Til produksjonen», valg «Bildekilde: animasjon / film / storyboardpaneler», én felles bildekilde-adapter; SB-4 = kildevalg + filmeksport (MP4/ProRes/PNG); tester: rekkefølge/timing/lyd, uendret med animasjon som kilde
-- [ ] SB-6: utskrift/pitch (3/6/9 per side) og CSV/XLSX som nye kort i samme eksportvindu
+## SB-5 – Kobling til sceneeditoren (pågår)
+- [ ] Referansepanel for storyboard i sceneeditoren: dokk, skjul, forstørr, popup med huska geometri
+- [ ] Panelet viser bilder, figurer, piler, lapper, reginotater, kamerainstruksjoner, dialog, timing, kommentarer, status
+- [ ] Valgt panel fremhevet; følger avspillingshodet etter storyboardtiming
+- [ ] Låst for redigering; «Rediger storyboard» (ny revisjon ved godkjent panel) og «Tilbake til scenen» via felles posisjon
+- [ ] Vindu-ID i registeret
+- [ ] «Opprett sceneoppsett fra storyboard»: kopierer ressurslag (ID/versjon, plassering, skala, rotasjon, rekkefølge, bakgrunn, kameramerke som kamerautgangspunkt); piler/lapper/tekst/figurer følger ikke med; aldri overskriving av scene med innhold – «nytt utkast» bevarer eksisterende; forhåndsvisning; én angrebar kommando; valg av panel ved flere
+- [ ] Storyboardstatus i sceneeditorens topp med de andre fagområdene
+- [ ] Migrasjon 0106 ved behov (0105 låst); tester kjerne/angre/ikke-overskriving/avspillingsfølging/navigasjon; visuelt nb/en
+- [ ] Rapport docs/development/SB5_REPORT.md
