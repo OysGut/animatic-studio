@@ -317,10 +317,9 @@ def loopback_redirect(port: int, path: str = "/callback") -> str:
     return f"http://127.0.0.1:{int(port)}{path}"
 
 
-def wait_for_loopback(server_factory, timeout=300) -> str:
-    """Starter en engangs loopback-server og returnerer hele callback-adressen (bare 127.0.0.1)."""
+def loopback_login(client: "PtgClient", open_url, timeout: float = 300, path: str = "/callback") -> dict:
+    """PKCE via engangs loopback-server på 127.0.0.1 (tilfeldig port). Nettleseren åpnes av verten."""
     import http.server
-    import threading
     result = {}
 
     class H(http.server.BaseHTTPRequestHandler):
@@ -334,12 +333,14 @@ def wait_for_loopback(server_factory, timeout=300) -> str:
         def log_message(self, *a):
             pass
 
-    srv = server_factory(H)
-    t = threading.Thread(target=srv.handle_request, daemon=True)
-    srv.timeout = timeout
-    t.start()
-    t.join(timeout)
-    srv.server_close()
+    srv = http.server.HTTPServer(("127.0.0.1", 0), H)
+    try:
+        srv.timeout = timeout
+        flow = client.begin_authorization(loopback_redirect(srv.server_address[1], path))
+        open_url(flow["url"])
+        srv.handle_request()
+    finally:
+        srv.server_close()
     if "url" not in result:
         raise ConnectorError(408, "login_timeout")
-    return result["url"]
+    return client.complete_authorization(result["url"], flow)
