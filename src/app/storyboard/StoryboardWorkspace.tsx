@@ -214,7 +214,8 @@ export function Gallery({
   const open = useCallback(
     (p: GalleryPanel) => {
       if (!p.panel.occurrenceId) return;
-      const position = panelPosition(state, p.panel.occurrenceId, p.panel.id, null);
+      const saved = currentPosition(projectId);
+      const position = panelPosition(state, p.panel.occurrenceId, p.panel.id, null, saved?.panelId === p.panel.id ? saved.timeMs ?? 0 : 0);
       if (position) rememberPosition(projectId, position);
       void navigate({ to: "/prosjekt/$projectId/scene", params: { projectId }, search: { scene: p.panel.occurrenceId, panel: p.panel.id } as never });
     },
