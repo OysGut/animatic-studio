@@ -57,7 +57,7 @@ function StoryboardRefRoute() {
           projectId={projectId}
           productionId={productionId}
           occurrenceId={occurrence.id}
-          sourceWindow={kilde}
+          {...(kilde ? { sourceWindow: kilde } : {})}
           large
         />
       ) : (

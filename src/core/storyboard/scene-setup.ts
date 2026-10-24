@@ -59,7 +59,7 @@ export function planSceneSetup(
   ids: { readonly layer?: () => LayerId; readonly composition?: () => CompositionId } = {},
 ): SceneSetupPlan {
   const occ = s.occurrences[occurrenceId];
-  if (!occ || occ.removed) return { ok: false, reason: "no_occurrence" };
+  if (!occ) return { ok: false, reason: "no_occurrence" };
   const panel = s.compositions[panelId];
   if (!panel || panel.removed || panel.kind !== "storyboard" || panel.occurrenceId !== occ.id)
     return { ok: false, reason: "no_panel" };

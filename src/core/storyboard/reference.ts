@@ -74,5 +74,5 @@ export function panelReferenceInfo(s: ProjectState, panel: Composition): PanelRe
 
 /** Panelene i scenen med referanseinfo, i panelrekkefølge. */
 export function scenePanelReferences(s: ProjectState, occurrenceId: string): PanelReferenceInfo[] {
-  return storyboardPanelsOf(s, occurrenceId).map((p) => panelReferenceInfo(s, p));
+  return storyboardPanelsOf(s, occurrenceId as never).map((p) => panelReferenceInfo(s, p));
 }

@@ -27,7 +27,7 @@ interface Props {
 }
 
 export function SceneSetupDialog({ open, onOpenChange, state, productionId, occurrenceId, initialPanelId, cmds }: Props) {
-  const panels = useMemo(() => storyboardPanelsOf(state, occurrenceId), [state, occurrenceId]);
+  const panels = useMemo(() => storyboardPanelsOf(state, occurrenceId as never), [state, occurrenceId]);
   const [panelId, setPanelId] = useState<string | null>(null);
   const [draft, setDraft] = useState(false);
   const [busy, setBusy] = useState(false);
