@@ -161,9 +161,12 @@ describe("C-0 API v1 og SDK mot falsk server", () => {
   });
   it("enhetsflyt: venter til brukeren godkjenner, deretter tokens", async () => {
     const h = harness();
+    const start = await h.fetchFn("https://ptg.test/api/v1/oauth/device", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ client_id: "ptg.cli", scope: "project:read" }) });
+    const d = (await start.json()) as { device_code: string };
+    const poll = await h.fetchFn("https://ptg.test/api/v1/oauth/token", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ grant_type: "urn:ietf:params:oauth:grant-type:device_code", device_code: d.device_code, client_id: "ptg.cli" }) });
+    expect(await poll.json()).toEqual({ error: "authorization_pending" });
     let shown = "";
-    const p = h.sdk.deviceLogin("project:read manifest:read", d => { shown = d.userCode; setTimeout(() => h.mem.approveDevice(shown, h.s.project.id, USER), 0); });
-    const t = await p;
+    const t = await h.sdk.deviceLogin("project:read manifest:read", x => { shown = x.userCode; h.mem.approveDevice(shown, h.s.project.id, USER); });
     expect(shown).toMatch(/^[A-Z]{4}-[A-Z]{4}$/);
     expect(t.scope).toBe("project:read manifest:read");
     expect((await h.sdk.manifest(h.s.project.id)).projectId).toBe(h.s.project.id);
