@@ -19,6 +19,8 @@ export interface Host {
   makeDir(path: string): Promise<void>;
   /** Kjører en funksjon i jsx/host.jsx og returnerer svaret som tekst. */
   evalScript(code: string): Promise<string>;
+  /** Dekoder mp3/ogg/m4a til rå lyd (Web Audio i CEP). Uten denne hoppes ikke-WAV over. */
+  decodeAudio?(bytes: Uint8Array, mimeType: string): Promise<{ channels: Float32Array[]; sampleRate: number } | null>;
 }
 
 /** De delene av Adobes CSInterface.js og window.cep.fs panelet bruker. */

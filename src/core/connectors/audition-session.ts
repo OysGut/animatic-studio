@@ -113,6 +113,16 @@ export function auditionWavMeta(plan: AuditionPlan, c: AuditionClip): BwfMeta {
   };
 }
 
+/** Metadata for en fil som er konvertert til WAV i nettleseren: merket i beskrivelse og iXML, originalen urørt. */
+export function auditionConvertedMeta(plan: AuditionPlan, c: AuditionClip, from: ConvertibleAudioFormat, sampleRate: number): BwfMeta {
+  const meta = auditionWavMeta({ ...plan, sampleRate }, c);
+  return {
+    ...meta,
+    description: `[converted from ${from}] ${meta.description}`.slice(0, 256),
+    user: { ...meta.user, PTG_CONVERTED_FROM: from },
+  };
+}
+
 /** Legger ID-ene inn i en nedlastet WAV uten å endre lyden. Andre formater må konverteres i appen først. */
 export function tagAuditionWav(bytes: Uint8Array, plan: AuditionPlan, c: AuditionClip): Uint8Array {
   return retagWav(bytes, auditionWavMeta(plan, c));
