@@ -290,7 +290,7 @@ export function checkInvariants(s: ProjectState): Violation[] {
       if (!ve || ve.variantId !== l.assetVariantId)
         add("MODEL", tk("core-invariants.check-invariants.add.2ae8b7cf2fce", { id: String(l.id) }));
     }
-    if (l.kind !== "group" && l.kind !== "page" && l.kind !== "note" && l.kind !== "arrow" && l.kind !== "camera_mark" && l.assetId === null && l.fill === null && !(l.kind === "text" && l.text))
+    if (l.kind !== "group" && l.kind !== "page" && l.kind !== "note" && l.kind !== "arrow" && l.kind !== "camera_mark" && l.kind !== "sketch" && l.assetId === null && l.fill === null && !(l.kind === "text" && l.text))
       add("MODEL", tk("core-invariants.check-invariants.add.42e8c587a46e", { id: String(l.id) }));
     let keys = keysByComp.get(l.compositionId);
     if (!keys) keysByComp.set(l.compositionId, (keys = new Set()));

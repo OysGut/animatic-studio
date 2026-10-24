@@ -470,6 +470,7 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         note: l.note ?? null,
         arrow: l.arrow ?? null,
         camera_mark: l.cameraMark ?? null,
+        sketch: l.sketch ?? null,
         removed: l.removed,
       };
     }
@@ -1623,6 +1624,7 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         ...(json(x["note"]) ? { note: json(x["note"]) as never } : {}),
         ...(json(x["arrow"]) ? { arrow: json(x["arrow"]) as never } : {}),
         ...(json(x["camera_mark"]) ? { cameraMark: json(x["camera_mark"]) as never } : {}),
+        ...(json(x["sketch"]) ? { sketch: json(x["sketch"]) as never } : {}),
         ...(typeof x["template_instance_id"] === "string" && typeof x["template_key"] === "string"
           ? {
               template: {

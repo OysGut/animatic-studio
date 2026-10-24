@@ -6,6 +6,7 @@
 import { matrixScale, multiply, registerTextMeasurer, versionImagePath, type DrawItem, type Frame, type Matrix } from "@/core";
 import { DEFAULT_ADJUSTMENTS } from "@/core/animation/parts";
 import { renderRigPart } from "./rig-parts";
+import { sketchRaster } from "./sketch";
 import { t as tk } from "@/core/i18n/keyed";
 
 /**
@@ -123,7 +124,10 @@ function paintItem(ctx: Ctx2D, it: DrawItem, v: Matrix, opts: DrawOptions, place
   const x = -it.width / 2;
   const y = -it.height / 2;
   applyShadow(ctx, it);
-  if (it.note) {
+  if (it.sketch) {
+    const raster=sketchRaster(it.sketch,it.width,it.height);
+    if(raster)ctx.drawImage(raster,x,y,it.width,it.height);
+  } else if (it.note) {
     ctx.fillStyle = it.note.color;
     ctx.fillRect(x, y, it.width, it.height);
     ctx.fillStyle = it.note.color.toLowerCase() === "#ffffff" ? "#000000" : "#ffffff";
