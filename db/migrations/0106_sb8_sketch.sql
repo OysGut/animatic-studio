@@ -63,9 +63,9 @@ declare s public.sketch_sessions; cap jsonb; r jsonb;begin
  perform 1 from public.projects where id=s.project_id for update;
  if exists(select 1 from public.change_log where project_id=s.project_id and command_id=p_id)then return;end if;
  if p_command->>'type' is distinct from 'UpdateLayers' or pg_catalog.jsonb_array_length(p_command->'layers')<>1 or p_command->'layers'->0->>'layerId' is distinct from s.layer_id::text
- or coalesce(p_changes->'inserts','{}')<>'{}'::jsonb or coalesce(p_changes->'deletes','{}')<>'{}'::jsonb or pg_catalog.jsonb_object_length(p_changes->'updates')<>1 or pg_catalog.jsonb_array_length(p_changes->'updates'->'composition_layers')<>1 then raise exception 'Sketch scope denied' using errcode='42501';end if;
+ or coalesce(p_changes->'inserts','{}')<>'{}'::jsonb or coalesce(p_changes->'deletes','{}')<>'{}'::jsonb or (select count(*) from pg_catalog.jsonb_object_keys(p_changes->'updates'))<>1 or pg_catalog.jsonb_array_length(p_changes->'updates'->'composition_layers')<>1 then raise exception 'Sketch scope denied' using errcode='42501';end if;
  r:=p_changes->'updates'->'composition_layers'->0;
- if r->>'id' is distinct from s.layer_id::text or exists(select 1 from pg_catalog.jsonb_object_keys(r) k where k not in('id','revision','sketch'))then raise exception 'Sketch scope denied' using errcode='42501';end if;
+ if r->>'id' is distinct from s.layer_id::text or exists(select 1 from pg_catalog.jsonb_object_keys(r) k where k not in('id','revision','expected_revision','sketch'))then raise exception 'Sketch scope denied' using errcode='42501';end if;
  perform public.apply_changes(s.project_id,s.actor,p_id,p_command,p_inverse,p_changes);
  update public.sketch_sessions set operations=operations+1 where id=s.id;
 end $$;
