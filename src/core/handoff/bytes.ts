@@ -75,3 +75,52 @@ export function storedZip(files: readonly { path: string; data: Uint8Array }[]):
   w.u32le(0x06054b50).u16le(0).u16le(0).u16le(central.length).u16le(central.length).u32le(cdSize).u32le(cdStart).u16le(0);
   return w.done();
 }
+
+/** Takhøyder for en returpakke (.ptgsb): filer, enkeltstørrelse og samlet størrelse (per retur, ikke globale). */
+export const PTGSB_MAX_FILES = 5000;
+export const PTGSB_MAX_FILE_BYTES = 25 * 1024 * 1024;
+export const PTGSB_MAX_TOTAL_BYTES = 512 * 1024 * 1024;
+
+export interface StoredZipFile { readonly path: string; readonly data: Uint8Array }
+export type StoredZipRead = { ok: true; files: StoredZipFile[]; comment: string } | { ok: false; reason: "not-zip" | "deflate" | "truncated" | "crc" | "too-many" | "too-large" | "name" };
+
+/** Leser en lagret (ukomprimert) ZIP slik storedZip skriver den. Komprimerte filer avvises ærlig. */
+export function readStoredZip(bytes: Uint8Array): StoredZipRead {
+  if (bytes.length < 22 || bytes[0] !== 0x50 || bytes[1] !== 0x4b) return { ok: false, reason: "not-zip" };
+  // Finn EOCD ved å lete baklengs etter signaturen (kommentaren kan være inntil 64 KiB).
+  let eocd = -1;
+  for (let i = bytes.length - 22; i >= Math.max(0, bytes.length - 22 - 65536); i--) {
+    if (bytes[i] === 0x50 && bytes[i + 1] === 0x4b && bytes[i + 2] === 0x05 && bytes[i + 3] === 0x06) { eocd = i; break; }
+  }
+  if (eocd < 0 || eocd + 22 > bytes.length) return { ok: false, reason: "not-zip" };
+  const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+  const count = view.getUint16(eocd + 10, true);
+  const cdStart = view.getUint32(eocd + 16, true);
+  const commentLen = view.getUint16(eocd + 20, true);
+  if (eocd + 22 + commentLen > bytes.length || cdStart + count * 46 > eocd) return { ok: false, reason: "truncated" };
+  if (count > PTGSB_MAX_FILES) return { ok: false, reason: "too-many" };
+  const comment = fromUtf8(bytes.subarray(eocd + 22, eocd + 22 + commentLen));
+  const files: StoredZipFile[] = [];
+  let total = 0, pos = cdStart;
+  for (let n = 0; n < count; n++) {
+    if (pos + 46 > eocd || view.getUint32(pos, true) !== 0x02014b50) return { ok: false, reason: "truncated" };
+    const method = view.getUint16(pos + 10, true);
+    if (method !== 0) return { ok: false, reason: "deflate" };
+    const crc = view.getUint32(pos + 16, true), size = view.getUint32(pos + 20, true);
+    const nameLen = view.getUint16(pos + 28, true), extraLen = view.getUint16(pos + 30, true), commentLen2 = view.getUint16(pos + 32, true);
+    const offset = view.getUint32(pos + 42, true);
+    const path = fromUtf8(bytes.subarray(pos + 46, pos + 46 + nameLen));
+    if (!path || path.length > 500 || path.includes("..") || path.startsWith("/") || path.includes("\\")) return { ok: false, reason: "name" };
+    if (size > PTGSB_MAX_FILE_BYTES) return { ok: false, reason: "too-large" };
+    total += size; if (total > PTGSB_MAX_TOTAL_BYTES) return { ok: false, reason: "too-large" };
+    if (offset + 30 > bytes.length || view.getUint32(offset, true) !== 0x04034b50) return { ok: false, reason: "truncated" };
+    const localName = view.getUint16(offset + 26, true), localExtra = view.getUint16(offset + 28, true);
+    const start = offset + 30 + localName + localExtra;
+    if (start + size > bytes.length) return { ok: false, reason: "truncated" };
+    const data = bytes.slice(start, start + size);
+    if (crc32(data) !== crc) return { ok: false, reason: "crc" };
+    files.push({ path, data });
+    pos += 46 + nameLen + extraLen + commentLen2;
+  }
+  return { ok: true, files, comment };
+}
