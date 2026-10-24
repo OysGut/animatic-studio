@@ -58,9 +58,33 @@ export interface ResolvedRange {
   readonly found: boolean;
 }
 
+/** Bokstaver og tall (alle skriftsystemer) – det som hører til inni et ord. */
+const WORD_CHAR = /[\p{L}\p{N}]/u;
+
+/**
+ * KI-226: utvider et utvalg til nærmeste ordgrenser – aldri innover, bare utover.
+ * Et notat på «ord» i «ordforråd» skal dekke hele ordet det står i.
+ */
+export function wordRange(text: string, start: number, end: number): { start: number; end: number } {
+  let s = Math.max(0, Math.min(start, end));
+  let e = Math.min(text.length, Math.max(start, end));
+  while (s > 0 && WORD_CHAR.test(text[s - 1]!) && WORD_CHAR.test(text[s]!)) s--;
+  while (e < text.length && WORD_CHAR.test(text[e - 1]!) && WORD_CHAR.test(text[e]!)) e++;
+  return { start: s, end: e };
+}
+
+/** Om treffet på posisjon i med lengde len begynner og slutter på en ordgrense. */
+function wholeWord(text: string, i: number, len: number): boolean {
+  const leftOk = i === 0 || !(WORD_CHAR.test(text[i - 1]!) && WORD_CHAR.test(text[i]!));
+  const j = i + len;
+  const rightOk = j >= text.length || !(WORD_CHAR.test(text[j - 1]!) && WORD_CHAR.test(text[j]!));
+  return leftOk && rightOk;
+}
+
 /**
  * Hvor notatet står i blokkens nåværende tekst. Står sitatet fortsatt på samme sted, brukes det;
- * ellers velges forekomsten av sitatet nærmest den opprinnelige plasseringen.
+ * ellers velges forekomsten av sitatet nærmest den opprinnelige plasseringen. KI-226: treff som
+ * står på ordgrenser velges foran treff inni et lengre ord (notatet «sol» skal ikke flytte til «soloppgang»).
  */
 export function resolveRange(a: Annotation, blockText: string): ResolvedRange {
   // Notat på hele elementet
@@ -69,8 +93,13 @@ export function resolveRange(a: Annotation, blockText: string): ResolvedRange {
   if (blockText.slice(a.start, a.end) === a.quote && a.end > a.start)
     return { start: a.start, end: a.end, found: true };
   if (a.quote) {
-    let best = -1;
+    const hits: number[] = [];
     for (let i = blockText.indexOf(a.quote); i >= 0; i = blockText.indexOf(a.quote, i + 1))
+      hits.push(i);
+    const whole = hits.filter((i) => wholeWord(blockText, i, a.quote.length));
+    const candidates = whole.length ? whole : hits;
+    let best = -1;
+    for (const i of candidates)
       if (best < 0 || Math.abs(i - a.start) < Math.abs(best - a.start)) best = i;
     if (best >= 0) return { start: best, end: best + a.quote.length, found: true };
   }

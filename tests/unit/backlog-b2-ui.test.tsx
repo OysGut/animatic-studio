@@ -4,7 +4,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { SceneScriptPanel } from "@/app/scene-editor/SceneScriptPanel";
 import { AiSourceCleanup } from "@/app/ai/AiSourceCleanup";
 import { fixture } from "../visual/fixture-state";
-import { blocksOfVariant } from "@/core";
+import { blocksOfVariant, wordRange } from "@/core";
 const h = vi.hoisted(() => ({ preview: vi.fn(), confirm: vi.fn() }));
 vi.mock("@tanstack/react-start", () => ({ useServerFn: (fn: unknown) => fn }));
 vi.mock("@/adapters/ai/source-cleanup.functions", () => ({ previewAiSourceCleanup: (args: unknown) => h.preview(args), confirmAiSourceCleanup: (args: unknown) => h.confirm(args) }));
@@ -29,7 +29,9 @@ describe("KI-226", () => {
     fireEvent.change(screen.getByRole("textbox"), { target: { value: "Sjekk dette ordet" } });
     fireEvent.click(screen.getByRole("button", { name: "Lagre notat" }));
     await waitFor(() => expect(run).toHaveBeenCalledTimes(1));
-    expect(run.mock.calls[0]?.[0]).toMatchObject({ type: "AddAnnotations", annotations: [{ blockId: block.id, start: 1, end: 4, quote: block.text.slice(1, 4), text: "Sjekk dette ordet" }] });
+    const wr = wordRange(block.text, 1, 4);
+    expect(wr.end).toBeGreaterThan(4);
+    expect(run.mock.calls[0]?.[0]).toMatchObject({ type: "AddAnnotations", annotations: [{ blockId: block.id, start: wr.start, end: wr.end, quote: block.text.slice(wr.start, wr.end), text: "Sjekk dette ordet" }] });
   });
 });
 describe("KI-207", () => {

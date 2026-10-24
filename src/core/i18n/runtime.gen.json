@@ -1821,6 +1821,12 @@
     "adapters-storylab-sessions-functions.turns-error.message.9398c4f56ee9.2": {
       "text": "Ugyldige turer"
     },
+    "ai-cleanup.select-file": {
+      "text": "Velg {name}"
+    },
+    "ai-cleanup.total": {
+      "text": "Totalt {size}"
+    },
     "ai.text.truncated": {
       "text": "Svaret ble avkortet fordi det ble for langt. Prøv igjen med kortere utvalg."
     },
@@ -33095,6 +33101,12 @@
     "n10.playback.stopped": {
       "text": "Stoppet på {timecode}"
     },
+    "notes-panel.hide-resolved": {
+      "text": "Skjul løste notater"
+    },
+    "notes-panel.show-resolved": {
+      "text": "Vis løste notater"
+    },
     "pathSpacing.aria": {
       "text": "Avstanden laget flytter seg per bilde langs banen. Tette merker er sakte, spredte merker er fort."
     },
@@ -37556,6 +37568,12 @@
     },
     "adapters-storylab-sessions-functions.turns-error.message.9398c4f56ee9.2": {
       "text": "Invalid turns"
+    },
+    "ai-cleanup.select-file": {
+      "text": "Select {name}"
+    },
+    "ai-cleanup.total": {
+      "text": "Total {size}"
     },
     "ai.text.truncated": {
       "text": "The response was truncated because it was too long. Try again with a shorter selection."
@@ -68830,6 +68848,12 @@
     },
     "n10.playback.stopped": {
       "text": "Stopped at {timecode}"
+    },
+    "notes-panel.hide-resolved": {
+      "text": "Hide resolved notes"
+    },
+    "notes-panel.show-resolved": {
+      "text": "Show resolved notes"
     },
     "pathSpacing.aria": {
       "text": "How far the layer moves per frame along the path. Close marks are slow, spread marks are fast."

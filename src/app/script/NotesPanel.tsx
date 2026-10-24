@@ -53,6 +53,10 @@ export function NotesPanel({
   const [adding, setAdding] = useState(false);
   const [draft, setDraft] = useState("");
   const [err, setErr] = useState<string | null>(null);
+  // KI-224: løste notater kan skjules; valget er per visning (ikke prosjektdata)
+  const [showResolved, setShowResolved] = useState(true);
+  const hasResolved = notes.some((n) => n.resolved);
+  const visible = showResolved ? notes : notes.filter((n) => !n.resolved);
 
   function add() {
     if (!newTarget || !draft.trim()) return;
@@ -74,10 +78,22 @@ export function NotesPanel({
 
   return (
     <div className="flex flex-col gap-2">
-      {notes.length === 0 && !adding ? (
+      {hasResolved ? (
+        <Button
+          size="sm"
+          variant="ghost"
+          className="self-start"
+          data-testid="notes-toggle-resolved"
+          aria-pressed={!showResolved}
+          onClick={() => setShowResolved((v) => !v)}
+        >
+          {showResolved ? t("notes-panel.hide-resolved") : t("notes-panel.show-resolved")}
+        </Button>
+      ) : null}
+      {visible.length === 0 && !adding ? (
         <p className="text-xs text-text-tertiary">{t("app-script-notes-panel.notes-panel.p.5ea42d80dea6")}</p>
       ) : null}
-      {notes.map((n) => (
+      {visible.map((n) => (
         <NoteCard
           key={n.id}
           state={state}

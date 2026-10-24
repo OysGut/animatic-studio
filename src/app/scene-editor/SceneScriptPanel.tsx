@@ -10,7 +10,7 @@ import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { NotesPanel } from "@/app/script/NotesPanel";
 import { DriftBadge } from "@/app/dialogue/DriftBadge";
 import { Button } from "@/components/ui/button";
-import { annotationsOfVariant, blockAtCompositionFrame, blockSpans, blocksOfVariant, dialogueOwnerOf, scriptSeekTarget, SCRIPT_CLICK_DELAY_MS, type ScriptSeek, formatHeading, sceneNumberOf, type BlockKind, type FilmClip, type Command, type NewAnnotation, type ProjectState } from "@/core";
+import { annotationsOfVariant, blockAtCompositionFrame, blockSpans, blocksOfVariant, dialogueOwnerOf, scriptSeekTarget, SCRIPT_CLICK_DELAY_MS, type ScriptSeek, formatHeading, sceneNumberOf, wordRange, type BlockKind, type FilmClip, type Command, type NewAnnotation, type ProjectState } from "@/core";
 import { useLanguage } from "@/app/i18n/language";
 import { t as tk } from "@/core/i18n/keyed";
 
@@ -199,8 +199,10 @@ export const SceneScriptPanel = memo(function SceneScriptPanel({
           before.setEnd(range.startContainer, range.startOffset);
           const start = before.toString().length;
           const end = start + range.toString().length;
-          if (end > start && end <= block.text.length)
-            setNoteTarget({ blockId: block.id, variantId: null, start, end, quote: block.text.slice(start, end) });
+          // KI-226: et utvalg inni et ord utvides til hele ordet, så notatet følger ordet
+          const wr = wordRange(block.text, start, end);
+          if (wr.end > wr.start && wr.end <= block.text.length)
+            setNoteTarget({ blockId: block.id, variantId: null, start: wr.start, end: wr.end, quote: block.text.slice(wr.start, wr.end) });
         }}
         className="px-3 pb-3 font-script text-[12px] leading-[1.35] text-text-primary"
       >

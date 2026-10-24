@@ -78167,5 +78167,17 @@
   },
   "c3.error": {
     "text": "That did not work. Please try again."
+  },
+  "notes-panel.show-resolved": {
+    "text": "Show resolved notes"
+  },
+  "notes-panel.hide-resolved": {
+    "text": "Hide resolved notes"
+  },
+  "ai-cleanup.total": {
+    "text": "Total {size}"
+  },
+  "ai-cleanup.select-file": {
+    "text": "Select {name}"
   }
 }

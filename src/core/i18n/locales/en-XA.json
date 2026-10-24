@@ -78167,5 +78167,17 @@
   },
   "c3.error": {
     "text": "[!! TThháátt ddïïdd nnôôtt wwôôrrkk. PPllëëáássëë ttrryy áággááïïnn. !!]"
+  },
+  "notes-panel.show-resolved": {
+    "text": "[!! SShhôôww rrëëssôôllvvëëdd nnôôttëëss !!]"
+  },
+  "notes-panel.hide-resolved": {
+    "text": "[!! HHïïddëë rrëëssôôllvvëëdd nnôôttëëss !!]"
+  },
+  "ai-cleanup.total": {
+    "text": "[!! TTôôttááll {size} !!]"
+  },
+  "ai-cleanup.select-file": {
+    "text": "[!! SSëëllëëcctt {name} !!]"
   }
 }
