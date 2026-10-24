@@ -20,7 +20,7 @@ export const ORPHAN_REFERENCE_TABLES: readonly string[] = [
   "change_log", "film_shares", "mobile_imports", "export_records", "imported_documents", "script_versions",
   "story_sessions", "story_suggestions", "script_entity_analysis", "duration_estimates",
   // B-114 C0 (0080): mediefilene til publiseringer
-  "publication_media",
+  "publication_media", "storyboard_shares",
   // B-116 (0087): kopierte bidragsfiler under <prosjekt>/shares/
   "showcase_items", "showcase_reservations",
 ];
