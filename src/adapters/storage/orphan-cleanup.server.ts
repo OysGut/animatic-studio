@@ -23,6 +23,8 @@ export const ORPHAN_REFERENCE_TABLES: readonly string[] = [
   "publication_media", "storyboard_shares",
   // B-116 (0087): kopierte bidragsfiler under <prosjekt>/shares/
   "showcase_items", "showcase_reservations",
+  // C-4 (0112): bilder hentet fra Boords som kandidater under <prosjekt>/connectors/boords/
+  "boords_candidates",
 ];
 
 /** Tabeller der en jobb som ikke er avsluttet, sperrer hele oppryddingen. */

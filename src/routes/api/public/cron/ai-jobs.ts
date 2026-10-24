@@ -66,6 +66,13 @@ export const Route = createFileRoute("/api/public/cron/ai-jobs")({
             const { error } = await (db as unknown as { rpc: (f: string) => Promise<{ error: unknown }> }).rpc("connector_cleanup");
             if (error) console.error("connector_cleanup failed");
           }
+          // C-4 (0112): periodisk henting fra Boords (webhooks dekker bare noen få endringer) og rydding
+          if (schema.version >= 112) {
+            const { syncAllBoords } = await import("@/adapters/connectors/boords.functions");
+            await syncAllBoords(db as never);
+            const { error } = await (db as unknown as { rpc: (f: string) => Promise<{ error: unknown }> }).rpc("boords_cleanup");
+            if (error) console.error("boords_cleanup failed");
+          }
           // G-5 (0097): rydd endringsloggen høyst én gang i døgnet (retensjon N dager / N endringer)
           if (schema.version >= 97) {
             const { pruneChangeLogsIfDue } = await import("@/adapters/storage/change-log-prune.server");
