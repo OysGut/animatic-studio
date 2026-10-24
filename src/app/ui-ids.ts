@@ -194,8 +194,9 @@ export const UI_IDS: readonly UiIdEntry[] = [
   {"id":"V-177","kind":"dialog","component":"StoryboardReview","file":"src/app/storyboard/StoryboardReview.tsx","description":"Dialog i StoryboardReview","status":"aktiv"},
   {"id":"V-178","kind":"dialog","component":"StoryboardReview","file":"src/app/storyboard/StoryboardReview.tsx","description":"Dialog i StoryboardReview","status":"aktiv"},
   {"id":"V-179","kind":"side","component":"ConnectRoute","file":"src/routes/koble.tsx","description":"Side «Koble til et program – From Pen to Glass» (/koble)","route":"/koble","status":"aktiv"},
-  {"id":"V-180","kind":"side","component":"ReturnRoute","file":"src/app/handoff/SendToDialog.tsx","description":"Side «Send tilbake – From Pen to Glass» (/r/$token)","route":"/r/$token","status":"aktiv"},
-  {"id":"V-181","kind":"side","component":"SignedInReturn","file":"src/routes/r.$token.tsx","description":"Side «Send tilbake – From Pen to Glass» (/retur)","route":"/retur","status":"aktiv"},
+  {"id":"V-180","kind":"dialog","component":"SendToDialog","file":"src/app/handoff/SendToDialog.tsx","description":"Dialog «Send til …» (C-1)","status":"aktiv"},
+  {"id":"V-181","kind":"side","component":"ReturnRoute","file":"src/routes/r.$token.tsx","description":"Side «Send tilbake – From Pen to Glass» (/r/$token)","route":"/r/$token","status":"aktiv"},
+  {"id":"V-182","kind":"side","component":"SignedInReturn","file":"src/routes/retur.tsx","description":"Side «Send tilbake – From Pen to Glass» (/retur)","route":"/retur","status":"aktiv"},
 ];
 
 const BY_ID = new Map(UI_IDS.map((e) => [e.id, e]));
