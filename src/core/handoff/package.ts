@@ -51,7 +51,7 @@ export const psdForHandoff = (width: number, height: number, layers: readonly Ps
 export const pngForHandoff = (width: number, height: number, rgba: Uint8Array, handoffId: string): Uint8Array =>
   encodePng(width, height, rgba, { "ptg:handoff": handoffMarker(handoffId), Software: "From Pen to Glass" });
 export function svgForHandoff(svg: string, handoffId: string): string {
-  const meta = `<metadata><ptg:handoff xmlns:ptg="https://pentoglass.com/ns/1.0/">${handoffMarker(handoffId)}</ptg:handoff></metadata>`;
+  const meta = `<metadata><ptg:handoff xmlns:ptg="urn:ptg:handoff:1.0">${handoffMarker(handoffId)}</ptg:handoff></metadata>`;
   if (!/<svg[\s>]/.test(svg)) throw new Error("svg");
   return svg.replace(/<svg([^>]*)>/, (m) => m + meta);
 }

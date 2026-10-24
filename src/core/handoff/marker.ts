@@ -30,4 +30,4 @@ export function findMarker(bytes: Uint8Array): string | null {
   return null;
 }
 export const xmpPacket = (handoffId: string): string =>
-  `<?xpacket begin="" id="W5M0MpCehiHzreSzNTczkc9d"?><x:xmpmeta xmlns:x="adobe:ns:meta/"><rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"><rdf:Description xmlns:ptg="https://pentoglass.com/ns/1.0/" ptg:handoff="${handoffMarker(handoffId)}"/></rdf:RDF></x:xmpmeta><?xpacket end="w"?>`;
+  `<?xpacket begin="" id="W5M0MpCehiHzreSzNTczkc9d"?><x:xmpmeta xmlns:x="adobe:ns:meta/"><rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"><rdf:Description xmlns:ptg="urn:ptg:handoff:1.0" ptg:handoff="${handoffMarker(handoffId)}"/></rdf:RDF></x:xmpmeta><?xpacket end="w"?>`;

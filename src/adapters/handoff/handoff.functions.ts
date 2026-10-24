@@ -114,4 +114,4 @@ export const returnFinishSignedIn = createServerFn({ method: "POST" }).middlewar
   .inputValidator((d: { handoffId: string; transferId: string }) => { if (!d || !isUuid(d.handoffId)) throw fail(); return d; })
   .handler(async ({ data, context }) => { await noStore(); const { s, h } = await signedInHandoff(context, data.handoffId); const tr = await s.getTransfer(data.transferId); if (!tr || tr.handoffId !== h.id || tr.sender !== context.userId) throw fail("unavailable"); try { const r = await finishReturn(s, h, tr, context.userId, { linkHandoffId: null, knownHandoffIds: [h.id] }); return { versionId: r.versionId, conflict: !!r.conflictId, targetKind: r.targetKind }; } catch (e) { throw fail(asCode(e)); } });
 
-export const sha256OfHex = toHex;
+export const sha256OfHex = (b: Uint8Array): string => toHex(b);

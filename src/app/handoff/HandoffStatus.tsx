@@ -2,6 +2,8 @@
  * C-1 status surface: «In progress in …», «Returned, awaiting approval» or a conflict, for an asset,
  * panel, audio clip or scene. Shown in the library, the scene editor and the storyboard panel. Read-only.
  */
+import { useContext } from "react";
+import { QueryClientContext } from "@tanstack/react-query";
 import { surfaceStatus, type HandoffRow } from "@/core/handoff";
 import { ADAPTERS } from "@/core/connectors";
 import { t } from "@/core/i18n/keyed";
@@ -27,7 +29,11 @@ export function HandoffStatusView({ rows, target, now = Date.now() }: { rows: re
   );
 }
 
-export function HandoffStatus({ projectId, target }: { projectId: string; target: { kind: "asset" | "panel" | "clip" | "scene"; id: string } }) {
+/** Renders nothing outside a query client (isolated component tests and previews without the app shell). */
+export function HandoffStatus(props: { projectId: string; target: { kind: "asset" | "panel" | "clip" | "scene"; id: string } }) {
+  return useContext(QueryClientContext) ? <HandoffStatusLive {...props} /> : null;
+}
+function HandoffStatusLive({ projectId, target }: { projectId: string; target: { kind: "asset" | "panel" | "clip" | "scene"; id: string } }) {
   const rows = useHandoffs(projectId);
   return <HandoffStatusView rows={rows} target={target} />;
 }

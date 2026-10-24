@@ -12,7 +12,7 @@ import { returnBegin, returnBeginSignedIn, returnChunk, returnChunkSignedIn, ret
 import { t } from "@/core/i18n/keyed";
 
 const CHUNK = 4 * 1024 * 1024;
-const ACCEPT = INTAKE_EXTENSIONS.map((e) => "." + e).join(",");
+const accept = () => INTAKE_EXTENSIONS.map((e) => "." + e).join(",");
 function b64(b: Uint8Array): string { let s = ""; for (let i = 0; i < b.length; i += 32768) s += String.fromCharCode(...b.subarray(i, i + 32768)); return btoa(s); }
 function idemKey(): string { return Array.from(crypto.getRandomValues(new Uint8Array(18)), (x) => x.toString(16).padStart(2, "0")).join(""); }
 
@@ -62,7 +62,7 @@ export function ReturnUploader({ token }: { token: string | null }) {
     <div className="space-y-3" data-testid="return-uploader">
       <label className="block">
         <span className="mb-1 block text-sm font-medium">{t("c1.return.pick")}</span>
-        <input type="file" accept={ACCEPT} disabled={busy} data-testid="return-file" className="block w-full text-sm" onChange={(e) => { const f = e.target.files?.[0]; if (f) void upload(f); e.target.value = ""; }} />
+        <input type="file" accept={accept()} disabled={busy} data-testid="return-file" className="block w-full text-sm" onChange={(e) => { const f = e.target.files?.[0]; if (f) void upload(f); e.target.value = ""; }} />
       </label>
       <p className="text-xs text-muted-foreground">{t("c1.return.types", { types: INTAKE_EXTENSIONS.join(", ") })}</p>
       {busy ? <p role="status" className="text-sm">{t("c1.return.progress", { percent: progress })}</p> : null}
