@@ -13,4 +13,13 @@ describe("SB-7 output and acceptance policy", () => {
   it("proposal acceptance retains job and concrete camera frame", () => { let { s, p } = setup(); const commands = planAiPanels(s, p, JSON.stringify({ panels: [{ title: "Door", shot: "CU", angle: "low", movement: "push in", focalMm: 85, tilt: 5, frame: { x: .25, y: .25, width: .5, height: .5 } }] }), "job-receipt"); const add = commands[0]; if (!add || add.type !== "AddStoryboardPanel") throw Error("plan"); for (const c of commands) s = mustApply(s, c); const created = s.compositions[add.panelId]; if (!created) throw Error("created"); expect(panelDetails(created).fields["ai_job"]).toBe("job-receipt"); expect(layersOf(s, created.id)[0]?.cameraMark?.frame.width).toBe(p.width / 2); expect(layersOf(s, created.id)[0]?.cameraMark?.tilt).toBe(5); });
   it("proposal outside panel bounds is rejected", () => { const { s, p } = setup(); expect(() => planAiPanels(s, p, JSON.stringify({ panels: [{ title: "bad", shot: "MS", angle: "eye", movement: "", focalMm: 35, tilt: 0, frame: { x: .8, y: 0, width: .5, height: 1 } }] }), "job")).toThrow(); });
   it("coverage contains scene text even without panel anchors", () => { const { s, p } = setup(); expect(sceneCoverageText(s, p)).toContain("dialogue: Replikk 0"); });
+  it("resource group transforms survive but hidden-group camera and group frames do not enter raster", () => {
+    let { s, p } = setup(); const assetId=tid<"asset">(),variantId=tid<"asset_variant">(),groupId=tid<"composition_layer">(),cameraGroupId=tid<"composition_layer">();
+    s=mustApply(s,{type:"CreateAssets",assets:[{assetId,fields:{kind:"other",name:"resource",names:[],description:"",category:"",tags:[]}}]});
+    s=mustApply(s,{type:"CreateAssetVariant",assetId,variantId,fields:{name:"base",style:"other",appearance:""}});
+    const base=defaultLayerFields(s,p,{fill:p.background});
+    s=mustApply(s,{type:"AddLayers",layers:[{layerId:groupId,compositionId:p.id,fields:{...base,kind:"group",fill:null,transform:{...base.transform,x:120,y:80}}},{layerId:cameraGroupId,compositionId:p.id,fields:{...base,kind:"group",fill:null,visible:false}}]});
+    s=mustApply(s,{type:"AddLayers",layers:[{layerId:tid(),compositionId:p.id,fields:{...defaultLayerFields(s,p,{assetId,assetVariantId:variantId}),groupId,transform:{...base.transform,x:10,y:20}}},{layerId:tid(),compositionId:p.id,fields:{...base,kind:"camera_mark",fill:null,groupId:cameraGroupId,cameraMark:{frame:{x:0,y:0,width:p.width/2,height:p.height/2},zoom:2,pan:{x:0,y:0},tilt:0}}}]});
+    const frame=panelStructureFrame(s,p,"composition");expect(frame.items).toHaveLength(1);expect(frame.items[0]?.kind).not.toBe("group");expect(frame.items[0]?.matrix[4]).toBe(130);expect(frame.items[0]?.matrix[5]).toBe(100);
+  });
 });
