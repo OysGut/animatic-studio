@@ -8890,7 +8890,7 @@ try {
     assert((await sql`select sketch from public.composition_layers where id=${layer}`)[0]?.['sketch']?.strokes?.length===0,'undo failed');
     await expectError(sbApply(g7p,{updates:{composition_layers:[{id:layer,expected_revision:2,revision:3,sketch:{...sketch,strokes:[{...sketch.strokes[0],points:[[0,0,1001,0,0,0]]}]}}]}}),'22023');
     await expectError(sbApply(g7p,{updates:{composition_layers:[{id:layer,expected_revision:2,revision:3,sketch:{...sketch,extra:'x'.repeat(524289)}}]}}),'23514');
-    const animation=newId();await sbApply(g7p,{inserts:{compositions:[{id:animation,project_id:g7p,variant_id:sbSetup.variant,kind:'scene',active:false,revision:1}]}});
+    const animation=String((await sql`select id from public.compositions where project_id=${g7p} and variant_id=${sbSetup.variant} and kind='scene' limit 1`)[0]?.['id']);
     await expectError(sbApply(g7p,{inserts:{composition_layers:[{id:newId(),project_id:g7p,composition_id:animation,kind:'sketch',width:1920,height:1080,transform:{x:960,y:540,scaleX:1,scaleY:1,rotation:0,opacity:1},order_key:'a1',sketch,revision:1}]}}),'22023');
   });
   await test("0106 SB-8: capability expiry, revoked link, wrong panel and browser denial",async()=>{

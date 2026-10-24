@@ -21,7 +21,7 @@ export function PanelDrawing({state,panel,allowed,cmds,panels}:{state:ProjectSta
       const blob=await new Promise<Blob|null>(resolve=>c.toBlob(resolve,"image/png"));if(!blob)return;const assetId=newId<"asset">(),variantId=newId<"asset_variant">(),group=newId();
       const commands:import("@/core").Command[]=[{type:"CreateAssets",assets:[{assetId,fields:{kind:"other",name:t("sb7.sketch"),names:[],description:"",category:"",tags:[]}}]},{type:"CreateAssetVariant",assetId,variantId,fields:{name:t("sb7.sketch"),style:"other",appearance:""}}];
       for(const command of commands){const r=await cmds.runAndWait(command,t("sb7.sketch"),group);if(r.error)throw Error(r.error);}
-      const up=await uploadAssetImage(fresh.project.id,assetId,new File([blob],"sketch.png",{type:"image/png"}));const r=await cmds.runAndWait({type:"AddAssetVersion",versionId:up.versionId,variantId,media:up.media,note:JSON.stringify({panelId:panel.id,layerId:layer.id,layerRevision:layer.revision,kind:"sketch"})},t("sb7.sketch"),group);if(r.error)throw Error(r.error);
+      const up=await uploadAssetImage(fresh.project.id,assetId,new File([blob],"sketch.png",{type:"image/png"}));const r=await cmds.runAndWait({type:"AddAssetVersion",versionId:up.versionId as import("@/core").AssetVersionId,variantId,media:up.media,note:JSON.stringify({panelId:panel.id,layerId:layer.id,layerRevision:layer.revision,kind:"sketch"})},t("sb7.sketch"),group);if(r.error)throw Error(r.error);
     }catch(e){setError(e instanceof Error?e.message:t("sb8.session-error"));}
   };
   return <div className="flex min-h-0 flex-1 flex-col" data-testid="sb8-panel-drawing">
