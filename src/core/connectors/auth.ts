@@ -64,13 +64,26 @@ export function parseScopes(raw: string): ConnectorScope[] | null {
   return [...new Set(list)] as ConnectorScope[];
 }
 
-/** Redirect-URI: https, eller loopback http (RFC 8252) for skrivebordsprogrammer. Ingen fragment. */
-export function redirectAllowed(uri: string): boolean {
-  let u: URL;
-  try { u = new URL(uri); } catch { return false; }
-  if (u.hash || u.username || u.password) return false;
-  if (u.protocol === "https:") return true;
-  return u.protocol === "http:" && (u.hostname === "127.0.0.1" || u.hostname === "[::1]" || u.hostname === "localhost");
+/**
+ * Registered clients (mirrors private.connector_clients in 0109). Unknown client IDs are refused. Redirects:
+ * loopback http with a port (RFC 8252: 127.0.0.1 or [::1]) or the program's own scheme (ptg-<name>://).
+ * No free https host without a registered pattern.
+ */
+const LOOPBACK = /^http:\/\/(127\.0\.0\.1|\[::1\]):[0-9]{1,5}(\/[^#]*)?$/;
+const scheme = (name: string) => new RegExp(`^ptg-${name}:\\/\\/[^#]*$`);
+export const CONNECTOR_CLIENTS: Readonly<Record<string, readonly RegExp[]>> = {
+  "ptg.photoshop": [LOOPBACK, scheme("photoshop")],
+  "ptg.premiere": [LOOPBACK, scheme("premiere")],
+  "ptg.audition": [LOOPBACK, scheme("audition")],
+  "ptg.illustrator": [LOOPBACK, scheme("illustrator")],
+  "ptg.krita": [LOOPBACK, scheme("krita")],
+  "ptg.blender": [LOOPBACK, scheme("blender")],
+  "ptg.generic-loopback": [LOOPBACK],
+};
+export const clientKnown = (clientId: string): boolean => Object.prototype.hasOwnProperty.call(CONNECTOR_CLIENTS, clientId);
+export function redirectAllowed(uri: string, clientId: string): boolean {
+  if (typeof uri !== "string" || uri.length > 500 || !clientKnown(clientId)) return false;
+  return CONNECTOR_CLIENTS[clientId]!.some((re) => re.test(uri));
 }
 export const CLIENT_ID_RE = /^[a-z0-9][a-z0-9.-]{2,63}$/;
 
