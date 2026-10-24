@@ -5302,13 +5302,12 @@ try {
       (await tx`select public.activate_film_share(${r.id}, 1000) as t`)[0]!["t"] as string,
     );
     assert(/^[0-9a-f]{64}$/.test(token), "nøkkelen");
-    const row = (await sql`select token, token_hash, token_digest, expires_at from public.film_shares where id = ${r.id}`)[0]!;
-    // 0070: bare pepret hash lagres, ingen klartekst
-    assert(row["token"] === null && row["token_digest"] === row["token_hash"], "bare hash lagres");
+    const row = (await sql`select token_hash, token_digest, expires_at from public.film_shares where id = ${r.id}`)[0]!;
+    // 0070/0116: bare pepret hash lagres; klartekstkolonnen finnes ikke lenger
+    assert(row["token_digest"] === row["token_hash"], "bare hash lagres");
     assert(row["token_hash"] !== (await sql`select encode(sha256(convert_to(${token}, 'UTF8')), 'hex') as h`)[0]!["h"], "hashen er pepret");
     assert(row["expires_at"] !== null, "30 dager gir utløp");
-    // Klienten kan ikke lese nøkkelen eller hashen direkte
-    await expectError(as("authenticated", ALICE, (tx) => tx`select token from public.film_shares where id = ${r.id}`), "42501");
+    // Klienten kan ikke lese hashen direkte
     await expectError(as("authenticated", ALICE, (tx) => tx`select token_hash from public.film_shares where id = ${r.id}`), "42501");
     const t2 = await as("authenticated", ALICE, async (tx) => (await tx`select public.film_share_token(${r.id}) as t`)[0]!["t"]);
     assert(t2 === token, "eieren får nøkkelen for QR");
@@ -5316,8 +5315,8 @@ try {
     await expectError(as("anon", null, (tx) => tx`select id from public.film_shares`), "42501");
     // Tilbakekalling virker med en gang
     await as("authenticated", ALICE, (tx) => tx`select public.revoke_film_share(${r.id})`);
-    const after = (await sql`select status, token from public.film_shares where id = ${r.id}`)[0]!;
-    assert(after["status"] === "revoked" && after["token"] === null, "tilbakekalt");
+    const after = (await sql`select status from public.film_shares where id = ${r.id}`)[0]!;
+    assert(after["status"] === "revoked", "tilbakekalt");
     const t3 = await as("authenticated", ALICE, async (tx) => (await tx`select public.film_share_token(${r.id}) as t`)[0]!["t"]);
     assert(t3 === null, "ingen nøkkel etter tilbakekalling");
     // delete_project fjerner delingene og lister filen
