@@ -96,15 +96,15 @@
 - [x] Tester + rapport docs/development/SB3_REPORT.md; full Vitest 2894/0/10, DB 227/0, i18n og forhåndsvisningskontroll grønne, nettleser nb/en 16/0 med mobil. 0104 bare lokalt; Claude må kjøre den før Cloud-lagring av nye felt kan verifiseres. 0103 og eldre er låst; ingen publisering.
 
 ## SB-4 tid, avspilling, storyboardfilm og sømløs veksling (23.10.2026) – kjøres etter SB-3
-- [ ] Restoppdrag 24.10: full posisjon, kort-scrubbing, galleriavspilling, timingforslag og midlertidig opptak/QR/opplasting; full Vitest/DB og rapport før ferdigmelding.
-- [ ] Lyd fra scenen som én kilde (filmAudio/audioBank, ingen kopi, over scenegrenser, av/på + volum husket, lyd er tidsmaster)
+- [ ] Restoppdrag 24.10: funksjoner implementert, men full femflate-/mobil-/eksport-E2E og separat sekvens-/produksjonsarv gjenstår; se SB4_REPORT.md.
+- [x] Lyd fra scenen som én kilde (filmAudio/audioBank, ingen kopi, over scenegrenser, av/på + volum husket, lyd er tidsmaster)
 - [ ] Timing med arv (panel/scene/sekvens/produksjon), forslag fra manus/dialog/lyd, aldri trimming av ferdig film
-- [ ] Scrubbing over kort (RTL-speilet tid, mus/berøring/tastatur, ingen autolyd)
-- [ ] Avspilling i galleriet (kontroller, 40 % for inaktive, fokus følger, hopper over deaktiverte)
-- [ ] Storyboardfilm i fullskjerm med overganger
-- [ ] Kamerabevegelse fra kameramerke (start/slutt-ramme)
-- [ ] Midlertidig lyd per panel (opptak/QR/opplasting), aldri blandet inn uten bekreftelse
-- [ ] Felles posisjon mellom Manus/Storyboard/Scene/Montering/Manusutforsker, hurtigtast, tilbake-knapp, replikk↔panel
-- [ ] Tester + rapport docs/development/SB4_REPORT.md
-- [ ] Presisering (Øystein): eksport via eksisterende ExportAnimaticDialog/«Til produksjonen», valg «Bildekilde: animasjon / film / storyboardpaneler», én felles bildekilde-adapter; SB-4 = kildevalg + filmeksport (MP4/ProRes/PNG); tester: rekkefølge/timing/lyd, uendret med animasjon som kilde
+- [x] Scrubbing over kort (RTL-speilet tid, mus/berøring/tastatur, ingen autolyd)
+- [x] Avspilling i galleriet (kontroller, 40 % for inaktive, fokus følger, hopper over deaktiverte)
+- [x] Storyboardfilm i fullskjerm med overganger
+- [x] Kamerabevegelse fra kameramerke (start/slutt-ramme)
+- [x] Midlertidig lyd per panel (opptak/QR/opplasting), aldri blandet inn uten bekreftelse
+- [ ] Felles posisjon og hurtigtast bygget; storyboard→scene nb/en og kjerne verifisert. Full femflate-/tilbake-/replikk-E2E gjenstår.
+- [x] Tester + rapport docs/development/SB4_REPORT.md: DB 228/0, nettleser nb/en 18/0, alle språk grønne; endelig full Vitest føres i rapporten. 0105 bare lokalt.
+- [x] Presisering (Øystein): eksport via eksisterende ExportAnimaticDialog/«Til produksjonen», valg «Bildekilde: animasjon / film / storyboardpaneler», én felles bildekilde-adapter; SB-4 = kildevalg + filmeksport (MP4/ProRes/PNG); tester: rekkefølge/timing/lyd, uendret med animasjon som kilde
 - [ ] SB-6: utskrift/pitch (3/6/9 per side) og CSV/XLSX som nye kort i samme eksportvindu
