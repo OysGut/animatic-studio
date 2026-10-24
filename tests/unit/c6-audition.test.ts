@@ -56,7 +56,7 @@ function setup() {
   s = mustApply(s, { type: "AddAssetVersion", versionId: v2, variantId, media: media(v2, bytes2), note: "" });
   const mp3Bytes = Uint8Array.from([0x49, 0x44, 0x33, 3, 0, 0, 0, 0, 0, 0]);
   s = mustApply(s, { type: "AddAssetVersion", versionId: mp3, variantId, media: media(mp3, mp3Bytes, "x.mp3", "audio/mpeg"), note: "" });
-  const base = { occurrenceId: occ.id, assetId, assetVariantId: null, blockId: null, sourceInMs: 0, gainDb: 0, fadeInMs: 0, fadeOutMs: 0, muted: false, continues: false, volumeKeys: [] };
+  const base = { occurrenceId: occ.id, assetId, assetVariantId: variantId, blockId: null, sourceInMs: 0, gainDb: 0, fadeInMs: 0, fadeOutMs: 0, muted: false, continues: false, volumeKeys: [] };
   const dlg = tid<"audio_clip">(), mus = tid<"audio_clip">(), sfx = tid<"audio_clip">();
   s = mustApply(s, { type: "AddAudioClips", clips: [
     { clipId: dlg, fields: { ...base, kind: "dialogue", name: "Hei", versionId: v2, offsetMs: 1200, lengthMs: 600 } },
