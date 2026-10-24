@@ -4,11 +4,12 @@ import { harness } from './mts-harness.mjs';
 import {readFileSync} from 'node:fs';
 const fx=JSON.parse(readFileSync(process.argv[3],'utf8'));
 const h=harness('/tmp/browser/sb3');
+h.hooks.navigate=async(page,path)=>{await page.getByTestId("ui-id").first().waitFor({timeout:30000});await page.evaluate(path=>{history.pushState({},"",path);window.dispatchEvent(new PopStateEvent("popstate"));},path);};
 h.hooks.context=async context=>{await context.addCookies([{name:'ptg-ui-language',value:'en',url:h.base}]);};
 h.hooks.rest=(table)=>table==='schema_version'?[{version:VISUAL_SCHEMA_VERSION}]:table==='rpc/project_snapshot'?{project:fx.project,log_seq:0,history:'current',tables:[fx.rows]}:undefined;
 for(const lang of ['nb','en'])await h.scenario(`sb3-${lang}`,fx.occurrenceId,lang,async page=>{
  await page.context().addCookies([{name:"ptg-ui-language",value:lang,url:h.base}]);
- await page.goto(`${h.base}${h.P}/scene?scene=${fx.occurrenceId}&panel=${fx.panelId}`,{waitUntil:"networkidle"});
+ await h.hooks.navigate(page,`${h.P}/scene?scene=${fx.occurrenceId}&panel=${fx.panelId}`);
  await page.getByTestId('sb3-editor').waitFor({timeout:15000});
  await page.getByTestId('sb3-tool-note').click();
  h.check(await h.eventually(()=>h.state.commands.some(c=>c.type==='AddLayers')),`${lang}: lapp lagres med vanlig lagkommando`);
@@ -17,7 +18,7 @@ for(const lang of ['nb','en'])await h.scenario(`sb3-${lang}`,fx.occurrenceId,lan
  await page.getByTestId('sb3-tool-arrow').click();
  h.check(!h.state.commands.some(c=>c.type==='UpdateSceneDraft'),`${lang}: pil blir ikke automatisk bevegelsesbane`);
  await page.screenshot({path:`${h.out}/panel-${lang}.png`});
- await page.goto(`${h.base}${h.P}/storyboard`,{waitUntil:"networkidle"});await page.getByTestId('sb-grid').waitFor();
+ await h.hooks.navigate(page,`${h.P}/storyboard`);await page.getByTestId('sb-grid').waitFor();
  const rows=page.getByTestId('sb-scene');await rows.first().dragTo(rows.nth(1));
  h.check(await h.eventually(()=>h.state.commands.some(c=>c.type==='MoveOccurrence')),`${lang}: scenedrag bruker MoveOccurrence`);
  await page.screenshot({path:`${h.out}/gallery-${lang}.png`});
