@@ -1,7 +1,7 @@
 /** SB-7 output policy and instruction-free render plan. Browser rasterization stays in adapters. */
 import type { Composition, ProjectState } from "../model";
 import type { ProviderModel } from "../generation/providers";
-import { layersOf, renderFrame, multiply, modelMatrix, invert, type Frame } from "../composition/render";
+import { layersOf, renderFrame, multiply, modelMatrix, invert, layerActiveAt, groupMatrixAt, transformAt, type Frame } from "../composition/render";
 import { panelAspect } from "./ai";
 
 export function panelOutputPlan(panel: Composition, mask: string, model: ProviderModel) {
@@ -24,11 +24,17 @@ export function panelOutputPlan(panel: Composition, mask: string, model: Provide
 /** Shared renderFrame handles groups; instruction layers never enter the structure raster. */
 export function panelStructureFrame(s: ProjectState, panel: Composition, basis: "composition" | "sketch", sketchLayerId?: string | null): Frame {
   const selected = new Set(layersOf(s, panel.id).filter(l => l.visible && (basis === "sketch" ? l.id === sketchLayerId && !!l.sketch : !!l.assetId && !l.note && !l.arrow && !l.text && !l.shape && !l.cameraMark && !l.sketch)).map(l => l.id));
-  const frame = renderFrame(s, panel.id, 0, { onlyLayers: selected });
-  const marker = layersOf(s, panel.id).find(l => l.visible && l.cameraMark);
+  const rendered = renderFrame(s, panel.id, 0, { onlyLayers: selected });
+  const frame = { ...rendered, items: rendered.items.filter(it => selected.has(it.layerId)) };
+  const marker = layersOf(s, panel.id).find(l => {
+    const group = l.groupId ? s.layers[l.groupId] : null;
+    return l.visible && l.cameraMark && layerActiveAt(l, 0) && (!group || (group.visible && layerActiveAt(group, 0)));
+  });
   if (!marker?.cameraMark) return frame;
   const f = marker.cameraMark.frame;
-  const inverse = invert(modelMatrix(marker.transform));
+  const group = marker.groupId ? s.layers[marker.groupId] : null;
+  const matrix = modelMatrix(transformAt(marker, 0));
+  const inverse = invert(group ? multiply(groupMatrixAt(group, 0), matrix) : matrix);
   if (!inverse || f.width <= 0 || f.height <= 0) return frame;
   const k = Math.min(panel.width / f.width, panel.height / f.height);
   const view = multiply([k, 0, 0, k, -(f.x + f.width / 2) * k, -(f.y + f.height / 2) * k], inverse);
