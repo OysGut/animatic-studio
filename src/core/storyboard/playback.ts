@@ -305,7 +305,7 @@ export function storyboardTempAudioItems(
   for (const shot of shots) {
     const temp = shot.panel.storyboard?.tempAudio;
     if (!temp) continue;
-    const version = s.versions[temp.versionId as never];
+    const version = s.assetVersions[temp.versionId as never];
     if (!version || version.removed) continue;
     const length = temp.durationMs / 1000;
     out.push({
