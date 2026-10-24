@@ -98,6 +98,7 @@ import { StoryboardPanelMark } from "@/app/storyboard/StoryboardPanelMark";
 import { PanelEditor } from "@/app/storyboard/PanelEditor";
 import { RhythmPanel } from "./animation/RhythmPanel";
 import { runGroup } from "@/app/storylab/canvas/run-group";
+import { StoryboardReferencePanel, StoryboardStatusBadge } from "./StoryboardReferencePanel";
 import { t as tk } from "@/core/i18n/keyed";
 
 export function SceneEditorWorkspace({
@@ -157,6 +158,7 @@ export function SceneEditorWorkspace({
       editable={editable}
       roleKnown={members.isSuccess}
       cmds={cmds}
+      initialPanelId={initialPanelId}
       initialOccurrenceId={initialOccurrenceId}
       initialLineId={initialLineId}
       initialFrame={initialFrame}
@@ -174,6 +176,7 @@ function Editor({
   editable: roleEditable,
   roleKnown,
   cmds,
+  initialPanelId = null,
   initialOccurrenceId,
   initialLineId = null,
   initialFrame = null,
@@ -185,6 +188,7 @@ function Editor({
   initialLayerId?: string | null;
   initialLineId?: string | null;
   initialFrame?: number | null;
+  initialPanelId?: string | null;
   userId: string;
   state: ProjectState;
   editable: boolean;
