@@ -9,10 +9,11 @@ import { describe, expect, it } from "vitest";
 import { orderedOccurrences, type Command, type ProjectState } from "@/core";
 import {
   ADAPTERS, PREMIERE_ADAPTER, buildPremiereSequence, clientKnown, cutFromClips, makeToken, panelIdFromPath, parseRef,
-  planPremiereProposal, premiereEditCommands, premiereOtio, premiereReturnManifest, premiereXml, readOtioClips,
+  planPremiereProposal, premiereEditCommands, stableSubsequence, premiereOtio, premiereReturnManifest, premiereXml, readOtioClips,
   readPremiereReturn, readXmlClips, redirectAllowed, tokenHash, type HostClip, type PremiereSequence,
 } from "@/core/connectors";
 import { storyboardPanelsOf } from "@/core/storyboard";
+import { keysEvenly } from "@/core/order-key";
 import { panelDetails } from "@/core/storyboard/editing";
 import { handleApiV1 } from "@/adapters/connectors/api-v1";
 import { PtgConnector } from "../../packages/ptg-connector-sdk/src/index";
@@ -38,9 +39,10 @@ function setup() {
   const occs = orderedOccurrences(s, sp.mainId).slice(0, 2);
   const ids: string[][] = [[], []];
   occs.forEach((o, oi) => {
+    const keys = keysEvenly(oi === 0 ? 3 : 2);
     for (let k = 0; k < (oi === 0 ? 3 : 2); k++) {
       const panelId = tid(); ids[oi]!.push(panelId);
-      s = mustApply(s, { type: "AddStoryboardPanel", panelId, occurrenceId: o.id, variantId: o.variantId, orderKey: `a${k}` });
+      s = mustApply(s, { type: "AddStoryboardPanel", panelId, occurrenceId: o.id, variantId: o.variantId, orderKey: keys[k]! });
       s = mustApply(s, { type: "UpdateStoryboardPanel", panelId, durationFrames: 20 + 5 * k });
       const d = panelDetails(s.compositions[panelId as never]!);
       s = mustApply(s, { type: "SetStoryboardDetails", panelId, details: { ...d, number: `${oi + 1}${"ABC"[k]}`, ...(oi === 1 && k === 0 ? { transition: { kind: "dissolve", frames: 10, overlap: false } } : {}) } } as unknown as Command);
@@ -146,7 +148,10 @@ describe("C-3 forslag: per panel, aldri automatisk, aldri scenebytte", () => {
     const { value } = ret(r.s, r.productionId, edit(seq, [b, a, c, d, e], { [c!]: 42 }));
     const plan = planPremiereProposal(r.s, r.productionId, value);
     const byId = Object.fromEntries(plan.edits.map(x => [x.panelId, x]));
-    expect(Object.keys(byId).sort()).toEqual([a, b, c].sort());
+    // Færrest mulige flytt: bare b får ny plass (først); a og c står stille, c får ny varighet.
+    expect(Object.keys(byId).sort()).toEqual([b, c].sort());
+    expect(byId[b!]!.orderChanged).toBe(true); expect(byId[b!]!.afterPanelId).toBeNull();
+    expect(byId[c!]!.orderChanged).toBe(false);
     expect(byId[c!]!.durationChanged).toBe(true); expect(byId[c!]!.durationFrames).toBe(42);
     expect(plan.conflicts).toEqual([]); expect(plan.missing).toBe(0);
     // Ingenting er endret før brukeren godtar.
@@ -184,6 +189,16 @@ describe("C-3 forslag: per panel, aldri automatisk, aldri scenebytte", () => {
     expect(plan.conflicts).toEqual([a]);
     const old = planPremiereProposal(r.s, r.productionId, value).edits.find(x => x.panelId === a)!;
     expect(premiereEditCommands(s2, old)).toBeNull();
+  });
+  it("lengste stående rekke: bare ett flytt når ett panel er dratt til slutten", () => {
+    expect(stableSubsequence([1, 2, 3, 0])).toEqual([0, 1, 2]);
+    expect(stableSubsequence([])).toEqual([]);
+    const r = setup();
+    const [a, b, c] = r.ids[0]!, [d, e] = r.ids[1]!;
+    const plan = planPremiereProposal(r.s, r.productionId, ret(r.s, r.productionId, edit(seqOf(r.s, r.productionId), [b!, c!, a!, d!, e!])).value);
+    expect(plan.edits.map(x => x.panelId)).toEqual([a]);
+    let s = r.s; for (const cmd of premiereEditCommands(s, plan.edits[0]!)!) s = mustApply(s, cmd);
+    expect(order(s, r.occs[0]!.id)).toEqual([b, c, a]);
   });
   it("paneler fjernet i Premiere slettes aldri; ukjente ID-er ignoreres", () => {
     const r = setup();
@@ -276,12 +291,12 @@ describe("C-3 panelet mot falsk Premiere og falskt API", () => {
     h.fake.setClips(edit(h.seq, [b!, a!, c!, d!, e!], { [e!]: 60 }));
     await h.plugin.sendBack();
     expect(h.plugin.state.message?.kind).toBe("info");
-    expect(h.mem.premiereProposals.map(p => p.edit.panelId).sort()).toEqual([a, b, e].sort());
+    expect(h.mem.premiereProposals.map(p => p.edit.panelId).sort()).toEqual([b, e].sort());
     expect(h.mem.premiereProposals.every(p => p.status === "open")).toBe(true);
     // Ingenting tatt i bruk på serveren.
     expect(order(h.mem.state, h.occs[0]!.id)).toEqual([a, b, c]);
     await h.plugin.sendBack();
-    expect(h.mem.premiereProposals).toHaveLength(3);
+    expect(h.mem.premiereProposals).toHaveLength(2);
   });
   it("pakke fra et annet prosjekt avvises, og sekvens uten markører gir beskjed", async () => {
     const h = harness();
@@ -303,6 +318,7 @@ describe("C-3 panelet mot falsk Premiere og falskt API", () => {
     expect(ticksToFrames({ ticks: String(TICKS_PER_SECOND * 2) }, { num: 25, den: 1 })).toBe(50);
     expect(ticksToFrames({ ticks: TICKS_PER_SECOND }, { num: 30000, den: 1001 })).toBe(30);
     const h = harness();
+    await signIn(h);
     await h.plugin.importPackage();
     const seq = await readActiveSequence(h.fake.host, { num: 25, den: 1 });
     expect(cutFromClips(seq!.clips).items.map(i => i.panelId)).toEqual(h.seq.panels.map(p => p.panelId));

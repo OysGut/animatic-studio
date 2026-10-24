@@ -94,6 +94,13 @@ export function planPremiereProposal(s: ProjectState, productionId: string, r: P
   // Rekkefølgen per scene slik Premiere har den (bare paneler som hører til scenen).
   const perScene = new Map<string, string[]>();
   for (const it of known) { const occ = byId.get(it.panelId)!.occurrenceId; (perScene.get(occ) ?? perScene.set(occ, []).get(occ)!).push(it.panelId); }
+  // Færrest mulige flytt: panelene i den lengste rekken som allerede står i riktig innbyrdes rekkefølge
+  // (lengste voksende delfølge av nåværende plass) står stille; bare de andre får forslag om ny plass.
+  const stay = new Set<string>();
+  for (const [occ, list] of perScene) {
+    const cur = storyboardPanelsOf(s, occ as never).map(p => p.id as string);
+    for (const id of stableSubsequence(list.map(id => cur.indexOf(id))).map(i => list[i]!)) stay.add(id);
+  }
   known.forEach((it, idx) => {
     const sh = byId.get(it.panelId)!;
     const occ = sh.occurrenceId as string;
@@ -103,11 +110,8 @@ export function planPremiereProposal(s: ProjectState, productionId: string, r: P
     const moved = prev !== null && next !== null && prev === next && prev !== occ ? String(prev) : null;
     const list = perScene.get(occ)!;
     const pos = list.indexOf(it.panelId);
-    const current = storyboardPanelsOf(s, sh.occurrenceId).filter(p => p.active !== false && !p.hidden).map(p => p.id as string);
     const afterPanelId = pos > 0 ? list[pos - 1]! : null;
-    const curPos = current.indexOf(it.panelId);
-    const curAfter = curPos > 0 ? current[curPos - 1]! : null;
-    const orderChanged = moved === null && afterPanelId !== curAfter;
+    const orderChanged = moved === null && !stay.has(it.panelId);
     const durationChanged = it.durationFrames !== sh.durationFrames;
     if (it.baseRevision !== null && it.baseRevision !== sh.panel.revision) conflicts.push(it.panelId);
     if (!orderChanged && !durationChanged && moved === null) return;
@@ -115,6 +119,20 @@ export function planPremiereProposal(s: ProjectState, productionId: string, r: P
       currentDuration: sh.durationFrames, durationFrames: it.durationFrames, afterPanelId, orderChanged, durationChanged });
   });
   return { edits, conflicts, missing: shots.filter(sh => !r.items.some(i => i.panelId === sh.panel.id)).length, unknown: r.items.length - known.length };
+}
+
+/** Indeksene (i `seq`) til en lengste strengt voksende delfølge. Deterministisk. */
+export function stableSubsequence(seq: readonly number[]): number[] {
+  const tails: number[] = [], prev: number[] = new Array(seq.length).fill(-1);
+  seq.forEach((v, i) => {
+    let lo = 0, hi = tails.length;
+    while (lo < hi) { const mid = (lo + hi) >> 1; if (seq[tails[mid]!]! < v) lo = mid + 1; else hi = mid; }
+    if (lo > 0) prev[i] = tails[lo - 1]!;
+    tails[lo] = i;
+  });
+  const out: number[] = [];
+  for (let i = tails.at(-1) ?? -1; i >= 0; i = prev[i]!) out.unshift(i);
+  return out;
 }
 
 /**
