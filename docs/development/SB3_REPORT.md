@@ -8,7 +8,7 @@ Dato: 24.10.2026. Ikke publisert. 0103 er låst. `0104_sb3_panel_editing.sql` er
 - Lapp, pil/linje, figur, tekst og kameramerke gjennom eksisterende lagkommandoer og felles compositor. Lapper har type, forankring og behandlet-flagg; notatvisning er et visningsvalg. Kommentarer bruker eksisterende annotasjoner og reversibel avklaring.
 - Pil blir bevegelsesbane bare via eksplisitt valg av scenelag og bekreftelse, som et vanlig `UpdateSceneDraft`. Ingen automatisk bane eller endring av ferdig scene.
 - Godkjent panel er skrivebeskyttet. «Rediger storyboard» grupperer snapshot før ny status; tidligere revisjoner kan vises uten å skrive over dem.
-- Panel- og scenemerker låses på panelmetadata. Nye paneler etter låste paneler får bokstavtillegg (12A, 12B), uten å endre eksisterende nummer. «Nummerer på nytt» viser plan og går via en angregruppe. Permanente ID-er endres ikke.
+- Panel- og scenemerker låses på panelmetadata. Nye paneler etter låste paneler og nye scener mellom låste scenemerker får bokstavtillegg (12A, 12B), uten å endre eksisterende nummer. «Nummerer på nytt» viser plan og går via en angregruppe. Permanente ID-er endres ikke.
 - Standard-/egendefinerte prosjektfelt, replikker koblet med blokk-ID, utsnitt, vinkel, fokallengde og bevegelsesbeskrivelse. Paneldata følger lasting, endringslogg og sikkerhetskopi; gjenoppretting remapper replikk-ID-er.
 - Eksisterende skuddliste får storyboardfelter i CSV/JSON, knyttet til permanent forekomst-ID, og `storyboard.json` i samme ZIP. Uten storyboardpaneler er eksisterende eksportdata uendret. Ingen ny eksportflate eller SB-4-filmeksport.
 - Formatmasker, sikre soner og tredjedeler er visningslag; kameramerker lagres som panelinnhold. Verktøyhurtigtaster, neste/forrige panel, nytt panel, duplisering og hjelpevindu.
@@ -27,12 +27,12 @@ Dato: 24.10.2026. Ikke publisert. 0103 er låst. `0104_sb3_panel_editing.sql` er
 - SB-2 galleri: **13 bestått**, inkludert scenedrag/angre og 2 000 paneler.
 - Eksisterende PTG1: **14 bestått**, inkludert storyboardtilleggsfelt og uendret eksport uten paneler.
 - Vindus-ID: **11 bestått** (enhet + arkitektur).
-- Full Vitest kjøres etter siste endringer; endelig resultat føres nedenfor.
+- Endelig full Vitest: **2894 bestått, 0 feilet, 10 hoppet over** (363 filer bestått, 2 hoppet over), 191,80 sekunder. Ingen forventninger eller ytelsesgrenser svekket. En mellomkjøring overlappet med inventargenerering og en annen fullkjøring; den endelige kjøringen ble gjort alene med ferdig språkoversikt.
 - Forhåndsvisningens typekontroll: grønn. i18n: grønn, 0 tekster uten engelsk. Alle registrerte språk har SB-3-nøkler; fr/es/ru/ja/pt-BR/de/it/ko er maskinoversatt og merket for gjennomlesing.
 
 ## Nettleser og begrensninger
 
-Nettleserprøven nb/en er grønn: **10 bestått, 0 feilet**, med skjermbilder kontrollert. Oppsettet venter på førstevisning og bruker intern navigasjon etter mocket innlogging. Tidligere feil kom av navigasjon før startsidens førstevisning var ferdig; ingen feil filtreres bort. Vindusmerket vises etter førstevisningen, så serverens startsidemerke ikke kolliderer med klientens scene-ID. Cloud-endepunktet er ikke prøvd med 0104: Claude må kontrollere og kjøre migrasjonen før lagring av nye felt kan virke der. Ingen betalte kall, ingen private manus og ingen SB-4-funksjoner.
+Nettleserprøven nb/en er grønn: **16 bestått, 0 feilet**, med skjermbilder kontrollert på skrivebord og mobil. Verktøy, nummerering og scenedrag prøves på begge språk. Oppsettet venter på førstevisning og bruker intern navigasjon etter mocket innlogging. Tidligere feil kom av navigasjon før startsidens førstevisning var ferdig; ingen feil filtreres bort. Vindusmerket vises etter førstevisningen, så serverens startsidemerke ikke kolliderer med klientens scene-ID. Cloud-endepunktet er ikke prøvd med 0104: Claude må kontrollere og kjøre migrasjonen før lagring av nye felt kan virke der. Ingen betalte kall, ingen private manus og ingen SB-4-funksjoner.
 
 
 ## Endrede filer i SB-3-leveransen

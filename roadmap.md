@@ -93,7 +93,7 @@
 - [x] Egendefinerte felt per prosjekt; dialog koblet til replikker
 - [x] Kamera/utsnitt per panel, formatmasker, sikre soner, tredjedeler
 - [x] Hurtigtaster i «?»-hjelpen
-- [~] Tester + rapport docs/development/SB3_REPORT.md; siste fullkjøring og visuell førstevisning kontrolleres; nye DB-endringer i 0104. 0103 og eldre er låst; ingen publisering.
+- [x] Tester + rapport docs/development/SB3_REPORT.md; full Vitest 2894/0/10, DB 227/0, i18n og forhåndsvisningskontroll grønne, nettleser nb/en 16/0 med mobil. 0104 bare lokalt; Claude må kjøre den før Cloud-lagring av nye felt kan verifiseres. 0103 og eldre er låst; ingen publisering.
 
 ## SB-4 tid, avspilling, storyboardfilm og sømløs veksling (23.10.2026) – kjøres etter SB-3
 - [ ] Lyd fra scenen som én kilde (filmAudio/audioBank, ingen kopi, over scenegrenser, av/på + volum husket, lyd er tidsmaster)
