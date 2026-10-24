@@ -4,6 +4,11 @@ export interface ActiveScene {
   readonly occurrenceId: string | null;
   readonly sceneId: string | null;
   readonly at: number;
+  readonly productionId?: string | null;
+  readonly panelId?: string | null;
+  readonly blockId?: string | null;
+  /** Scene-local time; never an absolute film timestamp. */
+  readonly timeMs?: number;
 }
 export type SceneMessage = ActiveScene | { readonly type: "ask"; readonly windowId: string; readonly sourceWindowId?: string };
 export interface SceneTransport {
@@ -40,8 +45,8 @@ export function createActiveSceneBus(windowId: string, transport: SceneTransport
     notify();
   });
   return {
-    publish(occurrenceId: string, sceneId: string | null) {
-      const scene = { windowId, occurrenceId, sceneId, at: now() };
+    publish(occurrenceId: string, sceneId: string | null, position: Pick<ActiveScene, "productionId" | "panelId" | "blockId" | "timeMs"> = {}) {
+      const scene = { windowId, occurrenceId, sceneId, ...position, at: now() };
       scenes.set(windowId, scene);
       transport.send(scene);
       notify();

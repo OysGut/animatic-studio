@@ -65,7 +65,20 @@ function bus(projectId: string) {
 export function rememberScene(projectId: string, occurrenceId: string | null | undefined, sceneId: string | null = null): void {
   if (!occurrenceId) return;
   last.set(projectId, occurrenceId);
-  if (typeof window !== "undefined") bus(projectId).publish(occurrenceId, sceneId);
+  if (typeof window !== "undefined") {
+    const channel = bus(projectId);
+    const old = channel.get();
+    channel.publish(occurrenceId, sceneId, old?.occurrenceId === occurrenceId ? { productionId: old.productionId, panelId: old.panelId, blockId: old.blockId, timeMs: old.timeMs } : {});
+  }
+}
+
+export function currentPosition(projectId: string): ActiveScene | null {
+  return typeof window === "undefined" ? null : bus(projectId).get();
+}
+export function rememberPosition(projectId: string, position: { occurrenceId: string; sceneId: string | null; productionId: string; panelId: string | null; blockId: string | null; timeMs: number }): void {
+  if (!Number.isFinite(position.timeMs) || position.timeMs < 0) return;
+  last.set(projectId, position.occurrenceId);
+  if (typeof window !== "undefined") bus(projectId).publish(position.occurrenceId, position.sceneId, position);
 }
 
 export function useActiveSceneInfo(projectId: string, source?: string) {
