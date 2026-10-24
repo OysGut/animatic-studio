@@ -54,11 +54,11 @@ const seqOf = (s: ProjectState, productionId: string) => buildPremiereSequence(s
 const order = (s: ProjectState, occ: string) => storyboardPanelsOf(s, occ as never).map(p => p.id as string);
 
 /** Det Premiere gjør når brukeren klipper: nye klipp med samme markører, i ny rekkefølge og lengde. */
-function edit(seq: PremiereSequence, ids: string[], durations: Record<string, number> = {}): HostClip[] {
+function edit(seq: PremiereSequence, ids: readonly (string | undefined)[], durations: Record<string, number> = {}): HostClip[] {
   const byId = new Map(seq.panels.map(p => [p.panelId, p]));
   let t = 0;
-  return ids.map(id => {
-    const p = byId.get(id)!, dur = durations[id] ?? p.durationFrames;
+  return ids.map(x => {
+    const id = x!, p = byId.get(id)!, dur = durations[id] ?? p.durationFrames;
     const c = { startFrame: t, endFrame: t + dur, markers: [`ptg:panel:${id}@${p.revision}`], mediaPath: `/Users/x/pakke/${p.image}` };
     t += dur;
     return c;
