@@ -1,5 +1,17 @@
 # Veikart
 
+## C-1 – Universell filvei «Send til …» og returside (bygget i kode; DB, Cloud og nettlesertest gjenstår)
+- [x] «Send til …» på ressurs, storyboardpanel, lydklipp og scene, med ærlig beskrivelse av hva mottakeren får
+- [x] PSD med lag (navn, synlighet, opasitet, alfa), PNG, SVG (bare ut), WAV/BWF med tidskode/scene/ressurs-ID, OTIO; manifest v1 og ZIP
+- [x] QR-kode og lenke for retur; kortlivet token per utsendelse, lagret bare som hash (0110)
+- [x] Returside /r/$token (uten konto) og /retur (innlogget, bare ved merket i filen, aldri filnavn)
+- [x] Mottak via C-0: kontrollsum, hviteliste/innhold, ny kandidatversjon, konflikt mot revisjonsgrunnlaget; ingenting tas i bruk automatisk
+- [x] PSD-retur lagrer originalen uendret og en PNG-forhåndsvisning; panelretur blir skisse for SB-7 (skjult kandidatlag)
+- [x] Statusflate i biblioteket, sceneeditoren, lydklippet og storyboardpanelet
+- [x] Enhetstester (13) og full Vitest 3074/0/10, tsc 0, i18n alle språk, test:ssr 8/8
+- [ ] DB-tester for 0110 (lokal Postgres kunne ikke startes her) og kjøring i Cloud – Claude
+- [ ] Nettlesertest tests/visual/c1-handoff.mjs er skrevet, ikke kjørt her (Playwright for Node mangler)
+
 ## C-0 – Kjernen for Creative Connectors (bygget i kode; DB og Cloud gjenstår)
 - [x] Manifest v1 med validator, rundtur med ukjente felt og hemmelighetssperre
 - [x] 0109: connector_sessions/links/transfers/conflicts med RLS, indekser og service-RPC-er (skrevet, ikke kjørt)
