@@ -25049,6 +25049,15 @@
     "c0.consent.page-title": {
       "text": "Koble til et program – From Pen to Glass"
     },
+    "c0.consent.paste-back": {
+      "text": "Hvis {client} ikke åpnet seg, kopier denne adressen og lim den inn i programmet:"
+    },
+    "c0.consent.paste-back-copied": {
+      "text": "Adressen er kopiert."
+    },
+    "c0.consent.paste-back-copy": {
+      "text": "Kopier adressen"
+    },
     "c0.consent.pick-project": {
       "text": "Velg et prosjekt"
     },
@@ -60427,6 +60436,15 @@
     },
     "c0.consent.page-title": {
       "text": "Connect an app – From Pen to Glass"
+    },
+    "c0.consent.paste-back": {
+      "text": "If {client} did not open, copy this address and paste it into the program:"
+    },
+    "c0.consent.paste-back-copied": {
+      "text": "The address has been copied."
+    },
+    "c0.consent.paste-back-copy": {
+      "text": "Copy the address"
     },
     "c0.consent.pick-project": {
       "text": "Choose a project"
