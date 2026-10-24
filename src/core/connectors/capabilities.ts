@@ -20,6 +20,8 @@ export interface AdapterDescriptor {
   /** C-9: eksisterende eksportformater som passer programmet (vises under «Eksporter for …»). */
   readonly exportFormats?: readonly string[];
 }
+/** Formater vi faktisk lager i dag (C-1, PTG3 Dragonframe, PTG6 klippefiler, PTG7 Fusion, filmeksport, B-102). */
+export const EXISTING_EXPORT_FORMATS = ["psd", "png", "svg", "wav", "otio", "fcp7", "edl", "fusion", "dragonframe", "mp4", "fbx", "ae", "pdf"] as const;
 export const CONNECTION_KINDS = ["plugin", "api", "handoff", "export"] as const;
 export type ConnectionKind = (typeof CONNECTION_KINDS)[number];
 
