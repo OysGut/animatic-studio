@@ -16,6 +16,20 @@ function transport(channel: MockBroadcastChannel): SceneTransport {
 }
 afterEach(() => { MockBroadcastChannel.channels.clear(); vi.unstubAllGlobals(); vi.useRealTimers(); vi.resetModules(); sessionStorage.clear(); window.name = ""; });
 describe("active scene bus", () => {
+  it("SB-4 retains exact time without per-frame renders and returns complete position to a new follower", () => {
+    let now=100;
+    const main=createActiveSceneBus("main",transport(new MockBroadcastChannel("sb4")),()=>now);
+    const listener=vi.fn(); main.subscribe(listener);
+    const position={productionId:"production",panelId:"panel",blockId:"line",timeMs:1250};
+    main.publish("occ","scene",position);
+    now=110; main.publish("occ","scene",{...position,timeMs:1260});
+    expect(listener).toHaveBeenCalledTimes(1);
+    expect(main.get()?.timeMs).toBe(1260);
+    const follower=createActiveSceneBus("follower",transport(new MockBroadcastChannel("sb4")),()=>now);
+    follower.ask("main");
+    expect(follower.get("main")).toMatchObject({...position,timeMs:1260});
+    main.close();follower.close();
+  });
   it("follows one source, ignores other window selections and replies immediately to ask", () => {
     const main = createActiveSceneBus("main", transport(new MockBroadcastChannel("project")), () => 100);
     main.publish("occ-1", "scene-1");

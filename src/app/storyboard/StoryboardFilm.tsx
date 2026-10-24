@@ -31,7 +31,8 @@ import { FilmViewer } from "@/app/assembly/FilmViewer";
 import { useFilmLanguage } from "@/app/assembly/use-film-language";
 import { useImageUrls } from "@/app/library/asset-images";
 import { useUiPref } from "@/app/account/ui-prefs";
-import { rememberScene } from "@/app/shell/current-scene";
+import { currentPosition, rememberPosition } from "@/app/shell/current-scene";
+import { panelPosition, positionIndex } from "@/core/storyboard/position";
 
 interface AudioPref { readonly muted: boolean; readonly volume: number }
 function isAudioPref(v: unknown): v is AudioPref {
@@ -69,6 +70,7 @@ export function StoryboardFilm({
     [view, clips, fps, filmLang.dialogue],
   );
   const film = useMemo(() => storyboardFilm(view, clips, audioItems), [view, clips, audioItems]);
+  const positions = useMemo(() => positionIndex(state, productionId), [state, productionId]);
   const images = useFilmImages(film.state, film.clips);
   const audioPaths = useMemo(
     () => [...new Set(film.audio.flatMap((it) => (it.version ? [it.version.mediaPath] : [])))],
@@ -98,14 +100,12 @@ export function StoryboardFilm({
   const currentPanelId = current?.shot.panel.id ?? null;
   // Delt posisjon: scenen under hodet publiseres på den felles bussen, så Manus, Scene, Montering og
   // Manusutforskeren følger samme sted i filmen (én felles posisjon).
-  const lastPublished = useRef<string | null>(null);
   useEffect(() => {
     const occId = current?.shot.occurrenceId ?? null;
-    if (!occId || occId === lastPublished.current) return;
-    lastPublished.current = occId;
-    rememberScene(projectId, occId, state.occurrences[occId]?.sceneId ?? null);
-  }, [current, projectId]);
-  useEffect(() => () => { lastPublished.current = null; }, []);
+    if (!open || !occId || !current) return;
+    const position = panelPosition(state, occId, current.shot.panel.id, null, Math.round((playback.frame - (positions.first.get(occId) ?? 0)) * 1000 * fps.den / fps.num), positions);
+    if (position) rememberPosition(projectId, position);
+  }, [open, current, projectId, state, playback.frame, positions, fps]);
   const close = useCallback(() => {
     playback.pause();
     onCurrentPanel?.(currentPanelId);
@@ -117,7 +117,9 @@ export function StoryboardFilm({
   useEffect(() => {
     if (open && !wasOpen.current) {
       const shot = startOccurrenceId ? film.shots.find((s) => s.occurrenceId === startOccurrenceId) : null;
-      playback.setFrame(shot?.startFrame ?? 0);
+      const saved = currentPosition(projectId);
+      const first = film.shots.find(s => s.occurrenceId === saved?.occurrenceId);
+      playback.setFrame(first && (!startOccurrenceId || startOccurrenceId === saved?.occurrenceId) ? first.startFrame + Math.round((saved?.timeMs ?? 0) * fps.num / fps.den / 1000) : shot?.startFrame ?? 0);
     }
     wasOpen.current = open;
     // eslint-disable-next-line react-hooks/exhaustive-deps

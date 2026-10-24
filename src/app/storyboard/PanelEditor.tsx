@@ -6,6 +6,9 @@ import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/compone
 import { Stage } from "@/app/scene-editor/Stage";
 import { UiId } from "@/app/shared/UiId";
 import { Thumbnail } from "@/app/shared/Thumbnail";
+import { PanelAudio } from "./PanelAudio";
+import { currentPosition, rememberPosition } from "@/app/shell/current-scene";
+import { panelPosition } from "@/core/storyboard/position";
 import { useImageUrls } from "@/app/library/asset-images";
 import { useUiPref } from "@/app/account/ui-prefs";
 import type { Commands } from "@/app/project/use-commands";
@@ -60,6 +63,12 @@ export function PanelEditor({ state, panel, editable, cmds, projectId }: { state
     const id = newId(); for (const c of commands) { const e = cmds.run(c,t("sb3.edit"),id); if (e) { setError(e); return; } }
   };
   const saveDetails = (patch: Partial<PanelDetails>) => run({ type:"SetStoryboardDetails",panelId:panel.id,details:{...panelDetails(panel),...patch} });
+  useEffect(() => {
+    if (!panel.occurrenceId) return;
+    const old = currentPosition(projectId);
+    const p = panelPosition(state, panel.occurrenceId, panel.id, null, old?.panelId === panel.id ? old.timeMs ?? 0 : 0);
+    if (p) rememberPosition(projectId, p);
+  }, [projectId, panel.id, panel.occurrenceId]);
   const updateLayer = (l: CompositionLayer, patch: Partial<LayerFields>) => run({type:"UpdateLayers",layers:[{layerId:l.id,fields:{...layerFieldsOf(l),...patch}}]});
   const openPanel = (p: Composition | undefined) => { if (!p?.occurrenceId) return; select(null); showSnapshot(""); void navigate({to:"/prosjekt/$projectId/scene",params:{projectId},search:{scene:p.occurrenceId,panel:p.id}}); };
   const addPanel = () => { if (!occurrence) return; const id = newId<"composition">(); group([{type:"AddStoryboardPanel",panelId:id,occurrenceId:occurrence.id,variantId:occurrence.variantId,orderKey:panelKeyAfter(state,occurrence.id,panel.id)}]); void navigate({to:"/prosjekt/$projectId/scene",params:{projectId},search:{scene:occurrence.id,panel:id}}); };
@@ -136,6 +145,7 @@ export function PanelEditor({ state, panel, editable, cmds, projectId }: { state
         <div className="max-h-40 overflow-auto border-t border-border p-2" aria-label={t("sb3.layers")}>{[...layers].reverse().map((l,i)=><div key={l.id} className="flex items-center gap-1 text-[13px]" data-testid="sb3-layer"><Button size="sm" variant={l.id===selected ? "secondary" : "ghost"} className="min-w-0 flex-1 justify-start truncate" onClick={()=>select(l.id)}>{l.name}</Button><Button size="icon" variant="ghost" aria-label={t("sb3.visibility")} disabled={!allowed} onClick={()=>updateLayer(l,{visible:!l.visible})}>{l.visible?<Eye/>:<EyeOff/>}</Button><Button size="icon" variant="ghost" aria-label={t("sb3.lock")} disabled={!allowed} onClick={()=>updateLayer(l,{locked:!l.locked})}>{l.locked?<Lock/>:<Unlock/>}</Button><Button size="icon" variant="ghost" aria-label={t("sb3.up")} disabled={!allowed||i===0} onClick={()=>{const index=layers.findIndex(x=>x.id===l.id);run({type:"MoveLayer",layerId:l.id,beforeLayerId:layers[index+2]?.id??null});}}><ArrowUp/></Button><Button size="icon" variant="ghost" aria-label={t("sb3.down")} disabled={!allowed||i===layers.length-1} onClick={()=>{const index=layers.findIndex(x=>x.id===l.id);run({type:"MoveLayer",layerId:l.id,beforeLayerId:layers[index-1]?.id??null});}}><ArrowDown/></Button><Button size="icon" variant="ghost" aria-label={t("sb3.remove")} disabled={!allowed||l.locked} onClick={()=>run({type:"SetLayersRemoved",layerIds:[l.id],removed:true})}><Trash2/></Button></div>)}</div>
       </div>
       <aside className="w-full shrink-0 space-y-3 overflow-auto border-s border-border p-3 lg:w-72" aria-label={t("sb3.properties")}>
+        <PanelAudio key={panel.id} projectId={projectId} state={state} panel={panel} cmds={cmds} allowed={allowed} save={saveDetails}/>
         {layer ? <LayerProperties layer={layer} layers={layers} disabled={!allowed||layer.locked} update={patch=>updateLayer(layer,patch)}/> : null}
         {layer?.arrow ? <div className="space-y-1"><select className={ctl} value={pathTarget} onChange={e=>setPathTarget(e.target.value)} aria-label={t("sb3.path-target")}><option value="">{t("sb3.path-target")}</option>{pathLayers.map(l=><option key={l.id} value={l.id}>{l.name}</option>)}</select><Button size="sm" disabled={!allowed||!pathTarget} onClick={()=>showPath(true)} data-testid="sb3-use-path">{t("sb3.use-path")}</Button></div> : null}
         <fieldset disabled={!allowed} className="space-y-2"><legend className="text-[13px] font-semibold">{t("sb3.panel")}</legend>

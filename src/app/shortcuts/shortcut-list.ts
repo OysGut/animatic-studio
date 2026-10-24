@@ -64,6 +64,7 @@ function group(
 export const SHORTCUT_GROUPS: readonly ShortcutGroup[] = [
   // i18n-ignore
   group("alle", () => t("app-shortcuts-shortcut-list.shortcut-groups.group.4a0fe4864f0e"), [
+    shortcut(["⌘/Ctrl", "⇧", "Space"], () => t("sb4.switch-view")),
     shortcut(["⌘/Ctrl", "Z"], () => t("app-shortcuts-shortcut-list.shortcut-groups.shortcut.672fece39828")),
     shortcut(["⇧", "⌘/Ctrl", "Z"], () => t("app-shortcuts-shortcut-list.shortcut-groups.shortcut.0a517bf7a43f")),
     shortcut(

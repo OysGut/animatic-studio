@@ -76820,5 +76820,53 @@
   },
   "sb4.export.source-storyboard": {
     "text": "Storyboardpaneler"
+  },
+  "sb4.switch-view": {
+    "text": "Veksle arbeidsflate"
+  },
+  "sb4.previous": {
+    "text": "Forrige panel"
+  },
+  "sb4.next": {
+    "text": "Neste panel"
+  },
+  "sb4.stop": {
+    "text": "Stopp"
+  },
+  "sb4.temp-audio": {
+    "text": "Midlertidig lyd"
+  },
+  "sb4.inherited": {
+    "text": "Timingkilde"
+  },
+  "sb4.scene-timing": {
+    "text": "Arvet fra scenen"
+  },
+  "sb4.accept-timing": {
+    "text": "Godta timingforslag"
+  },
+  "sb4.accept-scene-timing": {
+    "text": "Godta timing for scenen"
+  },
+  "sb4.scrub": {
+    "text": "Bla i scenens bilder"
+  },
+  "sb4.use-scene": {
+    "text": "Bruk i scenen"
+  },
+  "sb4.audio-timing": {
+    "text": "Bruk lydens varighet"
+  },
+  "sb4.mix-confirm": {
+    "text": "Legg den midlertidige lyden til scenens lyd? Eksisterende lyd beholdes."
+  },
+  "sb4.record": {
+    "text": "Ta opp midlertidig lyd"
+  },
+  "sb4.upload-audio": {
+    "text": "Last opp lyd"
+  },
+  "sb4.mobile-audio": {
+    "text": "Ta opp med mobilen"
   }
 }

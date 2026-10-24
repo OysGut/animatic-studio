@@ -83,6 +83,7 @@ import {
 import { FrameValue, useFrame, usePlaybackStore, type Playback } from "./use-playback";
 import { FrameFrozen } from "./frame-frozen";
 import { lastScene, onGotoScene, rememberScene } from "@/app/shell/current-scene";
+import { usePositionPlayback } from "@/app/shell/use-position-playback";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ShortcutsButton, ShortcutsDialog } from "@/app/shortcuts/ShortcutsDialog";
 import { isShortcutHelpKey } from "@/app/shortcuts/shortcut-list";
@@ -314,6 +315,7 @@ function Editor({
   const audioClock = useRef<(() => number | null) | null>(null);
   // N8: arbeidsflaten abonnerer ikke på bildet; bare lerretet, avspillingshodet, tidskoden og manuspanelet gjør det
   const playback = usePlaybackStore(duration, state.project.fps, true, tracksOpen ? animationRange : null, audioClock);
+  usePositionPlayback(projectId, state, playback, occurrenceId);
   // Lyden i scenen spilles med (DEC-0044)
   // Filmens scener (for lyd som løper inn fra tidligere scener og lyd i scenene rundt, DEC-0045)
   // Språkversjonen som er valgt i monteringen (DEC-0059): bare den lyden spilles

@@ -55,7 +55,8 @@ import { SceneNavigator, type CharacterOption } from "./SceneNavigator";
 import { ScriptPageView, type Selection } from "./ScriptPageView";
 import { useNavigate } from "@tanstack/react-router";
 import { PaneResizer, usePaneSize, useStoredFlag } from "@/app/shell/pane-size";
-import { onGotoScene, rememberScene } from "@/app/shell/current-scene";
+import { onGotoScene, rememberPosition, currentPosition } from "@/app/shell/current-scene";
+import { panelPosition } from "@/core/storyboard/position";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { RejectedTextNotice } from "@/app/project/RejectedTextNotice";
 import { titlePageCommand } from "@/core/commands/export-settings";
@@ -145,10 +146,13 @@ function Workspace({
       ),
     [state.productions],
   );
-  const initialOcc = initialOccurrenceId ? state.occurrences[initialOccurrenceId] : undefined;
+  const savedPosition = currentPosition(projectId);
+  const wantedOccurrence = initialOccurrenceId ?? savedPosition?.occurrenceId;
+  const initialOcc = wantedOccurrence ? state.occurrences[wantedOccurrence] : undefined;
+  const wantedBlock = initialBlockId ?? savedPosition?.blockId;
   const initialBlock =
-    initialOcc && initialBlockId && state.blocks[initialBlockId]?.variantId === initialOcc.variantId
-      ? initialBlockId
+    initialOcc && wantedBlock && state.blocks[wantedBlock]?.variantId === initialOcc.variantId
+      ? wantedBlock
       : null;
   // Valgt produksjon, felles for arbeidsflatene (DEC-0057)
   const [productionId, setProductionId] = useActiveProduction(
@@ -161,8 +165,15 @@ function Workspace({
     blockId: initialBlock,
   });
   useEffect(
-    () => rememberScene(projectId, selection.occurrenceId, state.occurrences[selection.occurrenceId ?? ""]?.sceneId ?? null),
-    [projectId, selection.occurrenceId, state.occurrences],
+    () => {
+      if (!selection.occurrenceId) return;
+      const old = currentPosition(projectId);
+      // Restoring a view is not a new line click: retain the exact shared time.
+      if (old?.occurrenceId === selection.occurrenceId && old.blockId === selection.blockId) return;
+      const p = panelPosition(state, selection.occurrenceId, null, selection.blockId, old?.occurrenceId === selection.occurrenceId ? old.timeMs ?? 0 : 0);
+      if (p) rememberPosition(projectId, p);
+    },
+    [projectId, selection.occurrenceId, selection.blockId, state],
   );
   // Scenen har fått egen versjon (ForkVariant, DEC-0057): valgt linje flyttes til den nye versjonen
   useEffect(() => {

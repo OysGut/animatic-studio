@@ -10,10 +10,11 @@
  * storyboardtidslinjen (samme klipp, samme versjoner). Lyden er tidsmaster – bildet følger lydklokken.
  */
 import type { FilmClip } from "../assembly/film";
-import type { FilmAudioItem } from "../audio";
+import { filmAudio, type FilmAudioItem } from "../audio";
 import type { CameraShot, Composition, ProjectState, Transition } from "../model";
 import type { OccurrenceId } from "../ids";
 import { speechSeconds } from "../language/text-metrics";
+import { sourceLanguageOf } from "../dialogue/languages";
 import { framesToSeconds, secondsToFrames } from "../time";
 import { panelBlockIds, panelTimingFrames, storyboardPanelsOf } from "./index";
 
@@ -68,14 +69,19 @@ export function suggestPanelTimings(
   const clip = clips.find((c) => c.occurrenceId === occurrenceId);
   const audioFrames = clip && clip.durationKind === "film" ? 0 : (clip?.durationFrames ?? 0);
   const perPanel = Math.max(1, Math.round(audioFrames / panels.length));
+  const actualAudio = filmAudio(s, clips, fps, sourceLanguageOf(s)).filter(item => item.clip.occurrenceId === occurrenceId);
   const out: PanelTimingSuggestion[] = [];
   for (const p of panels) {
     let seconds = 0;
-    for (const blockId of panelBlockIds(s, p.id)) {
+    const ids = [...new Set([...panelBlockIds(s, p.id), ...(p.storyboard?.dialogueIds ?? [])])];
+    const linkedAudio = actualAudio.filter(item => item.clip.blockId && ids.includes(item.clip.blockId));
+    for (const blockId of ids) {
       const b = s.blocks[blockId];
-      if (b && !b.removed && b.kind === "dialogue") seconds += speechSeconds(b.text);
+      if (b && !b.removed && (b.kind === "dialogue" || b.kind === "action")) seconds += speechSeconds(b.text, sourceLanguageOf(s));
     }
-    if (seconds > 0) out.push({ panelId: p.id, frames: Math.max(1, secondsToFrames(seconds, fps)), basis: "dialogue" });
+    if (linkedAudio.length) out.push({ panelId: p.id, frames: Math.max(1, secondsToFrames(linkedAudio.reduce((sum, item) => sum + item.length, 0), fps)), basis: "audio" });
+    else if (seconds > 0) out.push({ panelId: p.id, frames: Math.max(1, secondsToFrames(seconds, fps)), basis: "dialogue" });
+    else if (actualAudio.length) out.push({ panelId: p.id, frames: Math.max(1, secondsToFrames(Math.max(...actualAudio.map(item => item.start + item.length - framesToSeconds(clip?.startFrame ?? 0, fps))) / panels.length, fps)), basis: "audio" });
     else if (audioFrames > 0) out.push({ panelId: p.id, frames: perPanel, basis: "audio" });
   }
   return out;

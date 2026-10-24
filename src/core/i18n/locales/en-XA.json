@@ -76802,5 +76802,53 @@
   },
   "sb4.export.source-storyboard": {
     "text": "[!! SSttôôrryybbôôáárrdd ppáánnëëllss !!]"
+  },
+  "sb4.switch-view": {
+    "text": "[!! SSwwïïttcchh wwôôrrkkssppááccëë !!]"
+  },
+  "sb4.previous": {
+    "text": "[!! PPrrëëvvïïôôüüss ppáánnëëll !!]"
+  },
+  "sb4.next": {
+    "text": "[!! NNëëxxtt ppáánnëëll !!]"
+  },
+  "sb4.stop": {
+    "text": "[!! SSttôôpp !!]"
+  },
+  "sb4.temp-audio": {
+    "text": "[!! TTëëmmppôôrráárryy ááüüddïïôô !!]"
+  },
+  "sb4.inherited": {
+    "text": "[!! TTïïmmïïnngg ssôôüürrccëë !!]"
+  },
+  "sb4.scene-timing": {
+    "text": "[!! ÏÏnnhhëërrïïttëëdd ffrrôômm ssccëënnëë !!]"
+  },
+  "sb4.accept-timing": {
+    "text": "[!! ÁÁccccëëpptt ttïïmmïïnngg ssüüggggëëssttïïôônn !!]"
+  },
+  "sb4.accept-scene-timing": {
+    "text": "[!! ÁÁccccëëpptt ttïïmmïïnngg ffôôrr ssccëënnëë !!]"
+  },
+  "sb4.scrub": {
+    "text": "[!! SSccrrüübb ssccëënnëë ffrráámmëëss !!]"
+  },
+  "sb4.use-scene": {
+    "text": "[!! ÜÜssëë ïïnn ssccëënnëë !!]"
+  },
+  "sb4.audio-timing": {
+    "text": "[!! ÜÜssëë ááüüddïïôô ddüürrááttïïôônn !!]"
+  },
+  "sb4.mix-confirm": {
+    "text": "[!! ÁÁdddd ttëëmmppôôrráárryy ááüüddïïôô ttôô tthhëë ssccëënnëë ssôôüünndd? ËËxxïïssttïïnngg ááüüddïïôô ïïss pprrëëssëërrvvëëdd. !!]"
+  },
+  "sb4.record": {
+    "text": "[!! RRëëccôôrrdd ttëëmmppôôrráárryy ááüüddïïôô !!]"
+  },
+  "sb4.upload-audio": {
+    "text": "[!! ÜÜppllôôáádd ááüüddïïôô !!]"
+  },
+  "sb4.mobile-audio": {
+    "text": "[!! RRëëccôôrrdd ôônn mmôôbbïïllëë !!]"
   }
 }

@@ -57582,5 +57582,85 @@
     "text": "스토리보드 패널",
     "sourceHash": "d77b960e3e992a9cc4f9ff7f26adcb01735e5ace70bf4577c498842c33e2bac9",
     "review": "machine"
+  },
+  "sb4.switch-view": {
+    "text": "작업 화면 전환",
+    "sourceHash": "ec19d453f511991ba22af015a4a8f946d0982bcff80d7f1b13b19cfc0067f5fe",
+    "review": "machine"
+  },
+  "sb4.previous": {
+    "text": "이전 패널",
+    "sourceHash": "7cc8e8dd050494c9c566f7867fd7baac7cf2cd7ed3b2d8afee19fe1458f0cd83",
+    "review": "machine"
+  },
+  "sb4.next": {
+    "text": "다음 패널",
+    "sourceHash": "8f5caf93552a0d4da50a6b0cfbba6d9b13381ccd1377f270632145a07311b036",
+    "review": "machine"
+  },
+  "sb4.stop": {
+    "text": "정지",
+    "sourceHash": "a05c552b6f758d06552c683061ca4353be2c8980f5353f68cc99d024ea445497",
+    "review": "machine"
+  },
+  "sb4.temp-audio": {
+    "text": "임시 오디오",
+    "sourceHash": "1e884ec5530dd126c0f8a2ebf0639a463ee213964a3d5d4626de8b2103786826",
+    "review": "machine"
+  },
+  "sb4.inherited": {
+    "text": "타이밍 소스",
+    "sourceHash": "4863f0d62ded3ca5f158da08a6ffdeb74aad52f1ba22cbd4dad7bebd26c04dc0",
+    "review": "machine"
+  },
+  "sb4.scene-timing": {
+    "text": "장면에서 상속됨",
+    "sourceHash": "11bdb9671b9e3135ed4c1c96984f8988689694f473e18f119cb425668d0181d2",
+    "review": "machine"
+  },
+  "sb4.accept-timing": {
+    "text": "타이밍 제안 수락",
+    "sourceHash": "21bdfcc1532d0bc9f58e4fb715a3edb4e6eb0320192782609b6e73f83616cead",
+    "review": "machine"
+  },
+  "sb4.accept-scene-timing": {
+    "text": "장면 타이밍 수락",
+    "sourceHash": "317d75d42c1098c8e4f578efbac9f0fcb71dd02ba8d89eef2901a6905c7d03a1",
+    "review": "machine"
+  },
+  "sb4.scrub": {
+    "text": "장면 프레임 탐색",
+    "sourceHash": "ac6b16bd22449194c2fd4c1dbc0bdf8046200b1911db4b25e3f8734cdeb0f063",
+    "review": "machine"
+  },
+  "sb4.use-scene": {
+    "text": "장면에서 사용",
+    "sourceHash": "20691ddc1ae6a0206f3c2ba9bebb34b6265dd407c662d14e142ff89df414acca",
+    "review": "machine"
+  },
+  "sb4.audio-timing": {
+    "text": "오디오 길이 사용",
+    "sourceHash": "ae6939bb790a68701e4074b091ce8c350b2ccbdbff315535f2693507830e8985",
+    "review": "machine"
+  },
+  "sb4.mix-confirm": {
+    "text": "임시 오디오를 장면 사운드에 추가할까요? 기존 오디오는 유지됩니다.",
+    "sourceHash": "99116549d0ab64b3d74f8d737f012580c81a52c37b3507b139e23c43b7153885",
+    "review": "machine"
+  },
+  "sb4.record": {
+    "text": "임시 오디오 녹음",
+    "sourceHash": "b93734a104283c99b425a8fbe783df4bfedf0def7543c9e765ccf6e56c23fe5c",
+    "review": "machine"
+  },
+  "sb4.upload-audio": {
+    "text": "오디오 업로드",
+    "sourceHash": "4be004e99b3d01887f9829261c33fa81a7cfbef96771652e76be2e5577753b04",
+    "review": "machine"
+  },
+  "sb4.mobile-audio": {
+    "text": "모바일에서 녹음",
+    "sourceHash": "462511f986141e10563f47818457d1f1f8b95d8cb21f67d9d28442a47abb8abf",
+    "review": "machine"
   }
 }

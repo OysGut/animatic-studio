@@ -76802,5 +76802,53 @@
   },
   "sb4.export.source-storyboard": {
     "text": "Storyboard panels"
+  },
+  "sb4.switch-view": {
+    "text": "Switch workspace"
+  },
+  "sb4.previous": {
+    "text": "Previous panel"
+  },
+  "sb4.next": {
+    "text": "Next panel"
+  },
+  "sb4.stop": {
+    "text": "Stop"
+  },
+  "sb4.temp-audio": {
+    "text": "Temporary audio"
+  },
+  "sb4.inherited": {
+    "text": "Timing source"
+  },
+  "sb4.scene-timing": {
+    "text": "Inherited from scene"
+  },
+  "sb4.accept-timing": {
+    "text": "Accept timing suggestion"
+  },
+  "sb4.accept-scene-timing": {
+    "text": "Accept timing for scene"
+  },
+  "sb4.scrub": {
+    "text": "Scrub scene frames"
+  },
+  "sb4.use-scene": {
+    "text": "Use in scene"
+  },
+  "sb4.audio-timing": {
+    "text": "Use audio duration"
+  },
+  "sb4.mix-confirm": {
+    "text": "Add temporary audio to the scene sound? Existing audio is preserved."
+  },
+  "sb4.record": {
+    "text": "Record temporary audio"
+  },
+  "sb4.upload-audio": {
+    "text": "Upload audio"
+  },
+  "sb4.mobile-audio": {
+    "text": "Record on mobile"
   }
 }

@@ -8333,6 +8333,7 @@ try {
       "projects|private.validate_sb3_fields||101",
       "script_annotations|private.validate_sb3_annotations||102",
       "composition_layers|private.validate_sb3_layer_links||103",
+      "compositions|private.validate_sb4_temp_audio||104",
     ]), `registeret avviker: ${JSON.stringify(rows)}`);
     // Alle registrerte funksjoner finnes med riktig signatur
     for (const fn of ["validate_translation_line_links", "validate_style_harmonizations", "validate_style_preferred_references",
@@ -8858,6 +8859,25 @@ try {
     await expectError(sbApply(g7p,{updates:{compositions:[{id:panel,expected_revision:1,revision:2,storyboard:{...details,dialogueIds:[],fields:[]}}]}}),"22023");
     await expectError(sbApply(g7p,{updates:{compositions:[{id:panel,expected_revision:1,revision:2,storyboard:{...details,dialogueIds:[],focalMm:"bad"}}]}}),"22023");
     assert((await as("authenticated",BOB,tx=>tx`select id from public.compositions where id=${panel}`)).length===0,"ikke-medlem kan lese panelet");
+  });
+
+  await test("0105 SB-4: midlertidig lyd valideres og beholdes også på fjernede paneler", async () => {
+    const panel = newId(), asset = newId(), variant = newId(), version = newId();
+    await sql`insert into public.assets(id,project_id,kind,name,created_by) values (${asset},${g7p},'sound','Temporary',${ALICE})`;
+    await sql`insert into public.asset_variants(id,project_id,asset_id,name,style,appearance,created_by) values (${variant},${g7p},${asset},'Temporary','other','',${ALICE})`;
+    await sql`insert into public.asset_versions(id,project_id,variant_id,number,media_path,mime_type,byte_size_big,sha256,created_by) values (${version},${g7p},${variant},1,${g7p+'/temp.wav'},'audio/wav',1,${'a'.repeat(64)},${ALICE})`;
+    const details = {number:'',sceneNumber:'',fields:{},dialogueIds:[],shot:null,angle:null,focalMm:null,movement:'',tempAudio:{assetId:asset,versionId:version,name:'Temporary',durationMs:2000}};
+    await sbApply(g7p,{inserts:{compositions:[{id:panel,project_id:g7p,variant_id:sbSetup.variant,kind:'storyboard',occurrence_id:sbSetup.occurrence,order_key:'zz9',revision:1,storyboard:details}]}});
+    for (const tempAudio of [{...details.tempAudio,assetId:newId()},{...details.tempAudio,versionId:newId()},{...details.tempAudio,durationMs:3600001},{...details.tempAudio,durationMs:'bad'}]) {
+      await expectError(sbApply(g7p,{updates:{compositions:[{id:panel,expected_revision:1,revision:2,storyboard:{...details,tempAudio}}]}}),'22023');
+    }
+    await sql`update public.assets set removed=true where id=${asset}`;
+    await expectError(as('service_role',null,tx=>tx`select public.purge_removed_assets(${g7p},${ALICE},array[${asset}]::uuid[],array[]::uuid[])`),'23503');
+    await sql`update public.compositions set removed=true where id=${panel}`;
+    await expectError(as('service_role',null,tx=>tx`select public.purge_removed_assets(${g7p},${ALICE},array[${asset}]::uuid[],array[]::uuid[])`),'23503');
+    await sql`update public.compositions set storyboard=jsonb_set(storyboard,'{tempAudio}','null'::jsonb) where id=${panel}`;
+    await as('service_role',null,tx=>tx`select public.purge_removed_assets(${g7p},${ALICE},array[${asset}]::uuid[],array[]::uuid[])`);
+    assert((await sql`select id from public.assets where id=${asset}`).length===0,'lyd kunne ikke fjernes etter frakobling');
   });
 
   // ---------- search_path: alle SECURITY DEFINER-funksjoner skal ha search_path='' ----------

@@ -1322,6 +1322,7 @@ export type Database = {
           removed: boolean
           revision: number
           step: number
+          storyboard: Json | null
           timing: Json
           variant_id: string
           width: number
@@ -1345,6 +1346,7 @@ export type Database = {
           removed?: boolean
           revision?: number
           step?: number
+          storyboard?: Json | null
           timing?: Json
           variant_id: string
           width?: number
@@ -1368,6 +1370,7 @@ export type Database = {
           removed?: boolean
           revision?: number
           step?: number
+          storyboard?: Json | null
           timing?: Json
           variant_id?: string
           width?: number
@@ -4437,6 +4440,7 @@ export type Database = {
           name: string
           revision: number
           source_language: string
+          storyboard_fields: Json | null
           workspace_id: string | null
         }
         Insert: {
@@ -4463,6 +4467,7 @@ export type Database = {
           name: string
           revision?: number
           source_language: string
+          storyboard_fields?: Json | null
           workspace_id?: string | null
         }
         Update: {
@@ -4489,6 +4494,7 @@ export type Database = {
           name?: string
           revision?: number
           source_language?: string
+          storyboard_fields?: Json | null
           workspace_id?: string | null
         }
         Relationships: [
@@ -5186,6 +5192,8 @@ export type Database = {
           edited_by_name: string | null
           id: string
           kind: string
+          layer_id: string | null
+          panel_id: string | null
           project_id: string
           quote: string
           range_end: number
@@ -5209,6 +5217,8 @@ export type Database = {
           edited_by_name?: string | null
           id: string
           kind?: string
+          layer_id?: string | null
+          panel_id?: string | null
           project_id: string
           quote?: string
           range_end?: number
@@ -5232,6 +5242,8 @@ export type Database = {
           edited_by_name?: string | null
           id?: string
           kind?: string
+          layer_id?: string | null
+          panel_id?: string | null
           project_id?: string
           quote?: string
           range_end?: number
@@ -5252,6 +5264,20 @@ export type Database = {
             columns: ["block_id"]
             isOneToOne: false
             referencedRelation: "script_blocks"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "script_annotations_layer_id_fkey"
+            columns: ["layer_id"]
+            isOneToOne: false
+            referencedRelation: "composition_layers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "script_annotations_panel_id_fkey"
+            columns: ["panel_id"]
+            isOneToOne: false
+            referencedRelation: "compositions"
             referencedColumns: ["id"]
           },
           {
