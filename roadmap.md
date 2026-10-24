@@ -78,22 +78,22 @@
 - [x] Galleri i fortellerrekkefølge per produksjon, gruppert per scene, felles Thumbnail
 - [x] Kontroller: panelstørrelse/zoom, vis-skjul, tekstvisning, filter, «Hopp til manus», husket per bruker
 - [x] Klikk/dobbeltklikk/Enter-navigasjon med panel-markering (URL-parameter)
-- [~] Omorganisering: paneldrag og opp/ned for scener testet; scenedrag skal verifiseres i SB-3. Legg til/dupliser/skjul/deaktiver/gjeninnfør og flytt til scene med angre er testet.
+- [x] Omorganisering: paneldrag, scenedrag via MoveOccurrence med tydelig varsel og angre (13 SB-2-tester). Legg til/dupliser/skjul/deaktiver/gjeninnfør og flytt til scene med angre er testet.
 - [x] Første åpning: forslag ett tomt panel per scene med bekreftelse
 - [x] Statusmerker per fagområde + redigering
 - [x] Tilgjengelighet (piltaster, aria, RTL), virtualisering for 2 000 paneler
-- [~] Tester jsdom (12) + rapport; typekontroll og i18n grønne, DB 226/0. Siste dokumenterte fullkjøring: 2879 bestått, én feil siden rettet; fullkjøring må gjentas. Visuell suite nb/en skrevet, ikke kjørt.
+- [x] Tester jsdom (13) + rapport; typekontroll/i18n grønne, DB 227/0. Full Vitest gjentatt uten feil (2892/0/10); visuell nb/en kontroll videreført i SB-3.
 
 ## SB-3 panelredigering (23.10.2026) – kjøres etter SB-2
-- [ ] Panelflate: dra inn ressurser (ID+versjon, proporsjoner), flytt/skaler/roter/ordne/lås/skjul
-- [ ] Verktøy: pil/linje, figur, tekst, kameramerke, lapp (type, forankring, behandlet), vis/skjul notater; tråder via notatsystemet
-- [ ] «Bruk som bevegelsesbane» (eksplisitt, utkast)
-- [ ] Revisjoner: «Rediger storyboard» på godkjent panel lager ny revisjon; vis tidligere
-- [ ] Låst nummerering (12, 12A) + angrebar «Nummerer på nytt» med forhåndsvisning
-- [ ] Egendefinerte felt per prosjekt; dialog koblet til replikker
-- [ ] Kamera/utsnitt per panel, formatmasker, sikre soner, tredjedeler
-- [ ] Hurtigtaster i «?»-hjelpen
-- [ ] Tester + rapport docs/development/SB3_REPORT.md; nye DB-endringer i 0104. 0103 og eldre er låst; ingen publisering.
+- [~] Panelflate: dra inn ressurser (ID+versjon, proporsjoner), flytt/skaler/roter/ordne/lås/skjul
+- [~] Verktøy: pil/linje, figur, tekst, kameramerke, lapp (type, forankring, behandlet), vis/skjul notater; tråder via notatsystemet
+- [x] «Bruk som bevegelsesbane» (eksplisitt, utkast)
+- [x] Revisjoner: «Rediger storyboard» på godkjent panel lager ny revisjon; vis tidligere
+- [x] Låst nummerering (12, 12A) + angrebar «Nummerer på nytt» med forhåndsvisning
+- [x] Egendefinerte felt per prosjekt; dialog koblet til replikker
+- [~] Kamera/utsnitt per panel, formatmasker, sikre soner, tredjedeler
+- [~] Hurtigtaster i «?»-hjelpen
+- [~] Tester + rapport docs/development/SB3_REPORT.md; siste fullkjøring og visuell førstevisning kontrolleres; nye DB-endringer i 0104. 0103 og eldre er låst; ingen publisering.
 
 ## SB-4 tid, avspilling, storyboardfilm og sømløs veksling (23.10.2026) – kjøres etter SB-3
 - [ ] Lyd fra scenen som én kilde (filmAudio/audioBank, ingen kopi, over scenegrenser, av/på + volum husket, lyd er tidsmaster)
