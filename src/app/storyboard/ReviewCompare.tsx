@@ -1,7 +1,7 @@
 import { useEffect,useState } from 'react';
 import type { ProjectState } from '@/core';
 import { panelSnapshotContentOf,filmClips } from '@/core';
-import { compareRevisions,revisionState,comparisonLabelKey } from '@/core/storyboard/review';
+import { compareRevisions,revisionState } from '@/core/storyboard/review';
 import { panelPrintRows } from '@/core/storyboard/print';
 import { printImageRenderer } from '@/engine/export/storyboard-print';
 import { createSignedUrls } from '@/adapters/browser/storage-files';

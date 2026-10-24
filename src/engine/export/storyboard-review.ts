@@ -8,8 +8,9 @@ import { exportAnimatic,loadImages } from './animatic';
 import { AudioBank } from '../audio/mixer';
 import { createSignedUrls,uploadFile } from '@/adapters/browser/storage-files';
 import { t } from '@/core/i18n/keyed';
-export async function uploadReviewMedia(state:ProjectState,productionId:string,occurrenceIds:string[],snapshots:Record<string,string>,reservation:{manifest:{key:string;panelId:string;image_key:string}[];videoKey:string},signal:AbortSignal,progress:(done:number,total:number)=>void){
- const selection=selectReview(state,productionId,occurrenceIds,snapshots);
+export async function uploadReviewMedia(state:ProjectState,productionId:string,occurrenceIds:string[],snapshots:Record<string,string>,reservation:{renderState:ProjectState;manifest:{key:string;panelId:string;image_key:string}[];videoKey:string},signal:AbortSignal,progress:(done:number,total:number)=>void){
+ state=reservation.renderState;
+ const selection=selectReview(state,productionId,occurrenceIds);
  const original=filmClips(state,productionId).filter(c=>occurrenceIds.includes(c.occurrenceId));
  const sourceAudio=[...filmAudio(state,original,state.project.fps),...filmTakeAudio(original,state.project.fps)];
  const adapted=storyboardFilm(selection.state,original,sourceAudio);

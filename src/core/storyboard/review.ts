@@ -37,6 +37,3 @@ export function compareRevisions(a:readonly PanelSnapshotContent[],b:readonly Pa
   const semantic=(p:PanelSnapshotContent)=>JSON.stringify({composition:{...p.composition,revision:0},layers:p.layers.map(l=>({...l,revision:0})),blockIds:p.blockIds});
   return [...new Set([...left.keys(),...right.keys()])].map(id=>({id,before:left.get(id),after:right.get(id),kind:!left.has(id)?'new':!right.has(id)?'removed':semantic(left.get(id) as PanelSnapshotContent)===semantic(right.get(id) as PanelSnapshotContent)?'same':'changed'}));
 }
-
-export function decisionLabelKey(value:string){return value==='approved'?'sb10.approved':value==='changes'?'sb10.changes':'sb10.none';}
-export function comparisonLabelKey(value:string){return value==='new'?'sb10.new':value==='removed'?'sb10.removed':value==='changed'?'sb10.changed':'sb10.same';}
